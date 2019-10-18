@@ -148,6 +148,10 @@
 .no-selectable {
   user-select: none;
 }
+.icon {
+  line-height: 1;
+  vertical-align: bottom;
+}
 
 @for $i from 1 through 20 {
   $base: 0.25rem;

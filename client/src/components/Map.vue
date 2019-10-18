@@ -14,7 +14,7 @@ export default {
     mapInts: undefined
   }),
   mounted() {
-    this.createMap()
+    this.mapInts = this.createMap()
   },
   methods: {
     createMap() {
