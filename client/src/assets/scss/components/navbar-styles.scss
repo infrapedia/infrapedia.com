@@ -1,6 +1,8 @@
 @import '../helpers/atomic-classes';
 @import '../base/variables';
 
+$hover-blue: lighten($blue-link-colors, 50%);
+
 .header {
   top: 0;
   z-index: 1500;
@@ -19,14 +21,87 @@
     height: 34px;
     width: 120px;
   }
+
+  li {
+    height: 99%;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      width: 100%;
+      display: block;
+      transform: scaleX(0);
+      border-bottom: solid 3px $dark-yellow;
+      transition: transform $cubic-bezier;
+    }
+  }
+
   .list-item {
     @extend .m0;
     line-height: 1.6;
     @extend .h-fit-full;
-    border-bottom: 2px solid transparent;
+    border-radius: 2px;
+    flex: 0 0 auto;
+    position: relative;
+    display: inline-flex;
+    text-decoration: none;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    transition: background-color $regular-transition;
+    font-weight: 400;
+    min-width: 60px;
+    font-size: 12px;
 
-    .el-button {
-      @extend .h-fit-full;
+    .icon-wrapper {
+      display: inline-flex;
+      justify-content: center;
+      vertical-align: middle;
+      align-items: center;
+      text-align: center;
+      transition: background-color $regular-transition;
+      transform: rotateZ(90deg);
+      &:hover {
+        background-color: $hover-blue;
+      }
     }
   }
+}
+
+/*
+*   THEME VARIANT'S
+*/
+
+.navbar-wrapper.light {
+  .sm-icon,
+  .list-item {
+    color: $blue-link-colors;
+  }
+  .list-item:not(.nobg) {
+    &:hover {
+      background-color: $hover-blue;
+    }
+  }
+  .user-icon {
+    .el-avatar {
+      color: white;
+      background: $blue-link-colors;
+    }
+  }
+  li:not(.outline0) {
+    &:focus,
+    &:focus-within {
+      outline: none 0;
+      &::after {
+        transform: scaleX(1);
+      }
+    }
+  }
+  // li.outline0 {
+  //   &:focus,
+  //   &:focus-within {
+  //     outline: none 0;
+  //     color: lighten($hover-blue, 12%);
+  //   }
+  // }
 }
