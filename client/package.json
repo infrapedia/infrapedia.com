@@ -1,5 +1,5 @@
 {
-  "name": "The world’s largest network and datacenter infrastructure atlas",
+  "name": "client",
   "version": "0.1.0",
   "private": true,
   "scripts": {
