@@ -1,1 +1,27 @@
-@import 'reset-css';
+@import '../../../node_modules/normalize.css/normalize';
+@import 'helpers/atomic-classes';
+
+body,
+html,
+.application {
+  @extend .no-overflow;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+::selection {
+  background-color: #b3d4fc;
+  text-shadow: none;
+  color: #000;
+}
+
+a {
+  text-decoration: none;
+}
+
+h1 {
+  @extend .m0;
+}
+
+.el-drawer__header {
+  display: none !important;
+}

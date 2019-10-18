@@ -1,0 +1,24 @@
+@import '../helpers/_atomic-classes';
+@import '../base/_variables';
+
+footer {
+  bottom: 0;
+  width: 98%;
+  color: grey;
+  font-size: 12px;
+  align-items: flex-end;
+}
+
+/*
+* THEME VARIANTS
+*/
+
+footer {
+  &.light {
+    background: transparent;
+  }
+
+  &.dark {
+    background: $dark-charcoal;
+  }
+}

@@ -1,20 +1,23 @@
 <template>
-  <div>
-    <Map />
+  <div class="application" :class="{ dark, light: !dark }">
+    <router-view />
+    <i-footer />
   </div>
 </template>
 
 <script>
-import Map from './components/Map'
+import IFooter from './components/Footer'
 
 export default {
   name: 'App',
   components: {
-    Map
+    IFooter
   },
-  data: () => ({
-    //
-  })
+  computed: {
+    dark() {
+      return this.$store.state.isDark
+    }
+  }
 }
 </script>
 <style lang="sass">
