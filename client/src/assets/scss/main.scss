@@ -1,13 +1,11 @@
 @import '../../../node_modules/normalize.css/normalize';
 @import 'helpers/atomic-classes';
-@import 'base/variables';
 
 body,
 html,
 .application {
   @extend .no-overflow;
   color: rgba(0, 0, 0, 0.87);
-  font-family: 'helvetica';
 }
 .application {
   overflow-y: scroll;
@@ -20,7 +18,7 @@ html,
 }
 
 a {
-  color: $blue-link-colors;
+  color: #255fb9;
   text-decoration: none;
 }
 
@@ -37,8 +35,4 @@ h1 {
 
 .el-drawer__header {
   display: none !important;
-}
-
-.el-divider--vertical {
-  min-height: calc(100% - 16px);
 }
