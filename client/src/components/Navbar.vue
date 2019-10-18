@@ -11,45 +11,52 @@
           </router-link>
         </h1>
         <ul class="links-wrapper p0 m0 h-fit-full">
-          <li class="inline-block" tabindex="0">
-            <div class="list-item pr4 pl4">
-              Ours Partners
+          <li class="inline-block relative" tabindex="0">
+            <div class="list-item pr4 pl4" aria-haspopup="true">
+              Our Partners
               <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
             </div>
           </li>
           <el-divider direction="vertical" class="m0" />
-          <li class="inline-block" tabindex="0">
-            <div class="list-item pr4 pl4">
+          <li class="inline-block relative" tabindex="0">
+            <div class="list-item pr4 pl4" aria-haspopup="true">
               Submarine Cables
               <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
             </div>
           </li>
           <el-divider direction="vertical" class="m0" />
-          <li class="inline-block" tabindex="0">
-            <div class="list-item pr4 pl4">
+          <li class="inline-block relative" tabindex="0">
+            <div class="list-item pr4 pl4" aria-haspopup="true">
               Data Centers
               <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
             </div>
           </li>
           <el-divider direction="vertical" class="m0" />
-          <li class="inline-block" tabindex="0">
-            <div class="list-item pr4 pl4">
+          <li class="inline-block relative" tabindex="0">
+            <div class="list-item pr4 pl4" aria-haspopup="true">
               IXPs
               <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
             </div>
           </li>
           <el-divider direction="vertical" class="m0" />
-          <li class="inline-block" tabindex="0">
-            <div class="list-item pr4 pl4">
+          <li class="inline-block relative" tabindex="0">
+            <div class="list-item pr4 pl4" aria-haspopup="true">
               Networks
               <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
             </div>
           </li>
           <el-divider direction="vertical" class="m0" />
-          <li class="inline-block" tabindex="0">
-            <div class="list-item user-icon pr1 pl1" role="user">
+          <li class="inline-block outline0 relative" tabindex="0">
+            <div class="list-item user-icon nobg pr1 pl1" aria-haspopup="true">
               <div class="pt2">
                 <el-avatar icon="el-icon-user-solid" size="small" />
+              </div>
+            </div>
+          </li>
+          <li class="inline-block outline0 relative" tabindex="0">
+            <div class="list-item nobg info-menu pr1 pl1" role="user" aria-haspopup="true">
+              <div class="p2 circle icon-wrapper">
+                <i aria-hidden="true" class="el-icon-more icon sm-icon" />
               </div>
             </div>
           </li>
