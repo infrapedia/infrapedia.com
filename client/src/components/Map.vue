@@ -10,6 +10,9 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 
 export default {
   name: 'Map',
+  data: () => ({
+    mapInts: undefined
+  }),
   mounted() {
     this.createMap()
   },
@@ -17,14 +20,15 @@ export default {
     createMap() {
       mapboxgl.accessToken = mapConfig.mapToken
 
-      new mapboxgl.Map({
+      const map = new mapboxgl.Map({
         container: 'map',
-        style: mapConfig.default,
         zoom: mapConfig.zoom,
-        center: mapConfig.center
+        center: mapConfig.center,
+        style: mapConfig.default
         // maptiks_id: mapConfig.maptiks_id
       })
 
+      return map
       // const draw = new MapboxDraw({
       //   displayControlsDefault: false,
       //   controls: {

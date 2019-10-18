@@ -1,0 +1,32 @@
+@import '../helpers/atomic-classes';
+@import '../base/variables';
+
+.header {
+  top: 0;
+  z-index: 1500;
+}
+
+.header-inner-wrapper {
+  background: $white-full;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.navbar-wrapper {
+  .logo-title {
+    margin-top: -0.05rem;
+  }
+  .logo-img {
+    height: 34px;
+    width: 120px;
+  }
+  .list-item {
+    @extend .m0;
+    line-height: 1.6;
+    @extend .h-fit-full;
+    border-bottom: 2px solid transparent;
+
+    .el-button {
+      @extend .h-fit-full;
+    }
+  }
+}

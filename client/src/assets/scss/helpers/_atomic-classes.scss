@@ -1,8 +1,14 @@
+.transparent {
+  background: transparent;
+}
 .cursor-pointer {
   cursor: pointer;
 }
 .absolute {
   position: absolute;
+}
+.fixed {
+  position: fixed;
 }
 .relative {
   position: relative;
@@ -82,6 +88,12 @@
 .no-margin {
   margin: 0;
 }
+.inline-block {
+  display: inline-block;
+}
+.block {
+  display: block;
+}
 .flex {
   display: flex;
 }
@@ -100,7 +112,7 @@
 .justify-self-end {
   justify-self: end;
 }
-.justify-content-between {
+.justify-content-space-between {
   justify-content: space-between;
 }
 .justify-content-space-around {
@@ -134,7 +146,7 @@
   overflow: hidden;
 }
 .no-selectable {
-  user-select: none
+  user-select: none;
 }
 
 @for $i from 1 through 20 {
