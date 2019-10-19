@@ -53,6 +53,52 @@
             </div>
           </li>
           <el-divider direction="vertical" class="m0" />
+          <li class="inline-block relative">
+            <div class="list-item sponsors-menu" aria-haspopup="true">
+              <el-popover
+                placement="bottom-end"
+                width="320"
+                trigger="manual"
+                v-model="isSponsorsMenuOpen"
+              >
+                <div>
+                  <header class="flex justify-content-end">
+                    <span
+                      class="inline-block mr2 cursor-pointer"
+                      @click="toggleSponsorsMenuVisibility"
+                    >
+                      <fa :icon="['fas', 'times']" class="sm-icon" />
+                    </span>
+                  </header>
+                  <div class="flex justify-content-space-around no-border">
+                    <a
+                      v-for="(sponsor, i) in sponsors"
+                      :key="i"
+                      target="_blank"
+                      :href="sponsor.url"
+                    >
+                      <el-image
+                        :src="sponsor.src"
+                        fit="contain"
+                        class="w24 h24"
+                        :alt="sponsor.alt"
+                        referrer-policy="strict-origin-when-cross-origin"
+                      />
+                    </a>
+                  </div>
+                </div>
+                <el-button
+                  slot="reference"
+                  class="m0 w-fit-full h-fit-full no-border vertical-align"
+                  @click.stop="toggleSponsorsMenuVisibility"
+                >
+                  <fa :icon="['fas', 'star']" class="sm-icon mr3" />
+                  <font size="2">Sponsors</font>
+                </el-button>
+              </el-popover>
+            </div>
+          </li>
+          <el-divider direction="vertical" class="m0" />
           <li class="inline-block relative" data-no-outline="true">
             <div class="list-item user-icon pr1 pl1" aria-haspopup="true" data-no-hover-bg="true">
               <div class="p2 no-outline icon-wrapper" tabindex="0">
@@ -84,14 +130,37 @@ export default {
     'i-search': ISearch
   },
   data: () => ({
-    activeIndex: '1',
-    search: ''
+    search: '',
+    isSponsorsMenuOpen: false,
+    sponsors: [
+      {
+        url: 'https://www.catchpoint.com/',
+        alt: 'catchpoint advertiser',
+        src: 'https://cdn.infrapedia.com/sponsors/catchpoint-logo.f5a07e5f.jpg'
+      },
+      {
+        url:
+          'https://ipv4.global/?utm_source=digitalads&utm_medium=banner&utm_campaign=networkatlas&utm_content=sidebar',
+        alt: 'ipv4 advertiser',
+        src: 'https://cdn.infrapedia.com/sponsors/ipv4-global-logo.033610fc.jpg'
+      },
+      {
+        url: 'https://www.infrapedia.com/',
+        alt: 'ad space available',
+        src: 'https://storage.googleapis.com/infrapedia_bucket/sponsors/ads.png'
+      }
+    ]
   }),
   computed: {
     imageURL() {
       return this.theme
         ? 'https://cdn.infrapedia.com/logos/dark-mode-logo.svg'
         : 'https://cdn.infrapedia.com/logos/light-mode-logo.svg'
+    }
+  },
+  methods: {
+    toggleSponsorsMenuVisibility() {
+      this.isSponsorsMenuOpen = !this.isSponsorsMenuOpen
     }
   }
 }

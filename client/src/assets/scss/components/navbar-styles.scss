@@ -68,10 +68,13 @@ $hover-blue: lighten($blue-link-colors, 50%);
   }
 }
 
-
 .list-item {
   .icon-wrapper {
     border-radius: 50%;
+  }
+  &.sponsors-menu span {
+    height: 100%;
+    width: 100%;
   }
 }
 
@@ -85,7 +88,7 @@ $hover-blue: lighten($blue-link-colors, 50%);
     color: $blue-link-colors;
   }
 
-  .list-item:not([data-no-hover-bg="true"]) {
+  .list-item:not([data-no-hover-bg='true']) {
     &:hover {
       background-color: $hover-blue;
     }
@@ -98,7 +101,7 @@ $hover-blue: lighten($blue-link-colors, 50%);
     }
   }
 
-  li:not([data-no-outline="true"]) {
+  li:not([data-no-outline='true']) {
     &:focus,
     &:focus-within {
       outline: none 0;
