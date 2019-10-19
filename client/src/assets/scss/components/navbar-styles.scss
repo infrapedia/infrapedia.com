@@ -42,19 +42,13 @@ $hover-blue: lighten($blue-link-colors, 50%);
     @extend .m0;
     line-height: 1.6;
     @extend .h-fit-full;
-    border-radius: 2px;
-    flex: 0 0 auto;
     position: relative;
-    display: inline-flex;
-    text-decoration: none;
-    justify-content: center;
-    align-items: center;
-    vertical-align: middle;
+    @extend .vertical-align;
+    border-radius: 2px;
     transition: background-color $regular-transition;
     font-weight: 400;
     min-width: 60px;
     font-size: 12px;
-
     .icon-wrapper {
       display: inline-flex;
       justify-content: center;

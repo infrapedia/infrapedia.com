@@ -1,1 +1,21 @@
 @import '../helpers/atomic-classes';
+@import '../base/variables';
+
+/*
+*   THEME VARIANT'S
+*/
+
+.application.light {
+  .filter-btn-wrapper {
+    .el-button {
+      color: $white-full;
+      background: $dark-yellow;
+      border: 1px solid $dark-yellow;
+      &:hover,
+      &:focus,
+      &:focus-within {
+        background: lighten($dark-yellow, 10%);
+      }
+    }
+  }
+}

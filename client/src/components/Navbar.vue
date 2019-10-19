@@ -43,46 +43,25 @@
             </div>
           </li>
           <li class="inline-block relative" data-no-outline="true">
-            <div
-              class="list-item info-menu pr1 pl1"
-              aria-haspopup="true"
-              data-no-hover-bg="true"
-            >
-              <el-input
-                class="w60"
-                placeholder="Search"
-                prefix-icon="el-icon-search"
-                append-icon="el-icon-caret-down"
-                v-model="search" />
+            <div class="list-item info-menu pr1 pl1" aria-haspopup="true" data-no-hover-bg="true">
+              <i-search />
             </div>
           </li>
           <li class="inline-block relative" data-no-outline="true">
-            <div
-              class="list-item info-menu pr1 pl1"
-              aria-haspopup="true"
-              data-no-hover-bg="true"
-            >
+            <div class="list-item info-menu pr1 pl1" aria-haspopup="true" data-no-hover-bg="true">
               <i-filter />
             </div>
           </li>
           <el-divider direction="vertical" class="m0" />
           <li class="inline-block relative" data-no-outline="true">
-            <div
-              class="list-item user-icon pr1 pl1"
-              aria-haspopup="true"
-              data-no-hover-bg="true"
-            >
+            <div class="list-item user-icon pr1 pl1" aria-haspopup="true" data-no-hover-bg="true">
               <div class="p2 no-outline icon-wrapper" tabindex="0">
                 <el-avatar icon="el-icon-user-solid" size="small" />
               </div>
             </div>
           </li>
           <li class="inline-block relative" data-no-outline="true">
-            <div
-              class="list-item info-menu pr1 pl1"
-              aria-haspopup="true"
-              data-no-hover-bg="true"
-            >
+            <div class="list-item info-menu pr1 pl1" aria-haspopup="true" data-no-hover-bg="true">
               <div class="p2 no-outline icon-wrapper circle" tabindex="0">
                 <i aria-hidden="true" class="el-icon-more icon sm-icon" />
               </div>
@@ -96,11 +75,13 @@
 
 <script>
 import IFilter from './Filter'
+import ISearch from './Search'
 
 export default {
   name: 'INavbar',
   components: {
-    'i-filter': IFilter
+    'i-filter': IFilter,
+    'i-search': ISearch
   },
   data: () => ({
     activeIndex: '1',

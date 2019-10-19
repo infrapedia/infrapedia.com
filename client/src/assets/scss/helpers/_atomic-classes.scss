@@ -151,6 +151,17 @@
 .no-outline {
   outline: none 0;
 }
+.no-border {
+  border: 0 none transparent;
+}
+.vertical-align {
+  flex: 0 0 auto;
+  display: inline-flex;
+  text-decoration: none;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+}
 
 @for $i from 1 through 60 {
   $base: 0.25rem;
