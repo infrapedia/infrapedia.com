@@ -41,3 +41,49 @@ h1 {
 .el-divider--vertical {
   min-height: calc(100% - 16px);
 }
+
+.mapboxgl-ctrl-top-right .mapboxgl-ctrl-group,
+.mapboxgl-ctrl-bottom-right .mapboxgl-ctrl-group {
+  margin-right: 1.62rem !important;
+}
+
+.mapboxgl-ctrl-bottom-right {
+  .mapboxgl-ctrl-group {
+    position: absolute;
+    min-width: auto;
+    width: fit-content;
+    right: 0;
+    bottom: 20rem;
+  }
+}
+.mapboxgl-ctrl-group {
+  .el-button--text:hover {
+    color: inherit !important;
+  }
+}
+.mapboxgl-ctrl-top-right {
+  top: unset !important;
+  bottom: 14rem !important;
+  .mapboxgl-ctrl-group {
+    display: flex;
+    flex-flow: column nowrap;
+    position: relative;
+    min-width: auto;
+    width: 2rem;
+    right: 0;
+  }
+}
+.mapboxgl-ctrl-group > button {
+  color: inherit;
+  text-align: center;
+  width: 100% !important;
+}
+.el-button + .el-button {
+  margin: 0 !important;
+}
+
+.mapboxgl-ctrl-top-left {
+  top: 4rem;
+  left: unset;
+  right: 0rem;
+}
