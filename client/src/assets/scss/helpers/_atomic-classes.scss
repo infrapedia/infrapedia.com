@@ -148,8 +148,11 @@
 .no-selectable {
   user-select: none;
 }
+.no-outline {
+  outline: none 0;
+}
 
-@for $i from 1 through 20 {
+@for $i from 1 through 60 {
   $base: 0.25rem;
   $val: $base * $i;
   $index: 1 * $i;

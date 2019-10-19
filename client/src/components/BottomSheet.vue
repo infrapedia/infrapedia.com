@@ -11,7 +11,13 @@
   >
     <div class="flex justify-content-space-around h-fit-full mr9 ml9 align-items-center">
       <h1 class="title text-center">Trusted by</h1>
-      <el-image v-for="(src, i) in sponsors" :key="i" :src="src" fit="contain" class="sponsor-img w20 h16 no-selectable" />
+      <el-image
+        v-for="(src, i) in sponsors"
+        :key="i"
+        :src="src"
+        fit="contain"
+        class="sponsor-img w20 h16 no-selectable"
+      />
     </div>
   </el-drawer>
 </template>

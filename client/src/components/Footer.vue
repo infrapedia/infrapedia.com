@@ -1,18 +1,30 @@
 <template>
-  <footer class="absolute h8 ml5 mr5 flex align-items-center" :class="{ dark, light: !dark }">
+  <footer
+    class="absolute h8 ml5 mr5 flex align-items-center"
+    :class="{ dark, light: !dark }"
+  >
     <div class="ml20 bgcolor-inherit">
       <span>&copy; 2019 Copyright, All Rights Reserved by Infrapedia</span>
       <span
         tabindex="0"
         class="ml6 mr2 cursor-pointer"
-        @click="switchDrawerVisibility"
-        @keyup.enter="switchDrawerVisibility"
+        @click="toggleDrawerVisibility"
+        @keyup.enter="toggleDrawerVisibility"
       >Trusted by</span>
       <el-divider direction="vertical" />
-      <bottom-sheet :visibility="isDrawerOpen" @close="switchDrawerVisibility" />
-      <router-link class="ml2 mr2 color-inherit" to="/terms-and-conditions">Terms & Conditions</router-link>
+      <bottom-sheet
+        :visibility="isDrawerOpen"
+        @close="toggleDrawerVisibility"
+      />
+      <router-link
+        class="ml2 mr2 color-inherit"
+        to="/terms-and-conditions"
+      >Terms & Conditions</router-link>
       <el-divider direction="vertical" />
-      <router-link class="ml2 mr2 color-inherit" to="/privacy-policy">Privacy Policy</router-link>
+      <router-link
+        class="ml2 mr2 color-inherit"
+        to="/privacy-policy"
+        >Privacy Policy</router-link>
     </div>
   </footer>
 </template>
@@ -32,7 +44,7 @@ export default {
     }
   },
   methods: {
-    switchDrawerVisibility() {
+    toggleDrawerVisibility() {
       this.isDrawerOpen = !this.isDrawerOpen
     }
   }

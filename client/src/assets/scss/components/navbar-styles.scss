@@ -6,11 +6,10 @@ $hover-blue: lighten($blue-link-colors, 50%);
 .header {
   top: 0;
   z-index: 1500;
-}
-
-.header-inner-wrapper {
-  background: $white-full;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  .header-inner-wrapper {
+    background: $white-full;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  }
 }
 
 .navbar-wrapper {
@@ -31,8 +30,11 @@ $hover-blue: lighten($blue-link-colors, 50%);
       width: 100%;
       display: block;
       transform: scaleX(0);
-      border-bottom: solid 3px $dark-yellow;
       transition: transform $cubic-bezier;
+      border-bottom: solid 3px $dark-yellow;
+    }
+    &:hover {
+      cursor: pointer;
     }
   }
 
@@ -60,7 +62,11 @@ $hover-blue: lighten($blue-link-colors, 50%);
       align-items: center;
       text-align: center;
       transition: background-color $regular-transition;
-      transform: rotateZ(90deg);
+      &.circle {
+        transform: rotateZ(90deg);
+      }
+      &:focus,
+      &:focus-within,
       &:hover {
         background-color: $hover-blue;
       }
@@ -68,27 +74,37 @@ $hover-blue: lighten($blue-link-colors, 50%);
   }
 }
 
+
+.list-item {
+  .icon-wrapper {
+    border-radius: 50%;
+  }
+}
+
 /*
 *   THEME VARIANT'S
 */
 
-.navbar-wrapper.light {
+.application.light {
   .sm-icon,
   .list-item {
     color: $blue-link-colors;
   }
-  .list-item:not(.nobg) {
+
+  .list-item:not([data-no-hover-bg="true"]) {
     &:hover {
       background-color: $hover-blue;
     }
   }
+
   .user-icon {
     .el-avatar {
       color: white;
       background: $blue-link-colors;
     }
   }
-  li:not(.outline0) {
+
+  li:not([data-no-outline="true"]) {
     &:focus,
     &:focus-within {
       outline: none 0;
@@ -97,11 +113,4 @@ $hover-blue: lighten($blue-link-colors, 50%);
       }
     }
   }
-  // li.outline0 {
-  //   &:focus,
-  //   &:focus-within {
-  //     outline: none 0;
-  //     color: lighten($hover-blue, 12%);
-  //   }
-  // }
 }

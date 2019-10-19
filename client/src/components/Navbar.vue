@@ -42,17 +42,48 @@
               <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
             </div>
           </li>
+          <li class="inline-block relative" data-no-outline="true">
+            <div
+              class="list-item info-menu pr1 pl1"
+              aria-haspopup="true"
+              data-no-hover-bg="true"
+            >
+              <el-input
+                class="w60"
+                placeholder="Search"
+                prefix-icon="el-icon-search"
+                append-icon="el-icon-caret-down"
+                v-model="search" />
+            </div>
+          </li>
+          <li class="inline-block relative" data-no-outline="true">
+            <div
+              class="list-item info-menu pr1 pl1"
+              aria-haspopup="true"
+              data-no-hover-bg="true"
+            >
+              <i-filter />
+            </div>
+          </li>
           <el-divider direction="vertical" class="m0" />
-          <li class="inline-block outline0 relative" tabindex="0">
-            <div class="list-item user-icon nobg pr1 pl1" aria-haspopup="true">
-              <div class="pt2">
+          <li class="inline-block relative" data-no-outline="true">
+            <div
+              class="list-item user-icon pr1 pl1"
+              aria-haspopup="true"
+              data-no-hover-bg="true"
+            >
+              <div class="p2 no-outline icon-wrapper" tabindex="0">
                 <el-avatar icon="el-icon-user-solid" size="small" />
               </div>
             </div>
           </li>
-          <li class="inline-block outline0 relative" tabindex="0">
-            <div class="list-item nobg info-menu pr1 pl1" role="user" aria-haspopup="true">
-              <div class="p2 circle icon-wrapper">
+          <li class="inline-block relative" data-no-outline="true">
+            <div
+              class="list-item info-menu pr1 pl1"
+              aria-haspopup="true"
+              data-no-hover-bg="true"
+            >
+              <div class="p2 no-outline icon-wrapper circle" tabindex="0">
                 <i aria-hidden="true" class="el-icon-more icon sm-icon" />
               </div>
             </div>
@@ -64,10 +95,16 @@
 </template>
 
 <script>
+import IFilter from './Filter'
+
 export default {
   name: 'INavbar',
+  components: {
+    'i-filter': IFilter
+  },
   data: () => ({
-    activeIndex: '1'
+    activeIndex: '1',
+    search: ''
   }),
   computed: {
     imageURL() {
