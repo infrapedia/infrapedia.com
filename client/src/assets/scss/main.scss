@@ -88,12 +88,16 @@ h1 {
   right: 0rem;
 }
 
+.el-popover {
+  border: 0 none transparent !important;
+}
+
 /*
 *  THEME VARIANT'S
 */
 
 // .application.light {
-//   .info-menu {
-
+//   .el-radio__inner:hover {
+//     border-color: $light-yellow;
 //   }
 // }

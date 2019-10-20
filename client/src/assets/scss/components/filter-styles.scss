@@ -1,21 +1,22 @@
 @import '../helpers/atomic-classes';
 @import '../base/variables';
-
 /*
 *   THEME VARIANT'S
 */
 
-.application.light {
-  .filter-btn-wrapper {
-    .el-button {
-      color: $white-full;
-      background: $dark-yellow;
-      border: 1px solid $dark-yellow;
-      &:hover,
-      &:focus,
-      &:focus-within {
-        background: lighten($dark-yellow, 10%);
-      }
+.header.light {
+  color: $white-partial;
+  background-color: $dark-yellow;
+}
+
+.filter-btn-wrapper.dark {
+  .el-button {
+    color: $dark-charcoal;
+    border: 1px solid $light-yellow;
+    &:hover,
+    &:focus,
+    &:focus-within {
+      background: darken($light-yellow, 10%);
     }
   }
 }

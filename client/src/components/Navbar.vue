@@ -62,7 +62,7 @@
                 trigger="manual"
                 v-model="isSponsorsMenuOpen"
               >
-                <div>
+                <div class="p2">
                   <header class="flex justify-content-end">
                     <span
                       class="inline-block mr2 cursor-pointer"
@@ -117,13 +117,14 @@
                 @keyup.enter.space="toggleInfoMenuVisibility"
               >
                 <el-popover
+                  :visible-arrow="false"
                   placement="bottom-end"
                   width="200"
                   transition="el-zoom-in-top"
                   trigger="manual"
                   v-model="isInfoMenuOpen"
                 >
-                  <ul>
+                  <ul class="pt4 pr4 pl4 pb0">
                     <li
                       v-for="(link, i) in infoMenuLinks.info"
                       :key="i"
@@ -139,7 +140,7 @@
                     </li>
                   </ul>
                   <el-divider class="m0" />
-                  <ul class="flex justify-content-space-around pt2">
+                  <ul class="flex justify-content-space-around pt2 p2">
                     <li
                       v-for="(link, i) in infoMenuLinks.social"
                       :key="i"
@@ -207,6 +208,12 @@ export default {
         ? 'https://cdn.infrapedia.com/logos/dark-mode-logo.svg'
         : 'https://cdn.infrapedia.com/logos/light-mode-logo.svg'
     }
+  },
+  async mounted() {
+    // Sponsors need to be open at first load
+    await setTimeout(() => (this.isSponsorsMenuOpen = true), 10)
+    // And close after 10 seconds
+    await setTimeout(() => (this.isSponsorsMenuOpen = false), 10000)
   },
   methods: {
     toggleSponsorsMenuVisibility() {

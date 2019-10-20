@@ -184,6 +184,42 @@
     background-color: lighten($dark-charcoal, 70%);
   }
 }
+.font-thin {
+  font-weight: 100;
+}
+.font-base {
+  font-weight: 300;
+}
+.font-medium {
+  font-weight: 500;
+}
+.font-bold {
+  font-weight: 700;
+}
+.font-xbold {
+  font-weight: 800;
+}
+.fs-xsmall {
+  font-size: 11px;
+}
+.fs-small {
+  font-size: 12px;
+}
+.fs-regular {
+  font-size: 14px;
+}
+.fs-medium {
+  font-size: 16px;
+}
+.fs-large {
+  font-size: 18px;
+}
+.fs-mdlarge {
+  font-size: 20px;
+}
+.fs-xlarge {
+  font-size: 24px;
+}
 
 @for $i from 1 through 60 {
   $base: 0.25rem;
