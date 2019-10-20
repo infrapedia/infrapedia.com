@@ -48,7 +48,7 @@
             </div>
           </li>
           <li class="inline-block relative" data-no-outline="true">
-            <div class="list-item info-menu pr4 pl2" aria-haspopup="true" data-no-hover-bg="true">
+            <div class="list-item info-menu pr3 pl3" aria-haspopup="true" data-no-hover-bg="true">
               <i-filter />
             </div>
           </li>
@@ -89,7 +89,7 @@
                 </div>
                 <el-button
                   slot="reference"
-                  class="m0 w-fit-full h-fit-full no-border vertical-align"
+                  class="m0 w-fit-full h-fit-full no-border vertical-align p4"
                   @click.stop="toggleSponsorsMenuVisibility"
                 >
                   <fa :icon="['fas', 'star']" class="sm-icon mr3" />
@@ -100,7 +100,7 @@
           </li>
           <el-divider direction="vertical" class="m0" />
           <li class="inline-block relative" data-no-outline="true">
-            <div class="list-item user-icon pr1 pl1" aria-haspopup="true" data-no-hover-bg="true">
+            <div class="list-item user-icon pr1 pl3" aria-haspopup="true" data-no-hover-bg="true">
               <div class="no-outline circle icon-wrapper" tabindex="0">
                 <fa :icon="['fas', 'user-circle']" class="md-icon" />
               </div>
