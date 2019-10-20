@@ -67,6 +67,7 @@
                     <span
                       class="inline-block mr2 cursor-pointer"
                       @click="toggleSponsorsMenuVisibility"
+                      @keyup.enter.space="toggleSponsorsMenuVisibility"
                     >
                       <fa :icon="['fas', 'times']" class="sm-icon" />
                     </span>
@@ -113,6 +114,7 @@
                 class="w4 pt2 pb1 pr2 pl2 no-outline icon-wrapper circle"
                 tabindex="0"
                 @click="toggleInfoMenuVisibility"
+                @keyup.enter.space="toggleInfoMenuVisibility"
               >
                 <el-popover
                   placement="bottom-end"
@@ -153,7 +155,7 @@
                       </a>
                     </li>
                   </ul>
-                  <fa slot="reference" class="sm-icon" :icon="['fas', 'ellipsis-v']" />
+                  <fa slot="reference" class="sm-icon outline0" :icon="['fas', 'ellipsis-v']" />
                 </el-popover>
               </div>
             </div>
