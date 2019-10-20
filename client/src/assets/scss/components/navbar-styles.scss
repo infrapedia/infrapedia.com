@@ -56,9 +56,6 @@ $hover-blue: lighten($blue-link-colors, 50%);
       align-items: center;
       text-align: center;
       transition: background-color $regular-transition;
-      &[data-rotate='true'] {
-        transform: rotateZ(90deg);
-      }
       &:focus,
       &:focus-within,
       &:hover {
@@ -81,6 +78,13 @@ $hover-blue: lighten($blue-link-colors, 50%);
     height: 100%;
     width: 100%;
   }
+}
+
+.link-info {
+  font-size: 14px;
+  color: #424242;
+  line-height: 1.6;
+  font-weight: normal;
 }
 
 /*

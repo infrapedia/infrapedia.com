@@ -1,3 +1,5 @@
+@import '../base/variables';
+
 .transparent {
   background: transparent;
 }
@@ -142,6 +144,12 @@
 .w-full {
   width: 100vw;
 }
+.w-fit-full {
+  width: 100%;
+}
+.w-inherit {
+  width: inherit;
+}
 .h-fit-full {
   height: 100%;
 }
@@ -164,6 +172,17 @@
   justify-content: center;
   align-items: center;
   vertical-align: middle;
+}
+.circle-bg {
+  @extend .cursor-pointer;
+  @extend .circle;
+  @extend .vertical-align;
+  transition: background-color $regular-transition;
+  &:hover,
+  &:focus,
+  &:focus-within {
+    background-color: lighten($dark-charcoal, 70%);
+  }
 }
 
 @for $i from 1 through 60 {

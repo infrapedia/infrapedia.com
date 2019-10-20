@@ -1,6 +1,6 @@
 <template>
   <div class="filter-btn-wrapper relative">
-    <el-popover placement="bottom-end" width="200" trigger="click">
+    <el-popover placement="bottom-end" width="200" trigger="click" transition="el-zoom-in-top">
       <el-card class="p0 no-border" shadow="never">
         <ul>
           <li>1</li>

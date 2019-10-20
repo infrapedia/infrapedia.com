@@ -30,7 +30,7 @@
           </li>
           <el-divider direction="vertical" class="m0" />
           <li class="inline-block relative" tabindex="0">
-            <div class="list-item pr4 pl4" aria-haspopup="true">
+            <div class="list-item pr6 pl6" aria-haspopup="true">
               IXPs
               <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
             </div>
@@ -58,6 +58,7 @@
               <el-popover
                 placement="bottom-end"
                 width="320"
+                transition="el-zoom-in-top"
                 trigger="manual"
                 v-model="isSponsorsMenuOpen"
               >
@@ -108,8 +109,52 @@
           </li>
           <li class="inline-block relative" data-no-outline="true">
             <div class="list-item info-menu pr1 pl1" aria-haspopup="true" data-no-hover-bg="true">
-              <div class="p2 no-outline icon-wrapper circle" tabindex="0" data-rotate="true">
-                <i aria-hidden="true" class="el-icon-more icon sm-icon" />
+              <div
+                class="w4 pt2 pb1 pr2 pl2 no-outline icon-wrapper circle"
+                tabindex="0"
+                @click="toggleInfoMenuVisibility"
+              >
+                <el-popover
+                  placement="bottom-end"
+                  width="200"
+                  transition="el-zoom-in-top"
+                  trigger="manual"
+                  v-model="isInfoMenuOpen"
+                >
+                  <ul>
+                    <li
+                      v-for="(link, i) in infoMenuLinks.info"
+                      :key="i"
+                      class="w-fit-full h6 mb4 link-info"
+                    >
+                      <a
+                        :href="link.url"
+                        v-text="link.label"
+                        target="_blank"
+                        rel="noopener"
+                        class="inline-block w-inherit color-inherit"
+                      />
+                    </li>
+                  </ul>
+                  <el-divider class="m0" />
+                  <ul class="flex justify-content-space-around pt2">
+                    <li
+                      v-for="(link, i) in infoMenuLinks.social"
+                      :key="i"
+                      class="w4 h4 circle-bg link-info p2"
+                    >
+                      <a
+                        :href="link.url"
+                        target="_blank"
+                        rel="noopener"
+                        class="w-inherit color-inherit vertical-align"
+                      >
+                        <fa :icon="link.icon" class="sm-icon" />
+                      </a>
+                    </li>
+                  </ul>
+                  <fa slot="reference" class="sm-icon" :icon="['fas', 'ellipsis-v']" />
+                </el-popover>
               </div>
             </div>
           </li>
@@ -122,6 +167,7 @@
 <script>
 import IFilter from './Filter'
 import ISearch from './Search'
+import infoMenuLinks from '../config/infoMenuLinks'
 
 export default {
   name: 'INavbar',
@@ -131,6 +177,8 @@ export default {
   },
   data: () => ({
     search: '',
+    infoMenuLinks,
+    isInfoMenuOpen: false,
     isSponsorsMenuOpen: false,
     sponsors: [
       {
@@ -160,7 +208,12 @@ export default {
   },
   methods: {
     toggleSponsorsMenuVisibility() {
+      if (this.isInfoMenuOpen) this.isInfoMenuOpen = false
       this.isSponsorsMenuOpen = !this.isSponsorsMenuOpen
+    },
+    toggleInfoMenuVisibility() {
+      if (this.isSponsorsMenuOpen) this.isSponsorsMenuOpen = false
+      this.isInfoMenuOpen = !this.isInfoMenuOpen
     }
   }
 }

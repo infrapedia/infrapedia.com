@@ -1,5 +1,11 @@
 <template>
-  <el-popover placement="bottom-start" width="320" trigger="manual" v-model="isResultsVisible">
+  <el-popover
+    placement="bottom-start"
+    width="320"
+    transition="el-zoom-in-top"
+    trigger="manual"
+    v-model="isResultsVisible"
+  >
     <el-card class="p0 no-border" shadow="never">
       <ul>
         <li>1</li>
