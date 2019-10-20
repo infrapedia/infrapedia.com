@@ -48,7 +48,7 @@
             </div>
           </li>
           <li class="inline-block relative" data-no-outline="true">
-            <div class="list-item info-menu pr1 pl1" aria-haspopup="true" data-no-hover-bg="true">
+            <div class="list-item info-menu pr4 pl2" aria-haspopup="true" data-no-hover-bg="true">
               <i-filter />
             </div>
           </li>
@@ -93,7 +93,7 @@
                   @click.stop="toggleSponsorsMenuVisibility"
                 >
                   <fa :icon="['fas', 'star']" class="sm-icon mr3" />
-                  <font size="2">Sponsors</font>
+                  <font size="2" class="link">Sponsors</font>
                 </el-button>
               </el-popover>
             </div>
@@ -101,14 +101,14 @@
           <el-divider direction="vertical" class="m0" />
           <li class="inline-block relative" data-no-outline="true">
             <div class="list-item user-icon pr1 pl1" aria-haspopup="true" data-no-hover-bg="true">
-              <div class="p2 no-outline icon-wrapper" tabindex="0">
-                <el-avatar icon="el-icon-user-solid" size="small" />
+              <div class="no-outline circle icon-wrapper" tabindex="0">
+                <fa :icon="['fas', 'user-circle']" class="md-icon" />
               </div>
             </div>
           </li>
           <li class="inline-block relative" data-no-outline="true">
             <div class="list-item info-menu pr1 pl1" aria-haspopup="true" data-no-hover-bg="true">
-              <div class="p2 no-outline icon-wrapper circle" tabindex="0">
+              <div class="p2 no-outline icon-wrapper circle" tabindex="0" data-rotate="true">
                 <i aria-hidden="true" class="el-icon-more icon sm-icon" />
               </div>
             </div>

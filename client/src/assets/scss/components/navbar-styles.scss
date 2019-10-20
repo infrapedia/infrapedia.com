@@ -56,7 +56,7 @@ $hover-blue: lighten($blue-link-colors, 50%);
       align-items: center;
       text-align: center;
       transition: background-color $regular-transition;
-      &.circle {
+      &[data-rotate='true'] {
         transform: rotateZ(90deg);
       }
       &:focus,
@@ -69,8 +69,13 @@ $hover-blue: lighten($blue-link-colors, 50%);
 }
 
 .list-item {
-  .icon-wrapper {
-    border-radius: 50%;
+  &:last-child {
+    min-width: 40px;
+  }
+  &.user-icon {
+    .icon-wrapper {
+      padding: 0.4rem;
+    }
   }
   &.sponsors-menu span {
     height: 100%;
@@ -84,7 +89,8 @@ $hover-blue: lighten($blue-link-colors, 50%);
 
 .application.light {
   .sm-icon,
-  .list-item {
+  .list-item,
+  .link {
     color: $blue-link-colors;
   }
 
