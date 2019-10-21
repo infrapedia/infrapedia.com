@@ -10,7 +10,7 @@
 <script>
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../config/mapConfig'
-// import { MapboxDraw } from '@mapbox/mapbox-gl-draw'
+import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 export default {
@@ -26,8 +26,7 @@ export default {
     }
   },
   mounted() {
-    this.map = this.createMap()
-    this.initLayers()
+    this.map = this.initLayers(this.createMap())
   },
   methods: {
     createMap() {
@@ -41,16 +40,16 @@ export default {
         // maptiks_id: mapConfig.maptiks_id
       })
 
-      // const draw = new MapboxDraw({
-      //   displayControlsDefault: false,
-      //   controls: {
-      //     polygon: true,
-      //     trash: true,
-      //     line_string: true
-      //   }
-      // })
+      const draw = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: {
+          polygon: true,
+          trash: true,
+          line_string: true
+        }
+      })
 
-      // map.addControl(draw, 'top-right')
+      map.addControl(draw, 'top-right')
       map.addControl(new mapboxgl.NavigationControl(), 'top-right')
       map.addControl(
         new mapboxgl.GeolocateControl({
@@ -67,16 +66,20 @@ export default {
       mbCtrl.appendChild(document.getElementById('ThreeD'))
       mbCtrl.appendChild(document.getElementById('FScreen'))
 
+      window.mapboxgl = mapboxgl
+      window.mapboxgl.Map = map
+
       return map
     },
-    initLayers() {
-      if (!this.map) return
+    initLayers(map) {
+      if (!map) return
       let vm = this
-      this.map.on('load', function() {
-        vm.addLayers()
+      map.on('load', function() {
+        vm.addLayers(map)
       })
+      return map
     },
-    addLayers(map = this.map) {
+    addLayers(map) {
       const data = mapConfig.data
       const fc = {
         type: 'FeatureCollection',

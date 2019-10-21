@@ -1,5 +1,4 @@
-const token =
-  'pk.eyJ1IjoibmV0d29ya2F0bGFzIiwiYSI6ImNqc2RwMXp2ZDBlbnY0M3FzcmI3dzJpaGkifQ.DXD_YO6ApQKR7WALqS-6SA'
+const token = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN
 
 const cableLayer = 'cables'
 const highlightLayer = 'cables2'
@@ -44,9 +43,9 @@ export const mapConfig = {
     highlightSource,
     sourceLayer,
     url: 'mapbox://networkatlas.ay1i6jsf',
-    buildingPointUrl: `${process.env.BASE_API}/facility/geojson/points`,
-    buildingPolyUrl: `${process.env.BASE_API}/facility/geojson/polygons`,
-    buildingLabelsUrl: `${process.env.BASE_API}/facility/geojson/labels`,
+    buildingPointUrl: `${process.env.VUE_APP_BASE_API}/facility/geojson/points`,
+    buildingPolyUrl: `${process.env.VUE_APP_BASE_API}/facility/geojson/polygons`,
+    buildingLabelsUrl: `${process.env.VUE_APP_BASE_API}/facility/geojson/labels`,
     layers: [
       {
         id: cableLayer,
