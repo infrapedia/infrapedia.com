@@ -1,5 +1,6 @@
 @import '../../../node_modules/normalize.css/normalize';
 @import 'helpers/atomic-classes';
+@import 'base/variables';
 
 body,
 html,
@@ -88,8 +89,25 @@ h1 {
   right: 0rem;
 }
 
+.mapboxgl-ctrl-group > button {
+  &:focus {
+    color: inherit !important;
+    box-shadow: none !important;
+  }
+}
+
 .el-popover {
   border: 0 none transparent !important;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all $regular-transition;
+}
+.fade-enter,
+.fade-leave {
+  opacity: 0;
+  transform-origin: 50% 50%;
 }
 
 /*

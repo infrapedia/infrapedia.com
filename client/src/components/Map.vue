@@ -12,21 +12,24 @@ import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../config/mapConfig'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Map',
   data: () => ({
     is3D: false,
     map: undefined,
-    currentMapFilter: ['all']
+    mapTooltip: {}
   }),
   computed: {
-    dark() {
-      return this.$store.state.isDark
-    }
+    ...mapState({
+      dark: state => state.dark,
+      isMobile: state => state.isMobile,
+      currentMapFilter: state => state.map.filter
+    })
   },
   mounted() {
-    this.map = this.initLayers(this.createMap())
+    this.map = this.addMapEvents(this.initMapLayers(this.createMap()))
   },
   methods: {
     createMap() {
@@ -71,15 +74,15 @@ export default {
 
       return map
     },
-    initLayers(map) {
+    initMapLayers(map) {
       if (!map) return
       let vm = this
       map.on('load', function() {
-        vm.addLayers(map)
+        vm.addMapLayers(map)
       })
       return map
     },
-    addLayers(map) {
+    addMapLayers(map) {
       const data = mapConfig.data
       const fc = {
         type: 'FeatureCollection',
@@ -156,6 +159,101 @@ export default {
           }
         } else map.addLayer(layer)
       }
+    },
+    addMapEvents(map) {
+      let vm = this
+      const popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: true,
+        className: 'mapPopup'
+      })
+
+      map.on('mouseenter', mapConfig.cableLayer, function(e) {
+        vm.handlePopupVisibilityOn(e, map, popup, false)
+      })
+      map.on('mouseenter', mapConfig.pointsLayer, function(e) {
+        vm.handlePopupVisibilityOn(e, map, popup, true)
+      })
+      map.on('mouseleave', mapConfig.cableLayer, function() {
+        vm.handlePopupVisibilityOff(map, popup)
+      })
+      map.on('touchend', function(e) {
+        vm.handleMobileTouchEnd(e, map)
+      })
+      map.on('click', function(e) {
+        vm.handleMapClick(e, map)
+      })
+      map.on('click', mapConfig.cableLayer, function(e) {
+        vm.handleCableLayerClick(e, map)
+      })
+      map.on('click', mapConfig.pointsLayer, function(e) {
+        vm.handlePointsLayerClick(e, map)
+      })
+      return map
+    },
+    showPopup(e, map, popup, isPoint) {
+      const prop = JSON.parse(JSON.stringify(e.features[0].properties))
+
+      this.mapTooltip = {
+        id: parseInt(prop.cable_id),
+        name: prop.name,
+        status: !!(
+          prop.IsInactive === undefined ||
+          prop.IsInactive === 'false' ||
+          prop.IsInactive === ''
+        ),
+        segment:
+          prop.segment_id === undefined ? null : parseInt(prop.segment_id),
+        segmentName: null,
+        hasOutage: prop.hasoutage === undefined ? false : prop.hasoutage,
+        hasPartialOutage:
+          prop.haspartial === undefined ? false : prop.haspartial,
+        fields: [],
+        eosEpoch: prop.eosepoch,
+        isHighlighted: false
+      }
+
+      let str = `<div class="cable-name dark-color"><b>${this.mapTooltip.name}</b></div>`
+
+      if (isPoint)
+        str = `<div class="cable-name dark-color"><b>Point name : ${this.mapTooltip.name}</b></div>`
+      else {
+        if (this.mapTooltip.segment) {
+          str += `<div class="segment-name dark-color">Segment: ${this.mapTooltip.segment}</div>`
+        }
+        str += `<div class="details dark-color">Click for more details</div>`
+      }
+
+      popup
+        .setLngLat(e.lngLat)
+        .setHTML(str)
+        .addTo(map)
+    },
+    handlePopupVisibilityOn(e, map, popup, isPoint) {
+      const clusterPts = map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.clusterPts]
+      })
+
+      if (e.features.length && !clusterPts.length) {
+        if (!this.isMobile) {
+          map.getCanvas().style.cursor = 'pointer'
+          this.showPopup(e, map, popup, isPoint)
+        }
+      }
+    },
+    handlePopupVisibilityOff(map, popup) {
+      if (!map || !popup) return
+      map.getCanvas().style.cursor = ''
+      popup.remove()
+    },
+    handleMapClick(e) {
+      console.log('Clicked map', e)
+    },
+    handleCableLayerClick(e) {
+      console.log('Clicked cable layer', e)
+    },
+    handlePointsLayerClick(e) {
+      console.log('Clicked points layer', e)
     },
     toggleFullScreen() {
       const el = document.querySelector('.application')

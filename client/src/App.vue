@@ -1,8 +1,10 @@
 <template>
-  <div class="application" :class="{ dark, light: !dark }">
-    <i-navbar />
-    <router-view />
-    <i-footer />
+  <div class="application" :class="{ dark, light: !dark }" role="main">
+    <i-navbar role="navigation" />
+    <transition name="fade" mode="out-in">
+      <router-view />
+    </transition>
+    <i-footer role="contentinfo" />
   </div>
 </template>
 

@@ -14,30 +14,36 @@
         <li>4</li>
       </ul>
     </el-card>
-    <el-input
-      class="w60"
-      slot="reference"
-      placeholder="Search"
-      v-model="search"
-      @blur="loseFocus"
-      @focus="setFocus"
-      @input="getQueryData"
-    >
-      <fa slot="prefix" :icon="['fas', 'search']" class="mt3 ml1" />
-      <fa
-        v-if="!isFocused"
-        slot="suffix"
-        :icon="['fas', 'caret-down']"
-        class="xsm-icon vertical-align mt3 mr3"
-      />
-      <fa v-else slot="suffix" :icon="['fas', 'caret-up']" class="xsm-icon vertical-align mt3 mr3" />
-      <fa
-        slot="suffix"
-        :icon="['fas', 'times']"
-        class="xsm-icon vertical-align mt3 mr2"
-        @click="clearSearch"
-      />
-    </el-input>
+    <div slot="reference" role="search">
+      <el-input
+        class="w60"
+        placeholder="Search"
+        v-model="search"
+        @blur="loseFocus"
+        @focus="setFocus"
+        @input="getQueryData"
+      >
+        <fa slot="prefix" :icon="['fas', 'search']" class="mt3 ml1" />
+        <fa
+          v-if="!isFocused"
+          slot="suffix"
+          :icon="['fas', 'caret-down']"
+          class="xsm-icon vertical-align mt3 mr3"
+        />
+        <fa
+          v-else
+          slot="suffix"
+          :icon="['fas', 'caret-up']"
+          class="xsm-icon vertical-align mt3 mr3"
+        />
+        <fa
+          slot="suffix"
+          :icon="['fas', 'times']"
+          class="xsm-icon vertical-align mt3 mr2"
+          @click="clearSearch"
+        />
+      </el-input>
+    </div>
   </el-popover>
 </template>
 
