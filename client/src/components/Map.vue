@@ -13,6 +13,8 @@ import { mapConfig } from '../config/mapConfig'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapState } from 'vuex'
+import { DRAWING, TITLE_BY_SELECTION } from '../events'
+import turf from 'turf'
 
 export default {
   name: 'Map',
@@ -71,6 +73,7 @@ export default {
 
       window.mapboxgl = mapboxgl
       window.mapboxgl.Map = map
+      window.draw = draw
 
       return map
     },
@@ -189,7 +192,68 @@ export default {
       map.on('click', mapConfig.pointsLayer, function(e) {
         vm.handlePointsLayerClick(e, map)
       })
+
+      map.on('draw.create', this.updateArea)
+      map.on('draw.delete', this.updateArea)
+      map.on('draw.update', this.updateArea)
       return map
+    },
+    updateArea() {
+      const data = window.draw.getAll()
+      const wrapper = document.getElementById('calculated-area')
+
+      if (data.features.length) {
+        this.$emit(`${DRAWING}`, true)
+        let calculated
+
+        if (window.draw.getMode() === 'direct_select') {
+          const selected = window.draw.getSelected()
+          if (selected.features.length) {
+            // eslint-disable-next-line
+            let featureData = selected.features[0]
+            if (featureData.geometry.type.toLowerCase() === 'polygon') {
+              this.$emit(`${TITLE_BY_SELECTION}`, 'Area')
+              // eslint-disable-next-line
+              calculated = turf.area(data)
+              wrapper.innerHTML =
+                '<p><strong>' +
+                Math.round(calculated) / 1000 +
+                '</strong></p><p>hectares</p>'
+            } else if (
+              featureData.geometry.type.toLowerCase() === 'linestring'
+            ) {
+              this.$emit(`${TITLE_BY_SELECTION}`, 'Distance')
+              calculated = turf.distance(
+                featureData.geometry.coordinates[0],
+                featureData.geometry.coordinates[1]
+              )
+              wrapper.innerHTML =
+                '<p><strong>' + calculated + '</strong></p><p>Kms</p>'
+            }
+          }
+          return
+        }
+
+        for (let feature of data.features) {
+          if (feature.geometry.type.toLowerCase() === 'linestring') {
+            // const opts = { units: 'kilometers' }
+            this.$emit(`${TITLE_BY_SELECTION}`, 'Distance')
+            calculated = turf.distance(
+              feature.geometry.coordinates[0],
+              feature.geometry.coordinates[1]
+            )
+            wrapper.innerHTML =
+              '<p><strong>' + calculated + '</strong></p><p>Kms</p>'
+          } else {
+            this.$emit(`${TITLE_BY_SELECTION}`, 'Area')
+            calculated = turf.area(data)
+            wrapper.innerHTML =
+              '<p><strong>' +
+              Math.round(calculated) / 1000 +
+              '</strong></p><p>hectares</p>'
+          }
+        }
+      } else this.$emit(`${DRAWING}`, false)
     },
     showPopup(e, map, popup, isPoint) {
       const prop = JSON.parse(JSON.stringify(e.features[0].properties))

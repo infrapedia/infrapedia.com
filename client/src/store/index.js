@@ -11,7 +11,8 @@ export default new Vuex.Store({
   devtools: true,
   state: {
     isDark: false,
-    isMobile: false
+    isMobile: false,
+    isDrawing: false
   },
   mutations: {
     [types.TOGGLE_DARK](state, bool) {
@@ -22,6 +23,9 @@ export default new Vuex.Store({
     },
     [types.IS_MOBILE](state, bool) {
       state.isMobile = bool
+    },
+    [types.IS_DRAWING](state, bool) {
+      state.isDrawing = bool
     }
   },
   actions: {},
