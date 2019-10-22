@@ -1,6 +1,9 @@
 @import '../../../node_modules/normalize.css/normalize';
 @import 'helpers/atomic-classes';
 @import 'base/variables';
+@import './node_modules/vue-cookieconsent-component/src/scss/cookie-consent-transition';
+@import './node_modules/vue-cookieconsent-component/src/scss/cookie-consent-bottom';
+@import './node_modules/vue-cookieconsent-component/src/scss/cookie-consent';
 
 $border-top-white: 1px solid white;
 
@@ -43,6 +46,16 @@ h1 {
 
 .el-divider--vertical {
   min-height: calc(100% - 16px);
+}
+
+.cookie-consent {
+  bottom: unset !important;
+  top: 0 !important;
+}
+.cookie-consent-transition {
+  &-leave-to {
+    transform: translateY(-100%) !important;
+  }
 }
 
 .mapboxgl-ctrl-top-right .mapboxgl-ctrl-group,

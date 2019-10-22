@@ -21,6 +21,7 @@
     "normalize.css": "^8.0.1",
     "turf": "^3.0.14",
     "vue": "^2.6.10",
+    "vue-cookieconsent-component": "^1.2.0",
     "vue-router": "^3.0.6",
     "vuex": "^3.0.1"
   },

@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import * as element from './plugins/element-ui'
 import * as icons from './plugins/fontAwesome'
+import * as cockieconsent from './plugins/cookieConsent'
 
 Vue.config.productionTip = false
 
@@ -12,5 +13,6 @@ new Vue({
   store,
   icons,
   element,
+  cockieconsent,
   render: h => h(App)
 }).$mount('#app')

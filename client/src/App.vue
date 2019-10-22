@@ -1,5 +1,6 @@
 <template>
   <div class="application" :class="{ dark, light: !dark }" role="main">
+    <cookie-consent :message="cc.message" :href="cc.href" />
     <i-navbar role="navigation" />
     <transition name="fade" mode="out-in">
       <router-view />
@@ -18,6 +19,14 @@ export default {
     IFooter,
     INavbar
   },
+  data: () => ({
+    cc: {
+      message:
+        'This website uses cookies to improve your experience. Visit our Privacy Policy page for more information about cookies and how we use them.',
+      href:
+        'https://networkatlas.com/wp-content/uploads/2019/03/privacy-policy.pdf'
+    }
+  }),
   computed: {
     dark() {
       return this.$store.state.isDark
