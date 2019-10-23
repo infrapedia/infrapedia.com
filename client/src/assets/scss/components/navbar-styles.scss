@@ -121,3 +121,8 @@ $hover-blue: lighten($blue-link-colors, 50%);
     }
   }
 }
+
+.header.light {
+  color: white;
+  background-color: rgb(37, 95, 185);
+}

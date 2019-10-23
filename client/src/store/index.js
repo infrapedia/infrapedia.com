@@ -11,6 +11,7 @@ export default new Vuex.Store({
   devtools: true,
   state: {
     isDark: false,
+    isOnline: true,
     isMobile: false,
     isDrawing: false
   },

@@ -20,13 +20,14 @@
 </template>
 
 <script>
-import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../config/mapConfig'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapState } from 'vuex'
 import { DRAWING, TITLE_BY_SELECTION } from '../events'
 import turf from 'turf'
+
+let mapboxgl
 
 export default {
   name: 'Map',
@@ -43,7 +44,13 @@ export default {
     })
   },
   mounted() {
-    this.map = this.addMapEvents(this.initMapLayers(this.createMap()))
+    mapboxgl = require('mapbox-gl/dist/mapbox-gl')
+    try {
+      this.map = this.addMapEvents(this.initMapLayers(this.createMap()))
+    } catch (err) {
+      console.log(mapboxgl)
+      console.error(err)
+    }
   },
   methods: {
     createMap() {
@@ -332,9 +339,7 @@ export default {
       const el = document.querySelector('.application')
       if (!document.fullscreen) {
         el.requestFullscreen().catch(err => console.error(err))
-      } else {
-        document.exitFullscreen()
-      }
+      } else document.exitFullscreen()
     },
     toggleThreeD() {
       if (!this.map) return

@@ -105,9 +105,12 @@ h1 {
 }
 
 .mapboxgl-ctrl-group > button {
-  &:focus {
+  &:focus,
+  &:hover,
+  &:focus-within {
     color: inherit !important;
     box-shadow: none !important;
+    background-color: lightgrey;
   }
 }
 

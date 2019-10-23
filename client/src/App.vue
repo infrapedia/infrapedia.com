@@ -5,7 +5,7 @@
     <transition name="fade" mode="out-in">
       <router-view />
     </transition>
-    <i-footer role="contentinfo" />
+    <i-footer role="contentinfo" :class="{ ml55: isProfileRoute, mb3: isProfileRoute }" />
   </div>
 </template>
 
@@ -27,12 +27,12 @@ export default {
         'https://networkatlas.com/wp-content/uploads/2019/03/privacy-policy.pdf'
     }
   }),
-  mounted() {
-    console.log(this.$http)
-  },
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    isProfileRoute() {
+      return this.$route.name === 'profile'
     }
   }
 }
