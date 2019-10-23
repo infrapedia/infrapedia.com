@@ -1,9 +1,21 @@
 <template>
   <div id="map">
-    <el-button id="ThreeD" type="text" @click="toggleFullScreen" size="small" class="m0 p0">
+    <el-button
+      id="ThreeD"
+      type="text"
+      size="small"
+      class="m0 p0"
+      @click="toggleFullScreen"
+    >
       <fa :icon="['fas', 'expand-arrows-alt']" />
     </el-button>
-    <el-button id="FScreen" type="text" @click="toggleThreeD" size="small" class="m0 p0">3D</el-button>
+    <el-button
+      id="FScreen"
+      type="text"
+      @click="toggleThreeD"
+      size="small"
+      class="m0 p0"
+      >3D</el-button>
   </div>
 </template>
 
@@ -209,11 +221,9 @@ export default {
         if (window.draw.getMode() === 'direct_select') {
           const selected = window.draw.getSelected()
           if (selected.features.length) {
-            // eslint-disable-next-line
             let featureData = selected.features[0]
             if (featureData.geometry.type.toLowerCase() === 'polygon') {
               this.$emit(`${TITLE_BY_SELECTION}`, 'Area')
-              // eslint-disable-next-line
               calculated = turf.area(data)
               wrapper.innerHTML =
                 '<p><strong>' +
@@ -236,7 +246,6 @@ export default {
 
         for (let feature of data.features) {
           if (feature.geometry.type.toLowerCase() === 'linestring') {
-            // const opts = { units: 'kilometers' }
             this.$emit(`${TITLE_BY_SELECTION}`, 'Distance')
             calculated = turf.distance(
               feature.geometry.coordinates[0],
@@ -279,9 +288,9 @@ export default {
 
       let str = `<div class="cable-name dark-color"><b>${this.mapTooltip.name}</b></div>`
 
-      if (isPoint)
+      if (isPoint){
         str = `<div class="cable-name dark-color"><b>Point name : ${this.mapTooltip.name}</b></div>`
-      else {
+      } else {
         if (this.mapTooltip.segment) {
           str += `<div class="segment-name dark-color">Segment: ${this.mapTooltip.segment}</div>`
         }

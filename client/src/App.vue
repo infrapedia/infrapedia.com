@@ -27,6 +27,9 @@ export default {
         'https://networkatlas.com/wp-content/uploads/2019/03/privacy-policy.pdf'
     }
   }),
+  mounted() {
+    console.log(this.$http)
+  },
   computed: {
     dark() {
       return this.$store.state.isDark
