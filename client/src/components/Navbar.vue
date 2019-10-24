@@ -369,10 +369,8 @@ export default {
       this.isUserMenuOpen = !this.isUserMenuOpen
     },
     userRegistration() {
-      if (this.$store.state.isOnline && !this.isProfileRoute) {
-        this.toggleUserMenuVisibility()
-        this.$router.push('/user')
-      } else this.toggleUserMenuVisibility()
+      if (this.$store.state.isOnline && !this.isProfileRoute) this.$router.push('/user')
+      else this.toggleUserMenuVisibility()
     }
   }
 }

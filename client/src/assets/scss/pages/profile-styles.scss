@@ -1,10 +1,6 @@
 @import '../base/variables';
 @import '../helpers/atomic-classes';
 
-.main-wrapper {
-  background: $white-profile;
-}
-
 li[role="listitem"] {
   font-size: 14px;
   &:hover {
@@ -17,6 +13,8 @@ li[role="listitem"] {
 */
 
 .application.light {
-
+  .main-wrapper {
+    background: $white-profile;
+  }
 }
 
