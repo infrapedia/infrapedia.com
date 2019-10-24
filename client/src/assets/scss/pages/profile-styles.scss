@@ -1,0 +1,22 @@
+@import '../base/variables';
+@import '../helpers/atomic-classes';
+
+.main-wrapper {
+  background: $white-profile;
+}
+
+li[role="listitem"] {
+  font-size: 14px;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+/*
+*  THEME VARIANT'S
+*/
+
+.application.light {
+
+}
+

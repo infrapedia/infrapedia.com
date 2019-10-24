@@ -1,0 +1,28 @@
+@import '../base/variables';
+@import '../helpers/atomic-classes';
+
+
+/*
+*  THEME VARIANT'S
+*/
+
+.application.light {
+  .el-aside {
+    ul[role="group"] {
+      color: $white-partial;
+      background-color: $blue-user-interface;
+      li[role="listitem"] {
+        font-size: 14px;
+        .router-link {
+          &:hover {
+            background-color: lighten($blue-user-interface, 4%);
+          }
+        }
+        .router-link-exact-active {
+          background-color: #255fb9;
+        }
+      }
+    }
+  }
+}
+

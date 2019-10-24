@@ -1,6 +1,6 @@
 <template>
   <div>
-    Profile here
+    Something here 2
   </div>
 </template>
 
@@ -9,5 +9,5 @@ export default {}
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/scss/pages/profile-styles.scss';
+@import '../../assets/scss/pages/profile-styles.scss';
 </style>

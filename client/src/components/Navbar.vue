@@ -10,7 +10,7 @@
 
         <div aria-labelledby="rightnavheading" class="links-wrapper">
           <transition-group name="fade" mode="out-in">
-            <ul class="p0 m0 h-fit-full" role="group" :key="1" v-if="!isProfileRoute">
+            <ul class="p0 m0 h-fit-full" role="group" :key="1" v-if="!isUserNavbar">
               <li class="inline-block relative" tabindex="0" role="listitem">
                 <div class="list-item pr4 pl4" aria-haspopup="true">
                   Our Partners
@@ -228,7 +228,7 @@
                 </div>
               </li>
             </ul>
-            <ul class="p0 m0 h-fit-full" role="group" :key="2" v-else>
+            <ul class="p0 pr4 m0 h-fit-full" role="group" :key="2" v-else>
               <li class="inline-block relative" data-no-outline="true">
                 <div
                   class="list-item user-icon pr1 pl3"
@@ -301,6 +301,12 @@ export default {
     'i-filter': IFilter,
     'i-search': ISearch
   },
+  props: {
+    isUserNavbar: {
+      type: Boolean,
+      default: () => false
+    }
+  },
   data: () => ({
     search: '',
     infoMenuLinks,
@@ -336,7 +342,11 @@ export default {
         : 'https://cdn.infrapedia.com/logos/light-mode-logo.svg'
     },
     isProfileRoute() {
-      return this.$route.name === 'profile'
+      let isProfile = false
+      if (this.$route.name === 'user' || this.$route.name === 'user-profile') {
+        isProfile = true
+      }
+      return isProfile
     },
     userName() {
       return 'Manuel Blanco'
@@ -361,7 +371,7 @@ export default {
     userRegistration() {
       if (this.$store.state.isOnline && !this.isProfileRoute) {
         this.toggleUserMenuVisibility()
-        this.$router.push('/profile')
+        this.$router.push('/user')
       } else this.toggleUserMenuVisibility()
     }
   }
