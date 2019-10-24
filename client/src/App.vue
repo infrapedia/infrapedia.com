@@ -1,5 +1,9 @@
 <template>
-  <div class="application" :class="{ dark, light: !dark }" role="main">
+  <div
+    class="application" :class="{ dark, light: !dark }"
+    role="main"
+    :style="getDarkStyles"
+  >
     <transition mode="out-in" name="fade">
       <keep-alive>
         <component :is="layout" />
@@ -27,6 +31,15 @@ export default {
     },
     dark() {
       return this.$store.state.isDark
+    },
+    getDarkStyles() {
+      let theme = {}
+      if (this.dark) {
+        theme = {
+          backgroundColor: '#303030'
+        }
+      }
+      return theme
     },
     isRecoverPass() {
       return this.$route.name === 'nonav'

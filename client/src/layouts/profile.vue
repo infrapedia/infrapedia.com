@@ -35,9 +35,16 @@
         @click.stop="toggleTheme"
       >
         <div class="mt-2">
-          <transition-group name="slide-left" mode="out-in" tag="div">
+            <!-- enter-active-class="animated faster slideInUp"
+            leave-active-class="animated faster slideInDown" -->
+          <transition-group
+            name="fade"
+            mode="in-out"
+            tag="div"
+          >
             <span :key="2" class="icon vertical-align align-items-center" v-if="dark">
               <svg
+                class="icon"
                 xmlns="http://www.w3.org/2000/svg"
                 width="28"
                 height="28"
@@ -49,6 +56,7 @@
             </span>
             <span :key="1" class="icon vertical-align align-items-center" v-else>
               <svg
+                class="icon"
                 xmlns="http://www.w3.org/2000/svg"
                 width="28"
                 height="28"

@@ -158,6 +158,79 @@ h1 {
   font-weight: 500;
 }
 
+@-webkit-keyframes slideInUp {
+  from {
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+    visibility: visible;
+  }
+
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+    visibility: visible;
+  }
+
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.slideInUp {
+  -webkit-animation-name: slideInUp;
+  animation-name: slideInUp;
+}
+
+@-webkit-keyframes slideOutDown {
+  from {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    visibility: hidden;
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    visibility: hidden;
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+.slideOutDown {
+  -webkit-animation-name: slideOutDown;
+  animation-name: slideOutDown;
+}
+
+.animated {
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+.animated.faster {
+  -webkit-animation-duration: 500ms;
+  animation-duration: 500ms;
+}
+
 /*
 *  THEME VARIANT'S
 */
@@ -169,14 +242,17 @@ h1 {
 
 .aplication.dark {
   color: $white-partial;
-  background-color: #303030;
 
-  .el-input {
-    input {
-      color: $white-partial;
-      background-color: $dark-charcoal;
-    }
+  .el-container {
+    background-color: inherit
   }
+
+  // .el-input {
+  //   input {
+  //     color: $white-partial;
+  //     background-color: $dark-charcoal;
+  //   }
+  // }
   .el-form-item__label {
     color: $white-partial !important
   }

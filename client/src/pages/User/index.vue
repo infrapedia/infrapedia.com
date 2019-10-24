@@ -3,7 +3,7 @@
     class="main-wrapper w-fit-full vph-full pt20 pb24 pr7 pl7"
     :class="{ dark, light: !dark }">
     <header class="mb8">
-      <h1 class="title-user">
+      <h1 class="title-user color-inherit">
         Account
       </h1>
     </header>
@@ -27,7 +27,7 @@
       <el-col :span="10">
         <el-card shadow="never" class="pr8 pl8 h100">
           <header class="header p4">
-            <h2 class="title-user-variant m0">
+            <h2 class="title-user-variant m0 color-inherit">
               My activity
             </h2>
           </header>
@@ -36,7 +36,7 @@
       <el-col :span="14">
         <el-card shadow="never" class="pr8 pl8 h100">
           <header class="header p4">
-            <h2 class="title-user-variant m0">
+            <h2 class="title-user-variant m0 color-inherit">
               Map
             </h2>
           </header>
