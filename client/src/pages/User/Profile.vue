@@ -60,6 +60,7 @@
 
 <script>
 export default {
+  name: 'profile',
   data: () => ({
     form: {
       name: '',

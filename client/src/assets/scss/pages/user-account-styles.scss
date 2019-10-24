@@ -1,0 +1,27 @@
+@import '../base/variables';
+@import '../helpers/atomic-classes';
+
+header.header {
+  border-bottom: 1px solid #91C6F6;
+}
+
+
+/*
+*  THEME VARIANT'S
+*/
+
+.application.light {
+  .main-wrapper {
+    background: $white-profile;
+
+    #profileBtn {
+      color: $white-partial;
+      background-color: $dark-yellow;
+      &:hover,
+      &:focus,
+      &:focus-within {
+        background-color: lighten($dark-yellow, 4%);
+      }
+    }
+  }
+}

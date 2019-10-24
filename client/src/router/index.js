@@ -21,6 +21,11 @@ const routes = [
     path: '/user/profile',
     name: 'user-profile',
     component: Profile
+  },
+  {
+    path: '/404',
+    name: '404',
+    component: () => import('../layouts/404.vue')
   }
 ]
 

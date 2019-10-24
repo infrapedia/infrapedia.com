@@ -139,11 +139,20 @@ h1 {
   }
 }
 
+.title-user,
+.title-user-variant {
+  color: #212121;
+  line-height: 30px;
+}
+
 .title-user {
   font-size: 25px;
-  color: #212121;
   font-weight: 700;
-  line-height: 30px;
+}
+
+.title-user-variant {
+  font-size: 20px;
+  font-weight: 500;
 }
 
 /*

@@ -247,9 +247,11 @@
 .vph-quart {
   height: 25vh;
 }
+.round {
+  border-radius: 28px;
+}
 
-
-@for $i from 1 through 60 {
+@for $i from 1 through 120 {
   $base: 0.25rem;
   $val: $base * $i;
   $index: 1 * $i;

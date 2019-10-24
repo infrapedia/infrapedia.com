@@ -349,7 +349,7 @@ export default {
       return isProfile
     },
     userName() {
-      return 'Manuel Blanco'
+      return 'Jhon Doe'
     }
   },
   async mounted() {
