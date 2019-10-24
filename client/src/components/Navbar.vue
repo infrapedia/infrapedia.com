@@ -337,7 +337,7 @@ export default {
       return this.$store.state.isDark
     },
     imageURL() {
-      return this.theme
+      return this.dark
         ? 'https://cdn.infrapedia.com/logos/dark-mode-logo.svg'
         : 'https://cdn.infrapedia.com/logos/light-mode-logo.svg'
     },

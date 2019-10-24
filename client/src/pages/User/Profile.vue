@@ -4,7 +4,7 @@
     :class="{ dark, light: !dark }"
   >
     <header class="mb8">
-      <h1 class="title-user">
+      <h1 class="title-user color-inherit">
         Profile
       </h1>
     </header>
@@ -51,7 +51,12 @@
       </el-form>
     </el-card>
     <footer class="mt10 p0">
-      <router-link to="/change-password" exact class="underline fs-regular">
+      <router-link
+        exact
+        id="changePass"
+        to="/change-password"
+        class="underline fs-regular"
+      >
         Change my password »
       </router-link>
     </footer>

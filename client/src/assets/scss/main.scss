@@ -11,11 +11,14 @@ body,
 html,
 .application {
   @extend .no-overflow;
-  color: rgba(0, 0, 0, 0.87);
   font-family: 'helvetica';
 }
 .application {
   overflow-y: scroll;
+}
+
+.el-form-item__label {
+  color: inherit !important
 }
 
 ::selection {
@@ -159,11 +162,25 @@ h1 {
 *  THEME VARIANT'S
 */
 
-// .application.light {
-//   .el-radio__inner:hover {
-//     border-color: $light-yellow;
-//   }
-// }
+.aplication.light {
+  color: rgba(0, 0, 0, 0.87);
+  background-color: $white-full;
+}
+
+.aplication.dark {
+  color: $white-partial;
+  background-color: #303030;
+
+  .el-input {
+    input {
+      color: $white-partial;
+      background-color: $dark-charcoal;
+    }
+  }
+  .el-form-item__label {
+    color: $white-partial !important
+  }
+}
 
 .application .dark {
   .mapbox-controllers,

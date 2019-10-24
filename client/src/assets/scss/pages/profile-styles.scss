@@ -18,3 +18,19 @@ li[role="listitem"] {
   }
 }
 
+.application.dark {
+  .main-wrapper {
+    color: $white-partial;
+    background: $dark-charcoal;
+
+    .el-card {
+      color: $white-partial;
+      border-color: $light-charcoal;
+      background-color: $light-charcoal;
+    }
+
+    #changePass {
+      color: $white-partial;
+    }
+  }
+}

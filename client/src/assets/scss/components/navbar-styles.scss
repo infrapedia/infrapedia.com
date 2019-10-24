@@ -7,7 +7,6 @@ $hover-blue: lighten($blue-link-colors, 50%);
   top: 0;
   z-index: 1500;
   .header-inner-wrapper {
-    background: $white-full;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   }
 }
@@ -92,6 +91,10 @@ $hover-blue: lighten($blue-link-colors, 50%);
 */
 
 .application.light {
+  .header-inner-wrapper {
+    background: $white-full;
+  }
+
   .sm-icon,
   .list-item,
   .link {
@@ -125,4 +128,10 @@ $hover-blue: lighten($blue-link-colors, 50%);
 .header.light {
   color: white;
   background-color: rgb(37, 95, 185);
+}
+
+.application.dark {
+  .header-inner-wrapper {
+    background-color: #212121;
+  }
 }

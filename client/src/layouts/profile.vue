@@ -8,7 +8,7 @@
           <router-link
             exact
             to="/user"
-            class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full"
+            class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
           >
             Account
           </router-link>
@@ -17,7 +17,7 @@
           <router-link
             exact
             to="/user/profile"
-            class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full"
+            class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
           >
             Profile
           </router-link>
@@ -69,6 +69,7 @@
 <script>
 import INavbar from '@/components/Navbar'
 import IFooter from '@/components/Footer'
+import { TOGGLE_DARK } from '../store/actionTypes'
 
 export default {
   components: {
@@ -82,7 +83,7 @@ export default {
   },
   methods: {
     toggleTheme() {
-      console.warn('Not done yet')
+      this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
     }
   }
 }

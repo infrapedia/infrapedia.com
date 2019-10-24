@@ -5,8 +5,16 @@
 .el-button#toggleTheme {
   bottom: 1.2rem;
   left: 1rem;
+  background-color: $blue;
   box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
   border-color: transparent;
+}
+.el-aside {
+  ul[role="group"] {
+    li[role="listitem"] {
+      font-size: 14px;
+    }
+  }
 }
 
 /*
@@ -18,25 +26,54 @@
     ul[role="group"] {
       color: $white-partial;
       background-color: $blue-user-interface;
-      li[role="listitem"] {
-        font-size: 14px;
-        .router-link {
-          &:hover {
+
+      li {
+        a {
+          &:hover:not(.router-link-exact-active),
+          &:focus:not(.router-link-exact-active),
+          &:focus-within:not(.router-link-exact-active) {
             background-color: lighten($blue-user-interface, 4%);
           }
         }
         .router-link-exact-active {
-          background-color: #255fb9;
+          background-color: $dark-blue;
         }
       }
     }
   }
 
   .el-button#toggleTheme {
-    background-color: #2196f3;
     &:hover {
-      background-color: darken(#2196f3, 4%);
+      background-color: darken($blue, 4%);
     }
   }
 }
 
+.application.dark {
+  .el-aside {
+    ul[role="group"] {
+      color: $white-partial;
+      background-color: $light-charcoal;
+
+      li[role="listitem"] {
+        a {
+          &:hover:not(.router-link-exact-active),
+          &:focus:not(.router-link-exact-active),
+          &:focus-within:not(.router-link-exact-active) {
+            background-color: lighten($dark-charcoal, 4%);
+          }
+        }
+        .router-link-exact-active {
+          background-color: $dark-charcoal;
+        }
+      }
+    }
+  }
+
+  .el-button#toggleTheme {
+    color: $white-partial;
+    &:hover {
+      background-color: darken($blue, 4%);
+    }
+  }
+}
