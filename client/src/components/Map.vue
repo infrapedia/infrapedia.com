@@ -91,7 +91,6 @@ export default {
       mbCtrl.appendChild(document.getElementById('FScreen'))
 
       window.mapboxgl = mapboxgl
-      window.mapboxgl.Map = map
       window.draw = draw
 
       return map

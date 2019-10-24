@@ -11,147 +11,171 @@
         <div aria-labelledby="rightnavheading" class="links-wrapper">
           <transition-group name="fade" mode="out-in">
             <ul class="p0 m0 h-fit-full" role="group" :key="1" v-if="!isProfileRoute">
-                <li class="inline-block relative" tabindex="0" role="listitem">
-                  <div class="list-item pr4 pl4" aria-haspopup="true">
-                    Our Partners
-                    <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
-                  </div>
-                </li>
-                <el-divider direction="vertical" class="m0" />
-                <li class="inline-block relative" tabindex="0" role="listitem">
-                  <div class="list-item pr4 pl4" aria-haspopup="true">
-                    Submarine Cables
-                    <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
-                  </div>
-                </li>
-                <el-divider direction="vertical" class="m0" />
-                <li class="inline-block relative" tabindex="0" role="listitem">
-                  <div class="list-item pr4 pl4" aria-haspopup="true">
-                    Data Centers
-                    <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
-                  </div>
-                </li>
-                <el-divider direction="vertical" class="m0" />
-                <li class="inline-block relative" tabindex="0" role="listitem">
-                  <div class="list-item pr6 pl6" aria-haspopup="true">
-                    IXPs
-                    <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
-                  </div>
-                </li>
-                <el-divider direction="vertical" class="m0" />
-                <li class="inline-block relative" tabindex="0" role="listitem">
-                  <div class="list-item pr4 pl4" aria-haspopup="true">
-                    Networks
-                    <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
-                  </div>
-                </li>
-                <li class="inline-block relative" data-no-outline="true" role="listitem">
-                  <div class="list-item info-menu pr1 pl1" aria-haspopup="true" data-no-hover-bg="true">
-                    <i-search />
-                  </div>
-                </li>
-                <li class="inline-block relative" data-no-outline="true" role="listitem">
-                  <div class="list-item info-menu pr3 pl3" aria-haspopup="true" data-no-hover-bg="true">
-                    <i-filter />
-                  </div>
-                </li>
-                <el-divider direction="vertical" class="m0" />
-                <li class="inline-block relative" role="listitem">
-                  <div class="list-item sponsors-menu" aria-haspopup="true">
-                    <el-popover
-                      placement="bottom-end"
-                      width="320"
-                      transition="el-zoom-in-top"
-                      trigger="manual"
-                      v-model="isSponsorsMenuOpen"
-                    >
-                      <div class="p2">
-                        <header class="flex justify-content-end">
-                          <span
-                            class="inline-block mr2 cursor-pointer"
-                            @click="toggleSponsorsMenuVisibility"
-                            @keyup.enter.space="toggleSponsorsMenuVisibility"
-                          >
-                            <fa :icon="['fas', 'times']" class="sm-icon" />
-                          </span>
-                        </header>
-                        <div class="flex justify-content-space-around no-border">
-                          <a
-                            v-for="(sponsor, i) in sponsors"
-                            :key="i"
-                            target="_blank"
-                            :href="sponsor.url"
-                          >
-                            <el-image
-                              :src="sponsor.src"
-                              fit="contain"
-                              class="w24 h24"
-                              :alt="sponsor.alt"
-                              referrer-policy="strict-origin-when-cross-origin"
-                            />
-                          </a>
-                        </div>
+              <li class="inline-block relative" tabindex="0" role="listitem">
+                <div class="list-item pr4 pl4" aria-haspopup="true">
+                  Our Partners
+                  <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
+                </div>
+              </li>
+              <el-divider direction="vertical" class="m0" />
+              <li class="inline-block relative" tabindex="0" role="listitem">
+                <div class="list-item pr4 pl4" aria-haspopup="true">
+                  Submarine Cables
+                  <i
+                    aria-hidden="true"
+                    class="el-icon-arrow-down icon sm-icon ml1"
+                  />
+                </div>
+              </li>
+              <el-divider direction="vertical" class="m0" />
+              <li class="inline-block relative" tabindex="0" role="listitem">
+                <div class="list-item pr4 pl4" aria-haspopup="true">
+                  Data Centers
+                  <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
+                </div>
+              </li>
+              <el-divider direction="vertical" class="m0" />
+              <li class="inline-block relative" tabindex="0" role="listitem">
+                <div class="list-item pr6 pl6" aria-haspopup="true">
+                  IXPs
+                  <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
+                </div>
+              </li>
+              <el-divider direction="vertical" class="m0" />
+              <li class="inline-block relative" tabindex="0" role="listitem">
+                <div class="list-item pr4 pl4" aria-haspopup="true">
+                  Networks
+                  <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
+                </div>
+              </li>
+              <li class="inline-block relative" data-no-outline="true" role="listitem">
+                <div
+                  class="list-item info-menu pr1 pl1"
+                  aria-haspopup="true"
+                  data-no-hover-bg="true"
+                >
+                  <i-search />
+                </div>
+              </li>
+              <li class="inline-block relative" data-no-outline="true" role="listitem">
+                <div
+                  class="list-item info-menu pr3 pl3"
+                  aria-haspopup="true"
+                  data-no-hover-bg="true"
+                >
+                  <i-filter />
+                </div>
+              </li>
+              <el-divider direction="vertical" class="m0" />
+              <li class="inline-block relative" role="listitem">
+                <div class="list-item sponsors-menu" aria-haspopup="true">
+                  <el-popover
+                    placement="bottom-end"
+                    width="320"
+                    transition="el-zoom-in-top"
+                    trigger="manual"
+                    v-model="isSponsorsMenuOpen"
+                  >
+                    <div class="p2">
+                      <header class="flex justify-content-end">
+                        <span
+                          class="inline-block mr2 cursor-pointer"
+                          @click="toggleSponsorsMenuVisibility"
+                          @keyup.enter.space="toggleSponsorsMenuVisibility"
+                        >
+                          <fa :icon="['fas', 'times']" class="sm-icon" />
+                        </span>
+                      </header>
+                      <div class="flex justify-content-space-around no-border">
+                        <a
+                          v-for="(sponsor, i) in sponsors"
+                          :key="i"
+                          target="_blank"
+                          :href="sponsor.url"
+                        >
+                          <el-image
+                            :src="sponsor.src"
+                            fit="contain"
+                            class="w24 h24"
+                            :alt="sponsor.alt"
+                            referrer-policy="strict-origin-when-cross-origin"
+                          />
+                        </a>
                       </div>
-                      <el-button
-                        slot="reference"
-                        class="m0 w-fit-full h-fit-full no-border vertical-align p4"
-                        @click.stop="toggleSponsorsMenuVisibility"
-                      >
-                        <fa :icon="['fas', 'star']" class="sm-icon mr3" />
-                        <font size="2" class="link">Sponsors</font>
-                      </el-button>
-                    </el-popover>
-                  </div>
-                </li>
-                <el-divider direction="vertical" class="m0" />
+                    </div>
+                    <el-button
+                      slot="reference"
+                      class="m0 w-fit-full h-fit-full no-border vertical-align p4"
+                      @click.stop="toggleSponsorsMenuVisibility"
+                    >
+                      <fa :icon="['fas', 'star']" class="sm-icon mr3" />
+                      <font size="2" class="link">Sponsors</font>
+                    </el-button>
+                  </el-popover>
+                </div>
+              </li>
+              <el-divider direction="vertical" class="m0" />
 
               <li class="inline-block relative" data-no-outline="true">
-                <div class="list-item user-icon pr1 pl3" aria-haspopup="true" data-no-hover-bg="true">
+                <div
+                  class="list-item user-icon pr1 pl3"
+                  aria-haspopup="true"
+                  data-no-hover-bg="true"
+                >
                   <el-popover
-                      :visible-arrow="false"
-                      placement="bottom-end"
-                      width="220"
-                      transition="el-zoom-in-top"
-                      trigger="manual"
-                      v-model="isUserMenuOpen"
-                    >
-                      <template v-if="isProfileRoute">
-                        <header
-                          class="header no-selectable h8 flex justify-content-space-between pr7 pl6 pt2 pb2 align-items-center"
-                          :class="{ dark, light: !dark }"
-                        >
-                          <strong class="fs-regular truncate">
-                            {{ userName }}
-                          </strong>
-                          <span class="fs-regular cursor-pointer" @click="toggleUserMenuVisibility">
-                            <fa :icon="['fas', 'times']" />
-                          </span>
-                        </header>
-                        <ul class="p1 h-fit">
-                          <li class="w-fit-full h10">
-                            <el-button type="text" class="inline-block color-inherit">
-                              <fa :icon="['fas', 'map']" class="mr4 ml4" />
-                              <router-link to="/" class="color-inherit">
-                                Back to map
-                              </router-link>
-                            </el-button>
-                          </li>
-                          <li class="w-fit-full h10">
-                            <el-button type="text" class="inline-block color-inherit">
+                    :visible-arrow="false"
+                    placement="bottom-end"
+                    width="220"
+                    transition="el-zoom-in-top"
+                    trigger="manual"
+                    v-model="isUserMenuOpen"
+                  >
+                    <template v-if="isProfileRoute">
+                      <header
+                        class="header no-selectable h8 flex justify-content-space-between pr7 pl6 pt2 pb2 align-items-center"
+                        :class="{ dark, light: !dark }"
+                      >
+                        <strong class="fs-regular truncate">{{ userName }}</strong>
+                        <span class="fs-regular cursor-pointer" @click="toggleUserMenuVisibility">
+                          <fa :icon="['fas', 'times']" />
+                        </span>
+                      </header>
+                      <ul class="p1 h-fit">
+                        <li class="w-fit-full h10">
+                          <el-button type="text" class="inline-block color-inherit">
+                            <fa :icon="['fas', 'map']" class="mr4 ml4" />
+                            <router-link to="/" class="color-inherit">Back to map</router-link>
+                          </el-button>
+                        </li>
+                        <li class="w-fit-full h10">
+                          <el-button
+                            type="text"
+                            class="inline-block color-inherit"
+                          >
                             <fa :icon="['fas', 'sign-out-alt']" class="mr5 ml4" />
-                              <strong>Sign out</strong>
-                            </el-button>
-                          </li>
-                        </ul>
-                      </template>
-                      <div slot="reference" class="no-outline circle icon-wrapper" tabindex="0" @click="userRegistration" @keyup.enter.space="userRegistration">
-                        <fa :icon="['fas', 'user-circle']" class="md-icon" />
-                      </div>
-                    </el-popover>
+                            <strong>Sign out</strong>
+                          </el-button>
+                        </li>
+                      </ul>
+                    </template>
+                    <div
+                      slot="reference"
+                      class="no-outline circle icon-wrapper"
+                      tabindex="0"
+                      @click="userRegistration"
+                      @keyup.enter.space="userRegistration"
+                    >
+                      <fa :icon="['fas', 'user-circle']" class="md-icon" />
+                    </div>
+                  </el-popover>
                 </div>
               </li>
               <li class="inline-block relative" data-no-outline="true">
-                <div class="list-item info-menu pr1 pl1" aria-haspopup="true" data-no-hover-bg="true">
+                <div
+                  class="list-item info-menu pr1 pl1"
+                  aria-haspopup="true"
+                  data-no-hover-bg="true"
+                >
                   <div
                     class="w4 pt2 pb1 pr2 pl2 no-outline icon-wrapper circle"
                     tabindex="0"
@@ -206,45 +230,56 @@
             </ul>
             <ul class="p0 m0 h-fit-full" role="group" :key="2" v-else>
               <li class="inline-block relative" data-no-outline="true">
-                <div class="list-item user-icon pr1 pl3" aria-haspopup="true" data-no-hover-bg="true">
+                <div
+                  class="list-item user-icon pr1 pl3"
+                  aria-haspopup="true"
+                  data-no-hover-bg="true"
+                >
                   <el-popover
-                      :visible-arrow="false"
-                      placement="bottom-end"
-                      width="220"
-                      transition="el-zoom-in-top"
-                      trigger="click"
+                    :visible-arrow="false"
+                    placement="bottom-end"
+                    width="220"
+                    transition="el-zoom-in-top"
+                    trigger="click"
+                  >
+                    <header
+                      class="header no-selectable h8 flex justify-content-space-between pr7 pl6 pt2 pb2 align-items-center"
+                      :class="{ dark, light: !dark }"
                     >
-                      <header
-                        class="header no-selectable h8 flex justify-content-space-between pr7 pl6 pt2 pb2 align-items-center"
-                        :class="{ dark, light: !dark }"
-                      >
-                        <strong class="fs-regular truncate">
-                          {{ userName }}
-                        </strong>
-                        <span class="fs-regular cursor-pointer">
-                          <fa :icon="['fas', 'times']" />
-                        </span>
-                      </header>
-                      <ul class="p1 h-fit">
-                        <li class="w-fit-full h10">
-                          <el-button type="text" class="inline-block color-inherit">
-                            <router-link to="/" class="color-inherit">
-                              <fa :icon="['fas', 'map']" class="mr4 ml4" />
-                              Back to map
-                            </router-link>
-                          </el-button>
-                        </li>
-                        <li class="w-fit-full h10">
-                          <el-button type="text" class="inline-block color-inherit">
+                      <strong class="fs-regular truncate">{{ userName }}</strong>
+                      <span class="fs-regular cursor-pointer">
+                        <fa :icon="['fas', 'times']" />
+                      </span>
+                    </header>
+                    <ul class="p1 h-fit">
+                      <li class="w-fit-full h10">
+                        <el-button type="text" class="inline-block color-inherit">
+                          <router-link to="/" class="color-inherit">
+                            <fa :icon="['fas', 'map']" class="mr4 ml4" />
+                            Back to map
+                          </router-link>
+                        </el-button>
+                      </li>
+                      <li class="w-fit-full h10">
+                        <el-button
+                          type="text"
+                          class="inline-block color-inherit"
+                        >
                           <fa :icon="['fas', 'sign-out-alt']" class="mr5 ml4" />
-                            <strong>Sign out</strong>
-                          </el-button>
-                        </li>
-                      </ul>
-                      <div slot="reference" class="no-outline circle icon-wrapper" tabindex="0" @click="userRegistration" @keyup.enter.space="userRegistration">
-                        <fa :icon="['fas', 'user-circle']" class="md-icon" />
-                      </div>
-                    </el-popover>
+                          <strong>Sign out</strong>
+                        </el-button>
+                      </li>
+                    </ul>
+                    <div
+                      slot="reference"
+                      class="no-outline circle icon-wrapper"
+                      tabindex="0"
+                      @click="userRegistration"
+                      @keyup.enter.space="userRegistration"
+                    >
+                      <fa :icon="['fas', 'user-circle']" class="md-icon" />
+                    </div>
+                  </el-popover>
                 </div>
               </li>
             </ul>
@@ -327,7 +362,7 @@ export default {
       if (this.$store.state.isOnline && !this.isProfileRoute) {
         this.toggleUserMenuVisibility()
         this.$router.push('/profile')
-      } this.toggleUserMenuVisibility()
+      } else this.toggleUserMenuVisibility()
     }
   }
 }

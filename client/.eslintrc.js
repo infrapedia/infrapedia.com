@@ -1,7 +1,8 @@
 module.exports = {
   root: true,
   env: {
-    node: true
+    node: true,
+    browser: true
   },
   extends: ['plugin:vue/essential', '@vue/prettier'],
   rules: {
@@ -11,6 +12,7 @@ module.exports = {
   parserOptions: {
     parser: 'babel-eslint'
   },
+  plugins: ['vue', 'prettier'],
   overrides: [
     {
       files: [
