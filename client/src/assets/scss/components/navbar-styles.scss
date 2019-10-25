@@ -1,7 +1,7 @@
 @import '../helpers/atomic-classes';
 @import '../base/variables';
 
-$hover-blue: lighten($blue-link-colors, 50%);
+$hover-blue: lighten($dark-blue, 50%);
 
 .header {
   top: 0;
@@ -98,7 +98,7 @@ $hover-blue: lighten($blue-link-colors, 50%);
   .sm-icon,
   .list-item,
   .link {
-    color: $blue-link-colors;
+    color: $dark-blue;
   }
 
   .list-item:not([data-no-hover-bg='true']) {
@@ -110,7 +110,7 @@ $hover-blue: lighten($blue-link-colors, 50%);
   .user-icon {
     .el-avatar {
       color: white;
-      background: $blue-link-colors;
+      background: $dark-blue;
     }
   }
 

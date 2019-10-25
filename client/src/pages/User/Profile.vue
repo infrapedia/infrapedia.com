@@ -30,7 +30,14 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="Phone number">
-              <el-input v-model="form.user_metadata.phonenumber" />
+              <div class="el-input">
+                <i-phone-input
+                  inputClasses="el-input__inner"
+                  v-model="form.user_metadata.phonenumber.num"
+                  @onInput="validatePhoneNumber"
+                  class="m0 p0 el-input__inner"
+                />
+              </div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -72,7 +79,10 @@ export default {
       email: '',
       user_metadata: {
         lastname: '',
-        phonenumber: '',
+        phonenumber: {
+          num: '',
+          valid: null
+        },
         companyname: ''
       }
     }
@@ -80,6 +90,14 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    }
+  },
+  methods: {
+    validatePhoneNumber({ number, isValid }) {
+      const { phonenumber } = this.form.user_metadata
+
+      phonenumber.num = number
+      phonenumber.valid = isValid
     }
   }
 }

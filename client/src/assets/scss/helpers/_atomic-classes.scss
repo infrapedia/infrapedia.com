@@ -250,6 +250,9 @@
 .round {
   border-radius: 28px;
 }
+.no-box-shadow {
+  box-shadow: 0 none;
+}
 
 @for $i from 1 through 120 {
   $base: 0.25rem;

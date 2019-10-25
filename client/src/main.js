@@ -8,6 +8,7 @@ import * as cockieconsent from './plugins/cookieConsent'
 import appErrorHandler from './services/errors/appErrorHandler'
 import axios from 'axios'
 import VueAxios from './plugins/axios'
+import * as vueTelInput from './plugins/vue-tel-input'
 
 Vue.config.productionTip = false
 Vue.config.errorHandler = appErrorHandler()
@@ -19,6 +20,7 @@ new Vue({
   store,
   icons,
   element,
+  vueTelInput,
   cockieconsent,
   render: h => h(App)
 }).$mount('#app')

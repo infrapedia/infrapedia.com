@@ -24,6 +24,7 @@
     "vue": "^2.6.10",
     "vue-cookieconsent-component": "^1.2.0",
     "vue-router": "^3.0.6",
+    "vue-tel-input": "^2.0.10",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

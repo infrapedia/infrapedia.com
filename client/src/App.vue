@@ -21,11 +21,11 @@ export default {
   name: 'App',
   computed: {
     layout() {
-      let layout = DefaultLayout
+      let layout = NoNavLayout
       if (this.isProfileRoute) {
         layout = ProfileLayout
-      } else if (this.isRecoverPass)  {
-        layout = NoNavLayout
+      } else if (!this.isRecoverPass)  {
+        layout = DefaultLayout
       }
       return layout
     },

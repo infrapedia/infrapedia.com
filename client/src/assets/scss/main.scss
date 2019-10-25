@@ -189,19 +189,6 @@ h1 {
   animation-name: slideInUp;
 }
 
-@-webkit-keyframes slideOutDown {
-  from {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    visibility: hidden;
-    -webkit-transform: translate3d(0, 100%, 0);
-    transform: translate3d(0, 100%, 0);
-  }
-}
-
 @keyframes slideOutDown {
   from {
     -webkit-transform: translate3d(0, 0, 0);
@@ -242,17 +229,9 @@ h1 {
 
 .aplication.dark {
   color: $white-partial;
-
   .el-container {
     background-color: inherit
   }
-
-  // .el-input {
-  //   input {
-  //     color: $white-partial;
-  //     background-color: $dark-charcoal;
-  //   }
-  // }
   .el-form-item__label {
     color: $white-partial !important
   }
