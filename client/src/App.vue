@@ -13,20 +13,22 @@
 </template>
 
 <script>
+// import NoNavLayout from './layouts/nonav'
 import ProfileLayout from './layouts/profile'
 import DefaultLayout from './layouts/default'
-import NoNavLayout from './layouts/default'
 
 export default {
   name: 'App',
   computed: {
     layout() {
-      let layout = NoNavLayout
+      let layout
+
       if (this.isProfileRoute) {
         layout = ProfileLayout
       } else if (!this.isRecoverPass)  {
         layout = DefaultLayout
       }
+
       return layout
     },
     dark() {
@@ -42,7 +44,7 @@ export default {
       return theme
     },
     isRecoverPass() {
-      return this.$route.name === 'nonav'
+      return this.$route.name === 'change-password'
     },
     isProfileRoute() {
       let isProfile = false

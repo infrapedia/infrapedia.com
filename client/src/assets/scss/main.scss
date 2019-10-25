@@ -227,6 +227,10 @@ h1 {
   background-color: $white-full;
 }
 
+.popover.light {
+  background-color: $white-full
+}
+
 .aplication.dark {
   color: $white-partial;
   .el-container {
@@ -234,6 +238,13 @@ h1 {
   }
   .el-form-item__label {
     color: $white-partial !important
+  }
+}
+
+.popover.dark {
+  background-color: $light-charcoal !important;
+  .el-divider {
+    background-color: $dark-charcoal
   }
 }
 

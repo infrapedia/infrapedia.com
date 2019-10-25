@@ -21,7 +21,7 @@
             <fa :icon="['fas', 'times']" />
           </span>
         </header>
-        <ul class="filters-wraper">
+        <ul class="filters-wrapper" :class="{ dark, light: !dark }">
           <li class="pb4 pt6 pr4 pl4 flex justify-content-space-between">
             <label for="subseaonly">Subsea only</label>
             <el-switch

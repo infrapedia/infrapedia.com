@@ -9,6 +9,19 @@
   background-color: $dark-yellow;
 }
 
+.header.dark {
+  color: $light-charcoal;
+  background-color: $light-yellow;
+}
+
+.filters-wrapper.dark {
+  color: $white-hsl;
+  background-color: $dark-charcoal;
+  .el-divider {
+    background-color: $light-charcoal;
+  }
+}
+
 .filter-btn-wrapper.dark {
   .el-button {
     color: $dark-charcoal;

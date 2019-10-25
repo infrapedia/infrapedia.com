@@ -72,11 +72,12 @@
                   <el-popover
                     placement="bottom-end"
                     width="320"
+                    :popper-class="popoverClassGiver"
                     transition="el-zoom-in-top"
                     trigger="manual"
                     v-model="isSponsorsMenuOpen"
                   >
-                    <div class="p2">
+                    <div class="p2 sponsors-wrapper" :class="{ dark, light: !dark }">
                       <header class="flex justify-content-end">
                         <span
                           class="inline-block mr2 cursor-pointer"
@@ -104,6 +105,7 @@
                       </div>
                     </div>
                     <el-button
+                      id="sponsorsBtn"
                       slot="reference"
                       class="m0 w-fit-full h-fit-full no-border vertical-align p4"
                       @click.stop="toggleSponsorsMenuVisibility"
@@ -126,6 +128,7 @@
                     :visible-arrow="false"
                     placement="bottom-end"
                     width="220"
+                    :popper-class="popoverClassGiver"
                     transition="el-zoom-in-top"
                     trigger="manual"
                     v-model="isUserMenuOpen"
@@ -165,7 +168,7 @@
                       @click="userRegistration"
                       @keyup.enter.space="userRegistration"
                     >
-                      <fa :icon="['fas', 'user-circle']" class="md-icon" />
+                      <fa :icon="['fas', 'user-circle']" class="md-icon user-icon" />
                     </div>
                   </el-popover>
                 </div>
@@ -188,9 +191,13 @@
                       width="200"
                       transition="el-zoom-in-top"
                       trigger="manual"
+                      :popper-class="popoverClassGiver"
                       v-model="isInfoMenuOpen"
                     >
-                      <ul class="pt4 pr4 pl4 pb0">
+                      <ul
+                        class="pt4 pr4 pl4 pb0"
+                        :class="{ dark, light: !dark }"
+                      >
                         <li
                           v-for="(link, i) in infoMenuLinks.info"
                           :key="i"
@@ -206,11 +213,14 @@
                         </li>
                       </ul>
                       <el-divider class="m0" />
-                      <ul class="flex justify-content-space-around pt2 p2">
+                      <ul
+                        class="flex justify-content-space-around pt2 p2"
+                        :class="{ dark, light: !dark }"
+                      >
                         <li
                           v-for="(link, i) in infoMenuLinks.social"
                           :key="i"
-                          class="w4 h4 circle-bg link-info p2"
+                          class="w4 h4 circle-bg link-info social p2"
                         >
                           <a
                             :href="link.url"
@@ -222,7 +232,11 @@
                           </a>
                         </li>
                       </ul>
-                      <fa slot="reference" class="sm-icon outline0" :icon="['fas', 'ellipsis-v']" />
+                      <fa
+                        slot="reference"
+                        class="sm-icon outline0"
+                        :icon="['fas', 'ellipsis-v']"
+                      />
                     </el-popover>
                   </div>
                 </div>
@@ -240,21 +254,29 @@
                     placement="bottom-end"
                     width="220"
                     transition="el-zoom-in-top"
-                    trigger="click"
+                    trigger="manual"
+                    v-model="isUserMenuOpen"
                   >
                     <header
                       class="header no-selectable h8 flex justify-content-space-between pr7 pl6 pt2 pb2 align-items-center"
                       :class="{ dark, light: !dark }"
                     >
                       <strong class="fs-regular truncate">{{ userName }}</strong>
-                      <span class="fs-regular cursor-pointer">
+                      <span
+                        class="fs-regular cursor-pointer"
+                        @click="toggleUserMenuVisibility"
+                      >
                         <fa :icon="['fas', 'times']" />
                       </span>
                     </header>
-                    <ul class="p1 h-fit">
+                    <ul class="p1 h-fit" :class="{ dark, light: !dark }">
                       <li class="w-fit-full h10">
                         <el-button type="text" class="inline-block color-inherit">
-                          <router-link to="/" class="color-inherit">
+                          <router-link
+                            to="/"
+                            class="color-inherit"
+                            @click="() => isUserMenuOpen = false"
+                          >
                             <fa :icon="['fas', 'map']" class="mr4 ml4" />
                             Back to map
                           </router-link>
@@ -336,6 +358,12 @@ export default {
     dark() {
       return this.$store.state.isDark
     },
+    popoverClassGiver() {
+      let c = 'popover'
+      if (this.dark) c += ' dark'
+      else c += ' light'
+      return c
+    },
     imageURL() {
       return this.dark
         ? 'https://cdn.infrapedia.com/logos/dark-mode-logo.svg'
@@ -369,8 +397,9 @@ export default {
       this.isUserMenuOpen = !this.isUserMenuOpen
     },
     userRegistration() {
-      if (this.$store.state.isOnline && !this.isProfileRoute) this.$router.push('/user')
-      else this.toggleUserMenuVisibility()
+      if (this.$store.state.isOnline && !this.isProfileRoute) {
+        this.$router.push('/user')
+      } else this.toggleUserMenuVisibility()
     }
   }
 }

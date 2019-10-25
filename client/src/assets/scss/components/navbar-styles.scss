@@ -2,6 +2,7 @@
 @import '../base/variables';
 
 $hover-blue: lighten($dark-blue, 50%);
+$header-color: rgb(37, 95, 185);
 
 .header {
   top: 0;
@@ -86,6 +87,12 @@ $hover-blue: lighten($dark-blue, 50%);
   font-weight: normal;
 }
 
+.header {
+  color: $white-full;
+  background-color: $header-color;
+}
+
+
 /*
 *   THEME VARIANT'S
 */
@@ -93,6 +100,14 @@ $hover-blue: lighten($dark-blue, 50%);
 .application.light {
   .header-inner-wrapper {
     background: $white-full;
+  }
+
+  .icon-wrapper {
+    &:focus,
+    &:focus-within,
+    &:hover {
+      background-color: $hover-blue;
+    }
   }
 
   .sm-icon,
@@ -104,13 +119,6 @@ $hover-blue: lighten($dark-blue, 50%);
   .list-item:not([data-no-hover-bg='true']) {
     &:hover {
       background-color: $hover-blue;
-    }
-  }
-
-  .user-icon {
-    .el-avatar {
-      color: white;
-      background: $dark-blue;
     }
   }
 
@@ -126,12 +134,73 @@ $hover-blue: lighten($dark-blue, 50%);
 }
 
 .header.light {
-  color: white;
-  background-color: rgb(37, 95, 185);
+  & + ul.light {
+    background: $white-full
+  }
 }
 
 .application.dark {
-  .header-inner-wrapper {
+  .header-inner-wrapper,
+  .sponsors-menu,
+  #sponsorsBtn {
     background-color: #212121;
+  }
+
+
+  .icon-wrapper {
+    &:focus,
+    &:focus-within,
+    &:hover {
+      background-color: #3a3838;
+    }
+  }
+
+  .sm-icon,
+  .list-item,
+  .link {
+    color: $white-full;
+  }
+
+  #sponsorsBtn,
+  .list-item:not([data-no-hover-bg='true']) {
+    &:focus,
+    &:focus-within,
+    &:hover {
+      background-color: $light-charcoal;
+    }
+  }
+
+  .el-divider {
+    background-color: $light-charcoal
+  }
+
+  li:not([data-no-outline='true']) {
+    &:focus,
+    &:focus-within {
+      outline: none 0;
+      &::after {
+        transform: scaleX(1);
+      }
+    }
+  }
+}
+
+ul.dark {
+  background: $light-charcoal;
+  color: $white-partial;
+  li {
+    color: inherit;
+    &.link-info.social {
+      &:hover {
+        background-color: darken($white-hsl, 52%)
+      }
+    }
+  }
+}
+
+.sponsors-wrapper.dark {
+  background-color: $dark-charcoal;
+  .el-divider {
+    background-color: $dark-charcoal !important;
   }
 }

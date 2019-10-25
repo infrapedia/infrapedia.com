@@ -5,10 +5,7 @@
     <transition name="fade" mode="out-in">
       <router-view />
     </transition>
-    <i-footer
-      role="contentinfo"
-      :class="{ ml60: isProfileRoute, mb3: isProfileRoute }"
-    />
+    <i-footer role="contentinfo" />
   </div>
 </template>
 
@@ -28,16 +25,7 @@ export default {
       href:
         'https://networkatlas.com/wp-content/uploads/2019/03/privacy-policy.pdf'
     }
-  }),
-  computed: {
-    isProfileRoute() {
-      let isProfile = false
-      if (this.$route.name === 'user' || this.$route.name === 'user-profile') {
-        isProfile = true
-      }
-      return isProfile
-    }
-  }
+  })
 }
 </script>
 

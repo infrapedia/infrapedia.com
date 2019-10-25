@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../pages/Home.vue'
+import NotFound from '../layouts/404.vue'
 import User from '../pages/User/index.vue'
 import Profile from '../pages/User/Profile.vue'
 
@@ -25,7 +26,7 @@ const routes = [
   {
     path: '/404',
     name: '404',
-    component: () => import('../layouts/404.vue')
+    component: NotFound
   }
 ]
 
