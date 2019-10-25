@@ -1164,6 +1164,14 @@ li.last-preferred {
 
 .application.light {
   .vue-tel-input {
+    border: 1px solid #dcdfe6;
+    &:hover {
+      border-color: #c0c4cc;
+    }
+    &:focus,
+    &:focus-within {
+      border-color: $dark-blue;
+    }
     input, ul {
       background-color: #fff;
     }
@@ -1184,7 +1192,7 @@ li.last-preferred {
 
 .application.dark {
   .vue-tel-input {
-    border: 1px solid $light-charcoal;
+    border-color: $light-charcoal;
     &:hover {
       border-color: darken($light-charcoal, 10%)
     }
