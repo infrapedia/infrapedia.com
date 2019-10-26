@@ -241,6 +241,21 @@ h1 {
   }
 }
 
+.el-input.dark {
+  input {
+    color: $white-full;
+    border-color: $light-charcoal;
+    background-color: $dark-charcoal;
+    &:hover {
+      border-color: darken($light-charcoal, 10%)
+    }
+    &:focus,
+    &:focus-within {
+      border-color: $dark-blue;
+    }
+  }
+}
+
 .popover.dark {
   background-color: $light-charcoal !important;
   .el-divider {
@@ -248,7 +263,7 @@ h1 {
   }
 }
 
-.application .dark {
+.application.dark {
   .mapbox-controllers,
   .mapboxgl-ctrl-group {
     background: #323232;

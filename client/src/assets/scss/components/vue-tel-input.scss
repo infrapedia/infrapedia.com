@@ -1123,6 +1123,7 @@ li.last-preferred {
     z-index: 1;
     padding: 0;
     margin: 0;
+    user-select: none;
     text-align: left;
     max-height: 10rem;
     overflow-y: scroll;

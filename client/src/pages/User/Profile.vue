@@ -13,19 +13,22 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="First name">
-              <el-input v-model="form.name" />
+              <el-input v-model="form.name" :class="{ dark }" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="Last name">
-              <el-input v-model="form.user_metadata.lastname" />
+              <el-input
+                v-model="form.user_metadata.lastname"
+                :class="{ dark }"
+              />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="Email address">
-              <el-input v-model="form.email" />
+              <el-input v-model="form.email" :class="{ dark }" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -44,13 +47,21 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="Company name">
-              <el-input v-model="form.user_metadata.companyname" />
+              <el-input
+                v-model="form.user_metadata.companyname"
+                :class="{ dark }"
+              />
             </el-form-item>
           </el-col>
         </el-row>
         <footer class="flex justify-content-end">
           <el-form-item class="m0 p0">
-            <el-button round type="warning" class="w22" size="medium">
+            <el-button
+              round
+              type="warning"
+              class="w22"
+              size="medium"
+            >
               Save
             </el-button>
           </el-form-item>
