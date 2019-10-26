@@ -16,11 +16,19 @@
       size="small"
       class="m0 p0"
       >3D</el-button>
+    <el-button
+      class="absolute z-index1"
+      style="right: 1rem; bottom: 10rem"
+      @click="toggleDarkMode"
+    >
+      DARK
+    </el-button>
   </div>
 </template>
 
 <script>
 import { DRAWING, TITLE_BY_SELECTION } from '../events'
+import { TOGGLE_DARK } from '../store/actionTypes'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../config/mapConfig'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
@@ -37,7 +45,7 @@ export default {
   }),
   computed: {
     ...mapState({
-      dark: state => state.dark,
+      dark: state => state.isDark,
       isMobile: state => state.isMobile,
       currentMapFilter: state => state.map.filter
     })
@@ -92,21 +100,16 @@ export default {
       if (!map) return
       let vm = this
       map.on('load', function() {
-        vm.addMapLayers(map)
+        vm.addMapSources(map)
       })
       return map
     },
-    addMapLayers(map) {
+    addMapSources(map) {
       const data = mapConfig.data
-      const fc = {
-        type: 'FeatureCollection',
-        features: []
-      }
-
       const style = this.dark ? 'Dark' : 'Light'
       const buildingPoint = `buildingPoint${style}`
-      const buildingFootprint = `buildingFootprint${style}`
       const buildingLabel = `buildingLabel${style}`
+      const buildingFootprint = `buildingFootprint${style}`
 
       map.addSource(mapConfig[buildingPoint], {
         type: 'geojson',
@@ -135,7 +138,10 @@ export default {
 
       map.addSource(mapConfig.clusterPts, {
         type: 'geojson',
-        data: fc,
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        },
         cluster: true,
         clusterMaxZoom: 15,
         clusterRadius: 50
@@ -162,16 +168,27 @@ export default {
         minzoom: 4
       })
 
+      this.addMapLayers()
+    },
+    addMapLayers() {
+      const data = mapConfig.data
+      const map = this.map
+
       for (const layer of data.layers) {
-        if (layer.id === mapConfig.cableLayer) {
-          layer.filter = this.currentMapFilter
-          map.addLayer(layer)
-        } else if (layer.id === 'buildingLayers') {
+        if (!map.getLayer(layer)) {
           const theme = this.dark ? 'dark' : 'light'
-          for (let d of layer[theme]) {
-            map.addLayer(d)
-          }
-        } else map.addLayer(layer)
+
+          if (layer.id === 'cableTMS') {
+            layer.filter = this.currentMapFilter
+            for (let d of layer[theme]) {
+              map.addLayer(d)
+            }
+          } else if (layer.id === 'buildingLayers') {
+            for (let d of layer[theme]) {
+              map.addLayer(d)
+            }
+          } else map.addLayer(layer)
+        } else continue
       }
     },
     addMapEvents(map) {
@@ -326,6 +343,22 @@ export default {
     },
     handlePointsLayerClick(e) {
       console.log('Clicked points layer', e)
+    },
+    toggleDarkMode() {
+      this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
+      const style = this.dark ? mapConfig.darkBasemap : mapConfig.default
+      const map = this.map
+
+      map.setStyle(style)
+      const loadStyles = () => {
+        if (map.loaded()) {
+          this.addMapSources(map)
+          this.addMapLayers()
+          map.off('render', loadStyles)
+        }
+      }
+
+      map.on('render', loadStyles)
     },
     toggleFullScreen() {
       const el = document.querySelector('.application')
