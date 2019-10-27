@@ -1,14 +1,6 @@
 @import '../base/variables';
 @import '../helpers/atomic-classes';
 
-
-.el-button#toggleTheme {
-  bottom: 1.2rem;
-  left: 1rem;
-  background-color: $blue;
-  box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
-  border-color: transparent;
-}
 .el-aside {
   ul[role="group"] {
     li[role="listitem"] {
@@ -41,12 +33,6 @@
       }
     }
   }
-
-  .el-button#toggleTheme {
-    &:hover {
-      background-color: darken($blue, 4%);
-    }
-  }
 }
 
 .application.dark {
@@ -68,16 +54,6 @@
           background-color: $dark-charcoal;
         }
       }
-    }
-  }
-
-
-  .el-button#toggleTheme {
-    .icon {
-      fill: $white-partial;
-    }
-    &:hover {
-      background-color: lighten($blue, 4%);
     }
   }
 }

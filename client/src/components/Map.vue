@@ -1,33 +1,61 @@
 <template>
   <div id="map">
     <el-button
-      id="ThreeD"
-      type="text"
-      size="small"
-      class="m0 p0"
-      @click="toggleFullScreen"
-    >
-      <fa :icon="['fas', 'expand-arrows-alt']" />
-    </el-button>
-    <el-button
       id="FScreen"
       type="text"
       @click="toggleThreeD"
       size="small"
       class="m0 p0"
+      :class="{ dark }"
       >3D</el-button>
     <el-button
-      class="absolute z-index1"
-      style="right: 1rem; bottom: 10rem"
-      @click="toggleDarkMode"
+      id="ThreeD"
+      type="text"
+      size="small"
+      class="m0 p0"
+      :class="{ dark }"
+      @click="toggleFullScreen"
     >
-      DARK
+      <fa :icon="['fas', 'expand-arrows-alt']" />
+    </el-button>
+    <el-button
+      id="menuOpener"
+      circle
+      size="small"
+      class="absolute z-index1 w11 h11"
+      @click.stop="toggleMenu"
+      tabindex="0"
+    >
+      <fa :icon="['fas', 'user-circle']" class="icon fs-medium" v-if="!isMenuOpen" />
+      <fa :icon="['fas', 'times']" class="icon fs-medium" v-else />
+
+      <ul
+        v-if="isMenuOpen"
+        role="group"
+        class="absolute flex justify-content-space-around align-items-center"
+        :class="{ active: isMenuOpen }"
+      >
+        <li role="listitem">
+          <i-theme-toggler @click="toggleDarkMode" id="toggleTheme" />
+        </li>
+        <li role="listitem">
+          <el-button
+            circle
+            class="color-inherit"
+            @click="shareViewLink"
+            :class="{ dark }"
+          >
+            <fa :icon="['fas', 'share-alt']" class="sm-icon" />
+          </el-button>
+        </li>
+      </ul>
     </el-button>
   </div>
 </template>
 
 <script>
 import { DRAWING, TITLE_BY_SELECTION } from '../events'
+import IThemeToggler from '../components/ThemeToggler'
 import { TOGGLE_DARK } from '../store/actionTypes'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../config/mapConfig'
@@ -38,10 +66,14 @@ import turf from 'turf'
 
 export default {
   name: 'Map',
+  components: {
+    IThemeToggler
+  },
   data: () => ({
     is3D: false,
     map: undefined,
-    mapTooltip: {}
+    mapTooltip: {},
+    isMenuOpen: false
   }),
   computed: {
     ...mapState({
@@ -360,6 +392,9 @@ export default {
 
       map.on('render', loadStyles)
     },
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen
+    },
     toggleFullScreen() {
       const el = document.querySelector('.application')
       if (!document.fullscreen) {
@@ -372,6 +407,9 @@ export default {
       this.$nextTick(() => {
         this.map.easeTo({ pitch: this.is3D ? 45 : 0, duration: 850 })
       })
+    },
+    shareViewLink() {
+      console.warn('Not done yet')
     }
   }
 }

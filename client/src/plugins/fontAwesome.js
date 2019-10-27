@@ -23,7 +23,8 @@ import {
   faChevronUp,
   faCertificate,
   faSignOutAlt,
-  faExclamationCircle
+  faExclamationCircle,
+  faShareAlt
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faFacebook,
@@ -58,6 +59,7 @@ library.add(
   faTwitter,
   faLinkedin,
   faInstagram,
+  faShareAlt,
   faExclamationCircle
 )
 
