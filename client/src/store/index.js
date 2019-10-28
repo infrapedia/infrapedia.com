@@ -13,7 +13,8 @@ export default new Vuex.Store({
     isDark: false,
     isOnline: true,
     isMobile: false,
-    isDrawing: false
+    isDrawing: false,
+    isLocating: false
   },
   mutations: {
     [types.TOGGLE_DARK](state, bool) {
@@ -27,7 +28,10 @@ export default new Vuex.Store({
     },
     [types.IS_DRAWING](state, bool) {
       state.isDrawing = bool
-    }
+    },
+    [types.LOCATE_USER](state, bool) {
+      state.isLocating = bool
+    },
   },
   actions: {},
   modules: {

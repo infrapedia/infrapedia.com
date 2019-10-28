@@ -16,8 +16,9 @@
       :class="{ dark }"
       @click="toggleFullScreen"
     >
-      <fa :icon="['fas', 'expand-arrows-alt']" />
+      <fa :icon="['fas', 'expand-arrows-alt']"  class="sm-icon" />
     </el-button>
+    <i-location-button @click="geolocateUser" @enter="geolocateUser" />
     <el-button
       id="menuOpener"
       circle
@@ -54,9 +55,10 @@
 </template>
 
 <script>
+import { TOGGLE_DARK, LOCATE_USER } from '../store/actionTypes'
+import ILocationButton from '../components/LocationButton'
 import { DRAWING, TITLE_BY_SELECTION } from '../events'
 import IThemeToggler from '../components/ThemeToggler'
-import { TOGGLE_DARK } from '../store/actionTypes'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../config/mapConfig'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
@@ -67,12 +69,14 @@ import turf from 'turf'
 export default {
   name: 'Map',
   components: {
-    IThemeToggler
+    IThemeToggler,
+    ILocationButton
   },
   data: () => ({
     is3D: false,
-    map: undefined,
+    trackID: null,
     mapTooltip: {},
+    map: undefined,
     isMenuOpen: false
   }),
   computed: {
@@ -108,20 +112,12 @@ export default {
 
       map.addControl(draw, 'top-right')
       map.addControl(new mapboxgl.NavigationControl(), 'top-right')
-      map.addControl(
-        new mapboxgl.GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true
-          },
-          trackUserLocation: true
-        }),
-        'top-right'
-      )
 
       const mbCtrl = document.querySelector('.mapboxgl-ctrl-group')
       mbCtrl.classList.add('mapbox-controllers')
       mbCtrl.appendChild(document.getElementById('ThreeD'))
       mbCtrl.appendChild(document.getElementById('FScreen'))
+      mbCtrl.appendChild(document.getElementById('Geolocation'))
 
       window.mapboxgl = mapboxgl
       window.draw = draw
@@ -221,6 +217,10 @@ export default {
             }
           } else map.addLayer(layer)
         } else continue
+      }
+
+      if (this.$store.state.isLocating) {
+        this.showLocation()
       }
     },
     addMapEvents(map) {
@@ -410,6 +410,137 @@ export default {
     },
     shareViewLink() {
       console.warn('Not done yet')
+    },
+    clearLocation() {
+      if (this.trackID) {
+        this.geolocation.clearWatch(this.trackID)
+      }
+
+      if (this.map.getLayer('geolocation-point')) {
+        this.map.removeLayer('geolocation-point')
+      }
+
+      this.$store.commit(`${LOCATE_USER}`, false)
+    },
+    geolocateUser() {
+      // if (this.$store.state.isLocating) {
+      //   return this.clearLocation()
+      // }
+
+      this.trackID = navigator.geolocation.watchPosition(
+        this.showLocation,
+        this.handleGeolocationErrors,
+        { maximumAge: 75000, enableHighAccuracy: true, timeout: 60000 }
+      )
+    },
+    showLocation(location) {
+      if (!location || !this.map) return
+
+      const map = this.map
+      const imageID = 'pulsing-dot'
+      const coordinates = location.coords
+      const sourceData = map.getSource('geolocation-point-data')
+      const size = 200
+      const pulsingDot = {
+        width: size,
+        height: size,
+        data: new Uint8Array(size * size * 4),
+        onAdd() {
+          const canvas = document.createElement('canvas')
+          canvas.width = this.width
+          canvas.height = this.height
+          this.context = canvas.getContext('2d')
+        },
+        render() {
+          const duration = 1320
+          const t = (performance.now() % duration) / duration
+          const radius = (size / 2) * 0.3
+          const outerRadius = (size / 2) * 0.7 * t + radius
+          const context = this.context
+          context.clearRect(0, 0, this.width, this.height)
+          context.beginPath()
+          context.arc(
+            this.width / 2,
+            this.height / 2,
+            outerRadius,
+            0,
+            Math.PI * 2
+          )
+          context.fillStyle = 'rgba(29, 161, 242,' + (1 - t) + ')'
+          context.fill()
+          context.beginPath()
+          context.arc(this.width / 2, this.height / 2, radius, 0, Math.PI * 2)
+          context.fillStyle = 'rgba(29, 161, 242, 1)'
+          context.strokeStyle = 'white'
+          context.lineWidth = 2 + 4 * (1 - t)
+          context.fill()
+          context.stroke()
+          this.data = context.getImageData(0, 0, this.width, this.height).data
+          map.triggerRepaint()
+          return true
+        }
+      }
+
+      if (!map.getLayer('geolocation-point')) {
+        if (!sourceData) {
+          map.addSource('geolocation-point-data', {
+            type: 'geojson',
+            data: {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [coordinates.longitude, coordinates.latitude]
+              }
+            }
+          })
+        } else {
+          sourceData.setData({
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [coordinates.longitude, coordinates.latitude]
+            }
+          })
+        }
+
+        if (!map.hasImage(imageID)) {
+          map.addImage(imageID, pulsingDot, { pixelRatio: 4 })
+        } else {
+          map.updateImage(imageID, pulsingDot)
+        }
+
+        map.addLayer({
+          id: 'geolocation-point',
+          type: 'symbol',
+          layout: {
+            'icon-image': imageID
+          },
+          source: 'geolocation-point-data'
+        })
+      }
+
+      map.flyTo({
+        center: [coordinates.longitude, coordinates.latitude],
+        zoom: 20
+      })
+
+      this.$store.commit(`${LOCATE_USER}`, true)
+    },
+    handleGeolocationErrors(err) {
+      switch (err) {
+        case 'UNKNOWN_ERROR':
+          console.error(err)
+          break
+        case 'PERMISSION_DENIED':
+          console.error(err)
+          break
+        case 'POSITION_UNAVAILABLE':
+          console.error(err)
+          break
+        default:
+          console.error(err)
+          break
+      }
     }
   }
 }

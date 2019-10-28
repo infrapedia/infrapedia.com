@@ -36,10 +36,11 @@
 </template>
 
 <script>
-import INavbar from '../components/Navbar'
-import IFooter from '../components/Footer'
 import IThemeToggler from '../components/ThemeToggler'
 import { TOGGLE_DARK } from '../store/actionTypes'
+import { mapConfig } from '../config/mapConfig'
+import INavbar from '../components/Navbar'
+import IFooter from '../components/Footer'
 
 export default {
   components: {
@@ -55,6 +56,7 @@ export default {
   methods: {
     toggleTheme() {
       this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
+      mapConfig.dark = this.dark
     }
   }
 }
