@@ -55,9 +55,14 @@
 </template>
 
 <script>
-import { DRAWING, TITLE_BY_SELECTION, TOGGLE_THEME } from '../events'
+import {
+  DRAWING,
+  TITLE_BY_SELECTION,
+  TOGGLE_THEME,
+  CABLE_SELECTED
+} from '../events'
 import { TOGGLE_DARK, LOCATE_USER } from '../store/actionTypes'
-import { CURRENT_MAP_FILTER } from '../store/actionTypes/map'
+import { CURRENT_MAP_FILTER, CURRENT_SELECTION } from '../store/actionTypes/map'
 import ILocationButton from '../components/LocationButton'
 import copyToClipboard from '../helpers/copyToClipboard'
 import { createBitlyURL } from '../services/api/bitly'
@@ -69,6 +74,8 @@ import { bus } from '../helpers/eventBus'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapState } from 'vuex'
 import turf from 'turf'
+
+const GEOLOCATION_POINT = 'geolocation-point'
 
 export default {
   name: 'Map',
@@ -132,6 +139,9 @@ export default {
 
       return map
     },
+    /**
+     * @param map { Object } The map instance
+     */
     initMapLayers(map) {
       if (!map) return
       let vm = this
@@ -140,6 +150,9 @@ export default {
       })
       return map
     },
+    /**
+     * @param map { Object } The map instance
+     */
     addMapSources(map) {
       const data = mapConfig.data
       const style = this.dark ? 'Dark' : 'Light'
@@ -223,6 +236,9 @@ export default {
         } else map.addLayer(layer)
       }
     },
+    /**
+     * @param map { Object } The map instance
+     */
     addMapEvents(map) {
       let vm = this
       const popup = new mapboxgl.Popup({
@@ -241,21 +257,20 @@ export default {
         vm.handlePopupVisibilityOff(popup)
       })
 
-      map.on('click', this.handleCableLayerClick)
+      map.on('click', this.handleMapClick)
       map.on('touchend', this.handleMobileTouchEnd)
-      map.on('click', mapConfig.cableLayer, this.handleCableLayerClick)
       map.on('click', mapConfig.pointsLayer, this.handlePointsLayerClick)
 
-      map.on('draw.create', this.updateArea)
-      map.on('draw.delete', this.updateArea)
-      map.on('draw.update', this.updateArea)
+      map.on('draw.create', this.handleDraw)
+      map.on('draw.delete', this.handleDraw)
+      map.on('draw.update', this.handleDraw)
 
       map.on('zoom', this.handleBoundsChange)
       map.on('movend', this.handleBoundsChange)
       map.on('pitchend', this.handleBoundsChange)
       return map
     },
-    updateArea() {
+    handleDraw() {
       const data = window.draw.getAll()
       const wrapper = document.getElementById('calculated-area')
 
@@ -309,6 +324,12 @@ export default {
         }
       } else this.$emit(`${DRAWING}`, false)
     },
+    /**
+     * @param e { Object } Map's hover Event
+     * @param popup { Object } The map popup instance
+     * @param map { Object } The map instance
+     * @param isPoint { Boolean } If the tooltip is for a Point
+     */
     showPopup(e, map, popup, isPoint) {
       const prop = JSON.parse(JSON.stringify(e.features[0].properties))
 
@@ -340,6 +361,11 @@ export default {
         .setHTML(str)
         .addTo(map)
     },
+    /**
+     * @param e { Object } Map's hover Event
+     * @param popup { Object } The map popup instance
+     * @param isPoint { Boolean } If the tooltip is for a Point
+     */
     handlePopupVisibilityOn(e, popup, isPoint) {
       if (!this.map) return
 
@@ -355,6 +381,9 @@ export default {
         }
       }
     },
+    /**
+     * @param popup { Object } The map popup instance
+     */
     handlePopupVisibilityOff(popup) {
       if (!this.map || !popup) return
       this.map.getCanvas().style.cursor = ''
@@ -373,31 +402,38 @@ export default {
 
       if (!bounds && center) return
 
-      if (this.currentSelection) {
-        const { id, opt, name } = this.currentSelection
+      try {
+          if (this.currentSelection) {
+          const { id, opt, name } = this.currentSelection
 
-        if (id && opt && name) {
+          if (id && opt && name) {
+            await this.$router.replace(
+              `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
+                bounds._sw.lng
+              }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
+                center.bearing ||
+                0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
+                center.center.lat
+              }&name=${name}&type=${opt}&id=${id}`
+            )
+          }
+        } else {
           await this.$router.replace(
             `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
               bounds._sw.lng
             }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
-              center.bearing ||
               0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
               center.center.lat
-            }&name=${name}&type=${opt}&id=${id}`
+            }`
           )
         }
-      } else {
-        await this.$router.replace(
-          `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
-            bounds._sw.lng
-          }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
-            0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
-            center.center.lat
-          }`
-        )
+      } catch {
+        // Ignore
       }
     },
+    /**
+     * @param cable { Object } - Contains the ID of the selected cable
+     */
     highlightCable(cable) {
       if (!this.map || !cable) return
       const { map } = this
@@ -446,7 +482,10 @@ export default {
         mapConfig.data.layers[0].paint['line-color']
       )
     },
-    async handleCableLayerClick(e) {
+    /**
+     * @param e { Object } Map's any clicking event
+     */
+    async handleMapClick(e) {
       // If is currently drawing don't do anything
       if (this.isDrawing) return
 
@@ -461,9 +500,12 @@ export default {
       if (cables.length) {
         // Highlight the far most close clicked cable
         this.highlightCable(cables[0].properties)
+        this.$emit(`${CABLE_SELECTED}`, cables[0].properties)
       } else {
         // Remove highlights
         this.disableCableHighlight()
+        // Clear "currentSelection" on store
+        this.$store.commit(`${CURRENT_SELECTION}`, null)
       }
 
       if (clustersFeats.length) {
@@ -487,6 +529,9 @@ export default {
         })
       }
     },
+    /**
+     * @param e { Object } Map's clicking 'points-layer' Event
+     */
     handlePointsLayerClick(e) {
       console.log('Clicked points layer', e)
     },
@@ -541,12 +586,15 @@ export default {
         this.geolocation.clearWatch(this.trackID)
       }
 
-      if (this.map.getLayer('geolocation-point')) {
-        this.map.removeLayer('geolocation-point')
+      if (this.map.getLayer(GEOLOCATION_POINT)) {
+        this.map.removeLayer(GEOLOCATION_POINT)
       }
 
       this.$store.commit(`${LOCATE_USER}`, false)
     },
+    /**
+     * @param isLocationZoomIn { Boolean } - For if the map has to ZoomIn when locating the user
+     */
     geolocateUser(isLocationZoomIn) {
       if (isLocationZoomIn) {
         this.isLocationZoomIn = true
@@ -558,13 +606,17 @@ export default {
         { maximumAge: 75000, enableHighAccuracy: true, timeout: 60000 }
       )
     },
+    /**
+     * @param location { Object } - Contains current location coordinates
+     */
     showLocation(location) {
       if (!location || !this.map) return
 
       const map = this.map
       const imageID = 'pulsing-dot'
       const coordinates = location.coords
-      const sourceData = map.getSource('geolocation-point-data')
+      const GEOLOCATION_SOURCE_DATA = 'geolocation-point-data'
+      const sourceData = map.getSource(GEOLOCATION_SOURCE_DATA)
       const size = 200
       const pulsingDot = {
         width: size,
@@ -606,9 +658,9 @@ export default {
         }
       }
 
-      if (!map.getLayer('geolocation-point')) {
+      if (!map.getLayer(GEOLOCATION_POINT)) {
         if (!sourceData) {
-          map.addSource('geolocation-point-data', {
+          map.addSource(GEOLOCATION_SOURCE_DATA, {
             type: 'geojson',
             data: {
               type: 'Feature',
@@ -635,12 +687,12 @@ export default {
         } else map.updateImage(imageID, pulsingDot)
 
         map.addLayer({
-          id: 'geolocation-point',
+          id: GEOLOCATION_POINT,
           type: 'symbol',
           layout: {
             'icon-image': imageID
           },
-          source: 'geolocation-point-data'
+          source: GEOLOCATION_SOURCE_DATA
         })
       }
 
@@ -655,6 +707,9 @@ export default {
 
       this.$store.commit(`${LOCATE_USER}`, true)
     },
+    /**
+     * @param err { Object } - The error emitted by the HTML5 location service
+     */
     handleGeolocationErrors(err) {
       switch (err) {
         case 'UNKNOWN_ERROR':

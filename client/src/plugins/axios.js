@@ -1,6 +1,38 @@
 import axios from 'axios'
 
-let VueAxiosPlugin = {}
+const VueAxiosPlugin = {}
+
+export function createService(initOptions) {
+  const service = axios.create(initOptions)
+  // Add a request interceptor
+  service.interceptors.request.use(
+    config => initOptions.reqHandleFunc(config),
+    error => initOptions.reqErrorFunc(error)
+  )
+  // Add a response interceptor
+  service.interceptors.response.use(
+    response => initOptions.resHandleFunc(response),
+    error => initOptions.resErrorFunc(error)
+  )
+
+  return service
+}
+
+export function create$Service(initOptions) {
+  const $service = axios.create(initOptions)
+  // Add a request interceptor
+  $service.interceptors.request.use(
+    config => initOptions.reqHandleFunc(config),
+    error => initOptions.reqErrorFunc(error.response.data)
+  )
+  // Add a response interceptor
+  $service.interceptors.response.use(
+    response => initOptions.resHandleFunc(response.data),
+    error => initOptions.resErrorFunc(error.response.data)
+  )
+
+  return $service
+}
 
 VueAxiosPlugin.install = (Vue, options) => {
   const defaultOptions = {
@@ -17,30 +49,8 @@ VueAxiosPlugin.install = (Vue, options) => {
     ...options
   }
 
-  const service = axios.create(initOptions)
-
-  // Add a request interceptor
-  service.interceptors.request.use(
-    config => initOptions.reqHandleFunc(config),
-    error => initOptions.reqErrorFunc(error.response.data)
-  )
-  // Add a response interceptor
-  service.interceptors.response.use(
-    response => initOptions.resHandleFunc(response.data),
-    error => initOptions.resErrorFunc(error.response.data)
-  )
-
-  Vue.prototype.$axios = service
+  Vue.prototype.axios = createService(initOptions)
+  Vue.prototype.$axios = create$Service(initOptions)
 }
-
-// Auto-install
-let GlobalVue = null
-if (typeof window !== 'undefined') {
-  GlobalVue = window.Vue
-} else if (typeof global !== 'undefined') {
-  GlobalVue = global.Vue
-}
-
-if (GlobalVue) GlobalVue.use(VueAxiosPlugin)
 
 export default VueAxiosPlugin

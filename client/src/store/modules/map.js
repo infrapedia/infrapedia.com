@@ -1,4 +1,6 @@
 // import * as types from '../actionTypes/map'
+import { getSelectionData } from '../../services/api/data'
+
 const state = {
   filter: ['all'],
   currentSelection: null
@@ -13,7 +15,12 @@ const mutations = {
   }
 }
 
-const actions = {}
+const actions = {
+  async getCurrentSelectionData({ commit }, id) {
+    const data = await getSelectionData(id)
+    if (data && data.length) commit('CURRENT_SELECTION', data[0])
+  }
+}
 
 export default {
   namespaced: true,
