@@ -18,7 +18,7 @@
     >
       <fa :icon="['fas', 'expand-arrows-alt']"  class="sm-icon" />
     </el-button>
-    <i-location-button @click="geolocateUser" @enter="geolocateUser" />
+    <i-location-button @click="geolocateUser(true)" @enter="geolocateUser(true)" />
     <el-button
       id="menuOpener"
       circle
@@ -77,7 +77,8 @@ export default {
     trackID: null,
     mapTooltip: {},
     map: undefined,
-    isMenuOpen: false
+    isMenuOpen: false,
+    isLocationZoomIn: true
   }),
   computed: {
     ...mapState({
@@ -217,10 +218,6 @@ export default {
             }
           } else map.addLayer(layer)
         } else continue
-      }
-
-      if (this.$store.state.isLocating) {
-        this.showLocation()
       }
     },
     addMapEvents(map) {
@@ -386,11 +383,16 @@ export default {
         if (map.loaded()) {
           this.addMapSources(map)
           this.addMapLayers()
+          if (this.$store.state.isLocating) {
+            this.isLocationZoomIn = false
+            this.geolocateUser()
+          }
           map.off('render', loadStyles)
         }
       }
 
       map.on('render', loadStyles)
+      console.log(map.getStyle().layers)
     },
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen
@@ -422,10 +424,10 @@ export default {
 
       this.$store.commit(`${LOCATE_USER}`, false)
     },
-    geolocateUser() {
-      // if (this.$store.state.isLocating) {
-      //   return this.clearLocation()
-      // }
+    geolocateUser(isLocationZoomIn) {
+      if (isLocationZoomIn) {
+        this.isLocationZoomIn = true
+      }
 
       this.trackID = navigator.geolocation.watchPosition(
         this.showLocation,
@@ -503,11 +505,11 @@ export default {
           })
         }
 
+        // If the image doesn't exit add it
         if (!map.hasImage(imageID)) {
           map.addImage(imageID, pulsingDot, { pixelRatio: 4 })
-        } else {
-          map.updateImage(imageID, pulsingDot)
-        }
+          // Else update it with the new position
+        } else map.updateImage(imageID, pulsingDot)
 
         map.addLayer({
           id: 'geolocation-point',
@@ -519,10 +521,14 @@ export default {
         })
       }
 
-      map.flyTo({
-        center: [coordinates.longitude, coordinates.latitude],
-        zoom: 20
-      })
+      if (this.isLocationZoomIn) {
+        map.flyTo({
+          center: [coordinates.longitude, coordinates.latitude],
+          zoom: 20
+        })
+
+        this.isLocationZoomIn = false
+      }
 
       this.$store.commit(`${LOCATE_USER}`, true)
     },
