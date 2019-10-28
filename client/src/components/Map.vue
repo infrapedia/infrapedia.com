@@ -57,7 +57,7 @@
 <script>
 import { DRAWING, TITLE_BY_SELECTION, TOGGLE_THEME } from '../events'
 import { TOGGLE_DARK, LOCATE_USER } from '../store/actionTypes'
-// import { CURRENT_SELECTION } from '../store/actionTypes/map'
+import { CURRENT_MAP_FILTER } from '../store/actionTypes/map'
 import ILocationButton from '../components/LocationButton'
 import copyToClipboard from '../helpers/copyToClipboard'
 import { createBitlyURL } from '../services/api/bitly'
@@ -88,6 +88,7 @@ export default {
     ...mapState({
       dark: state => state.isDark,
       isMobile: state => state.isMobile,
+      isDrawing: state => state.isDrawing,
       currentMapFilter: state => state.map.filter,
       currentSelection: state => state.map.currentSelection
     })
@@ -240,7 +241,7 @@ export default {
         vm.handlePopupVisibilityOff(popup)
       })
 
-      map.on('click', this.handleMapClick)
+      map.on('click', this.handleCableLayerClick)
       map.on('touchend', this.handleMobileTouchEnd)
       map.on('click', mapConfig.cableLayer, this.handleCableLayerClick)
       map.on('click', mapConfig.pointsLayer, this.handlePointsLayerClick)
@@ -312,7 +313,6 @@ export default {
       const prop = JSON.parse(JSON.stringify(e.features[0].properties))
 
       this.mapTooltip = {
-        id: parseInt(prop.cable_id),
         name: prop.name,
         status: !!(
           prop.IsInactive === undefined ||
@@ -320,14 +320,7 @@ export default {
           prop.IsInactive === ''
         ),
         segment:
-          prop.segment_id === undefined ? null : parseInt(prop.segment_id),
-        segmentName: null,
-        hasOutage: prop.hasoutage === undefined ? false : prop.hasoutage,
-        hasPartialOutage:
-          prop.haspartial === undefined ? false : prop.haspartial,
-        fields: [],
-        eosEpoch: prop.eosepoch,
-        isHighlighted: false
+          prop.segment_id === undefined ? null : parseInt(prop.segment_id)
       }
 
       let str = `<div class="cable-name dark-color"><b>${this.mapTooltip.name}</b></div>`
@@ -338,6 +331,7 @@ export default {
         if (this.mapTooltip.segment) {
           str += `<div class="segment-name dark-color">Segment: ${this.mapTooltip.segment}</div>`
         }
+        str += `<div class="status dark-color"> Status: ${this.mapTooltip.status}</div>`
         str += `<div class="details dark-color">Click for more details</div>`
       }
 
@@ -404,11 +398,94 @@ export default {
         )
       }
     },
-    handleMapClick(e) {
-      console.log('Clicked map', e)
+    highlightCable(cable) {
+      if (!this.map || !cable) return
+      const { map } = this
+      const highlightColor = this.dark ? 'rgba(50,50,50,0.35)' : 'rgba(23,23,23, 0.06)'
+
+      map.setPaintProperty(mapConfig.cableLayer, 'line-color', highlightColor)
+      map.setFilter(mapConfig.highlightLayer, [
+        '==',
+        ['get', 'cable_id'],
+        cable.cable_id
+      ])
+
+      // if (
+      //   cable.isterrestr === 'true' &&
+      //   cable.segment_id &&
+      //   !isNaN(cable.segment_id)
+      // ) {
+      //   console.log(cable, '-----TERRESTRIAL-----')
+      //   map.setFilter(mapConfig.highlightLayer, [
+      //     'all',
+      //     ['==', ['get', 'cable_id'], cable.cable_id],
+      //     ['==', ['get', 'segment_id'], cable.segment_id]
+      //   ])
+      // // } else if (_this.org_cables && _this.org_cables.length === 1) {
+      // //   map.setFilter(mapConfig.highlightLayer, [
+      // //     'in',
+      // //     'cable_id',
+      // //     _this.org_cables[0]
+      // //   ])
+      // } else {
+      // }
+
+      // map.setFilter(mapConfig.highlightLayer, [
+      //   '==',
+      //   ['get', 'cable_id'],
+      //   feature.cable_id ? feature.cable_id : cable.cable_id
+      // ])
     },
-    handleCableLayerClick(e) {
-      console.log('Clicked cable layer', e)
+    disableCableHighlight() {
+      const { map } = this
+      this.$store.commit(`${CURRENT_MAP_FILTER}`, ['in', 'cable_id', false])
+      this.map.setFilter(mapConfig.highlightLayer, this.currentMapFilter)
+      map.setPaintProperty(
+        mapConfig.cableLayer,
+        'line-color',
+        mapConfig.data.layers[0].paint['line-color']
+      )
+    },
+    async handleCableLayerClick(e) {
+      // If is currently drawing don't do anything
+      if (this.isDrawing) return
+
+      const { map } = this
+      const cables = map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.cableLayer]
+      })
+      const clustersFeats = map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.clusterPts]
+      })
+
+      if (cables.length) {
+        // Highlight the far most close clicked cable
+        this.highlightCable(cables[0].properties)
+      } else {
+        // Remove highlights
+        this.disableCableHighlight()
+      }
+
+      if (clustersFeats.length) {
+        // Zoom into the cluster
+        const clusterId = clustersFeats[0].properties.cluster_id
+        return map
+          .getSource(mapConfig.clusterPts)
+          .getClusterExpansionZoom(clusterId, function(err, zoom) {
+            if (err) return
+
+            map.easeTo({
+              center: clustersFeats[0].geometry.coordinates,
+              zoom
+            })
+          })
+      } else {
+        // Remove the clusters source data
+        map.getSource(mapConfig.clusterPts).setData({
+          type: 'FeatureCollection',
+          features: []
+        })
+      }
     },
     handlePointsLayerClick(e) {
       console.log('Clicked points layer', e)
