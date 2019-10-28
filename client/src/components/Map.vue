@@ -55,13 +55,14 @@
 </template>
 
 <script>
+import { DRAWING, TITLE_BY_SELECTION, TOGGLE_THEME } from '../events'
 import { TOGGLE_DARK, LOCATE_USER } from '../store/actionTypes'
 import ILocationButton from '../components/LocationButton'
-import { DRAWING, TITLE_BY_SELECTION } from '../events'
 import IThemeToggler from '../components/ThemeToggler'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../config/mapConfig'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
+import { bus } from '../helpers/eventBus'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapState } from 'vuex'
 import turf from 'turf'
@@ -84,11 +85,13 @@ export default {
     ...mapState({
       dark: state => state.isDark,
       isMobile: state => state.isMobile,
-      currentMapFilter: state => state.map.filter
+      currentMapFilter: state => state.map.filter,
+      currentSelection: state => state.map.currentSelection
     })
   },
   mounted() {
     this.map = this.addMapEvents(this.initMapLayers(this.createMap()))
+    bus.$on(`${TOGGLE_THEME}`, this.toggleDarkMode)
   },
   methods: {
     createMap() {
@@ -200,24 +203,20 @@ export default {
       this.addMapLayers()
     },
     addMapLayers() {
-      const data = mapConfig.data
       const map = this.map
+      const data = mapConfig.data
+      const theme = this.dark ? 'dark' : 'light'
+      const currentMapFilter = this.currentMapFilter
 
-      for (const layer of data.layers) {
-        if (!map.getLayer(layer)) {
-          const theme = this.dark ? 'dark' : 'light'
-
-          if (layer.id === 'cableTMS') {
-            layer.filter = this.currentMapFilter
-            for (let d of layer[theme]) {
-              map.addLayer(d)
-            }
-          } else if (layer.id === 'buildingLayers') {
-            for (let d of layer[theme]) {
-              map.addLayer(d)
-            }
-          } else map.addLayer(layer)
-        } else continue
+      for (let layer of data.layers) {
+        if (layer.id === mapConfig.cableLayer) {
+          layer.filter = currentMapFilter
+          map.addLayer(layer)
+        } else if (layer.id === 'buildingLayers') {
+          for (let d of layer[theme]) {
+            map.addLayer(d)
+          }
+        } else map.addLayer(layer)
       }
     },
     addMapEvents(map) {
@@ -229,30 +228,27 @@ export default {
       })
 
       map.on('mouseenter', mapConfig.cableLayer, function(e) {
-        vm.handlePopupVisibilityOn(e, map, popup, false)
+        vm.handlePopupVisibilityOn(e, popup, false)
       })
       map.on('mouseenter', mapConfig.pointsLayer, function(e) {
-        vm.handlePopupVisibilityOn(e, map, popup, true)
+        vm.handlePopupVisibilityOn(e, popup, true)
       })
       map.on('mouseleave', mapConfig.cableLayer, function() {
-        vm.handlePopupVisibilityOff(map, popup)
+        vm.handlePopupVisibilityOff(popup)
       })
-      map.on('touchend', function(e) {
-        vm.handleMobileTouchEnd(e, map)
-      })
-      map.on('click', function(e) {
-        vm.handleMapClick(e, map)
-      })
-      map.on('click', mapConfig.cableLayer, function(e) {
-        vm.handleCableLayerClick(e, map)
-      })
-      map.on('click', mapConfig.pointsLayer, function(e) {
-        vm.handlePointsLayerClick(e, map)
-      })
+
+      map.on('click', this.handleMapClick)
+      map.on('touchend', this.handleMobileTouchEnd)
+      map.on('click', mapConfig.cableLayer, this.handleCableLayerClick)
+      map.on('click', mapConfig.pointsLayer, this.handlePointsLayerClick)
 
       map.on('draw.create', this.updateArea)
       map.on('draw.delete', this.updateArea)
       map.on('draw.update', this.updateArea)
+
+      map.on('zoom', this.handleBoundsChange)
+      map.on('movend', this.handleBoundsChange)
+      map.on('pitchend', this.handleBoundsChange)
       return map
     },
     updateArea() {
@@ -347,7 +343,10 @@ export default {
         .setHTML(str)
         .addTo(map)
     },
-    handlePopupVisibilityOn(e, map, popup, isPoint) {
+    handlePopupVisibilityOn(e, popup, isPoint) {
+      if (!this.map) return
+
+      const map = this.map
       const clusterPts = map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.clusterPts]
       })
@@ -359,10 +358,48 @@ export default {
         }
       }
     },
-    handlePopupVisibilityOff(map, popup) {
-      if (!map || !popup) return
-      map.getCanvas().style.cursor = ''
+    handlePopupVisibilityOff(popup) {
+      if (!this.map || !popup) return
+      this.map.getCanvas().style.cursor = ''
       popup.remove()
+    },
+    async handleBoundsChange() {
+      if (!this.map) return
+
+      const map = this.map
+      const pitch = map.getPitch()
+      const bounds = map.getBounds()
+      const bearing = map.getBearing()
+      const center = map.cameraForBounds(bounds, {
+        padding: { top: 10, bottom: 25, left: 15, right: 5 }
+      })
+
+      if (!bounds && center) return
+
+      if (this.currentSelection) {
+        const { id, opt, name } = this.currentSelection
+
+        if (id && opt && name) {
+          await this.$router.replace(
+            `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
+              bounds._sw.lng
+            }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
+              center.bearing ||
+              0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
+              center.center.lat
+            }&name=${name}&type=${opt}&id=${id}`
+          )
+        }
+      } else {
+        await this.$router.replace(
+          `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
+            bounds._sw.lng
+          }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
+            0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
+            center.center.lat
+          }`
+        )
+      }
     },
     handleMapClick(e) {
       console.log('Clicked map', e)
@@ -378,7 +415,6 @@ export default {
       const style = this.dark ? mapConfig.darkBasemap : mapConfig.default
       const map = this.map
 
-      map.setStyle(style)
       const loadStyles = () => {
         if (map.loaded()) {
           this.addMapSources(map)
@@ -391,8 +427,12 @@ export default {
         }
       }
 
-      map.on('render', loadStyles)
-      console.log(map.getStyle().layers)
+      const switchStyles = style => {
+        map.setStyle(style)
+        map.on('render', loadStyles)
+      }
+
+      switchStyles(style)
     },
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen

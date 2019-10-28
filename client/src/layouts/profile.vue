@@ -24,23 +24,19 @@
         </li>
       </ul>
     </el-aside>
+    <transition name="fade" mode="out-in"><router-view /></transition>
 
-      <transition name="fade" mode="out-in">
-        <router-view />
-      </transition>
-
-      <i-theme-toggler @click="toggleTheme" />
-
-      <i-footer role="contentinfo" class="ml60 mb3" />
-    </el-container>
+    <i-theme-toggler @click="toggleTheme" />
+    <i-footer role="contentinfo" class="ml60 mb3" />
+  </el-container>
 </template>
 
 <script>
 import IThemeToggler from '../components/ThemeToggler'
-import { TOGGLE_DARK } from '../store/actionTypes'
-import { mapConfig } from '../config/mapConfig'
 import INavbar from '../components/Navbar'
 import IFooter from '../components/Footer'
+import { bus } from '../helpers/eventBus'
+import { TOGGLE_THEME } from '../events'
 
 export default {
   components: {
@@ -55,8 +51,7 @@ export default {
   },
   methods: {
     toggleTheme() {
-      this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
-      mapConfig.dark = this.dark
+      bus.$emit(`${TOGGLE_THEME}`)
     }
   }
 }

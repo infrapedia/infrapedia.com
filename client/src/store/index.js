@@ -31,7 +31,7 @@ export default new Vuex.Store({
     },
     [types.LOCATE_USER](state, bool) {
       state.isLocating = bool
-    },
+    }
   },
   actions: {},
   modules: {

@@ -5,9 +5,7 @@
     :style="getDarkStyles"
   >
     <transition mode="out-in" name="fade">
-      <keep-alive>
-        <component :is="layout" />
-      </keep-alive>
+      <component :is="layout" />
     </transition>
   </div>
 </template>

@@ -1,5 +1,6 @@
 const state = {
-  filter: ['all']
+  filter: ['all'],
+  currentSelection: null
 }
 
 const mutations = {}
