@@ -57,7 +57,10 @@
 <script>
 import { DRAWING, TITLE_BY_SELECTION, TOGGLE_THEME } from '../events'
 import { TOGGLE_DARK, LOCATE_USER } from '../store/actionTypes'
+// import { CURRENT_SELECTION } from '../store/actionTypes/map'
 import ILocationButton from '../components/LocationButton'
+import copyToClipboard from '../helpers/copyToClipboard'
+import { createBitlyURL } from '../services/api/bitly'
 import IThemeToggler from '../components/ThemeToggler'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../config/mapConfig'
@@ -450,8 +453,11 @@ export default {
         this.map.easeTo({ pitch: this.is3D ? 45 : 0, duration: 850 })
       })
     },
-    shareViewLink() {
-      console.warn('Not done yet')
+    async shareViewLink() {
+      const link = `${window.location.origin}${this.$route.fullPath}`
+      const res = await createBitlyURL(link, this.$axios)
+      if (!res) return
+      copyToClipboard(encodeURI(res.link))
     },
     clearLocation() {
       if (this.trackID) {

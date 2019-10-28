@@ -18,13 +18,16 @@ export default {
     Map
   },
   data: () => ({
-    title: '',
-    isDrawing: false
+    title: ''
   }),
+  computed: {
+    isDrawing() {
+      return this.$store.state.isDrawing
+    }
+  },
   methods: {
     handleIsDrawing(bool) {
-      this.isDrawing = bool
-      if (!bool) this.$store.commit(`${IS_DRAWING}`, bool)
+      this.$store.commit(`${IS_DRAWING}`, bool)
     }
   }
 }

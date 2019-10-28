@@ -22,16 +22,15 @@ VueAxiosPlugin.install = (Vue, options) => {
   // Add a request interceptor
   service.interceptors.request.use(
     config => initOptions.reqHandleFunc(config),
-    error => initOptions.reqErrorFunc(error)
+    error => initOptions.reqErrorFunc(error.response.data)
   )
   // Add a response interceptor
   service.interceptors.response.use(
-    response => initOptions.resHandleFunc(response),
-    error => initOptions.resErrorFunc(error)
+    response => initOptions.resHandleFunc(response.data),
+    error => initOptions.resErrorFunc(error.response.data)
   )
 
   Vue.prototype.$axios = service
-  Vue.prototype.$http = service
 }
 
 // Auto-install
@@ -41,8 +40,7 @@ if (typeof window !== 'undefined') {
 } else if (typeof global !== 'undefined') {
   GlobalVue = global.Vue
 }
-if (GlobalVue) {
-  GlobalVue.use(VueAxiosPlugin)
-}
+
+if (GlobalVue) GlobalVue.use(VueAxiosPlugin)
 
 export default VueAxiosPlugin
