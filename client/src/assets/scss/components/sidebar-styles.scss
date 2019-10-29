@@ -1,0 +1,118 @@
+@import '../helpers/atomic-classes';
+@import '../helpers/animations.scss';
+@import '../base/variables';
+
+.sidebar-wrapper {
+  background: transparent;
+  position: absolute;
+  width: 25%;
+  max-width: 28rem;
+  height: 94vh;
+  z-index: 5;
+  left: 0;
+  top: 48px;
+  overflow: hidden;
+  display: flex;
+  flex-flow: row nowrap;
+
+  // @media screen and (max-width: $break-sm) {
+  //   width: 100%;
+  //   overflow: hidden;
+  //   z-index: 50 !important;
+  //   bottom: -24px;
+  //   left: 0;
+  //   top: unset;
+  //   height: 12vh;
+  // }
+
+  .el-card {
+    width: 100%;
+    height: 100%;
+    min-width: auto;
+    background: $white-full;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    // @media screen and (max-width: $break-sm) {
+    //   height: 6rem;
+    //   position: relative;
+    //   bottom: 0;
+    //   width: 100%;
+    //   overflow: hidden;
+    // }
+
+    .properties-container {
+      .bold-text {
+        max-width: 15rem;
+      }
+    }
+
+    hr.el-divider {
+      margin-left: 2.4rem;
+      width: 86%;
+    }
+
+    .header-container {
+      width: fit-content;
+      color: $white-full;
+      margin-left: 1.2rem;
+
+      .headline-copy {
+        border-radius: 4px;
+        min-width: 8rem;
+        padding: 0.2rem;
+        cursor: pointer;
+      }
+
+      // @media (max-width: $break-sm) {
+      //   h1 {
+      //     font-size: 16px;
+      //   }
+      //   p {
+      //     font-size: 14px;
+      //   }
+      // }
+
+      p,
+      h1 {
+        color: inherit;
+        margin: 0;
+      }
+      h1 {
+        font: {
+          weight: bold;
+          size: 18px;
+        }
+        margin: 0;
+      }
+      p {
+        margin: 0.4rem 0;
+        font-size: 16px;
+        font-weight: 700;
+      }
+      small {
+        font-size: 14px;
+      }
+    }
+
+    h1.sidebar_card-text {
+      font-size: 14px;
+    }
+
+    .sidebar_card-text {
+      font-weight: normal;
+    }
+  }
+}
+
+
+/*
+* Theme variants
+*/
+
+.application.light {
+  .header {
+    color: $white-full;
+    background-color: $blue-user-interface;
+  }
+}

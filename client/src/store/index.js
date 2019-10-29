@@ -14,7 +14,9 @@ export default new Vuex.Store({
     isOnline: true,
     isMobile: false,
     isDrawing: false,
-    isLocating: false
+    isSidebar: false,
+    isLocating: false,
+    isLoading: false
   },
   mutations: {
     [types.TOGGLE_DARK](state, bool) {
@@ -31,6 +33,12 @@ export default new Vuex.Store({
     },
     [types.LOCATE_USER](state, bool) {
       state.isLocating = bool
+    },
+    [types.TOGGLE_SIDEBAR](state, bool) {
+      state.isSidebar = bool
+    },
+    [types.TOGGLE_LOADING](state, bool) {
+      state.isLoading = bool
     }
   },
   actions: {},

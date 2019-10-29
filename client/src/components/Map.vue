@@ -61,7 +61,11 @@ import {
   TOGGLE_THEME,
   CABLE_SELECTED
 } from '../events'
-import { TOGGLE_DARK, LOCATE_USER } from '../store/actionTypes'
+import {
+  TOGGLE_DARK,
+  LOCATE_USER,
+  TOGGLE_SIDEBAR
+} from '../store/actionTypes'
 import { CURRENT_MAP_FILTER, CURRENT_SELECTION } from '../store/actionTypes/map'
 import ILocationButton from '../components/LocationButton'
 import copyToClipboard from '../helpers/copyToClipboard'
@@ -474,6 +478,7 @@ export default {
     },
     disableCableHighlight() {
       const { map } = this
+      this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, ['in', 'cable_id', false])
       this.map.setFilter(mapConfig.highlightLayer, this.currentMapFilter)
       map.setPaintProperty(

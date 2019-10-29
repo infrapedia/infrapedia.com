@@ -2,9 +2,14 @@
   <div>
     <cookie-consent :message="cc.message" :href="cc.href" />
     <i-navbar role="navigation" />
-    <transition name="fade" mode="out-in">
-      <router-view />
-    </transition>
+    <template>
+      <transition name="fade" mode="out-in">
+        <i-sidebar />
+      </transition>
+      <transition name="fade" mode="out-in">
+        <router-view />
+      </transition>
+    </template>
     <i-footer role="contentinfo" />
   </div>
 </template>
@@ -12,11 +17,13 @@
 <script>
 import INavbar from '@/components/Navbar'
 import IFooter from '@/components/Footer'
+import ISidebar from '@/components/Sidebar'
 
 export default {
   components: {
     IFooter,
-    INavbar
+    INavbar,
+    ISidebar
   },
   data: () => ({
     cc: {
