@@ -18,6 +18,7 @@
       <el-input
         class="w60"
         placeholder="Search"
+        :class="{ dark }"
         v-model="search"
         @blur="loseFocus"
         @focus="setFocus"
@@ -55,6 +56,11 @@ export default {
     searchResults: [],
     isResultsVisible: false
   }),
+  computed: {
+    dark() {
+      return this.$store.state.isDark
+    }
+  },
   methods: {
     handleResultSelect() {
       console.warn('Not done yet')

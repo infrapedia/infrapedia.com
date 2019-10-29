@@ -1,0 +1,37 @@
+@import '../helpers/atomic-classes';
+@import '../base/variables';
+
+a {
+  max-width: 20rem;
+}
+
+p {
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.el-col span.label,
+p.label {
+  color: $dark-blue;
+}
+
+span.label {
+  font-weight: 700;
+}
+
+.application.light {
+  .status-text {
+    color: #FF8282;
+    &.active-cable {
+      color: #2AA9B7
+    }
+  }
+}
+.application.dark {
+  .status-text {
+    color: #FF4E46;
+    &.active-cable {
+      color: #57CED8
+    }
+  }
+}

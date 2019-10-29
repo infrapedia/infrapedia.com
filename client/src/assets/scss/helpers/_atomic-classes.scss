@@ -256,6 +256,9 @@
 .no-box-shadow {
   box-shadow: 0 none;
 }
+.h-inherit {
+  height: inherit;
+}
 
 @for $i from 1 through 120 {
   $base: 0.25rem;
