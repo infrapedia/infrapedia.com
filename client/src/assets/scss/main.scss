@@ -242,8 +242,10 @@ h1 {
   }
 }
 
+.el-textarea.dark,
 .el-select.dark,
 .el-input.dark {
+  textarea,
   input {
     color: $white-full;
     border-color: $light-charcoal;

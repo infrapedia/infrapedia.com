@@ -55,14 +55,22 @@
             </el-form-item>
           </el-col>
           <el-col :span="12" v-else>
-            <div class="mt6">
-              <span> Rack total* </span>
-              <el-slider
-                id="rack-slider"
-                v-model="form.totalRack"
-                show-input
-                input-size="small"
-              />
+            <div class="block">
+              <el-form-item prop="rack">
+                <span slot="label">
+                  <span class="text-red">*</span> Rack total
+                </span>
+                <br>
+                <div class="block">
+                  <el-slider
+                    class="relative"
+                    id="rack-slider"
+                    v-model="form.totalRack"
+                    show-input
+                    input-size="small"
+                  />
+                </div>
+              </el-form-item>
             </div>
           </el-col>
         </template>
