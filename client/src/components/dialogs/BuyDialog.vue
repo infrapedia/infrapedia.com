@@ -95,6 +95,7 @@
           class="w24"
           plain
           @click="submitForm('form')"
+          @keyup.enter.space="submitForm('form')"
         >
           Buy
         </el-button>
@@ -105,6 +106,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { buyRequest } from '@/services/api'
 import { TOGGLE_BUY_DIALOG, BUY_TYPE } from '@/store/actionTypes'
 
 export default {
@@ -187,13 +189,26 @@ export default {
     }
   },
   methods: {
+    async sendBuyRequest() {
+      const res = await buyRequest({
+        ...this.form,
+        type: this.dialogTitle,
+        cable: this.$store.state.map.currentSelection.name
+      })
+
+      if (res && res.status !== 'error') {
+        this.$notify({
+          type: 'success',
+          title: 'Email sent!',
+          message: 'You will hear from us in the next few days'
+        })
+        this.closeDialog()
+      }
+    },
     submitForm(formRef) {
       this.$refs[formRef].validate((valid) => {
-        if (valid) alert('submit!')
-        else {
-          console.log('error submit!!')
-          return false
-        }
+        if (valid) this.sendBuyRequest()
+        else return false
       })
     },
     closeDialog() {

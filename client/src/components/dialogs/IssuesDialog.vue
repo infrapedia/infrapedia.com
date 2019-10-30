@@ -66,6 +66,7 @@
           class="w24"
           plain
           @click="submitForm('form')"
+          @keyup.enter.space="submitForm('form')"
         >
           Report
         </el-button>
@@ -75,6 +76,8 @@
 </template>
 
 <script>
+import { issueRequest } from '@/services/api'
+import { DATA_CENTER_MODE } from '../../config/sidebarModes'
 import { TOGGLE_ISSUES_DIALOG } from '@/store/actionTypes'
 
 export default {
@@ -137,13 +140,34 @@ export default {
     }
   },
   methods: {
+    async sendIssueRequest() {
+      const { sidebarMode, map: { currentSelection } } = this.$store.state
+      const { name, email, lastname } = this.form
+      const isDataCenter = sidebarMode === DATA_CENTER_MODE
+      const type = isDataCenter ? 'Facility' : 'Submarine Cable'
+
+      const data = {
+        data: {
+          subject: `Infrapedia Issue Report ${name} ${lastname}`,
+          text: `Hi, ${name} ${lastname} reported an error in the ${currentSelection.name} (${type}). If you want to contact him, this is his email: ${email}`
+        },
+        email
+      }
+
+      const res = await issueRequest(data)
+      if (res && res.length && res[0].reject_reason === null) {
+        this.$notify({
+          type: 'success',
+          title: 'Your issue has being sent succesfully!',
+          message: 'You will hear from us in the next few days'
+        })
+        this.closeDialog()
+      }
+    },
     submitForm(formRef) {
-      this.$refs[formRef].validate((valid) => {
-        if (valid) alert('submit!')
-        else {
-          console.log('error submit!!')
-          return false
-        }
+      this.$refs[formRef].validate(valid => {
+        if (valid) this.sendIssueRequest()
+        else return false
       })
     },
     closeDialog() {

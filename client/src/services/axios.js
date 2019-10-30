@@ -1,12 +1,13 @@
 import { create$Service } from '../plugins/axios'
+import { handleReqErrors, handleReqSuccess } from './notifications/api'
 
 const $axios = create$Service({
   // request interceptor handlers
   reqHandleFunc: config => config,
-  reqErrorFunc: error => Promise.reject(error),
+  reqErrorFunc: err => handleReqErrors(err),
   // response interceptor handlers
-  resHandleFunc: response => response,
-  resErrorFunc: error => Promise.reject(error),
+  resHandleFunc: res => handleReqSuccess(res),
+  resErrorFunc: err => handleReqErrors(err),
   baseURL: process.env.VUE_APP_BASE_API,
   timeout: 12000
 })

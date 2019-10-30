@@ -21,7 +21,7 @@ export default new Vuex.Store({
     isLoading: false,
     isBuyDialog: false,
     isIssueDialog: false,
-    sidebarMode: modes.CABLE_MODE,
+    sidebarMode: modes.CABLE_MODE
   },
   mutations: {
     [types.TOGGLE_DARK](state, bool) {
