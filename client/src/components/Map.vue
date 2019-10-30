@@ -59,7 +59,8 @@ import {
   DRAWING,
   TITLE_BY_SELECTION,
   TOGGLE_THEME,
-  CABLE_SELECTED
+  CABLE_SELECTED,
+  CLEAR_SELECTION
 } from '../events'
 import {
   TOGGLE_DARK,
@@ -107,6 +108,7 @@ export default {
   mounted() {
     this.map = this.addMapEvents(this.initMapLayers(this.createMap()))
     bus.$on(`${TOGGLE_THEME}`, this.toggleDarkMode)
+    bus.$on(`${CLEAR_SELECTION}`, this.disableCableHighlight)
   },
   methods: {
     ...mapActions({
@@ -532,6 +534,7 @@ export default {
       switch(bool) {
         case true:
           // Highlight the far most close clicked cable
+          this.changeSidebarMode(-1)
           this.highlightCable(cables[0].properties)
           this.$emit(`${CABLE_SELECTED}`, cables[0].properties)
           break

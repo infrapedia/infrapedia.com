@@ -3,9 +3,7 @@
     <cookie-consent :message="cc.message" :href="cc.href" />
     <i-navbar role="navigation" />
     <template>
-      <transition name="fade" mode="out-in">
-        <i-sidebar />
-      </transition>
+      <i-sidebar />
       <transition name="fade" mode="out-in">
         <router-view />
       </transition>

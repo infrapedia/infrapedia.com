@@ -14,6 +14,12 @@
       >
         <el-card shadow="hover" v-loading="isLoading">
           <header class="header pt8 pr8 pl14 pb12 h12">
+            <span
+              class="inline-block w4 h4 icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
+              @click="closeSidebar"
+            >
+              <fa :icon="['fas', 'times']" />
+            </span>
             <el-tooltip
               effect="dark"
               transition="animated faster slideDown delay-2s"
@@ -42,6 +48,8 @@
 
 <script>
 import { mapState } from 'vuex'
+import { bus } from '../helpers/eventBus'
+import { CLEAR_SELECTION } from '../events'
 import * as modes from '../config/sidebarModes'
 import { createBitlyURL } from '../services/api/bitly'
 import copyToClipboard from '../helpers/copyToClipboard'
@@ -131,6 +139,9 @@ export default {
       const res = await createBitlyURL(url)
       if (res) copyToClipboard(encodeURI(res.link))
       setTimeout(() => (this.isBadge = false), 820)
+    },
+    closeSidebar() {
+      bus.$emit(`${CLEAR_SELECTION}`)
     }
   }
 }

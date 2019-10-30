@@ -205,6 +205,9 @@
     background-color: lighten($dark-charcoal, 70%);
   }
 }
+.transition-all {
+  transition: all $regular-transition;
+}
 .font-thin {
   font-weight: 100;
 }
