@@ -262,7 +262,6 @@
 .h-inherit {
   height: inherit;
 }
-
 .seamless-hoverbg {
   @extend .transition-all;
   &.light {
@@ -275,6 +274,9 @@
       background-color: lighten(rgba(0,0,0, 0.2), 12%);
     }
   }
+}
+.text-red {
+  color: $berry
 }
 
 @for $i from 1 through 120 {
