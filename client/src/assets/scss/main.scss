@@ -158,6 +158,10 @@ h1 {
   font-weight: 500;
 }
 
+.el-select-dropdown {
+  border: none !important
+}
+
 @-webkit-keyframes slideInUp {
   from {
     -webkit-transform: translate3d(0, 100%, 0);
@@ -222,7 +226,27 @@ h1 {
 *  THEME VARIANT'S
 */
 
-.aplication.light {
+.buy-dialog {
+  color: inherit;
+  .el-dialog__header {
+    padding: 1.2rem 1rem
+  }
+}
+
+.buy-dialog.light {
+  .el-dialog__header {
+    background-color: $grey-ligthen;
+  }
+}
+
+.buy-dialog.dark {
+  background-color: $dark-charcoal;
+  .el-dialog__header {
+    background-color: $gray;
+  }
+}
+
+.application.light {
   color: rgba(0, 0, 0, 0.87);
   background-color: $white-full;
 }
@@ -231,7 +255,7 @@ h1 {
   background-color: $white-full
 }
 
-.aplication.dark {
+.application.dark {
   color: $white-partial;
   .el-container {
     background-color: inherit
@@ -241,6 +265,31 @@ h1 {
   }
 }
 
+#html-wrapper.dark {
+  div[role="tooltip"],
+  div[role="tooltip"] .el-card,
+  .el-scrollbar {
+    color: $white-partial;
+    border-color: $dark-charcoal;
+    background-color: $dark-charcoal;
+  }
+  .popper__arrow,
+  .popper__arrow::after {
+    border-bottom-color:$dark-charcoal;
+  }
+  .el-scrollbar {
+    .el-select-dropdown__item {
+      color: $white-partial;
+      background: inherit;
+      &.hover {
+        background-color: $light-charcoal;
+      }
+    }
+  }
+}
+
+
+.el-select.dark,
 .el-input.dark {
   input {
     color: $white-full;

@@ -1,5 +1,5 @@
 <template>
-  <div class="pr8 pl8 pt2 pb2">
+  <div class="pr8 pl8 pt2 pb8">
     <el-row :gutter="20" v-if="info.address1">
       <el-col :span="10" class="p2">
         <p class="label capitalize">

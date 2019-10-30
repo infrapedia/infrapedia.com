@@ -13,7 +13,7 @@
         class="sidebar-wrapper"
       >
         <el-card shadow="hover" v-loading="isLoading">
-          <header class="header pt8 pr8 pl14 pb12 h12">
+          <header class="header pt8 pr8 pl14 pb12 h12 relative">
             <span
               class="inline-block w4 h4 icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
               @click="closeSidebar"
@@ -22,7 +22,6 @@
             </span>
             <el-tooltip
               effect="dark"
-              transition="animated faster slideDown delay-2s"
               content="Click to copy link"
               placement="bottom">
               <h1
@@ -38,7 +37,12 @@
           </header>
           <!---------------------- SIDEBAR MODES ----------------------->
           <transition mode="out-in" name="fade">
-            <component :is="currentView" :info="currentSelection" />
+            <component
+              :is="currentView"
+              :info="currentSelection"
+              @edit-cable="$emit(EDIT_CABLE, $event)"
+              @buy-capacity="$emit(BUY_CAPACITY, $event)"
+            />
           </transition>
         </el-card>
       </div>
@@ -49,10 +53,10 @@
 <script>
 import { mapState } from 'vuex'
 import { bus } from '../helpers/eventBus'
-import { CLEAR_SELECTION } from '../events'
 import * as modes from '../config/sidebarModes'
 import { createBitlyURL } from '../services/api/bitly'
 import copyToClipboard from '../helpers/copyToClipboard'
+import { BUY_CAPACITY, EDIT_CABLE, CLEAR_SELECTION } from '../events'
 
 export default {
   name: 'ISidebar',
@@ -64,6 +68,8 @@ export default {
     sidebarStyleOnMobile: {},
     sidebarStyle: {},
     isBadge: false,
+    BUY_CAPACITY,
+    EDIT_CABLE,
     transitionsClasses: {
       name: 'animated faster',
       active: 'slideInLeft',

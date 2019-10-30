@@ -12,17 +12,23 @@ export default new Vuex.Store({
   devtools: true,
   state: {
     isDark: false,
+    buyType: null,
     isOnline: true,
     isMobile: false,
     isDrawing: false,
     isSidebar: false,
     isLocating: false,
     isLoading: false,
-    sidebarMode: modes.CABLE_MODE
+    isBuyDialog: false,
+    sidebarMode: modes.CABLE_MODE,
   },
   mutations: {
     [types.TOGGLE_DARK](state, bool) {
       state.isDark = bool
+      const body = document.getElementById('html-wrapper')
+      // I don't know if this is not supposed to be done but hey
+      // in this case is necessary for style issues
+      bool ? (body.className = 'dark') : (body.className = 'light')
     },
     [types.SHARE_LINK](state) {
       return state
@@ -44,6 +50,12 @@ export default new Vuex.Store({
     },
     [types.TOGGLE_SIDEBAR_MODE](state, mode) {
       state.sidebarMode = mode
+    },
+    [types.TOGGLE_BUY_DIALOG](state, bool) {
+      state.isBuyDialog = bool
+    },
+    [types.BUY_TYPE](state, type) {
+      state.buyType = type
     }
   },
   actions: {

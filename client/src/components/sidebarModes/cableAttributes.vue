@@ -1,5 +1,5 @@
 <template>
-  <div class="pr8 pl8 pt2 pb2">
+  <div class="pr8 pl8 pt2 pb8">
     <el-row :gutter="20">
       <el-col :span="10" class="p2">
         <p class="label capitalize">
@@ -71,17 +71,41 @@
     <el-divider />
     <footer class="p0">
       <el-row :gutter="20">
-        <el-col :span="12" @click="$emit('buy')">
-          <el-button
-            type="warning"
-            circle
-            class="mr1 w9 h9 vertical-align"
+        <el-col :span="12">
+          <el-popover
+            placement="bottom"
+            width="100"
+            popper-class="buy-capacity-popper"
+            :visible-arrow="false"
+            trigger="manual"
+            v-model="isMenuOpen"
           >
-            <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
-          </el-button>
-          <span class="cursor-pointer fs-regular label">
-            Buy capacity
-          </span>
+            <el-card shadow="never" class="">
+              <ul role="list" class="pt2 pb2">
+                <li
+                  tabindex="1"
+                  role="listitem"
+                  class="p4 no-selectable transition cursor-pointer seamless-hoverbg no-outline"
+                  :class="{ dark, light: !dark }"
+                  @click="emitEvent"
+                >
+                  Backbone
+                </li>
+              </ul>
+            </el-card>
+            <div slot="reference" @click="toggleMenu">
+              <el-button
+                type="warning"
+                circle
+                class="mr1 w9 h9 vertical-align"
+              >
+                <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
+              </el-button>
+              <span class="cursor-pointer fs-regular label">
+                Buy capacity
+              </span>
+            </div>
+          </el-popover>
         </el-col>
         <el-col :span="12">
           <el-button
@@ -97,7 +121,7 @@
         </el-col>
       </el-row>
       <el-row :gutter="20" class="mt8">
-        <el-col :span="12" @click="$emit('buy')">
+        <el-col :span="12" @click="$emit(`${EDIT_CABLE}`)">
           <el-button
             type="warning"
             circle
@@ -128,6 +152,7 @@
 
 <script>
 import convertToYear from '../../helpers/converToYear'
+import { BUY_CAPACITY, EDIT_CABLE } from '../../events/'
 
 export default {
   name: 'ICableAttributes',
@@ -138,9 +163,15 @@ export default {
     }
   },
   data: () => ({
-    convertToYear
+    convertToYear,
+    BUY_CAPACITY,
+    EDIT_CABLE,
+    isMenuOpen: false
   }),
   computed: {
+    dark() {
+      return this.$store.state.isDark
+    },
     isFutureState() {
       const date = this.info.activation_datetime
       const currentEpoch = Math.round(new Date().getTime() / 1000)
@@ -158,6 +189,15 @@ export default {
       else if (url3) urls.push(url3)
 
       return urls
+    }
+  },
+  methods: {
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen
+    },
+    emitEvent() {
+      this.toggleMenu()
+      this.$emit(`${BUY_CAPACITY}`, 'backbone')
     }
   },
 }

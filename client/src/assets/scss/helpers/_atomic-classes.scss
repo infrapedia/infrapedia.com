@@ -263,6 +263,20 @@
   height: inherit;
 }
 
+.seamless-hoverbg {
+  @extend .transition-all;
+  &.light {
+    &:hover {
+      background-color: lighten(rgba(0,0,0,0.2), 80%);
+    }
+  }
+  &.dark {
+    &:hover {
+      background-color: lighten(rgba(0,0,0, 0.2), 12%);
+    }
+  }
+}
+
 @for $i from 1 through 120 {
   $base: 0.25rem;
   $val: $base * $i;

@@ -10,16 +10,20 @@ p {
   font-size: 14px;
 }
 
-.el-col span.label,
-p.label {
-  color: $dark-blue;
-}
-
 span.label {
   font-weight: 700;
 }
 
+/*
+* THEMES VARIANT'S
+*/
+
 .application.light {
+  .el-col span.label,
+  p.label {
+    color: $dark-blue;
+  }
+
   .status-text {
     color: #FF8282;
     &.active-cable {
@@ -28,10 +32,25 @@ span.label {
   }
 }
 .application.dark {
+  p {
+    color: $white-partial
+  }
   .status-text {
     color: #FF4E46;
     &.active-cable {
       color: #57CED8
     }
+  }
+  .el-button {
+    color: $dark-charcoal;
+    background-color: $light-yellow;
+    &:hover {
+      background-color: darken($light-yellow, 8%);
+    }
+  }
+
+  a,
+  .el-col span.label {
+    color: $white-partial
   }
 }
