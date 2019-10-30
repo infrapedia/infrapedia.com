@@ -1,11 +1,9 @@
 // import * as types from '../actionTypes/map'
-import { getSelectionData } from '../../services/api/data'
-import * as modes from '../../config/sidebarModes'
+import { getSelectionData, getFacility } from '../../services/api/data'
 
 const state = {
   filter: ['all'],
-  currentSelection: null,
-  sidebarMode: modes.CABLE_MODE
+  currentSelection: null
 }
 
 const mutations = {
@@ -14,19 +12,18 @@ const mutations = {
   },
   CURRENT_MAP_FILTER(state, filter) {
     state.filter = filter
-  },
-  TOGGLE_SIDEBAR_MODE(state, mode) {
-    state.sidebarMode = mode
   }
 }
 
 const actions = {
   async getCurrentSelectionData({ commit }, id) {
-    const data = await getSelectionData(id)
-    if (data && data.length) commit('CURRENT_SELECTION', data[0])
+    const res = await getSelectionData(id)
+    if (res && res.length) commit('CURRENT_SELECTION', res[0])
   },
-  changeSidebarMode({ commit }, num) {
-    commit('TOGGLE_SIDEBAR_MODE', num > 0 ? modes.DATA_CENTER_MODE : modes.CABLE_MODE)
+  async getFacilityData({ commit }, id) {
+    const res = await getFacility(id)
+    if (res && res.length) commit('CURRENT_SELECTION', res)
+    return res
   }
 }
 

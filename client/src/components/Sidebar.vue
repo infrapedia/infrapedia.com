@@ -66,7 +66,7 @@ export default {
     ...mapState({
       isLoading: state => state.isLoading,
       isSidebar: state => state.isSidebar,
-      sidebarMode: state => state.map.sidebarMode,
+      sidebarMode: state => state.sidebarMode,
       currentSelection: state => state.map.currentSelection
     }),
     defaultMode() {

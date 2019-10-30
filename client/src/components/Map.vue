@@ -76,7 +76,7 @@ import { mapConfig } from '../config/mapConfig'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import { bus } from '../helpers/eventBus'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import turf from 'turf'
 
 const GEOLOCATION_POINT = 'geolocation-point'
@@ -109,6 +109,10 @@ export default {
     bus.$on(`${TOGGLE_THEME}`, this.toggleDarkMode)
   },
   methods: {
+    ...mapActions({
+      getFacilityData: 'map/getFacilityData',
+      changeSidebarMode: 'changeSidebarMode'
+    }),
     createMap() {
       mapboxgl.accessToken = mapConfig.mapToken
 
@@ -477,6 +481,8 @@ export default {
       // ])
     },
     disableCableHighlight() {
+      console.warn('Entered here')
+
       const { map } = this
       this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, ['in', 'cable_id', false])
@@ -495,44 +501,81 @@ export default {
       if (this.isDrawing) return
 
       const { map } = this
+      let selectionID = null
+      const themeColor = this.dark ? 'Dark' : 'Light'
+      const buildingPoint = `buildingPoint${themeColor}`
+      const buildingFootprint = `buildingFootprint${themeColor}`
       const cables = map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.cableLayer]
+      })
+      const buildingFootprints = map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig[buildingFootprint]]
+      })
+      const buildingPoints = map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig[buildingPoint]]
       })
       const clustersFeats = map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.clusterPts]
       })
 
-      if (cables.length) {
-        // Highlight the far most close clicked cable
-        this.highlightCable(cables[0].properties)
-        this.$emit(`${CABLE_SELECTED}`, cables[0].properties)
-      } else {
-        // Remove highlights
-        this.disableCableHighlight()
-        // Clear "currentSelection" on store
-        this.$store.commit(`${CURRENT_SELECTION}`, null)
+      if (buildingFootprints.length) {
+        selectionID = buildingFootprints[0].properties.fac_id
+      } else if (buildingPoints.length) {
+        selectionID = buildingPoints[0].properties.fac_id
       }
 
-      if (clustersFeats.length) {
+      selectionID ? this.handleFacilitySelection(this.getFacilityData(selectionID)) : null
+      await this.handleCablesSelection(!!cables.length, cables)
+      await this.handleClustersSelection(clustersFeats)
+    },
+    handleCablesSelection(bool, cables) {
+      switch(bool) {
+        case true:
+          // Highlight the far most close clicked cable
+          this.highlightCable(cables[0].properties)
+          this.$emit(`${CABLE_SELECTED}`, cables[0].properties)
+          break
+        default:
+          // Remove highlights
+          this.disableCableHighlight()
+          // Clear "currentSelection" on store
+          this.$store.commit(`${CURRENT_SELECTION}`, null)
+          break
+      }
+    },
+    async handleClustersSelection(clusters) {
+      const { map } = this
+      if (clusters.length) {
         // Zoom into the cluster
-        const clusterId = clustersFeats[0].properties.cluster_id
-        return map
+        await map
           .getSource(mapConfig.clusterPts)
-          .getClusterExpansionZoom(clusterId, function(err, zoom) {
-            if (err) return
+          .getClusterExpansionZoom(clusters[0].properties.cluster_id,
+            function(err, zoom) {
+              if (err) return
 
-            map.easeTo({
-              center: clustersFeats[0].geometry.coordinates,
-              zoom
-            })
-          })
+              map.easeTo({
+                center: clusters[0].geometry.coordinates,
+                zoom
+              })
+            }
+          )
       } else {
         // Remove the clusters source data
-        map.getSource(mapConfig.clusterPts).setData({
+        await this.map.getSource(mapConfig.clusterPts).setData({
           type: 'FeatureCollection',
           features: []
         })
       }
+    },
+    async handleFacilitySelection(facility) {
+      // Facility is a Promise so when it returns we can show the data
+      const data = await facility
+      if (!data) throw "We couldn't load the facility ..."
+      // Changing the sidebar mode to show facilities
+      this.changeSidebarMode(1)
+      this.$store.commit(`${CURRENT_SELECTION}`, data)
+      // Opening the sidebar
+      this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
     },
     /**
      * @param e { Object } Map's clicking 'points-layer' Event

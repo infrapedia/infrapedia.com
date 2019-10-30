@@ -15,7 +15,7 @@
         </p>
       </el-col>
     </el-row>
-    <el-row :gutter="30">
+    <el-row :gutter="30" v-if="info.system_length">
       <el-col :span="10" class="p2">
         <p class="label capitalize">
           System Length
@@ -27,7 +27,7 @@
         </p>
       </el-col>
     </el-row>
-    <el-row :gutter="30">
+    <el-row :gutter="30" v-if="info.activation_datetime">
       <el-col :span="10" class="p2">
         <p class="label capitalize">
           Activation Year
