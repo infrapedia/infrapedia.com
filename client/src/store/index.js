@@ -20,6 +20,7 @@ export default new Vuex.Store({
     isLocating: false,
     isLoading: false,
     isBuyDialog: false,
+    isIssueDialog: false,
     sidebarMode: modes.CABLE_MODE,
   },
   mutations: {
@@ -56,6 +57,9 @@ export default new Vuex.Store({
     },
     [types.BUY_TYPE](state, type) {
       state.buyType = type
+    },
+    [types.TOGGLE_ISSUES_DIALOG](state, bool) {
+      state.isIssueDialog = bool
     }
   },
   actions: {

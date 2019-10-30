@@ -100,29 +100,60 @@
     <el-divider />
     <footer class="p0">
       <el-row :gutter="20">
-        <el-col :span="12" @click="$emit('buy')">
-          <el-button
-            type="warning"
-            circle
-            class="mr1 w9 h9 vertical-align"
+        <el-col :span="12">
+          <el-popover
+            placement="bottom"
+            width="100"
+            popper-class="buy-capacity-popper"
+            :visible-arrow="false"
+            trigger="manual"
+            v-model="isMenuOpen"
           >
-            <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
-          </el-button>
-          <span class="cursor-pointer fs-regular label">
-            Buy capacity
-          </span>
+            <el-card shadow="never" class="">
+              <ul role="list" class="pt2 pb2">
+                <li
+                  v-for="(option, i) in buyOptions"
+                  :key="i"
+                  tabindex="1"
+                  role="listitem"
+                  class="p4 no-selectable transition cursor-pointer seamless-hoverbg no-outline"
+                  :class="{ dark, light: !dark }"
+                  @click="emitEvent(option)"
+                  v-text="option"
+                />
+              </ul>
+            </el-card>
+            <div
+              slot="reference"
+              @click="toggleMenu"
+              class="cursor-pointer no-outline no-selectable"
+            >
+              <el-button
+                type="warning"
+                circle
+                class="mr1 w9 h9 vertical-align"
+              >
+                <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
+              </el-button>
+              <span class="cursor-pointer fs-regular label">
+                Buy capacity
+              </span>
+            </div>
+          </el-popover>
         </el-col>
         <el-col :span="12">
-          <el-button
-            type="warning"
-            circle
-            class="mr1 w9 h9 vertical-align"
-          >
-            <fa :icon="['fas', 'exclamation-circle']" class="sm-icon mt-1" />
-          </el-button>
-          <span class="cursor-pointer fs-regular label">
-            Report issue
-          </span>
+          <div class="cursor-pointer no-selectable" @click="$emit(REPORT_ISSUE)">
+            <el-button
+              type="warning"
+              circle
+              class="mr1 w9 h9 vertical-align"
+            >
+              <fa :icon="['fas', 'exclamation-circle']" class="sm-icon mt-1" />
+            </el-button>
+            <span class="cursor-pointer fs-regular label">
+              Report issue
+            </span>
+          </div>
         </el-col>
       </el-row>
     </footer>
@@ -130,12 +161,39 @@
 </template>
 
 <script>
+import { BUY_CAPACITY, REPORT_ISSUE } from '../../events'
+
 export default {
   name: 'IDataCenter',
   props: {
     info: {
       type: Object,
       required: true
+    }
+  },
+  data: () => ({
+    BUY_CAPACITY,
+    REPORT_ISSUE,
+    buyOptions: [
+      'Transit',
+      'Backbone',
+      'Datacenter',
+      'Other'
+    ],
+    isMenuOpen: false
+  }),
+  computed: {
+    dark() {
+      return this.$store.state.isDark
+    }
+  },
+  methods: {
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen
+    },
+    emitEvent(option) {
+      this.toggleMenu()
+      this.$emit(`${BUY_CAPACITY}`, option)
     }
   }
 }

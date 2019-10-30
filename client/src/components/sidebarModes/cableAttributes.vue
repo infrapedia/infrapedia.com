@@ -93,7 +93,11 @@
                 </li>
               </ul>
             </el-card>
-            <div slot="reference" @click="toggleMenu">
+            <div
+              slot="reference"
+              @click="toggleMenu"
+              class="cursor-pointer no-outline no-selectable"
+            >
               <el-button
                 type="warning"
                 circle
@@ -121,29 +125,33 @@
         </el-col>
       </el-row>
       <el-row :gutter="20" class="mt8">
-        <el-col :span="12" @click="$emit(`${EDIT_CABLE}`)">
-          <el-button
-            type="warning"
-            circle
-            class="mr1 w9 h9 vertical-align"
-          >
-            <fa :icon="['fas', 'pen']" class="sm-icon mt-1" />
-          </el-button>
-          <span class="cursor-pointer fs-regular label">
-            Edit this cable
-          </span>
+        <el-col :span="12">
+          <div class="cursor-pointer no-selectable" @click="$emit(`${EDIT_CABLE}`)">
+            <el-button
+              type="warning"
+              circle
+              class="mr1 w9 h9 vertical-align"
+            >
+              <fa :icon="['fas', 'pen']" class="sm-icon mt-1" />
+            </el-button>
+            <span class="fs-regular label">
+              Edit this cable
+            </span>
+          </div>
         </el-col>
         <el-col :span="12">
-          <el-button
-            type="warning"
-            circle
-            class="mr1 w9 h9 vertical-align"
-          >
-            <fa :icon="['fas', 'exclamation-circle']" class="sm-icon mt-1" />
-          </el-button>
-          <span class="cursor-pointer fs-regular label">
-            Report issue
-          </span>
+          <div class="cursor-pointer no-selectable" @click="$emit(REPORT_ISSUE)">
+            <el-button
+              type="warning"
+              circle
+              class="mr1 w9 h9 vertical-align"
+            >
+              <fa :icon="['fas', 'exclamation-circle']" class="sm-icon mt-1" />
+            </el-button>
+            <span class="cursor-pointer fs-regular label">
+              Report issue
+            </span>
+          </div>
         </el-col>
       </el-row>
     </footer>
@@ -152,7 +160,7 @@
 
 <script>
 import convertToYear from '../../helpers/converToYear'
-import { BUY_CAPACITY, EDIT_CABLE } from '../../events/'
+import { BUY_CAPACITY, EDIT_CABLE, REPORT_ISSUE } from '../../events'
 
 export default {
   name: 'ICableAttributes',
@@ -163,9 +171,10 @@ export default {
     }
   },
   data: () => ({
-    convertToYear,
-    BUY_CAPACITY,
     EDIT_CABLE,
+    BUY_CAPACITY,
+    REPORT_ISSUE,
+    convertToYear,
     isMenuOpen: false
   }),
   computed: {

@@ -42,6 +42,7 @@
               :info="currentSelection"
               @edit-cable="$emit(EDIT_CABLE, $event)"
               @buy-capacity="$emit(BUY_CAPACITY, $event)"
+              @report-issue="$emit(REPORT_ISSUE, $event)"
             />
           </transition>
         </el-card>
@@ -56,7 +57,7 @@ import { bus } from '../helpers/eventBus'
 import * as modes from '../config/sidebarModes'
 import { createBitlyURL } from '../services/api/bitly'
 import copyToClipboard from '../helpers/copyToClipboard'
-import { BUY_CAPACITY, EDIT_CABLE, CLEAR_SELECTION } from '../events'
+import { BUY_CAPACITY, EDIT_CABLE, CLEAR_SELECTION, REPORT_ISSUE } from '../events'
 
 export default {
   name: 'ISidebar',
@@ -70,6 +71,7 @@ export default {
     isBadge: false,
     BUY_CAPACITY,
     EDIT_CABLE,
+    REPORT_ISSUE,
     transitionsClasses: {
       name: 'animated faster',
       active: 'slideInLeft',

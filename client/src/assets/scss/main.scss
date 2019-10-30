@@ -1,5 +1,6 @@
 @import '../../../node_modules/normalize.css/normalize';
 @import 'helpers/atomic-classes';
+@import 'helpers/animations.scss';
 @import 'base/variables';
 @import './node_modules/vue-cookieconsent-component/src/scss/cookie-consent-transition';
 @import './node_modules/vue-cookieconsent-component/src/scss/cookie-consent-bottom';
@@ -162,89 +163,16 @@ h1 {
   border: none !important
 }
 
-@-webkit-keyframes slideInUp {
-  from {
-    -webkit-transform: translate3d(0, 100%, 0);
-    transform: translate3d(0, 100%, 0);
-    visibility: visible;
-  }
-
-  to {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes slideInUp {
-  from {
-    -webkit-transform: translate3d(0, 100%, 0);
-    transform: translate3d(0, 100%, 0);
-    visibility: visible;
-  }
-
-  to {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.slideInUp {
-  -webkit-animation-name: slideInUp;
-  animation-name: slideInUp;
-}
-
-@keyframes slideOutDown {
-  from {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    visibility: hidden;
-    -webkit-transform: translate3d(0, 100%, 0);
-    transform: translate3d(0, 100%, 0);
-  }
-}
-
-.slideOutDown {
-  -webkit-animation-name: slideOutDown;
-  animation-name: slideOutDown;
-}
-
-.animated {
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
-}
-.animated.faster {
-  -webkit-animation-duration: 500ms;
-  animation-duration: 500ms;
-}
-
-/*
-*  THEME VARIANT'S
-*/
-
-.buy-dialog {
+.custom-dialog {
   color: inherit;
   .el-dialog__header {
     padding: 1.2rem 1rem
   }
 }
 
-.buy-dialog.light {
-  .el-dialog__header {
-    background-color: $grey-ligthen;
-  }
-}
-
-.buy-dialog.dark {
-  background-color: $dark-charcoal;
-  .el-dialog__header {
-    background-color: $gray;
-  }
-}
+/*
+*  THEME VARIANT'S
+*/
 
 .application.light {
   color: rgba(0, 0, 0, 0.87);
@@ -262,6 +190,22 @@ h1 {
   }
   .el-form-item__label {
     color: $white-partial !important
+  }
+}
+
+.custom-dialog.light {
+  .el-dialog__header {
+    background-color: $grey-ligthen;
+  }
+}
+
+.custom-dialog.dark {
+  background-color: $dark-charcoal;
+  .el-dialog__header {
+    background-color: $gray;
+  }
+  small {
+    color: $white-partial
   }
 }
 
@@ -288,6 +232,15 @@ h1 {
   }
 }
 
+#rack-slider {
+  .el-tooltip,
+  .el-slider__bar {
+    background-color: $dark-blue
+  }
+  .el-tooltip {
+    border-color: $dark-blue
+  }
+}
 
 .el-select.dark,
 .el-input.dark {

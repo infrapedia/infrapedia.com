@@ -3,8 +3,13 @@
     <cookie-consent :message="cc.message" :href="cc.href" />
     <i-navbar role="navigation" />
     <template>
-      <i-sidebar @buy-capacity="openDialog" @edit-cable="handleEditCable" />
+      <i-sidebar
+        @buy-capacity="openBuyDialog"
+        @edit-cable="handleEditCable"
+        @report-issue="openIssuesDialog"
+      />
       <i-buy-dialog />
+      <i-issues-dialog />
       <transition name="fade" mode="out-in">
         <router-view />
       </transition>
@@ -17,16 +22,22 @@
 import INavbar from '@/components/Navbar'
 import IFooter from '@/components/Footer'
 import ISidebar from '@/components/Sidebar'
-import IBuyDialog from '@/components/BuyDialog'
+import IBuyDialog from '@/components/dialogs/BuyDialog'
+import IIssuesDialog from '@/components/dialogs/IssuesDialog'
 import { BUY_CAPACITY, EDIT_CABLE } from '../events'
-import { TOGGLE_BUY_DIALOG, BUY_TYPE } from '../store/actionTypes'
+import {
+  BUY_TYPE,
+  TOGGLE_BUY_DIALOG,
+  TOGGLE_ISSUES_DIALOG
+} from '../store/actionTypes'
 
 export default {
   components: {
     IFooter,
     INavbar,
     ISidebar,
-    IBuyDialog
+    IBuyDialog,
+    IIssuesDialog
   },
   data: () => ({
     BUY_CAPACITY,
@@ -39,9 +50,12 @@ export default {
     }
   }),
   methods: {
-    openDialog(option) {
+    openBuyDialog(option) {
       this.$store.commit(`${BUY_TYPE}`, { title: option })
       this.$store.commit(`${TOGGLE_BUY_DIALOG}`, true)
+    },
+    openIssuesDialog() {
+      this.$store.commit(`${TOGGLE_ISSUES_DIALOG}`, true)
     },
     handleEditCable() {
       console.warn('NOT DONE YET')
