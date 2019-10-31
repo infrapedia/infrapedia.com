@@ -12,14 +12,14 @@
           <transition-group name="fade" mode="out-in">
             <ul class="p0 m0 h-fit-full" role="group" :key="1" v-if="!isUserNavbar">
               <li class="inline-block relative" tabindex="0" role="listitem">
-                <div class="list-item pr4 pl4" aria-haspopup="true">
+                <div class="list-item pr4 pl4 no-selectable" aria-haspopup="true">
                   Our Partners
                   <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
                 </div>
               </li>
               <el-divider direction="vertical" class="m0" />
               <li class="inline-block relative" tabindex="0" role="listitem">
-                <div class="list-item pr4 pl4" aria-haspopup="true">
+                <div class="list-item pr4 pl4 no-selectable" aria-haspopup="true">
                   Submarine Cables
                   <i
                     aria-hidden="true"
@@ -29,21 +29,23 @@
               </li>
               <el-divider direction="vertical" class="m0" />
               <li class="inline-block relative" tabindex="0" role="listitem">
-                <div class="list-item pr4 pl4" aria-haspopup="true">
-                  Data Centers
-                  <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
-                </div>
+                <i-list-view :options="[]">
+                  <div slot="reference" class="list-item pr4 pl4 no-selectable" aria-haspopup="true">
+                    Data Centers
+                    <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
+                  </div>
+                </i-list-view>
               </li>
               <el-divider direction="vertical" class="m0" />
               <li class="inline-block relative" tabindex="0" role="listitem">
-                <div class="list-item pr6 pl6" aria-haspopup="true">
+                <div class="list-item pr6 pl6 no-selectable" aria-haspopup="true">
                   IXPs
                   <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
                 </div>
               </li>
               <el-divider direction="vertical" class="m0" />
               <li class="inline-block relative" tabindex="0" role="listitem">
-                <div class="list-item pr4 pl4" aria-haspopup="true">
+                <div class="list-item pr4 pl4 no-selectable" aria-haspopup="true">
                   Networks
                   <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
                 </div>
@@ -315,13 +317,15 @@
 <script>
 import IFilter from './Filter'
 import ISearch from './Search'
+import IListView from './ListView'
 import infoMenuLinks from '../config/infoMenuLinks'
 
 export default {
   name: 'INavbar',
   components: {
-    'i-filter': IFilter,
-    'i-search': ISearch
+    IListView,
+    IFilter,
+    ISearch
   },
   props: {
     isUserNavbar: {

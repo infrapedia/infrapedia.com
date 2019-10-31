@@ -1,0 +1,10 @@
+@import '../helpers/_atomic-classes';
+@import '../base/_variables';
+
+ul[role="list"] {
+  overflow: scroll;
+  max-height: 28rem;
+  li[role="listitem"] {
+
+  }
+}

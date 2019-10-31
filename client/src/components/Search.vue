@@ -17,6 +17,7 @@
     <div slot="reference" role="search">
       <el-input
         class="w60"
+        clearable
         placeholder="Search"
         :class="{ dark }"
         v-model="search"
