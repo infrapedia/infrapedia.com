@@ -12,14 +12,20 @@
           <transition-group name="fade" mode="out-in">
             <ul class="p0 m0 h-fit-full" role="group" :key="1" v-if="!isUserNavbar">
 
-              <li class="inline-block relative" tabindex="0" role="listitem">
-                <el-popover trigger="manual" v-model="isPartnersMenuOpen">
-                  <i-list option="partners" @click="getSelectedInfo" />
+              <li
+                class="inline-block no-selectable relative"
+                role="listitem"
+              >
+                <el-popover class="no-selectable" trigger="manual" v-model="isPartnersMenuOpen">
+                  <i-list
+                    option="partners"
+                    @click="getSelectedInfo"
+                    @keyup.enter.space="getSelectInfo" />
                   <div
                     slot="reference"
                     aria-haspopup="true"
                     class="list-item pr4 pl4 no-selectable"
-                    @click.stop="toggleMenu('partners')"
+                    @click.stop="handlePremiumSelection"
                   >
                     Our Partners
                     <i
@@ -31,7 +37,10 @@
               </li>
               <el-divider direction="vertical" class="m0" />
 
-              <li class="inline-block relative" tabindex="0" role="listitem">
+              <li
+                class="inline-block no-selectable relative"
+                role="listitem"
+              >
                 <el-popover trigger="manual" v-model="isSubmarineMenuOpen">
                   <i-list option="submarine" @click="getSelectedInfo" />
                     <div
@@ -50,7 +59,10 @@
               </li>
               <el-divider direction="vertical" class="m0" />
 
-              <li class="inline-block relative" tabindex="0" role="listitem">
+              <li
+                class="inline-block no-selectable relative"
+                role="listitem"
+              >
                 <el-popover trigger="manual" v-model="isDataCentersMenuOpen">
                 <i-list option="dataCenters" @click="getSelectedInfo" />
                   <div
@@ -66,7 +78,10 @@
               </li>
 
                 <el-divider direction="vertical" class="m0" />
-              <li class="inline-block relative" tabindex="0" role="listitem">
+              <li
+                class="inline-block no-selectable relative"
+                role="listitem"
+              >
                 <el-popover trigger="manual" v-model="isIxpsMenuOpen">
                   <i-list option="ixps" @click="getSelectedInfo" />
                   <div
@@ -85,7 +100,10 @@
               </li>
 
               <el-divider direction="vertical" class="m0" />
-              <li class="inline-block relative" tabindex="0" role="listitem">
+              <li
+                class="inline-block no-selectable relative"
+                role="listitem"
+              >
                 <el-popover trigger="manual" v-model="isNetworsMenuOpen">
                   <i-list option="networks" @click="getSelectedInfo" />
                     <div
@@ -373,6 +391,7 @@ import IFilter from './Filter'
 import ISearch from './Search'
 import sponsors from '../config/navbarSponsors'
 import infoMenuLinks from '../config/infoMenuLinks'
+import dataCollection from '../mixins/dataCollection'
 
 export default {
   name: 'INavbar',
@@ -381,6 +400,7 @@ export default {
     IFilter,
     ISearch
   },
+  mixins: [dataCollection],
   props: {
     isUserNavbar: {
       type: Boolean,

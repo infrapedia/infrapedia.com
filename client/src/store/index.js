@@ -4,6 +4,7 @@ import map from './modules/map'
 import auth from './modules/auth'
 import * as types from './actionTypes'
 import * as modes from '../config/sidebarModes'
+import { dataActions, dataMutations } from './data'
 
 Vue.use(Vuex)
 
@@ -29,6 +30,7 @@ export default new Vuex.Store({
     dataCenters: []
   },
   mutations: {
+    ...dataMutations,
     [types.TOGGLE_DARK](state, bool) {
       state.isDark = bool
       const body = document.getElementById('html-wrapper')
@@ -73,7 +75,8 @@ export default new Vuex.Store({
         `${types.TOGGLE_SIDEBAR_MODE}`,
         num > 0 ? modes.DATA_CENTER_MODE : modes.CABLE_MODE
       )
-    }
+    },
+    ...dataActions
   },
   modules: {
     map,

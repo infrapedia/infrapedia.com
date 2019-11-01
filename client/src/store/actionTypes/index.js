@@ -13,3 +13,11 @@ export const TOGGLE_ISSUES_DIALOG = 'TOGGLE_ISSUES_DIALOG'
 export const BUY_TYPE = 'BUY_TYPE'
 export const BUY_REQUEST = 'BUY_REQUEST'
 export const ISSUE_REQUEST = 'ISSUE_REQUEST'
+
+// --------------- DATA -------------------
+
+export const GET_SUBSEA = 'GET_SUBSEA'
+export const GET_DATA_CENTERS = 'GET_DATA_CENTERS'
+export const GET_PREMIUM_DATA = 'GET_PREMIUM_DATA'
+export const GET_NET_FACILITIES = 'GET_NET_FACILITIES'
+export const GET_IX_FACILITIES = 'GET_IX_FACILITIES'

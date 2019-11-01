@@ -5,8 +5,13 @@ import { TOGGLE_SIDEBAR, TOGGLE_LOADING } from '../store/actionTypes'
 export default {
   methods: {
     ...mapActions({
-      getCurrentSelectionData: 'map/getCurrentSelectionData'
+      getCurrentSelectionData: 'map/getCurrentSelectionData',
+      getPremiumData: 'getPremiumData'
     }),
+  async handlePremiumSelection() {
+      this.toggleMenu('partners')
+      await this.getPremiumData()
+    },
     async handleCableSelected({ cable_id }) {
       if (!cable_id) return
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="w120 no-border no-outline">
+  <div class="w120 no-border no-outline no-selectable">
     <div class="w-fit-full p4">
       <el-input
         class="w110"
@@ -20,8 +20,7 @@
 
     <ul
       role="list"
-      tabindex="1"
-      class="no-outline"
+      class="no-outline no-selectable"
       v-loading="isLoading"
     >
       <template v-for="(option, i) in optionsGiver">
@@ -73,7 +72,9 @@ export default {
       isLoading: state => state.isLoading,
       submarine: state => state.submarine,
       dataCenters: state => state.dataCenters
-    }),
+    })
+  },
+  methods: {
     optionsGiver() {
       const option = this.option.toLowerCase()
       let data = []
@@ -95,9 +96,7 @@ export default {
           break
       }
       return data
-    }
-  },
-  methods: {
+    },
     isFinal(num) {
       return num + 1 === this.optionsGiver
     },
