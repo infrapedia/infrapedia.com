@@ -11,12 +11,15 @@
         <div aria-labelledby="rightnavheading" class="links-wrapper">
           <transition-group name="fade" mode="out-in">
             <ul class="p0 m0 h-fit-full" role="group" :key="1" v-if="!isUserNavbar">
+
               <li class="inline-block relative" tabindex="0" role="listitem">
-                <i-list-view option="partners">
+                <el-popover trigger="manual" v-model="isPartnersMenuOpen">
+                  <i-list option="partners" @click="getSelectedInfo" />
                   <div
                     slot="reference"
                     aria-haspopup="true"
                     class="list-item pr4 pl4 no-selectable"
+                    @click.stop="toggleMenu('partners')"
                   >
                     Our Partners
                     <i
@@ -24,40 +27,53 @@
                       class="el-icon-arrow-down icon sm-icon ml1"
                     />
                   </div>
-                </i-list-view>
+                </el-popover>
               </li>
               <el-divider direction="vertical" class="m0" />
+
               <li class="inline-block relative" tabindex="0" role="listitem">
-                <i-list-view option="submarine">
+                <el-popover trigger="manual" v-model="isSubmarineMenuOpen">
+                  <i-list option="submarine" @click="getSelectedInfo" />
+                    <div
+                      slot="reference"
+                      aria-haspopup="true"
+                      class="list-item pr4 pl4 no-selectable"
+                      @click.stop="toggleMenu('submarine')"
+                    >
+                      Submarine Cables
+                      <i
+                        aria-hidden="true"
+                        class="el-icon-arrow-down icon sm-icon ml1"
+                      />
+                    </div>
+                </el-popover>
+              </li>
+              <el-divider direction="vertical" class="m0" />
+
+              <li class="inline-block relative" tabindex="0" role="listitem">
+                <el-popover trigger="manual" v-model="isDataCentersMenuOpen">
+                <i-list option="dataCenters" @click="getSelectedInfo" />
                   <div
                     slot="reference"
                     aria-haspopup="true"
                     class="list-item pr4 pl4 no-selectable"
+                    @click.stop="toggleMenu('dataCenters')"
                   >
-                    Submarine Cables
-                    <i
-                      aria-hidden="true"
-                      class="el-icon-arrow-down icon sm-icon ml1"
-                    />
-                  </div>
-                </i-list-view>
-              </li>
-              <el-divider direction="vertical" class="m0" />
-              <li class="inline-block relative" tabindex="0" role="listitem">
-                <i-list-view option="dataCenters">
-                  <div slot="reference" class="list-item pr4 pl4 no-selectable" aria-haspopup="true">
                     Data Centers
                     <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
                   </div>
-                </i-list-view>
+                </el-popover>
               </li>
-              <el-divider direction="vertical" class="m0" />
+
+                <el-divider direction="vertical" class="m0" />
               <li class="inline-block relative" tabindex="0" role="listitem">
-                <i-list-view option="ixps">
+                <el-popover trigger="manual" v-model="isIxpsMenuOpen">
+                  <i-list option="ixps" @click="getSelectedInfo" />
                   <div
                     slot="reference"
                     aria-haspopup="true"
                     class="list-item pr6 pl6 no-selectable"
+                    @click.stop="toggleMenu('ixps')"
                   >
                     IXPs
                     <i
@@ -65,23 +81,28 @@
                       class="el-icon-arrow-down icon sm-icon ml1"
                     />
                   </div>
-                </i-list-view>
+                </el-popover>
               </li>
+
               <el-divider direction="vertical" class="m0" />
               <li class="inline-block relative" tabindex="0" role="listitem">
-                <i-list-view option="ixps">
-                  <div
-                    slot="reference"
-                    class="list-item pr4 pl4 no-selectable"
-                    aria-haspopup="true">
-                    Networks
-                    <i
-                      aria-hidden="true"
-                      class="el-icon-arrow-down icon sm-icon ml1"
-                    />
-                  </div>
-                </i-list-view>
-              </li>
+                <el-popover trigger="manual" v-model="isNetworsMenuOpen">
+                  <i-list option="networks" @click="getSelectedInfo" />
+                    <div
+                      slot="reference"
+                      class="list-item pr4 pl4 no-selectable"
+                      aria-haspopup="true"
+                      @click.stop="toggleMenu('networks')"
+                    >
+                      Networks
+                      <i
+                        aria-hidden="true"
+                        class="el-icon-arrow-down icon sm-icon ml1"
+                      />
+                    </div>
+                  </el-popover>
+                </li>
+
               <li class="inline-block relative" data-no-outline="true" role="listitem">
                 <div
                   class="list-item info-menu pr1 pl1"
@@ -347,15 +368,15 @@
 </template>
 
 <script>
+import IList from './List'
 import IFilter from './Filter'
 import ISearch from './Search'
-import IListView from './ListView'
 import infoMenuLinks from '../config/infoMenuLinks'
 
 export default {
   name: 'INavbar',
   components: {
-    IListView,
+    IList,
     IFilter,
     ISearch
   },
@@ -370,7 +391,12 @@ export default {
     infoMenuLinks,
     isUserMenuOpen: false,
     isInfoMenuOpen: false,
+    isIxpsMenuOpen: false,
+    isNetworsMenuOpen: false,
     isSponsorsMenuOpen: false,
+    isPartnersMenuOpen: false,
+    isSubmarineMenuOpen: false,
+    isDataCentersMenuOpen: false,
     sponsors: [
       {
         url: 'https://www.catchpoint.com/',
@@ -421,8 +447,48 @@ export default {
     await setTimeout(() => (this.isSponsorsMenuOpen = true), 100)
     // And close after 10 seconds
     await setTimeout(() => (this.isSponsorsMenuOpen = false), 10000)
+    document.addEventListener('click', this.closeUnwantedOpenMenus)
   },
   methods: {
+    getSelectedInfo(selected) {
+      console.log(selected)
+      this.closeUnwantedOpenMenus()
+    },
+    closeUnwantedOpenMenus() {
+      const menus = [
+        'isIxpsMenuOpen',
+        'isNetworsMenuOpen',
+        'isPartnersMenuOpen',
+        'isSubmarineMenuOpen',
+        'isDataCentersMenuOpen'
+      ]
+
+      for (let menu of menus) {
+        if (this[menu]) this[menu] = false
+      }
+    },
+    toggleMenu(name) {
+      if (!name) return
+      let menuName = name.toLowerCase()
+      this.closeUnwantedOpenMenus()
+      switch(menuName) {
+        case 'partners':
+          this.isPartnersMenuOpen = !this.isPartnersMenuOpen
+          break
+        case 'datacenters':
+          this.isDataCentersMenuOpen = !this.isDataCentersMenuOpen
+          break
+        case 'submarine':
+          this.isSubmarineMenuOpen = !this.isSubmarineMenuOpen
+          break
+        case 'ixps':
+          this.isIxpsMenuOpen = !this.isIxpsMenuOpen
+          break
+        case 'networks':
+          this.isNetworsMenuOpen = !this.isNetworsMenuOpen
+          break
+      }
+    },
     toggleSponsorsMenuVisibility() {
       this.isSponsorsMenuOpen = !this.isSponsorsMenuOpen
     },
