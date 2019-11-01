@@ -12,24 +12,39 @@
           <transition-group name="fade" mode="out-in">
             <ul class="p0 m0 h-fit-full" role="group" :key="1" v-if="!isUserNavbar">
               <li class="inline-block relative" tabindex="0" role="listitem">
-                <div class="list-item pr4 pl4 no-selectable" aria-haspopup="true">
-                  Our Partners
-                  <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
-                </div>
+                <i-list-view option="partners">
+                  <div
+                    slot="reference"
+                    aria-haspopup="true"
+                    class="list-item pr4 pl4 no-selectable"
+                  >
+                    Our Partners
+                    <i
+                      aria-hidden="true"
+                      class="el-icon-arrow-down icon sm-icon ml1"
+                    />
+                  </div>
+                </i-list-view>
               </li>
               <el-divider direction="vertical" class="m0" />
               <li class="inline-block relative" tabindex="0" role="listitem">
-                <div class="list-item pr4 pl4 no-selectable" aria-haspopup="true">
-                  Submarine Cables
-                  <i
-                    aria-hidden="true"
-                    class="el-icon-arrow-down icon sm-icon ml1"
-                  />
-                </div>
+                <i-list-view option="submarine">
+                  <div
+                    slot="reference"
+                    aria-haspopup="true"
+                    class="list-item pr4 pl4 no-selectable"
+                  >
+                    Submarine Cables
+                    <i
+                      aria-hidden="true"
+                      class="el-icon-arrow-down icon sm-icon ml1"
+                    />
+                  </div>
+                </i-list-view>
               </li>
               <el-divider direction="vertical" class="m0" />
               <li class="inline-block relative" tabindex="0" role="listitem">
-                <i-list-view :options="[]">
+                <i-list-view option="dataCenters">
                   <div slot="reference" class="list-item pr4 pl4 no-selectable" aria-haspopup="true">
                     Data Centers
                     <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
@@ -38,17 +53,34 @@
               </li>
               <el-divider direction="vertical" class="m0" />
               <li class="inline-block relative" tabindex="0" role="listitem">
-                <div class="list-item pr6 pl6 no-selectable" aria-haspopup="true">
-                  IXPs
-                  <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
-                </div>
+                <i-list-view option="ixps">
+                  <div
+                    slot="reference"
+                    aria-haspopup="true"
+                    class="list-item pr6 pl6 no-selectable"
+                  >
+                    IXPs
+                    <i
+                      aria-hidden="true"
+                      class="el-icon-arrow-down icon sm-icon ml1"
+                    />
+                  </div>
+                </i-list-view>
               </li>
               <el-divider direction="vertical" class="m0" />
               <li class="inline-block relative" tabindex="0" role="listitem">
-                <div class="list-item pr4 pl4 no-selectable" aria-haspopup="true">
-                  Networks
-                  <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
-                </div>
+                <i-list-view option="ixps">
+                  <div
+                    slot="reference"
+                    class="list-item pr4 pl4 no-selectable"
+                    aria-haspopup="true">
+                    Networks
+                    <i
+                      aria-hidden="true"
+                      class="el-icon-arrow-down icon sm-icon ml1"
+                    />
+                  </div>
+                </i-list-view>
               </li>
               <li class="inline-block relative" data-no-outline="true" role="listitem">
                 <div
