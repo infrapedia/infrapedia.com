@@ -118,7 +118,7 @@
                   aria-haspopup="true"
                   data-no-hover-bg="true"
                 >
-                  <i-filter />
+                  <i-filter @open="closeUnwantedOpenMenus" />
                 </div>
               </li>
               <el-divider direction="vertical" class="m0" />
@@ -136,8 +136,8 @@
                       <header class="flex justify-content-end">
                         <span
                           class="inline-block mr2 cursor-pointer"
-                          @click="toggleSponsorsMenuVisibility"
-                          @keyup.enter.space="toggleSponsorsMenuVisibility"
+                          @click.stop="() => isSponsorsMenuOpen = false"
+                          @keyup.enter.space="() => isSponsorsMenuOpen = false"
                         >
                           <fa :icon="['fas', 'times']" class="sm-icon" />
                         </span>
@@ -237,7 +237,7 @@
                   <div
                     class="w4 pt2 pb1 pr2 pl2 no-outline icon-wrapper circle"
                     tabindex="0"
-                    @click="toggleInfoMenuVisibility"
+                    @click.stop="toggleInfoMenuVisibility"
                     @keyup.enter.space="toggleInfoMenuVisibility"
                   >
                     <el-popover
@@ -371,6 +371,7 @@
 import IList from './List'
 import IFilter from './Filter'
 import ISearch from './Search'
+import sponsors from '../config/navbarSponsors'
 import infoMenuLinks from '../config/infoMenuLinks'
 
 export default {
@@ -387,6 +388,7 @@ export default {
     }
   },
   data: () => ({
+    sponsors,
     search: '',
     infoMenuLinks,
     isUserMenuOpen: false,
@@ -397,24 +399,6 @@ export default {
     isPartnersMenuOpen: false,
     isSubmarineMenuOpen: false,
     isDataCentersMenuOpen: false,
-    sponsors: [
-      {
-        url: 'https://www.catchpoint.com/',
-        alt: 'catchpoint advertiser',
-        src: 'https://cdn.infrapedia.com/sponsors/catchpoint-logo.f5a07e5f.jpg'
-      },
-      {
-        url:
-          'https://ipv4.global/?utm_source=digitalads&utm_medium=banner&utm_campaign=networkatlas&utm_content=sidebar',
-        alt: 'ipv4 advertiser',
-        src: 'https://cdn.infrapedia.com/sponsors/ipv4-global-logo.033610fc.jpg'
-      },
-      {
-        url: 'https://www.infrapedia.com/',
-        alt: 'ad space available',
-        src: 'https://storage.googleapis.com/infrapedia_bucket/sponsors/ads.png'
-      }
-    ]
   }),
   computed: {
     dark() {
@@ -449,15 +433,19 @@ export default {
     await setTimeout(() => (this.isSponsorsMenuOpen = false), 10000)
     document.addEventListener('click', this.closeUnwantedOpenMenus)
   },
+  beforeDestroy() {
+    document.removeEventListener('click', this.closeUnwantedOpenMenus)
+  },
   methods: {
     getSelectedInfo(selected) {
       console.log(selected)
       this.closeUnwantedOpenMenus()
     },
-    closeUnwantedOpenMenus() {
+    closeUnwantedOpenMenus(e) {
       const menus = [
         'isIxpsMenuOpen',
         'isNetworsMenuOpen',
+        'isSponsorsMenuOpen',
         'isPartnersMenuOpen',
         'isSubmarineMenuOpen',
         'isDataCentersMenuOpen'
@@ -466,6 +454,7 @@ export default {
       for (let menu of menus) {
         if (this[menu]) this[menu] = false
       }
+      if (e || this.isInfoMenuOpen) this.isInfoMenuOpen = false
     },
     toggleMenu(name) {
       if (!name) return
@@ -490,12 +479,15 @@ export default {
       }
     },
     toggleSponsorsMenuVisibility() {
+      this.closeUnwantedOpenMenus()
       this.isSponsorsMenuOpen = !this.isSponsorsMenuOpen
     },
     toggleInfoMenuVisibility() {
+      this.closeUnwantedOpenMenus()
       this.isInfoMenuOpen = !this.isInfoMenuOpen
     },
     toggleUserMenuVisibility() {
+      this.closeUnwantedOpenMenus()
       this.isUserMenuOpen = !this.isUserMenuOpen
     },
     userRegistration() {

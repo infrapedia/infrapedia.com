@@ -50,6 +50,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'IList',
   props: {
@@ -63,14 +65,36 @@ export default {
     searchResults: []
   }),
   computed: {
-    dark() {
-      return this.$store.state.isDark
-    },
-    isLoading() {
-      return this.$store.state.isLoading
-    },
+    ...mapState({
+      ixps: state => state.ixps,
+      dark: state => state.dark,
+      premium: state => state.premium,
+      networks: state => state.networks,
+      isLoading: state => state.isLoading,
+      submarine: state => state.submarine,
+      dataCenters: state => state.dataCenters
+    }),
     optionsGiver() {
-      return 20
+      const option = this.option.toLowerCase()
+      let data = []
+      switch (option) {
+        case 'networks':
+          data = this.networks
+          break
+        case 'submarine':
+          data = this.submarine
+          break
+        case 'premium':
+          data = this.premium
+          break
+        case 'ixps':
+          data = this.ixps
+          break
+        default:
+          data = this.dataCenters
+          break
+      }
+      return data
     }
   },
   methods: {

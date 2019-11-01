@@ -72,7 +72,7 @@
         type="warning"
         slot="reference"
         class="circle w7 h7 p0 vertical-align"
-        @click="toggleFilterVisiblity"
+        @click.stop="toggleFilterVisiblity"
       >
         <fa :icon="['fas', 'filter']" class="xsm-icon" />
       </el-button>
@@ -107,9 +107,19 @@ export default {
       return new Date().getFullYear() + estimateMaxYearsUntilNoCables
     }
   },
+  async mounted() {
+    document.addEventListener('click', this.closeMenu)
+  },
+  beforeDestroy() {
+    document.removeEventListener('click', this.closeMenu)
+  },
   methods: {
+    closeMenu() {
+      this.isMenuFilter = false
+    },
     toggleFilterVisiblity() {
       this.isMenuFilter = !this.isMenuFilter
+      if (this.isMenuFilter) this.$emit('open')
     },
     handleRadioSelection(selection) {
       return selection === 0 ? console.log('active') : console.log('future')
