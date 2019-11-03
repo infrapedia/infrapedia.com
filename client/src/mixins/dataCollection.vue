@@ -100,10 +100,11 @@ export default {
           break
       }
     },
-    async handleCableSelected({ cable_id }) {
+    async handleCableSelected({ cable_id, name }) {
       if (!cable_id) return
 
       await this.$store.commit(`${TOGGLE_LOADING}`, true)
+      await this.$store.commit(`${MAP_FOCUS_ON}`, { type: 'fac', id: cable_id, name })
       try {
         await this.getCurrentSelectionData(cable_id).then(() => {
           this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
@@ -154,7 +155,6 @@ export default {
         }
 
         // GETTING ORGANIZATION ID
-        // THIS WILL ALLOW ME TO SET THE APPROPIATE FOCUS IN THE MAP
         const orgID = await this.getOrganizationID(id)
         if (orgID) {
           const data = { id: orgID, type: 'org' }

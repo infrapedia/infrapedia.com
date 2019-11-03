@@ -68,7 +68,13 @@ import {
   LOCATE_USER,
   TOGGLE_SIDEBAR
 } from '../store/actionTypes'
-import { CURRENT_MAP_FILTER, CURRENT_SELECTION } from '../store/actionTypes/map'
+import {
+  CURRENT_MAP_FILTER,
+  CURRENT_SELECTION,
+  MAP_FOCUS_ON,
+  MAP_BOUNDS,
+  MAP_POINTS
+} from '../store/actionTypes/map'
 import ILocationButton from '../components/LocationButton'
 import copyToClipboard from '../helpers/copyToClipboard'
 import { createBitlyURL } from '../services/api/bitly'
@@ -279,9 +285,10 @@ export default {
       map.on('draw.delete', this.handleDraw)
       map.on('draw.update', this.handleDraw)
 
-      map.on('zoom', this.handleBoundsChange)
-      map.on('movend', this.handleBoundsChange)
-      map.on('pitchend', this.handleBoundsChange)
+      map.on('render', this.handleBoundsChange)
+      // map.on('zoom', this.handleBoundsChange)
+      // map.on('movend', this.handleBoundsChange)
+      // map.on('pitchend', this.handleBoundsChange)
       return map
     },
     handleDraw() {
@@ -404,9 +411,9 @@ export default {
       popup.remove()
     },
     async handleBoundsChange() {
-      if (!this.map) return
+      const { map } = this
+      if (!map) return
 
-      const map = this.map
       const pitch = map.getPitch()
       const bounds = map.getBounds()
       const bearing = map.getBearing()
@@ -415,12 +422,11 @@ export default {
       })
 
       if (!bounds && center) return
-
       try {
-          if (this.currentSelection) {
-          const { id, opt, name } = this.currentSelection
+          if (this.focus) {
+          const { id, type, name } = this.focus
 
-          if (id && opt && name) {
+          if (id && type && name) {
             await this.$router.replace(
               `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
                 bounds._sw.lng
@@ -428,7 +434,7 @@ export default {
                 center.bearing ||
                 0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
                 center.center.lat
-              }&name=${name}&type=${opt}&id=${id}`
+              }&name=${name}&type=${type}&id=${id}`
             )
           }
         } else {
@@ -538,7 +544,7 @@ export default {
       // If in the region selected there is a point or a building
       // Call the api to retrieve that facility data and open the sidebar
       if (selectionID) {
-        await this.handleFacilitySelection(this.getFacilityData(selectionID))
+        await this.handleFacilitySelection(this.getFacilityData(selectionID), selectionID)
       }
 
       // If there is no clusters or didn't select a building/point
@@ -586,15 +592,21 @@ export default {
           type: 'FeatureCollection',
           features: []
         })
+
+        // CLEARING CLUSTERS DATA SAVED IN STORE
+        this.$store.commit(`${MAP_BOUNDS}`, [])
+        this.$store.commit(`${MAP_POINTS}`, [])
+        this.$store.commit(`${MAP_FOCUS_ON}`, null)
       }
     },
-    async handleFacilitySelection(facility) {
+    async handleFacilitySelection(facility, id) {
       // Facility is a Promise so when it returns we can show the data
       const data = await facility
-      if (!data) throw "We couldn't load the facility ..."
+      if (!data) throw { message: "We couldn't load the facility ..." }
       // Changing the sidebar mode to show facilities
       this.changeSidebarMode(1)
       this.$store.commit(`${CURRENT_SELECTION}`, data)
+      this.$store.commit(`${MAP_FOCUS_ON}`, { id, name: data.name, type: 'fac' })
       // Opening the sidebar
       this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
       // Removing cables highlight if any
