@@ -30,12 +30,12 @@
           role="listitem"
           class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg"
           :class="{ dark, light: !dark }"
-          @click="$emit('click', option)"
+          @click="emitSelected(option)"
         >
           {{ option.name }}
         </li>
         <el-button
-          v-if="isFinal(i)"
+          v-if="isFinal(i) && !isPremiumPartners"
           :loading="isLoading"
           :key="option.name + ' ' + i"
           class="w-fit-full p4 h20 no-border seamless-hoverbg"
@@ -60,7 +60,7 @@
           role="listitem"
           class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg"
           :class="{ dark, light: !dark }"
-          @click="$emit('click', option)"
+          @click="emitSelected(option)"
         >
           {{ option.name }}
         </li>
@@ -71,7 +71,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { LOAD_MORE } from '../events'
+import { LOAD_MORE } from '../events/listview'
 
 export default {
   name: 'IList',
@@ -97,6 +97,9 @@ export default {
       submarine: state => state.submarine,
       dataCenters: state => state.dataCenters
     }),
+    isPremiumPartners() {
+      return this.option === 'partners'
+    },
     optionsGiver() {
       const option = this.option.toLowerCase()
 
@@ -108,6 +111,17 @@ export default {
     }
   },
   methods: {
+    emitSelected(selection) {
+      this.$emit('click', {
+        id:
+          selection.cable_id ||
+          selection.org_id ||
+          selection.fac_id ||
+          selection.ix_id ||
+          selection.net_id,
+        option: this.option
+      })
+    },
     isFinal(num) {
       return num + 1 === this.optionsGiver.length
     },

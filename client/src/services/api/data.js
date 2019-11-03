@@ -1,15 +1,17 @@
 import $axios from '../axios'
 
+const ID_PARAM_ERROR = { message: "YOU'RE MISSING THE ID PARAMETER" }
+
 // MAP CABLE SELECTION
 export const getSelectionData = async id => {
-  if (!id) throw "YOU'RE MISSING THE ID PARAMETER"
+  if (!id) throw ID_PARAM_ERROR
   const res = await $axios.get(`/cable/byid/${id}`)
   return res
 }
 
 // MAP FACILITY SELECTION - Buildings and dots
 export const getFacility = async id => {
-  if (!id) throw "YOU'RE MISSING THE ID PARAMETER"
+  if (!id) throw ID_PARAM_ERROR
   const res = await $axios.get(`/facility/byid/${id}`)
   return res
 }
@@ -39,3 +41,23 @@ export const getNetworks = async () => {
   const res = await $axios.get('/network/withFacility')
   return res
 }
+
+// --- NAVBAR PREMIUM LIST ITEM SELECTION --- START
+export const getPremiumSelectedBounds = async id => {
+  if (!id) throw ID_PARAM_ERROR
+  const res = await $axios.get(`/org/childbbox/${id}`)
+  return res
+}
+
+export const getPremiumSelectedFeatures = async id => {
+  if (!id) throw ID_PARAM_ERROR
+  const res = await $axios.get(`/org/childPoints/${id}`)
+  return res
+}
+
+export const getOrganization = async id => {
+  if (!id) throw ID_PARAM_ERROR
+  const res = await $axios.get(`/cable/byorg/${id}`)
+  return res
+}
+// --- NAVBAR PREMIUM LIST ITEM SELECTION --- END

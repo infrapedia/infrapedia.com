@@ -1,6 +1,10 @@
 @import '../helpers/atomic-classes';
 @import '../base/variables';
 
+a {
+  width: 10rem;
+}
+
 p {
   font-weight: 400;
   font-size: 14px;
@@ -16,7 +20,6 @@ span.label {
 
 .application.light {
   a {
-    max-width: 20rem;
     color: $gray;
   }
 

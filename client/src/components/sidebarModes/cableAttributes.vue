@@ -160,7 +160,7 @@
 
 <script>
 import convertToYear from '../../helpers/converToYear'
-import { BUY_CAPACITY, EDIT_CABLE, REPORT_ISSUE } from '../../events'
+import { BUY_CAPACITY, EDIT_CABLE, REPORT_ISSUE } from '../../events/sidebar'
 
 export default {
   name: 'ICableAttributes',

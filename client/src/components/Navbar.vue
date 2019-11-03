@@ -23,7 +23,7 @@
                 >
                   <i-list
                     option="partners"
-                    @click="getSelectedInfo"
+                    @click="handleItemListSelection"
                     @load-more="handleLoadMoreItems('partners')"
                   />
                   <div
@@ -55,7 +55,7 @@
                 >
                   <i-list
                     option="submarine"
-                    @click="getSelectedInfo"
+                    @click="handleItemListSelection"
                     @load-more="handleLoadMoreItems('submarine')"
                   />
                     <div
@@ -87,7 +87,7 @@
                 >
                 <i-list
                   option="dataCenters"
-                  @click="getSelectedInfo"
+                  @click="handleItemListSelection"
                   @load-more="handleLoadMoreItems('dataCenters')"
                 />
                   <div
@@ -116,7 +116,7 @@
                 >
                   <i-list
                     option="ixps"
-                    @click="getSelectedInfo"
+                    @click="handleItemListSelection"
                     @load-more="handleLoadMoreItems('ixps')"
                   />
                   <div
@@ -148,7 +148,7 @@
                 >
                   <i-list
                     option="networks"
-                    @click="getSelectedInfo"
+                    @click="handleItemListSelection"
                     @load-more="handleLoadMoreItems('networks')"
                   />
                     <div
@@ -503,10 +503,6 @@ export default {
     document.removeEventListener('click', this.closeUnwantedOpenMenus)
   },
   methods: {
-    getSelectedInfo(selected) {
-      console.log(selected)
-      this.closeUnwantedOpenMenus()
-    },
     closeUnwantedOpenMenus(e) {
       const menus = [
         'isIxpsMenuOpen',

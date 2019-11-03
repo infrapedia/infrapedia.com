@@ -1,5 +1,6 @@
 <script>
 import { mapActions } from 'vuex'
+import { bus } from '../helpers/eventBus'
 import {
   TOGGLE_SIDEBAR,
   TOGGLE_LOADING,
@@ -8,6 +9,8 @@ import {
   GET_IX_FACILITIES,
   GET_NETWORKS
 } from '../store/actionTypes'
+import { FOCUS_ON } from '../events'
+import { MAP_BOUNDS, MAP_FOCUS_ON, MAP_POINTS } from '../store/actionTypes/map'
 
 export default {
   data: () => ({
@@ -20,7 +23,13 @@ export default {
       getNetworksData: 'getNetworksData',
       getPremiumData: 'getPremiumData',
       getSubseaData: 'getSubseaData',
-      getIxpsData: 'getIxpsData'
+      getIxpsData: 'getIxpsData',
+      // --- Services for retrieving navbar item selection - start ---
+      getPremiumSelectedData: 'getPremiumSelectedData',
+      getOrganizationID: 'getOrganizationID',
+      getPremiumSelectedBoundsData: 'getPremiumSelectedBoundsData',
+      getPremiumSelectedFeaturesData: 'getPremiumSelectedFeaturesData'
+      // --- Services for retrieving navbar item selection - end ---
     }),
     clearSubsea() {
       this.$store.commit(`${GET_SUBMARINE}`, [])
@@ -104,7 +113,56 @@ export default {
       } finally {
         this.$store.commit(`${TOGGLE_LOADING}`, false)
       }
+    },
+    async handleItemListSelection({ option, id }) {
+      console.log(option, id)
+      this.closeUnwantedOpenMenus()
+      switch (option.toLowerCase()) {
+        case 'partners':
+          this.handlePremiumPartnerSelection(id)
+          break
+        case 'submarine':
+          break
+        case 'ixps':
+          break
+        case 'networks':
+          break
+        case 'datacenters':
+          break
+        case 'data centers':
+          break
+      }
+    },
+    async handlePremiumPartnerSelection(id) {
+      if (!id) throw { message: 'MISSING ID PARAMETER'}
+
+      // RETRIEVING BOUNDS FOR MAP ZOOM IN
+      const bounds = await this.getPremiumSelectedBoundsData(id)
+      if (bounds) {
+        // SETTING BOUNDS
+        await this.$store.commit(`${MAP_BOUNDS}`, bounds)
+        // RETRIEVING FEATURES
+        const points = await this.getPremiumSelectedFeaturesData(id)
+        if (!points) return
+        // SETTING POINTS
+        await this.$store.commit(`${MAP_POINTS}`, points.features)
+
+        // IF THE LENGTH IS EXACTLY 1.
+        // I NEED TO GET THE ORG INFORMATION FOR OPENING THE SIDEBAR
+        if (points.features && points.features.length === 1) {
+          await this.getPremiumSelectedData(points.features[0].properties.fac_id)
+        }
+
+        // GETTING ORGANIZATION ID
+        // THIS WILL ALLOW ME TO SET THE APPROPIATE FOCUS IN THE MAP
+        const orgID = await this.getOrganizationID(id)
+        if (orgID) {
+          const data = { id: orgID, type: 'org' }
+          this.$store.commit(`${MAP_FOCUS_ON}`, data)
+          bus.$emit(`${FOCUS_ON}`, data)
+        }
+      }
     }
-  },
+  }
 }
 </script>

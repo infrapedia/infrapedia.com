@@ -24,7 +24,7 @@ import IFooter from '@/components/Footer'
 import ISidebar from '@/components/Sidebar'
 import IBuyDialog from '@/components/dialogs/BuyDialog'
 import IIssuesDialog from '@/components/dialogs/IssuesDialog'
-import { BUY_CAPACITY, EDIT_CABLE } from '../events'
+import { BUY_CAPACITY, EDIT_CABLE } from '../events/sidebar'
 import {
   BUY_TYPE,
   TOGGLE_BUY_DIALOG,

@@ -68,7 +68,7 @@
       </el-col>
       <el-col :span="12" class="p2">
         <a
-          class="inline-block text-bold underline mt3 mb0"
+          class="inline-block text-bold underline mt3 mb0 truncate"
           :href="info.website"
           target="_blank"
           v-text="info.website"
@@ -161,7 +161,7 @@
 </template>
 
 <script>
-import { BUY_CAPACITY, REPORT_ISSUE } from '../../events'
+import { BUY_CAPACITY, REPORT_ISSUE } from '../../events/sidebar'
 
 export default {
   name: 'IDataCenter',

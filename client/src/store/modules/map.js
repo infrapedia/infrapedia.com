@@ -2,6 +2,9 @@
 import { getSelectionData, getFacility } from '../../services/api/data'
 
 const state = {
+  bounds: [],
+  points: [],
+  focus: null,
   filter: ['all'],
   currentSelection: null
 }
@@ -12,6 +15,15 @@ const mutations = {
   },
   CURRENT_MAP_FILTER(state, filter) {
     state.filter = filter
+  },
+  MAP_BOUNDS(state, bounds) {
+    state.bounds = bounds
+  },
+  MAP_FOCUS_ON(state, focus) {
+    state.focus = focus
+  },
+  MAP_POINTS(state, points) {
+    state.points = points
   }
 }
 

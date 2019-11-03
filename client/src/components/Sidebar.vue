@@ -57,7 +57,8 @@ import { bus } from '../helpers/eventBus'
 import * as modes from '../config/sidebarModes'
 import { createBitlyURL } from '../services/api/bitly'
 import copyToClipboard from '../helpers/copyToClipboard'
-import { BUY_CAPACITY, EDIT_CABLE, CLEAR_SELECTION, REPORT_ISSUE } from '../events'
+import { BUY_CAPACITY, EDIT_CABLE, REPORT_ISSUE } from '../events/sidebar'
+import { CLEAR_SELECTION } from '../events'
 
 export default {
   name: 'ISidebar',

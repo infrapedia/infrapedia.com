@@ -60,7 +60,8 @@ import {
   TITLE_BY_SELECTION,
   TOGGLE_THEME,
   CABLE_SELECTED,
-  CLEAR_SELECTION
+  CLEAR_SELECTION,
+  FOCUS_ON
 } from '../events'
 import {
   TOGGLE_DARK,
@@ -102,13 +103,17 @@ export default {
       isMobile: state => state.isMobile,
       isDrawing: state => state.isDrawing,
       currentMapFilter: state => state.map.filter,
-      currentSelection: state => state.map.currentSelection
+      currentSelection: state => state.map.currentSelection,
+      bounds: state => state.map.bounds,
+      focus: state => state.map.focus,
+      points: state => state.map.points
     })
   },
   mounted() {
     this.map = this.addMapEvents(this.initMapLayers(this.createMap()))
-    bus.$on(`${TOGGLE_THEME}`, this.toggleDarkMode)
-    bus.$on(`${CLEAR_SELECTION}`, this.disableCableHighlight)
+    bus.$on(CLEAR_SELECTION, this.disableCableHighlight)
+    bus.$on(TOGGLE_THEME, this.toggleDarkMode)
+    bus.$on(FOCUS_ON, this.handleFocusOn)
   },
   methods: {
     ...mapActions({
@@ -482,11 +487,13 @@ export default {
       //   feature.cable_id ? feature.cable_id : cable.cable_id
       // ])
     },
-    disableCableHighlight() {
-      console.warn('Entered here')
-
+    /**
+     * @param closesSidebar { Boolean } - If besides removing cables highlight it also closes the sidebar
+     */
+    disableCableHighlight(closesSidebar = true) {
       const { map } = this
-      this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
+
+      if (closesSidebar) this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, ['in', 'cable_id', false])
       this.map.setFilter(mapConfig.highlightLayer, this.currentMapFilter)
       map.setPaintProperty(
@@ -526,9 +533,21 @@ export default {
         selectionID = buildingPoints[0].properties.fac_id
       }
 
-      selectionID ? this.handleFacilitySelection(this.getFacilityData(selectionID)) : null
-      await this.handleCablesSelection(!!cables.length, cables)
+      // Display or hide the clusters
       await this.handleClustersSelection(clustersFeats)
+
+      // If in the region selected there is a point or a building
+      // Call the api to retrieve that facility data and open the sidebar
+      if (selectionID) {
+        await this.handleFacilitySelection(this.getFacilityData(selectionID))
+      }
+
+      // If there is no clusters or didn't select a building/point
+      // in the map region clicked then I can say ...
+      // That is safe to call the cables selection handler
+      if (!clustersFeats.length && !selectionID) {
+        this.handleCablesSelection(!!cables.length, cables)
+      }
     },
     handleCablesSelection(bool, cables) {
       switch(bool) {
@@ -579,6 +598,8 @@ export default {
       this.$store.commit(`${CURRENT_SELECTION}`, data)
       // Opening the sidebar
       this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
+      // Removing cables highlight if any
+      this.disableCableHighlight(false)
     },
     /**
      * @param e { Object } Map's clicking 'points-layer' Event
@@ -776,6 +797,77 @@ export default {
           console.error(err)
           break
       }
+    },
+    /**
+     * @param id { Array }
+     * @param type { String }
+     */
+    async handleFocusOn({ id, type }) {
+      if (!id) {
+        throw {
+          message: `Expected @param id to be Array, but found ${typeof id}`
+        }
+      } else if (!type) {
+        throw {
+          message: `Expected @param type to be string, but found ${typeof type}`
+        }
+      }
+
+      switch (type.toLowerCase()) {
+        case 'org':
+          this.handleOrganizationFocus(id)
+          break
+      }
+    },
+    async handleOrganizationFocus(id) {
+      const { map, points } = this
+      const clustersSource = map.getSource(mapConfig.clusterPts)
+      const featureCollection = JSON.parse(JSON.stringify(points))
+
+      if (featureCollection.length && clustersSource) {
+        clustersSource.setData({ features: featureCollection })
+      } else throw { message: `FOUND EXCEPTION: ${id}`}
+
+      // const tilesLoaded = () => {
+      //   const feats = map.querySourceFeatures(mapConfig.data.source2, {
+      //     filter: ['in', 'id', id[0]],
+      //     sourceLayer: mapConfig.data.sourceLayer,
+      //     validate: false
+      //   })
+
+      //   console.log(feats)
+
+      //   if (feats.length) {
+      //     const prop = feats[0].properties
+
+      //     this.disableCableHighlight()
+      //     this.mapTooltip = {
+      //       id: parseInt(prop.cable_id),
+      //       name: prop.Name
+      //     }
+      //   }
+      //   map.off('render', tilesLoaded)
+      // }
+      // if (featureCollection.length && clustersSource) {
+      //   console.log('------------- ENTERED HERE -------------------')
+      // } else if (id.length && map.areTilesLoaded()) {
+      //   map.on('render', tilesLoaded)
+      // } else if (
+      //   !id.length &&
+      //   featureCollection.length === 1 &&
+      //   featureCollection.features[0].properties.fac_id !== undefined
+      // ) {
+      //   await this.getFacilityData(id)
+      // }
+
+      map.fitBounds(this.bounds, {
+        padding: this.isMobile ? 10 : 50,
+        animate: true,
+        speed: 1.25,
+        pan: {
+          duration: 30
+        }
+      })
     }
   }
 }
