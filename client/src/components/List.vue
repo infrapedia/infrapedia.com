@@ -1,5 +1,5 @@
 <template>
-  <div class="w120 no-border no-outline no-selectable">
+  <div class="w120 no-border no-outline no-selectable transition-all">
     <div class="w-fit-full p4">
       <el-input
         class="w110"
@@ -19,6 +19,7 @@
     </div>
 
     <ul
+      v-if="!isSearching"
       role="list"
       class="no-outline no-selectable"
       v-loading="isLoading"
@@ -31,25 +32,46 @@
           :class="{ dark, light: !dark }"
           @click="$emit('click', option)"
         >
-          {{ option.name || 'Placeholder' }}
+          {{ option.name }}
         </li>
-        <el-divider :key="i + ' ' + option.name" class="m0" />
         <el-button
           v-if="isFinal(i)"
           :loading="isLoading"
           :key="option.name + ' ' + i"
           class="w-fit-full p4 h20 no-border seamless-hoverbg"
-          @click="$emit('load-items', option)"
+          @click="$emit(LOAD_MORE, option)"
         >
           Load more
         </el-button>
       </template>
     </ul>
+
+      <transition-group
+        v-else
+        tag="ul"
+        role="list"
+        class="no-outline no-selectable"
+        mode="out-in"
+        name="fade"
+      >
+      <template v-for="(option, i) in searchResults">
+        <li
+          :key="i"
+          role="listitem"
+          class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg"
+          :class="{ dark, light: !dark }"
+          @click="$emit('click', option)"
+        >
+          {{ option.name }}
+        </li>
+      </template>
+    </transition-group>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import { LOAD_MORE } from '../events'
 
 export default {
   name: 'IList',
@@ -61,7 +83,9 @@ export default {
   },
   data: () => ({
     search: '',
-    searchResults: []
+    LOAD_MORE,
+    searchResults: [],
+    isSearching: false
   }),
   computed: {
     ...mapState({
@@ -72,40 +96,36 @@ export default {
       isLoading: state => state.isLoading,
       submarine: state => state.submarine,
       dataCenters: state => state.dataCenters
-    })
-  },
-  methods: {
+    }),
     optionsGiver() {
       const option = this.option.toLowerCase()
-      let data = []
-      switch (option) {
-        case 'networks':
-          data = this.networks
-          break
-        case 'submarine':
-          data = this.submarine
-          break
-        case 'premium':
-          data = this.premium
-          break
-        case 'ixps':
-          data = this.ixps
-          break
-        default:
-          data = this.dataCenters
-          break
-      }
-      return data
-    },
+
+      if (option === 'partners') return this.premium
+      else if (option === 'submarine') return this.submarine
+      else if (option === 'ixps') return this.ixps
+      else if (option === 'datacenters') return this.dataCenters
+      else return this.networks
+    }
+  },
+  methods: {
     isFinal(num) {
-      return num + 1 === this.optionsGiver
+      return num + 1 === this.optionsGiver.length
     },
     clearSearch() {
+      this.isSearching = false
       this.search = ''
       this.searchResults = []
     },
     filterSearch(search) {
-      console.log(search)
+      if (!search || search.length <= 1) {
+        this.isSearching = false
+        return
+      }
+      this.isSearching = true
+
+      this.searchResults = this.optionsGiver.filter(option =>
+        option.name.toLowerCase().includes(search.toLowerCase())
+      )
     }
   }
 }

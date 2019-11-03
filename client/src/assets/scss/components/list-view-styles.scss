@@ -5,6 +5,6 @@ ul[role="list"] {
   overflow: scroll;
   max-height: 28rem;
   li[role="listitem"] {
-
+    border-bottom: 1px solid $grey-ligthen;
   }
 }

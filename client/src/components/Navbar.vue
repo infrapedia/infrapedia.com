@@ -16,16 +16,22 @@
                 class="inline-block no-selectable relative"
                 role="listitem"
               >
-                <el-popover class="no-selectable" trigger="manual" v-model="isPartnersMenuOpen">
+                <el-popover
+                  trigger="manual"
+                  v-model="isPartnersMenuOpen"
+                  :visible-arrow="false"
+                >
                   <i-list
                     option="partners"
                     @click="getSelectedInfo"
-                    @keyup.enter.space="getSelectInfo" />
+                    @load-more="handleLoadMoreItems('partners')"
+                  />
                   <div
                     slot="reference"
                     aria-haspopup="true"
                     class="list-item pr4 pl4 no-selectable"
                     @click.stop="handlePremiumSelection"
+                    @keyup.enter.space="handlePremiumSelection"
                   >
                     Our Partners
                     <i
@@ -41,13 +47,23 @@
                 class="inline-block no-selectable relative"
                 role="listitem"
               >
-                <el-popover trigger="manual" v-model="isSubmarineMenuOpen">
-                  <i-list option="submarine" @click="getSelectedInfo" />
+                <el-popover
+                  trigger="manual"
+                  :visible-arrow="false"
+                  v-model="isSubmarineMenuOpen"
+                  @after-leave="clearSubsea"
+                >
+                  <i-list
+                    option="submarine"
+                    @click="getSelectedInfo"
+                    @load-more="handleLoadMoreItems('submarine')"
+                  />
                     <div
                       slot="reference"
                       aria-haspopup="true"
                       class="list-item pr4 pl4 no-selectable"
-                      @click.stop="toggleMenu('submarine')"
+                      @click.stop="handleSubmarineSelection"
+                      @keyup.enter.space="handleSubmarineSelection"
                     >
                       Submarine Cables
                       <i
@@ -63,13 +79,23 @@
                 class="inline-block no-selectable relative"
                 role="listitem"
               >
-                <el-popover trigger="manual" v-model="isDataCentersMenuOpen">
-                <i-list option="dataCenters" @click="getSelectedInfo" />
+                <el-popover
+                  trigger="manual"
+                  :visible-arrow="false"
+                  v-model="isDataCentersMenuOpen"
+                  @after-leave="clearDataCenters"
+                >
+                <i-list
+                  option="dataCenters"
+                  @click="getSelectedInfo"
+                  @load-more="handleLoadMoreItems('dataCenters')"
+                />
                   <div
                     slot="reference"
                     aria-haspopup="true"
                     class="list-item pr4 pl4 no-selectable"
-                    @click.stop="toggleMenu('dataCenters')"
+                    @click.stop="handleDataCenterSelection"
+                    @keyup.enter.space="handleDataCenterSelection"
                   >
                     Data Centers
                     <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
@@ -82,13 +108,23 @@
                 class="inline-block no-selectable relative"
                 role="listitem"
               >
-                <el-popover trigger="manual" v-model="isIxpsMenuOpen">
-                  <i-list option="ixps" @click="getSelectedInfo" />
+                <el-popover
+                  trigger="manual"
+                  :visible-arrow="false"
+                  v-model="isIxpsMenuOpen"
+                  @after-leave="clearIxps"
+                >
+                  <i-list
+                    option="ixps"
+                    @click="getSelectedInfo"
+                    @load-more="handleLoadMoreItems('ixps')"
+                  />
                   <div
                     slot="reference"
                     aria-haspopup="true"
                     class="list-item pr6 pl6 no-selectable"
-                    @click.stop="toggleMenu('ixps')"
+                    @click.stop="handleIxpsSelection"
+                    @keyup.enter.space="handleIxpsSelection"
                   >
                     IXPs
                     <i
@@ -104,13 +140,23 @@
                 class="inline-block no-selectable relative"
                 role="listitem"
               >
-                <el-popover trigger="manual" v-model="isNetworsMenuOpen">
-                  <i-list option="networks" @click="getSelectedInfo" />
+                <el-popover
+                  trigger="manual"
+                  :visible-arrow="false"
+                  v-model="isNetworsMenuOpen"
+                  @after-leave="clearNetworks"
+                >
+                  <i-list
+                    option="networks"
+                    @click="getSelectedInfo"
+                    @load-more="handleLoadMoreItems('networks')"
+                  />
                     <div
                       slot="reference"
                       class="list-item pr4 pl4 no-selectable"
                       aria-haspopup="true"
-                      @click.stop="toggleMenu('networks')"
+                      @click.stop="handleNetworksSelection"
+                      @keyup.enter.space="handleNetworksSelection"
                     >
                       Networks
                       <i
