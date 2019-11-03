@@ -274,7 +274,6 @@ export default {
 
       map.on('click', this.handleMapClick)
       map.on('touchend', this.handleMobileTouchEnd)
-      map.on('click', mapConfig.pointsLayer, this.handlePointsLayerClick)
 
       map.on('draw.create', this.handleDraw)
       map.on('draw.delete', this.handleDraw)
@@ -604,9 +603,6 @@ export default {
     /**
      * @param e { Object } Map's clicking 'points-layer' Event
      */
-    handlePointsLayerClick(e) {
-      console.log('Clicked points layer', e)
-    },
     toggleDarkMode() {
       this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
       const style = this.dark ? mapConfig.darkBasemap : mapConfig.default
