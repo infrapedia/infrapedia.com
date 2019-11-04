@@ -1,5 +1,8 @@
 <template>
-  <div class="w120 no-border no-outline no-selectable transition-all">
+  <div
+    class="w120 no-border no-outline no-selectable transition-all"
+    v-loading="isLoading"
+  >
     <div class="w-fit-full p4">
       <el-input
         class="w110"
