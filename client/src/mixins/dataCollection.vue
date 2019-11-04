@@ -28,7 +28,8 @@ export default {
       getPremiumSelectedData: 'getPremiumSelectedData',
       getOrganizationID: 'getOrganizationID',
       getPremiumSelectedBoundsData: 'getPremiumSelectedBoundsData',
-      getPremiumSelectedFeaturesData: 'getPremiumSelectedFeaturesData'
+      getPremiumSelectedFeaturesData: 'getPremiumSelectedFeaturesData',
+      getSubseaCableBoundsData: 'getSubseaCableBoundsData'
       // --- Services for retrieving navbar item selection - end ---
     }),
     clearSubsea() {
@@ -123,6 +124,7 @@ export default {
           this.handlePremiumPartnerSelection(id)
           break
         case 'submarine':
+          this.handleSubmarineCablesSelection(id)
           break
         case 'ixps':
           break
@@ -161,6 +163,15 @@ export default {
           this.$store.commit(`${MAP_FOCUS_ON}`, data)
           bus.$emit(`${FOCUS_ON}`, data)
         }
+      }
+    },
+    async handleSubmarineCablesSelection(id) {
+      if (!id) throw { message: 'MISSING ID PARAMETER'}
+      const bounds = await this.getSubseaCableBoundsData(id)
+
+      if (bounds) {
+        await this.$store.commit(`${MAP_BOUNDS}`, bounds)
+        bus.$emit(`${FOCUS_ON}`, { id, type: 'cable' })
       }
     }
   }

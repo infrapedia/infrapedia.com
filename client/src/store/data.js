@@ -7,7 +7,8 @@ import {
   getFacility,
   getPremiumSelectedBounds,
   getPremiumSelectedFeatures,
-  getOrganization
+  getOrganization,
+  getSubseaCableBounds
 } from '../services/api/data'
 import * as types from './actionTypes'
 
@@ -61,6 +62,9 @@ export const dataMutations = {
   [types.GET_CABLES_BY_ORG](state) {
     return state
   },
+  [types.GET_SUBSEA_CABLE](state) {
+    return state
+  }
 }
 
 export const dataActions = {
@@ -116,6 +120,15 @@ export const dataActions = {
     if (!res) throw NO_RES_ERR
     commit(`${types.GET_CABLES_BY_ORG}`)
     return res
-  }
+  },
+  // --- NAVBAR PREMIUM ITEM SELECTION --- END
+
+  // --- NAVBAR SUBMARINE CABLES SELECTION --- START
+  async getSubseaCableBoundsData({ commit }, id) {
+    const res = await getSubseaCableBounds(id)
+    if (!res) throw NO_RES_ERR
+    commit(`${types.GET_SUBSEA_CABLE}`)
+    return res
+  },
   // --- NAVBAR PREMIUM ITEM SELECTION --- END
 }

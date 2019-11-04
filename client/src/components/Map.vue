@@ -64,6 +64,7 @@ import {
   FOCUS_ON
 } from '../events'
 import {
+  TOGGLE_LOADING,
   TOGGLE_DARK,
   LOCATE_USER,
   TOGGLE_SIDEBAR
@@ -124,7 +125,8 @@ export default {
   methods: {
     ...mapActions({
       getFacilityData: 'map/getFacilityData',
-      changeSidebarMode: 'changeSidebarMode'
+      changeSidebarMode: 'changeSidebarMode',
+      getCurrentSelectionData: 'map/getCurrentSelectionData'
     }),
     createMap() {
       mapboxgl.accessToken = mapConfig.mapToken
@@ -825,7 +827,53 @@ export default {
         case 'org':
           this.handleOrganizationFocus(id)
           break
+        case 'cable':
+          this.handleCableFocus(id)
+          break
       }
+    },
+    async handleCableFocus(id) {
+      const { map, bounds, isMobile } = this
+
+      const loadTiles = async () => {
+        if (!map.areTilesLoaded()) return
+
+        const features = map.querySourceFeatures(mapConfig.data.source2, {
+          sourceLayer: mapConfig.data.sourceLayer,
+          filter: ['in', 'cable_id', id]
+        })
+
+        if (features.length) {
+          const collection = { features }
+          this.highlightCable(collection)
+          map.off('render', loadTiles)
+        } else {
+          try {
+            await this.$store.commit(`${TOGGLE_LOADING}`, true)
+            // Retrieving cable information and saving it to the store
+            await this.getCurrentSelectionData(id).then(() => {
+              this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
+            })
+            this.highlightCable({ cable_id: id })
+          } catch {
+            // Ignore
+          } finally {
+            this.$store.commit(`${TOGGLE_LOADING}`, false)
+          }
+          map.off('render', loadTiles)
+        }
+      }
+
+      map.fitBounds(bounds, {
+        padding: isMobile ? 10 : 50,
+        animate: true,
+        speed: 1.25,
+        pan: {
+          duration: 30
+        }
+      })
+
+      map.on('render', loadTiles)
     },
     async handleOrganizationFocus(id) {
       const { map, points } = this

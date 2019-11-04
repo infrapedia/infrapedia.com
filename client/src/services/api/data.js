@@ -61,3 +61,13 @@ export const getOrganization = async id => {
   return res
 }
 // --- NAVBAR PREMIUM LIST ITEM SELECTION --- END
+
+// --- NAVBAR SUBMARINE CABLE SELECTION --- START
+
+export const getSubseaCableBounds = async id => {
+  if (!id) throw ID_PARAM_ERROR
+  const res = await $axios.get(`/cable/bboxbyid/${id}`)
+  return res
+}
+
+// --- NAVBAR SUBMARINE CABLE SELECTION --- END
