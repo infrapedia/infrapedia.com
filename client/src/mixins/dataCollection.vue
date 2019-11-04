@@ -14,7 +14,7 @@ import { MAP_FOCUS_ON, MAP_POINTS } from '../store/actionTypes/map'
 
 export default {
   data: () => ({
-    quantity: 20
+    quantity: 1000
   }),
   methods: {
     ...mapActions({
@@ -47,44 +47,56 @@ export default {
       this.$store.commit(`${GET_NETWORKS}`, [])
     },
     async handlePremiumSelection(opensMenu = true) {
-      await this.getPremiumData()
+      if (!this.$store.state.premium.length) await this.getPremiumData()
       if (opensMenu) await this.toggleMenu('partners')
     },
     async handleSubmarineSelection(opensMenu = true) {
       if (opensMenu) {
+        await this.$store.commit(`${TOGGLE_LOADING}`, true)
         // I'm assuming that's opening the menu for the first time
         // Resetting quantity of items to load
         this.quantity = 20
         await this.toggleMenu('submarine')
       }
-      await this.getSubseaData(this.quantity)
+      await this.getSubseaData(this.quantity).then(() => {
+        this.$store.commit(`${TOGGLE_LOADING}`, false)
+      })
     },
     async handleDataCenterSelection(opensMenu = true) {
       if (opensMenu) {
+        await this.$store.commit(`${TOGGLE_LOADING}`, true)
         // I'm assuming that's opening the menu for the first time
         // Resetting quantity of items to load
         this.quantity = 20
         await this.toggleMenu('dataCenters')
       }
-      await this.getDataCentersData(this.quantity)
+      await this.getDataCentersData(this.quantity).then(() => {
+        this.$store.commit(`${TOGGLE_LOADING}`, false)
+      })
     },
     async handleIxpsSelection(opensMenu = true) {
       if (opensMenu) {
+        await this.$store.commit(`${TOGGLE_LOADING}`, true)
         // I'm assuming that's opening the menu for the first time
         // Resetting quantity of items to load
         this.quantity = 20
         await this.toggleMenu('ixps')
       }
-      await this.getIxpsData(this.quantity)
+      await this.getIxpsData(this.quantity).then(() => {
+        this.$store.commit(`${TOGGLE_LOADING}`, false)
+      })
     },
     async handleNetworksSelection(opensMenu = true) {
       if (opensMenu) {
+        await this.$store.commit(`${TOGGLE_LOADING}`, true)
         // I'm assuming that's opening the menu for the first time
         // Resetting quantity of items to load
-        this.quantity = 20
+        this.quantity = 1000
         await this.toggleMenu('networks')
       }
-      await this.getNetworksData(this.quantity)
+      await this.getNetworksData(this.quantity).then(() => {
+        this.$store.commit(`${TOGGLE_LOADING}`, false)
+      })
     },
     async handleLoadMoreItems(option) {
       this.quantity += 50
@@ -124,22 +136,22 @@ export default {
 
       switch (option.toLowerCase()) {
         case 'partners':
-          this.handlePremiumPartnerItemSelected(id)
+          await this.handlePremiumPartnerItemSelected(id)
           break
         case 'submarine':
-          this.handleSubmarineCableItemSelected(id)
+          await this.handleSubmarineCableItemSelected(id)
           break
         case 'ixps':
-          this.handleFacilityItemSelected({ id, type: 'ix' })
+          await this.handleFacilityItemSelected({ id, type: 'ix' })
           break
         case 'networks':
-          this.handleFacilityItemSelected({ id, type: 'net' })
+          await this.handleFacilityItemSelected({ id, type: 'net' })
           break
         case 'datacenters':
-          this.handleDataCenterItemSelected(id)
+          await this.handleDataCenterItemSelected(id)
           break
         case 'data centers':
-          this.handleDataCenterItemSelected(id)
+          await this.handleDataCenterItemSelected(id)
           break
       }
     },

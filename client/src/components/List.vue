@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="w120 no-border no-outline no-selectable transition-all"
-    v-loading="isLoading"
-  >
+  <div class="w120 no-border no-outline no-selectable transition-all">
     <div class="w-fit-full p4">
       <el-input
         class="w110"
@@ -21,54 +18,57 @@
       </el-input>
     </div>
 
-    <ul
-      v-if="!isSearching"
-      role="list"
-      class="no-outline no-selectable"
-      v-loading="isLoading"
-    >
-      <template v-for="(option, i) in optionsGiver">
-        <li
-          :key="i"
-          role="listitem"
-          class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg"
-          :class="{ dark, light: !dark }"
-          @click="emitSelected(option)"
-        >
-          {{ option.name }}
-        </li>
-        <el-button
-          v-if="isFinal(i) && !isPremiumPartners"
-          :loading="isLoading"
-          :key="option.name + ' ' + i"
-          class="w-fit-full p4 h20 no-border seamless-hoverbg"
-          @click="$emit(LOAD_MORE, option)"
-        >
-          Load more
-        </el-button>
-      </template>
-    </ul>
-
-      <transition-group
-        v-else
-        tag="ul"
+    <div v-if="isLoading" v-loading="isLoading" class="h112" />
+    <div v-else>
+      <ul
+        v-if="!isSearching"
         role="list"
         class="no-outline no-selectable"
-        mode="out-in"
-        name="fade"
+        v-loading="isLoading"
       >
-      <template v-for="(option, i) in searchResults">
-        <li
-          :key="i"
-          role="listitem"
-          class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg"
-          :class="{ dark, light: !dark }"
-          @click="emitSelected(option)"
+        <template v-for="(option, i) in optionsGiver">
+          <li
+            :key="i"
+            role="listitem"
+            class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg"
+            :class="{ dark, light: !dark }"
+            @click="emitSelected(option)"
+          >
+            {{ option.name }}
+          </li>
+          <el-button
+            v-if="isFinal(i) && !isPremiumPartners"
+            :loading="isLoading"
+            :key="option.name + ' ' + i"
+            class="w-fit-full p4 h20 no-border seamless-hoverbg"
+            @click="$emit(LOAD_MORE, option)"
+          >
+            Load more
+          </el-button>
+        </template>
+      </ul>
+
+        <transition-group
+          v-else
+          tag="ul"
+          role="list"
+          class="no-outline no-selectable"
+          mode="out-in"
+          name="fade"
         >
-          {{ option.name }}
-        </li>
-      </template>
-    </transition-group>
+        <template v-for="(option, i) in searchResults">
+          <li
+            :key="i"
+            role="listitem"
+            class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg"
+            :class="{ dark, light: !dark }"
+            @click="emitSelected(option)"
+          >
+            {{ option.name }}
+          </li>
+        </template>
+      </transition-group>
+    </div>
   </div>
 </template>
 
