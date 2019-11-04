@@ -48,12 +48,14 @@
                 role="listitem"
               >
                 <el-popover
+                  tabindex="0"
                   trigger="manual"
                   :visible-arrow="false"
                   v-model="isSubmarineMenuOpen"
                   @after-leave="clearSubsea"
                 >
                   <i-list
+                    tabindex="0"
                     option="submarine"
                     @click="handleItemListSelection"
                     @load-more="handleLoadMoreItems('submarine')"

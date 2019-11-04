@@ -265,11 +265,15 @@
 .seamless-hoverbg {
   @extend .transition-all;
   &.light {
+    &:focus,
+    &:focus-within,
     &:hover {
       background-color: lighten(rgba(0,0,0,0.2), 80%);
     }
   }
   &.dark {
+    &:focus,
+    &:focus-within,
     &:hover {
       background-color: lighten(rgba(0,0,0, 0.2), 12%);
     }

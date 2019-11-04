@@ -6,6 +6,8 @@
         placeholder="Search"
         :class="{ dark }"
         v-model="search"
+        autofocus
+        tabindex="0"
         @input="filterSearch"
       >
         <fa slot="prefix" :icon="['fas', 'search']" class="mt3 ml1" />
@@ -29,10 +31,12 @@
         <template v-for="(option, i) in optionsGiver">
           <li
             :key="i"
+            tabindex="0"
             role="listitem"
-            class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg"
+            class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
             :class="{ dark, light: !dark }"
             @click="emitSelected(option)"
+            @keyup.enter.space="emitSelected(option)"
           >
             {{ option.name }}
           </li>
@@ -42,6 +46,7 @@
             :key="option.name + ' ' + i"
             class="w-fit-full p4 h20 no-border seamless-hoverbg"
             @click="$emit(LOAD_MORE, option)"
+            @keyup.enter.space="$emit(LOAD_MORE, option)"
           >
             Load more
           </el-button>
@@ -59,10 +64,12 @@
         <template v-for="(option, i) in searchResults">
           <li
             :key="i"
+            tabindex="0"
             role="listitem"
-            class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg"
+            class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
             :class="{ dark, light: !dark }"
             @click="emitSelected(option)"
+            @keyup.enter.space="emitSelected(option)"
           >
             {{ option.name }}
           </li>
