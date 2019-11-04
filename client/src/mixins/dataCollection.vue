@@ -119,8 +119,9 @@ export default {
       }
     },
     async handleItemListSelection({ option, id }) {
-      console.log(option, id)
+      // console.log(option, id)
       this.closeUnwantedOpenMenus()
+
       switch (option.toLowerCase()) {
         case 'partners':
           this.handlePremiumPartnerItemSelected(id)
@@ -129,9 +130,10 @@ export default {
           this.handleSubmarineCableItemSelected(id)
           break
         case 'ixps':
-          this.handleIxpsItemSelected({ id, type: 'ix' })
+          this.handleFacilityItemSelected({ id, type: 'ix' })
           break
         case 'networks':
+          this.handleFacilityItemSelected({ id, type: 'net' })
           break
         case 'datacenters':
           this.handleDataCenterItemSelected(id)
@@ -182,7 +184,7 @@ export default {
       bus.$emit(`${FOCUS_ON}`, { id, type: 'fac' })
     },
 
-    async handleIxpsItemSelected({ id, type }) {
+    async handleFacilityItemSelected({ id, type }) {
       if (!id) throw { message: 'MISSING ID PARAMETER'}
 
       // RETRIEVING AND SAVING POINTS TO THE STORE
