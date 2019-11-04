@@ -10,7 +10,7 @@ import {
   GET_NETWORKS
 } from '../store/actionTypes'
 import { FOCUS_ON } from '../events'
-import { MAP_BOUNDS, MAP_FOCUS_ON, MAP_POINTS } from '../store/actionTypes/map'
+import { MAP_FOCUS_ON, MAP_POINTS } from '../store/actionTypes/map'
 
 export default {
   data: () => ({
@@ -29,7 +29,9 @@ export default {
       getOrganizationID: 'getOrganizationID',
       getPremiumSelectedBoundsData: 'getPremiumSelectedBoundsData',
       getPremiumSelectedFeaturesData: 'getPremiumSelectedFeaturesData',
-      getSubseaCableBoundsData: 'getSubseaCableBoundsData'
+      getSubseaCableBoundsData: 'getSubseaCableBoundsData',
+      getFacilityBoundsData: 'getFacilityBoundsData',
+      getFacilityPointsData: 'getFacilityPointsData'
       // --- Services for retrieving navbar item selection - end ---
     }),
     clearSubsea() {
@@ -121,58 +123,71 @@ export default {
       this.closeUnwantedOpenMenus()
       switch (option.toLowerCase()) {
         case 'partners':
-          this.handlePremiumPartnerSelection(id)
+          this.handlePremiumPartnerItemSelected(id)
           break
         case 'submarine':
-          this.handleSubmarineCablesSelection(id)
+          this.handleSubmarineCableItemSelected(id)
           break
         case 'ixps':
+          this.handleIxpsItemSelected({ id, type: 'ix' })
           break
         case 'networks':
           break
         case 'datacenters':
+          this.handleDataCenterItemSelected(id)
           break
         case 'data centers':
+          this.handleDataCenterItemSelected(id)
           break
       }
     },
-    async handlePremiumPartnerSelection(id) {
+    async handlePremiumPartnerItemSelected(id) {
       if (!id) throw { message: 'MISSING ID PARAMETER'}
 
-      // RETRIEVING BOUNDS FOR MAP ZOOM IN
-      const bounds = await this.getPremiumSelectedBoundsData(id)
-      if (bounds) {
-        // SETTING BOUNDS
-        await this.$store.commit(`${MAP_BOUNDS}`, bounds)
-        // RETRIEVING FEATURES
-        const points = await this.getPremiumSelectedFeaturesData(id)
-        if (!points) return
-        // SETTING POINTS
-        await this.$store.commit(`${MAP_POINTS}`, points.features)
+      // SAVING BOUNDS FOR MAP ZOOM IN
+      await this.getPremiumSelectedBoundsData(id)
+      // RETRIEVING FEATURES
+      const points = await this.getPremiumSelectedFeaturesData(id)
+      if (!points) return
+      // SETTING POINTS
+      await this.$store.commit(`${MAP_POINTS}`, points.features)
 
-        // IF THE LENGTH IS EXACTLY 1.
-        // I NEED TO GET THE ORG INFORMATION FOR OPENING THE SIDEBAR
-        if (points.features && points.features.length === 1) {
-          await this.getPremiumSelectedData(points.features[0].properties.fac_id)
-        }
+      // IF THE LENGTH IS EXACTLY 1.
+      // I NEED TO GET THE ORG INFORMATION FOR OPENING THE SIDEBAR
+      if (points.features && points.features.length === 1) {
+        await this.getPremiumSelectedData(points.features[0].properties.fac_id)
+      }
 
-        // GETTING ORGANIZATION ID
-        const orgID = await this.getOrganizationID(id)
-        if (orgID) {
-          const data = { id: orgID, type: 'org' }
-          this.$store.commit(`${MAP_FOCUS_ON}`, data)
-          bus.$emit(`${FOCUS_ON}`, data)
-        }
+      // GETTING ORGANIZATION ID
+      const orgID = await this.getOrganizationID(id)
+      if (orgID) {
+        const data = { id: orgID, type: 'org' }
+        this.$store.commit(`${MAP_FOCUS_ON}`, data)
+        bus.$emit(`${FOCUS_ON}`, data)
       }
     },
-    async handleSubmarineCablesSelection(id) {
+    async handleSubmarineCableItemSelected(id) {
       if (!id) throw { message: 'MISSING ID PARAMETER'}
-      const bounds = await this.getSubseaCableBoundsData(id)
 
-      if (bounds) {
-        await this.$store.commit(`${MAP_BOUNDS}`, bounds)
-        bus.$emit(`${FOCUS_ON}`, { id, type: 'cable' })
-      }
+      // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
+      await this.getSubseaCableBoundsData(id)
+      bus.$emit(`${FOCUS_ON}`, { id, type: 'cable' })
+    },
+
+    async handleDataCenterItemSelected(id) {
+      if (!id) throw { message: 'MISSING ID PARAMETER'}
+
+      // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
+      await this.getFacilityBoundsData(id)
+      bus.$emit(`${FOCUS_ON}`, { id, type: 'fac' })
+    },
+
+    async handleIxpsItemSelected({ id, type }) {
+      if (!id) throw { message: 'MISSING ID PARAMETER'}
+
+      // RETRIEVING AND SAVING POINTS TO THE STORE
+      await this.getFacilityPointsData({ id, type })
+      bus.$emit(`${FOCUS_ON}`, { id, type: 'ixps' })
     }
   }
 }

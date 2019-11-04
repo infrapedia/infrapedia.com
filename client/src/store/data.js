@@ -8,9 +8,12 @@ import {
   getPremiumSelectedBounds,
   getPremiumSelectedFeatures,
   getOrganization,
-  getSubseaCableBounds
+  getSubseaCableBounds,
+  getFacilityBounds,
+  getFacilityPoints
 } from '../services/api/data'
 import * as types from './actionTypes'
+import { MAP_BOUNDS, MAP_POINTS } from './actionTypes/map'
 
 const NO_RES_ERR = { message: 'THERE WAS NO RESPONSE' }
 
@@ -68,6 +71,7 @@ export const dataMutations = {
 }
 
 export const dataActions = {
+  // NAVBAR OPTIONS GETTERS
   async getPremiumData({ commit }) {
     const res = await getPremium()
     if (res) commit(`${types.GET_PREMIUM_DATA}`, res)
@@ -93,12 +97,13 @@ export const dataActions = {
     if (res) commit(`${types.GET_NETWORKS}`, { data: res, quantity })
   },
 
+  // ---------------- END ---------------------
+
   // --- NAVBAR PREMIUM ITEM SELECTION --- START
   async getPremiumSelectedBoundsData({ commit }, id) {
-    const res = await getPremiumSelectedBounds(id)
-    if (!res) throw NO_RES_ERR
-    commit(`${types.GET_PREMIUM_SELECTED_BOUNDS}`)
-    return res
+    const bounds = await getPremiumSelectedBounds(id)
+    if (!bounds) throw NO_RES_ERR
+    commit(`${MAP_BOUNDS}`, bounds)
   },
 
   async getPremiumSelectedFeaturesData({ commit }, id) {
@@ -121,14 +126,33 @@ export const dataActions = {
     commit(`${types.GET_CABLES_BY_ORG}`)
     return res
   },
-  // --- NAVBAR PREMIUM ITEM SELECTION --- END
 
-  // --- NAVBAR SUBMARINE CABLES SELECTION --- START
+  // ---------------- END ---------------------
+
+  // --- NAVBAR SUBMARINE CABLES ITEM SELECTION --- START
   async getSubseaCableBoundsData({ commit }, id) {
-    const res = await getSubseaCableBounds(id)
-    if (!res) throw NO_RES_ERR
-    commit(`${types.GET_SUBSEA_CABLE}`)
-    return res
+    const bounds = await getSubseaCableBounds(id)
+    if (!bounds) throw NO_RES_ERR
+    commit(`${MAP_BOUNDS}`, bounds)
   },
-  // --- NAVBAR PREMIUM ITEM SELECTION --- END
+
+  // ---------------- END ---------------------
+
+  // --- NAVBAR DATA CENTERS ITEM SELECTION --- START
+  async getFacilityBoundsData({ commit }, id) {
+    const bounds = await getFacilityBounds(id, this.$axios)
+    if (!bounds) throw NO_RES_ERR
+    commit(`${MAP_BOUNDS}`, bounds)
+  },
+
+  // ---------------- END ---------------------
+
+  // --- NAVBAR IXPS-NETWORKS ITEM SELECTION --- START
+  async getFacilityPointsData({ commit }, data) {
+    const res = await getFacilityPoints(data)
+    if (!res) throw NO_RES_ERR
+    commit(`${MAP_POINTS}`, res.features)
+  }
+
+  // ---------------- END ---------------------
 }

@@ -64,7 +64,7 @@ import {
   FOCUS_ON
 } from '../events'
 import {
-  TOGGLE_LOADING,
+  // TOGGLE_LOADING,
   TOGGLE_DARK,
   LOCATE_USER,
   TOGGLE_SIDEBAR
@@ -546,29 +546,30 @@ export default {
       // If in the region selected there is a point or a building
       // Call the api to retrieve that facility data and open the sidebar
       if (selectionID) {
-        await this.handleFacilitySelection(this.getFacilityData(selectionID), selectionID)
+        await this.handleFacilitySelection(selectionID)
       }
 
       // If there is no clusters or didn't select a building/point
       // in the map region clicked then I can say ...
       // That is safe to call the cables selection handler
       if (!clustersFeats.length && !selectionID) {
-        this.handleCablesSelection(!!cables.length, cables)
+        await this.handleCablesSelection(!!cables.length, cables)
       }
     },
-    handleCablesSelection(bool, cables) {
+    async handleCablesSelection(bool, cables) {
       switch(bool) {
         case true:
+          // Change sidebar mode bck to cable in case is on data_centers mode
+          await this.changeSidebarMode(-1)
           // Highlight the far most close clicked cable
-          this.changeSidebarMode(-1)
-          this.highlightCable(cables[0].properties)
-          this.$emit(`${CABLE_SELECTED}`, cables[0].properties)
+          await this.highlightCable(cables[0].properties)
+          await this.$emit(`${CABLE_SELECTED}`, cables[0].properties)
           break
         default:
           // Remove highlights
-          this.disableCableHighlight()
+          await this.disableCableHighlight()
           // Clear "currentSelection" on store
-          this.$store.commit(`${CURRENT_SELECTION}`, null)
+          await this.$store.commit(`${CURRENT_SELECTION}`, null)
           break
       }
     },
@@ -601,11 +602,14 @@ export default {
         this.$store.commit(`${MAP_FOCUS_ON}`, null)
       }
     },
-    async handleFacilitySelection(facility, id) {
-      // Facility is a Promise so when it returns we can show the data
-      const data = await facility
+    /**
+     * @param id { String } - ID of the facility (data centers)
+     */
+    async handleFacilitySelection(id) {
+      const data = await this.getFacilityData(id)
       if (!data) throw { message: "We couldn't load the facility ..." }
-      // Changing the sidebar mode to show facilities
+
+      // Changing the sidebar mode to data_center mode
       this.changeSidebarMode(1)
       this.$store.commit(`${CURRENT_SELECTION}`, data)
       this.$store.commit(`${MAP_FOCUS_ON}`, { id, name: data.name, type: 'fac' })
@@ -809,13 +813,13 @@ export default {
       }
     },
     /**
-     * @param id { Array }
+     * @param id { [Number, String] }
      * @param type { String }
      */
     async handleFocusOn({ id, type }) {
       if (!id) {
         throw {
-          message: `Expected @param id to be Array, but found ${typeof id}`
+          message: `Expected @param id to be [Number, String], but found ${typeof id}`
         }
       } else if (!type) {
         throw {
@@ -823,48 +827,36 @@ export default {
         }
       }
 
+      // Cleaning source
+      await this.map.getSource(mapConfig.clusterPts).setData({
+        type: 'FeatureCollection',
+        features: []
+      })
+
+      // If it is an ixps or a network the sidebar has to be close
+      if (type !== 'cable' && type !== 'fac') {
+        await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
+      }
+
       switch (type.toLowerCase()) {
         case 'org':
-          this.handleOrganizationFocus(id)
+          await this.handleOrganizationFocus(id)
           break
         case 'cable':
-          this.handleCableFocus(id)
+          await this.handleCableFocus(id)
+          break
+        case 'fac':
+          await this.handleFacilityFocus(id)
+          break
+        case 'ixps':
+          await this.handleIxpsFocus()
           break
       }
     },
     async handleCableFocus(id) {
       const { map, bounds, isMobile } = this
 
-      const loadTiles = async () => {
-        if (!map.areTilesLoaded()) return
-
-        const features = map.querySourceFeatures(mapConfig.data.source2, {
-          sourceLayer: mapConfig.data.sourceLayer,
-          filter: ['in', 'cable_id', id]
-        })
-
-        if (features.length) {
-          const collection = { features }
-          this.highlightCable(collection)
-          map.off('render', loadTiles)
-        } else {
-          try {
-            await this.$store.commit(`${TOGGLE_LOADING}`, true)
-            // Retrieving cable information and saving it to the store
-            await this.getCurrentSelectionData(id).then(() => {
-              this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
-            })
-            this.highlightCable({ cable_id: id })
-          } catch {
-            // Ignore
-          } finally {
-            this.$store.commit(`${TOGGLE_LOADING}`, false)
-          }
-          map.off('render', loadTiles)
-        }
-      }
-
-      map.fitBounds(bounds, {
+      await map.fitBounds(bounds, {
         padding: isMobile ? 10 : 50,
         animate: true,
         speed: 1.25,
@@ -873,7 +865,7 @@ export default {
         }
       })
 
-      map.on('render', loadTiles)
+      await this.handleCablesSelection(true, [{ properties: { cable_id: id }}])
     },
     async handleOrganizationFocus(id) {
       const { map, points } = this
@@ -924,6 +916,52 @@ export default {
           duration: 30
         }
       })
+    },
+    async handleFacilityFocus(id) {
+      const { map, isMobile, bounds } = this
+
+      await this.handleFacilitySelection(id)
+      map.fitBounds(bounds, {
+        padding: isMobile ? 10 : 40,
+        pan: { duration: 25 },
+        animate: true,
+        maxZoom: 17,
+        speed: 1.1,
+        pitch: 45
+      })
+    },
+    async handleIxpsFocus() {
+      const { points, map, isMobile } = this
+      const geojsonExtent = require('geojson-extent')
+      const fc = { features: points, type: 'FeatureCollection' }
+      const inBounds = await geojsonExtent(JSON.parse(JSON.stringify(fc)))
+
+      await this.$store.commit(`${MAP_BOUNDS}`, inBounds)
+
+      if (points.length > 1) {
+        await map.getSource(mapConfig.clusterPts).setData(fc)
+        await map.fitBounds(inBounds, {
+          padding: isMobile ? 15 : 125,
+          animate: true,
+          maxZoom: 13.5,
+          pan: {
+            duration: 10
+          },
+          speed: 1.1,
+          pitch: 45
+        })
+      } else {
+        await map.fitBounds(inBounds, {
+          padding: isMobile ? 10 : 35,
+          animate: true,
+          maxZoom: 16.5,
+          pan: {
+            duration: 10
+          },
+          speed: 1.5,
+          pitch: 45
+        })
+      }
     }
   }
 }

@@ -41,6 +41,7 @@ export const getNetworks = async () => {
   const res = await $axios.get('/network/withFacility')
   return res
 }
+// ---------------- END ---------------------
 
 // --- NAVBAR PREMIUM LIST ITEM SELECTION --- START
 export const getPremiumSelectedBounds = async id => {
@@ -60,14 +61,29 @@ export const getOrganization = async id => {
   const res = await $axios.get(`/cable/byorg/${id}`)
   return res
 }
-// --- NAVBAR PREMIUM LIST ITEM SELECTION --- END
+// ---------------- END ---------------------
 
 // --- NAVBAR SUBMARINE CABLE SELECTION --- START
-
 export const getSubseaCableBounds = async id => {
   if (!id) throw ID_PARAM_ERROR
   const res = await $axios.get(`/cable/bboxbyid/${id}`)
   return res
 }
 
-// --- NAVBAR SUBMARINE CABLE SELECTION --- END
+// ---------------- END ---------------------
+
+// --- NAVBAR DATA CENTER SELECTION --- START
+export const getFacilityBounds = async id => {
+  if (!id) throw ID_PARAM_ERROR
+  const res = await $axios.get(`/facility/bboxbyid/${id}`)
+  return res
+}
+
+// ---------------- END ---------------------
+
+export const getFacilityPoints = async ({ type, id }) => {
+  // Expected types are: ix, net.
+  // Ix for Ixps items and net for Networks items
+  const res = await $axios.get(`/facility/geojson/by${type}id/${id}`)
+  return res
+}
