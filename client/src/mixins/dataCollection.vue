@@ -14,7 +14,7 @@ import { MAP_FOCUS_ON, MAP_POINTS } from '../store/actionTypes/map'
 
 export default {
   data: () => ({
-    quantity: 1000
+    quantity: 20
   }),
   methods: {
     ...mapActions({
@@ -91,7 +91,7 @@ export default {
         await this.$store.commit(`${TOGGLE_LOADING}`, true)
         // I'm assuming that's opening the menu for the first time
         // Resetting quantity of items to load
-        this.quantity = 1000
+        this.quantity = 20
         await this.toggleMenu('networks')
       }
       await this.getNetworksData(this.quantity).then(() => {
@@ -131,8 +131,8 @@ export default {
       }
     },
     async handleItemListSelection({ option, id }) {
-      // console.log(option, id)
       this.closeUnwantedOpenMenus()
+      console.log(option, id)
 
       switch (option.toLowerCase()) {
         case 'partners':
@@ -152,6 +152,21 @@ export default {
           break
         case 'data centers':
           await this.handleDataCenterItemSelected(id)
+          break
+        case 'org':
+          await this.handlePremiumPartnerItemSelected(id)
+          break
+        case 'facility':
+          await this.handleDataCenterItemSelected(id)
+          break
+        case 'cable':
+          await this.handleSubmarineCableItemSelected(id)
+          break
+        case 'network':
+          await this.handleFacilityItemSelected({ id, type: 'net' })
+          break
+        case 'ixp':
+          await this.handleFacilityItemSelected({ id, type: 'ix' })
           break
       }
     },
@@ -187,7 +202,6 @@ export default {
       await this.getSubseaCableBoundsData(id)
       bus.$emit(`${FOCUS_ON}`, { id, type: 'cable' })
     },
-
     async handleDataCenterItemSelected(id) {
       if (!id) throw { message: 'MISSING ID PARAMETER'}
 
@@ -195,7 +209,6 @@ export default {
       await this.getFacilityBoundsData(id)
       bus.$emit(`${FOCUS_ON}`, { id, type: 'fac' })
     },
-
     async handleFacilityItemSelected({ id, type }) {
       if (!id) throw { message: 'MISSING ID PARAMETER'}
 

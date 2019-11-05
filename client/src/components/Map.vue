@@ -837,7 +837,6 @@ export default {
       if (type !== 'cable' && type !== 'fac') {
         await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
       }
-      console.log(id, type)
 
       switch (type.toLowerCase()) {
         case 'org':
@@ -884,36 +883,44 @@ export default {
       await this.handleCablesSelection(true, [{ properties: { cable_id: id }}])
     },
     async handleOrganizationFocus(id) {
-      const { map, points } = this
+      const { map, points, bounds, isMobile } = this
       const clustersSource = map.getSource(mapConfig.clusterPts)
-      const featureCollection = JSON.parse(JSON.stringify(points))
+      const featureCollection = JSON.parse(JSON.stringify(points || {}))
 
-      if (featureCollection.length && clustersSource) {
+      console.log(points, featureCollection)
+
+      if (featureCollection && featureCollection.length && clustersSource) {
         clustersSource.setData({ features: featureCollection })
       } else if (id && !featureCollection.length && map.areTilesLoaded()) {
-        console.warn('------- ENTERED HERE -------')
-        console.log(id, clustersSource)
-        // const tilesLoaded = () => {
-        //   const feats = map.querySourceFeatures(mapConfig.data.source2, {
-        //     filter: ['in', 'id', id[0]],
-        //     sourceLayer: mapConfig.data.sourceLayer,
-        //     validate: false
-        //   })
+        const tilesLoaded = () => {
+          const feats = map.querySourceFeatures(mapConfig.data.source2, {
+            filter: ['in', 'id', id],
+            sourceLayer: mapConfig.data.sourceLayer,
+            validate: false
+          })
 
-        //   console.log(feats)
+          if (feats.length) {
+            const prop = feats[0].properties
 
-        //   if (feats.length) {
-        //     const prop = feats[0].properties
-
-        //     this.disableCableHighlight()
-        //     this.mapTooltip = {
-        //       id: parseInt(prop.cable_id),
-        //       name: prop.Name
-        //     }
-        //   }
-        //   map.off('render', tilesLoaded)
-        // }
-        // map.on('render', tilesLoaded)
+            this.disableCableHighlight()
+            this.mapTooltip = {
+              id: parseInt(prop.cable_id),
+              name: prop.Name
+            }
+          } else {
+            map.off('render', tilesLoaded)
+            throw { message: "THERE'S NO FEATURES DATA" }
+          }
+          map.off('render', tilesLoaded)
+        }
+        map.on('render', tilesLoaded)
+      } else if (
+        featureCollection &&
+        featureCollection.features &&
+        featureCollection.features.length === 1
+      ) {
+        const id = featureCollection.features[0].properties.fac_id
+        if (id) await this.handleFacilitySelection(id)
       } else throw { message: `FOUND EXCEPTION: ${id}`}
 
       // if (featureCollection.length && clustersSource) {
@@ -927,8 +934,9 @@ export default {
       //   await this.getFacilityData(id)
       // }
 
-      map.fitBounds(this.bounds, {
-        padding: this.isMobile ? 10 : 50,
+      if (!bounds.length) return
+      map.fitBounds(bounds, {
+        padding: isMobile ? 10 : 50,
         animate: true,
         speed: 1.25,
         pan: {

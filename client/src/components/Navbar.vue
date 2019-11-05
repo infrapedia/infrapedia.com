@@ -173,7 +173,7 @@
                   aria-haspopup="true"
                   data-no-hover-bg="true"
                 >
-                  <i-search />
+                  <i-search @search-selection="handleItemListSelection" />
                 </div>
               </li>
               <li class="inline-block relative" data-no-outline="true" role="listitem">
