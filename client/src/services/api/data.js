@@ -87,3 +87,23 @@ export const getFacilityPoints = async ({ type, id }) => {
   const res = await $axios.get(`/facility/geojson/by${type}id/${id}`)
   return res
 }
+
+// PLACES
+
+export const getSearchQueryResults = async s => {
+  const res = await $axios.get(`/search/${s}`)
+  return res
+}
+
+// SEARCH PLACES MAPBOX API
+
+export const searchPlace = async search => {
+  const res = await $axios.get(
+    `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURI(
+      search
+    )}.json?limit=10&proximity=-77.00909999999999%2C38.8899&access_token=${
+      process.env.VUE_APP_MAPBOX_ACCESS_TOKEN
+    }`
+  )
+  return res
+}

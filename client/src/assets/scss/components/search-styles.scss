@@ -1,8 +1,10 @@
 @import '../helpers/atomic-classes';
 @import '../base/variables';
 
-// .application.light {
-  // .close {
-  //   background: $blue-link-colors
-  // }
-// }
+ul[role="list"] {
+  overflow: scroll;
+  max-height: 28rem;
+  li[role="listitem"] {
+    border-bottom: 1px solid $grey-ligthen;
+  }
+}

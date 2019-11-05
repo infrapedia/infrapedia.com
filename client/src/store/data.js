@@ -10,7 +10,9 @@ import {
   getOrganization,
   getSubseaCableBounds,
   getFacilityBounds,
-  getFacilityPoints
+  getFacilityPoints,
+  searchPlace,
+  getSearchQueryResults
 } from '../services/api/data'
 import * as types from './actionTypes'
 import { MAP_BOUNDS, MAP_POINTS } from './actionTypes/map'
@@ -66,6 +68,9 @@ export const dataMutations = {
     return state
   },
   [types.GET_SUBSEA_CABLE](state) {
+    return state
+  },
+  [types.QUERY_RESULTS](state) {
     return state
   }
 }
@@ -140,7 +145,7 @@ export const dataActions = {
 
   // --- NAVBAR DATA CENTERS ITEM SELECTION --- START
   async getFacilityBoundsData({ commit }, id) {
-    const bounds = await getFacilityBounds(id, this.$axios)
+    const bounds = await getFacilityBounds(id)
     if (!bounds) throw NO_RES_ERR
     commit(`${MAP_BOUNDS}`, bounds)
   },
@@ -152,7 +157,22 @@ export const dataActions = {
     const res = await getFacilityPoints(data)
     if (!res) throw NO_RES_ERR
     commit(`${MAP_POINTS}`, res.features)
-  }
+  },
 
   // ---------------- END ---------------------
+
+  // Places
+  async getSearchQueryData({ commit }, s) {
+    const res = await getSearchQueryResults(s)
+    if (!res) throw NO_RES_ERR
+    commit(`${types.QUERY_RESULTS}`)
+    return res
+  },
+
+  async getSearchQueryDataMapbox({ commit }, s) {
+    const res = await searchPlace(s)
+    if (!res) throw NO_RES_ERR
+    commit(`${types.QUERY_RESULTS}`)
+    return res
+  }
 }

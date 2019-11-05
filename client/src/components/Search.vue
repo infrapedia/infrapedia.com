@@ -1,23 +1,29 @@
 <template>
   <el-popover
     placement="bottom-start"
-    width="320"
+    width="420"
     transition="el-zoom-in-top"
     trigger="manual"
     v-model="isResultsVisible"
   >
     <el-card class="p0 no-border" shadow="never">
-      <ul>
-        <li>1</li>
-        <li>2</li>
-        <li>3</li>
-        <li>4</li>
+      <ul role="list" class="w-fit-full h80 no-outline no-selectable">
+        <li
+          v-for="(place, i) in searchResults"
+          :key="i"
+          tabindex="0"
+          role="listitem"
+          v-text="place.name"
+          :class="{ dark, light: !dark }"
+          class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
+          @click="emitSelected(place)"
+          @keyup.enter.space="emitSelected(place)"
+        />
       </ul>
     </el-card>
     <div slot="reference" role="search">
       <el-input
         class="w60"
-        clearable
         placeholder="Search"
         :class="{ dark }"
         v-model="search"
@@ -50,6 +56,9 @@
 </template>
 
 <script>
+import debounce from '../helpers/debounce'
+import { SEARCH_SELECTION } from '../events'
+
 export default {
   data: () => ({
     search: '',
@@ -63,17 +72,21 @@ export default {
     }
   },
   methods: {
-    handleResultSelect() {
-      console.warn('Not done yet')
-    },
-    getQueryData(querystring) {
-      console.warn(querystring, 'Not done yet')
-      setTimeout(() => {
-        this.isResultsVisible = true
-      }, 2000)
-    },
+    getQueryData: debounce(async function(querystring) {
+      if (querystring.length <= 1) return
+      const res = await this.$store.dispatch('getSearchQueryData', querystring)
+      const places = await this.$store.dispatch('getSearchQueryDataMapbox', querystring)
+
+      if (!res) return
+      Array.from(places.features).forEach(
+        place => (place.name = place.place_name)
+      )
+      this.searchResults = res.concat(places.features)
+      this.isResultsVisible = true
+    }, 820),
     loseFocus() {
       this.isFocused = false
+      this.isResultsVisible = false
     },
     clearSearch() {
       this.search = ''
@@ -81,6 +94,10 @@ export default {
     },
     setFocus() {
       this.isFocused = true
+      if (this.searchResults.length) this.isResultsVisible = true
+    },
+    emitSelected(selection) {
+      this.$emit(SEARCH_SELECTION, { ...selection })
     }
   }
 }

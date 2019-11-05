@@ -457,6 +457,7 @@ export default {
     sponsors,
     search: '',
     infoMenuLinks,
+    searchResults: [],
     isUserMenuOpen: false,
     isInfoMenuOpen: false,
     isIxpsMenuOpen: false,
