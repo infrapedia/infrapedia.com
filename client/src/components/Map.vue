@@ -837,6 +837,7 @@ export default {
       if (type !== 'cable' && type !== 'fac') {
         await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
       }
+      console.log(id, type)
 
       switch (type.toLowerCase()) {
         case 'org':
@@ -851,7 +852,22 @@ export default {
         case 'ixps':
           await this.handleIxpsFocus()
           break
+        case 'city':
+          await this.handleCityFocus()
+          break
       }
+    },
+    async handleCityFocus() {
+      const { map, bounds, isMobile } = this
+      await map.fitBounds(bounds, {
+        padding: isMobile ? 10 : 35,
+        maxZoom: 16.5,
+        animate: true,
+        speed: 1.75,
+        pan: {
+          duration: 25
+        }
+      })
     },
     async handleCableFocus(id) {
       const { map, bounds, isMobile } = this
@@ -874,32 +890,35 @@ export default {
 
       if (featureCollection.length && clustersSource) {
         clustersSource.setData({ features: featureCollection })
+      } else if (id && !featureCollection.length && map.areTilesLoaded()) {
+        console.warn('------- ENTERED HERE -------')
+        console.log(id, clustersSource)
+        // const tilesLoaded = () => {
+        //   const feats = map.querySourceFeatures(mapConfig.data.source2, {
+        //     filter: ['in', 'id', id[0]],
+        //     sourceLayer: mapConfig.data.sourceLayer,
+        //     validate: false
+        //   })
+
+        //   console.log(feats)
+
+        //   if (feats.length) {
+        //     const prop = feats[0].properties
+
+        //     this.disableCableHighlight()
+        //     this.mapTooltip = {
+        //       id: parseInt(prop.cable_id),
+        //       name: prop.Name
+        //     }
+        //   }
+        //   map.off('render', tilesLoaded)
+        // }
+        // map.on('render', tilesLoaded)
       } else throw { message: `FOUND EXCEPTION: ${id}`}
 
-      // const tilesLoaded = () => {
-      //   const feats = map.querySourceFeatures(mapConfig.data.source2, {
-      //     filter: ['in', 'id', id[0]],
-      //     sourceLayer: mapConfig.data.sourceLayer,
-      //     validate: false
-      //   })
-
-      //   console.log(feats)
-
-      //   if (feats.length) {
-      //     const prop = feats[0].properties
-
-      //     this.disableCableHighlight()
-      //     this.mapTooltip = {
-      //       id: parseInt(prop.cable_id),
-      //       name: prop.Name
-      //     }
-      //   }
-      //   map.off('render', tilesLoaded)
-      // }
       // if (featureCollection.length && clustersSource) {
-      //   console.log('------------- ENTERED HERE -------------------')
       // } else if (id.length && map.areTilesLoaded()) {
-      //   map.on('render', tilesLoaded)
+
       // } else if (
       //   !id.length &&
       //   featureCollection.length === 1 &&

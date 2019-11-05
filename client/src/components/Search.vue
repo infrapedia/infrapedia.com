@@ -16,8 +16,8 @@
           v-text="place.name"
           :class="{ dark, light: !dark }"
           class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
-          @click="emitSelected(place)"
-          @keyup.enter.space="emitSelected(place)"
+          @click.stop="handlePlaceSelection(place)"
+          @keyup.enter.space="handlePlaceSelection(place)"
         />
       </ul>
     </el-card>
@@ -56,8 +56,10 @@
 </template>
 
 <script>
+import { FOCUS_ON } from '../events'
+import { bus } from '../helpers/eventBus'
 import debounce from '../helpers/debounce'
-import { SEARCH_SELECTION } from '../events'
+import { MAP_BOUNDS } from '../store/actionTypes/map'
 
 export default {
   data: () => ({
@@ -86,7 +88,7 @@ export default {
     }, 820),
     loseFocus() {
       this.isFocused = false
-      this.isResultsVisible = false
+      if (!this.searchResults.length) this.isResultsVisible = false
     },
     clearSearch() {
       this.search = ''
@@ -96,8 +98,18 @@ export default {
       this.isFocused = true
       if (this.searchResults.length) this.isResultsVisible = true
     },
-    emitSelected(selection) {
-      this.$emit(SEARCH_SELECTION, { ...selection })
+    handlePlaceSelection(place) {
+      let bounds = []
+      if (place.bbox) bounds = place.bbox
+      else if (place.center) bounds = [...place.center, ...place.center]
+
+      if (bounds.length) this.$store.commit(`${MAP_BOUNDS}`, bounds)
+      bus.$emit(FOCUS_ON, {
+        id: place.id,
+        type: place.type === 'Feature' ? 'city' : place.type
+      })
+
+      this.isResultsVisible = false
     }
   }
 }
