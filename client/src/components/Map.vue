@@ -61,7 +61,8 @@ import {
   TOGGLE_THEME,
   CABLE_SELECTED,
   CLEAR_SELECTION,
-  FOCUS_ON
+  FOCUS_ON,
+  FOCUS_ON_CITY
 } from '../events'
 import {
   // TOGGLE_LOADING,
@@ -74,7 +75,9 @@ import {
   CURRENT_SELECTION,
   MAP_FOCUS_ON,
   MAP_BOUNDS,
-  MAP_POINTS
+  MAP_POINTS,
+  HAS_TO_EASE_TO,
+  EASE_POINT
 } from '../store/actionTypes/map'
 import ILocationButton from '../components/LocationButton'
 import copyToClipboard from '../helpers/copyToClipboard'
@@ -113,7 +116,9 @@ export default {
       currentSelection: state => state.map.currentSelection,
       bounds: state => state.map.bounds,
       focus: state => state.map.focus,
-      points: state => state.map.points
+      points: state => state.map.points,
+      easePoint: state => state.map.easePoint,
+      hasToEase: state => state.map.hasToEase
     })
   },
   mounted() {
@@ -121,6 +126,7 @@ export default {
     bus.$on(CLEAR_SELECTION, this.disableCableHighlight)
     bus.$on(TOGGLE_THEME, this.toggleDarkMode)
     bus.$on(FOCUS_ON, this.handleFocusOn)
+    bus.$on(FOCUS_ON_CITY, this.handleCityFocus)
   },
   methods: {
     ...mapActions({
@@ -413,9 +419,9 @@ export default {
       popup.remove()
     },
     async handleBoundsChange() {
-      const { map } = this
-      if (!map) return
+      if (!this.map || this.hasToEase) return
 
+      const { map } = this
       const pitch = map.getPitch()
       const bounds = map.getBounds()
       const bearing = map.getBearing()
@@ -423,9 +429,18 @@ export default {
         padding: { top: 10, bottom: 25, left: 15, right: 5 }
       })
 
-      if (!bounds && center) return
+      if (!bounds && !center) return
       try {
-          if (this.focus) {
+        if (!this.focus) {
+          await this.$router.replace(
+            `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
+              bounds._sw.lng
+            }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
+              0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
+              center.center.lat
+            }`
+          )
+        } else {
           const { id, type, name } = this.focus
 
           if (id && type && name) {
@@ -439,15 +454,6 @@ export default {
               }&name=${name}&type=${type}&id=${id}`
             )
           }
-        } else {
-          await this.$router.replace(
-            `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
-              bounds._sw.lng
-            }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
-              0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
-              center.center.lat
-            }`
-          )
         }
       } catch {
         // Ignore
@@ -457,15 +463,15 @@ export default {
      * @param cable { Object } - Contains the ID of the selected cable
      */
     highlightCable(cable) {
+      console.log(cable.cable_id)
       if (!this.map || !cable) return
-      const { map } = this
       const highlightColor = this.dark ? 'rgba(50,50,50,0.35)' : 'rgba(23,23,23, 0.06)'
 
-      map.setPaintProperty(mapConfig.cableLayer, 'line-color', highlightColor)
-      map.setFilter(mapConfig.highlightLayer, [
+      this.map.setPaintProperty(mapConfig.cableLayer, 'line-color', highlightColor)
+      this.map.setFilter(mapConfig.highlightLayer, [
         '==',
         ['get', 'cable_id'],
-        cable.cable_id
+        Number(cable.cable_id)
       ])
 
       // if (
@@ -618,9 +624,6 @@ export default {
       // Removing cables highlight if any
       this.disableCableHighlight(false)
     },
-    /**
-     * @param e { Object } Map's clicking 'points-layer' Event
-     */
     toggleDarkMode() {
       this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
       const style = this.dark ? mapConfig.darkBasemap : mapConfig.default
@@ -857,31 +860,47 @@ export default {
       }
     },
     async handleCityFocus() {
-      const { map, bounds, isMobile } = this
-      await map.fitBounds(bounds, {
-        padding: isMobile ? 10 : 35,
-        maxZoom: 16.5,
-        animate: true,
-        speed: 1.75,
-        pan: {
-          duration: 25
-        }
-      })
+      const { map, bounds, isMobile, hasToEase } = this
+      /**
+       * - The ease point is exclusibly use when the user wants to share
+       *  the view of a given point
+       */
+      if (hasToEase) await this.handleFocusOnEasePoints()
+      else {
+        await map.fitBounds(bounds, {
+          padding: isMobile ? 10 : 35,
+          maxZoom: 16.5,
+          animate: true,
+          speed: 1.75,
+          pan: {
+            duration: 25
+          }
+        })
+      }
     },
+    /**
+     * @param id { String } - Cable ID
+     */
     async handleCableFocus(id) {
-      const { map, bounds, isMobile } = this
+      const { map, bounds, isMobile, hasToEase } = this
 
-      await map.fitBounds(bounds, {
-        padding: isMobile ? 10 : 50,
-        animate: true,
-        speed: 1.25,
-        pan: {
-          duration: 30
-        }
-      })
+      if (hasToEase) await this.handleFocusOnEasePoints()
+      else {
+        await map.fitBounds(bounds, {
+          padding: isMobile ? 10 : 50,
+          animate: true,
+          speed: 1.25,
+          pan: {
+            duration: 30
+          }
+        })
+      }
 
       await this.handleCablesSelection(true, [{ properties: { cable_id: id }}])
     },
+    /**
+     * @param id { String } - Organization ID
+     */
     async handleOrganizationFocus(id) {
       const { map, points, bounds, isMobile } = this
       const clustersSource = map.getSource(mapConfig.clusterPts)
@@ -944,30 +963,36 @@ export default {
         }
       })
     },
+    /**
+     * @param id { String } - Building/DataCenter/Dot ID
+     */
     async handleFacilityFocus(id) {
-      const { map, isMobile, bounds } = this
+      const { map, isMobile, bounds, hasToEase } = this
 
       await this.handleFacilitySelection(id)
-      map.fitBounds(bounds, {
-        padding: isMobile ? 10 : 40,
-        pan: { duration: 25 },
-        animate: true,
-        maxZoom: 17,
-        speed: 1.1,
-        pitch: 45
-      })
+      if (hasToEase) await this.handleFocusOnEasePoints()
+      else {
+        map.fitBounds(bounds, {
+          padding: isMobile ? 10 : 40,
+          pan: { duration: 25 },
+          animate: true,
+          maxZoom: 17,
+          speed: 1.1,
+          pitch: 45
+        })
+      }
     },
     async handleIxpsFocus() {
-      const { points, map, isMobile } = this
+      const { points, map, isMobile, hasToEase } = this
       const geojsonExtent = require('geojson-extent')
       const fc = { features: points, type: 'FeatureCollection' }
-      const inBounds = await geojsonExtent(JSON.parse(JSON.stringify(fc)))
+      const bounds = await geojsonExtent(JSON.parse(JSON.stringify(fc)))
 
-      await this.$store.commit(`${MAP_BOUNDS}`, inBounds)
+      await this.$store.commit(`${MAP_BOUNDS}`, bounds)
 
       if (points.length > 1) {
         await map.getSource(mapConfig.clusterPts).setData(fc)
-        await map.fitBounds(inBounds, {
+        await map.fitBounds(bounds, {
           padding: isMobile ? 15 : 125,
           animate: true,
           maxZoom: 13.5,
@@ -977,8 +1002,10 @@ export default {
           speed: 1.1,
           pitch: 45
         })
+      } else if (hasToEase) {
+        await this.handleFocusOnEasePoints()
       } else {
-        await map.fitBounds(inBounds, {
+        await map.fitBounds(bounds, {
           padding: isMobile ? 10 : 35,
           animate: true,
           maxZoom: 16.5,
@@ -989,6 +1016,29 @@ export default {
           pitch: 45
         })
       }
+    },
+    async handleFocusOnEasePoints() {
+      if (!this.hasToEase || !this.easePoint) return
+      /**
+       * - The ease point is exclusibly use when the user wants to share
+       *  the view of a given point
+       */
+
+      const { center, zoom, pitch, bearing, cameraCenter } = this.easePoint
+      if (center[0] && center[0].length < 2) return
+      this.map.fitBounds(center, {
+        pan: { duration: 30 },
+        zoom: zoom + 1, // This + 1 is because mapbox doesn't zoom correctly sometimes and this fix it
+        center: cameraCenter,
+        bearing,
+        pitch,
+        animate: true,
+        speed: 1.25
+      })
+
+      // Clearing ease point so it wont ease everytime the user comes to the home page
+      this.$store.commit(`${EASE_POINT}`, null)
+      this.$store.commit(`${HAS_TO_EASE_TO}`, false)
     }
   }
 }

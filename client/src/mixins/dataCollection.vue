@@ -119,7 +119,11 @@ export default {
       if (!cable_id) return
 
       await this.$store.commit(`${TOGGLE_LOADING}`, true)
-      await this.$store.commit(`${MAP_FOCUS_ON}`, { type: 'fac', id: cable_id, name })
+      await this.$store.commit(`${MAP_FOCUS_ON}`, {
+        name,
+        id: cable_id,
+        type: 'cable'
+      })
       try {
         await this.getCurrentSelectionData(cable_id).then(() => {
           this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
@@ -131,7 +135,6 @@ export default {
       }
     },
     async handleItemListSelection({ option, id }) {
-      this.closeUnwantedOpenMenus()
       console.log(option, id)
 
       switch (option.toLowerCase()) {
@@ -157,6 +160,9 @@ export default {
           await this.handlePremiumPartnerItemSelected(id)
           break
         case 'facility':
+          await this.handleDataCenterItemSelected(id)
+          break
+        case 'fac':
           await this.handleDataCenterItemSelected(id)
           break
         case 'cable':

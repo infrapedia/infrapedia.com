@@ -1,4 +1,3 @@
-// import * as types from '../actionTypes/map'
 import { getSelectionData, getFacility } from '../../services/api/data'
 
 const state = {
@@ -6,6 +5,8 @@ const state = {
   points: [],
   focus: null,
   filter: ['all'],
+  easePoint: null,
+  hasToEase: false,
   currentSelection: null
 }
 
@@ -24,6 +25,12 @@ const mutations = {
   },
   MAP_POINTS(state, points) {
     state.points = points
+  },
+  HAS_TO_EASE_TO(state, bool) {
+    state.hasToEase = bool
+  },
+  EASE_POINT(state, easePoint) {
+    state.easePoint = easePoint
   }
 }
 

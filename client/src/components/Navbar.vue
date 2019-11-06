@@ -23,7 +23,7 @@
                 >
                   <i-list
                     option="partners"
-                    @click="handleItemListSelection"
+                    @click="handleBeforeLoadItem"
                     @load-more="handleLoadMoreItems('partners')"
                   />
                   <div
@@ -55,7 +55,7 @@
                 >
                   <i-list
                     option="submarine"
-                    @click="handleItemListSelection"
+                    @click="handleBeforeLoadItem"
                     @load-more="handleLoadMoreItems('submarine')"
                   />
                     <div
@@ -87,7 +87,7 @@
                 >
                 <i-list
                   option="dataCenters"
-                  @click="handleItemListSelection"
+                  @click="handleBeforeLoadItem"
                   @load-more="handleLoadMoreItems('dataCenters')"
                 />
                   <div
@@ -116,7 +116,7 @@
                 >
                   <i-list
                     option="ixps"
-                    @click="handleItemListSelection"
+                    @click="handleBeforeLoadItem"
                     @load-more="handleLoadMoreItems('ixps')"
                   />
                   <div
@@ -148,7 +148,7 @@
                 >
                   <i-list
                     option="networks"
-                    @click="handleItemListSelection"
+                    @click="handleBeforeLoadItem"
                     @load-more="handleLoadMoreItems('networks')"
                   />
                     <div
@@ -173,7 +173,7 @@
                   aria-haspopup="true"
                   data-no-hover-bg="true"
                 >
-                  <i-search @search-selection="handleItemListSelection" />
+                  <i-search @search-selection="handleBeforeLoadItem" />
                 </div>
               </li>
               <li class="inline-block relative" data-no-outline="true" role="listitem">
@@ -504,6 +504,10 @@ export default {
     document.removeEventListener('click', this.closeUnwantedOpenMenus)
   },
   methods: {
+    async handleBeforeLoadItem(item) {
+      this.closeUnwantedOpenMenus()
+      await this.handleItemListSelection(item)
+    },
     closeUnwantedOpenMenus(e) {
       const menus = [
         'isIxpsMenuOpen',
