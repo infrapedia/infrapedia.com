@@ -12,7 +12,7 @@
         :style="sidebarStyle"
         class="sidebar-wrapper"
       >
-        <el-card shadow="hover" v-loading="isLoading">
+        <el-card shadow="hover" v-loading="isSidebarLoad">
           <header class="header pt8 pr8 pl14 pb12 h12 relative">
             <span
               class="inline-block w4 h4 icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
@@ -95,6 +95,9 @@ export default {
     },
     currentView() {
       return this.isCable ? 'i-cable-attributes' : 'i-data-center'
+    },
+    isSidebarLoad() {
+      return this.isLoading && !this.isSidebar
     }
   },
   beforeMount() {
