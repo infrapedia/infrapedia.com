@@ -54,11 +54,12 @@
 <script>
 import { mapState } from 'vuex'
 import { bus } from '../helpers/eventBus'
+import { CLEAR_SELECTION } from '../events'
 import * as modes from '../config/sidebarModes'
 import { createBitlyURL } from '../services/api/bitly'
 import copyToClipboard from '../helpers/copyToClipboard'
+import { CURRENT_SELECTION, MAP_FOCUS_ON } from '../store/actionTypes/map'
 import { BUY_CAPACITY, EDIT_CABLE, REPORT_ISSUE } from '../events/sidebar'
-import { CLEAR_SELECTION } from '../events'
 
 export default {
   name: 'ISidebar',
@@ -151,6 +152,8 @@ export default {
     },
     closeSidebar() {
       bus.$emit(`${CLEAR_SELECTION}`)
+      this.$store.commit(`${MAP_FOCUS_ON}`, null)
+      this.$store.commit(`${CURRENT_SELECTION}`, null)
     }
   }
 }

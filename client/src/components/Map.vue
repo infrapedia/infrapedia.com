@@ -860,22 +860,27 @@ export default {
       }
     },
     async handleCityFocus() {
-      const { map, bounds, isMobile, hasToEase } = this
-      /**
-       * - The ease point is exclusibly use when the user wants to share
-       *  the view of a given point
-       */
-      if (hasToEase) await this.handleFocusOnEasePoints()
-      else {
-        await map.fitBounds(bounds, {
-          padding: isMobile ? 10 : 35,
-          maxZoom: 16.5,
-          animate: true,
-          speed: 1.75,
-          pan: {
-            duration: 25
-          }
-        })
+      try {
+        if (!this.bounds.length) throw { message: 'There is no bounds' }
+        const { map, bounds, isMobile, hasToEase } = this
+        /**
+         * - The ease point is exclusibly use when the user wants to share
+         *  the view of a given point
+         */
+        if (hasToEase) await this.handleFocusOnEasePoints()
+        else {
+          await map.fitBounds(bounds, {
+            padding: isMobile ? 10 : 35,
+            maxZoom: 16.5,
+            animate: true,
+            speed: 1.75,
+            pan: {
+              duration: 25
+            }
+          })
+        }
+      } catch {
+        // Ignore
       }
     },
     /**
@@ -1025,6 +1030,7 @@ export default {
        */
 
       const { center, zoom, pitch, bearing, cameraCenter } = this.easePoint
+      console.log(this.easePoint)
       if (center[0] && center[0].length < 2) return
       this.map.fitBounds(center, {
         pan: { duration: 30 },
