@@ -1,6 +1,6 @@
 <template>
   <header class="header fixed h12 w-full no-padding">
-    <div class="header-inner-wrapper w-full flex relative h-fit-full">
+    <div class="header-inner-wrapper w-full flex relative h-fit-full bottom-shadow">
       <div class="flex no-padding navbar-wrapper w-full justify-content-space-between pr1 pl1">
         <h1 class="logo-title hidden-md-and-down">
           <router-link to="/">
@@ -8,7 +8,21 @@
           </router-link>
         </h1>
 
-        <h1><i-mobile-drawer /></h1>
+        <h1>
+          <i-mobile-drawer
+            class="hidden-md-and-up"
+            @clear-subsea="clearSubsea"
+            @clear-data-centers="clearDataCenters"
+            @clear-networks="clearNetworks"
+            @clear-ixps="clearIxps"
+            @click-submarine="handleSubmarineSelection"
+            @click-data-center="handleDataCenterSelection"
+            @click-ixps="handleIxpsSelection"
+            @click-networks="handleNetworksSelection"
+            @load-more="handleLoadMoreItems"
+            @click-list-item="handleBeforeLoadItem"
+          />
+        </h1>
 
         <div aria-labelledby="rightnavheading" class="links-wrapper">
           <transition-group name="fade" mode="out-in">
@@ -32,8 +46,6 @@
                     slot="reference"
                     aria-haspopup="true"
                     class="list-item pr4 pl4 no-selectable"
-                    @click.stop="handlePremiumSelection"
-                    @keyup.enter.space="handlePremiumSelection"
                   >
                     Our Partners
                     <i
@@ -166,7 +178,11 @@
                   </el-popover>
                 </li>
 
-              <li class="inline-block relative" data-no-outline="true" role="listitem">
+              <li
+                class="inline-block relative hidden-sm-and-down"
+                data-no-outline="true"
+                role="listitem"
+              >
                 <div
                   class="list-item info-menu pr1 pl1"
                   aria-haspopup="true"
@@ -439,6 +455,7 @@
 import IList from './List'
 import IFilter from './Filter'
 import ISearch from './Search'
+import IMobileDrawer from './MobileDrawer'
 import sponsors from '../config/navbarSponsors'
 import IFullScreenSearch from './FullScreenSearch'
 import infoMenuLinks from '../config/infoMenuLinks'
@@ -450,6 +467,7 @@ export default {
     IList,
     IFilter,
     ISearch,
+    IMobileDrawer,
     IFullScreenSearch
   },
   mixins: [dataCollection],
@@ -500,6 +518,8 @@ export default {
     }
   },
   async mounted() {
+    // Loading premium partners
+    await this.handlePremiumSelection(false)
     // Sponsors need to be open at first load
     await setTimeout(() => (this.isSponsorsMenuOpen = true), 100)
     // And close after 10 seconds

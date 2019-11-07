@@ -7,4 +7,11 @@ ul[role="list"] {
   li[role="listitem"] {
     border-bottom: 1px solid $grey-ligthen;
   }
+
+  @media screen and (max-width: $break-md) {
+    width: 100%;
+  }
+  @media screen and (max-width: $break-sm) {
+    width: 17.4rem;
+  }
 }

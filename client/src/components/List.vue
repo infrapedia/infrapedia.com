@@ -1,6 +1,6 @@
 <template>
   <div class="w120 no-border no-outline no-selectable transition-all">
-    <div class="w-fit-full p4">
+    <div class="w-fit-full p4" v-if="isSearchVisible">
       <el-input
         class="w110"
         placeholder="Search"
@@ -89,6 +89,10 @@ export default {
     option: {
       type: String,
       required: true
+    },
+    isSearchVisible: {
+      type: Boolean,
+      default: () => true
     }
   },
   data: () => ({

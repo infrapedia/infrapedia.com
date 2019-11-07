@@ -1,0 +1,36 @@
+@import '../helpers/atomic-classes';
+@import '../base/variables';
+
+.el-button.no-border {
+  color: $dark-charcoal
+}
+
+.logo-img {
+  height: 34px;
+  width: 120px;
+}
+
+header {
+  border-bottom: 1px solid $light-hover;
+  .icon {
+    color: $dark-charcoal;
+    &:active {
+      background-color: $light-hover;
+    }
+  }
+}
+
+.footer {
+  width: 100%;
+  margin: 0;
+  padding: 1rem;
+  margin-top: 14rem
+}
+
+#html-wrapper.dark {
+  header {
+    .icon {
+      color: $white-full
+    }
+  }
+}

@@ -287,7 +287,7 @@ export default {
       })
 
       map.on('click', this.handleMapClick)
-      map.on('touchend', this.handleMobileTouchEnd)
+      map.on('touchend', this.handleMapClick)
 
       map.on('draw.create', this.handleDraw)
       map.on('draw.delete', this.handleDraw)

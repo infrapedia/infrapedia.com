@@ -1,0 +1,10 @@
+export const CLICK_LIST_ITEM = 'click-list-item'
+export const CLICK_SUBMARINE = 'click-submarine'
+export const CLICK_DATACENTERS = 'click-data-center'
+export const CLICK_IXPS = 'click-ixps'
+export const CLICK_NETWORKS = 'click-networks'
+
+export const CLEAR_SUBMARINE = 'clear-submarine'
+export const CLEAR_DATACENTERS = 'clear-data-center'
+export const CLEAR_IXPS = 'clear-ixps'
+export const CLEAR_NETWORKS = 'clear-networks'

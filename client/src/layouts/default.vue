@@ -14,7 +14,7 @@
         <router-view />
       </transition>
     </template>
-    <i-footer role="contentinfo" />
+    <i-footer role="contentinfo" class="ml20 hidden-sm-and-down" />
   </div>
 </template>
 
