@@ -1,5 +1,5 @@
 <template>
-  <footer class="absolute h8 ml5 mr5 flex align-items-center" :class="{ dark, light: !dark }">
+  <footer class="absolute h8 ml5 mr5 flex align-items-center hidden-sm-and-down" :class="{ dark, light: !dark }">
     <div class="ml20 bgcolor-inherit">
       <span>&copy; 2019 Copyright, All Rights Reserved by Infrapedia</span>
       <span

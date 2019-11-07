@@ -1,0 +1,42 @@
+@import '../helpers/atomic-classes';
+@import '../base/variables';
+
+.sm-icon {
+  color: $dark-charcoal;
+}
+
+.circle {
+  transition: all $regular-transition;
+  &:active {
+    background-color: $light-hover;
+  }
+}
+
+.full-screen {
+  color: $dark-charcoal;
+  overflow-y: scroll;
+  height: 100vh;
+  width: 100vw;
+  left: 0;
+  top: 0;
+
+  li {
+    max-width: 20rem;
+    .partner {
+      color: $white-partial;
+      background-color: orange
+    }
+  }
+}
+
+.application.light {
+  .full-screen {
+    background-color: $white-full;
+  }
+}
+
+.application.dark {
+  .full-screen {
+    background-color: $dark-charcoal;
+  }
+}

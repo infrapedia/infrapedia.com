@@ -17,3 +17,10 @@ ul[role="list"] {
 .sm-icon {
   color: rgba(0,0,0,.54);
 }
+
+.el-input {
+  min-width: 8rem;
+  @media screen and (max-width: $break-md) {
+    width: 8rem
+  }
+}

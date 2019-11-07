@@ -1,19 +1,21 @@
 <template>
   <header class="header fixed h12 w-full no-padding">
     <div class="header-inner-wrapper w-full flex relative h-fit-full">
-      <div class="flex no-padding navbar-wrapper w-full justify-content-space-between pr6 pl6">
-        <h1 class="logo-title">
+      <div class="flex no-padding navbar-wrapper w-full justify-content-space-between pr1 pl1">
+        <h1 class="logo-title hidden-md-and-down">
           <router-link to="/">
             <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
           </router-link>
         </h1>
+
+        <h1><i-mobile-drawer /></h1>
 
         <div aria-labelledby="rightnavheading" class="links-wrapper">
           <transition-group name="fade" mode="out-in">
             <ul class="p0 m0 h-fit-full" role="group" :key="1" v-if="!isUserNavbar">
 
               <li
-                class="inline-block no-selectable relative"
+                class="inline-block no-selectable relative hidden-sm-and-down"
                 role="listitem"
               >
                 <el-popover
@@ -41,10 +43,10 @@
                   </div>
                 </el-popover>
               </li>
-              <el-divider direction="vertical" class="m0" />
+              <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
 
               <li
-                class="inline-block no-selectable relative"
+                class="inline-block no-selectable relative hidden-sm-and-down"
                 role="listitem"
               >
                 <el-popover
@@ -73,10 +75,10 @@
                     </div>
                 </el-popover>
               </li>
-              <el-divider direction="vertical" class="m0" />
+              <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
 
               <li
-                class="inline-block no-selectable relative"
+                class="inline-block no-selectable relative hidden-sm-and-down"
                 role="listitem"
               >
                 <el-popover
@@ -103,9 +105,9 @@
                 </el-popover>
               </li>
 
-                <el-divider direction="vertical" class="m0" />
+              <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
               <li
-                class="inline-block no-selectable relative"
+                class="inline-block no-selectable relative hidden-sm-and-down"
                 role="listitem"
               >
                 <el-popover
@@ -135,9 +137,9 @@
                 </el-popover>
               </li>
 
-              <el-divider direction="vertical" class="m0" />
+              <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
               <li
-                class="inline-block no-selectable relative"
+                class="inline-block no-selectable relative hidden-sm-and-down"
                 role="listitem"
               >
                 <el-popover
@@ -159,10 +161,7 @@
                       @keyup.enter.space="handleNetworksSelection"
                     >
                       Networks
-                      <i
-                        aria-hidden="true"
-                        class="el-icon-arrow-down icon sm-icon ml1"
-                      />
+                      <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
                     </div>
                   </el-popover>
                 </li>
@@ -176,15 +175,19 @@
                   <i-search @search-selection="handleBeforeLoadItem" />
                 </div>
               </li>
+
+              <i-full-screen-search @search-selection="handleBeforeLoadItem" />
+
               <li class="inline-block relative" data-no-outline="true" role="listitem">
                 <div
-                  class="list-item info-menu pr3 pl3"
+                  class="list-item info-menu pr2 pl2"
                   aria-haspopup="true"
                   data-no-hover-bg="true"
                 >
                   <i-filter @open="closeUnwantedOpenMenus" />
                 </div>
               </li>
+
               <el-divider direction="vertical" class="m0" />
               <li class="inline-block relative" role="listitem">
                 <div class="list-item sponsors-menu" aria-haspopup="true">
@@ -229,14 +232,14 @@
                       class="m0 w-fit-full h-fit-full no-border vertical-align p4"
                       @click.stop="toggleSponsorsMenuVisibility"
                     >
-                      <fa :icon="['fas', 'star']" class="sm-icon mr3" />
-                      <font size="2" class="link">Sponsors</font>
+                      <fa :icon="['fas', 'star']" class="sm-icon" />
+                      <font size="2" class="link hidden-md-and-down ml3">Sponsors</font>
                     </el-button>
                   </el-popover>
                 </div>
               </li>
-              <el-divider direction="vertical" class="m0" />
 
+              <el-divider direction="vertical" class="m0" />
               <li class="inline-block relative" data-no-outline="true">
                 <div
                   class="list-item user-icon pr1 pl3"
@@ -361,6 +364,7 @@
                 </div>
               </li>
             </ul>
+
             <ul class="p0 pr4 m0 h-fit-full" role="group" :key="2" v-else>
               <li class="inline-block relative" data-no-outline="true">
                 <div
@@ -436,6 +440,7 @@ import IList from './List'
 import IFilter from './Filter'
 import ISearch from './Search'
 import sponsors from '../config/navbarSponsors'
+import IFullScreenSearch from './FullScreenSearch'
 import infoMenuLinks from '../config/infoMenuLinks'
 import dataCollection from '../mixins/dataCollection'
 
@@ -444,7 +449,8 @@ export default {
   components: {
     IList,
     IFilter,
-    ISearch
+    ISearch,
+    IFullScreenSearch
   },
   mixins: [dataCollection],
   props: {

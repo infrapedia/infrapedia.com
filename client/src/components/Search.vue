@@ -31,7 +31,7 @@
     </el-card>
     <div slot="reference" role="search">
       <el-input
-        class="w60"
+        class="hidden-sm-and-down"
         placeholder="Search"
         :class="{ dark }"
         v-model="search"
