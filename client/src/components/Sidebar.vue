@@ -1,54 +1,48 @@
 <template>
-  <div :style="sidebarStyleOnMobile">
-    <transition
-      tag="div"
-      mode="out-in"
-      :name="transitionsClasses.name"
-      :enter-active-class="transitionsClasses.active"
-      :leave-active-class="transitionsClasses.leave"
-      >
-      <div
-        v-if="isSidebar"
-        :style="sidebarStyle"
-        class="sidebar-wrapper"
-      >
-        <el-card shadow="hover" v-loading="isSidebarLoad">
-          <header class="header pt8 pr8 pl14 pb12 h12 relative">
-            <span
-              class="inline-block w4 h4 icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
-              @click="closeSidebar"
+  <transition
+    tag="div"
+    mode="out-in"
+    :name="transitionsClasses.name"
+    :enter-active-class="transitionsClasses.active"
+    :leave-active-class="transitionsClasses.leave"
+    >
+    <div v-if="isSidebar" class="sidebar-wrapper" :class="{ active: isSidebarActive }">
+      <el-card shadow="hover" v-loading="isSidebarLoad">
+        <header class="header pt8 pr8 pl14 pb12 h12 relative" @click="toggleActiveClassOnMobile">
+          <span
+            class="inline-block w4 h4 icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
+            @click="closeSidebar"
+          >
+            <fa :icon="['fas', 'times']" />
+          </span>
+          <el-tooltip
+            effect="dark"
+            content="Click to copy link"
+            placement="bottom">
+            <h1
+              class="inline-block cursor-pointer title font-bold m0 p1 round truncate fs-large underline"
+              @click="copyToClip"
             >
-              <fa :icon="['fas', 'times']" />
-            </span>
-            <el-tooltip
-              effect="dark"
-              content="Click to copy link"
-              placement="bottom">
-              <h1
-                class="inline-block cursor-pointer title font-bold m0 p1 round truncate fs-large underline"
-                @click="copyToClip"
-              >
-                {{ currentSelection.name }}
-              </h1>
-            </el-tooltip>
-            <p class="text-bold">
-              {{ currentSelection.segment_name }}
-            </p>
-          </header>
-          <!---------------------- SIDEBAR MODES ----------------------->
-          <transition mode="out-in" name="fade">
-            <component
-              :is="currentView"
-              :info="currentSelection"
-              @edit-cable="$emit(EDIT_CABLE, $event)"
-              @buy-capacity="$emit(BUY_CAPACITY, $event)"
-              @report-issue="$emit(REPORT_ISSUE, $event)"
-            />
-          </transition>
-        </el-card>
-      </div>
-    </transition>
-  </div>
+              {{ currentSelection.name }}
+            </h1>
+          </el-tooltip>
+          <p class="text-bold">
+            {{ currentSelection.segment_name }}
+          </p>
+        </header>
+        <!---------------------- SIDEBAR MODES ----------------------->
+        <transition mode="out-in" name="fade">
+          <component
+            :is="currentView"
+            :info="currentSelection"
+            @edit-cable="$emit(EDIT_CABLE, $event)"
+            @buy-capacity="$emit(BUY_CAPACITY, $event)"
+            @report-issue="$emit(REPORT_ISSUE, $event)"
+          />
+        </transition>
+      </el-card>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -68,12 +62,11 @@ export default {
     'i-cable-attributes': () => import('./sidebarModes/cableAttributes')
   },
   data: () => ({
-    sidebarStyleOnMobile: {},
-    sidebarStyle: {},
     isBadge: false,
     BUY_CAPACITY,
     EDIT_CABLE,
     REPORT_ISSUE,
+    isSidebarActive: false,
     transitionsClasses: {
       name: 'animated faster',
       active: 'slideInLeft',
@@ -108,18 +101,8 @@ export default {
     window.removeEventListener('resize', this.resizeWatcher)
   },
   methods: {
-    setFullSidebarHeight() {
-      const mobileWidth = 425
-      if (window.innerWidth <= mobileWidth) {
-        this.sidebarStyleOnMobile = {
-          height: '97vh',
-          overflowY: 'auto',
-          overflowX: 'hidden'
-        }
-        this.sidebarStyle = { height: '100%', overflow: 'auto' }
-      } else {
-        this.sidebarStyle = { height: '100%', overflow: 'auto' }
-      }
+    toggleActiveClassOnMobile() {
+      this.isSidebarActive = !this.isSidebarActive
     },
     resizeWatcher() {
       const mobileWidth = 425

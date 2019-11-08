@@ -911,7 +911,7 @@ export default {
       const clustersSource = map.getSource(mapConfig.clusterPts)
       const featureCollection = JSON.parse(JSON.stringify(points || {}))
 
-      console.log(points, featureCollection)
+      // console.log(points, featureCollection)
 
       if (featureCollection && featureCollection.length && clustersSource) {
         clustersSource.setData({ features: featureCollection })
@@ -1030,7 +1030,6 @@ export default {
        */
 
       const { center, zoom, pitch, bearing, cameraCenter } = this.easePoint
-      console.log(this.easePoint)
       if (center[0] && center[0].length < 2) return
       this.map.fitBounds(center, {
         pan: { duration: 30 },

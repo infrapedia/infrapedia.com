@@ -8,13 +8,24 @@
   width: 25%;
   max-width: 28rem;
   height: 94vh;
-  z-index: 5;
+  z-index: 2000 !important;
   left: 0;
   top: 48px;
   overflow: hidden;
   display: flex;
   flex-flow: row nowrap;
   border-color: transparent;
+  transition: all $regular-transition;
+
+  @media screen and (max-width: $break-sm) {
+    top: unset;
+    bottom: 0;
+    height: 15%;
+    width: 100%;
+    &.active {
+      height: 100%;
+    }
+  }
 
   .el-card {
     width: 100%;

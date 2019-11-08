@@ -2,7 +2,7 @@
   <el-dialog
     :visible.sync="isVisible"
     width="80%"
-    top="28vh"
+    top="12vh"
     :custom-class="customDialogClass"
     :close-on-click-modal="false"
     :show-close="false"
@@ -12,32 +12,32 @@
         Buy Now! - <span class="capitalize">{{ dialogTitle }}</span>
       </h1>
     </header>
-    <el-form :model="form" :rules="formRules" class="pr6 pl6" ref="form">
+    <el-form :model="form" :rules="formRules" class="pr2 pl2" ref="form">
       <el-row :gutter="15">
-        <el-col :span="8">
+        <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8">
           <el-form-item label="Company name" prop="company">
             <el-input v-model="form.company" :class="{ dark }" />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="First Name" prop="name">
             <el-input v-model="form.name" :class="{ dark }" />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
           <el-form-item label="Last Name" prop="lastname">
             <el-input v-model="form.lastname" :class="{ dark }" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="30">
-        <el-col :span="12">
+        <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
           <el-form-item label="Email" prop="email">
             <el-input type="email" v-model="form.email" :class="{ dark }" />
           </el-form-item>
         </el-col>
         <template v-if="dialogTitle !== 'Other'">
-          <el-col :span="12" v-if="dialogTitle !== 'Datacenter'">
+          <el-col v-if="dialogTitle !== 'Datacenter'" :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
             <el-form-item label="Capacity" prop="capacity">
               <el-select
                 class="w-fit-full"
@@ -76,8 +76,8 @@
         </template>
       </el-row>
     </el-form>
-    <footer class="footer flex justify-content-space-between pr0 pl6">
-      <small class="inline-block mt2">
+    <footer class="footer flex wrap justify-content-space-between pr0 pl6">
+      <small class="inline-block mt2 mb4">
         <span class="text-red">*</span> indicates required field
       </small>
       <div>
