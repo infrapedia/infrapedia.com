@@ -46,6 +46,8 @@
                     slot="reference"
                     aria-haspopup="true"
                     class="list-item pr4 pl4 no-selectable"
+                    @click.stop="handlePremiumSelection"
+                    @keyup.enter.space="handlePremiumSelection"
                   >
                     Our Partners
                     <i
