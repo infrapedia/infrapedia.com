@@ -1059,8 +1059,15 @@ export default {
       this.$store.commit(`${EASE_POINT}`, null)
       this.$store.commit(`${HAS_TO_EASE_TO}`, false)
     },
-    handleUpdateTimeMachine(selection) {
-      return selection === 0 ? console.log('active') : console.log('future')
+    async handleUpdateTimeMachine(selection) {
+      const { map } = this
+      const filters = mapConfig.filter
+
+      await this.disableCableHighlight()
+      await map.setFilter(
+        mapConfig.cableLayer,
+        selection === 0 ? filters['active'] : filters['future']
+      )
     },
     /**
      * @param year { Number } - The year parameter is for toggling if showing only the subsea cables or show them all
@@ -1085,9 +1092,6 @@ export default {
       timemachineFilter[2] = epoch
       await map.setFilter(mapConfig.cableLayer, timemachineFilter)
       await this.$store.commit(`${CURRENT_MAP_FILTER}`, timemachineFilter)
-    },
-    handleSubseaFilterSelection(val) {
-      return console.log(val, 'subsea filter')
     }
   }
 }

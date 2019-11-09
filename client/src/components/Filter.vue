@@ -55,7 +55,7 @@
               <el-checkbox
                 name="timemachine"
                 v-model="filters.isTimeMachineActive"
-                @change="emitSubseaSelection"
+                @change="emitTimeMachineSelection"
               />
             </header>
             <div class="w-fit-full vertical-align pb5">
@@ -134,12 +134,39 @@ export default {
       this.isMenuFilter = !this.isMenuFilter
       if (this.isMenuFilter) this.$emit('open')
     },
+    /**
+     * @param isSubseaOnly { Boolean }
+     */
     emitSubseaSelection(isSubseaOnly) {
+      // Other filters cannot be active
+      if (this.filters.isTimeMachineActive) this.filters.isTimeMachineActive = false
+      if (this.filters.radio !== '') this.filters.radio = ''
+
       return bus.$emit(`${SUBSEA_FILTER}`, isSubseaOnly ? currentYear() : 0)
     },
+    /**
+     * @param selection { Boolean }
+     */
     emitRadioSelection(selection) {
+      // Other filters cannot be active
+      if (this.filters.isTimeMachineActive) this.filters.isTimeMachineActive = false
+      if (this.filters.isSubseaOnly) this.filters.isSubseaOnly = false
+
       return bus.$emit(`${UPDATE_TIME_MACHINE}`, selection)
     },
+    /**
+     * @param isTimeMachineActive { Boolean }
+     */
+    emitTimeMachineSelection(isTimeMachineActive) {
+      // Other filters cannot be active
+      if (this.filters.radio !== '') this.filters.radio = ''
+      if (this.filters.isSubseaOnly) this.filters.isSubseaOnly = false
+
+      return bus.$emit(`${SUBSEA_FILTER}`, isTimeMachineActive ? this.filters.year : 0)
+    },
+    /**
+     * @param year { Number } Year selected with the slider
+     */
     emitTimeMachineYear(year) {
       return bus.$emit(`${TOGGLE_FILTER_SELECTION}`, year)
     }
