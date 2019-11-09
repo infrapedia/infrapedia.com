@@ -294,6 +294,6 @@ export const mapConfig = {
     active: ['!=', ['get', 'isinactive'], 'true'],
     all: ['has', 'cable_id'],
     future: ['>', ['get', 'activation'], currentEpoch],
-    timemachine: ['>=', ['get', 'eosepoch'], 0]
+    timemachine: ['>=', ['get', 'eosepoch'], 0] // We change the 0 value when using the filter component inside the navbar for the sub-sea time machine
   }
 }

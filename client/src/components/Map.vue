@@ -65,6 +65,11 @@ import {
   FOCUS_ON_CITY
 } from '../events'
 import {
+  TOGGLE_FILTER_SELECTION,
+  UPDATE_TIME_MACHINE,
+  SUBSEA_FILTER
+} from '../events/filter'
+import {
   // TOGGLE_LOADING,
   TOGGLE_DARK,
   LOCATE_USER,
@@ -90,6 +95,7 @@ import { bus } from '../helpers/eventBus'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapState, mapActions } from 'vuex'
 import turf from 'turf'
+import currentYear from '../helpers/currentYear'
 
 const GEOLOCATION_POINT = 'geolocation-point'
 
@@ -127,6 +133,9 @@ export default {
     bus.$on(TOGGLE_THEME, this.toggleDarkMode)
     bus.$on(FOCUS_ON, this.handleFocusOn)
     bus.$on(FOCUS_ON_CITY, this.handleCityFocus)
+    bus.$on(UPDATE_TIME_MACHINE, this.handleUpdateTimeMachine)
+    bus.$on(TOGGLE_FILTER_SELECTION, this.handleFilterSelection)
+    bus.$on(SUBSEA_FILTER, this.handleFilterSelection)
   },
   methods: {
     ...mapActions({
@@ -468,6 +477,11 @@ export default {
       const highlightColor = this.dark ? 'rgba(50,50,50,0.35)' : 'rgba(23,23,23, 0.06)'
 
       this.map.setPaintProperty(mapConfig.cableLayer, 'line-color', highlightColor)
+      this.$store.commit(`${CURRENT_MAP_FILTER}`, [
+        '==',
+        ['get', 'cable_id'],
+        Number(cable.cable_id)
+      ])
       this.map.setFilter(mapConfig.highlightLayer, [
         '==',
         ['get', 'cable_id'],
@@ -1044,6 +1058,36 @@ export default {
       // Clearing ease point so it wont ease everytime the user comes to the home page
       this.$store.commit(`${EASE_POINT}`, null)
       this.$store.commit(`${HAS_TO_EASE_TO}`, false)
+    },
+    handleUpdateTimeMachine(selection) {
+      return selection === 0 ? console.log('active') : console.log('future')
+    },
+    /**
+     * @param year { Number } - The year parameter is for toggling if showing only the subsea cables or show them all
+     */
+    async handleFilterSelection(year) {
+      const { map } = this
+      // The epoch is the time arbitrarily selected as a point of reference for the specification of celestial coordinates. In this case, is used for denoting the existence of future cables
+      const epoch = new Date(`${year}-02-02`).getTime() / 1000
+      const timemachineFilter = mapConfig.filter['timemachine']
+
+      // If the year is the current year or is equal to 0
+      // We suppose he/she is either deactivating the subsea switch of the filter
+      // Or is toggling off/on the checkbox for the subseatime machine slider
+      if (year === currentYear() || year === 0) {
+        await this.$store.commit(`${CURRENT_MAP_FILTER}`, ['all'])
+        await map.setFilter(mapConfig.cableLayer, ['all'])
+      } else await this.disableCableHighlight()
+
+      // The year 0 demarks that we should show all the cables including the underground ones and nothing else
+      if (year === 0) return
+      // Otherwise keep going and show me only the subsea ones
+      timemachineFilter[2] = epoch
+      await map.setFilter(mapConfig.cableLayer, timemachineFilter)
+      await this.$store.commit(`${CURRENT_MAP_FILTER}`, timemachineFilter)
+    },
+    handleSubseaFilterSelection(val) {
+      return console.log(val, 'subsea filter')
     }
   }
 }

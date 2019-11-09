@@ -28,6 +28,7 @@
               name="subseaonly"
               v-model="filters.isSubseaOnly"
               :active-color="colorBaseOnThemeState"
+              @change="emitSubseaSelection"
             />
           </li>
           <el-divider class="m0" />
@@ -40,7 +41,7 @@
               v-model="filters.radio"
               size="medium"
               fill="red"
-              @change="handleRadioSelection"
+              @change="emitRadioSelection"
               class="flex column"
             >
               <el-radio :label="0" name="activeonly" class="mr1">{{'' + ''}}</el-radio>
@@ -51,7 +52,11 @@
           <li class="p4">
             <header class="flex justify-content-space-between pb14 pr4 pl-1">
               <label for="timemachine">Subsea time machine</label>
-              <el-checkbox name="timemachine" v-model="filters.isTimeMachineActive" />
+              <el-checkbox
+                name="timemachine"
+                v-model="filters.isTimeMachineActive"
+                @change="emitSubseaSelection"
+              />
             </header>
             <div class="w-fit-full vertical-align pb5">
               <span class="mr5">{{ minYears }}</span>
@@ -61,7 +66,7 @@
                 :min="minYears"
                 :max="maxYears"
                 v-model="filters.year"
-                @change="updateTimeMachineYear"
+                @change="emitTimeMachineYear"
               />
               <span class="ml5">{{ maxYears }}</span>
             </div>
@@ -81,6 +86,14 @@
 </template>
 
 <script>
+import { bus } from '../helpers/eventBus'
+import {
+  TOGGLE_FILTER_SELECTION,
+  UPDATE_TIME_MACHINE,
+  SUBSEA_FILTER
+} from '../events/filter'
+import currentYear from '../helpers/currentYear'
+
 export default {
   name: 'IFilter',
   data: () => ({
@@ -89,7 +102,7 @@ export default {
       isSubseaOnly: false,
       isTimeMachineActive: false,
       radio: '',
-      year: new Date().getFullYear()
+      year: currentYear()
     }
   }),
   computed: {
@@ -100,11 +113,11 @@ export default {
       return this.dark ? '#f7dc82' : '#f3c52c'
     },
     minYears() {
-      return new Date().getFullYear()
+      return currentYear()
     },
     maxYears() {
       const estimateMaxYearsUntilNoCables = 31
-      return new Date().getFullYear() + estimateMaxYearsUntilNoCables
+      return currentYear() + estimateMaxYearsUntilNoCables
     }
   },
   async mounted() {
@@ -121,11 +134,14 @@ export default {
       this.isMenuFilter = !this.isMenuFilter
       if (this.isMenuFilter) this.$emit('open')
     },
-    handleRadioSelection(selection) {
-      return selection === 0 ? console.log('active') : console.log('future')
+    emitSubseaSelection(isSubseaOnly) {
+      return bus.$emit(`${SUBSEA_FILTER}`, isSubseaOnly ? currentYear() : 0)
     },
-    updateTimeMachineYear(year) {
-      console.warn(year, 'not done')
+    emitRadioSelection(selection) {
+      return bus.$emit(`${UPDATE_TIME_MACHINE}`, selection)
+    },
+    emitTimeMachineYear(year) {
+      return bus.$emit(`${TOGGLE_FILTER_SELECTION}`, year)
     }
   }
 }
