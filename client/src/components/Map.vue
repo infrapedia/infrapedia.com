@@ -136,6 +136,8 @@ export default {
     bus.$on(UPDATE_TIME_MACHINE, this.handleUpdateTimeMachine)
     bus.$on(TOGGLE_FILTER_SELECTION, this.handleFilterSelection)
     bus.$on(SUBSEA_FILTER, this.handleFilterSelection)
+
+    if (this.dark) this.map.setStyle(mapConfig.darkBasemap)
   },
   methods: {
     ...mapActions({
