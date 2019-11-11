@@ -43,6 +43,7 @@
           <el-button
             v-if="isFinal(i) && !isPremiumPartners"
             :loading="isLoading"
+            :class="{ dark, light: !dark }"
             :key="option.name + ' ' + i"
             class="w-fit-full p4 h20 no-border seamless-hoverbg"
             @click="$emit(LOAD_MORE, option)"

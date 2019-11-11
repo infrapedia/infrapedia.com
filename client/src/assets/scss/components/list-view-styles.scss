@@ -4,9 +4,6 @@
 ul[role="list"] {
   overflow: scroll;
   max-height: 28rem;
-  li[role="listitem"] {
-    border-bottom: 1px solid $grey-ligthen;
-  }
 
   @media screen and (max-width: $break-md) {
     width: 100%;
@@ -15,3 +12,29 @@ ul[role="list"] {
     width: 17.4rem;
   }
 }
+
+#html-wrapper.light {
+  ul[role="list"] {
+    li[role="listitem"] {
+      border-bottom: 1px solid $grey-ligthen;
+    }
+  }
+}
+
+#html-wrapper.dark {
+  ul[role="list"] {
+    li[role="listitem"] {
+      border-bottom: 1px solid $light-charcoal;
+    }
+  }
+  .el-button {
+    color: inherit;
+    background-color: $dark-charcoal;
+    &:focus,
+    &:focus-within,
+    &:hover {
+      background-color: lighten(rgba(0,0,0,0.2), 80%);
+    }
+  }
+}
+
