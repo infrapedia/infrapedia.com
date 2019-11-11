@@ -646,15 +646,17 @@ export default {
       const map = this.map
 
       const loadStyles = () => {
-        if (map.loaded()) {
-          this.addMapSources(map)
-          this.addMapLayers()
-          if (this.$store.state.isLocating) {
-            this.isLocationZoomIn = false
-            this.geolocateUser()
-          }
-          map.off('render', loadStyles)
+        if (!map.loaded()) return
+
+        this.addMapSources(map)
+        if (this.$store.state.isLocating) {
+          this.isLocationZoomIn = false
+          this.geolocateUser()
         }
+        if (this.focus && this.focus.type.toLowerCase() === 'cable') {
+          this.handleCablesSelection(true, [{ properties: { cable_id: this.focus.id }}])
+        }
+        map.off('render', loadStyles)
       }
 
       const switchStyles = style => {
@@ -662,6 +664,9 @@ export default {
         map.on('render', loadStyles)
       }
 
+      // We have to remove the filter cause if not it will only draw the filtered cable
+      map.setFilter(mapConfig.highlightLayer, ['all'])
+      this.$store.commit(`${CURRENT_MAP_FILTER}`, ['all'])
       switchStyles(style)
     },
     toggleMenu() {
@@ -1061,6 +1066,9 @@ export default {
       this.$store.commit(`${EASE_POINT}`, null)
       this.$store.commit(`${HAS_TO_EASE_TO}`, false)
     },
+    /**
+     * @param selection { Number } - 0 being "active" and 1 "future"
+     */
     async handleUpdateTimeMachine(selection) {
       const { map } = this
       const filters = mapConfig.filter
