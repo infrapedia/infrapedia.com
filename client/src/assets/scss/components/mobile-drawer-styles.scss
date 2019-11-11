@@ -34,3 +34,14 @@ header {
     }
   }
 }
+
+.drawer-wrapper.dark {
+  .el-button {
+    color: $white-partial;
+    background-color: inherit;
+  }
+
+  header {
+    background-color: $dark-charcoal;
+  }
+}

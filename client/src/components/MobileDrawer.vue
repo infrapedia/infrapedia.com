@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="drawer-wrapper" :class="{ dark, light: !dark }">
     <el-button
       circle
       icon="el-icon-menu"
-      class="no-border"
+      class="no-border color-inherit w8 vertical-align mt1"
       @click="toggleVisibility"
     />
     <el-drawer

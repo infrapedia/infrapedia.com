@@ -60,6 +60,14 @@ export default {
       return this.$store.state.isDark
     }
   },
+  mounted() {
+    document.querySelector('body').addEventListener('keydown', this.handleClose)
+  },
+  beforeDestroy() {
+    document
+      .querySelector('body')
+      .removeEventListener('keydown', this.handleClose)
+  },
   methods: {
     toggleVisibility() {
       this.isFullScreen = !this.isFullScreen
@@ -95,6 +103,11 @@ export default {
       this.toggleVisibility()
       this.searchResults = []
       this.search = ''
+    },
+    handleClose(e) {
+      if (e.keyCode === 27 || e.keyCode === 4) {
+        this.isFullScreen = false
+      }
     }
   }
 }

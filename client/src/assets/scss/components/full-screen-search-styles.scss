@@ -1,10 +1,6 @@
 @import '../helpers/atomic-classes';
 @import '../base/variables';
 
-.sm-icon {
-  color: $dark-charcoal;
-}
-
 .circle {
   transition: all $regular-transition;
   &:active {
@@ -30,6 +26,9 @@
 }
 
 .application.light {
+  .sm-icon {
+    color: $dark-charcoal;
+  }
   .full-screen {
     background-color: $white-full;
   }
