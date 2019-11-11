@@ -72,14 +72,12 @@
           />
         </el-collapse-item>
       </el-collapse>
-      <i-footer class="footer relative" />
+      <i-footer class="footer relative m0 mt54 ml-5 p4" />
     </el-drawer>
   </div>
 </template>
 
 <script>
-import IList from './List'
-import IFooter from './Footer'
 import { LOAD_MORE } from '../events/listview'
 import {
   CLICK_LIST_ITEM,
@@ -95,8 +93,8 @@ import {
 
 export default {
   components: {
-    IFooter,
-    IList
+    IFooter: () => import('./Footer'),
+    IList: () => import('./List')
   },
   data: () => ({
     isDrawer: false,
@@ -114,17 +112,14 @@ export default {
   },
   methods: {
     async emitSelected(selected) {
-      console.warn('----------- ENTERED HERE 1 -----------')
-      await this.$emit(CLICK_LIST_ITEM, selected)
-      await this.toggleVisibility()
+      this.$emit(CLICK_LIST_ITEM, selected)
+      this.toggleVisibility()
       this.clear()
     },
     emitLoadMore(opt) {
-      console.warn('----------- ENTERED HERE 2 -----------')
       return this.$emit(LOAD_MORE, opt)
     },
     clear() {
-      console.warn('----------- ENTERED HERE 3 -----------')
       this.$emit(CLEAR_SUBMARINE)
       this.$emit(CLEAR_DATACENTERS)
       this.$emit(CLEAR_IXPS)
@@ -132,9 +127,8 @@ export default {
       this.collapseActive = ''
     },
     handleCollapseChange(tab) {
-      console.warn('----------- ENTERED HERE 4 -----------', tab)
-      if (!tab) return this.clear()
-      switch (tab.toLowerCase()) {
+      if (!tab) this.clear()
+      else switch (tab.toLowerCase()) {
         case 'submarine':
           this.$emit(CLICK_SUBMARINE, tab)
           break
@@ -150,7 +144,6 @@ export default {
       }
     },
     toggleVisibility() {
-      console.warn('----------- ENTERED HERE 5 -----------')
       this.isDrawer = !this.isDrawer
     }
   }
