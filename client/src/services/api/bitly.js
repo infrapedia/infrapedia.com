@@ -1,6 +1,6 @@
-export const createBitlyURL = async (link, $axios) => {
-  if (!$axios || !link) return
+import $axios from '../axios'
 
+export const createBitlyURL = async link => {
   const res = await $axios.post(
     'https://api-ssl.bitly.com/v4/shorten',
     {

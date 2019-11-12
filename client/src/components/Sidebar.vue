@@ -78,6 +78,7 @@ export default {
       isLoading: state => state.isLoading,
       isSidebar: state => state.isSidebar,
       sidebarMode: state => state.sidebarMode,
+      focus: state => state.map.focus,
       currentSelection: state => state.map.currentSelection
     }),
     defaultMode() {
@@ -123,14 +124,15 @@ export default {
       }
     },
     async copyToClip() {
-      this.isBadge = true
-      const { id, opt, name } = this.$store.state.currentSelection
-      if (!id || !opt || !name) return
+      if (!this.focus) return
 
+      const { id, type, name } = this.focus
       let url
+
+      this.isBadge = true
       if (this.$route.query.neLng) {
         url = `${window.location.origin}${this.$route.fullPath}`
-      } else url = `${window.location.origin}?name=${name}&type=${opt}&id=${id}`
+      } else url = `${window.location.origin}?name=${name}&type=${type}&id=${id}`
 
       const res = await createBitlyURL(url)
       if (res) copyToClipboard(encodeURI(res.link))

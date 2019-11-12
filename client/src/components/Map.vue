@@ -305,9 +305,7 @@ export default {
       map.on('draw.update', this.handleDraw)
 
       map.on('render', this.handleBoundsChange)
-      // map.on('zoom', this.handleBoundsChange)
-      // map.on('movend', this.handleBoundsChange)
-      // map.on('pitchend', this.handleBoundsChange)
+
       return map
     },
     handleDraw() {
@@ -454,7 +452,7 @@ export default {
         } else {
           const { id, type, name } = this.focus
 
-          if (id && type && name) {
+          if (id && type) {
             await this.$router.replace(
               `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
                 bounds._sw.lng
@@ -474,7 +472,6 @@ export default {
      * @param cable { Object } - Contains the ID of the selected cable
      */
     highlightCable(cable) {
-      console.log(cable.cable_id)
       if (!this.map || !cable) return
       const highlightColor = this.dark ? 'rgba(50,50,50,0.35)' : 'rgba(23,23,23, 0.06)'
 
@@ -489,32 +486,11 @@ export default {
         ['get', 'cable_id'],
         Number(cable.cable_id)
       ])
-
-      // if (
-      //   cable.isterrestr === 'true' &&
-      //   cable.segment_id &&
-      //   !isNaN(cable.segment_id)
-      // ) {
-      //   console.log(cable, '-----TERRESTRIAL-----')
-      //   map.setFilter(mapConfig.highlightLayer, [
-      //     'all',
-      //     ['==', ['get', 'cable_id'], cable.cable_id],
-      //     ['==', ['get', 'segment_id'], cable.segment_id]
-      //   ])
-      // // } else if (_this.org_cables && _this.org_cables.length === 1) {
-      // //   map.setFilter(mapConfig.highlightLayer, [
-      // //     'in',
-      // //     'cable_id',
-      // //     _this.org_cables[0]
-      // //   ])
-      // } else {
-      // }
-
-      // map.setFilter(mapConfig.highlightLayer, [
-      //   '==',
-      //   ['get', 'cable_id'],
-      //   feature.cable_id ? feature.cable_id : cable.cable_id
-      // ])
+      this.$store.commit(`${MAP_FOCUS_ON}`, {
+        type: 'cable',
+        id: cable.cable_id,
+        name: cable.name
+      })
     },
     /**
      * @param closesSidebar { Boolean } - If besides removing cables highlight it also closes the sidebar
@@ -630,11 +606,11 @@ export default {
     async handleFacilitySelection(id) {
       const data = await this.getFacilityData(id)
       if (!data) throw { message: "We couldn't load the facility ..." }
+      this.$store.commit(`${MAP_FOCUS_ON}`, { id, name: data.name, type: 'fac' })
 
       // Changing the sidebar mode to data_center mode
       this.changeSidebarMode(1)
       this.$store.commit(`${CURRENT_SELECTION}`, data)
-      this.$store.commit(`${MAP_FOCUS_ON}`, { id, name: data.name, type: 'fac' })
       // Opening the sidebar
       this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
       // Removing cables highlight if any
@@ -859,6 +835,7 @@ export default {
 
       // If it is an ixps or a network the sidebar has to be close
       if (type !== 'cable' && type !== 'fac') {
+        await this.disableCableHighlight()
         await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
       }
 
@@ -1015,6 +992,7 @@ export default {
       const bounds = await geojsonExtent(JSON.parse(JSON.stringify(fc)))
 
       await this.$store.commit(`${MAP_BOUNDS}`, bounds)
+      console.log(fc)
 
       if (points.length > 1) {
         await map.getSource(mapConfig.clusterPts).setData(fc)

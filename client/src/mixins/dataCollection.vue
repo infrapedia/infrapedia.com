@@ -119,14 +119,14 @@ export default {
       if (!cable_id) return
 
       await this.$store.commit(`${TOGGLE_LOADING}`, true)
-      await this.$store.commit(`${MAP_FOCUS_ON}`, {
-        name,
-        id: cable_id,
-        type: 'cable'
-      })
       try {
         await this.getCurrentSelectionData(cable_id).then(() => {
           this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
+          this.$store.commit(`${MAP_FOCUS_ON}`, {
+            name,
+            id: cable_id,
+            type: 'cable'
+          })
         })
       } catch {
         // Ignore
