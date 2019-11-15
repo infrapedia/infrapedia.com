@@ -174,6 +174,9 @@ export default {
         case 'ixp':
           await this.handleFacilityItemSelected({ id, type: 'ix' })
           break
+        case 'net':
+          await this.handleFacilityItemSelected({ id, type: 'net' })
+          break
       }
     },
     async handlePremiumPartnerItemSelected(id) {
@@ -195,11 +198,8 @@ export default {
 
       // GETTING ORGANIZATION ID
       const orgID = await this.getOrganizationID(id)
-      if (orgID) {
-        const data = { id: orgID, type: 'org' }
-        this.$store.commit(`${MAP_FOCUS_ON}`, data)
-        bus.$emit(`${FOCUS_ON}`, data)
-      }
+      if (!orgID) return
+      else bus.$emit(`${FOCUS_ON}`, { id: orgID, type: 'org' })
     },
     async handleSubmarineCableItemSelected(id) {
       if (!id) throw { message: 'MISSING ID PARAMETER'}
@@ -220,7 +220,7 @@ export default {
 
       // RETRIEVING AND SAVING POINTS TO THE STORE
       await this.getFacilityPointsData({ id, type })
-      bus.$emit(`${FOCUS_ON}`, { id, type: 'ixps' })
+      bus.$emit(`${FOCUS_ON}`, { id, type })
     }
   }
 }

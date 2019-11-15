@@ -62,7 +62,8 @@ import {
   CABLE_SELECTED,
   CLEAR_SELECTION,
   FOCUS_ON,
-  FOCUS_ON_CITY
+  FOCUS_ON_CITY,
+  REMOVE_QUERY_ROUTE_REPLACE
 } from '../events'
 import {
   TOGGLE_FILTER_SELECTION,
@@ -96,6 +97,8 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapState, mapActions } from 'vuex'
 import turf from 'turf'
 import currentYear from '../helpers/currentYear'
+import debounce from '../helpers/debounce'
+import geojsonExtent from 'geojson-extent'
 
 const GEOLOCATION_POINT = 'geolocation-point'
 
@@ -136,8 +139,10 @@ export default {
     bus.$on(UPDATE_TIME_MACHINE, this.handleUpdateTimeMachine)
     bus.$on(TOGGLE_FILTER_SELECTION, this.handleFilterSelection)
     bus.$on(SUBSEA_FILTER, this.handleFilterSelection)
+    bus.$on(REMOVE_QUERY_ROUTE_REPLACE, this.handleRemoveQueryRouteReplacer)
 
     if (this.dark) this.map.setStyle(mapConfig.darkBasemap)
+    this.handlePreviouslySelected()
   },
   methods: {
     ...mapActions({
@@ -180,7 +185,7 @@ export default {
       return map
     },
     /**
-     * @param map { Object } The map instance
+     * @param map { Object } map instance
      */
     initMapLayers(map) {
       if (!map) return
@@ -191,7 +196,7 @@ export default {
       return map
     },
     /**
-     * @param map { Object } The map instance
+     * @param map { Object } map instance
      */
     addMapSources(map) {
       const data = mapConfig.data
@@ -275,9 +280,12 @@ export default {
           }
         } else map.addLayer(layer)
       }
+
+      this.map.setFilter(mapConfig.cableLayer, ['all'])
+      this.$store.commit(`${CURRENT_MAP_FILTER}`, ['all'])
     },
     /**
-     * @param map { Object } The map instance
+     * @param map { Object } map instance
      */
     addMapEvents(map) {
       let vm = this
@@ -554,6 +562,10 @@ export default {
         await this.handleCablesSelection(!!cables.length, cables)
       }
     },
+    /**
+     * @param bool { Boolean } - If it opens the sidebar
+     * @param cables { Object } [{ properties: { cable_id: String } }]
+     */
     async handleCablesSelection(bool, cables) {
       switch(bool) {
         case true:
@@ -571,6 +583,9 @@ export default {
           break
       }
     },
+    /**
+     * @param clusters { Array }
+     */
     async handleClustersSelection(clusters) {
       const { map } = this
       if (clusters.length) {
@@ -826,7 +841,8 @@ export default {
           message: `Expected @param type to be string, but found ${typeof type}`
         }
       }
-
+      console.log(id, type)
+      this.$store.commit(`${MAP_FOCUS_ON}`, { id, type })
       // Cleaning source
       await this.map.getSource(mapConfig.clusterPts).setData({
         type: 'FeatureCollection',
@@ -854,6 +870,9 @@ export default {
           break
         case 'city':
           await this.handleCityFocus()
+          break
+        case 'net':
+          await this.handleOrganizationFocus(id)
           break
       }
     },
@@ -905,11 +924,14 @@ export default {
      * @param id { String } - Organization ID
      */
     async handleOrganizationFocus(id) {
-      const { map, points, bounds, isMobile } = this
+      const { map, points, isMobile } = this
       const clustersSource = map.getSource(mapConfig.clusterPts)
       const featureCollection = JSON.parse(JSON.stringify(points || {}))
-
-      // console.log(points, featureCollection)
+      console.log(id, featureCollection)
+      const bounds = await geojsonExtent({
+        features: featureCollection,
+        type: 'FeatureCollection'
+      })
 
       if (featureCollection && featureCollection.length && clustersSource) {
         clustersSource.setData({ features: featureCollection })
@@ -945,17 +967,6 @@ export default {
         if (id) await this.handleFacilitySelection(id)
       } else throw { message: `FOUND EXCEPTION: ${id}`}
 
-      // if (featureCollection.length && clustersSource) {
-      // } else if (id.length && map.areTilesLoaded()) {
-
-      // } else if (
-      //   !id.length &&
-      //   featureCollection.length === 1 &&
-      //   featureCollection.features[0].properties.fac_id !== undefined
-      // ) {
-      //   await this.getFacilityData(id)
-      // }
-
       if (!bounds.length) return
       map.fitBounds(bounds, {
         padding: isMobile ? 10 : 50,
@@ -987,28 +998,35 @@ export default {
     },
     async handleIxpsFocus() {
       const { points, map, isMobile, hasToEase } = this
-      const geojsonExtent = require('geojson-extent')
       const fc = { features: points, type: 'FeatureCollection' }
       const bounds = await geojsonExtent(JSON.parse(JSON.stringify(fc)))
 
       await this.$store.commit(`${MAP_BOUNDS}`, bounds)
-      console.log(fc)
+      console.log(map.getSource(mapConfig.clusterPts))
 
       if (points.length > 1) {
-        await map.getSource(mapConfig.clusterPts).setData(fc)
-        await map.fitBounds(bounds, {
-          padding: isMobile ? 15 : 125,
-          animate: true,
-          maxZoom: 13.5,
-          pan: {
-            duration: 10
-          },
-          speed: 1.1,
-          pitch: 45
-        })
+        console.info('HERE 1')
+        try {
+          await map.getSource(mapConfig.clusterPts).setData(fc)
+          await map.fitBounds(bounds, {
+            padding: isMobile ? 15 : 125,
+            animate: true,
+            maxZoom: 13.5,
+            pan: {
+              duration: 10
+            },
+            speed: 1.1,
+            pitch: 45
+          })
+        } catch(e) {
+          console.error(e)
+          // Ignore
+        }
       } else if (hasToEase) {
+        console.info('HERE 2')
         await this.handleFocusOnEasePoints()
       } else {
+        console.info('HERE 3')
         await map.fitBounds(bounds, {
           padding: isMobile ? 10 : 35,
           animate: true,
@@ -1080,6 +1098,24 @@ export default {
       timemachineFilter[2] = epoch
       await map.setFilter(mapConfig.cableLayer, timemachineFilter)
       await this.$store.commit(`${CURRENT_MAP_FILTER}`, timemachineFilter)
+    },
+    handlePreviouslySelected: debounce(function() {
+      if (!this.currentSelection || !this.focus) return
+
+      const { type, id } = this.focus
+      const { map } = this
+
+      if (map.loaded()) {
+        if (type === 'cable') {
+          this.handleCablesSelection(true, [{ properties: {cable_id: id }}])
+        } else if (type) {
+          this.handleFacilitySelection(id)
+        }
+      }
+    }, 320),
+    handleRemoveQueryRouteReplacer() {
+      const { map } = this
+      map.off('render', this.handleBoundsChange)
     }
   }
 }

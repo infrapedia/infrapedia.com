@@ -17,10 +17,10 @@
 <script>
 import Map from '../components/Map.vue'
 import { bus } from '../helpers/eventBus'
-import { FOCUS_ON_CITY } from '../events'
 import debounce from '../helpers/debounce'
-import { IS_DRAWING } from '../store/actionTypes'
 import dataCollection from '../mixins/dataCollection.vue'
+import { IS_DRAWING, TOGGLE_SIDEBAR } from '../store/actionTypes'
+import { FOCUS_ON_CITY, REMOVE_QUERY_ROUTE_REPLACE } from '../events'
 import { HAS_TO_EASE_TO, EASE_POINT } from '../store/actionTypes/map'
 
 export default {
@@ -35,11 +35,19 @@ export default {
   computed: {
     isDrawing() {
       return this.$store.state.isDrawing
+    },
+    isSidebar() {
+      return this.$store.state.isSidebar
     }
   },
   beforeCreate() {
     // If the route has a query it must be a link shared
     if (this.$route.query.neLng) this.$store.commit(`${HAS_TO_EASE_TO}`, true)
+  },
+  beforeRouteLeave (to, from, next) {
+    if (this.isSidebar) this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
+    bus.$emit(REMOVE_QUERY_ROUTE_REPLACE)
+    next()
   },
   async mounted() {
     await this.loadDataIfQueryParamsExist()
