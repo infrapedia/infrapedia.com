@@ -2,69 +2,47 @@
   <div class="pr8 pl8 pt2 pb8">
     <el-row :gutter="20" v-if="info.address1">
       <el-col :span="10" class="p2">
-        <p class="label capitalize">
-          Address
-        </p>
+        <p class="label capitalize">Address</p>
       </el-col>
       <el-col :span="12" class="p2">
-        <p class="text-bold">
-          {{ info.address1 }}
-        </p>
+        <p class="text-bold">{{ info.address1 }}</p>
       </el-col>
     </el-row>
     <el-row :gutter="30" v-if="info.city">
       <el-col :span="10" class="p2">
-        <p class="label capitalize">
-          City
-        </p>
+        <p class="label capitalize">City</p>
       </el-col>
       <el-col :span="12" class="p2">
-        <p class="text-bold">
-          {{ info.city }}
-        </p>
+        <p class="text-bold">{{ info.city }}</p>
       </el-col>
     </el-row>
     <el-row :gutter="30" v-if="info.zipcode">
       <el-col :span="10" class="p2">
-        <p class="label capitalize">
-          Zip
-        </p>
+        <p class="label capitalize">Zip</p>
       </el-col>
       <el-col :span="12" class="p2">
-        <p class="text-bold">
-          {{ info.zipcode }}
-        </p>
+        <p class="text-bold">{{ info.zipcode }}</p>
       </el-col>
     </el-row>
     <el-row :gutter="30" v-if="info.org_name">
       <el-col :span="10" class="p2">
-        <p class="label capitalize">
-          Org Name
-        </p>
+        <p class="label capitalize">Org Name</p>
       </el-col>
       <el-col :span="12" class="p2">
-        <p class="text-bold">
-          {{ info.org_name }}
-        </p>
+        <p class="text-bold">{{ info.org_name }}</p>
       </el-col>
     </el-row>
     <el-row :gutter="30" v-if="info.net_count">
       <el-col :span="10" class="p2">
-        <p class="label capitalize">
-          Network Count
-        </p>
+        <p class="label capitalize">Network Count</p>
       </el-col>
       <el-col :span="12" class="p2">
-        <p class="text-bold">
-          {{ info.net_count }}
-        </p>
+        <p class="text-bold">{{ info.net_count }}</p>
       </el-col>
     </el-row>
     <el-row :gutter="30" v-if="info.website">
       <el-col :span="10" class="p2">
-        <p class="label capitalize">
-          Website
-        </p>
+        <p class="label capitalize">Website</p>
       </el-col>
       <el-col :span="12" class="p2">
         <a
@@ -72,35 +50,29 @@
           :href="info.website"
           target="_blank"
           v-text="info.website"
-          />
+        />
       </el-col>
     </el-row>
     <el-row :gutter="30" v-if="info.updated">
       <el-col :span="10" class="p2">
-        <p class="label capitalize">
-          Last Updated
-        </p>
+        <p class="label capitalize">Last Updated</p>
       </el-col>
       <el-col :span="12" class="p2">
-        <p class="text-bold">
-          {{ info.updated }}
-        </p>
+        <p class="text-bold">{{ info.updated }}</p>
       </el-col>
     </el-row>
     <el-row :gutter="30" v-if="info.status">
       <el-col :span="10" class="p2">
-        <p class="label capitalize">
-          Status
-        </p>
+        <p class="label capitalize">Status</p>
       </el-col>
       <el-col :span="12" class="p2">
-        <p class="text-bold"> {{ info.status }} </p>
+        <p class="text-bold">{{ info.status }}</p>
       </el-col>
     </el-row>
     <el-divider />
     <footer class="p0">
       <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col :sx="24" :md="12">
           <el-popover
             placement="bottom"
             width="100"
@@ -109,7 +81,7 @@
             trigger="manual"
             v-model="isMenuOpen"
           >
-            <el-card shadow="never" class="">
+            <el-card shadow="never" class>
               <ul role="list" class="pt2 pb2">
                 <li
                   v-for="(option, i) in buyOptions"
@@ -128,31 +100,19 @@
               @click="toggleMenu"
               class="cursor-pointer no-outline no-selectable"
             >
-              <el-button
-                type="warning"
-                circle
-                class="mr1 w9 h9 vertical-align"
-              >
+              <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
                 <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
               </el-button>
-              <span class="cursor-pointer fs-regular label">
-                Buy capacity
-              </span>
+              <span class="cursor-pointer fs-regular label">Buy capacity</span>
             </div>
           </el-popover>
         </el-col>
-        <el-col :span="12">
+        <el-col :sx="24" :md="12">
           <div class="cursor-pointer no-selectable" @click="$emit(REPORT_ISSUE)">
-            <el-button
-              type="warning"
-              circle
-              class="mr1 w9 h9 vertical-align"
-            >
+            <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
               <fa :icon="['fas', 'exclamation-circle']" class="sm-icon mt-1" />
             </el-button>
-            <span class="cursor-pointer fs-regular label">
-              Report issue
-            </span>
+            <span class="cursor-pointer fs-regular label">Report issue</span>
           </div>
         </el-col>
       </el-row>
@@ -174,12 +134,7 @@ export default {
   data: () => ({
     BUY_CAPACITY,
     REPORT_ISSUE,
-    buyOptions: [
-      'Transit',
-      'Backbone',
-      'Datacenter',
-      'Other'
-    ],
+    buyOptions: ['Transit', 'Backbone', 'Datacenter', 'Other'],
     isMenuOpen: false
   }),
   computed: {

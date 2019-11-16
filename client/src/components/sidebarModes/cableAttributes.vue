@@ -2,67 +2,52 @@
   <div class="pr8 pl8 pt2 pb8">
     <el-row :gutter="20">
       <el-col :span="10" class="p2">
-        <p class="label capitalize">
-          System status
-        </p>
+        <p class="label capitalize">System status</p>
       </el-col>
       <el-col :span="12" class="p2">
-        <p v-if="info.has_partial_outage">
-          Partial Outage
-        </p>
-        <p v-else class="status-text" :class="{ 'active-cable': !currentCableStatus }">
-          {{ currentCableStatus ? 'Off' : 'On' }}
-        </p>
+        <p v-if="info.has_partial_outage">Partial Outage</p>
+        <p
+          v-else
+          class="status-text"
+          :class="{ 'active-cable': !currentCableStatus }"
+        >{{ currentCableStatus ? 'Off' : 'On' }}</p>
       </el-col>
     </el-row>
     <el-row :gutter="30" v-if="info.system_length">
       <el-col :span="10" class="p2">
-        <p class="label capitalize">
-          System Length
-        </p>
+        <p class="label capitalize">System Length</p>
       </el-col>
       <el-col :span="12" class="p2">
-        <p class="text-bold">
-          {{ `${info.system_length} km`}}
-        </p>
+        <p class="text-bold">{{ `${info.system_length} km`}}</p>
       </el-col>
     </el-row>
     <el-row :gutter="30" v-if="info.activation_datetime">
       <el-col :span="10" class="p2">
-        <p class="label capitalize">
-          Activation Year
-        </p>
+        <p class="label capitalize">Activation Year</p>
       </el-col>
       <el-col :span="12" class="p2">
-        <p class="text-bold">
-          {{ convertToYear(info.activation_datetime) }}
-        </p>
+        <p class="text-bold">{{ convertToYear(info.activation_datetime) }}</p>
       </el-col>
     </el-row>
     <el-row :gutter="30" v-if="info.capacity_tbps > 0">
       <el-col :span="10" class="p2">
-        <p class="label capitalize">
-          Capacity
-        </p>
+        <p class="label capitalize">Capacity</p>
       </el-col>
       <el-col :span="12" class="p2">
-        <p>
-          {{ `${info.capacity_tbps} tbps` }}
-        </p>
+        <p>{{ `${info.capacity_tbps} tbps` }}</p>
       </el-col>
     </el-row>
     <el-divider />
     <div class="w-fit-full">
-      <p class="label"> Owners </p>
-      <p class="mt4">
-        {{ info.orgs ? info.orgs : 'There is no owners ...' }}
-      </p>
+      <p class="label">Owners</p>
+      <p class="mt4">{{ info.orgs ? info.orgs : 'There is no owners ...' }}</p>
     </div>
     <div class="w-fit-full mt10" v-if="currentCableUrls.length">
-      <p class="mb1"> More information: </p>
+      <p class="mb1">More information:</p>
       <a
         v-for="(link, i) in currentCableUrls"
-        v-text="link" :key="i"
+        v-text="link"
+        :key="i"
         :href="link"
         target="_blank"
         class="inline-block underline fs-regular truncate"
@@ -71,7 +56,7 @@
     <el-divider />
     <footer class="p0">
       <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col :xs="24" :sm="12" :md="24" :lg="12">
           <el-popover
             placement="bottom"
             width="100"
@@ -80,7 +65,7 @@
             trigger="manual"
             v-model="isMenuOpen"
           >
-            <el-card shadow="never" class="">
+            <el-card shadow="never" class>
               <ul role="list" class="pt2 pb2">
                 <li
                   tabindex="1"
@@ -88,9 +73,7 @@
                   class="p4 no-selectable transition cursor-pointer seamless-hoverbg no-outline"
                   :class="{ dark, light: !dark }"
                   @click="emitEvent"
-                >
-                  Backbone
-                </li>
+                >Backbone</li>
               </ul>
             </el-card>
             <div
@@ -98,59 +81,35 @@
               @click="toggleMenu"
               class="cursor-pointer no-outline no-selectable"
             >
-              <el-button
-                type="warning"
-                circle
-                class="mr1 w9 h9 vertical-align"
-              >
+              <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
                 <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
               </el-button>
-              <span class="cursor-pointer fs-regular label">
-                Buy capacity
-              </span>
+              <span class="cursor-pointer fs-regular label">Buy capacity</span>
             </div>
           </el-popover>
         </el-col>
-        <el-col :span="12">
-          <el-button
-            type="warning"
-            circle
-            class="mr1 w9 h9 vertical-align"
-          >
+        <el-col :xs="24" :sm="12" :md="24" :lg="12">
+          <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
             <fa :icon="['fas', 'bell']" class="sm-icon mt-1" />
           </el-button>
-          <span class="cursor-pointer fs-regular label">
-            Receive alerts
-          </span>
+          <span class="cursor-pointer fs-regular label">Receive alerts</span>
         </el-col>
       </el-row>
       <el-row :gutter="20" class="mt8">
-        <el-col :span="12">
+        <el-col :xs="24" :sm="12" :md="24" :lg="12">
           <div class="cursor-pointer no-selectable" @click="$emit(`${EDIT_CABLE}`)">
-            <el-button
-              type="warning"
-              circle
-              class="mr1 w9 h9 vertical-align"
-            >
+            <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
               <fa :icon="['fas', 'pen']" class="sm-icon mt-1" />
             </el-button>
-            <span class="fs-regular label">
-              Edit this cable
-            </span>
+            <span class="fs-regular label">Edit this cable</span>
           </div>
         </el-col>
-        <el-col :span="12">
+        <el-col :xs="24" :sm="12" :md="24" :lg="12">
           <div class="cursor-pointer no-selectable" @click="$emit(REPORT_ISSUE)">
-            <el-button
-              type="warning"
-              circle
-              class="mr1 w9 h9 vertical-align"
-            >
+            <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
               <fa :icon="['fas', 'exclamation-circle']" class="sm-icon mt-1" />
             </el-button>
-            <span class="cursor-pointer fs-regular label">
-              Report issue
-            </span>
+            <span class="cursor-pointer fs-regular label">Report issue</span>
           </div>
         </el-col>
       </el-row>
@@ -208,7 +167,7 @@ export default {
       this.toggleMenu()
       this.$emit(`${BUY_CAPACITY}`, 'backbone')
     }
-  },
+  }
 }
 </script>
 

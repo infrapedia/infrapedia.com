@@ -5,11 +5,11 @@
     top="12vh"
     :custom-class="customDialogClass"
     :close-on-click-modal="false"
-    :show-close="false"
   >
     <header slot="title" class="header p0 no-selectable">
       <h1 class="inline-block font-semibold fs-xlarge">
-        Buy Now! - <span class="capitalize">{{ dialogTitle }}</span>
+        Buy Now! -
+        <span class="capitalize">{{ dialogTitle }}</span>
       </h1>
     </header>
     <el-form :model="form" :rules="formRules" class="pr2 pl2" ref="form">
@@ -50,7 +50,8 @@
                   v-for="option in capacities"
                   :key="option"
                   :label="option"
-                  :value="option" />
+                  :value="option"
+                />
               </el-select>
             </el-form-item>
           </el-col>
@@ -60,7 +61,7 @@
                 <span slot="label">
                   <span class="text-red">*</span> Rack total
                 </span>
-                <br>
+                <br />
                 <div class="block">
                   <el-slider
                     class="relative"
@@ -81,14 +82,7 @@
         <span class="text-red">*</span> indicates required field
       </small>
       <div>
-        <el-button
-          plain
-          type="info"
-          class="mr2"
-          @click="closeDialog"
-        >
-          Cancel
-        </el-button>
+        <el-button plain type="info" class="mr2" @click="closeDialog">Cancel</el-button>
         <el-button
           :disabled="isFormUncomplete"
           type="primary"
@@ -96,9 +90,7 @@
           plain
           @click="submitForm('form')"
           @keyup.enter.space="submitForm('form')"
-        >
-          Buy
-        </el-button>
+        >Buy</el-button>
       </div>
     </footer>
   </el-dialog>
@@ -123,22 +115,49 @@ export default {
     },
     formRules: {
       name: [
-        { required: true, message: 'Please input your first name', trigger: 'blur' },
-        { min: 3, max: 10, message: 'Length should be 3 to 10', trigger: 'blur' }
+        {
+          required: true,
+          message: 'Please input your first name',
+          trigger: 'blur'
+        },
+        {
+          min: 3,
+          max: 10,
+          message: 'Length should be 3 to 10',
+          trigger: 'blur'
+        }
       ],
       lastname: [
-        { required: true, message: 'Please input your last name name', trigger: 'blur' },
-        { min: 3, max: 10, message: 'Length should be 3 to 10', trigger: 'blur' }
+        {
+          required: true,
+          message: 'Please input your last name name',
+          trigger: 'blur'
+        },
+        {
+          min: 3,
+          max: 10,
+          message: 'Length should be 3 to 10',
+          trigger: 'blur'
+        }
       ],
       company: [
         { required: true, message: 'Company name is required', trigger: 'blur' }
       ],
       email: [
         { required: true, message: 'Please input your email', trigger: 'blur' },
-        { type: 'email', required: true, message: 'Please input a valid email', trigger: 'change' }
+        {
+          type: 'email',
+          required: true,
+          message: 'Please input a valid email',
+          trigger: 'change'
+        }
       ],
       capacity: [
-        { required: true, message: 'Please select the desired capacity', trigger: 'change' }
+        {
+          required: true,
+          message: 'Please select the desired capacity',
+          trigger: 'change'
+        }
       ]
     }
   }),
@@ -156,31 +175,31 @@ export default {
       }
     },
     dialogTitle() {
-      return this.buyType && this.buyType.title || ''
+      return (this.buyType && this.buyType.title) || ''
     },
     isFormUncomplete() {
       const { name, lastname, capacity, email, company } = this.form
       let title = this.dialogTitle.toLowerCase()
       let isDisabled = true
 
-        if (
-          title !== 'datacenter' &&
-          name !== '' &&
-          lastname !== '' &&
-          capacity !== '' &&
-          email !== '' &&
-          company!== ''
-        ) {
-          isDisabled = false
-        } else if (
-          (title === 'datacenter' || title === 'other') &&
-          company!== '' &&
-          name !== '' &&
-          lastname !== '' &&
-          email !== ''
-        ) {
-          isDisabled = false
-        }
+      if (
+        title !== 'datacenter' &&
+        name !== '' &&
+        lastname !== '' &&
+        capacity !== '' &&
+        email !== '' &&
+        company !== ''
+      ) {
+        isDisabled = false
+      } else if (
+        (title === 'datacenter' || title === 'other') &&
+        company !== '' &&
+        name !== '' &&
+        lastname !== '' &&
+        email !== ''
+      ) {
+        isDisabled = false
+      }
 
       return isDisabled
     },
@@ -206,7 +225,7 @@ export default {
       }
     },
     submitForm(formRef) {
-      this.$refs[formRef].validate((valid) => {
+      this.$refs[formRef].validate(valid => {
         if (valid) this.sendBuyRequest()
         else return false
       })

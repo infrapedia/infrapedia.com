@@ -5,30 +5,23 @@
     :name="transitionsClasses.name"
     :enter-active-class="transitionsClasses.active"
     :leave-active-class="transitionsClasses.leave"
-    >
+  >
     <div v-if="isSidebar" class="sidebar-wrapper" :class="{ active: isSidebarActive }">
       <el-card shadow="hover" v-loading="isSidebarLoad">
-        <header class="header pt8 pr8 pl14 pb12 h12 relative" @click="toggleActiveClassOnMobile">
+        <header class="header pt10 pr8 pl8 pb10 h12 relative" @click="toggleActiveClassOnMobile">
           <span
             class="inline-block w4 h4 icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
             @click="closeSidebar"
           >
             <fa :icon="['fas', 'times']" />
           </span>
-          <el-tooltip
-            effect="dark"
-            content="Click to copy link"
-            placement="bottom">
+          <el-tooltip effect="dark" content="Click to copy link" placement="bottom">
             <h1
               class="inline-block cursor-pointer title font-bold m0 p1 round truncate fs-large underline"
               @click="copyToClip"
-            >
-              {{ currentSelection.name }}
-            </h1>
+            >{{ currentSelection.name }}</h1>
           </el-tooltip>
-          <p class="text-bold">
-            {{ currentSelection.segment_name }}
-          </p>
+          <p class="text-bold">{{ currentSelection.segment_name }}</p>
         </header>
         <!---------------------- SIDEBAR MODES ----------------------->
         <transition mode="out-in" name="fade">
@@ -132,7 +125,8 @@ export default {
       this.isBadge = true
       if (this.$route.query.neLng) {
         url = `${window.location.origin}${this.$route.fullPath}`
-      } else url = `${window.location.origin}?name=${name}&type=${type}&id=${id}`
+      } else
+        url = `${window.location.origin}?name=${name}&type=${type}&id=${id}`
 
       const res = await createBitlyURL(url)
       if (res) copyToClipboard(encodeURI(res.link))

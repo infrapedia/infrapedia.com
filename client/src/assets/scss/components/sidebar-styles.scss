@@ -18,6 +18,10 @@
   transition: all $regular-transition;
 
   @media screen and (max-width: $break-sm) {
+    width: 48%;
+  }
+
+  @media screen and (max-width: $break-xs) {
     top: unset;
     bottom: 0;
     height: 15%;
@@ -41,7 +45,7 @@
       max-width: 18rem;
     }
     .icon.absolute {
-      top: .5rem;
+      top: 0.5rem;
       right: 1rem;
       &:hover {
         background-color: $light-hover;
@@ -49,7 +53,6 @@
     }
   }
 }
-
 
 /*
 * Theme variants

@@ -5,19 +5,11 @@
     top="28vh"
     :custom-class="customDialogClass"
     :close-on-click-modal="false"
-    :show-close="false"
   >
     <header slot="title" class="header p0 no-selectable">
-      <h1 class="inline-block font-semibold fs-xlarge">
-        Report your issue
-      </h1>
+      <h1 class="inline-block font-semibold fs-xlarge">Report your issue</h1>
     </header>
-    <el-form
-      :model="form"
-      :rules="formRules"
-      class="pr6 pl6"
-      ref="form"
-    >
+    <el-form :model="form" :rules="formRules" class="pr6 pl6" ref="form">
       <el-row :gutter="15">
         <el-col :span="12">
           <el-form-item label="First Name" prop="name">
@@ -38,11 +30,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="Issue" prop="issue">
-            <el-input
-              type="textarea"
-              :class="{ dark }"
-              v-model="form.issue"
-            />
+            <el-input type="textarea" :class="{ dark }" v-model="form.issue" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -52,14 +40,7 @@
         <span class="text-red">*</span> indicates required field
       </small>
       <div>
-        <el-button
-          plain
-          type="info"
-          class="mr2"
-          @click="closeDialog"
-        >
-          Cancel
-        </el-button>
+        <el-button plain type="info" class="mr2" @click="closeDialog">Cancel</el-button>
         <el-button
           :disabled="isFormUncomplete"
           type="primary"
@@ -67,9 +48,7 @@
           plain
           @click="submitForm('form')"
           @keyup.enter.space="submitForm('form')"
-        >
-          Report
-        </el-button>
+        >Report</el-button>
       </div>
     </footer>
   </el-dialog>
@@ -90,24 +69,51 @@ export default {
     },
     formRules: {
       name: [
-        { required: true, message: 'Please input your first name', trigger: 'blur' },
-        { min: 3, max: 10, message: 'Length should be 3 to 10', trigger: 'blur' }
+        {
+          required: true,
+          message: 'Please input your first name',
+          trigger: 'blur'
+        },
+        {
+          min: 3,
+          max: 10,
+          message: 'Length should be 3 to 10',
+          trigger: 'blur'
+        }
       ],
       lastname: [
-        { required: true, message: 'Please input your last name name', trigger: 'blur' },
-        { min: 3, max: 10, message: 'Length should be 3 to 10', trigger: 'blur' }
+        {
+          required: true,
+          message: 'Please input your last name name',
+          trigger: 'blur'
+        },
+        {
+          min: 3,
+          max: 10,
+          message: 'Length should be 3 to 10',
+          trigger: 'blur'
+        }
       ],
       company: [
         { required: true, message: 'Company name is required', trigger: 'blur' }
       ],
       email: [
         { required: true, message: 'Please input your email', trigger: 'blur' },
-        { type: 'email', required: true, message: 'Please input a valid email', trigger: 'change' }
+        {
+          type: 'email',
+          required: true,
+          message: 'Please input a valid email',
+          trigger: 'change'
+        }
       ],
       issue: [
         { required: true, message: 'Please input the issue', trigger: 'blur' },
-        { min: 10, message: 'Issue length should be at least 10', trigger: 'blur' }
-      ],
+        {
+          min: 10,
+          message: 'Issue length should be at least 10',
+          trigger: 'blur'
+        }
+      ]
     }
   }),
   computed: {
@@ -125,12 +131,7 @@ export default {
     isFormUncomplete() {
       const { name, lastname, email, issue } = this.form
       let isDisabled = true
-      if (
-        name !== '' &&
-        lastname !== '' &&
-        email !== '' &&
-        issue !== ''
-      ) {
+      if (name !== '' && lastname !== '' && email !== '' && issue !== '') {
         isDisabled = false
       }
       return isDisabled
@@ -141,7 +142,10 @@ export default {
   },
   methods: {
     async sendIssueRequest() {
-      const { sidebarMode, map: { currentSelection } } = this.$store.state
+      const {
+        sidebarMode,
+        map: { currentSelection }
+      } = this.$store.state
       const { name, email, lastname } = this.form
       const isDataCenter = sidebarMode === DATA_CENTER_MODE
       const type = isDataCenter ? 'Facility' : 'Submarine Cable'

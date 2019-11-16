@@ -1,29 +1,29 @@
 @import '../helpers/_atomic-classes';
 @import '../base/_variables';
 
-ul[role="list"] {
+ul[role='list'] {
   overflow: scroll;
   max-height: 28rem;
 
   @media screen and (max-width: $break-md) {
     width: 100%;
   }
-  @media screen and (max-width: $break-sm) {
+  @media screen and (max-width: $break-xs) {
     width: 17.4rem;
   }
 }
 
 #html-wrapper.light {
-  ul[role="list"] {
-    li[role="listitem"] {
+  ul[role='list'] {
+    li[role='listitem'] {
       border-bottom: 1px solid $grey-ligthen;
     }
   }
 }
 
 #html-wrapper.dark {
-  ul[role="list"] {
-    li[role="listitem"] {
+  ul[role='list'] {
+    li[role='listitem'] {
       border-bottom: 1px solid $light-charcoal;
     }
   }
@@ -33,8 +33,7 @@ ul[role="list"] {
     &:focus,
     &:focus-within,
     &:hover {
-      background-color: lighten(rgba(0,0,0,0.2), 80%);
+      background-color: lighten(rgba(0, 0, 0, 0.2), 80%);
     }
   }
 }
-
