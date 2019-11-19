@@ -160,7 +160,7 @@ export default {
      * @param selection { Boolean }
      */
     emitRadioSelection(selection) {
-      console.log(selection)
+      // console.log(selection)
       if (selection === 'no-active' || selection === 'no-future') {
         return bus.$emit(`${UPDATE_TIME_MACHINE}`, -1)
       }

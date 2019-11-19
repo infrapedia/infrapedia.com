@@ -1010,10 +1010,10 @@ export default {
       const bounds = await geojsonExtent(JSON.parse(JSON.stringify(fc)))
 
       await this.$store.commit(`${MAP_BOUNDS}`, bounds)
-      console.log(map.getSource(mapConfig.clusterPts))
+      // console.log(map.getSource(mapConfig.clusterPts))
 
       if (points.length > 1) {
-        console.info('HERE 1')
+        // console.info('HERE 1')
         try {
           await map.getSource(mapConfig.clusterPts).setData(fc)
           await map.fitBounds(bounds, {
@@ -1031,10 +1031,10 @@ export default {
           // Ignore
         }
       } else if (hasToEase) {
-        console.info('HERE 2')
+        // console.info('HERE 2')
         await this.handleFocusOnEasePoints()
       } else {
-        console.info('HERE 3')
+        // console.info('HERE 3')
         await map.fitBounds(bounds, {
           padding: isMobile ? 10 : 35,
           animate: true,
@@ -1089,7 +1089,7 @@ export default {
      * @param year { Number } - The year parameter is for toggling if showing only the subsea cables or show them all
      */
     async handleFilterSelection(year) {
-      console.log(year)
+      // console.log(year)
       const { map } = this
       const isYearEqual = year === currentYear()
       // The epoch is the time arbitrarily selected as a point of reference for the specification of celestial coordinates. In this case, is used for denoting the existence of future cables
