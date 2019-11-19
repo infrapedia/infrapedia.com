@@ -19,7 +19,7 @@ html,
 }
 
 .el-form-item__label {
-  color: inherit !important
+  color: inherit !important;
 }
 
 ::selection {
@@ -160,13 +160,13 @@ h1 {
 }
 
 .el-select-dropdown {
-  border: none !important
+  border: none !important;
 }
 
 .custom-dialog {
   color: inherit;
   .el-dialog__header {
-    padding: 1.2rem 1rem
+    padding: 1.2rem 1rem;
   }
 }
 
@@ -178,6 +178,31 @@ h1 {
   outline: none 0;
 }
 
+.filters-wrapper {
+  #radio-like-wrapper {
+    .el-checkbox__input .el-checkbox__inner::after {
+      width: 4px;
+      height: 4px;
+      border-radius: 100%;
+      content: ' ';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      border: 0 !important;
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform 0.15s ease-in;
+    }
+    .el-checkbox__input.is-checked .el-checkbox__inner::after {
+      background: $white-partial;
+    }
+    .el-checkbox__input.is-checked .el-checkbox__inner::after {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .el-checkbox__inner {
+      border-radius: 50%;
+    }
+  }
+}
 /*
 *  THEME VARIANT'S
 */
@@ -188,16 +213,16 @@ h1 {
 }
 
 .popover.light {
-  background-color: $white-full
+  background-color: $white-full;
 }
 
 .application.dark {
   color: $white-partial;
   .el-container {
-    background-color: inherit
+    background-color: inherit;
   }
   .el-form-item__label {
-    color: $white-partial !important
+    color: $white-partial !important;
   }
 }
 
@@ -213,13 +238,13 @@ h1 {
     background-color: $gray;
   }
   small {
-    color: $white-partial
+    color: $white-partial;
   }
 }
 
 #html-wrapper.dark {
-  div[role="tooltip"],
-  div[role="tooltip"] .el-card,
+  div[role='tooltip'],
+  div[role='tooltip'] .el-card,
   .el-scrollbar {
     color: $white-partial;
     border-color: $dark-charcoal;
@@ -227,7 +252,7 @@ h1 {
   }
   .popper__arrow,
   .popper__arrow::after {
-    border-bottom-color:$dark-charcoal;
+    border-bottom-color: $dark-charcoal;
   }
   .el-scrollbar {
     .el-select-dropdown__item {
@@ -243,10 +268,10 @@ h1 {
 #rack-slider {
   .el-tooltip,
   .el-slider__bar {
-    background-color: $dark-blue
+    background-color: $dark-blue;
   }
   .el-tooltip {
-    border-color: $dark-blue
+    border-color: $dark-blue;
   }
 }
 
@@ -259,7 +284,7 @@ h1 {
     border-color: $light-charcoal;
     background-color: $dark-charcoal;
     &:hover {
-      border-color: darken($light-charcoal, 10%)
+      border-color: darken($light-charcoal, 10%);
     }
     &:focus,
     &:focus-within {
@@ -271,7 +296,7 @@ h1 {
 .popover.dark {
   background-color: $light-charcoal !important;
   .el-divider {
-    background-color: $dark-charcoal
+    background-color: $dark-charcoal;
   }
 }
 
@@ -322,5 +347,37 @@ h1 {
   }
   .mapboxgl-ctrl-geolocate {
     background-image: url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PScwIDAgMjAgMjAnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZycgZmlsbD0nd2hpdGUnPiA8cGF0aCBkPSdNMTAgNEM5IDQgOSA1IDkgNUw5IDUuMUE1IDUgMCAwIDAgNS4xIDlMNSA5QzUgOSA0IDkgNCAxMCA0IDExIDUgMTEgNSAxMUw1LjEgMTFBNSA1IDAgMCAwIDkgMTQuOUw5IDE1QzkgMTUgOSAxNiAxMCAxNiAxMSAxNiAxMSAxNSAxMSAxNUwxMSAxNC45QTUgNSAwIDAgMCAxNC45IDExTDE1IDExQzE1IDExIDE2IDExIDE2IDEwIDE2IDkgMTUgOSAxNSA5TDE0LjkgOUE1IDUgMCAwIDAgMTEgNS4xTDExIDVDMTEgNSAxMSA0IDEwIDR6TTEwIDYuNUEzLjUgMy41IDAgMCAxIDEzLjUgMTAgMy41IDMuNSAwIDAgMSAxMCAxMy41IDMuNSAzLjUgMCAwIDEgNi41IDEwIDMuNSAzLjUgMCAwIDEgMTAgNi41ek0xMCA4LjNBMS44IDEuOCAwIDAgMCA4LjMgMTAgMS44IDEuOCAwIDAgMCAxMCAxMS44IDEuOCAxLjggMCAwIDAgMTEuOCAxMCAxLjggMS44IDAgMCAwIDEwIDguM3onLz4gPC9zdmc+Cg==') !important;
+  }
+}
+
+.el-collapse.dark .el-collapse-item__header,
+.el-drawer.dark {
+  color: $white-partial;
+  background-color: $dark-charcoal;
+}
+
+.el-collapse.dark {
+  .el-collapse-item__content {
+    background-color: $dark-charcoal;
+  }
+  .el-collapse-item__header {
+    border-bottom-color: $dark-charcoal;
+  }
+}
+
+#html-wrapper.dark {
+  .el-loading-mask {
+    background-color: $dark-charcoal;
+    svg circle {
+      stroke: lighten($dark-blue, 20%);
+    }
+  }
+  .el-notification {
+    .el-notification__title,
+    p {
+      color: $white-partial;
+    }
+    border-color: $dark-charcoal;
+    background-color: $dark-charcoal;
   }
 }

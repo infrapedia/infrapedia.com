@@ -6,11 +6,11 @@
       class="no-border color-inherit w8 vertical-align mt1"
       @click="toggleVisibility"
     />
-    <el-drawer
-      size="100%"
-      :visible.sync="isDrawer"
-      direction="ltr">
-      <header class="h14 w-fit-full pr4 pl4 pb2 flex justify-content-space-between align-items-center">
+    <el-drawer size="100%" :visible.sync="isDrawer" direction="ltr" :custom-class="drawerClass">
+      <header
+        class="h14 w-fit-full pr4 pl4 pb2 flex justify-content-space-between align-items-center"
+        :class="{ dark, light: !dark }"
+      >
         <router-link to="/">
           <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
         </router-link>
@@ -25,9 +25,10 @@
         accordion
         v-model="collapseActive"
         @change="handleCollapseChange"
+        :class="{ dark, light: !dark }"
       >
         <el-collapse-item name="partners" class="pr4 pl4">
-          <p slot="title"> Our Partners</p>
+          <p slot="title">Our Partners</p>
           <i-list
             option="partners"
             @click="emitSelected"
@@ -36,7 +37,7 @@
           />
         </el-collapse-item>
         <el-collapse-item name="submarine" class="pr4 pl4">
-          <p slot="title"> Submarine Cables</p>
+          <p slot="title">Submarine Cables</p>
           <i-list
             option="submarine"
             @click="emitSelected"
@@ -45,7 +46,7 @@
           />
         </el-collapse-item>
         <el-collapse-item name="dataCenters" class="pr4 pl4">
-          <p slot="title"> Data Centers</p>
+          <p slot="title">Data Centers</p>
           <i-list
             option="dataCenters"
             @click="emitSelected"
@@ -54,7 +55,7 @@
           />
         </el-collapse-item>
         <el-collapse-item name="ixps" class="pr4 pl4">
-          <p slot="title"> IXPs</p>
+          <p slot="title">IXPs</p>
           <i-list
             option="ixps"
             @click="emitSelected"
@@ -63,7 +64,7 @@
           />
         </el-collapse-item>
         <el-collapse-item name="networks" class="pr4 pl4">
-          <p slot="title"> Networks</p>
+          <p slot="title">Networks</p>
           <i-list
             option="networks"
             @click="emitSelected"
@@ -108,6 +109,9 @@ export default {
       return this.dark
         ? 'https://cdn.infrapedia.com/logos/dark-mode-logo.svg'
         : 'https://cdn.infrapedia.com/logos/light-mode-logo.svg'
+    },
+    drawerClass() {
+      return this.dark ? 'dark' : 'light'
     }
   },
   methods: {
@@ -128,20 +132,21 @@ export default {
     },
     handleCollapseChange(tab) {
       if (!tab) this.clear()
-      else switch (tab.toLowerCase()) {
-        case 'submarine':
-          this.$emit(CLICK_SUBMARINE, tab)
-          break
-        case 'datacenters':
-          this.$emit(CLICK_DATACENTERS, tab)
-          break
-        case 'ixps':
-          this.$emit(CLICK_IXPS, tab)
-          break
-        case 'networks':
-          this.$emit(CLICK_NETWORKS, tab)
-          break
-      }
+      else
+        switch (tab.toLowerCase()) {
+          case 'submarine':
+            this.$emit(CLICK_SUBMARINE, tab)
+            break
+          case 'datacenters':
+            this.$emit(CLICK_DATACENTERS, tab)
+            break
+          case 'ixps':
+            this.$emit(CLICK_IXPS, tab)
+            break
+          case 'networks':
+            this.$emit(CLICK_NETWORKS, tab)
+            break
+        }
     },
     toggleVisibility() {
       this.isDrawer = !this.isDrawer

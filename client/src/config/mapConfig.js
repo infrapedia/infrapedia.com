@@ -290,7 +290,7 @@ export const mapConfig = {
     ]
   },
   filter: {
-    subsea: ['!=', ['get', 'isterrestr'], 'true'],
+    subsea: ['!=', ['get', 'isterrestrial'], 'true'],
     active: ['!=', ['get', 'isinactive'], 'true'],
     all: ['has', 'cable_id'],
     future: ['>', ['get', 'activation'], currentEpoch],

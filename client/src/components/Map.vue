@@ -7,7 +7,7 @@
       size="small"
       class="m0 p0"
       :class="{ dark }"
-      >3D</el-button>
+    >3D</el-button>
     <el-button
       id="ThreeD"
       type="text"
@@ -16,7 +16,7 @@
       :class="{ dark }"
       @click="toggleFullScreen"
     >
-      <fa :icon="['fas', 'expand-arrows-alt']"  class="sm-icon" />
+      <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
     </el-button>
     <i-location-button @click="geolocateUser(true)" @enter="geolocateUser(true)" />
     <el-button
@@ -40,12 +40,7 @@
           <i-theme-toggler @click="toggleDarkMode" id="toggleTheme" />
         </li>
         <li role="listitem">
-          <el-button
-            circle
-            class="color-inherit"
-            @click="shareViewLink"
-            :class="{ dark }"
-          >
+          <el-button circle class="color-inherit" @click="shareViewLink" :class="{ dark }">
             <fa :icon="['fas', 'share-alt']" class="sm-icon" />
           </el-button>
         </li>
@@ -392,7 +387,7 @@ export default {
 
       let str = `<div class="cable-name dark-color"><b>${this.mapTooltip.name}</b></div>`
 
-      if (isPoint){
+      if (isPoint) {
         str = `<div class="cable-name dark-color"><b>Point name : ${this.mapTooltip.name}</b></div>`
       } else {
         if (this.mapTooltip.segment) {
@@ -481,9 +476,15 @@ export default {
      */
     highlightCable(cable) {
       if (!this.map || !cable) return
-      const highlightColor = this.dark ? 'rgba(50,50,50,0.35)' : 'rgba(23,23,23, 0.06)'
+      const highlightColor = this.dark
+        ? 'rgba(50,50,50,0.35)'
+        : 'rgba(23,23,23, 0.06)'
 
-      this.map.setPaintProperty(mapConfig.cableLayer, 'line-color', highlightColor)
+      this.map.setPaintProperty(
+        mapConfig.cableLayer,
+        'line-color',
+        highlightColor
+      )
       this.$store.commit(`${CURRENT_MAP_FILTER}`, [
         '==',
         ['get', 'cable_id'],
@@ -567,7 +568,7 @@ export default {
      * @param cables { Object } [{ properties: { cable_id: String } }]
      */
     async handleCablesSelection(bool, cables) {
-      switch(bool) {
+      switch (bool) {
         case true:
           // Change sidebar mode bck to cable in case is on data_centers mode
           await this.changeSidebarMode(-1)
@@ -592,16 +593,17 @@ export default {
         // Zoom into the cluster
         await map
           .getSource(mapConfig.clusterPts)
-          .getClusterExpansionZoom(clusters[0].properties.cluster_id,
-            function(err, zoom) {
-              if (err) return
+          .getClusterExpansionZoom(clusters[0].properties.cluster_id, function(
+            err,
+            zoom
+          ) {
+            if (err) return
 
-              map.easeTo({
-                center: clusters[0].geometry.coordinates,
-                zoom
-              })
-            }
-          )
+            map.easeTo({
+              center: clusters[0].geometry.coordinates,
+              zoom
+            })
+          })
       } else {
         // Remove the clusters source data
         await this.map.getSource(mapConfig.clusterPts).setData({
@@ -621,7 +623,11 @@ export default {
     async handleFacilitySelection(id) {
       const data = await this.getFacilityData(id)
       if (!data) throw { message: "We couldn't load the facility ..." }
-      this.$store.commit(`${MAP_FOCUS_ON}`, { id, name: data.name, type: 'fac' })
+      this.$store.commit(`${MAP_FOCUS_ON}`, {
+        id,
+        name: data.name,
+        type: 'fac'
+      })
 
       // Changing the sidebar mode to data_center mode
       this.changeSidebarMode(1)
@@ -645,7 +651,9 @@ export default {
           this.geolocateUser()
         }
         if (this.focus && this.focus.type.toLowerCase() === 'cable') {
-          this.handleCablesSelection(true, [{ properties: { cable_id: this.focus.id }}])
+          this.handleCablesSelection(true, [
+            { properties: { cable_id: this.focus.id } }
+          ])
         }
         map.off('render', loadStyles)
       }
@@ -918,7 +926,7 @@ export default {
         })
       }
 
-      await this.handleCablesSelection(true, [{ properties: { cable_id: id }}])
+      await this.handleCablesSelection(true, [{ properties: { cable_id: id } }])
     },
     /**
      * @param id { String } - Organization ID
@@ -965,7 +973,7 @@ export default {
       ) {
         const id = featureCollection.features[0].properties.fac_id
         if (id) await this.handleFacilitySelection(id)
-      } else throw { message: `FOUND EXCEPTION: ${id}`}
+      } else throw { message: `FOUND EXCEPTION: ${id}` }
 
       if (!bounds.length) return
       map.fitBounds(bounds, {
@@ -1018,7 +1026,7 @@ export default {
             speed: 1.1,
             pitch: 45
           })
-        } catch(e) {
+        } catch (e) {
           console.error(e)
           // Ignore
         }
@@ -1066,23 +1074,29 @@ export default {
      * @param selection { Number } - 0 being "active" and 1 "future"
      */
     async handleUpdateTimeMachine(selection) {
+      let filter
       const { map } = this
       const filters = mapConfig.filter
 
+      if (selection === 0) filter = filters.active
+      else if (selection === 1) filter = filters.future
+      else if (selection === -1) filter = ['all']
+
       await this.disableCableHighlight()
-      await map.setFilter(
-        mapConfig.cableLayer,
-        selection === 0 ? filters['active'] : filters['future']
-      )
+      await map.setFilter(mapConfig.cableLayer, filter)
     },
     /**
      * @param year { Number } - The year parameter is for toggling if showing only the subsea cables or show them all
      */
     async handleFilterSelection(year) {
+      console.log(year)
       const { map } = this
+      const isYearEqual = year === currentYear()
       // The epoch is the time arbitrarily selected as a point of reference for the specification of celestial coordinates. In this case, is used for denoting the existence of future cables
       const epoch = new Date(`${year}-02-02`).getTime() / 1000
-      const timemachineFilter = mapConfig.filter['timemachine']
+      const filter = isYearEqual
+        ? mapConfig.filter.subsea
+        : mapConfig.filter.timemachine
 
       // If the year is the current year or is equal to 0
       // We suppose he/she is either deactivating the subsea switch of the filter
@@ -1095,9 +1109,9 @@ export default {
       // The year 0 demarks that we should show all the cables including the underground ones and nothing else
       if (year === 0) return
       // Otherwise keep going and show me only the subsea ones
-      timemachineFilter[2] = epoch
-      await map.setFilter(mapConfig.cableLayer, timemachineFilter)
-      await this.$store.commit(`${CURRENT_MAP_FILTER}`, timemachineFilter)
+      if (!isYearEqual) filter[2] = epoch
+      await map.setFilter(mapConfig.cableLayer, filter)
+      await this.$store.commit(`${CURRENT_MAP_FILTER}`, filter)
     },
     handlePreviouslySelected: debounce(function() {
       if (!this.currentSelection || !this.focus) return
@@ -1107,7 +1121,7 @@ export default {
 
       if (map.loaded()) {
         if (type === 'cable') {
-          this.handleCablesSelection(true, [{ properties: {cable_id: id }}])
+          this.handleCablesSelection(true, [{ properties: { cable_id: id } }])
         } else if (type) {
           this.handleFacilitySelection(id)
         }

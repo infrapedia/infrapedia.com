@@ -1,5 +1,5 @@
 <template>
-  <div class="w120 no-border no-outline no-selectable transition-all">
+  <div class="w120 no-border no-outline no-selectable transition-all" :class="{ dark }">
     <div class="w-fit-full p4" v-if="isSearchVisible">
       <el-input
         class="w110"
@@ -22,12 +22,7 @@
 
     <div v-if="isLoading" v-loading="isLoading" class="h112" />
     <div v-else>
-      <ul
-        v-if="!isSearching"
-        role="list"
-        class="no-outline no-selectable"
-        v-loading="isLoading"
-      >
+      <ul v-if="!isSearching" role="list" class="no-outline no-selectable" v-loading="isLoading">
         <template v-for="(option, i) in optionsGiver">
           <li
             :key="i"
@@ -37,9 +32,7 @@
             :class="{ dark, light: !dark }"
             @click="emitSelected(option)"
             @keyup.enter.space="emitSelected(option)"
-          >
-            {{ option.name }}
-          </li>
+          >{{ option.name }}</li>
           <el-button
             v-if="isFinal(i) && !isPremiumPartners"
             :loading="isLoading"
@@ -48,20 +41,18 @@
             class="w-fit-full p4 h20 no-border seamless-hoverbg"
             @click="$emit(LOAD_MORE, option)"
             @keyup.enter.space="$emit(LOAD_MORE, option)"
-          >
-            Load more
-          </el-button>
+          >Load more</el-button>
         </template>
       </ul>
 
-        <transition-group
-          v-else
-          tag="ul"
-          role="list"
-          class="no-outline no-selectable"
-          mode="out-in"
-          name="fade"
-        >
+      <transition-group
+        v-else
+        tag="ul"
+        role="list"
+        class="no-outline no-selectable"
+        mode="out-in"
+        name="fade"
+      >
         <template v-for="(option, i) in searchResults">
           <li
             :key="i"
@@ -71,9 +62,7 @@
             :class="{ dark, light: !dark }"
             @click="emitSelected(option)"
             @keyup.enter.space="emitSelected(option)"
-          >
-            {{ option.name }}
-          </li>
+          >{{ option.name }}</li>
         </template>
       </transition-group>
     </div>

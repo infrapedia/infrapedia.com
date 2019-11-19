@@ -22,13 +22,18 @@ ul[role='list'] {
 }
 
 #html-wrapper.dark {
+  div.w120.no-border.dark {
+    background-color: $dark-charcoal;
+  }
   ul[role='list'] {
     li[role='listitem'] {
+      color: $white-partial;
+      background-color: $dark-charcoal;
       border-bottom: 1px solid $light-charcoal;
     }
   }
   .el-button {
-    color: inherit;
+    color: $white-partial;
     background-color: $dark-charcoal;
     &:focus,
     &:focus-within,

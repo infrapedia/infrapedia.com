@@ -37,16 +37,27 @@
               <label for="activeonly">Active only</label>
               <label for="futureonly" class="mt8">Future only</label>
             </div>
-            <el-radio-group
-              v-model="filters.radio"
-              size="medium"
-              fill="red"
-              @change="emitRadioSelection"
-              class="flex column"
+            <div
+              class="el-checkbox-group flex column radio"
+              role="group"
+              aria-label="checkbox-group"
+              id="radio-like-wrapper"
             >
-              <el-radio :label="0" name="activeonly" class="mr1">{{'' + ''}}</el-radio>
-              <el-radio :label="1" name="futureonly" class="mt9">{{'' + ''}}</el-radio>
-            </el-radio-group>
+              <el-checkbox
+                class="mr1"
+                v-model="filters.radio"
+                :true-label="0"
+                :false-label="'no-active'"
+                @change="emitRadioSelection"
+              >{{''+''}}</el-checkbox>
+              <el-checkbox
+                class="mt9"
+                v-model="filters.radio"
+                :true-label="1"
+                :false-label="'no-future'"
+                @change="emitRadioSelection"
+              >{{''+''}}</el-checkbox>
+            </div>
           </li>
           <el-divider class="m0" />
           <li class="p4">
@@ -139,7 +150,8 @@ export default {
      */
     emitSubseaSelection(isSubseaOnly) {
       // Other filters cannot be active
-      if (this.filters.isTimeMachineActive) this.filters.isTimeMachineActive = false
+      if (this.filters.isTimeMachineActive)
+        this.filters.isTimeMachineActive = false
       if (this.filters.radio !== '') this.filters.radio = ''
 
       return bus.$emit(`${SUBSEA_FILTER}`, isSubseaOnly ? currentYear() : 0)
@@ -148,21 +160,32 @@ export default {
      * @param selection { Boolean }
      */
     emitRadioSelection(selection) {
+      console.log(selection)
+      if (selection === 'no-active' || selection === 'no-future') {
+        return bus.$emit(`${UPDATE_TIME_MACHINE}`, -1)
+      }
       // Other filters cannot be active
-      if (this.filters.isTimeMachineActive) this.filters.isTimeMachineActive = false
-      if (this.filters.isSubseaOnly) this.filters.isSubseaOnly = false
+      if (this.filters.isTimeMachineActive || this.filters.isSubseaOnly) {
+        this.filters.isTimeMachineActive = false
+        this.filters.isSubseaOnly = false
+      }
 
-      return bus.$emit(`${UPDATE_TIME_MACHINE}`, selection)
+      bus.$emit(`${UPDATE_TIME_MACHINE}`, selection)
     },
     /**
      * @param isTimeMachineActive { Boolean }
      */
     emitTimeMachineSelection(isTimeMachineActive) {
       // Other filters cannot be active
-      if (this.filters.radio !== '') this.filters.radio = ''
-      if (this.filters.isSubseaOnly) this.filters.isSubseaOnly = false
+      if (this.filters.radio !== '' || this.filters.isSubseaOnly) {
+        this.filters.radio = ''
+        this.filters.isSubseaOnly = false
+      }
 
-      return bus.$emit(`${SUBSEA_FILTER}`, isTimeMachineActive ? this.filters.year : 0)
+      return bus.$emit(
+        `${SUBSEA_FILTER}`,
+        isTimeMachineActive ? this.filters.year : 0
+      )
     },
     /**
      * @param year { Number } Year selected with the slider
