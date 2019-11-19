@@ -357,11 +357,13 @@ h1 {
 }
 
 .el-collapse.dark {
+  .el-collapse-item__wrap,
   .el-collapse-item__content {
     background-color: $dark-charcoal;
   }
+  .el-collapse-item__wrap,
   .el-collapse-item__header {
-    border-bottom-color: $dark-charcoal;
+    border-bottom-color: $light-charcoal;
   }
 }
 
