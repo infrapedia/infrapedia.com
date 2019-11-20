@@ -108,7 +108,10 @@
           </el-popover>
         </el-col>
         <el-col :sx="24" :md="12">
-          <div class="cursor-pointer no-selectable" @click="$emit(REPORT_ISSUE)">
+          <div
+            class="cursor-pointer no-selectable"
+            @click="$emit(REPORT_ISSUE)"
+          >
             <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
               <fa :icon="['fas', 'exclamation-circle']" class="sm-icon mt-1" />
             </el-button>

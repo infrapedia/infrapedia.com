@@ -10,7 +10,9 @@
           v-else
           class="status-text"
           :class="{ 'active-cable': !currentCableStatus }"
-        >{{ currentCableStatus ? 'Off' : 'On' }}</p>
+        >
+          {{ currentCableStatus ? 'Off' : 'On' }}
+        </p>
       </el-col>
     </el-row>
     <el-row :gutter="30" v-if="info.system_length">
@@ -18,7 +20,7 @@
         <p class="label capitalize">System Length</p>
       </el-col>
       <el-col :span="12" class="p2">
-        <p class="text-bold">{{ `${info.system_length} km`}}</p>
+        <p class="text-bold">{{ `${info.system_length} km` }}</p>
       </el-col>
     </el-row>
     <el-row :gutter="30" v-if="info.activation_datetime">
@@ -73,7 +75,9 @@
                   class="p4 no-selectable transition cursor-pointer seamless-hoverbg no-outline"
                   :class="{ dark, light: !dark }"
                   @click="emitEvent"
-                >Backbone</li>
+                >
+                  Backbone
+                </li>
               </ul>
             </el-card>
             <div
@@ -97,7 +101,10 @@
       </el-row>
       <el-row :gutter="20" class="mt8">
         <el-col :xs="24" :sm="12" :md="24" :lg="12">
-          <div class="cursor-pointer no-selectable" @click="$emit(`${EDIT_CABLE}`)">
+          <div
+            class="cursor-pointer no-selectable"
+            @click="$emit(`${EDIT_CABLE}`)"
+          >
             <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
               <fa :icon="['fas', 'pen']" class="sm-icon mt-1" />
             </el-button>
@@ -105,7 +112,10 @@
           </div>
         </el-col>
         <el-col :xs="24" :sm="12" :md="24" :lg="12">
-          <div class="cursor-pointer no-selectable" @click="$emit(REPORT_ISSUE)">
+          <div
+            class="cursor-pointer no-selectable"
+            @click="$emit(REPORT_ISSUE)"
+          >
             <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
               <fa :icon="['fas', 'exclamation-circle']" class="sm-icon mt-1" />
             </el-button>

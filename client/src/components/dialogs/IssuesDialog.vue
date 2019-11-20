@@ -40,7 +40,9 @@
         <span class="text-red">*</span> indicates required field
       </small>
       <div>
-        <el-button plain type="info" class="mr2" @click="closeDialog">Cancel</el-button>
+        <el-button plain type="info" class="mr2" @click="closeDialog"
+          >Cancel</el-button
+        >
         <el-button
           :disabled="isFormUncomplete"
           type="primary"
@@ -48,7 +50,8 @@
           plain
           @click="submitForm('form')"
           @keyup.enter.space="submitForm('form')"
-        >Report</el-button>
+          >Report</el-button
+        >
       </div>
     </footer>
   </el-dialog>

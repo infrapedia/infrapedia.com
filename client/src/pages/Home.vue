@@ -6,8 +6,11 @@
       @drawing="handleIsDrawing"
       @title-by-selection="title = $event"
       @cable-selected="handleCableSelected"
-      />
-    <div v-show="isDrawing" class="absolute calculation-box truncate w44 h22 p1 text-center">
+    />
+    <div
+      v-show="isDrawing"
+      class="absolute calculation-box truncate w44 h22 p1 text-center"
+    >
       <h4 class="mt2 mb2 font-medium">{{ title }}</h4>
       <div id="calculated-area" class="font-medium fs-regular" />
     </div>
@@ -44,7 +47,7 @@ export default {
     // If the route has a query it must be a link shared
     if (this.$route.query.neLng) this.$store.commit(`${HAS_TO_EASE_TO}`, true)
   },
-  beforeRouteLeave (to, from, next) {
+  beforeRouteLeave(to, from, next) {
     if (this.isSidebar) this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
     bus.$emit(REMOVE_QUERY_ROUTE_REPLACE)
     next()
@@ -59,7 +62,7 @@ export default {
     handleIsDrawing(bool) {
       this.$store.commit(`${IS_DRAWING}`, bool)
     },
-    loadDataIfQueryParamsExist:debounce(async function() {
+    loadDataIfQueryParamsExist: debounce(async function() {
       const {
         id,
         type,

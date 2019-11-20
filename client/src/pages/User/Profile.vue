@@ -56,12 +56,7 @@
         </el-row>
         <footer class="flex justify-content-end">
           <el-form-item class="m0 p0">
-            <el-button
-              round
-              type="warning"
-              class="w22"
-              size="medium"
-            >
+            <el-button round type="warning" class="w22" size="medium">
               Save
             </el-button>
           </el-form-item>
@@ -104,11 +99,13 @@ export default {
     }
   },
   mounted() {
-    if (Object.keys(this.$route.query).length) this.$router.replace('/user/profile')
+    if (Object.keys(this.$route.query).length)
+      this.$router.replace('/user/profile')
   },
-  beforeRouteEnter (to, from, next) {
+  beforeRouteEnter(to, from, next) {
     next(vm => {
-      if (Object.keys(vm.$route.query).length) vm.$router.replace('/user/profile')
+      if (Object.keys(vm.$route.query).length)
+        vm.$router.replace('/user/profile')
     })
   },
   methods: {

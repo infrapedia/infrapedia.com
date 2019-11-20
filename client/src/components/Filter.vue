@@ -17,7 +17,10 @@
             <fa :icon="['fas', 'filter']" class="mr2" />
             <strong class="fs-mdlarge">Filters</strong>
           </span>
-          <span class="fs-mdlarge cursor-pointer" @click="toggleFilterVisiblity">
+          <span
+            class="fs-mdlarge cursor-pointer"
+            @click="toggleFilterVisiblity"
+          >
             <fa :icon="['fas', 'times']" />
           </span>
         </header>
@@ -49,14 +52,16 @@
                 :true-label="0"
                 :false-label="'no-active'"
                 @change="emitRadioSelection"
-              >{{''+''}}</el-checkbox>
+                >{{ '' + '' }}</el-checkbox
+              >
               <el-checkbox
                 class="mt9"
                 v-model="filters.radio"
                 :true-label="1"
                 :false-label="'no-future'"
                 @change="emitRadioSelection"
-              >{{''+''}}</el-checkbox>
+                >{{ '' + '' }}</el-checkbox
+              >
             </div>
           </li>
           <el-divider class="m0" />

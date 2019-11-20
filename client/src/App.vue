@@ -1,6 +1,7 @@
 <template>
   <div
-    class="application" :class="{ dark, light: !dark }"
+    class="application"
+    :class="{ dark, light: !dark }"
     role="main"
     :style="getDarkStyles"
   >
@@ -23,7 +24,7 @@ export default {
 
       if (this.isProfileRoute) {
         layout = ProfileLayout
-      } else if (!this.isRecoverPass)  {
+      } else if (!this.isRecoverPass) {
         layout = DefaultLayout
       }
 

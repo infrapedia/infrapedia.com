@@ -28,13 +28,13 @@
             @click="handlePlaceSelection(result)"
             @keyup.enter.space="handlePlaceSelection(result)"
           >
-          {{ result.name }}
-          <span
-            v-if="result.premium && result.premium === 'true'"
-            class="w6 p1 h6 partner circle flo-right vertical-align mt-2"
-          >
-            <fa :icon="['fas', 'star']" class="sm-icon " />
-          </span>
+            {{ result.name }}
+            <span
+              v-if="result.premium && result.premium === 'true'"
+              class="w6 p1 h6 partner circle flo-right vertical-align mt-2"
+            >
+              <fa :icon="['fas', 'star']" class="sm-icon " />
+            </span>
           </li>
         </ul>
       </div>
@@ -75,7 +75,10 @@ export default {
     getQueryData: debounce(async function(querystring) {
       if (querystring.length <= 1) return
       const res = await this.$store.dispatch('getSearchQueryData', querystring)
-      const places = await this.$store.dispatch('getSearchQueryDataMapbox', querystring)
+      const places = await this.$store.dispatch(
+        'getSearchQueryDataMapbox',
+        querystring
+      )
 
       if (!res) return
       Array.from(places.features).forEach(
@@ -88,7 +91,8 @@ export default {
       if (selection.geometry) {
         let bounds = []
         if (selection.bbox) bounds = selection.bbox
-        else if (selection.center) bounds = [...selection.center, ...selection.center]
+        else if (selection.center)
+          bounds = [...selection.center, ...selection.center]
 
         if (bounds.length) this.$store.commit(`${MAP_BOUNDS}`, bounds)
         bus.$emit(FOCUS_ON, {
@@ -97,7 +101,10 @@ export default {
         })
       } else {
         // Otherwise if must be an org/facility/datacenter, etc...
-        this.$emit(SEARCH_SELECTION, { id: selection.id, option: selection.type })
+        this.$emit(SEARCH_SELECTION, {
+          id: selection.id,
+          option: selection.type
+        })
       }
 
       this.toggleVisibility()

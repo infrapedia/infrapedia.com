@@ -7,7 +7,8 @@
       size="small"
       class="m0 p0"
       :class="{ dark }"
-    >3D</el-button>
+      >3D</el-button
+    >
     <el-button
       id="ThreeD"
       type="text"
@@ -18,7 +19,10 @@
     >
       <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
     </el-button>
-    <i-location-button @click="geolocateUser(true)" @enter="geolocateUser(true)" />
+    <i-location-button
+      @click="geolocateUser(true)"
+      @enter="geolocateUser(true)"
+    />
     <el-button
       id="menuOpener"
       circle
@@ -27,7 +31,11 @@
       @click.stop="toggleMenu"
       tabindex="0"
     >
-      <fa :icon="['fas', 'user-circle']" class="icon fs-medium" v-if="!isMenuOpen" />
+      <fa
+        :icon="['fas', 'user-circle']"
+        class="icon fs-medium"
+        v-if="!isMenuOpen"
+      />
       <fa :icon="['fas', 'times']" class="icon fs-medium" v-else />
 
       <ul
@@ -40,7 +48,12 @@
           <i-theme-toggler @click="toggleDarkMode" id="toggleTheme" />
         </li>
         <li role="listitem">
-          <el-button circle class="color-inherit" @click="shareViewLink" :class="{ dark }">
+          <el-button
+            circle
+            class="color-inherit"
+            @click="shareViewLink"
+            :class="{ dark }"
+          >
             <fa :icon="['fas', 'share-alt']" class="sm-icon" />
           </el-button>
         </li>

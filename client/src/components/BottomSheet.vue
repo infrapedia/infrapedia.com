@@ -9,7 +9,9 @@
     append-to-body
     direction="btt"
   >
-    <div class="flex justify-content-space-around h-fit-full mr9 ml9 align-items-center">
+    <div
+      class="flex justify-content-space-around h-fit-full mr9 ml9 align-items-center"
+    >
       <h1 class="title text-center">Trusted by</h1>
       <el-image
         v-for="(src, i) in sponsors"

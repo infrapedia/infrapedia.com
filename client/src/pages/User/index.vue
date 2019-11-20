@@ -1,7 +1,8 @@
 <template>
   <div
     class="main-wrapper w-fit-full vph-full pt20 pb24 pr7 pl7"
-    :class="{ dark, light: !dark }">
+    :class="{ dark, light: !dark }"
+  >
     <header class="mb8">
       <h1 class="title-user color-inherit">
         Account
@@ -10,8 +11,10 @@
     <el-card shadow="never" class="p8">
       <div class="flex justify-content-space-between">
         <div>
-          <p class="m0 fs-large"><strong> {{ userName }} </strong></p>
-          <p class="mt6 fs-small"> {{ userCompany }} </p>
+          <p class="m0 fs-large">
+            <strong> {{ userName }} </strong>
+          </p>
+          <p class="mt6 fs-small">{{ userCompany }}</p>
         </div>
         <router-link
           id="profileBtn"
@@ -63,7 +66,7 @@ export default {
   mounted() {
     if (Object.keys(this.$route.query).length) this.$router.replace('/user')
   },
-  beforeRouteEnter (to, from, next) {
+  beforeRouteEnter(to, from, next) {
     next(vm => {
       if (Object.keys(vm.$route.query).length) vm.$router.replace('/user')
     })

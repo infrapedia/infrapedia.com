@@ -1,7 +1,11 @@
 <template>
   <header class="header fixed h12 w-full no-padding">
-    <div class="header-inner-wrapper w-full flex relative h-fit-full bottom-shadow">
-      <div class="flex no-padding navbar-wrapper w-full justify-content-space-between pr1 pl1">
+    <div
+      class="header-inner-wrapper w-full flex relative h-fit-full bottom-shadow"
+    >
+      <div
+        class="flex no-padding navbar-wrapper w-full justify-content-space-between pr1 pl1"
+      >
         <h1 class="logo-title hidden-md-and-down">
           <router-link to="/">
             <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
@@ -26,8 +30,12 @@
 
         <div aria-labelledby="rightnavheading" class="links-wrapper">
           <transition-group name="fade" mode="out-in">
-            <ul class="p0 m0 h-fit-full" role="group" :key="1" v-if="!isUserNavbar">
-
+            <ul
+              class="p0 m0 h-fit-full"
+              role="group"
+              :key="1"
+              v-if="!isUserNavbar"
+            >
               <li
                 class="inline-block no-selectable relative hidden-sm-and-down"
                 role="listitem"
@@ -74,19 +82,19 @@
                     @click="handleBeforeLoadItem"
                     @load-more="handleLoadMoreItems('submarine')"
                   />
-                    <div
-                      slot="reference"
-                      aria-haspopup="true"
-                      class="list-item pr4 pl4 no-selectable"
-                      @click.stop="handleSubmarineSelection"
-                      @keyup.enter.space="handleSubmarineSelection"
-                    >
-                      Submarine Cables
-                      <i
-                        aria-hidden="true"
-                        class="el-icon-arrow-down icon sm-icon ml1"
-                      />
-                    </div>
+                  <div
+                    slot="reference"
+                    aria-haspopup="true"
+                    class="list-item pr4 pl4 no-selectable"
+                    @click.stop="handleSubmarineSelection"
+                    @keyup.enter.space="handleSubmarineSelection"
+                  >
+                    Submarine Cables
+                    <i
+                      aria-hidden="true"
+                      class="el-icon-arrow-down icon sm-icon ml1"
+                    />
+                  </div>
                 </el-popover>
               </li>
               <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
@@ -101,11 +109,11 @@
                   v-model="isDataCentersMenuOpen"
                   @after-leave="clearDataCenters"
                 >
-                <i-list
-                  option="dataCenters"
-                  @click="handleBeforeLoadItem"
-                  @load-more="handleLoadMoreItems('dataCenters')"
-                />
+                  <i-list
+                    option="dataCenters"
+                    @click="handleBeforeLoadItem"
+                    @load-more="handleLoadMoreItems('dataCenters')"
+                  />
                   <div
                     slot="reference"
                     aria-haspopup="true"
@@ -114,7 +122,10 @@
                     @keyup.enter.space="handleDataCenterSelection"
                   >
                     Data Centers
-                    <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
+                    <i
+                      aria-hidden="true"
+                      class="el-icon-arrow-down icon sm-icon ml1"
+                    />
                   </div>
                 </el-popover>
               </li>
@@ -167,18 +178,21 @@
                     @click="handleBeforeLoadItem"
                     @load-more="handleLoadMoreItems('networks')"
                   />
-                    <div
-                      slot="reference"
-                      class="list-item pr4 pl4 no-selectable"
-                      aria-haspopup="true"
-                      @click.stop="handleNetworksSelection"
-                      @keyup.enter.space="handleNetworksSelection"
-                    >
-                      Networks
-                      <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
-                    </div>
-                  </el-popover>
-                </li>
+                  <div
+                    slot="reference"
+                    class="list-item pr4 pl4 no-selectable"
+                    aria-haspopup="true"
+                    @click.stop="handleNetworksSelection"
+                    @keyup.enter.space="handleNetworksSelection"
+                  >
+                    Networks
+                    <i
+                      aria-hidden="true"
+                      class="el-icon-arrow-down icon sm-icon ml1"
+                    />
+                  </div>
+                </el-popover>
+              </li>
 
               <li
                 class="inline-block relative hidden-sm-and-down"
@@ -196,7 +210,11 @@
 
               <i-full-screen-search @search-selection="handleBeforeLoadItem" />
 
-              <li class="inline-block relative" data-no-outline="true" role="listitem">
+              <li
+                class="inline-block relative"
+                data-no-outline="true"
+                role="listitem"
+              >
                 <div
                   class="list-item info-menu pr2 pl2"
                   aria-haspopup="true"
@@ -217,12 +235,17 @@
                     trigger="manual"
                     v-model="isSponsorsMenuOpen"
                   >
-                    <div class="p2 sponsors-wrapper" :class="{ dark, light: !dark }">
+                    <div
+                      class="p2 sponsors-wrapper"
+                      :class="{ dark, light: !dark }"
+                    >
                       <header class="flex justify-content-end">
                         <span
                           class="inline-block mr2 cursor-pointer"
-                          @click.stop="() => isSponsorsMenuOpen = false"
-                          @keyup.enter.space="() => isSponsorsMenuOpen = false"
+                          @click.stop="() => (isSponsorsMenuOpen = false)"
+                          @keyup.enter.space="
+                            () => (isSponsorsMenuOpen = false)
+                          "
                         >
                           <fa :icon="['fas', 'times']" class="sm-icon" />
                         </span>
@@ -251,7 +274,9 @@
                       @click.stop="toggleSponsorsMenuVisibility"
                     >
                       <fa :icon="['fas', 'star']" class="sm-icon" />
-                      <font size="2" class="link hidden-md-and-down ml3">Sponsors</font>
+                      <font size="2" class="link hidden-md-and-down ml3"
+                        >Sponsors</font
+                      >
                     </el-button>
                   </el-popover>
                 </div>
@@ -278,16 +303,26 @@
                         class="header no-selectable h8 flex justify-content-space-between pr7 pl6 pt2 pb2 align-items-center"
                         :class="{ dark, light: !dark }"
                       >
-                        <strong class="fs-regular truncate">{{ userName }}</strong>
-                        <span class="fs-regular cursor-pointer" @click="toggleUserMenuVisibility">
+                        <strong class="fs-regular truncate">{{
+                          userName
+                        }}</strong>
+                        <span
+                          class="fs-regular cursor-pointer"
+                          @click="toggleUserMenuVisibility"
+                        >
                           <fa :icon="['fas', 'times']" />
                         </span>
                       </header>
                       <ul class="p1 h-fit">
                         <li class="w-fit-full h10">
-                          <el-button type="text" class="inline-block color-inherit">
+                          <el-button
+                            type="text"
+                            class="inline-block color-inherit"
+                          >
                             <fa :icon="['fas', 'map']" class="mr4 ml4" />
-                            <router-link to="/" class="color-inherit">Back to map</router-link>
+                            <router-link to="/" class="color-inherit"
+                              >Back to map</router-link
+                            >
                           </el-button>
                         </li>
                         <li class="w-fit-full h10">
@@ -295,7 +330,10 @@
                             type="text"
                             class="inline-block color-inherit"
                           >
-                            <fa :icon="['fas', 'sign-out-alt']" class="mr5 ml4" />
+                            <fa
+                              :icon="['fas', 'sign-out-alt']"
+                              class="mr5 ml4"
+                            />
                             <strong>Sign out</strong>
                           </el-button>
                         </li>
@@ -308,7 +346,10 @@
                       @click="userRegistration"
                       @keyup.enter.space="userRegistration"
                     >
-                      <fa :icon="['fas', 'user-circle']" class="md-icon user-icon" />
+                      <fa
+                        :icon="['fas', 'user-circle']"
+                        class="md-icon user-icon"
+                      />
                     </div>
                   </el-popover>
                 </div>
@@ -402,7 +443,9 @@
                       class="header no-selectable h8 flex justify-content-space-between pr7 pl6 pt2 pb2 align-items-center"
                       :class="{ dark, light: !dark }"
                     >
-                      <strong class="fs-regular truncate">{{ userName }}</strong>
+                      <strong class="fs-regular truncate">{{
+                        userName
+                      }}</strong>
                       <span
                         class="fs-regular cursor-pointer"
                         @click="toggleUserMenuVisibility"
@@ -412,11 +455,14 @@
                     </header>
                     <ul class="p1 h-fit" :class="{ dark, light: !dark }">
                       <li class="w-fit-full h10">
-                        <el-button type="text" class="inline-block color-inherit">
+                        <el-button
+                          type="text"
+                          class="inline-block color-inherit"
+                        >
                           <router-link
                             to="/"
                             class="color-inherit"
-                            @click="() => isUserMenuOpen = false"
+                            @click="() => (isUserMenuOpen = false)"
                           >
                             <fa :icon="['fas', 'map']" class="mr4 ml4" />
                             Back to map
@@ -491,7 +537,7 @@ export default {
     isSponsorsMenuOpen: false,
     isPartnersMenuOpen: false,
     isSubmarineMenuOpen: false,
-    isDataCentersMenuOpen: false,
+    isDataCentersMenuOpen: false
   }),
   computed: {
     dark() {
@@ -555,7 +601,7 @@ export default {
       if (!name) return
       let menuName = name.toLowerCase()
       this.closeUnwantedOpenMenus()
-      switch(menuName) {
+      switch (menuName) {
         case 'partners':
           this.isPartnersMenuOpen = !this.isPartnersMenuOpen
           break

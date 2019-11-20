@@ -18,14 +18,14 @@
           @click="handlePlaceSelection(place)"
           @keyup.enter.space="handlePlaceSelection(place)"
         >
-        {{ place.name }}
-        <span
-          v-if="place.premium && place.premium === 'true'"
-          class="w22 p1 h6 partner round flo-right vertical-align mt-2"
-        >
-          Partner
-          <fa :icon="['fas', 'star']" class="sm-icon ml2" />
-        </span>
+          {{ place.name }}
+          <span
+            v-if="place.premium && place.premium === 'true'"
+            class="w22 p1 h6 partner round flo-right vertical-align mt-2"
+          >
+            Partner
+            <fa :icon="['fas', 'star']" class="sm-icon ml2" />
+          </span>
         </li>
       </ul>
     </el-card>
@@ -90,7 +90,10 @@ export default {
     getQueryData: debounce(async function(querystring) {
       if (querystring.length <= 1) return
       const res = await this.$store.dispatch('getSearchQueryData', querystring)
-      const places = await this.$store.dispatch('getSearchQueryDataMapbox', querystring)
+      const places = await this.$store.dispatch(
+        'getSearchQueryDataMapbox',
+        querystring
+      )
 
       if (!res) return
       Array.from(places.features).forEach(
@@ -120,7 +123,8 @@ export default {
       if (selection.geometry) {
         let bounds = []
         if (selection.bbox) bounds = selection.bbox
-        else if (selection.center) bounds = [...selection.center, ...selection.center]
+        else if (selection.center)
+          bounds = [...selection.center, ...selection.center]
 
         if (bounds.length) this.$store.commit(`${MAP_BOUNDS}`, bounds)
         bus.$emit(FOCUS_ON, {
@@ -129,7 +133,10 @@ export default {
         })
       } else {
         // Otherwise if must be an org/facility/datacenter, etc...
-        this.$emit(SEARCH_SELECTION, { id: selection.id, option: selection.type })
+        this.$emit(SEARCH_SELECTION, {
+          id: selection.id,
+          option: selection.type
+        })
       }
 
       this.isResultsVisible = false

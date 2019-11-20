@@ -37,7 +37,14 @@
           </el-form-item>
         </el-col>
         <template v-if="dialogTitle !== 'Other'">
-          <el-col v-if="dialogTitle !== 'Datacenter'" :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+          <el-col
+            v-if="dialogTitle !== 'Datacenter'"
+            :xs="24"
+            :sm="12"
+            :md="12"
+            :lg="12"
+            :xl="12"
+          >
             <el-form-item label="Capacity" prop="capacity">
               <el-select
                 class="w-fit-full"
@@ -82,7 +89,9 @@
         <span class="text-red">*</span> indicates required field
       </small>
       <div>
-        <el-button plain type="info" class="mr2" @click="closeDialog">Cancel</el-button>
+        <el-button plain type="info" class="mr2" @click="closeDialog"
+          >Cancel</el-button
+        >
         <el-button
           :disabled="isFormUncomplete"
           type="primary"
@@ -90,7 +99,8 @@
           plain
           @click="submitForm('form')"
           @keyup.enter.space="submitForm('form')"
-        >Buy</el-button>
+          >Buy</el-button
+        >
       </div>
     </footer>
   </el-dialog>

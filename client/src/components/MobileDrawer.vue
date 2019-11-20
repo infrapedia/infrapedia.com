@@ -6,7 +6,12 @@
       class="no-border color-inherit w8 vertical-align mt1"
       @click="toggleVisibility"
     />
-    <el-drawer size="100%" :visible.sync="isDrawer" direction="ltr" :custom-class="drawerClass">
+    <el-drawer
+      size="100%"
+      :visible.sync="isDrawer"
+      direction="ltr"
+      :custom-class="drawerClass"
+    >
       <header
         class="h14 w-fit-full pr4 pl4 pb2 flex justify-content-space-between align-items-center"
         :class="{ dark, light: !dark }"

@@ -100,7 +100,7 @@ export default {
     },
     async handleLoadMoreItems(option) {
       this.quantity += 50
-      switch(option.toLowerCase()) {
+      switch (option.toLowerCase()) {
         case 'submarine':
           await this.handleSubmarineSelection(false)
           break
@@ -180,7 +180,7 @@ export default {
       }
     },
     async handlePremiumPartnerItemSelected(id) {
-      if (!id) throw { message: 'MISSING ID PARAMETER'}
+      if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       // SAVING BOUNDS FOR MAP ZOOM IN
       await this.getPremiumSelectedBoundsData(id)
@@ -202,21 +202,21 @@ export default {
       else bus.$emit(`${FOCUS_ON}`, { id: orgID, type: 'org' })
     },
     async handleSubmarineCableItemSelected(id) {
-      if (!id) throw { message: 'MISSING ID PARAMETER'}
+      if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
       await this.getSubseaCableBoundsData(id)
       bus.$emit(`${FOCUS_ON}`, { id, type: 'cable' })
     },
     async handleDataCenterItemSelected(id) {
-      if (!id) throw { message: 'MISSING ID PARAMETER'}
+      if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
       await this.getFacilityBoundsData(id)
       bus.$emit(`${FOCUS_ON}`, { id, type: 'fac' })
     },
     async handleFacilityItemSelected({ id, type }) {
-      if (!id) throw { message: 'MISSING ID PARAMETER'}
+      if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       // RETRIEVING AND SAVING POINTS TO THE STORE
       await this.getFacilityPointsData({ id, type })
