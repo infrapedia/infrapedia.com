@@ -91,7 +91,10 @@ export default {
         centerLng
       ) {
         this.$store.commit(`${EASE_POINT}`, {
-          center: [[neLng, neLat], [swLng, swLat]],
+          center: [
+            [neLng, neLat],
+            [swLng, swLat]
+          ],
           cameraCenter: [centerLng, centerLat],
           hasToEase: true,
           bearing,
