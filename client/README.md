@@ -4,8 +4,6 @@
 
 Sidebar:
 
-- The values of the cables and "data center" did not align with their corresponding properties.
-
 - New property: Latency. On the cables sidebar, with the given formula: Distance / 200.
 
 ## Version 2.0.0
