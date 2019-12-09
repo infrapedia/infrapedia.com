@@ -27,6 +27,18 @@ header {
   margin-top: 14rem;
 }
 
+.links-wrapper {
+  margin-bottom: 1rem;
+  a {
+    display: inline-block;
+    width: 100%;
+    outline: 0;
+    padding: 1rem;
+    color: #333;
+    border-bottom: 1px solid #ebeef5
+  }
+}
+
 #html-wrapper.dark {
   header {
     .icon {

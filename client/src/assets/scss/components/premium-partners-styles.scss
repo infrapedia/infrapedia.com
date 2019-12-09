@@ -1,0 +1,41 @@
+@import '../helpers/_atomic-classes';
+@import '../base/_variables';
+
+.title {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.8;
+  color: $dark-charcoal;
+  letter-spacing: 0.02em;
+}
+
+.sponsors-wrapper {
+  width: 82vw;
+  margin-left: 2rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.wrapper {
+  width: 100vw;
+  height: 95vh;
+  z-index: -2;
+  top: 3rem;
+  left: 0;
+
+  display: flex;
+  position: fixed;
+  align-items: center;
+  flex-flow: row nowrap;
+}
+
+.img-wrapper {
+  width: 50%;
+  justify-self: center;
+  .img-sponsor {
+    height: 8rem;
+    width: 100%;
+    cursor: pointer;
+  }
+}
+

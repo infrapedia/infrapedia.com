@@ -8,4 +8,10 @@ footer {
   font-size: 12px;
   align-items: flex-end;
   background: transparent;
+  div.flex {
+    margin-left: 1rem;
+    .link {
+      margin-bottom: .5rem;
+    }
+  }
 }

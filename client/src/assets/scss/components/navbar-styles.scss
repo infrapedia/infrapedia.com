@@ -90,6 +90,16 @@ $header-color: rgb(37, 95, 185);
   background-color: $header-color;
 }
 
+.image-sponsor {
+  height: 2.8rem;
+  padding: 0 1rem;
+  &.ipv4 {
+    height: 4rem;
+    img {
+      margin-top: 1.2rem
+    }
+  }
+}
 
 /*
 *   THEME VARIANT'S

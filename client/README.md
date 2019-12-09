@@ -1,4 +1,14 @@
-# Vue client
+# Infrapedia Open Source
+
+## Version 2.1.0
+
+Sidebar:
+
+- The values of the cables and "data center" did not align with their corresponding properties.
+
+- New property: Latency. On the cables sidebar, with the given formula: Distance / 200.
+
+## Version 2.0.0
 
 ## Project setup
 
@@ -32,4 +42,4 @@ yarn lint
 
 ### Customize configuration
 
-See [Configuration Reference](https://cli.vuejs.org/config/).
+See [Configuration Reference](https://cli.vuejs.org/config/)

@@ -6,6 +6,9 @@
 .cursor-pointer {
   cursor: pointer;
 }
+.cursor-regular {
+  cursor: default;
+}
 .absolute {
   position: absolute;
 }
@@ -261,6 +264,9 @@
 }
 .h-inherit {
   height: inherit;
+}
+.bg-white {
+  background-color: #fff;
 }
 .seamless-hoverbg {
   @extend .transition-all;

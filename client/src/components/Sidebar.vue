@@ -9,12 +9,12 @@
     <div
       v-if="isSidebar"
       class="sidebar-wrapper"
-      :class="{ active: isSidebarActive }"
+      :class="classGiver"
     >
       <el-card shadow="hover" v-loading="isSidebarLoad">
         <header
           class="header pt10 pr8 pl8 pb10 h12 relative"
-          @click="toggleActiveClassOnMobile"
+          @click.stop="toggleActiveClassOnMobile"
         >
           <span
             class="inline-block w4 h4 icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
@@ -87,6 +87,9 @@ export default {
       focus: state => state.map.focus,
       currentSelection: state => state.map.currentSelection
     }),
+    classGiver() {
+      return this.isSidebarActive ? { active: 'active' } : {}
+    },
     defaultMode() {
       return modes.CABLE_MODE
     },
@@ -117,7 +120,7 @@ export default {
         this.transitionsClasses = {
           name: 'animated faster',
           active: 'slideInUp',
-          leave: 'zoomOutLeft'
+          leave: 'slideOutDown'
         }
         return true
       } else {
@@ -147,6 +150,7 @@ export default {
     },
     closeSidebar() {
       bus.$emit(`${CLEAR_SELECTION}`)
+      this.isSidebarActive = false
       this.$store.commit(`${MAP_FOCUS_ON}`, null)
       this.$store.commit(`${CURRENT_SELECTION}`, null)
     }

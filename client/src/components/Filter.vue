@@ -155,27 +155,34 @@ export default {
      */
     emitSubseaSelection(isSubseaOnly) {
       // Other filters cannot be active
-      if (this.filters.isTimeMachineActive)
+      if (this.filters.isTimeMachineActive) {
         this.filters.isTimeMachineActive = false
-      if (this.filters.radio !== '') this.filters.radio = ''
+      }
 
-      return bus.$emit(`${SUBSEA_FILTER}`, isSubseaOnly ? currentYear() : 0)
+      return bus.$emit(`${SUBSEA_FILTER}`, { bool: isSubseaOnly, isActive: this.filters.radio === 0 })
     },
     /**
      * @param selection { Boolean }
      */
     emitRadioSelection(selection) {
       // console.log(selection)
-      if (selection === 'no-active' || selection === 'no-future') {
-        return bus.$emit(`${UPDATE_TIME_MACHINE}`, -1)
+      if ((selection === 'no-active' || selection === 'no-future') && !this.filters.isSubseaOnly) {
+        return bus.$emit(`${TOGGLE_FILTER_SELECTION}`, -1)
+      } else if ((selection === 'no-active' || selection === 'no-future') && this.filters.isSubseaOnly) {
+        return bus.$emit(`${TOGGLE_FILTER_SELECTION}`, 3)
       }
-      // Other filters cannot be active
-      if (this.filters.isTimeMachineActive || this.filters.isSubseaOnly) {
+      // Subsea filter cannot be active
+      if (this.filters.isTimeMachineActive) {
         this.filters.isTimeMachineActive = false
-        this.filters.isSubseaOnly = false
+        // this.filters.isSubseaOnly = false
       }
 
-      bus.$emit(`${UPDATE_TIME_MACHINE}`, selection)
+      if (this.filters.isSubseaOnly) {
+        return bus.$emit(`${TOGGLE_FILTER_SELECTION}`, 2)
+      }
+
+      console.log(selection)
+      bus.$emit(`${TOGGLE_FILTER_SELECTION}`, selection)
     },
     /**
      * @param isTimeMachineActive { Boolean }
@@ -188,15 +195,15 @@ export default {
       }
 
       return bus.$emit(
-        `${SUBSEA_FILTER}`,
-        isTimeMachineActive ? this.filters.year : 0
+        `${UPDATE_TIME_MACHINE}`,
+        isTimeMachineActive ? { year: this.filters.year, isActive: false } : { year: 0, isActive: this.filters.radio === 0 }
       )
     },
     /**
      * @param year { Number } Year selected with the slider
      */
     emitTimeMachineYear(year) {
-      return bus.$emit(`${TOGGLE_FILTER_SELECTION}`, year)
+      return bus.$emit(`${UPDATE_TIME_MACHINE}`, { year, isActive: false })
     }
   }
 }

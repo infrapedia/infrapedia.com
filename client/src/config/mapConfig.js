@@ -1,6 +1,7 @@
 const token = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN
 
 const cableLayer = 'cables'
+const cableLabelLayer = 'cable-label'
 const highlightLayer = 'cables2'
 const pointsLayer = 'pointTMS'
 const source = 'network-atlas'
@@ -29,6 +30,7 @@ export const mapConfig = {
   center: [-34.292, 27.57],
   cableLayer,
   pointsLayer,
+  cableLabelLayer,
   highlightLayer,
   buildingFootprintLight,
   buildingPointLight,
@@ -71,7 +73,7 @@ export const mapConfig = {
         }
       },
       {
-        id: 'cable-label',
+        id: cableLabelLayer,
         source: 'cableTMS',
         'source-layer': 'cables',
         type: 'symbol',
@@ -291,6 +293,11 @@ export const mapConfig = {
   },
   filter: {
     subsea: ['!=', ['get', 'isterrestrial'], 'true'],
+    activeSubsea: [
+      'all',
+      ['!=', 'isterrestrial', 'true'],
+      ['!=', 'isinactive', 'true']
+    ],
     active: ['!=', ['get', 'isinactive'], 'true'],
     all: ['has', 'cable_id'],
     future: ['>', ['get', 'activation'], currentEpoch],

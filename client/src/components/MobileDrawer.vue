@@ -38,10 +38,10 @@
             option="partners"
             @click="emitSelected"
             :is-search-visible="false"
-            @load-more="emitLoadMore('partners')"
           />
         </el-collapse-item>
-        <el-collapse-item name="submarine" class="pr4 pl4">
+
+        <!-- <el-collapse-item name="submarine" class="pr4 pl4">
           <p slot="title">Submarine Cables</p>
           <i-list
             option="submarine"
@@ -76,8 +76,66 @@
             :is-search-visible="false"
             @load-more="emitLoadMore('networks')"
           />
-        </el-collapse-item>
+        </el-collapse-item> -->
       </el-collapse>
+      <ul class="links-wrapper m0 mb4 p0">
+        <li class="w-fit-full" data-no-outline="true">
+          <div class="no-selectable">
+            <a href="https://www.infrapedia.com/blog" target="_blank" class="no-underline inherit color-inherit">
+              Blog
+            </a>
+          </div>
+        </li>
+        <li class="w-fit-full" data-no-outline="true">
+          <div class="no-selectable">
+            <a href="https://www.infrapedia.com" target="_blank" class="no-underline inherit color-inherit">
+              Contact us
+            </a>
+          </div>
+        </li>
+      </ul>
+      <div class="text-center">
+        <h2 class="mb10 mt6">
+          Sponsors
+        </h2>
+        <ul class="flex column wrap">
+          <li
+            class="inline-block relative"
+            data-no-outline="true"
+            role="listitem"
+          >
+            <div class="list-item" data-no-hover-bg="true">
+              <a href="https://www.catchpoint.com" target="_blank" >
+                <el-image
+                  src="https://storage.googleapis.com/infrapedia_bucket/sponsors/catchpoint-logo.png"
+                  class="w46 h16"
+                  fit="cover"
+                  alt="catchpoint logo"
+                  referrer-policy="strict-origin-when-cross-origin"
+                />
+              </a>
+            </div>
+          </li>
+
+          <li
+            class="inline-block relative mt8"
+            data-no-outline="true"
+            role="listitem"
+          >
+            <div class="list-item" data-no-hover-bg="true">
+              <a href="https://ipv4.global" target="_blank" >
+                <el-image
+                  src="https://storage.googleapis.com/infrapedia_bucket/sponsors/ipv4global-footer.png"
+                  fit="cover"
+                  class="w46 h16"
+                  alt="ipv4 logo"
+                  referrer-policy="strict-origin-when-cross-origin"
+                />
+              </a>
+            </div>
+          </li>
+        </ul>
+      </div>
       <i-footer class="footer relative m0 mt54 ml-5 p4" />
     </el-drawer>
   </div>

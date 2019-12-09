@@ -46,9 +46,8 @@ export default {
     clearNetworks() {
       this.$store.commit(`${GET_NETWORKS}`, [])
     },
-    async handlePremiumSelection(opensMenu = true) {
+    async loadPremiumPartners() {
       if (!this.$store.state.premium.length) await this.getPremiumData()
-      if (opensMenu) await this.toggleMenu('partners')
     },
     async handleSubmarineSelection(opensMenu = true) {
       if (opensMenu) {

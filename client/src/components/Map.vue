@@ -146,7 +146,7 @@ export default {
     bus.$on(FOCUS_ON_CITY, this.handleCityFocus)
     bus.$on(UPDATE_TIME_MACHINE, this.handleUpdateTimeMachine)
     bus.$on(TOGGLE_FILTER_SELECTION, this.handleFilterSelection)
-    bus.$on(SUBSEA_FILTER, this.handleFilterSelection)
+    bus.$on(SUBSEA_FILTER, this.handleSubseaToggle)
     bus.$on(REMOVE_QUERY_ROUTE_REPLACE, this.handleRemoveQueryRouteReplacer)
 
     if (this.dark) this.map.setStyle(mapConfig.darkBasemap)
@@ -1083,47 +1083,88 @@ export default {
       this.$store.commit(`${EASE_POINT}`, null)
       this.$store.commit(`${HAS_TO_EASE_TO}`, false)
     },
+    async handleSubseaToggle({ bool, isActive }) {
+      let filter
+      const { map } = this
+      const epoch = new Date(`${currentYear()}-02-02`).getTime() / 1000
+
+      if (bool && isActive) {
+        filter = mapConfig.filter.activeSubsea
+      } else if (bool && !isActive) {
+        filter = mapConfig.filter.timemachine
+        filter[2] = epoch
+      } else if (!bool && isActive) {
+        filter = mapConfig.filter.active
+      } else {
+        filter = ['all']
+      }
+
+      await this.disableCableHighlight()
+      await map.setFilter(mapConfig.cableLayer, filter)
+      await map.setFilter(mapConfig.cableLabelLayer, filter)
+    },
     /**
-     * @param selection { Number } - 0 being "active" and 1 "future"
+     * @param selection { Number } - 0 being "active" - 1 being "future" - 2 being "activeSubsea" and 3 being "subseaOnly" filter
      */
-    async handleUpdateTimeMachine(selection) {
+    async handleFilterSelection(selection) {
       let filter
       const { map } = this
       const filters = mapConfig.filter
 
-      if (selection === 0) filter = filters.active
-      else if (selection === 1) filter = filters.future
-      else if (selection === -1) filter = ['all']
+      switch (selection) {
+        case -1:
+          filter = ['all']
+          break
+        case 0:
+          filter = filters.active
+          break
+        case 1:
+          filter = filters.future
+          break
+        case 2:
+          filter = filters.activeSubsea
+          break
+        case 3:
+          filter = 3
+          break
+      }
+
+      if (filter === 3) {
+        return this.handleUpdateTimeMachine({ year: currentYear(), isActive: false, isSubseaOnly: true })
+      }
 
       await this.disableCableHighlight()
       await map.setFilter(mapConfig.cableLayer, filter)
+      await map.setFilter(mapConfig.cableLabelLayer, filter)
     },
     /**
      * @param year { Number } - The year parameter is for toggling if showing only the subsea cables or show them all
+     * @param isActive { Bool } - Indicates if the isActive filter is currently active or not
      */
-    async handleFilterSelection(year) {
-      // console.log(year)
+    async handleUpdateTimeMachine({ year, isActive, isSubseaOnly }) {
       const { map } = this
       const isYearEqual = year === currentYear()
       // The epoch is the time arbitrarily selected as a point of reference for the specification of celestial coordinates. In this case, is used for denoting the existence of future cables
       const epoch = new Date(`${year}-02-02`).getTime() / 1000
-      const filter = isYearEqual
-        ? mapConfig.filter.subsea
-        : mapConfig.filter.timemachine
+      let filter = mapConfig.filter.timemachine
 
       // If the year is the current year or is equal to 0
-      // We suppose he/she is either deactivating the subsea switch of the filter
+      // We suppose the user is either deactivating the subsea switch of the filter
       // Or is toggling off/on the checkbox for the subseatime machine slider
-      if (year === currentYear() || year === 0) {
-        await this.$store.commit(`${CURRENT_MAP_FILTER}`, ['all'])
-        await map.setFilter(mapConfig.cableLayer, ['all'])
+      if (!isYearEqual || isSubseaOnly) {
+        filter[2] = epoch
+      } else if ((year === currentYear() || year === 0) && !isActive) {
+        filter = ['all']
+      } else if ((year === currentYear() || year === 0) && isActive) {
+        if (year === 0) {
+          filter = mapConfig.filter.active
+        } else {
+          filter = mapConfig.filter.activeSubsea
+        }
       } else await this.disableCableHighlight()
 
-      // The year 0 demarks that we should show all the cables including the underground ones and nothing else
-      if (year === 0) return
-      // Otherwise keep going and show me only the subsea ones
-      if (!isYearEqual) filter[2] = epoch
       await map.setFilter(mapConfig.cableLayer, filter)
+      await map.setFilter(mapConfig.cableLabelLayer, filter)
       await this.$store.commit(`${CURRENT_MAP_FILTER}`, filter)
     },
     handlePreviouslySelected: debounce(function() {
