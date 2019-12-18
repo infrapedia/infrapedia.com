@@ -29,16 +29,28 @@
         </h1>
 
         <div aria-labelledby="rightnavheading" class="links-wrapper">
-          <transition-group tag="div" class="h-fit-full" name="fade" mode="out-in">
+          <transition-group
+            tag="div"
+            class="h-fit-full"
+            name="fade"
+            mode="out-in"
+          >
             <ul
               class="p0 m0 h-fit-full"
               role="group"
               :key="1"
               v-if="!isUserNavbar"
             >
-              <li class="inline-block relative hidden-sm-and-down" data-no-outline="true">
+              <li
+                class="inline-block relative hidden-sm-and-down"
+                data-no-outline="true"
+              >
                 <div class="list-item pr4 pl4 no-selectable">
-                  <a href="https://www.infrapedia.com/blog" target="_blank" class="no-underline inherit color-inherit">
+                  <a
+                    href="https://www.infrapedia.com/blog"
+                    target="_blank"
+                    class="no-underline inherit color-inherit"
+                  >
                     Blog
                   </a>
                 </div>
@@ -79,7 +91,9 @@
                 class="inline-block no-selectable relative hidden-sm-and-down"
                 role="listitem"
               >
-                <premium-partners-button @item-selected="handleBeforeLoadItem" />
+                <premium-partners-button
+                  @item-selected="handleBeforeLoadItem"
+                />
               </li>
 
               <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
@@ -100,9 +114,16 @@
 
               <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
 
-              <li class="inline-block relative hidden-sm-and-down" data-no-outline="true">
+              <li
+                class="inline-block relative hidden-sm-and-down"
+                data-no-outline="true"
+              >
                 <div class="list-item pr4 pl4 no-selectable">
-                  <a href="https://www.infrapedia.com" target="_blank" class="no-underline inherit color-inherit">
+                  <a
+                    href="mailto:admin@infrapedia.com"
+                    target="_blank"
+                    class="no-underline inherit color-inherit"
+                  >
                     Contact us
                   </a>
                 </div>
@@ -271,7 +292,7 @@
                 role="listitem"
               >
                 <div class="list-item" data-no-hover-bg="true">
-                  <a href="https://www.catchpoint.com" target="_blank" >
+                  <a href="https://www.catchpoint.com" target="_blank">
                     <el-image
                       src="https://storage.googleapis.com/infrapedia_bucket/sponsors/catchpoint-logo.png"
                       lazy
@@ -292,7 +313,7 @@
                 role="listitem"
               >
                 <div class="list-item" data-no-hover-bg="true">
-                  <a href="https://ipv4.global" target="_blank" >
+                  <a href="https://ipv4.global" target="_blank">
                     <el-image
                       lazy
                       src="https://storage.googleapis.com/infrapedia_bucket/sponsors/ipv4global-footer.png"

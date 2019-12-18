@@ -1,5 +1,9 @@
 # Infrapedia Open Source
 
+## Version 1.2.1
+Navbar:
+- Contact us link changed to 'mailto:admin@infrapedia.com'
+
 ## Version 1.2.0
 
 Sidebar:
