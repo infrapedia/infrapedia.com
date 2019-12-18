@@ -1,12 +1,23 @@
 # Infrapedia Open Source
 
-## Version 2.1.0
+## Version 1.2.0
 
 Sidebar:
+- Removed latency calculation on terrestrial cables
 
+Trusted by:
+- New logos
+- Styling like "Our Partners" 
+
+Navbar: 
+- New sponsor logo
+
+## Version 1.1.0
+
+Sidebar:
 - New property: Latency. On the cables sidebar, with the given formula: Distance / 200.
 
-## Version 2.0.0
+## Version 1.0.0
 
 ## Project setup
 

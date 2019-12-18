@@ -1,13 +1,12 @@
 <template>
   <div
     aria-haspopup="true"
-    class="list-item pr4 pl4 no-selectable" @click.stop="toggleVisibility">
+    class="list-item pr4 pl4 no-selectable"
+    @click.stop="toggleVisibility"
+  >
     <div class="flex align-items-center">
       Our Partners
-      <i
-        aria-hidden="true"
-        class="el-icon-arrow-down icon sm-icon ml1"
-      />
+      <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
     </div>
     <transition
       tag="div"
@@ -26,11 +25,7 @@
               @click="setActiveCable(item, 'partners')"
               class="img-wrapper"
             >
-              <el-image
-                :src="item.logo"
-                class="img-sponsor"
-                fit="contain"
-              />
+              <el-image :src="item.logo" class="img-sponsor" fit="contain" />
             </div>
           </template>
         </div>

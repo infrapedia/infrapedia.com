@@ -23,12 +23,14 @@
         <p class="text-bold">{{ `${info.system_length} km` }}</p>
       </el-col>
     </el-row>
-    <el-row :gutter="30" v-if="info.system_length">
+    <el-row :gutter="30" v-if="info.system_length && !info.is_terrestrial">
       <el-col :span="10" class="p2">
         <p class="label capitalize">Latency</p>
       </el-col>
       <el-col :span="12" class="p2">
-        <p class="text-bold">{{ `${getCableLatency(info.system_length)} ms` }}</p>
+        <p class="text-bold">
+          {{ `${getCableLatency(info.system_length)} ms` }}
+        </p>
       </el-col>
     </el-row>
     <el-row :gutter="30" v-if="info.activation_datetime">

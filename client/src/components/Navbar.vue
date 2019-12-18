@@ -265,8 +265,6 @@
                 </div>
               </li>
 
-              <el-divider direction="vertical" class="m0" />
-
               <li
                 class="inline-block hidden-sm-and-down relative"
                 data-no-outline="true"
@@ -277,7 +275,7 @@
                     <el-image
                       src="https://storage.googleapis.com/infrapedia_bucket/sponsors/catchpoint-logo.png"
                       lazy
-                      class="w36 image-sponsor"
+                      class="w28 image-sponsor"
                       fit="cover"
                       alt="catchpoint logo"
                       referrer-policy="strict-origin-when-cross-origin"
@@ -298,9 +296,30 @@
                     <el-image
                       lazy
                       src="https://storage.googleapis.com/infrapedia_bucket/sponsors/ipv4global-footer.png"
-                      fit="cover"
-                      class="w36 image-sponsor ipv4"
+                      fit="center"
+                      class="w28 image-sponsor ipv4"
                       alt="ipv4 logo"
+                      referrer-policy="strict-origin-when-cross-origin"
+                    />
+                  </a>
+                </div>
+              </li>
+
+              <el-divider direction="vertical" class="m0" />
+
+              <li
+                class="inline-block hidden-sm-and-down relative"
+                data-no-outline="true"
+                role="listitem"
+              >
+                <div class="list-item" data-no-hover-bg="true">
+                  <a href="https://aptelecom.com/" target="_blank">
+                    <el-image
+                      lazy
+                      src="https://cdn.infrapedia.com/sponsors/aptelecom_logo.png"
+                      fit="center"
+                      class="w28 h12 image-sponsor"
+                      alt="aptelecom logo"
                       referrer-policy="strict-origin-when-cross-origin"
                     />
                   </a>
@@ -363,7 +382,6 @@
                 </div>
               </li> -->
 
-              <el-divider direction="vertical" class="m0" />
               <li class="inline-block relative" data-no-outline="true">
                 <div
                   class="list-item user-icon pr1 pl3"

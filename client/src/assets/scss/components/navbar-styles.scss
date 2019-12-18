@@ -91,13 +91,10 @@ $header-color: rgb(37, 95, 185);
 }
 
 .image-sponsor {
-  height: 2.8rem;
+  height: 100%;
   padding: 0 1rem;
   &.ipv4 {
-    height: 4rem;
-    img {
-      margin-top: 1.2rem
-    }
+    margin-top: -1rem;
   }
 }
 

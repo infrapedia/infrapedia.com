@@ -1,16 +1,23 @@
 const sponsors = [
-  'https://cdn.infrapedia.com/trustedby/Disa.webp',
-  'https://cdn.infrapedia.com/trustedby/Microsoft.webp',
-  'https://cdn.infrapedia.com/trustedby/USenergy.webp',
-  'https://cdn.infrapedia.com/trustedby/att.webp',
-  'https://cdn.infrapedia.com/trustedby/bloomberg.webp',
-  'https://cdn.infrapedia.com/trustedby/chase.webp',
-  'https://cdn.infrapedia.com/trustedby/cisco.webp',
-  'https://cdn.infrapedia.com/trustedby/invesco.gif',
-  'https://cdn.infrapedia.com/trustedby/limelight.webp',
-  'https://cdn.infrapedia.com/trustedby/morganstanley.webp',
-  'https://cdn.infrapedia.com/trustedby/spacex.webp',
-  'https://cdn.infrapedia.com/trustedby/twitter.webp'
+  'https://cdn.infrapedia.com/trustedby350/alcatelsubmarine-min.png',
+  'https://cdn.infrapedia.com/trustedby350/amazon-min.png',
+  'https://cdn.infrapedia.com/trustedby350/att-min.png',
+  'https://cdn.infrapedia.com/trustedby350/blackveatch-min.png',
+  'https://cdn.infrapedia.com/trustedby350/bloomberg-min.png',
+  'https://cdn.infrapedia.com/trustedby350/chase-min.png',
+  'https://cdn.infrapedia.com/trustedby350/cisco-min.png',
+  'https://cdn.infrapedia.com/trustedby350/clarobrasil-min.png',
+  'https://cdn.infrapedia.com/trustedby350/disa-min.png',
+  'https://cdn.infrapedia.com/trustedby350/energy-min.png',
+  'https://cdn.infrapedia.com/trustedby350/ivnesco-min.png',
+  'https://cdn.infrapedia.com/trustedby350/limelight-min.png',
+  'https://cdn.infrapedia.com/trustedby350/microsoft-min.png',
+  'https://cdn.infrapedia.com/trustedby350/morganstanley-min.png',
+  'https://cdn.infrapedia.com/trustedby350/oneweb-min.png',
+  'https://cdn.infrapedia.com/trustedby350/spacex-min.png',
+  'https://cdn.infrapedia.com/trustedby350/telecom-min.png',
+  'https://cdn.infrapedia.com/trustedby350/tencent-min.png',
+  'https://cdn.infrapedia.com/trustedby350/twitter-min.png'
 ]
 
 export default sponsors

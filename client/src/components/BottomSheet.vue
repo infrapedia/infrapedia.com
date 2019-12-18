@@ -1,5 +1,8 @@
 <template>
-  <div class="text-center h-fit-full flex align-items-center" @click.stop="toggleVisibility">
+  <div
+    class="text-center h-fit-full flex align-items-center"
+    @click.stop="toggleVisibility"
+  >
     <span class="drawer-opener">Trusted by</span>
     <transition
       tag="div"
@@ -12,15 +15,14 @@
         class="wrapper flex bg-white h-fit-full w-fit-full pr6 pl6 align-items-center"
       >
         <h1 class="title w34">Trusted by</h1>
-        <div class="sponsors-wrapper flex row nowrap justify-content-space-around p0 bg-white">
-          <el-image
-            v-for="(src, i) in sponsors"
-            :key="i"
-            :src="src"
-            lazy
-            fit="scale-down"
-            class="img-sponsor w20 h16 no-selectable"
-          />
+        <div class="sponsors-wrapper">
+          <div class="img-wrapper" v-for="(src, i) in sponsors" :key="i">
+            <el-image
+              :src="src"
+              fit="scale-down"
+              class="img-sponsor w20 h16 no-selectable"
+            />
+          </div>
         </div>
       </div>
     </transition>
@@ -55,5 +57,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/scss/components/bottom-sheet-styles.scss';
+// @import '../assets/scss/components/bottom-sheet-styles.scss';
+@import '../assets/scss/components/premium-partners-styles.scss';
 </style>
