@@ -1,5 +1,13 @@
 # Infrapedia Open Source
 
+## Version 1.3.1
+New pages on user route: 
+
+- cls
+- cables
+- networks
+- organizations
+
 ## Version 1.2.1
 Navbar:
 - Contact us link changed to 'mailto:admin@infrapedia.com'
