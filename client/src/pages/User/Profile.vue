@@ -120,5 +120,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/scss/pages/profile-styles.scss';
+@import '../../assets/scss/pages/user/profile-styles.scss';
 </style>

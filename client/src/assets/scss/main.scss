@@ -388,3 +388,37 @@ h1 {
     background-color: $dark-charcoal;
   }
 }
+
+.application.dark {
+  .main-wrapper {
+    color: $white-partial;
+    background: $dark-charcoal;
+
+    header.header {
+      border-bottom: 1px solid $white-full;
+    }
+
+    .el-table,
+    .el-table table,
+    .el-table tbody,
+    .el-table thead,
+    .el-table th,
+    .el-table tr,
+    .el-card {
+      color: $white-partial;
+      border-color: darken($light-charcoal, 10%);
+      background-color: $light-charcoal;
+    }
+  }
+  .el-table th.is-leaf, .el-table td {
+    border-bottom: 1px solid darken($light-charcoal, 10%);
+  }
+  .el-table--enable-row-hover .el-table__body tr:hover > td  {
+    background-color: $dark-charcoal !important;
+  }
+}
+
+.dark,
+.light {
+  transition: all 120ms ease-in;
+}

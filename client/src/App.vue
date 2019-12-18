@@ -47,7 +47,7 @@ export default {
     },
     isProfileRoute() {
       let isProfile = false
-      if (this.$route.name === 'user' || this.$route.name === 'user-profile') {
+      if (this.$route.name.includes('user')) {
         isProfile = true
       }
       return isProfile

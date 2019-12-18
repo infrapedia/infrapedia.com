@@ -1,0 +1,42 @@
+@import '../../../base/variables';
+@import '../../../helpers/atomic-classes';
+
+.main-wrapper {
+  width: 100%;
+  height: 90vh;
+}
+
+.el-button {
+  color: $white-partial;
+  background-color: $dark-yellow;
+  &:hover,
+  &:focus,
+  &:focus-within {
+    background-color: lighten($dark-yellow, 4%);
+  }
+}
+
+/*
+*  THEME VARIANT'S
+*/
+
+.application.light {
+  .main-wrapper {
+    background: $white-profile;
+
+    header.header {
+      border-bottom: 1px solid #91C6F6;
+    }
+  }
+}
+
+.application.dark {
+  .main-wrapper {
+    color: $white-partial;
+    background: $dark-charcoal;
+
+    header.header {
+      border-bottom: 1px solid $white-full;
+    }
+  }
+}
