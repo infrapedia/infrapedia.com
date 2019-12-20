@@ -50,6 +50,10 @@ const routes = [
     component: CreateSection
   },
   {
+    path: '/user/section',
+    redirect: { name: 'user/orgs-section' }
+  },
+  {
     path: '/404',
     name: '404',
     component: NotFound

@@ -4,11 +4,7 @@
       <h1 class="title-user color-inherit">
         {{ config.title }}
       </h1>
-      <el-button
-        type="warning"
-        round
-        @click="$router.push(config.creation_link)"
-      >
+      <el-button type="warning" round @click="handleRoute">
         {{ config.btn_label }}
       </el-button>
     </header>
@@ -40,6 +36,15 @@ export default {
     tableData: {
       type: Array,
       required: true
+    }
+  },
+  methods: {
+    handleRoute() {
+      if (this.config.creation_link) {
+        this.$router.push(this.config.creation_link)
+      } else if (!this.config.creation_link) {
+        this.$emit('btn-click')
+      }
     }
   }
 }

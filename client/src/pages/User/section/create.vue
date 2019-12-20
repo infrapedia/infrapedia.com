@@ -4,75 +4,13 @@
     :class="{ dark, light: !dark }"
   >
     <div class="left el-card p6">
-      <el-card shadow="never" class="pb6 pt6 pr8 pl8">
-        <header slot="header" class="w-fit-full mb8">
-          <h1 class="title">
-            Create cable
-          </h1>
-        </header>
-        <el-form ref="form" :model="form">
-          <el-form-item label="Name">
-            <el-input class="w-fit-full" v-model="form.name" />
-          </el-form-item>
-          <el-form-item label="System length">
-            <el-input-number
-              :min="0"
-              class="w-fit-full"
-              controls-position="right"
-              v-model="form.system_length"
-            />
-          </el-form-item>
-          <el-form-item label="Activation date">
-            <el-date-picker
-              class="w-fit-full-imp"
-              v-model="form.activationDateTime"
-            />
-          </el-form-item>
-          <el-form-item label="URL(s)">
-            <el-tag
-              :key="tag"
-              v-for="tag in form.urls"
-              closable
-              :disable-transitions="false"
-              @close="handleClose(tag)"
-            >
-              {{ tag }}
-            </el-tag>
-            <el-input
-              type="url"
-              v-if="inputVisible"
-              v-model="tag"
-              ref="saveTagInput"
-              size="mini"
-              @keyup.enter.native="confirmTag"
-              @blur="confirmTag"
-            />
-            <el-button
-              v-else
-              class="w42 text-center"
-              size="small"
-              @click="showInput"
-            >
-              Add url
-            </el-button>
-          </el-form-item>
-          <el-form-item label="Terrestrial">
-            <el-radio-group v-model="form.terrestrial">
-              <el-radio :label="true">
-                Yes
-              </el-radio>
-              <el-radio :label="false">
-                No
-              </el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item class="flo-right">
-            <el-button type="primary" round @click="sendData">
-              Create and start drawing
-            </el-button>
-          </el-form-item>
-        </el-form>
-      </el-card>
+      <header class="w-fit-full text-left mb8">
+        <router-link :to="routeGiver">
+          <fa :icon="['fas', 'arrow-left']" /> Back
+        </router-link>
+      </header>
+      <cable-form v-if="creationType === 'cables'" :form="form" />
+      <!-- <org-form v-else-if="creationType === 'org'" :form="form" /> -->
     </div>
     <div class="right w-fit-full">
       <editor-map />
@@ -82,17 +20,19 @@
 
 <script>
 import EditorMap from '../../../components/editor/Editor'
+// import OrgForm from '../../../components/userCreationForms/org'
+import CableForm from '../../../components/userCreationForms/cables'
 
 export default {
   name: 'CreateSection',
   components: {
-    'editor-map': EditorMap
+    'editor-map': EditorMap,
+    'cable-form': CableForm
+    // 'org-form': OrgForm
   },
   data: () => ({
     form: {},
-    tag: '',
-    creationType: null,
-    inputVisible: false
+    creationType: null
   }),
   mounted() {
     if (!this.$route.query.id) {
@@ -105,6 +45,25 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    routeGiver() {
+      const { creationType } = this
+      let route = '/user/section/cables'
+      switch (creationType) {
+        // case 'orgs':
+        //   route = '/user/section/orgs'
+        //   break
+        case 'cls':
+          route = '/user/section/cls'
+          break
+        // case 'networks':
+        //   route = '/user/section/networks'
+        //   break
+        default:
+          route = '/user/section/cables'
+          break
+      }
+      return route
     }
   },
   methods: {
@@ -142,24 +101,6 @@ export default {
           }
           break
       }
-    },
-    handleClose(tag) {
-      this.form.urls.splice(this.form.urls.indexOf(tag), 1)
-    },
-    showInput() {
-      this.inputVisible = true
-      this.$nextTick(() => {
-        this.$refs.saveTagInput.$refs.input.focus()
-      })
-    },
-    confirmTag() {
-      let tag = this.tag
-      const isTagAlreadyCreated = this.form.urls.includes(tag)
-      if (isTagAlreadyCreated) return
-
-      if (tag) this.form.urls.push(tag)
-      this.inputVisible = false
-      this.tag = ''
     }
   }
 }

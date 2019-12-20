@@ -7,24 +7,35 @@
       :columns="columns"
       :config="tableConfig"
       :table-data="cablesList"
+      @btn-click="toggleDialog"
     />
+    <org-form :form="form" :visible="isDialog" @close="toggleDialog" />
   </div>
 </template>
 
 <script>
 import cablesList from '../../../mokedData/cablesList'
 import TableList from '../../../components/TableList.vue'
+import OrgForm from '../../../components/userCreationForms/org'
 
 export default {
   name: 'CablesSection',
   components: {
-    TableList
+    'table-list': TableList,
+    'org-form': OrgForm
   },
   data: () => ({
     cablesList,
+    form: {
+      name: '',
+      logo: '',
+      notes: '',
+      address: []
+    },
+    isDialog: false,
     tableConfig: {
+      creation_link: false,
       title: 'Organizations',
-      creation_link: '/user/create?id=org',
       btn_label: 'Create organization'
     },
     columns: [
@@ -37,6 +48,11 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    }
+  },
+  methods: {
+    toggleDialog() {
+      this.isDialog = !this.isDialog
     }
   }
 }

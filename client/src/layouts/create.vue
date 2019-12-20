@@ -5,7 +5,6 @@
     <transition name="fade" mode="out-in"><router-view /></transition>
 
     <i-theme-toggler @click="toggleTheme" />
-    <i-footer role="contentinfo" class="mb6" />
   </el-container>
 </template>
 
@@ -13,13 +12,11 @@
 import IThemeToggler from '../components/ThemeToggler'
 import { TOGGLE_DARK } from '../store/actionTypes'
 import INavbar from '../components/Navbar'
-import IFooter from '../components/Footer'
 import { bus } from '../helpers/eventBus'
 import { TOGGLE_THEME } from '../events'
 
 export default {
   components: {
-    IFooter,
     INavbar,
     IThemeToggler
   },

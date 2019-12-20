@@ -1,6 +1,15 @@
 @import '../../base/variables';
 @import '../../helpers/atomic-classes';
 
+.main-wrapper {
+  height: 95vh;
+  .left {
+    &.el-card {
+      width: 30vw;
+      overflow-y: auto;
+    }
+  }
+}
 /*
 *  THEME VARIANT'S
 */
@@ -8,10 +17,6 @@
 .application.light {
   .main-wrapper {
     background: $white-profile;
-    .left.el-card {
-      width: 45vw;
-      overflow-y: auto;
-    }
     .el-card {
       background-color: $white-full;
     }
