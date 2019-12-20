@@ -1,5 +1,20 @@
 # Infrapedia Open Source
 
+## Version 1.4.1
+Dragger component for uploading files
+
+New pages:
+
+- IXPs
+- Facilities
+
+Form components for:
+- cls
+- cables
+- networks
+- organizations
+- facilities
+
 ## Version 1.3.1
 New pages on user route: 
 
