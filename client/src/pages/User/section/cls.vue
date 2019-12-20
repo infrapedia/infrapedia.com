@@ -24,20 +24,15 @@ export default {
     cablesList,
     tableConfig: {
       title: 'CLS',
-      creation_link: '/user/create?id=cls',
+      creation_link: '/user/section/create?id=cls',
       btn_label: 'Create cls'
     },
     columns: [
       'name',
-      'system_lenght',
-      'activationDateTime',
-      'urls', // (Array)
-      // 'terrestrial', // (Bool)
-      'capacity_tbps',
-      'fiberPairs',
-      'notes'
-      // 'facilities', // (Array)
-      // 'cls' // (Array)
+      'state', // Bool
+      'slug',
+      'geom',
+      'cables' // (Array)
     ]
   }),
   computed: {

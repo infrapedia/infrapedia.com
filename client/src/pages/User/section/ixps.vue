@@ -16,28 +16,23 @@ import cablesList from '../../../mokedData/cablesList'
 import TableList from '../../../components/TableList.vue'
 
 export default {
-  name: 'CablesSection',
+  name: 'IxpsSection',
   components: {
     TableList
   },
   data: () => ({
     cablesList,
     tableConfig: {
-      title: 'Cables',
-      creation_link: '/user/section/create?id=cables',
-      btn_label: 'Create cable'
+      title: 'Ixps',
+      creation_link: '/user/section/create?id=ixps',
+      btn_label: 'Create Ixps'
     },
     columns: [
       'name',
-      'system_length',
-      'activationDateTime',
-      'urls', // (Array)
-      // 'terrestrial', // (Bool)
-      'capacity_tbps',
-      'fiberPairs',
-      'notes'
-      // 'facilities', // (Array)
-      // 'cls' // (Array)
+      'state', // Bool
+      'slug',
+      'geom',
+      'cables' // (Array)
     ]
   }),
   computed: {

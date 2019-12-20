@@ -6,11 +6,12 @@
     <div class="left el-card p6">
       <header class="w-fit-full text-left mb8">
         <router-link :to="routeGiver">
-          <fa :icon="['fas', 'arrow-left']" /> Back
+          <fa :icon="['fas', 'arrow-left']" />
         </router-link>
       </header>
       <cable-form v-if="creationType === 'cables'" :form="form" />
-      <!-- <org-form v-else-if="creationType === 'org'" :form="form" /> -->
+      <cls-form v-else-if="creationType === 'cls'" :form="form" />
+      <facs-form v-else-if="creationType === 'facs'" :form="form" />
     </div>
     <div class="right w-fit-full">
       <editor-map />
@@ -20,15 +21,17 @@
 
 <script>
 import EditorMap from '../../../components/editor/Editor'
-// import OrgForm from '../../../components/userCreationForms/org'
+import CLSForm from '../../../components/userCreationForms/cls'
 import CableForm from '../../../components/userCreationForms/cables'
+import FacsForm from '../../../components/userCreationForms/facilities'
 
 export default {
   name: 'CreateSection',
   components: {
     'editor-map': EditorMap,
-    'cable-form': CableForm
-    // 'org-form': OrgForm
+    'cable-form': CableForm,
+    'cls-form': CLSForm,
+    'facs-form': FacsForm
   },
   data: () => ({
     form: {},
@@ -50,15 +53,12 @@ export default {
       const { creationType } = this
       let route = '/user/section/cables'
       switch (creationType) {
-        // case 'orgs':
-        //   route = '/user/section/orgs'
-        //   break
         case 'cls':
           route = '/user/section/cls'
           break
-        // case 'networks':
-        //   route = '/user/section/networks'
-        //   break
+        case 'facs':
+          route = '/user/section/facs'
+          break
         default:
           route = '/user/section/cables'
           break

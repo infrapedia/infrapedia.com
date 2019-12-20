@@ -1,26 +1,32 @@
 <template>
-  <el-dialog :visible="visible" width="30%" :before-close="handleBeforeClose">
-    <header slot="title" class="w-fit-full">
-      <h1 class="title-user-variant w-fit-full fs-xlarge text-center">
-        Create organization
+  <div class="pb6 pt6 pr8 pl8">
+    <header slot="header" class="w-fit-full mb8">
+      <h1 class="title">
+        Create facility
       </h1>
     </header>
-    <el-form ref="form" :model="form" class="p2">
+    <el-form ref="form" :model="form">
       <el-form-item label="Name">
         <el-input class="w-fit-full" v-model="form.name" />
       </el-form-item>
-      <el-form-item label="Notes">
-        <el-input
-          type="textarea"
+      <el-form-item label="System length">
+        <el-input-number
+          :min="0"
           class="w-fit-full"
-          v-model="form.notes"
-          :rows="4"
+          controls-position="right"
+          v-model="form.system_length"
         />
       </el-form-item>
+      <el-form-item label="Point">
+        <el-input class="w-fit-full" v-model="form.point" />
+      </el-form-item>
       <el-form-item label="Address">
+        <el-input class="w-fit-full" v-model="form.address" />
+      </el-form-item>
+      <el-form-item label="Websites">
         <el-tag
           :key="tag"
-          v-for="tag in form.address"
+          v-for="tag in form.websites"
           closable
           :disable-transitions="false"
           @close="handleClose(tag)"
@@ -42,33 +48,34 @@
           size="small"
           @click="showInput"
         >
-          Add
+          Add url
         </el-button>
       </el-form-item>
+      <el-form-item>
+        <dragger />
+      </el-form-item>
       <el-form-item class="mt12">
-        <el-button type="primary" class="mr8" round @click="sendData">
-          Create organization
-        </el-button>
-        <el-button round @click="handleBeforeClose">
-          Cancel
+        <el-button type="primary" class="w-fit-full" round @click="sendData">
+          Create and start drawing
         </el-button>
       </el-form-item>
     </el-form>
-  </el-dialog>
+  </div>
 </template>
 
 <script>
+import Dragger from '../../components/Dragger'
+
 export default {
-  name: 'OrgForm',
+  name: 'FacsForm',
+  components: {
+    Dragger
+  },
   data: () => ({
     tag: '',
     inputVisible: false
   }),
   props: {
-    visible: {
-      type: Boolean,
-      required: true
-    },
     form: {
       type: Object,
       required: true
@@ -76,13 +83,10 @@ export default {
   },
   methods: {
     sendData() {
-      this.$emit('send-data')
-    },
-    handleBeforeClose() {
-      this.$emit('close')
+      return this.$emit('send-data')
     },
     handleClose(tag) {
-      this.form.address.splice(this.form.address.indexOf(tag), 1)
+      this.form.websites.splice(this.form.websites.indexOf(tag), 1)
     },
     showInput() {
       this.inputVisible = true
@@ -97,10 +101,10 @@ export default {
     },
     confirmTag() {
       let tag = this.tag
-      const isTagAlreadyCreated = this.form.address.includes(tag)
+      const isTagAlreadyCreated = this.form.websites.includes(tag)
       if (isTagAlreadyCreated) return
 
-      if (tag) this.form.address.push(tag)
+      if (tag) this.form.websites.push(tag)
       this.inputVisible = false
       this.tag = ''
     }

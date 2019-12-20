@@ -173,6 +173,9 @@
 .no-overflow-y {
   overflow-y: hidden;
 }
+.hidden {
+  display: none;
+}
 .no-overflow-x {
   overflow-x: hidden;
 }
@@ -261,6 +264,9 @@
 }
 .round {
   border-radius: 28px;
+}
+.sm-round {
+  border-radius: 4px;
 }
 .no-box-shadow {
   box-shadow: 0 none;

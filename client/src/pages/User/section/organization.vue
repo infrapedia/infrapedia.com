@@ -8,6 +8,7 @@
       :config="tableConfig"
       :table-data="cablesList"
       @btn-click="toggleDialog"
+      @send-data="sendData"
     />
     <org-form :form="form" :visible="isDialog" @close="toggleDialog" />
   </div>
@@ -53,6 +54,9 @@ export default {
   methods: {
     toggleDialog() {
       this.isDialog = !this.isDialog
+    },
+    sendData() {
+      console.warn('Not done yet')
     }
   }
 }

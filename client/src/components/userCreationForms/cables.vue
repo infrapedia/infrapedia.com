@@ -100,6 +100,9 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item>
+        <dragger />
+      </el-form-item>
       <el-form-item class="mt12">
         <el-button type="primary" class="w-fit-full" round @click="sendData">
           Create and start drawing
@@ -110,8 +113,13 @@
 </template>
 
 <script>
+import Dragger from '../../components/Dragger'
+
 export default {
   name: 'CableForm',
+  components: {
+    Dragger
+  },
   data: () => ({
     tag: '',
     inputVisible: false

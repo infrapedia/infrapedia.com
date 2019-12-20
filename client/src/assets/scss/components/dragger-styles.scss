@@ -1,0 +1,34 @@
+@import '../helpers/atomic-classes';
+@import '../base/variables';
+
+.dragger-wrapper {
+  min-height: 4rem;
+  border: 1px dashed #ccc;
+  transition: all $regular-transition;
+  &:hover {
+    cursor: pointer;
+    border-color: $dark-blue;
+  }
+  &.is-dragover {
+    border-color: $dark-blue;
+  }
+}
+
+.inner-wrapper {
+  color: rgba(0, 0, 1, .8);
+  transition: all $regular-transition;
+  &:hover {
+    color: $blue !important;
+  }
+  .accent-text {
+    &:hover {
+      color: inherit;
+      text-decoration: underline;
+    }
+  }
+}
+
+
+/*
+*   THEME VARIANT'S
+*/

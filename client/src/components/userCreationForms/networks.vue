@@ -2,7 +2,7 @@
   <el-dialog :visible="visible" width="30%" :before-close="handleBeforeClose">
     <header slot="title" class="w-fit-full">
       <h1 class="title-user-variant w-fit-full fs-xlarge text-center">
-        Create organization
+        Create network
       </h1>
     </header>
     <el-form ref="form" :model="form" class="p2">
@@ -17,10 +17,10 @@
           :rows="4"
         />
       </el-form-item>
-      <el-form-item label="Address">
+      <el-form-item label="Websites">
         <el-tag
           :key="tag"
-          v-for="tag in form.address"
+          v-for="tag in form.websites"
           closable
           :disable-transitions="false"
           @close="handleClose(tag)"
@@ -45,9 +45,59 @@
           Add
         </el-button>
       </el-form-item>
+      <el-form-item label="Organizations">
+        <el-select class="w-fit-full" v-model="form.organizations" placeholder>
+          <el-option
+            v-for="(opt, i) in []"
+            :key="i"
+            :label="opt.label"
+            :value="opt.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="Facilities">
+        <el-select class="w-fit-full" v-model="form.facilities" placeholder>
+          <el-option
+            v-for="(opt, i) in []"
+            :key="i"
+            :label="opt.label"
+            :value="opt.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="Cables">
+        <el-select class="w-fit-full" v-model="form.cables" placeholder>
+          <el-option
+            v-for="(opt, i) in []"
+            :key="i"
+            :label="opt.label"
+            :value="opt.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="Ixps">
+        <el-select class="w-fit-full" v-model="form.ixps" placeholder>
+          <el-option
+            v-for="(opt, i) in []"
+            :key="i"
+            :label="opt.label"
+            :value="opt.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="CLS">
+        <el-select class="w-fit-full" v-model="form.cls" placeholder>
+          <el-option
+            v-for="(opt, i) in []"
+            :key="i"
+            :label="opt.label"
+            :value="opt.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item class="mt12">
         <el-button type="primary" class="mr8" round @click="sendData">
-          Create organization
+          Create network
         </el-button>
         <el-button round @click="handleBeforeClose">
           Cancel
@@ -59,7 +109,7 @@
 
 <script>
 export default {
-  name: 'OrgForm',
+  name: 'NetworkForm',
   data: () => ({
     tag: '',
     inputVisible: false

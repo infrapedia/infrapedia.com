@@ -7,25 +7,40 @@
       :columns="columns"
       :config="tableConfig"
       :table-data="cablesList"
+      @btn-click="toggleDialog"
+      @send-data="sendData"
     />
+    <network-form :form="form" :visible="isDialog" @close="toggleDialog" />
   </div>
 </template>
 
 <script>
 import cablesList from '../../../mokedData/cablesList'
 import TableList from '../../../components/TableList.vue'
+import NetworkForm from '../../../components/userCreationForms/networks'
 
 export default {
   name: 'CablesSection',
   components: {
-    TableList
+    TableList,
+    NetworkForm
   },
   data: () => ({
     cablesList,
+    isDialog: false,
     tableConfig: {
       title: 'Networks',
-      creation_link: '/user/create?id=networks',
+      creation_link: false,
       btn_label: 'Create network'
+    },
+    form: {
+      name: '',
+      websites: [],
+      organizations: [],
+      facilities: [],
+      cables: [],
+      ixps: [],
+      cls: []
     },
     columns: [
       'name',
@@ -40,6 +55,14 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    }
+  },
+  methods: {
+    toggleDialog() {
+      this.isDialog = !this.isDialog
+    },
+    sendData() {
+      console.warn('Not done yet')
     }
   }
 }

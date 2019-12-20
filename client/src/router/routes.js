@@ -1,12 +1,14 @@
-import Home from '../pages/Home.vue'
+import Home from '../pages/home.vue'
 import NotFound from '../layouts/404.vue'
 import User from '../pages/user/index.vue'
-import Profile from '../pages/user/Profile.vue'
+import Profile from '../pages/user/profile.vue'
 import CLS from '../pages/user/section/cls.vue'
+import IxpsSection from '../pages/user/section/ixps.vue'
 import CreateSection from '../pages/user/section/create.vue'
 import CablesSection from '../pages/user/section/cables.vue'
 import NetworksSection from '../pages/user/section/network.vue'
 import OrgsSection from '../pages/user/section/organization.vue'
+import FacilitiesSection from '../pages/user/section/facilities.vue'
 
 const routes = [
   {
@@ -40,13 +42,23 @@ const routes = [
     component: CLS
   },
   {
+    path: '/user/section/facs',
+    name: 'user/facs-section',
+    component: FacilitiesSection
+  },
+  {
+    path: '/user/section/ixps',
+    name: 'user/ixps-section',
+    component: IxpsSection
+  },
+  {
     path: '/user/section/networks',
     name: 'user/networks-section',
     component: NetworksSection
   },
   {
-    path: '/user/create',
-    name: 'create',
+    path: '/user/section/create',
+    name: '/user/create',
     component: CreateSection
   },
   {
