@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import sponsors from '../data/sponsors'
+import sponsors from '../config/sponsors'
 import { bus } from '../helpers/eventBus'
 
 export default {

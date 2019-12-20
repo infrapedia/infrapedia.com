@@ -1,0 +1,28 @@
+@import '../../base/variables';
+@import '../../helpers/atomic-classes';
+
+/*
+*  THEME VARIANT'S
+*/
+
+.application.light {
+  .main-wrapper {
+    background: $white-profile;
+    .left.el-card {
+      width: 45vw;
+      overflow-y: auto;
+    }
+    .el-card {
+      background-color: $white-full;
+    }
+  }
+}
+
+.application.dark {
+  .main-wrapper {
+    background: darken($dark-charcoal, 1%);
+    .el-card {
+      background-color: $dark-charcoal;
+    }
+  }
+}

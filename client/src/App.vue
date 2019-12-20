@@ -12,9 +12,9 @@
 </template>
 
 <script>
-// import NoNavLayout from './layouts/nonav'
 import ProfileLayout from './layouts/profile'
 import DefaultLayout from './layouts/default'
+import CreationLayout from './layouts/create'
 
 export default {
   name: 'App',
@@ -24,6 +24,8 @@ export default {
 
       if (this.isProfileRoute) {
         layout = ProfileLayout
+      } else if (this.isCreationLayout) {
+        layout = CreationLayout
       } else if (!this.isRecoverPass) {
         layout = DefaultLayout
       }
@@ -42,15 +44,14 @@ export default {
       }
       return theme
     },
+    isCreationLayout() {
+      return this.$route.name === 'create'
+    },
     isRecoverPass() {
       return this.$route.name === 'change-password'
     },
     isProfileRoute() {
-      let isProfile = false
-      if (this.$route.name.includes('user')) {
-        isProfile = true
-      }
-      return isProfile
+      return this.$route.name.includes('user')
     }
   }
 }

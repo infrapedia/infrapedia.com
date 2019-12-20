@@ -29,7 +29,7 @@ export default {
     },
     columns: [
       'name',
-      'system_lenght',
+      'system_length',
       'activationDateTime',
       'urls', // (Array)
       // 'terrestrial', // (Bool)
