@@ -14,6 +14,7 @@
 <script>
 import ProfileLayout from './layouts/profile'
 import DefaultLayout from './layouts/default'
+import BlogLayout from './layouts/blog'
 
 export default {
   name: 'App',
@@ -23,6 +24,8 @@ export default {
 
       if (this.isProfileRoute) {
         layout = ProfileLayout
+      } else if (this.isBlogLayout) {
+        layout = BlogLayout
       } else if (!this.isRecoverPass) {
         layout = DefaultLayout
       }
@@ -43,6 +46,9 @@ export default {
     },
     isRecoverPass() {
       return this.$route.name === 'change-password'
+    },
+    isBlogLayout() {
+      return this.$route.name === 'blog'
     },
     isProfileRoute() {
       return this.$route.name.includes('user')

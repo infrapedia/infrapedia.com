@@ -546,6 +546,11 @@
 
             <ul class="p0 pr4 m0 h-fit-full" role="group" :key="2" v-else>
               <li class="inline-block relative" data-no-outline="true">
+                <router-link class="list-item pl3 pr3" to="/blog">
+                  Blog
+                </router-link>
+              </li>
+              <li class="inline-block relative" data-no-outline="true">
                 <div
                   class="list-item user-icon pr1 pl3"
                   aria-haspopup="true"

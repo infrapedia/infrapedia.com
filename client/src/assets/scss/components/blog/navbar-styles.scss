@@ -1,0 +1,155 @@
+@import '../../helpers/atomic-classes';
+@import '../../base/variables';
+
+$hover-blue: lighten($dark-blue, 50%);
+$header-color: rgb(37, 95, 185);
+
+.header {
+  top: 0;
+  z-index: 1500;
+  .logo-title {
+    margin-top: -0.05rem;
+  }
+  .logo-img {
+    height: 34px;
+    width: 120px;
+  }
+
+  li {
+    height: 99%;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      width: 100%;
+      display: block;
+      transform: scaleX(0);
+      transition: transform $cubic-bezier;
+      border-bottom: solid 3px $dark-yellow;
+    }
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .list-item {
+    @extend .m0;
+    line-height: 1.6;
+    @extend .h-fit-full;
+    position: relative;
+    @extend .vertical-align;
+    border-radius: 2px;
+    transition: background-color $regular-transition;
+    font-weight: 400;
+    min-width: 60px;
+    font-size: 12px;
+    .icon-wrapper {
+      display: inline-flex;
+      justify-content: center;
+      vertical-align: middle;
+      align-items: center;
+      text-align: center;
+      transition: background-color $regular-transition;
+      &:focus,
+      &:focus-within,
+      &:hover {
+        background-color: $hover-blue;
+      }
+    }
+  }
+}
+
+
+/*
+*   THEME VARIANT'S
+*/
+
+.application.light {
+  .header{
+    background: $white-full;
+  }
+
+  .icon-wrapper {
+    &:focus,
+    &:focus-within,
+    &:hover {
+      background-color: $hover-blue;
+    }
+  }
+
+  .sm-icon,
+  .list-item,
+  .link {
+    color: $dark-blue;
+  }
+
+  .list-item:not([data-no-hover-bg='true']) {
+    &:hover {
+      background-color: $hover-blue;
+    }
+  }
+
+  li:not([data-no-outline='true']) {
+    &:focus,
+    &:focus-within {
+      outline: none 0;
+      &::after {
+        transform: scaleX(1);
+      }
+    }
+  }
+}
+
+.header.light {
+  & + ul.light {
+    background: $white-full
+  }
+}
+
+.application.dark {
+  .header {
+    background-color: #212121;
+  }
+
+
+  .sm-icon,
+  .list-item,
+  .link {
+    color: $white-full;
+  }
+
+  .list-item:not([data-no-hover-bg='true']) {
+    &:focus,
+    &:focus-within,
+    &:hover {
+      background-color: $light-charcoal;
+    }
+  }
+
+  .el-divider {
+    background-color: $light-charcoal
+  }
+
+  li:not([data-no-outline='true']) {
+    &:focus,
+    &:focus-within {
+      outline: none 0;
+      &::after {
+        transform: scaleX(1);
+      }
+    }
+  }
+}
+
+ul.dark {
+  background: $light-charcoal;
+  color: $white-partial;
+  li {
+    color: inherit;
+    &.link-info.social {
+      &:hover {
+        background-color: darken($white-hsl, 52%)
+      }
+    }
+  }
+}
