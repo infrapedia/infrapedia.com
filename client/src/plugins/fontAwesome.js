@@ -25,6 +25,7 @@ import {
   faSignOutAlt,
   faExclamationCircle,
   faShareAlt,
+  faHeart,
   faCloudUploadAlt
 } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -61,6 +62,7 @@ library.add(
   faLinkedin,
   faInstagram,
   faShareAlt,
+  faHeart,
   faCloudUploadAlt,
   faExclamationCircle
 )

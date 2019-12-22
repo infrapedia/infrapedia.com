@@ -173,6 +173,12 @@
 .no-overflow-y {
   overflow-y: hidden;
 }
+.overflow-y-auto {
+  overflow-y: auto;
+}
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
 .hidden {
   display: none;
 }

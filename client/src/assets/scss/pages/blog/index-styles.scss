@@ -1,0 +1,33 @@
+@import '../../base/variables';
+@import '../../helpers/atomic-classes';
+
+.main-wrapper {
+  background-color: $white-full;
+  .left {
+    .border {
+      border: 1px solid lighten($light-charcoal, 30%);
+    }
+    .blog-color {
+      color: $light-charcoal;
+    }
+  }
+
+  .center {
+    width: 40vw;
+    .el-card {
+      .description p {
+        color: $light-charcoal
+      }
+      footer {
+        .fa-layers {
+          font-size: 20px;
+          .fa-layers-counter {
+            position: absolute;
+            right: -22px;
+            top: -8px;
+          }
+        }
+      }
+    }
+  }
+}

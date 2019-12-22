@@ -1,10 +1,9 @@
 <template>
-  <el-container class="vph-full no-overflow">
+  <el-container class="vph-full">
     <navbar />
     <transition name="fade" mode="out-in"><router-view /></transition>
 
     <i-theme-toggler @click="toggleTheme" />
-    <i-footer role="contentinfo" class="mb3" />
   </el-container>
 </template>
 
@@ -12,12 +11,10 @@
 import IThemeToggler from '../components/ThemeToggler'
 import { TOGGLE_DARK } from '../store/actionTypes'
 import Navbar from '../components/blog/Navbar'
-import IFooter from '../components/Footer'
 
 export default {
   components: {
     Navbar,
-    IFooter,
     IThemeToggler
   },
   computed: {
