@@ -5,20 +5,44 @@
     <div class="left w100 h30">
       <router-link
         to="/user"
-        class="border p12 flex align-items-center column nowrap"
+        class="el-card is-hover-shadow p12 flex align-items-center column nowrap"
       >
         <img class="w40 h40 mb12" :src="userData.photo" alt="user photo" />
         <div class="blog-color">
           {{ userData.name }}
         </div>
       </router-link>
-      <div class="mt8 pr8 pl8 pt4 pb4 border">
+      <el-card shadow="hover" class="mt8 pr8 pl8 pt4 pb4">
         <div>
           <p class="blog-color">
-            Key links
+            <strong>
+              Key links
+            </strong>
           </p>
+          <div class="flex row nowrap justify-content-space-around">
+            <a
+              v-for="(link, i) in infoMenuLinks.social"
+              :key="i"
+              class="blog-color"
+              target="_blank"
+              :href="link.url"
+            >
+              <fa :icon="link.icon" class="fs-xxlarge" />
+            </a>
+          </div>
+          <div class="flex column nowrap mt5">
+            <a
+              v-for="(link, i) in infoMenuLinks.info"
+              :key="i"
+              class="blog-color w-fit-full p4"
+              target="_blank"
+              :href="link.url"
+            >
+              {{ link.label }}
+            </a>
+          </div>
         </div>
-      </div>
+      </el-card>
     </div>
     <div class="center mr8 ml8">
       <div class="h-fit-full">
@@ -61,16 +85,22 @@
       </div>
     </div>
     <div class="right">
-      <div class="w100">
-        Listings here
-      </div>
+      <el-card shadow="hover" class="p8 w100">
+        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Obcaecati
+        aliquid voluptates corporis, nemo eaque soluta. Fugiat officia commodi
+        dignissimos, pariatur iusto, saepe nesciunt maxime assumenda ab
+        distinctio, sapiente ipsum quibusdam!
+      </el-card>
     </div>
   </div>
 </template>
 
 <script>
+import infoMenuLinks from '../../config/infoMenuLinks'
+
 export default {
   data: () => ({
+    infoMenuLinks,
     posts: [
       {
         title: 'TEST 001',

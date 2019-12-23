@@ -41,19 +41,10 @@
               :key="1"
               v-if="!isUserNavbar"
             >
-              <li
-                class="inline-block relative hidden-sm-and-down"
-                data-no-outline="true"
-              >
-                <div class="list-item pr4 pl4 no-selectable">
-                  <a
-                    href="https://www.infrapedia.com/blog"
-                    target="_blank"
-                    class="no-underline inherit color-inherit"
-                  >
-                    Blog
-                  </a>
-                </div>
+              <li class="inline-block relative" data-no-outline="true">
+                <router-link class="list-item pl3 pr3" to="/blog">
+                  Blog
+                </router-link>
               </li>
 
               <el-divider direction="vertical" class="m0 hidden-sm-and-down" />

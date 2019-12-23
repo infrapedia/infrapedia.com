@@ -14,7 +14,7 @@
             data-no-outline="true"
             role="listitem"
           >
-            <div class="list-item pr3 pl3">
+            <div class="list-item pr4 pl4">
               <strong class="fs-small">
                 Write a post
               </strong>
@@ -25,8 +25,17 @@
             data-no-outline="true"
             role="listitem"
           >
-            <router-link to="/" class="list-item pr1 pl1">
+            <router-link to="/" class="list-item pr4 pl4">
               <fa :icon="['fas', 'map']" class="sm-icon mr2" /> Map
+            </router-link>
+          </li>
+          <li
+            class="inline-block relative hidden-sm-and-down"
+            data-no-outline="true"
+            role="listitem"
+          >
+            <router-link to="/user" class="list-item pr4 pl4">
+              <fa :icon="['fas', 'user-circle']" class="sm-icon mr2" /> Profile
             </router-link>
           </li>
         </ul>
