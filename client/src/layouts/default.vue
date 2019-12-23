@@ -49,6 +49,9 @@ export default {
         'https://networkatlas.com/wp-content/uploads/2019/03/privacy-policy.pdf'
     }
   }),
+  mounted() {
+    console.log(this.$auth)
+  },
   methods: {
     openBuyDialog(option) {
       this.$store.commit(`${BUY_TYPE}`, { title: option })

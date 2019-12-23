@@ -1,0 +1,9 @@
+@import '../base/variables';
+
+.application.dark {
+  .el-card {
+    background-color: $dark-charcoal;
+    border-color: $light-charcoal;
+    color: $white-profile
+  }
+}

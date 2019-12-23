@@ -1,4 +1,5 @@
 import Home from '../pages/home.vue'
+import Login from '../pages/login.vue'
 import NotFound from '../layouts/404.vue'
 import User from '../pages/user/index.vue'
 import Blog from '../pages/blog/index.vue'
@@ -16,6 +17,11 @@ const routes = [
     path: '/',
     name: 'home',
     component: Home
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
   },
   {
     path: '/user',

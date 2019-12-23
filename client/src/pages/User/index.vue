@@ -12,9 +12,21 @@
       <div class="flex justify-content-space-between">
         <div>
           <p class="m0 fs-large">
-            <strong> {{ userName }} </strong>
+            <strong>
+              {{
+                userData.user_metadata && userData.user_metadata.name
+                  ? user_metadata.namename
+                  : userData.name
+              }}
+            </strong>
           </p>
-          <p class="mt6 fs-small">{{ userCompany }}</p>
+          <p class="mt6 fs-small">
+            {{
+              userData.user_metadata && userData.user_metadata.company
+                ? userData.user_metadata.company
+                : 'Company: Unknown'
+            }}
+          </p>
         </div>
         <router-link
           id="profileBtn"
@@ -53,11 +65,8 @@
 export default {
   name: 'user',
   computed: {
-    userName() {
-      return 'Jhon Doe'
-    },
-    userCompany() {
-      return 'FARWQA'
+    userData() {
+      return this.$auth.user
     },
     dark() {
       return this.$store.state.isDark

@@ -14,7 +14,7 @@
     >
       <fa :icon="['fas', 'cloud-upload-alt']" class="icon upload fs-xlarge" />
       <span class="accent-text fs-regular mt2" @click.stop="clickFileInput">
-        Upload kml
+        Upload kmz
       </span>
       <input ref="file" type="file" class="hidden" @change="selectFile" />
     </div>

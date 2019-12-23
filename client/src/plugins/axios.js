@@ -23,12 +23,21 @@ export function create$Service(initOptions) {
   // Add a request interceptor
   $service.interceptors.request.use(
     config => initOptions.reqHandleFunc(config),
-    error => initOptions.reqErrorFunc(error.response.data)
+    error =>
+      initOptions.reqErrorFunc(
+        error.response && error.response.data ? error.response.data : error
+      )
   )
   // Add a response interceptor
   $service.interceptors.response.use(
-    response => initOptions.resHandleFunc(response.data),
-    error => initOptions.resErrorFunc(error.response.data)
+    response =>
+      initOptions.resHandleFunc(
+        response && response.data ? response.data : response
+      ),
+    error =>
+      initOptions.resErrorFunc(
+        error.response && error.response.data ? error.response.data : error
+      )
   )
 
   return $service

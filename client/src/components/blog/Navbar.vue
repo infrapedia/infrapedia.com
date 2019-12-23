@@ -1,13 +1,13 @@
 <template>
   <header class="header fixed h12 w-full p0 bottom-shadow">
-    <div class="flex justify-content-space-between  pr20 pl20">
+    <div class="flex justify-content-space-between pr20 pl20">
       <h1 class="logo-title hidden-md-and-down">
         <router-link to="/">
           <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
         </router-link>
       </h1>
 
-      <div class="pr2 pl2">
+      <div class="pr2 pl2" v-if="!isLoginRoute">
         <ul class="p0 m0 h-fit-full" role="group">
           <li
             class="inline-block relative hidden-sm-and-down"
@@ -49,6 +49,9 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    isLoginRoute() {
+      return this.$route.name === 'login'
     },
     imageURL() {
       return this.dark

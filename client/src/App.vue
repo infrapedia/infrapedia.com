@@ -24,7 +24,7 @@ export default {
 
       if (this.isProfileRoute) {
         layout = ProfileLayout
-      } else if (this.isBlogLayout) {
+      } else if (this.isBlogLayout || this.isLoginRoute) {
         layout = BlogLayout
       } else if (!this.isRecoverPass) {
         layout = DefaultLayout
@@ -49,6 +49,9 @@ export default {
     },
     isBlogLayout() {
       return this.$route.name === 'blog'
+    },
+    isLoginRoute() {
+      return this.$route.name === 'login'
     },
     isProfileRoute() {
       return this.$route.name.includes('user')

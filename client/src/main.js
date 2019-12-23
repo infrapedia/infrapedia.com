@@ -8,10 +8,24 @@ import * as cockieconsent from './plugins/cookieConsent'
 import appErrorHandler from './services/notifications/errors'
 import VueAxios from './plugins/axios'
 import * as vueTelInput from './plugins/vue-tel-input'
+import { domain, clientId } from './auth/config.json'
+import { Auth0Plugin } from './auth'
 
 Vue.config.productionTip = false
-// eslint-disable-next-line
 Vue.config.errorHandler = (err, vm, info) => appErrorHandler(err, vm, info)
+
+// Install the authentication plugin here
+Vue.use(Auth0Plugin, {
+  domain,
+  clientId,
+  onRedirectCallback: appState => {
+    router.push(
+      appState && appState.targetUrl
+        ? appState.targetUrl
+        : window.location.pathname
+    )
+  }
+})
 
 Vue.use(VueAxios, {
   baseURL: process.env.VUE_APP_BASE_API,

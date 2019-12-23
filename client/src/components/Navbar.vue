@@ -585,7 +585,7 @@
                           </router-link>
                         </el-button>
                       </li>
-                      <li class="w-fit-full h10">
+                      <li class="w-fit-full h10" @click="logOutUser">
                         <el-button
                           type="text"
                           class="inline-block color-inherit"
@@ -748,10 +748,19 @@ export default {
       this.closeUnwantedOpenMenus()
       this.isUserMenuOpen = !this.isUserMenuOpen
     },
+    logOutUser() {
+      return this.$auth.logout()
+    },
     userRegistration() {
-      if (this.$store.state.isOnline && !this.isProfileRoute) {
+      const { isAuthenticated } = this.$auth
+
+      if (!isAuthenticated) {
+        this.$router.push('/login')
+      } else if (this.$route.name.includes('user')) {
+        this.toggleUserMenuVisibility()
+      } else if (isAuthenticated) {
         this.$router.push('/user')
-      } else this.toggleUserMenuVisibility()
+      }
     }
   }
 }
