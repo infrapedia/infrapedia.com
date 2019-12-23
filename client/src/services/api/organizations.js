@@ -12,7 +12,7 @@ export const createOrganization = async ({ name, notes, address, user_id }) => {
   form.append('notes', notes)
   form.append('address', address)
 
-  const res = await $axios.post(apiConfig.url, form, {
+  const res = await $axios.post(url, form, {
     headers: { user_id }
   })
 
@@ -33,7 +33,7 @@ export const editOrganization = async ({
   form.append('notes', notes)
   form.append('address', address)
 
-  const res = await $axios.post(apiConfig.url, form, {
+  const res = await $axios.post(url, form, {
     headers: { user_id }
   })
 
@@ -42,7 +42,7 @@ export const editOrganization = async ({
 
 export const getOrganizations = async ({ user_id }) => {
   url = `${apiConfig.url}/auth/organization/all`
-  const res = await $axios.get(apiConfig.url, {
+  const res = await $axios.get(url, {
     headers: { user_id }
   })
 
@@ -51,7 +51,7 @@ export const getOrganizations = async ({ user_id }) => {
 
 export const deleteOrganization = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/organization/delete/${_id}`
-  const res = await $axios.delete(apiConfig.url, {
+  const res = await $axios.delete(url, {
     headers: { user_id }
   })
 

@@ -58,7 +58,7 @@ export default {
       return this.$store.state.isDark
     }
   },
-  async created() {
+  async mounted() {
     await this.getOrganizationsList()
   },
   methods: {
@@ -75,14 +75,19 @@ export default {
     },
     async getOrganizationsList() {
       const res = await getOrganizations({ user_id: this.$auth.user.sub })
-      console.log(res)
+      if (res && res.t !== 'error') {
+        this.tableData = res.data.r
+      }
     },
     async sendData() {
       const res = await createOrganization({
         ...this.form,
         user_id: this.$auth.user.sub
       })
-      console.log(res)
+      if (res && res.t !== 'error') {
+        this.toggleDialog(true)
+        this.getOrganizationsList()
+      }
     }
   }
 }
