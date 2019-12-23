@@ -8,9 +8,13 @@
       :config="tableConfig"
       :table-data="cablesList"
       @btn-click="toggleDialog"
-      @send-data="sendData"
     />
-    <network-form :form="form" :visible="isDialog" @close="toggleDialog" />
+    <network-form
+      :form="form"
+      @send-data="sendData"
+      :visible="isDialog"
+      @close="toggleDialog(true)"
+    />
   </div>
 </template>
 
@@ -58,8 +62,19 @@ export default {
     }
   },
   methods: {
-    toggleDialog() {
+    toggleDialog(itClearsForm) {
       this.isDialog = !this.isDialog
+      if (itClearsForm) {
+        this.form = {
+          name: '',
+          websites: [],
+          organizations: [],
+          facilities: [],
+          cables: [],
+          ixps: [],
+          cls: []
+        }
+      }
     },
     sendData() {
       console.warn('Not done yet')

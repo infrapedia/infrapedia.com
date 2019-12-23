@@ -22,7 +22,6 @@ export const getUserData = async id => {
       Authorization: 'Bearer ' + token.access_token
     }
   })
-  console.log(token)
 
   return res
 }

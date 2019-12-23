@@ -6,18 +6,25 @@
     <table-list
       :columns="columns"
       :config="tableConfig"
-      :table-data="cablesList"
+      :table-data="tableData"
       @btn-click="toggleDialog"
-      @send-data="sendData"
     />
-    <org-form :form="form" :visible="isDialog" @close="toggleDialog" />
+    <org-form
+      :form="form"
+      @send-data="sendData"
+      :visible="isDialog"
+      @close="toggleDialog(true)"
+    />
   </div>
 </template>
 
 <script>
-import cablesList from '../../../mokedData/cablesList'
 import TableList from '../../../components/TableList.vue'
 import OrgForm from '../../../components/userCreationForms/org'
+import {
+  createOrganization,
+  getOrganizations
+} from '../../../services/api/organizations'
 
 export default {
   name: 'CablesSection',
@@ -26,7 +33,7 @@ export default {
     'org-form': OrgForm
   },
   data: () => ({
-    cablesList,
+    tableData: [],
     form: {
       name: '',
       logo: '',
@@ -51,12 +58,31 @@ export default {
       return this.$store.state.isDark
     }
   },
+  async created() {
+    await this.getOrganizationsList()
+  },
   methods: {
-    toggleDialog() {
+    toggleDialog(itClearsForm) {
       this.isDialog = !this.isDialog
+      if (itClearsForm) {
+        this.form = {
+          name: '',
+          logo: '',
+          notes: '',
+          address: []
+        }
+      }
     },
-    sendData() {
-      console.warn('Not done yet')
+    async getOrganizationsList() {
+      const res = await getOrganizations({ user_id: this.$auth.user.sub })
+      console.log(res)
+    },
+    async sendData() {
+      const res = await createOrganization({
+        ...this.form,
+        user_id: this.$auth.user.sub
+      })
+      console.log(res)
     }
   }
 }

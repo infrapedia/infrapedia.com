@@ -100,9 +100,9 @@ export default {
       return this.$store.state.isDark
     }
   },
-  async created() {
-    await this.setUserData()
-  },
+  // async created() {
+  //   await this.setUserData()
+  // },
   async mounted() {
     if (Object.keys(this.$route.query).length) {
       await this.$router.replace('/user/profile')
