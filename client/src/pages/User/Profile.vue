@@ -8,16 +8,16 @@
         Profile
       </h1>
     </header>
-    <el-card shadow="never" class="pt2 pr5 pl5 pb4 mt8">
-      <el-form>
+    <el-card shadow="never" class="pt2 pr5 pl5 pb4 mt8" v-loading="loading">
+      <el-form :model="form" :rules="rules" ref="form">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="First name">
+            <el-form-item prop="name" label="First name">
               <el-input v-model="form.name" :class="{ dark }" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Last name">
+            <el-form-item prop="user_metadata.lastname" label="Last name">
               <el-input
                 v-model="form.user_metadata.lastname"
                 :class="{ dark }"
@@ -27,7 +27,7 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="Email address">
+            <el-form-item prop="email" label="Email address">
               <el-input v-model="form.email" :class="{ dark }" />
             </el-form-item>
           </el-col>
@@ -41,12 +41,25 @@
                   class="m0 p0 el-input__inner"
                 />
               </div>
+              <el-collapse-transition>
+                <el-alert
+                  type="error"
+                  class="mt2 h8"
+                  show-icon
+                  title="This phone number is not valid"
+                  :closable="false"
+                  v-if="
+                    form.user_metadata.phonenumber.num &&
+                      !form.user_metadata.phonenumber.valid
+                  "
+                />
+              </el-collapse-transition>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="Company name">
+            <el-form-item prop="user_metadata.companyname" label="Company name">
               <el-input
                 v-model="form.user_metadata.companyname"
                 :class="{ dark }"
@@ -56,7 +69,13 @@
         </el-row>
         <footer class="flex justify-content-end">
           <el-form-item class="m0 p0">
-            <el-button round type="warning" class="w22" size="medium">
+            <el-button
+              round
+              type="warning"
+              class="w22"
+              size="medium"
+              @click="validateForm"
+            >
               Save
             </el-button>
           </el-form-item>
@@ -77,11 +96,12 @@
 </template>
 
 <script>
-import { getUserData } from '../../services/api/auth'
+import { getUserData, updateUserData } from '../../services/api/auth'
 
 export default {
   name: 'profile',
   data: () => ({
+    loading: false,
     form: {
       name: '',
       email: '',
@@ -93,6 +113,37 @@ export default {
         },
         companyname: ''
       }
+    },
+    rules: {
+      name: [
+        {
+          required: true,
+          message: 'Please input your first name',
+          trigger: 'blur'
+        }
+      ],
+      'user_metadata.companyname': [
+        {
+          required: true,
+          message: 'Please input your company name',
+          trigger: 'blur'
+        }
+      ],
+      'user_metadata.lastname': [
+        {
+          required: true,
+          message: 'Please input your last name',
+          trigger: 'blur'
+        }
+      ],
+      email: [
+        {
+          required: true,
+          message: 'Please input your email',
+          trigger: 'blur',
+          type: 'email'
+        }
+      ]
     }
   }),
   computed: {
@@ -100,13 +151,11 @@ export default {
       return this.$store.state.isDark
     }
   },
-  // async created() {
-  //   await this.setUserData()
-  // },
-  async mounted() {
+  async created() {
     if (Object.keys(this.$route.query).length) {
       await this.$router.replace('/user/profile')
     }
+    await this.setUserData()
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
@@ -116,16 +165,60 @@ export default {
   },
   methods: {
     async setUserData() {
+      if (!this.$auth || !this.$auth.user) return
+      this.loading = true
       setTimeout(async () => {
         const userData = await getUserData(this.$auth.user.sub)
-        console.log(userData)
-      }, 20)
+        if (userData) {
+          const { user_metadata } = userData
+          this.form = {
+            name: user_metadata.name ? user_metadata.name : userData.name,
+            email: user_metadata.email ? user_metadata.email : userData.email,
+            user_metadata: {
+              lastname: user_metadata.lastname
+                ? user_metadata.lastname
+                : name.split(' ')[1]
+                ? name.split(' ')[1]
+                : '',
+              phonenumber: user_metadata.phonenumber
+                ? user_metadata.phonenumber
+                : { num: '', valid: null },
+              companyname: user_metadata.companyname
+                ? user_metadata.companyname
+                : ''
+            }
+          }
+        }
+        this.loading = false
+      }, 100)
     },
     validatePhoneNumber({ number, isValid }) {
-      const { phonenumber } = this.form.user_metadata
-
-      phonenumber.num = number
-      phonenumber.valid = isValid
+      try {
+        this.form.user_metadata.phonenumber = {
+          num: number,
+          valid: isValid
+        }
+      } catch {
+        // Ignore
+      }
+    },
+    validateForm() {
+      this.$refs.form.validate(valid => (valid ? this.updateUser() : false))
+    },
+    async updateUser() {
+      const { form, $auth } = this
+      const res = updateUserData(
+        { ...form },
+        { _id: $auth.user.sub, connection: $auth.user.sub.split('|')[0] },
+        false
+      )
+      if (res) {
+        this.$notify({
+          title: 'Success!',
+          message: 'The changes has been saved successfully',
+          type: 'success'
+        })
+      }
     }
   }
 }

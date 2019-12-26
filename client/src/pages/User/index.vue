@@ -66,7 +66,7 @@ export default {
   name: 'user',
   computed: {
     userData() {
-      return this.$auth.user
+      return this.$auth.user || {}
     },
     dark() {
       return this.$store.state.isDark
@@ -74,6 +74,7 @@ export default {
   },
   mounted() {
     if (Object.keys(this.$route.query).length) this.$router.replace('/user')
+    if (!this.$auth.user) this.$auth.loginWithRedirect()
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {

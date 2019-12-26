@@ -862,7 +862,6 @@ export default {
           message: `Expected @param type to be string, but found ${typeof type}`
         }
       }
-      console.log(id, type)
       this.$store.commit(`${MAP_FOCUS_ON}`, { id, type })
       // Cleaning source
       await this.map.getSource(mapConfig.clusterPts).setData({
@@ -948,7 +947,7 @@ export default {
       const { map, points, isMobile } = this
       const clustersSource = map.getSource(mapConfig.clusterPts)
       const featureCollection = JSON.parse(JSON.stringify(points || {}))
-      console.log(id, featureCollection)
+      // console.log(id, featureCollection)
       const bounds = await geojsonExtent({
         features: featureCollection,
         type: 'FeatureCollection'
@@ -1130,7 +1129,11 @@ export default {
       }
 
       if (filter === 3) {
-        return this.handleUpdateTimeMachine({ year: currentYear(), isActive: false, isSubseaOnly: true })
+        return this.handleUpdateTimeMachine({
+          year: currentYear(),
+          isActive: false,
+          isSubseaOnly: true
+        })
       }
 
       await this.disableCableHighlight()

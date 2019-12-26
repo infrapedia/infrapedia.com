@@ -91,7 +91,6 @@ export default {
           this.$refs.saveTagInput.$refs.input.focus()
         })
       } catch (err) {
-        console.log(this.$refs)
         console.error(err)
       }
     },

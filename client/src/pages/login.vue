@@ -24,7 +24,7 @@ export default {
     try {
       this.$auth.loginWithRedirect()
     } catch {
-      console.log(this.$auth)
+      console.warn(this.$auth)
     }
   },
   created() {

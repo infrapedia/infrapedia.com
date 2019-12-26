@@ -134,7 +134,7 @@ export default {
       }
     },
     async handleItemListSelection({ option, id }) {
-      console.log(option, id)
+      // console.log(option, id)
 
       switch (option.toLowerCase()) {
         case 'partners':

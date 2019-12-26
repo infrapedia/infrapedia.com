@@ -159,16 +159,25 @@ export default {
         this.filters.isTimeMachineActive = false
       }
 
-      return bus.$emit(`${SUBSEA_FILTER}`, { bool: isSubseaOnly, isActive: this.filters.radio === 0 })
+      return bus.$emit(`${SUBSEA_FILTER}`, {
+        bool: isSubseaOnly,
+        isActive: this.filters.radio === 0
+      })
     },
     /**
      * @param selection { Boolean }
      */
     emitRadioSelection(selection) {
       // console.log(selection)
-      if ((selection === 'no-active' || selection === 'no-future') && !this.filters.isSubseaOnly) {
+      if (
+        (selection === 'no-active' || selection === 'no-future') &&
+        !this.filters.isSubseaOnly
+      ) {
         return bus.$emit(`${TOGGLE_FILTER_SELECTION}`, -1)
-      } else if ((selection === 'no-active' || selection === 'no-future') && this.filters.isSubseaOnly) {
+      } else if (
+        (selection === 'no-active' || selection === 'no-future') &&
+        this.filters.isSubseaOnly
+      ) {
         return bus.$emit(`${TOGGLE_FILTER_SELECTION}`, 3)
       }
       // Subsea filter cannot be active
@@ -181,7 +190,6 @@ export default {
         return bus.$emit(`${TOGGLE_FILTER_SELECTION}`, 2)
       }
 
-      console.log(selection)
       bus.$emit(`${TOGGLE_FILTER_SELECTION}`, selection)
     },
     /**
@@ -196,7 +204,9 @@ export default {
 
       return bus.$emit(
         `${UPDATE_TIME_MACHINE}`,
-        isTimeMachineActive ? { year: this.filters.year, isActive: false } : { year: 0, isActive: this.filters.radio === 0 }
+        isTimeMachineActive
+          ? { year: this.filters.year, isActive: false }
+          : { year: 0, isActive: this.filters.radio === 0 }
       )
     },
     /**
