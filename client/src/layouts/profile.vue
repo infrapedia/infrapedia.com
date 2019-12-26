@@ -50,6 +50,9 @@ export default {
       return this.$store.state.isDark
     }
   },
+  mounted() {
+    if (!this.$auth.user) this.$auth.loginWithRedirect()
+  },
   methods: {
     toggleTheme() {
       bus.$emit(`${TOGGLE_THEME}`)
