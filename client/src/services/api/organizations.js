@@ -14,7 +14,7 @@ export const createOrganization = async ({ name, notes, address, user_id }) => {
     address.forEach((a, i) => {
       form.append(`address[${i}]`, JSON.stringify(a))
     })
-  } else form.append('address', JSON.stringify([]))
+  } else form.append('address', [])
 
   const res = await $axios.post(url, form, {
     headers: { user_id }
@@ -39,7 +39,7 @@ export const editOrganization = async ({
     address.forEach((a, i) => {
       form.append(`address[${i}]`, JSON.stringify(a))
     })
-  } else form.append('address', JSON.stringify([]))
+  } else form.append('address', [])
 
   const res = await $axios.put(url, form, {
     headers: { user_id }

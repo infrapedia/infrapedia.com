@@ -7,7 +7,6 @@
       v-loading="loading"
       :columns="columns"
       :config="tableConfig"
-      :admitted-keys="tableDataKeys"
       :table-data="tableData"
       @btn-click="toggleDialog"
       @edit-item="editOrg"
@@ -55,7 +54,6 @@ export default {
       title: 'Organizations',
       btn_label: 'Create organization'
     },
-    tableDataKeys: ['city', 'street'],
     columns: [
       'name',
       'logo',
@@ -77,7 +75,7 @@ export default {
   methods: {
     editOrg(_id) {
       const orgToEdit = this.tableData.filter(org => org._id === _id)[0]
-      this.form = { ...orgToEdit }
+      this.form = JSON.parse(JSON.stringify(orgToEdit))
       this.mode = 'edit'
       this.toggleDialog()
     },
@@ -109,7 +107,7 @@ export default {
     async getOrganizationsList() {
       this.loading = true
       const res = await getOrganizations({ user_id: this.$auth.user.sub })
-      if (res && res.t !== 'error') {
+      if (res && res.data && res.t !== 'error') {
         this.tableData = res.data.r
       }
       this.loading = false
@@ -119,7 +117,7 @@ export default {
         ...this.form,
         user_id: this.$auth.user.sub
       })
-      if (res && res.t !== 'error') {
+      if (res && res.data && res.t !== 'error') {
         this.toggleDialog(true)
         this.getOrganizationsList()
       }

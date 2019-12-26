@@ -2,20 +2,12 @@
   <el-dialog :visible="visible" width="30%" :before-close="handleBeforeClose">
     <header slot="title" class="w-fit-full">
       <h1 class="title-user-variant w-fit-full fs-xlarge text-center">
-        Create network
+        {{ title }} network
       </h1>
     </header>
     <el-form ref="form" :model="form" class="p2">
       <el-form-item label="Name">
         <el-input class="w-fit-full" v-model="form.name" />
-      </el-form-item>
-      <el-form-item label="Notes">
-        <el-input
-          type="textarea"
-          class="w-fit-full"
-          v-model="form.notes"
-          :rows="4"
-        />
       </el-form-item>
       <el-form-item label="Websites">
         <el-tag
@@ -46,7 +38,15 @@
         </el-button>
       </el-form-item>
       <el-form-item label="Organizations">
-        <el-select class="w-fit-full" v-model="form.organizations" placeholder>
+        <el-select
+          multiple
+          clearable
+          collapse-tags
+          filterable
+          class="w-fit-full"
+          v-model="form.organizations"
+          placeholder
+        >
           <el-option
             v-for="(opt, i) in []"
             :key="i"
@@ -56,7 +56,15 @@
         </el-select>
       </el-form-item>
       <el-form-item label="Facilities">
-        <el-select class="w-fit-full" v-model="form.facilities" placeholder>
+        <el-select
+          multiple
+          clearable
+          collapse-tags
+          filterable
+          class="w-fit-full"
+          v-model="form.facilities"
+          placeholder
+        >
           <el-option
             v-for="(opt, i) in []"
             :key="i"
@@ -66,7 +74,15 @@
         </el-select>
       </el-form-item>
       <el-form-item label="Cables">
-        <el-select class="w-fit-full" v-model="form.cables" placeholder>
+        <el-select
+          multiple
+          clearable
+          collapse-tags
+          filterable
+          class="w-fit-full"
+          v-model="form.cables"
+          placeholder
+        >
           <el-option
             v-for="(opt, i) in []"
             :key="i"
@@ -76,7 +92,15 @@
         </el-select>
       </el-form-item>
       <el-form-item label="Ixps">
-        <el-select class="w-fit-full" v-model="form.ixps" placeholder>
+        <el-select
+          multiple
+          clearable
+          collapse-tags
+          filterable
+          class="w-fit-full"
+          v-model="form.ixps"
+          placeholder
+        >
           <el-option
             v-for="(opt, i) in []"
             :key="i"
@@ -86,7 +110,15 @@
         </el-select>
       </el-form-item>
       <el-form-item label="CLS">
-        <el-select class="w-fit-full" v-model="form.cls" placeholder>
+        <el-select
+          multiple
+          clearable
+          collapse-tags
+          filterable
+          class="w-fit-full"
+          v-model="form.cls"
+          placeholder
+        >
           <el-option
             v-for="(opt, i) in []"
             :key="i"
@@ -97,7 +129,7 @@
       </el-form-item>
       <el-form-item class="mt12">
         <el-button type="primary" class="mr8" round @click="sendData">
-          Create network
+          {{ title }} network
         </el-button>
         <el-button round @click="handleBeforeClose">
           Cancel
@@ -122,6 +154,15 @@ export default {
     form: {
       type: Object,
       required: true
+    },
+    mode: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    title() {
+      return this.mode === 'create' ? 'Create' : 'Edit'
     }
   },
   methods: {
@@ -132,7 +173,7 @@ export default {
       this.$emit('close')
     },
     handleClose(tag) {
-      this.form.address.splice(this.form.address.indexOf(tag), 1)
+      this.form.websites.splice(this.form.websites.indexOf(tag), 1)
     },
     showInput() {
       this.inputVisible = true
@@ -147,10 +188,10 @@ export default {
     },
     confirmTag() {
       let tag = this.tag
-      const isTagAlreadyCreated = this.form.address.includes(tag)
+      const isTagAlreadyCreated = this.form.websites.includes(tag)
       if (isTagAlreadyCreated) return
 
-      if (tag) this.form.address.push(tag)
+      if (tag) this.form.websites.push(tag)
       this.inputVisible = false
       this.tag = ''
     }

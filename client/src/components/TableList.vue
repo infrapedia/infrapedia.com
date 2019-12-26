@@ -13,21 +13,16 @@
       <el-table :data="tableData">
         <el-table-column :label="col" v-for="(col, i) in columns" :key="i">
           <template slot-scope="scope">
-            <div v-if="Array.isArray(scope.row[col])">
-              <p v-if="!scope.row[col].length">
-                You didn't add any address to this org
+            <div v-if="Array.isArray(scope.row[col]) && scope.row[col].length">
+              <p v-for="(address, i) in scope.row[col]" :key="i">
+                <template v-if="address.city">
+                  City: {{ address.city }}
+                </template>
+                <br />
+                <template v-if="address.street">
+                  Street: {{ address.street }}
+                </template>
               </p>
-              <template v-else>
-                <p v-for="(address, i) in scope.row[col]" :key="i">
-                  <template v-if="address.city">
-                    City: {{ address.city }}
-                  </template>
-                  <br />
-                  <template v-if="address.street">
-                    Street: {{ address.street }}
-                  </template>
-                </p>
-              </template>
             </div>
             <span v-else>
               {{ `${scope.row[col]}` }}
