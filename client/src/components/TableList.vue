@@ -13,7 +13,45 @@
       <el-table :data="tableData">
         <el-table-column :label="col" v-for="(col, i) in columns" :key="i">
           <template slot-scope="scope">
-            {{ `${scope.row[col]}` }}
+            <div v-if="Array.isArray(scope.row[col])">
+              <p v-if="!scope.row[col].length">
+                You didn't add any address to this org
+              </p>
+              <template v-else>
+                <p v-for="(address, i) in scope.row[col]" :key="i">
+                  <template v-if="address.city">
+                    City: {{ address.city }}
+                  </template>
+                  <br />
+                  <template v-if="address.street">
+                    Street: {{ address.street }}
+                  </template>
+                </p>
+              </template>
+            </div>
+            <span v-else>
+              {{ `${scope.row[col]}` }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" label="Operations" width="120">
+          <template slot-scope="scope">
+            <el-button
+              plain
+              size="small"
+              class="p2 mr4 fs-regular"
+              @click="$emit('edit-item', scope.row._id)"
+            >
+              <fa :icon="['fas', 'pen']" />
+            </el-button>
+            <el-button
+              type="danger"
+              class="p2 fs-regular"
+              size="small"
+              @click="$emit('delete-item', scope.row._id)"
+            >
+              <fa :icon="['fas', 'trash']" />
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -36,10 +74,19 @@ export default {
     tableData: {
       type: Array,
       required: true
+    },
+    admittedKeys: {
+      type: Array,
+      default: () => []
     }
   },
   methods: {
+    getKeys(arr) {
+      if (!arr.length) return []
+      return Object.keys(arr[0]).sort()
+    },
     handleRoute() {
+      0
       if (this.config.creation_link) {
         this.$router.push(this.config.creation_link)
       } else if (!this.config.creation_link) {

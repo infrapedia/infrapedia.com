@@ -161,6 +161,9 @@
 .w-fit-full {
   width: 100%;
 }
+.w-auto {
+  width: auto;
+}
 .w-fit-full-imp {
   width: 100% !important;
 }
@@ -295,19 +298,19 @@
     &:focus,
     &:focus-within,
     &:hover {
-      background-color: lighten(rgba(0,0,0,0.2), 80%);
+      background-color: lighten(rgba(0, 0, 0, 0.2), 80%);
     }
   }
   &.dark {
     &:focus,
     &:focus-within,
     &:hover {
-      background-color: lighten(rgba(0,0,0, 0.2), 12%);
+      background-color: lighten(rgba(0, 0, 0, 0.2), 12%);
     }
   }
 }
 .text-red {
-  color: $berry
+  color: $berry;
 }
 .bottom-shadow {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);

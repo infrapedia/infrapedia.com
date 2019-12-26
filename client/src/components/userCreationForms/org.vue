@@ -1,8 +1,13 @@
 <template>
-  <el-dialog :visible="visible" width="30%" :before-close="handleBeforeClose">
+  <el-dialog
+    :visible="visible"
+    width="30%"
+    :before-close="handleBeforeClose"
+    :close-on-click-modal="false"
+  >
     <header slot="title" class="w-fit-full">
       <h1 class="title-user-variant w-fit-full fs-xlarge text-center">
-        Create organization
+        {{ title }} organization
       </h1>
     </header>
     <el-form ref="form" :model="form" class="p2">
@@ -19,35 +24,106 @@
       </el-form-item>
       <el-form-item label="Address">
         <el-tag
-          :key="tag"
-          v-for="tag in form.address"
+          :key="i"
+          v-for="(tag, i) in form.address"
           closable
           :disable-transitions="false"
           @close="handleClose(tag)"
         >
-          {{ tag }}
+          {{ tag.reference }}
+          <fa
+            :icon="['fas', 'pen']"
+            class="cursor-pointer w24 ml1 inline-block"
+            @click="editAddress(tag, i)"
+          />
         </el-tag>
-        <el-input
-          type="url"
-          v-if="inputVisible"
-          v-model="tag"
-          ref="saveTagInput"
-          size="mini"
-          @keyup.enter.native="confirmTag"
-          @blur="confirmTag"
-        />
-        <el-button
-          v-else
-          class="w42 text-center"
-          size="small"
-          @click="showInput"
-        >
-          Add
-        </el-button>
+        <br />
+        <el-collapse-transition>
+          <el-card v-if="inputVisible" class="p4 w-auto mt4" shadow="never">
+            <div class="w-fit-full">
+              <label class="el-input__label" for="tagname">
+                Reference
+              </label>
+              <el-input
+                name="street"
+                type="url"
+                v-model="tag.reference"
+                ref="saveTagInput"
+                size="mini"
+              />
+            </div>
+            <div>
+              <label class="el-input__label" for="street">
+                Street
+              </label>
+              <el-input
+                name="street"
+                type="url"
+                v-model="tag.street"
+                size="mini"
+                placeholder="Street and number, P.O. box, c/o."
+              />
+              <el-input
+                size="mini"
+                v-model="tag.apt"
+                placeholder="Apartment, suite, unit, building, floor, etc"
+              />
+            </div>
+            <div>
+              <label class="el-input__label" for="city">
+                City
+              </label>
+              <el-input
+                name="street"
+                type="url"
+                v-model="tag.city"
+                size="mini"
+                placeholder
+              />
+            </div>
+            <div>
+              <label for="state">State / Province / Region</label>
+              <el-input size="mini" v-model="tag.state" />
+            </div>
+            <div>
+              <label for="state">
+                Zip Code
+              </label>
+              <el-input
+                size="mini"
+                type="number"
+                v-model="tag.zipcode"
+                placeholder
+              />
+            </div>
+            <div class="flex justify-content-end pt3">
+              <el-button
+                plain
+                type="success"
+                size="mini"
+                class="mr4"
+                @click="handleSaveAddress"
+              >
+                Save address
+              </el-button>
+              <el-button plain size="mini" @click="clearAddress">
+                Cancel
+              </el-button>
+            </div>
+          </el-card>
+          <el-button
+            v-else
+            class="w42 text-center"
+            size="small"
+            @click="showInput"
+          >
+            Add
+          </el-button>
+        </el-collapse-transition>
       </el-form-item>
       <el-form-item class="mt12">
         <el-button type="primary" class="mr8" round @click="sendData">
-          Create organization
+          {{ title }} organization
         </el-button>
         <el-button round @click="handleBeforeClose">
           Cancel
@@ -61,7 +137,15 @@
 export default {
   name: 'OrgForm',
   data: () => ({
-    tag: '',
+    tag: {
+      reference: '',
+      street: '',
+      apt: '',
+      city: '',
+      state: '',
+      zipcode: ''
+    },
+    tagOnEdit: null,
     inputVisible: false
   }),
   props: {
@@ -72,6 +156,15 @@ export default {
     form: {
       type: Object,
       required: true
+    },
+    mode: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    title() {
+      return this.mode === 'create' ? 'Create' : 'Edit'
     }
   },
   methods: {
@@ -83,6 +176,31 @@ export default {
     },
     handleClose(tag) {
       this.form.address.splice(this.form.address.indexOf(tag), 1)
+    },
+    clearAddress() {
+      this.inputVisible = false
+      this.tagOnEdit = null
+      this.tag = {
+        reference: '',
+        street: '',
+        apt: '',
+        city: '',
+        state: '',
+        zipcode: ''
+      }
+    },
+    editAddress(tag, i) {
+      this.tag = { ...tag }
+      this.tagOnEdit = i
+      this.inputVisible = true
+      console.log(this.tagOnEdit)
+    },
+    handleSaveAddress() {
+      const { tagOnEdit } = this
+
+      if (tagOnEdit === null) this.form.address.push({ ...this.tag })
+      else this.form.address[tagOnEdit] = { ...this.tag }
+      this.clearAddress()
     },
     showInput() {
       this.inputVisible = true

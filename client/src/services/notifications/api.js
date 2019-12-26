@@ -11,10 +11,12 @@ export function handleReqErrors(err) {
 }
 
 export function handleReqSuccess(res) {
-  // Notification({
-  //   type: 'success',
-  //   message: 'Data loaded correctly',
-  //   title: 'Success!'
-  // })
+  if (res.data && res.data.m) {
+    Notification({
+      type: 'success',
+      message: res.data.m,
+      title: 'Success!'
+    })
+  }
   return res
 }

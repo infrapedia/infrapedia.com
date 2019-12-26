@@ -10,7 +10,11 @@ export const createOrganization = async ({ name, notes, address, user_id }) => {
   form = new FormData()
   form.append('name', name)
   form.append('notes', notes)
-  form.append('address', address)
+  if (address.length) {
+    address.forEach((a, i) => {
+      form.append(`address[${i}]`, JSON.stringify(a))
+    })
+  } else form.append('address', JSON.stringify([]))
 
   const res = await $axios.post(url, form, {
     headers: { user_id }
@@ -31,9 +35,13 @@ export const editOrganization = async ({
   form.append('_id', _id)
   form.append('name', name)
   form.append('notes', notes)
-  form.append('address', address)
+  if (address.length) {
+    address.forEach((a, i) => {
+      form.append(`address[${i}]`, JSON.stringify(a))
+    })
+  } else form.append('address', JSON.stringify([]))
 
-  const res = await $axios.post(url, form, {
+  const res = await $axios.put(url, form, {
     headers: { user_id }
   })
 

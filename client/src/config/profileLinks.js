@@ -15,18 +15,18 @@ const profileLinks = [
     label: 'Networks',
     url: '/user/section/networks'
   },
-  {
-    label: 'Facilities',
-    url: '/user/section/facs'
-  },
+  // {
+  //   label: 'Facilities',
+  //   url: '/user/section/facs'
+  // },
   {
     label: 'CLS',
     url: '/user/section/cls'
   },
-  {
-    label: 'Ixps',
-    url: '/user/section/ixps'
-  },
+  // {
+  //   label: 'Ixps',
+  //   url: '/user/section/ixps'
+  // },
   {
     label: 'Cables',
     url: '/user/section/cables'

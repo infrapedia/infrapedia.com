@@ -205,7 +205,7 @@ h1 {
 }
 
 .image-sponsor.ipv4 img {
-  margin-top: 1.2rem
+  margin-top: 1.2rem;
 }
 
 /*
@@ -390,6 +390,12 @@ h1 {
 }
 
 .application.dark {
+  .el-table__body tr.hover-row > td,
+  .el-table__body tr.hover-row.current-row > td,
+  .el-table__body tr.hover-row.el-table__row--striped > td,
+  .el-table__body tr.hover-row.el-table__row--striped.current-row > td {
+    background-color: $dark-charcoal;
+  }
   .main-wrapper {
     color: $white-partial;
     background: $dark-charcoal;
@@ -398,6 +404,13 @@ h1 {
       border-bottom: 1px solid $white-full;
     }
 
+    .el-button.is-plain {
+      &:hover {
+        border-color: $dark-blue;
+      }
+    }
+
+    .el-button.is-plain,
     .el-table,
     .el-table table,
     .el-table tbody,
@@ -410,10 +423,11 @@ h1 {
       background-color: $light-charcoal;
     }
   }
-  .el-table th.is-leaf, .el-table td {
+  .el-table th.is-leaf,
+  .el-table td {
     border-bottom: 1px solid darken($light-charcoal, 10%);
   }
-  .el-table--enable-row-hover .el-table__body tr:hover > td  {
+  .el-table--enable-row-hover .el-table__body tr:hover > td {
     background-color: $dark-charcoal !important;
   }
 }
