@@ -15,6 +15,7 @@
 import ProfileLayout from './layouts/profile'
 import DefaultLayout from './layouts/default'
 import BlogLayout from './layouts/blog'
+import NoNav from './layouts/nothing'
 
 export default {
   name: 'App',
@@ -26,7 +27,9 @@ export default {
         layout = ProfileLayout
       } else if (this.isBlogLayout || this.isLoginRoute) {
         layout = BlogLayout
-      } else if (!this.isRecoverPass) {
+      } else if (this.isRecoverPass) {
+        layout = NoNav
+      } else {
         layout = DefaultLayout
       }
 
@@ -54,6 +57,7 @@ export default {
       return this.$route.name === 'login'
     },
     isProfileRoute() {
+      console.log(this.$route)
       return this.$route.name.includes('user')
     }
   }

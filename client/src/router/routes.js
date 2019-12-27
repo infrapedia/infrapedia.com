@@ -8,6 +8,7 @@ import CLS from '../pages/user/section/cls.vue'
 import IxpsSection from '../pages/user/section/ixps.vue'
 import CreateSection from '../pages/user/section/create.vue'
 import CablesSection from '../pages/user/section/cables.vue'
+import ChangePassword from '../pages/user/recover-password.vue'
 import NetworksSection from '../pages/user/section/network.vue'
 import OrgsSection from '../pages/user/section/organization.vue'
 import FacilitiesSection from '../pages/user/section/facilities.vue'
@@ -32,6 +33,11 @@ const routes = [
     path: '/user/profile',
     name: 'user-profile',
     component: Profile
+  },
+  {
+    path: '/change-password',
+    name: 'change-password',
+    component: ChangePassword
   },
   {
     path: '/user/section/cables',
