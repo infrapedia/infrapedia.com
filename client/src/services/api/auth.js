@@ -38,7 +38,7 @@ export const getUserData = async id => {
 
 export const updateUserData = async (data, user, isPassword) => {
   const token = await getAccessToken()
-  if (!token || !user) return
+  if (!token || (!isPassword && !user)) return
 
   const provider = user.connection
   const dataUpdate = { ...data }

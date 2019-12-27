@@ -39,6 +39,11 @@
 .underline {
   text-decoration: underline;
 }
+.underline-hover {
+  &:hover {
+    text-decoration: underline;
+  }
+}
 .h-fit {
   height: fit-content;
 }
