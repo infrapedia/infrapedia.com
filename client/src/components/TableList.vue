@@ -24,6 +24,12 @@
                 </template>
               </p>
             </div>
+            <el-image
+              v-if="col === 'logo'"
+              fit="cover"
+              :src="scope.row[col]"
+              class="w12 h12 circle"
+            />
             <span v-else>
               {{ `${scope.row[col]}` }}
             </span>

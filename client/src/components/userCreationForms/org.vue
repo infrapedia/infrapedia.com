@@ -22,7 +22,19 @@
           :rows="4"
         />
       </el-form-item>
-      <el-form-item label="Address">
+      <el-upload
+        accept="image/*.jpg"
+        :action="uploadURL"
+        :file-list="fileList"
+        :headers="uploadLogoHeaders"
+        :on-success="handleLogoUpload"
+      >
+        <el-button size="small" type="primary">Click to upload</el-button>
+        <div slot="tip" class="el-upload__tip mt2 ml1">
+          - jpg files only
+        </div>
+      </el-upload>
+      <el-form-item label="Address" class="mt2">
         <el-tag
           :key="i"
           v-for="(tag, i) in form.address"
@@ -134,9 +146,12 @@
 </template>
 
 <script>
+import apiConfig from '../../config/apiConfig'
+
 export default {
   name: 'OrgForm',
   data: () => ({
+    fileList: [],
     tag: {
       reference: '',
       street: '',
@@ -163,19 +178,31 @@ export default {
     }
   },
   computed: {
+    uploadLogoHeaders() {
+      return { user_id: this.$auth.user.sub }
+    },
     title() {
       return this.mode === 'create' ? 'Create' : 'Edit'
+    },
+    uploadURL() {
+      return `${apiConfig.url}/auth/upload/logo`
     }
   },
   methods: {
+    handleLogoUpload(res) {
+      if (!res.data && res.data.r.length) return
+      this.form.logo = res.data.r[0]
+    },
     sendData() {
-      this.$emit('send-data')
+      return this.$emit('send-data')
     },
     handleBeforeClose() {
-      this.$emit('close')
+      this.fileList = []
+      this.tagOnEdit = null
+      return this.$emit('close')
     },
     handleClose(tag) {
-      this.form.address.splice(this.form.address.indexOf(tag), 1)
+      return this.form.address.splice(this.form.address.indexOf(tag), 1)
     },
     clearAddress() {
       this.inputVisible = false
@@ -193,7 +220,6 @@ export default {
       this.tag = { ...tag }
       this.tagOnEdit = i
       this.inputVisible = true
-      console.log(this.tagOnEdit)
     },
     handleSaveAddress() {
       const { tagOnEdit } = this

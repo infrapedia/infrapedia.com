@@ -4,12 +4,19 @@ import apiConfig from '../../config/apiConfig'
 var url
 var form
 
-export const createOrganization = async ({ name, notes, address, user_id }) => {
+export const createOrganization = async ({
+  name,
+  logo,
+  notes,
+  address,
+  user_id
+}) => {
   url = `${apiConfig.url}/auth/organization/add`
 
   form = new FormData()
   form.append('name', name)
   form.append('notes', notes)
+  form.append('logo', logo)
   if (address.length) {
     address.forEach((a, i) => {
       form.append(`address[${i}]`, JSON.stringify(a))
@@ -26,6 +33,7 @@ export const createOrganization = async ({ name, notes, address, user_id }) => {
 export const editOrganization = async ({
   name,
   _id,
+  logo,
   notes,
   address,
   user_id
@@ -35,6 +43,7 @@ export const editOrganization = async ({
   form.append('_id', _id)
   form.append('name', name)
   form.append('notes', notes)
+  form.append('logo', logo)
   if (address.length) {
     address.forEach((a, i) => {
       form.append(`address[${i}]`, JSON.stringify(a))
