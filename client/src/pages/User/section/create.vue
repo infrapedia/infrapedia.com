@@ -9,9 +9,19 @@
           <fa :icon="['fas', 'arrow-left']" />
         </router-link>
       </header>
-      <cable-form v-if="creationType === 'cables'" :form="form" />
-      <cls-form v-else-if="creationType === 'cls'" :form="form" />
-      <facs-form v-else-if="creationType === 'facs'" :form="form" />
+      <cable-form
+        v-if="creationType === 'cables'"
+        :form="form"
+        :mode="mode"
+        @send-data="checkType"
+      />
+      <cls-form
+        v-else-if="creationType === 'cls'"
+        :form="form"
+        :mode="mode"
+        @send-data="checkType"
+      />
+      <!-- <facs-form v-else-if="creationType === 'facs'" :form="form" /> -->
     </div>
     <div class="right w-fit-full">
       <editor-map />
@@ -23,31 +33,32 @@
 import EditorMap from '../../../components/editor/Editor'
 import CLSForm from '../../../components/userCreationForms/cls'
 import CableForm from '../../../components/userCreationForms/cables'
-import FacsForm from '../../../components/userCreationForms/facilities'
+import { createCls, editCls, getClss } from '../../../services/api/cls'
+// import FacsForm from '../../../components/userCreationForms/facilities'
 
 export default {
   name: 'CreateSection',
   components: {
     'editor-map': EditorMap,
     'cable-form': CableForm,
-    'cls-form': CLSForm,
-    'facs-form': FacsForm
+    'cls-form': CLSForm
+    // 'facs-form': FacsForm
   },
   data: () => ({
     form: {},
+    mode: 'create',
     creationType: null
   }),
-  mounted() {
-    if (!this.$route.query.id) {
-      return this.$router.push('/')
-    }
-
-    this.creationType = this.$route.query.id
-    this.checkCreationType(this.creationType)
-  },
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    checkType() {
+      if (this.mode === 'edit') {
+        return this.creationType === 'cls' ? this.editCLS : this.editCable
+      } else {
+        return this.creationType === 'cls' ? this.createCLS : this.createCable
+      }
     },
     routeGiver() {
       const { creationType } = this
@@ -56,9 +67,9 @@ export default {
         case 'cls':
           route = '/user/section/cls'
           break
-        case 'facs':
-          route = '/user/section/facs'
-          break
+        // case 'facs':
+        //   route = '/user/section/facs'
+        //   break
         default:
           route = '/user/section/cables'
           break
@@ -66,24 +77,61 @@ export default {
       return route
     }
   },
+  async mounted() {
+    if (!this.$route.query.id) {
+      return this.$router.push('/')
+    }
+
+    this.creationType = this.$route.query.id
+    this.checkCreationType(this.creationType)
+    if (this.$route.query.item) {
+      if (this.creationType === 'cls') {
+        this.getElementOnEdit(this.$route.query.item, await this.getClssList())
+      } else {
+        this.getElementOnEdit(this.$route.query.item, [])
+      }
+    }
+  },
   methods: {
-    sendData() {
-      console.warn('Not done yet')
+    getElementOnEdit(_id, arr) {
+      this.mode = 'edit'
+      const currentElement = arr.filter(el => el._id === _id)[0]
+      this.form = { ...currentElement }
     },
+    async getClssList() {
+      const res = await getClss({ user_id: this.$auth.user.sub })
+      return res.t !== 'error' && res.data ? res.data.r : []
+    },
+    async createCLS() {
+      const res = await createCls({
+        ...this.form,
+        user_id: this.$auth.user.sub
+      })
+      if (res.t !== 'err') {
+        return this.$router.push('/user/section/cls')
+      }
+    },
+    async editCLS() {
+      const res = await editCls({
+        ...this.form,
+        user_id: this.$auth.user.sub,
+        _id: this.$route.query.item
+      })
+      if (res.t !== 'err') {
+        return this.$router.push('/user/section/cls')
+      }
+    },
+    createCable() {},
+    editCable() {},
     checkCreationType(type) {
       switch (type) {
-        case 'cable':
+        case 'cls':
           this.form = {
-            cls: '',
             name: '',
-            urls: [],
-            notes: '',
-            facilities: '',
-            fiberPairs: '',
-            system_length: 0,
-            capacity_tbps: 0,
-            terrestrial: false,
-            activationDateTime: ''
+            cables: [],
+            slug: '',
+            geom: '',
+            state: null
           }
           break
         default:

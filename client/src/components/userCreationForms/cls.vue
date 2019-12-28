@@ -1,9 +1,7 @@
 <template>
   <div class="pb6 pt6 pr8 pl8">
     <header slot="header" class="w-fit-full mb8">
-      <h1 class="title">
-        Create CLS
-      </h1>
+      <h1 class="title">{{ title }} CLS</h1>
     </header>
     <el-form ref="form" :model="form">
       <el-form-item label="Name">
@@ -44,7 +42,7 @@
       </el-form-item>
       <el-form-item class="mt24">
         <el-button type="primary" class="w-fit-full" round @click="sendData">
-          Create and start drawing
+          {{ this.title }} CLS
         </el-button>
       </el-form-item>
     </el-form>
@@ -63,6 +61,15 @@ export default {
     form: {
       type: Object,
       required: true
+    },
+    mode: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    title() {
+      return this.mode === 'create' ? 'Create' : 'Edit'
     }
   },
   methods: {

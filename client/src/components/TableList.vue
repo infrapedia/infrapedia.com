@@ -10,7 +10,7 @@
     </header>
     <el-divider />
     <el-card shadow="never">
-      <el-table :data="tableData">
+      <el-table :data="tableData" max-height="700">
         <el-table-column :label="col" v-for="(col, i) in columns" :key="i">
           <template slot-scope="scope">
             <div v-if="Array.isArray(scope.row[col]) && scope.row[col].length">
