@@ -54,6 +54,11 @@ export default {
   },
   async mounted() {
     await this.loadDataIfQueryParamsExist()
+    await setTimeout(() => {
+      if (this.$auth && !this.$auth.isAuthenticated) {
+        this.$router.push('/login')
+      }
+    }, 1000)
   },
   methods: {
     /**

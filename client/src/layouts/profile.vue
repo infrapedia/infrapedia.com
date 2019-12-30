@@ -50,10 +50,16 @@ export default {
       return this.$store.state.isDark
     }
   },
-  mounted() {
-    if (!this.$auth.user) this.$auth.loginWithRedirect()
+  async mounted() {
+    if (!this.$auth.user) {
+      await this.$auth.loginWithRedirect().then(async () => this.setToken())
+    }
   },
   methods: {
+    async setToken() {
+      const token = await this.$auth.getIdTokenClaims()
+      window.localStorage.setItem('auth.token-session', token.__raw)
+    },
     toggleTheme() {
       bus.$emit(`${TOGGLE_THEME}`)
       this.$store.commit(`${TOGGLE_DARK}`, !this.dark)

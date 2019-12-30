@@ -26,7 +26,12 @@ export const createCls = async ({
   } else form.append('cables', [])
 
   const res = await $axios.post(url, form, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
 
   return res
@@ -56,7 +61,12 @@ export const editCls = async ({
   } else form.append('cables', [])
 
   const res = await $axios.put(url, form, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
 
   return res
@@ -65,7 +75,12 @@ export const editCls = async ({
 export const getClss = async ({ user_id }) => {
   url = `${apiConfig.url}/auth/cls/all`
   const res = await $axios.get(url, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
 
   return res
@@ -74,7 +89,12 @@ export const getClss = async ({ user_id }) => {
 export const deleteCls = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/cls/delete/${_id}`
   const res = await $axios.delete(url, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
 
   return res
@@ -83,7 +103,12 @@ export const deleteCls = async ({ user_id, _id }) => {
 export const viewCls = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/cls/owner/${_id}`
   const res = await $axios.get(url, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
   return res
 }

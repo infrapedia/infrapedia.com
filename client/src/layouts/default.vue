@@ -49,10 +49,17 @@ export default {
         'https://networkatlas.com/wp-content/uploads/2019/03/privacy-policy.pdf'
     }
   }),
-  mounted() {
-    console.log(this.$auth)
+  async mounted() {
+    // console.log(this.$auth)
+    if (this.$auth && this.$auth.isAuthenticated) {
+      await this.setToken()
+    }
   },
   methods: {
+    async setToken() {
+      const token = await this.$auth.getIdTokenClaims()
+      window.localStorage.setItem('auth.token-session', token.__raw)
+    },
     openBuyDialog(option) {
       this.$store.commit(`${BUY_TYPE}`, { title: option })
       this.$store.commit(`${TOGGLE_BUY_DIALOG}`, true)

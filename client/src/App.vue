@@ -57,7 +57,6 @@ export default {
       return this.$route.name === 'login'
     },
     isProfileRoute() {
-      console.log(this.$route)
       return this.$route.name.includes('user')
     }
   }

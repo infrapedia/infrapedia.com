@@ -20,9 +20,9 @@ export default {
   data: () => ({
     isUserBlock: false
   }),
-  mounted() {
+  async mounted() {
     try {
-      this.$auth.loginWithRedirect()
+      await this.$auth.loginWithRedirect()
     } catch {
       console.warn(this.$auth)
     }

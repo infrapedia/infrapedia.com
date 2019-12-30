@@ -56,7 +56,12 @@ export const createNetwork = async ({
   } else form.append('cables', [])
 
   const res = await $axios.post(url, form, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
 
   return res
@@ -115,7 +120,12 @@ export const editNetwork = async ({
   } else form.append('cables', [])
 
   const res = await $axios.put(url, form, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
 
   return res
@@ -124,7 +134,12 @@ export const editNetwork = async ({
 export const getNetworks = async ({ user_id }) => {
   url = `${apiConfig.url}/auth/network/all`
   const res = await $axios.get(url, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
   return res
 }
@@ -132,7 +147,12 @@ export const getNetworks = async ({ user_id }) => {
 export const deleteNetwork = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/network/delete/${_id}`
   const res = await $axios.delete(url, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
 
   return res
@@ -141,7 +161,12 @@ export const deleteNetwork = async ({ user_id, _id }) => {
 export const viewNetwork = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/network/owner/${_id}`
   const res = await $axios.get(url, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
   return res
 }

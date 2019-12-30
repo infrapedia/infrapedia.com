@@ -24,7 +24,12 @@ export const createOrganization = async ({
   } else form.append('address', [])
 
   const res = await $axios.post(url, form, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
 
   return res
@@ -51,7 +56,12 @@ export const editOrganization = async ({
   } else form.append('address', [])
 
   const res = await $axios.put(url, form, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
 
   return res
@@ -60,7 +70,12 @@ export const editOrganization = async ({
 export const getOrganizations = async ({ user_id }) => {
   url = `${apiConfig.url}/auth/organization/all`
   const res = await $axios.get(url, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
 
   return res
@@ -69,7 +84,12 @@ export const getOrganizations = async ({ user_id }) => {
 export const deleteOrganization = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/organization/delete/${_id}`
   const res = await $axios.delete(url, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
 
   return res
@@ -78,7 +98,12 @@ export const deleteOrganization = async ({ user_id, _id }) => {
 export const viewOrganization = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/organization/owner/${_id}`
   const res = await $axios.get(url, {
-    headers: { user_id }
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
   })
   return res
 }
