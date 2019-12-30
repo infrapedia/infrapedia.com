@@ -33,7 +33,7 @@
 import EditorMap from '../../../components/editor/Editor'
 import CLSForm from '../../../components/userCreationForms/cls'
 import CableForm from '../../../components/userCreationForms/cables'
-import { createCls, editCls, getClss } from '../../../services/api/cls'
+import { createCls, editCls, getClss, viewCls } from '../../../services/api/cls'
 // import FacsForm from '../../../components/userCreationForms/facilities'
 
 export default {
@@ -93,9 +93,16 @@ export default {
     }
   },
   methods: {
-    getElementOnEdit(_id, arr) {
+    async getElementOnEdit(_id) {
       this.mode = 'edit'
-      const currentElement = arr.filter(el => el._id === _id)[0]
+      let currentElement = {}
+      if (this.creationType === 'cls') {
+        const res = await viewCls({ user_id: this.$auth.user.sub, _id })
+        if (res && res.data && res.data.r) {
+          currentElement = res.data.r
+          currentElement.geom = JSON.stringify(currentElement.geom)
+        }
+      }
       this.form = { ...currentElement }
     },
     async getClssList() {

@@ -74,3 +74,11 @@ export const deleteOrganization = async ({ user_id, _id }) => {
 
   return res
 }
+
+export const viewOrganization = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/auth/organization/owner/${_id}`
+  const res = await $axios.get(url, {
+    headers: { user_id }
+  })
+  return res
+}

@@ -9,7 +9,7 @@
       :config="tableConfig"
       :table-data="tableData"
       @btn-click="toggleDialog"
-      @edit-item="editOrg"
+      @edit-item="viewOrg"
       @delete-item="deleteOrg"
     />
     <org-form
@@ -29,7 +29,8 @@ import {
   createOrganization,
   getOrganizations,
   deleteOrganization,
-  editOrganization
+  editOrganization,
+  viewOrganization
 } from '../../../services/api/organizations'
 
 export default {
@@ -73,9 +74,11 @@ export default {
     await this.getOrganizationsList()
   },
   methods: {
-    editOrg(_id) {
-      const orgToEdit = this.tableData.filter(org => org._id === _id)[0]
-      this.form = JSON.parse(JSON.stringify(orgToEdit))
+    async viewOrg(_id) {
+      const res = await viewOrganization({ user_id: this.$auth.user.sub, _id })
+      if (res && res.data && res.data.r) {
+        this.form = res.data.r
+      }
       this.mode = 'edit'
       this.toggleDialog()
     },

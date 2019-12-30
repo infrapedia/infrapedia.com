@@ -188,6 +188,13 @@ export default {
       return `${apiConfig.url}/auth/upload/logo`
     }
   },
+  // watch: {
+  //   visible(bool) {
+  //     if (bool && this.form.logo && this.mode === 'edit') {
+  //       this.fileList.push([{ name: this.form.logo, url: this.form.logo }])
+  //     }
+  //   }
+  // },
   methods: {
     handleLogoUpload(res) {
       if (!res.data && res.data.r.length) return

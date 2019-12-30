@@ -137,3 +137,11 @@ export const deleteNetwork = async ({ user_id, _id }) => {
 
   return res
 }
+
+export const viewNetwork = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/auth/network/owner/${_id}`
+  const res = await $axios.get(url, {
+    headers: { user_id }
+  })
+  return res
+}

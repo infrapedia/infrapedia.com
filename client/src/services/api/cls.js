@@ -79,3 +79,11 @@ export const deleteCls = async ({ user_id, _id }) => {
 
   return res
 }
+
+export const viewCls = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/auth/cls/owner/${_id}`
+  const res = await $axios.get(url, {
+    headers: { user_id }
+  })
+  return res
+}

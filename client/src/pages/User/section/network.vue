@@ -9,7 +9,7 @@
       :config="tableConfig"
       :table-data="tableData"
       @btn-click="toggleDialog"
-      @edit-item="editSelectedNetwork"
+      @edit-item="viewNet"
       @delete-item="deleteNet"
     />
     <network-form
@@ -29,7 +29,8 @@ import {
   createNetwork,
   getNetworks,
   deleteNetwork,
-  editNetwork
+  editNetwork,
+  viewNetwork
 } from '../../../services/api/networks'
 
 export default {
@@ -92,9 +93,11 @@ export default {
         console.error(err)
       }
     },
-    editSelectedNetwork(_id) {
-      const netToEdit = this.tableData.filter(net => net._id === _id)[0]
-      this.form = JSON.parse(JSON.stringify(netToEdit))
+    async viewNet(_id) {
+      const res = await viewNetwork({ user_id: this.$auth.user.sub, _id })
+      if (res && res.data && res.data.r) {
+        this.form = res.data.r
+      }
       this.mode = 'edit'
       this.toggleDialog()
     },
