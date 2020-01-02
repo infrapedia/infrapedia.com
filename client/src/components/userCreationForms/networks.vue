@@ -1,5 +1,10 @@
 <template>
-  <el-dialog :visible="visible" width="30%" :before-close="handleBeforeClose">
+  <el-dialog
+    :visible="visible"
+    width="30%"
+    :before-close="handleBeforeClose"
+    :close-on-click-modal="false"
+  >
     <header slot="title" class="w-fit-full">
       <h1 class="title-user-variant w-fit-full fs-xlarge text-center">
         {{ title }} network

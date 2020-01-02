@@ -13,6 +13,7 @@
           <router-link
             exact
             :to="link.url"
+            :class="checkURL(link)"
             class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
           >
             {{ link.label }}
@@ -54,6 +55,19 @@ export default {
     }
   },
   methods: {
+    checkURL(link) {
+      let obj = {}
+      if (!this.$route.query.id) return obj
+      else if (this.$route.query.id) {
+        let pathName = link.url.split('/')
+        pathName = pathName[pathName.length - 1]
+        obj = {
+          'router-link-exact-active router-link-active':
+            this.$route.query.id.toLowerCase() === pathName
+        }
+      }
+      return obj
+    },
     async setToken() {
       const token = await this.$auth.getIdTokenClaims()
       window.localStorage.setItem('auth.token-session', token.__raw)
