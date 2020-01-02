@@ -21,10 +21,16 @@ export default {
     isUserBlock: false
   }),
   async mounted() {
+    // console.log(this.$auth.isAuthenticated)
     try {
-      await this.$auth.loginWithRedirect()
-    } catch {
-      console.warn(this.$auth)
+      await setTimeout(() => {
+        return this.$auth && this.$auth.isAuthenticated
+          ? this.$router.push('/')
+          : this.$auth.loginWithRedirect()
+      }, 1000)
+    } catch (err) {
+      console.error(err)
+      // console.warn(this.$auth)
     }
   },
   created() {

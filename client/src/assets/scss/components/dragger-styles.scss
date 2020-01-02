@@ -15,7 +15,7 @@
 }
 
 .inner-wrapper {
-  color: rgba(0, 0, 1, .8);
+  color: rgba(0, 0, 1, 0.8);
   transition: all $regular-transition;
   &:hover {
     color: $blue !important;
@@ -28,7 +28,15 @@
   }
 }
 
-
 /*
 *   THEME VARIANT'S
 */
+
+.application.dark {
+  .inner-wrapper {
+    color: $white-full;
+    &:hover {
+      color: $blue !important;
+    }
+  }
+}

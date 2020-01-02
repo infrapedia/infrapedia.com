@@ -33,8 +33,6 @@ import { TOGGLE_DARK } from '../store/actionTypes'
 import profileLinks from '../config/profileLinks'
 import INavbar from '../components/Navbar'
 import IFooter from '../components/Footer'
-import { bus } from '../helpers/eventBus'
-import { TOGGLE_THEME } from '../events'
 
 export default {
   components: {
@@ -61,9 +59,7 @@ export default {
       window.localStorage.setItem('auth.token-session', token.__raw)
     },
     toggleTheme() {
-      bus.$emit(`${TOGGLE_THEME}`)
-      this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
-      console.warn('TOGGLING THEME FROM PROFILE LAYOUT!!')
+      return this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
     }
   }
 }

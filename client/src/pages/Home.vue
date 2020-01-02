@@ -23,7 +23,11 @@ import { bus } from '../helpers/eventBus'
 import debounce from '../helpers/debounce'
 import dataCollection from '../mixins/dataCollection.vue'
 import { IS_DRAWING, TOGGLE_SIDEBAR } from '../store/actionTypes'
-import { FOCUS_ON_CITY, REMOVE_QUERY_ROUTE_REPLACE } from '../events'
+import {
+  FOCUS_ON_CITY,
+  REMOVE_QUERY_ROUTE_REPLACE,
+  DESTROY_MAP
+} from '../events'
 import { HAS_TO_EASE_TO, EASE_POINT } from '../store/actionTypes/map'
 
 export default {
@@ -50,14 +54,14 @@ export default {
   beforeRouteLeave(to, from, next) {
     if (this.isSidebar) this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
     bus.$emit(REMOVE_QUERY_ROUTE_REPLACE)
+    bus.$emit(DESTROY_MAP)
     next()
   },
   async mounted() {
     await this.loadDataIfQueryParamsExist()
     await setTimeout(() => {
-      if (this.$auth && !this.$auth.isAuthenticated) {
-        this.$router.push('/login')
-      }
+      if (this.$auth.isAuthenticated) return
+      else this.$router.push('/login')
     }, 1000)
   },
   methods: {
