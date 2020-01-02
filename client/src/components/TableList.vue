@@ -30,7 +30,7 @@
               :src="scope.row[col]"
               class="w12 h12 circle"
             />
-            <span v-else>
+            <span v-else-if="typeof scope.row[col] === 'string'">
               {{ `${scope.row[col]}` }}
             </span>
           </template>
