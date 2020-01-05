@@ -27,7 +27,8 @@
     "vue-cookieconsent-component": "^1.2.0",
     "vue-router": "^3.0.6",
     "vue-tel-input": "^2.0.10",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vuex-persistedstate": "^2.7.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.0.0",

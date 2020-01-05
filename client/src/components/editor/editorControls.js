@@ -1,12 +1,10 @@
-import { LINE_STRING, POINT } from './geometryTypes'
 import createControlButton from './createControlButton'
-// import { finalizeCreation } from './editorActions'
 
 class EditorControls {
-  constructor(map, draw, state) {
-    this.map = map
+  constructor(draw, dispatch, scene) {
     this.draw = draw
-    this.state = state
+    this.scene = scene
+    this.$dispatch = dispatch
     this.updateControls = this.updateControls
     this.handleDrawSelectionChange = this.handleDrawSelectionChange
   }
@@ -30,10 +28,8 @@ class EditorControls {
         title: 'Draw line',
         visible: true,
         eventListener: () => {
+          this.$dispatch('editor/beginCreation')
           this.draw.changeMode(this.draw.modes.DRAW_LINE_STRING)
-          this.state.scene.creation = true
-          console.warn('BEGIN CREATION ' + LINE_STRING)
-          // this.store.dispatch(beginCreation(LINE_STRING))
         }
       }),
       point: createControlButton('point', {
@@ -42,62 +38,17 @@ class EditorControls {
         title: 'Create point',
         visible: true,
         eventListener: () => {
-          this.state.scene.creation = {
-            feature: this.draw.getSelected()
-          }
+          this.$dispatch('editor/beginCreation')
           this.draw.changeMode(this.draw.modes.DRAW_POINT)
-          console.warn('BEGIN CREATION ' + POINT)
         }
       }),
 
-      editProperties: createControlButton('edit-properties', {
-        container: this.controlGroup,
-        className: 'editor-ctrl editor-edit-properties',
-        title: 'Edit properties',
-        eventListener: () => {
-          let featureId = this.state.scene.features.selected
-          let features = this.state.scene.features.list.filter(
-            f => f.properties.__editor._id === featureId
-          )
-          let feature = features.length ? features[0] : null
-          if (feature) {
-            console.warn('EDIT FEATURE PROPERTIES' + LINE_STRING)
-            // this.store.dispatch(editFeatureProperties(feature))
-          }
-        }
-      }),
-      edit: createControlButton('edit', {
-        container: this.controlGroup,
-        className: 'editor-ctrl editor-edit-geometry',
-        title: 'Edit geometry',
-        eventListener: () => {
-          let featureId = this.state.scene.features.selected
-          let features = this.state.scene.features.list.filter(
-            f => f.properties.__editor._id === featureId
-          )
-          let feature = features.length ? features[0] : null
-          if (feature) {
-            let id = this.draw.add(feature)[0]
-            if (feature.geometry.type === POINT) {
-              this.draw.changeMode(this.draw.modes.SIMPLE_SELECT, {
-                featureIds: [id]
-              })
-            } else {
-              this.draw.changeMode(this.draw.modes.DIRECT_SELECT, {
-                featureId: id
-              })
-            }
-            console.warn('BEGIN EDIT ' + feature)
-            // this.store.dispatch(beginEdit(feature))
-          }
-        }
-      }),
       trash: createControlButton('trash', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-trash',
         title: 'Delete',
         eventListener: () => {
-          this.state.scene.features.selected = this.draw.getSelected()
+          this.$dispatch('editor/selectionChange', this.draw.getSelected())
           this.featureDeleted()
         }
       }),
@@ -107,16 +58,20 @@ class EditorControls {
         className: 'editor-ctrl editor-ok',
         title: 'Accept',
         eventListener: () => {
-          const current = this.draw.getSelected()
-          if (this.state.scene.creation) {
-            if (current && current.features.length) {
-              this.state.scene.features.list.push({
-                feature: { ...current },
-                id: current.features[0].id
-              })
+          this.$dispatch('editor/selectionChange', this.draw.getSelected())
+          const { features, edition, creation } = this.scene
+
+          if (creation) {
+            if (features && features.selected.length) {
+              for (let feature of features.selected) {
+                this.$dispatch('editor/confirmCreation', {
+                  feature: { ...feature },
+                  id: feature.id
+                })
+              }
             } else return
-          } else if (this.state.scene.edition) {
-            console.log(current)
+          } else if (edition) {
+            this.$dispatch('editor/editFeature', features.selected)
           }
 
           this.resetScene()
@@ -127,34 +82,41 @@ class EditorControls {
         className: 'editor-ctrl editor-cancel',
         title: 'Cancel',
         eventListener: () => {
-          const current = this.draw.getSelected()
+          this.$dispatch('editor/selectionChange', this.draw.getSelected())
           const creations = this.draw.getAll()
-          const savedFeats = Array.from(this.state.scene.features.list, i => ({
-            ...i
-          })).map(feat => feat.id)
+          const savedFeats = Array.from(this.scene.features.list).map(
+            feat => feat.id
+          )
+          const { selected } = this.scene.features
 
-          if (this.state.scene.creation) {
-            if (current.features.length) {
-              for (let feat of current.features) {
+          if (this.scene.creation) {
+            // We are deleting the selected and just created draw(s)
+            if (selected && selected.length) {
+              for (let feat of selected) {
                 this.draw.delete(feat.id)
               }
             } else if (creations.features.length) {
+              // Otherwise if the user has created draw(s) but he un-selected them
+              // We are checking for ones which aren't saved on the store and deleting them
               for (let feat of creations.features) {
                 if (!savedFeats.includes(feat.id)) {
                   this.draw.delete(feat.id)
                 }
               }
             }
-
-            console.warn('Cancel creation')
             this.resetScene()
-          } else if (this.state.scene.edition) {
-            console.warn('Cancel edition')
-            if (current.features.length) {
-              this.draw.delete(current.features[0].id)
-              this.draw.add(this.state.scene.features.selected)
-              this.resetScene()
+          } else if (this.scene.edition) {
+            // Deleting all draws
+            this.draw.trash()
+            // Because you cancel the edition we need to recreate all the draw(s) again
+            // It will work like this for now, but I know it can't be cost-effective
+            const savedFeatures = Array.from(this.scene.features.list, i => ({
+              ...i.feature
+            }))
+            for (let feat of savedFeatures) {
+              this.draw.add(feat)
             }
+            this.resetScene()
           }
         }
       })
@@ -162,74 +124,56 @@ class EditorControls {
   }
 
   resetScene() {
-    this.state.scene.edition = null
-    this.state.scene.creation = null
-    this.state.scene.features.selected = null
+    this.$dispatch('editor/resetScene')
     this.draw.changeMode(this.draw.modes.SIMPLE_SELECT)
   }
 
   async featureDeleted() {
-    const { selected } = this.state.scene.features
-    if (selected) {
-      console.warn('DELETING FEATURE!!')
-      this.state.scene.features.list = this.state.scene.features.list.filter(
-        feat => feat._id !== selected.features[0].id
-      )
+    const { selected } = this.scene.features
+    if (selected && selected.length) {
+      for (let feat of selected) {
+        this.$dispatch('editor/deleteFeature', feat.id)
+      }
       this.draw.trash()
       this.resetScene()
     }
   }
 
-  updateControls() {
-    if (this.state.scene.creation || this.state.scene.edition) {
+  updateControls(scene = this.scene) {
+    if (scene.creation || scene.edition) {
       this.buttons.ok.style.setProperty('display', 'block')
       this.buttons.cancel.style.setProperty('display', 'block')
-
-      this.buttons.editProperties.style.setProperty('display', 'none')
-      this.buttons.edit.style.setProperty('display', 'none')
       this.buttons.trash.style.setProperty('display', 'block')
 
-      this.buttons.line_string.style.setProperty('display', 'none')
       this.buttons.point.style.setProperty('display', 'none')
+      this.buttons.line_string.style.setProperty('display', 'none')
 
       return
-    } else if (!this.state.scene.creation || !this.state.scene.edition) {
+    } else if (!scene.creation || !scene.edition) {
       this.buttons.ok.style.setProperty('display', 'none')
       this.buttons.cancel.style.setProperty('display', 'none')
-
-      this.buttons.editProperties.style.setProperty('display', 'none')
-      this.buttons.edit.style.setProperty('display', 'none')
       this.buttons.trash.style.setProperty('display', 'none')
 
-      this.buttons.line_string.style.setProperty('display', 'block')
       this.buttons.point.style.setProperty('display', 'block')
+      this.buttons.line_string.style.setProperty('display', 'block')
     }
 
-    if (this.state.scene.features.selected) {
+    if (scene.features.selected) {
       this.buttons.ok.style.setProperty('display', 'none')
       this.buttons.cancel.style.setProperty('display', 'none')
-
-      this.buttons.editProperties.style.setProperty('display', 'block')
-      this.buttons.edit.style.setProperty('display', 'block')
       this.buttons.trash.style.setProperty('display', 'block')
 
-      this.buttons.line_string.style.setProperty('display', 'none')
       this.buttons.point.style.setProperty('display', 'none')
+      this.buttons.line_string.style.setProperty('display', 'none')
 
       return
     }
-
-    // this.controlGroup.style.setProperty('display', 'none')
   }
 
   handleDrawSelectionChange(features) {
-    if (
-      !this.state.scene.creation &&
-      !this.state.scene.edition &&
-      features.length
-    ) {
-      this.state.scene.edition = true
-      this.state.scene.features.selected = features[0]
+    if (!this.scene.edition && !this.scene.creation && features.length) {
+      this.$dispatch('editor/beginEdition')
+      this.$dispatch('editor/selectionChange', { features })
     }
   }
 }

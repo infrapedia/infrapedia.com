@@ -2,14 +2,17 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import map from './modules/map'
 import auth from './modules/auth'
+import editor from './modules/editor'
 import * as types from './actionTypes'
 import * as modes from '../config/sidebarModes'
 import { dataActions, dataMutations } from './data'
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
+  plugins: [createPersistedState()],
   devtools: true,
   state: {
     isDark: false,
@@ -80,6 +83,7 @@ export default new Vuex.Store({
   },
   modules: {
     map,
-    auth
+    auth,
+    editor
   }
 })

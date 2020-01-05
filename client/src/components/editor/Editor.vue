@@ -12,32 +12,29 @@ export default {
   data: () => ({
     map: null,
     draw: null,
-    controls: null,
-    state: {
-      scene: {
-        features: {
-          list: [],
-          selected: null
-        },
-        creation: null,
-        edition: null,
-        oldState: null
-      }
-    }
+    controls: null
   }),
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    scene() {
+      return this.$store.state.editor.scene
+    },
+    isEdition() {
+      return this.$store.state.editor.edition
+    },
+    isCreation() {
+      return this.$store.state.editor.creation
     }
   },
   watch: {
     dark(bool) {
       return this.toggleDarkMode(bool)
     },
-    state: {
-      // eslint-disable-next-line
+    scene: {
       handler(newState) {
-        this.controls.updateControls()
+        this.controls.updateControls(newState)
       },
       deep: true
     }
@@ -45,6 +42,9 @@ export default {
   mounted() {
     this.map = this.addMapEvents(this.createMap())
     this.toggleDarkMode(this.dark)
+    if (this.scene.features.list.length) {
+      this.handleRecreateDraw()
+    }
   },
   methods: {
     createMap() {
@@ -62,7 +62,11 @@ export default {
         displayControlsDefault: false
       })
 
-      this.controls = new EditorControls(this.map, this.draw, this.state)
+      this.controls = new EditorControls(
+        this.draw,
+        this.$store.dispatch,
+        this.scene
+      )
       map.addControl(this.controls)
       map.addControl(this.draw)
       return map
@@ -70,22 +74,15 @@ export default {
     addMapEvents(map) {
       const vm = this
       map.on('load', function() {
-        map.on('click', vm.handleMapClick)
         map.on('draw.selectionchange', vm.handleDrawSelectionChange)
       })
       return map
     },
-    handleMapClick() {
-      if (this.state.scene.creation || this.state.scene.edition) return
-
-      let features = this.map.queryRenderedFeatures()
-      if (features.length) {
-        let feature = features[0]
-        if (feature.properties.__editor) {
-          this.state.scene.features.selected = feature.properties.__editor._id
-        }
-      } else {
-        this.state.scene.features.selected = null
+    handleRecreateDraw() {
+      // Deleting everything in case there's something already drawn that could be repeted
+      this.draw.trash()
+      for (let feat of this.scene.features.list) {
+        this.draw.add(feat.feature)
       }
     },
     handleDrawSelectionChange(e) {
