@@ -24,9 +24,16 @@
     </div>
     <div class="right w-fit-full">
       <editor-map
-        @open-properties-dialog="handleDialogVisibility(true)"
-        :is-cls="creationType === 'cls'"
+        @open-properties-dialog="handleDialogVisibility($event, true)"
         :properties-dialog-form="dialogForm"
+        :is-dialog-done="isDialogDone"
+        :is-cls="creationType === 'cls'"
+      />
+      <properties-dialog
+        :form="dialogForm"
+        :title="dialogTitle"
+        :is-visible="isPropertiesDialog"
+        @close="handleDialogVisibility('', false)"
       />
     </div>
   </div>
@@ -37,19 +44,23 @@ import EditorMap from '../../../components/editor/Editor'
 import CLSForm from '../../../components/userCreationForms/cls'
 import CableForm from '../../../components/userCreationForms/cables'
 import { createCls, editCls, viewCls } from '../../../services/api/cls'
+import PropertiesDialog from '../../../components/editor/propertiesDialog'
 
 export default {
   name: 'CreateSection',
   components: {
     'cls-form': CLSForm,
     'editor-map': EditorMap,
-    'cable-form': CableForm
+    'cable-form': CableForm,
+    'properties-dialog': PropertiesDialog
   },
   data() {
     return {
       form: {},
       mode: 'create',
       dialogForm: {},
+      dialogTitle: '',
+      isDialogDone: false,
       isPropertiesDialog: false,
       creationType: this.$route.query.id
     }
@@ -95,8 +106,14 @@ export default {
     }
   },
   methods: {
-    handleDialogVisibility(bool) {
+    handleDialogVisibility(type, bool) {
       this.isPropertiesDialog = bool
+      if (bool) this.dialogForm = {}
+      else if (!bool) {
+        this.isDialogDone = true
+        setTimeout(() => (this.isDialogDone = false), 300)
+      }
+      this.dialogTitle = type === 'Point' ? 'CLS' : 'Cable'
     },
     checkCreationType(type) {
       switch (type) {

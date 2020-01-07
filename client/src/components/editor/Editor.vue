@@ -23,6 +23,10 @@ export default {
     propertiesDialogForm: {
       type: Object,
       required: true
+    },
+    isDialogDone: {
+      type: Boolean,
+      required: true
     }
   },
   computed: {
@@ -42,6 +46,25 @@ export default {
   watch: {
     dark(bool) {
       return this.toggleDarkMode(bool)
+    },
+    isDialogDone(bool) {
+      if (!bool) return
+
+      const { features } = this.scene
+      const feature = {
+        id: features.selected[0].id,
+        feature: { ...features.selected[0] },
+        type: features.selected[0].geometry.type
+      }
+      feature.feature.properties = {
+        ...feature.feature.properties,
+        ...this.propertiesDialogForm
+      }
+      if (this.scene.creation) {
+        return this.handleCreateFeature(feature)
+      } else if (this.scene.edition) {
+        return this.handleEditFeatureProperties()
+      }
     },
     scene: {
       handler(newState) {
@@ -106,18 +129,12 @@ export default {
     handleDrawSelectionChange(e) {
       return this.controls.handleDrawSelectionChange(e.features)
     },
-    async handleBeforeFeatureCreation(feat) {
-      await this.$prompt('Please input a name', 'Before we continue ...', {
-        confirmButtonText: 'OK',
-        showClose: false,
-        showCancelButton: false,
-        closeOnClickModal: false,
-        closeOnPressEscape: false,
-        roundButton: true,
-        inputValidator: val => val !== '',
-        inputErrorMessage: 'Invalid name'
-      }).then(({ value }) => (feat.feature.properties.name = value))
-      return feat
+    async handleBeforeFeatureCreation(type) {
+      return await this.$emit('open-properties-dialog', type)
+    },
+    handleCreateFeature(feat) {
+      this.$store.dispatch('editor/confirmCreation', feat)
+      return this.controls.resetScene()
     },
     async handleEditFeatureProperties(feat) {
       await this.$prompt('Please input a valid name', 'Edit ...', {
