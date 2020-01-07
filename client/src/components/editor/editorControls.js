@@ -1,7 +1,14 @@
 import createControlButton from './createControlButton'
 
 class EditorControls {
-  constructor({ draw, $dispatch, scene, isCLS, handleBeforeFeatureCreation }) {
+  constructor({
+    draw,
+    $dispatch,
+    scene,
+    isCLS,
+    handleEditFeatureProperties,
+    handleBeforeFeatureCreation
+  }) {
     this.draw = draw
     this.scene = scene
     this.isCLS = isCLS
@@ -9,6 +16,7 @@ class EditorControls {
     this.resetScene = this.resetScene
     this.updateControls = this.updateControls
     this.handleBeforeFeatureCreation = handleBeforeFeatureCreation
+    this.handleEditFeatureProperties = handleEditFeatureProperties
     this.handleDrawSelectionChange = this.handleDrawSelectionChange
   }
 
@@ -51,16 +59,7 @@ class EditorControls {
         container: this.controlGroup,
         className: 'editor-ctrl editor-edit-properties',
         title: 'Edit properties',
-        eventListener: () => {
-          let featureId = this.scene.features.selected[0].id
-          let features = this.scene.features.list.filter(
-            f => f.id === featureId
-          )
-          let feature = features.length ? features[0] : null
-          if (feature) {
-            console.log(feature)
-          }
-        }
+        eventListener: () => this.handleEditFeatureProps()
       }),
 
       trash: createControlButton('trash', {
@@ -77,55 +76,31 @@ class EditorControls {
         container: this.controlGroup,
         className: 'editor-ctrl editor-ok',
         title: 'Accept',
-        eventListener: () => this.handleFeatureCreation()
+        eventListener: () => {
+          try {
+            return this.scene.creation
+              ? this.handleFeatureCreation()
+              : this.handleFeatureEdition(this.scene.features.selected)
+          } catch (err) {
+            console.warn(err)
+          } finally {
+            this.resetScene()
+          }
+        }
       }),
 
       cancel: createControlButton('cancel', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-cancel',
         title: 'Cancel',
-        eventListener: () => {
-          this.$dispatch('editor/selectionChange', this.draw.getSelected())
-          const creations = this.draw.getAll()
-          const savedFeats = Array.from(this.scene.features.list).map(
-            feat => feat.id
-          )
-          const { selected } = this.scene.features
-
-          if (this.scene.creation) {
-            // We are deleting the selected and just created draw(s)
-            if (selected && selected.length) {
-              for (let feat of selected) {
-                this.draw.delete(feat.id)
-              }
-            } else if (creations.features.length) {
-              // Otherwise if the user has created draw(s) but he un-selected them
-              // We are checking for ones which aren't saved on the store and deleting them
-              for (let feat of creations.features) {
-                if (!savedFeats.includes(feat.id)) {
-                  this.draw.delete(feat.id)
-                }
-              }
-            }
-            this.resetScene()
-          } else if (this.scene.edition) {
-            // Deleting all draws
-            this.draw.trash()
-            // Because you cancel the edition we need to recreate all the draw(s) again
-            // It will work like this for now, but I know it can't be cost-effective
-            const savedFeatures = Array.from(this.scene.features.list, i => ({
-              ...i.feature
-            }))
-            for (let feat of savedFeatures) {
-              this.draw.add(feat)
-            }
-            this.resetScene()
-          }
-        }
+        eventListener: () => this.handleCancel()
       })
     }
   }
-
+  /**
+   *
+   * @param { boolean } isResetList - A boolean indicating if it should reset the list of features saved too
+   */
   resetScene(isResetList) {
     this.$dispatch('editor/resetScene')
     this.draw.changeMode(this.draw.modes.SIMPLE_SELECT)
@@ -143,6 +118,10 @@ class EditorControls {
     }
   }
 
+  /**
+   *
+   * @param { Object } scene - Reference to the Vuex state of the scene
+   */
   updateControls(scene = this.scene) {
     if (scene.creation || scene.edition) {
       this.buttons.ok.style.setProperty('display', 'block')
@@ -154,11 +133,14 @@ class EditorControls {
 
       if (scene.edition) {
         this.buttons.editProperties.style.setProperty('display', 'block')
+      } else {
+        this.buttons.editProperties.style.setProperty('display', 'none')
       }
     } else if (!scene.creation || !scene.edition) {
       this.buttons.ok.style.setProperty('display', 'none')
       this.buttons.cancel.style.setProperty('display', 'none')
       this.buttons.trash.style.setProperty('display', 'none')
+      this.buttons.editProperties.style.setProperty('display', 'none')
 
       this.buttons.point.style.setProperty('display', 'block')
       if (!this.isCLS) {
@@ -169,6 +151,47 @@ class EditorControls {
     }
   }
 
+  handleCancel() {
+    this.$dispatch('editor/selectionChange', this.draw.getSelected())
+    const creations = this.draw.getAll()
+    const savedFeats = Array.from(this.scene.features.list).map(feat => feat.id)
+    const { selected } = this.scene.features
+
+    if (this.scene.creation) {
+      // We are deleting the selected and just created draw(s)
+      if (selected && selected.length) {
+        for (let feat of selected) {
+          this.draw.delete(feat.id)
+        }
+      } else if (creations.features.length) {
+        // Otherwise if the user has created draw(s) but he un-selected them
+        // We are checking for ones which aren't saved on the store and deleting them
+        for (let feat of creations.features) {
+          if (!savedFeats.includes(feat.id)) {
+            this.draw.delete(feat.id)
+          }
+        }
+      }
+      this.resetScene()
+    } else if (this.scene.edition) {
+      // Deleting all draws
+      this.draw.trash()
+      // Because you cancel the edition we need to recreate all the draw(s) again
+      // It will work like this for now, but I know it can't be cost-effective
+      const savedFeatures = Array.from(this.scene.features.list, i => ({
+        ...i.feature
+      }))
+      for (let feat of savedFeatures) {
+        this.draw.add(feat)
+      }
+      this.resetScene()
+    }
+  }
+
+  /**
+   *
+   * @param { Array } features - FeatureCollection with the features that has been selected by the user
+   */
   handleDrawSelectionChange(features) {
     if (!this.scene.edition && !this.scene.creation && features.length) {
       this.$dispatch('editor/beginEdition')
@@ -178,23 +201,37 @@ class EditorControls {
 
   async handleFeatureCreation() {
     this.$dispatch('editor/selectionChange', this.draw.getSelected())
-    const { features, edition, creation } = this.scene
+    const { features } = this.scene
 
-    if (creation) {
-      if (features && features.selected.length) {
-        const featWProps = await this.handleBeforeFeatureCreation({
-          id: features.selected[0].id,
-          feature: { ...features.selected[0] },
-          type: features.selected[0].geometry.type
-        })
+    if (features && features.selected.length) {
+      const featWProps = await this.handleBeforeFeatureCreation({
+        id: features.selected[0].id,
+        feature: { ...features.selected[0] },
+        type: features.selected[0].geometry.type
+      })
 
-        await this.$dispatch('editor/confirmCreation', featWProps)
-      } else return
-    } else if (edition) {
-      this.$dispatch('editor/editFeature', features.selected)
+      await this.$dispatch('editor/confirmCreation', { ...featWProps })
+    } else return
+  }
+  /**
+   *
+   * @param { Object } features - Features that has been edited
+   */
+  handleFeatureEdition(features) {
+    return this.$dispatch('editor/editFeature', features)
+  }
+
+  async handleEditFeatureProps() {
+    const featureId = this.scene.features.selected[0].id
+    const features = this.scene.features.list.filter(f => f.id === featureId)
+    const feature = features.length
+      ? JSON.parse(JSON.stringify(features[0]))
+      : null
+    if (feature) {
+      const featEdited = await this.handleEditFeatureProperties(feature)
+      this.handleFeatureEdition([{ ...featEdited }])
+      this.resetScene()
     }
-
-    this.resetScene()
   }
 }
 

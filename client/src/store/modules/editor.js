@@ -34,9 +34,11 @@ const mutations = {
       for (let featEdit of features) {
         if (feat.id === featEdit.id) {
           state.scene.features.list[i] = {
-            feature: { ...featEdit },
+            feature: featEdit.feature
+              ? { ...featEdit.feature }
+              : { ...featEdit },
             id: featEdit.id,
-            type: featEdit.geometry.type
+            type: featEdit.type
           }
         }
       }

@@ -4,7 +4,7 @@
       <h1 class="title">{{ title }} CLS</h1>
     </header>
     <el-form ref="form" :model="form">
-      <el-form-item label="Name">
+      <el-form-item label="Name of group">
         <el-input class="w-fit-full" v-model="form.name" />
       </el-form-item>
       <el-form-item label="State">

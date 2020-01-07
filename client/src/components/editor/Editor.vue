@@ -7,7 +7,6 @@ import { mapConfig } from '../../config/mapConfig'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import EditorControls from './editorControls'
-import editorInteractions from './editorInteractions'
 
 export default {
   data: () => ({
@@ -82,13 +81,8 @@ export default {
         scene: this.scene,
         isCLS: this.isCls,
         $dispatch: this.$store.dispatch,
+        handleEditFeatureProperties: this.handleEditFeatureProperties,
         handleBeforeFeatureCreation: this.handleBeforeFeatureCreation
-      })
-
-      this.interactions = new editorInteractions({
-        map,
-        scene: this.scene,
-        $dispatch: this.$store.dispatch
       })
 
       map.addControl(this.controls)
@@ -98,7 +92,6 @@ export default {
     addMapEvents(map) {
       const vm = this
       map.on('load', function() {
-        map.on('click', vm.interactions.methods.handlePopUpShow)
         map.on('draw.selectionchange', vm.handleDrawSelectionChange)
       })
       return map
@@ -107,7 +100,6 @@ export default {
       // Deleting everything in case there's something already drawn that could be repeted
       this.draw.trash()
       for (let feat of this.scene.features.list) {
-        console.log(feat.feature)
         this.draw.add(feat.feature)
       }
     },
@@ -122,6 +114,20 @@ export default {
         closeOnClickModal: false,
         closeOnPressEscape: false,
         roundButton: true,
+        inputValidator: val => val !== '',
+        inputErrorMessage: 'Invalid name'
+      }).then(({ value }) => (feat.feature.properties.name = value))
+      return feat
+    },
+    async handleEditFeatureProperties(feat) {
+      await this.$prompt('Please input a valid name', 'Edit ...', {
+        confirmButtonText: 'OK',
+        showClose: false,
+        roundButton: true,
+        showCancelButton: false,
+        closeOnClickModal: false,
+        closeOnPressEscape: false,
+        inputValue: feat.feature.properties.name,
         inputValidator: val => val !== '',
         inputErrorMessage: 'Invalid name'
       }).then(({ value }) => (feat.feature.properties.name = value))
