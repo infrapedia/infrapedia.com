@@ -7,13 +7,25 @@ import { mapConfig } from '../../config/mapConfig'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import EditorControls from './editorControls'
+import editorInteractions from './editorInteractions'
 
 export default {
   data: () => ({
     map: null,
     draw: null,
-    controls: null
+    controls: null,
+    interactions: null
   }),
+  props: {
+    isCls: {
+      type: Boolean,
+      default: () => false
+    },
+    propertiesDialogForm: {
+      type: Object,
+      required: true
+    }
+  },
   computed: {
     dark() {
       return this.$store.state.isDark
@@ -46,6 +58,11 @@ export default {
       this.handleRecreateDraw()
     }
   },
+  beforeDestroy() {
+    if (this.scene.features.list.length) {
+      this.controls.resetScene(true)
+    }
+  },
   methods: {
     createMap() {
       mapboxgl.accessToken = mapConfig.mapToken
@@ -58,15 +75,22 @@ export default {
       })
 
       map.addControl(new mapboxgl.NavigationControl())
-      this.draw = new MapboxDraw({
-        displayControlsDefault: false
+      this.draw = new MapboxDraw({ displayControlsDefault: false })
+
+      this.controls = new EditorControls({
+        draw: this.draw,
+        scene: this.scene,
+        isCLS: this.isCls,
+        $dispatch: this.$store.dispatch,
+        handleBeforeFeatureCreation: this.handleBeforeFeatureCreation
       })
 
-      this.controls = new EditorControls(
-        this.draw,
-        this.$store.dispatch,
-        this.scene
-      )
+      this.interactions = new editorInteractions({
+        map,
+        scene: this.scene,
+        $dispatch: this.$store.dispatch
+      })
+
       map.addControl(this.controls)
       map.addControl(this.draw)
       return map
@@ -74,6 +98,7 @@ export default {
     addMapEvents(map) {
       const vm = this
       map.on('load', function() {
+        map.on('click', vm.interactions.methods.handlePopUpShow)
         map.on('draw.selectionchange', vm.handleDrawSelectionChange)
       })
       return map
@@ -82,11 +107,25 @@ export default {
       // Deleting everything in case there's something already drawn that could be repeted
       this.draw.trash()
       for (let feat of this.scene.features.list) {
+        console.log(feat.feature)
         this.draw.add(feat.feature)
       }
     },
     handleDrawSelectionChange(e) {
       return this.controls.handleDrawSelectionChange(e.features)
+    },
+    async handleBeforeFeatureCreation(feat) {
+      await this.$prompt('Please input a name', 'Before we continue ...', {
+        confirmButtonText: 'OK',
+        showClose: false,
+        showCancelButton: false,
+        closeOnClickModal: false,
+        closeOnPressEscape: false,
+        roundButton: true,
+        inputValidator: val => val !== '',
+        inputErrorMessage: 'Invalid name'
+      }).then(({ value }) => (feat.feature.properties.name = value))
+      return feat
     },
     toggleDarkMode(dark) {
       const style = dark ? mapConfig.darkBasemap : mapConfig.default

@@ -35,7 +35,8 @@ const mutations = {
         if (feat.id === featEdit.id) {
           state.scene.features.list[i] = {
             feature: { ...featEdit },
-            id: featEdit.id
+            id: featEdit.id,
+            type: featEdit.geometry.type
           }
         }
       }
@@ -48,6 +49,9 @@ const mutations = {
   },
   [types.SELECTION](state, featuresSelected) {
     state.scene.features.selected = featuresSelected
+  },
+  [types.RESET_LIST](state) {
+    state.scene.features.list = []
   },
   [types.RESET_SCENE](state) {
     state.scene.edition = null
@@ -74,6 +78,9 @@ const actions = {
   },
   confirmCreation({ commit }, feature) {
     return commit(`${types.CONFIRM_CREATION}`, feature)
+  },
+  resetList({ commit }) {
+    return commit(`${types.RESET_LIST}`)
   },
   cancel({ commit }) {
     return commit(`${types.CANCEL}`)

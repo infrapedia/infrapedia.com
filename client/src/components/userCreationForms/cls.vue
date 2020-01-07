@@ -28,7 +28,14 @@
         <el-input class="w-fit-full" v-model="form.geom" />
       </el-form-item>
       <el-form-item label="Cables">
-        <el-select class="w-fit-full" v-model="form.cables" placeholder>
+        <el-select
+          class="w-fit-full"
+          v-model="form.cables"
+          multiple
+          filterable
+          collapse-tags
+          placeholder
+        >
           <el-option
             v-for="(opt, i) in []"
             :key="i"

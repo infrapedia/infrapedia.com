@@ -21,10 +21,13 @@
         :mode="mode"
         @send-data="checkType"
       />
-      <!-- <facs-form v-else-if="creationType === 'facs'" :form="form" /> -->
     </div>
     <div class="right w-fit-full">
-      <editor-map />
+      <editor-map
+        @open-properties-dialog="handleDialogVisibility(true)"
+        :is-cls="creationType === 'cls'"
+        :properties-dialog-form="dialogForm"
+      />
     </div>
   </div>
 </template>
@@ -33,22 +36,24 @@
 import EditorMap from '../../../components/editor/Editor'
 import CLSForm from '../../../components/userCreationForms/cls'
 import CableForm from '../../../components/userCreationForms/cables'
-import { createCls, editCls, getClss, viewCls } from '../../../services/api/cls'
-// import FacsForm from '../../../components/userCreationForms/facilities'
+import { createCls, editCls, viewCls } from '../../../services/api/cls'
 
 export default {
   name: 'CreateSection',
   components: {
+    'cls-form': CLSForm,
     'editor-map': EditorMap,
-    'cable-form': CableForm,
-    'cls-form': CLSForm
-    // 'facs-form': FacsForm
+    'cable-form': CableForm
   },
-  data: () => ({
-    form: {},
-    mode: 'create',
-    creationType: null
-  }),
+  data() {
+    return {
+      form: {},
+      mode: 'create',
+      dialogForm: {},
+      isPropertiesDialog: false,
+      creationType: this.$route.query.id
+    }
+  },
   computed: {
     dark() {
       return this.$store.state.isDark
@@ -67,9 +72,6 @@ export default {
         case 'cls':
           route = '/user/section/cls'
           break
-        // case 'facs':
-        //   route = '/user/section/facs'
-        //   break
         default:
           route = '/user/section/cables'
           break
@@ -86,50 +88,16 @@ export default {
     this.checkCreationType(this.creationType)
     if (this.$route.query.item) {
       if (this.creationType === 'cls') {
-        this.getElementOnEdit(this.$route.query.item, await this.getClssList())
+        this.getElementOnEdit(this.$route.query.item)
       } else {
         this.getElementOnEdit(this.$route.query.item, [])
       }
     }
   },
   methods: {
-    async getElementOnEdit(_id) {
-      this.mode = 'edit'
-      let currentElement = {}
-      if (this.creationType === 'cls') {
-        const res = await viewCls({ user_id: this.$auth.user.sub, _id })
-        if (res && res.data && res.data.r) {
-          currentElement = res.data.r
-          currentElement.geom = JSON.stringify(currentElement.geom)
-        }
-      }
-      this.form = { ...currentElement }
+    handleDialogVisibility(bool) {
+      this.isPropertiesDialog = bool
     },
-    async getClssList() {
-      const res = await getClss({ user_id: this.$auth.user.sub })
-      return res.t !== 'error' && res.data ? res.data.r : []
-    },
-    async createCLS() {
-      const res = await createCls({
-        ...this.form,
-        user_id: this.$auth.user.sub
-      })
-      if (res.t !== 'err') {
-        return this.$router.push('/user/section/cls')
-      }
-    },
-    async editCLS() {
-      const res = await editCls({
-        ...this.form,
-        user_id: this.$auth.user.sub,
-        _id: this.$route.query.item
-      })
-      if (res.t !== 'err') {
-        return this.$router.push('/user/section/cls')
-      }
-    },
-    createCable() {},
-    editCable() {},
     checkCreationType(type) {
       switch (type) {
         case 'cls':
@@ -156,7 +124,40 @@ export default {
           }
           break
       }
-    }
+    },
+    async getElementOnEdit(_id) {
+      this.mode = 'edit'
+      let currentElement = {}
+      if (this.creationType === 'cls') {
+        const res = await viewCls({ user_id: this.$auth.user.sub, _id })
+        if (res && res.data && res.data.r) {
+          currentElement = res.data.r
+          currentElement.geom = JSON.stringify(currentElement.geom)
+        }
+      }
+      this.form = { ...currentElement }
+    },
+    async createCLS() {
+      const res = await createCls({
+        ...this.form,
+        user_id: this.$auth.user.sub
+      })
+      if (res.t !== 'err') {
+        return this.$router.push('/user/section/cls')
+      }
+    },
+    async editCLS() {
+      const res = await editCls({
+        ...this.form,
+        user_id: this.$auth.user.sub,
+        _id: this.$route.query.item
+      })
+      if (res.t !== 'err') {
+        return this.$router.push('/user/section/cls')
+      }
+    },
+    createCable() {},
+    editCable() {}
   }
 }
 </script>

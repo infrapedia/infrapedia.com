@@ -1,11 +1,14 @@
 import createControlButton from './createControlButton'
 
 class EditorControls {
-  constructor(draw, dispatch, scene) {
+  constructor({ draw, $dispatch, scene, isCLS, handleBeforeFeatureCreation }) {
     this.draw = draw
     this.scene = scene
-    this.$dispatch = dispatch
+    this.isCLS = isCLS
+    this.$dispatch = $dispatch
+    this.resetScene = this.resetScene
     this.updateControls = this.updateControls
+    this.handleBeforeFeatureCreation = handleBeforeFeatureCreation
     this.handleDrawSelectionChange = this.handleDrawSelectionChange
   }
 
@@ -26,12 +29,13 @@ class EditorControls {
         container: this.controlGroup,
         className: 'editor-ctrl editor-line-string',
         title: 'Draw line',
-        visible: true,
+        visible: this.isCLS ? false : true,
         eventListener: () => {
           this.$dispatch('editor/beginCreation')
           this.draw.changeMode(this.draw.modes.DRAW_LINE_STRING)
         }
       }),
+
       point: createControlButton('point', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-point',
@@ -40,6 +44,22 @@ class EditorControls {
         eventListener: () => {
           this.$dispatch('editor/beginCreation')
           this.draw.changeMode(this.draw.modes.DRAW_POINT)
+        }
+      }),
+
+      editProperties: createControlButton('edit-properties', {
+        container: this.controlGroup,
+        className: 'editor-ctrl editor-edit-properties',
+        title: 'Edit properties',
+        eventListener: () => {
+          let featureId = this.scene.features.selected[0].id
+          let features = this.scene.features.list.filter(
+            f => f.id === featureId
+          )
+          let feature = features.length ? features[0] : null
+          if (feature) {
+            console.log(feature)
+          }
         }
       }),
 
@@ -57,26 +77,9 @@ class EditorControls {
         container: this.controlGroup,
         className: 'editor-ctrl editor-ok',
         title: 'Accept',
-        eventListener: () => {
-          this.$dispatch('editor/selectionChange', this.draw.getSelected())
-          const { features, edition, creation } = this.scene
-
-          if (creation) {
-            if (features && features.selected.length) {
-              for (let feature of features.selected) {
-                this.$dispatch('editor/confirmCreation', {
-                  feature: { ...feature },
-                  id: feature.id
-                })
-              }
-            } else return
-          } else if (edition) {
-            this.$dispatch('editor/editFeature', features.selected)
-          }
-
-          this.resetScene()
-        }
+        eventListener: () => this.handleFeatureCreation()
       }),
+
       cancel: createControlButton('cancel', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-cancel',
@@ -123,12 +126,13 @@ class EditorControls {
     }
   }
 
-  resetScene() {
+  resetScene(isResetList) {
     this.$dispatch('editor/resetScene')
     this.draw.changeMode(this.draw.modes.SIMPLE_SELECT)
+    if (isResetList) this.$dispatch('editor/resetList')
   }
 
-  async featureDeleted() {
+  featureDeleted() {
     const { selected } = this.scene.features
     if (selected && selected.length) {
       for (let feat of selected) {
@@ -148,25 +152,20 @@ class EditorControls {
       this.buttons.point.style.setProperty('display', 'none')
       this.buttons.line_string.style.setProperty('display', 'none')
 
-      return
+      if (scene.edition) {
+        this.buttons.editProperties.style.setProperty('display', 'block')
+      }
     } else if (!scene.creation || !scene.edition) {
       this.buttons.ok.style.setProperty('display', 'none')
       this.buttons.cancel.style.setProperty('display', 'none')
       this.buttons.trash.style.setProperty('display', 'none')
 
       this.buttons.point.style.setProperty('display', 'block')
-      this.buttons.line_string.style.setProperty('display', 'block')
-    }
-
-    if (scene.features.selected) {
-      this.buttons.ok.style.setProperty('display', 'none')
-      this.buttons.cancel.style.setProperty('display', 'none')
-      this.buttons.trash.style.setProperty('display', 'block')
-
-      this.buttons.point.style.setProperty('display', 'none')
-      this.buttons.line_string.style.setProperty('display', 'none')
-
-      return
+      if (!this.isCLS) {
+        this.buttons.line_string.style.setProperty('display', 'block')
+      } else {
+        this.buttons.line_string.style.setProperty('display', 'none')
+      }
     }
   }
 
@@ -175,6 +174,27 @@ class EditorControls {
       this.$dispatch('editor/beginEdition')
       this.$dispatch('editor/selectionChange', { features })
     }
+  }
+
+  async handleFeatureCreation() {
+    this.$dispatch('editor/selectionChange', this.draw.getSelected())
+    const { features, edition, creation } = this.scene
+
+    if (creation) {
+      if (features && features.selected.length) {
+        const featWProps = await this.handleBeforeFeatureCreation({
+          id: features.selected[0].id,
+          feature: { ...features.selected[0] },
+          type: features.selected[0].geometry.type
+        })
+
+        await this.$dispatch('editor/confirmCreation', featWProps)
+      } else return
+    } else if (edition) {
+      this.$dispatch('editor/editFeature', features.selected)
+    }
+
+    this.resetScene()
   }
 }
 
