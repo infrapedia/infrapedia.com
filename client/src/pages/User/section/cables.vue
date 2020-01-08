@@ -4,16 +4,19 @@
     :class="{ dark, light: !dark }"
   >
     <table-list
+      v-loading="loading"
       :columns="columns"
       :config="tableConfig"
-      :table-data="cablesList"
+      :table-data="tableData"
+      @edit-item="handleEditCable"
+      @delete-item="handleDeleteCable"
     />
   </div>
 </template>
 
 <script>
-import cablesList from '../../../mokedData/cablesList'
 import TableList from '../../../components/TableList.vue'
+import { getCables, deleteCable } from '../../../services/api/cables'
 
 export default {
   name: 'CablesSection',
@@ -21,7 +24,8 @@ export default {
     TableList
   },
   data: () => ({
-    cablesList,
+    tableData: [],
+    loading: false,
     tableConfig: {
       title: 'Cables',
       creation_link: '/user/section/create?id=cables',
@@ -43,6 +47,38 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    }
+  },
+  async mounted() {
+    await this.getCablesList()
+  },
+  methods: {
+    async getCablesList() {
+      this.loading = true
+      const res = await getCables({ user_id: this.$auth.user.sub })
+      if (res.t !== 'error' && res.data) {
+        this.tableData = res.data.r
+      }
+      this.loading = false
+    },
+    handleEditCable(_id) {
+      this.$router.push({
+        path: '/user/section/create',
+        query: { id: 'cable', item: _id }
+      })
+    },
+    handleDeleteCable(_id) {
+      this.$confirm(
+        'Are you sure you want to delete this CLS. This action is irreversible',
+        'Please confirm to continue'
+      )
+        .then(async () => {
+          await deleteCable({
+            user_id: this.$auth.user.sub,
+            _id
+          }).then(() => this.getClssList())
+        })
+        .catch(() => {})
     }
   }
 }

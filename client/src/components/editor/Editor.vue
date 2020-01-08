@@ -11,11 +11,13 @@
 </template>
 
 <script>
-import { mapConfig } from '../../config/mapConfig'
+import { bus } from '../../helpers/eventBus'
+import EditorControls from './editorControls'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
-import EditorControls from './editorControls'
 import PropertiesDialog from './propertiesDialog'
+import { mapConfig } from '../../config/mapConfig'
+import { EDITOR_LOAD_DRAW } from '../../events/editor'
 
 export default {
   components: {
@@ -68,6 +70,7 @@ export default {
     if (this.scene.features.list.length) {
       this.handleRecreateDraw()
     }
+    bus.$on(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
   },
   beforeDestroy() {
     if (this.scene.features.list.length) {

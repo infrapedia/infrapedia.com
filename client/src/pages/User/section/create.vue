@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import { bus } from '../../../helpers/eventBus'
+import { EDITOR_LOAD_DRAW } from '../../../events/editor'
 import EditorMap from '../../../components/editor/Editor'
 import CLSForm from '../../../components/userCreationForms/cls'
 import CableForm from '../../../components/userCreationForms/cables'
@@ -98,10 +100,10 @@ export default {
         case 'cls':
           this.form = {
             name: '',
-            cables: [],
             slug: '',
-            geom: '',
-            state: null
+            cables: [],
+            state: null,
+            geom: this.$store.state.editor.scene.features.list
           }
           break
         default:
@@ -127,10 +129,20 @@ export default {
         const res = await viewCls({ user_id: this.$auth.user.sub, _id })
         if (res && res.data && res.data.r) {
           currentElement = res.data.r
-          currentElement.geom = JSON.stringify(currentElement.geom)
         }
       }
+
       this.form = { ...currentElement }
+      if (this.form.geom.features) {
+        for (let feat of this.form.geom.features) {
+          this.$store.dispatch('editor/confirmCreation', {
+            id: feat.id,
+            feature: feat,
+            type: feat.geometry.type
+          })
+        }
+        bus.$emit(`${EDITOR_LOAD_DRAW}`)
+      }
     },
     async createCLS() {
       const res = await createCls({

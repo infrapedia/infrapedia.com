@@ -24,9 +24,6 @@
           v-model="form.slug"
         />
       </el-form-item>
-      <el-form-item label="Geometry">
-        <el-input class="w-fit-full" v-model="form.geom" />
-      </el-form-item>
       <el-form-item label="Cables">
         <el-select
           class="w-fit-full"

@@ -18,7 +18,17 @@ export const createCls = async ({
   form.append('name', name)
   form.append('state', state)
   form.append('slug', slug)
-  form.append('geom', geom)
+
+  if (geom) {
+    form.append(
+      'geom',
+      JSON.stringify({
+        type: 'FeatureCollection',
+        features: geom.map(f => f.feature)
+      })
+    )
+  } else form.append('geom', '')
+
   if (cables.length) {
     cables.forEach((a, i) => {
       form.append(`cables[${i}]`, a)
@@ -53,7 +63,17 @@ export const editCls = async ({
   form.append('name', name)
   form.append('state', state)
   form.append('slug', slug)
-  form.append('geom', geom)
+
+  if (geom) {
+    form.append(
+      'geom',
+      JSON.stringify({
+        type: 'FeatureCollection',
+        features: geom[0].feature
+      })
+    )
+  } else form.append('geom', '')
+
   if (cables.length) {
     cables.forEach((a, i) => {
       form.append(`cables[${i}]`, a)
