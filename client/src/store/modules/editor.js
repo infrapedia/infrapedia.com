@@ -55,6 +55,9 @@ const mutations = {
   [types.RESET_LIST](state) {
     state.scene.features.list = []
   },
+  [types.SET_LIST](state, list) {
+    state.scene.features.list = list
+  },
   [types.RESET_SCENE](state) {
     state.scene.edition = null
     state.scene.creation = null
@@ -80,6 +83,9 @@ const actions = {
   },
   confirmCreation({ commit }, feature) {
     return commit(`${types.CONFIRM_CREATION}`, feature)
+  },
+  setList({ commit }, featuresList) {
+    return commit(`${types.SET_LIST}`, featuresList)
   },
   resetList({ commit }) {
     return commit(`${types.RESET_LIST}`)

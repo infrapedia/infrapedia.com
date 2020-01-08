@@ -14,6 +14,7 @@
         :form="form"
         :mode="mode"
         @send-data="checkType"
+        @handle-file-converted="handleFileConverted"
       />
     </div>
     <div class="right w-fit-full">
@@ -24,12 +25,12 @@
 
 <script>
 import { bus } from '../../../helpers/eventBus'
-import { EDITOR_LOAD_DRAW } from '../../../events/editor'
 import EditorMap from '../../../components/editor/Editor'
 import CLSForm from '../../../components/userCreationForms/cls'
 import CableForm from '../../../components/userCreationForms/cables'
 import { createCls, editCls, viewCls } from '../../../services/api/cls'
 import { createCable, editCable, viewCable } from '../../../services/api/cables'
+import { EDITOR_LOAD_DRAW, EDITOR_FILE_CONVERTED } from '../../../events/editor'
 
 export default {
   name: 'CreateSection',
@@ -87,6 +88,9 @@ export default {
     }
   },
   methods: {
+    handleFileConverted(fc) {
+      return bus.$emit(`${EDITOR_FILE_CONVERTED}`, fc)
+    },
     handleDialogVisibility(bool) {
       this.isPropertiesDialog = bool
     },

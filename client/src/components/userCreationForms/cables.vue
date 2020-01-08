@@ -113,7 +113,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <dragger />
+        <dragger @handle-file-converted="handleFileConverted" />
       </el-form-item>
       <el-form-item class="mt12">
         <el-button
@@ -167,6 +167,9 @@ export default {
     this.getCLSList()
   },
   methods: {
+    handleFileConverted(fc) {
+      return this.$emit('handle-file-converted', fc)
+    },
     async getCLSList() {
       const res = await getClss({ user_id: this.$auth.user.sub })
       if (res && res.data && res.data.r) {

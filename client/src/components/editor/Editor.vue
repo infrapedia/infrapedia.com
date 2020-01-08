@@ -17,7 +17,7 @@ import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import PropertiesDialog from './propertiesDialog'
 import { mapConfig } from '../../config/mapConfig'
-import { EDITOR_LOAD_DRAW } from '../../events/editor'
+import { EDITOR_LOAD_DRAW, EDITOR_FILE_CONVERTED } from '../../events/editor'
 
 export default {
   components: {
@@ -71,6 +71,7 @@ export default {
       this.handleRecreateDraw()
     }
     bus.$on(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
+    bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
   },
   beforeDestroy() {
     if (this.scene.features.list.length) {
@@ -78,13 +79,24 @@ export default {
     }
   },
   methods: {
+    async handleFileConverted(fc) {
+      await this.$store.dispatch('editor/setList', fc.features)
+      return this.draw.set(fc)
+    },
     handleDialogData(data) {
       this.dialog.visible = false
       const feature = { ...this.dialog.selectedFeature }
 
-      feature.feature.properties = {
-        ...feature.feature.properties,
-        ...data
+      if (feature.feature) {
+        feature.feature.properties = {
+          ...feature.feature.properties,
+          ...data
+        }
+      } else {
+        feature.properties = {
+          ...feature.properties,
+          ...data
+        }
       }
 
       this.dialog.mode === 'create'

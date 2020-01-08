@@ -89,25 +89,27 @@ export default {
     isVisible(bool) {
       if (!bool) return
 
-      const { type } = this.feature
-      if (type !== 'Point') {
-        this.form = {
-          name: '',
-          status: 'Active',
-          stroke: '#cccccc',
-          'stroke-width': 0.4,
-          'stroke-opacity': 1
-        }
+      const type =
+        this.feature.type && this.feature.type !== 'Feature'
+          ? this.feature.type
+          : this.feature.geometry.type
+
+      if (this.mode !== 'create') {
+        this.form = { ...this.feature.properties }
+        this.form.status = this.form.status ? 'Active' : 'Inactive'
       } else {
-        this.form = {
-          name: ''
-        }
-      }
-    },
-    mode(str) {
-      if (str === 'edit') {
-        this.form = {
-          ...this.feature.feature.properties
+        if (type !== 'Point') {
+          this.form = {
+            name: '',
+            status: 'Active',
+            stroke: '#cccccc',
+            'stroke-width': 0.4,
+            'stroke-opacity': 1
+          }
+        } else {
+          this.form = {
+            name: ''
+          }
         }
       }
     }

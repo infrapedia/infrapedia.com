@@ -66,7 +66,7 @@ export default {
         const fCollection = await kmzToJSON({ link: res.data.r[0], user_id })
 
         if (fCollection && fCollection.data.r) {
-          this.$emit('featureCollection-converted-file', fCollection.data.r)
+          this.$emit('handle-file-converted', fCollection.data.r)
           this.isConvertingKMZ = false
         }
       }
