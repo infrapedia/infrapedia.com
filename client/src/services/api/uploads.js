@@ -18,3 +18,33 @@ export const uploadOrgLogo = async ({ logo, user_id }) => {
   })
   return res
 }
+
+export const uploadKmz = async ({ file, user_id }) => {
+  url = `${apiConfig.url}/auth/upload/kmz`
+  form = new FormData()
+  form.append('file', file)
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+  return res
+}
+
+export const kmzToJSON = async ({ link, user_id }) => {
+  url = `${apiConfig.url}/auth/upload/togeojson`
+  form = new FormData()
+  form.append('link', link)
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+  return res
+}

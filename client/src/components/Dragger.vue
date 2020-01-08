@@ -22,10 +22,14 @@
 </template>
 
 <script>
+import { kmzToJSON, uploadKmz } from '../services/api/uploads'
+
 export default {
   data: () => ({
+    file: [],
     dragover: false,
-    file: []
+    isUploadingKMZ: false,
+    isConvertingKMZ: false
   }),
   methods: {
     onDrop(e) {
@@ -43,16 +47,30 @@ export default {
       return this.$refs.file.click()
     },
     selectFile() {
-      // @ts-ignore
       const file = this.$refs.file.files
       if (file) this.file = Array.from(file)
       this.$refs.file.value = ''
+      this.handleFileReadProcess()
     },
     async handleFileReadProcess() {
+      this.isUploadingKMZ = true
       if (this.file.length > 1) {
         this.file = this.file.splice(1)
       }
-      console.log(this.file)
+
+      const user_id = this.$auth.user.sub
+      const res = await uploadKmz({ file: this.file, user_id })
+
+      if (res && res.data.r && res.data.r.length) {
+        this.isConvertingKMZ = true
+        const fCollection = await kmzToJSON({ link: res.data.r[0], user_id })
+
+        if (fCollection && fCollection.data.r) {
+          this.$emit('featureCollection-converted-file', fCollection.data.r)
+          this.isConvertingKMZ = false
+        }
+      }
+      this.isUploadingKMZ = false
     }
   }
 }
