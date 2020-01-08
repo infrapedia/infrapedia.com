@@ -80,7 +80,7 @@ class EditorControls {
           try {
             return this.scene.creation
               ? this.handleFeatureCreation()
-              : this.handleFeatureEdition(this.scene.features.selected)
+              : this.handleFeatureEdition()
           } catch (err) {
             console.warn(err)
           }
@@ -215,9 +215,24 @@ class EditorControls {
    *
    * @param { Object } features - Features that has been edited
    */
-  handleFeatureEdition(features) {
-    this.$dispatch('editor/editFeature', features)
-    return this.resetScene()
+  handleFeatureEdition() {
+    const currentFeature = this.draw.getSelected()
+
+    if (currentFeature.features.length) {
+      const feat = JSON.parse(
+        JSON.stringify(
+          this.scene.features.list.filter(
+            f => f.id === currentFeature.features[0].id
+          )[0]
+        )
+      )
+
+      feat.feature.geometry.coordinates =
+        currentFeature.features[0].geometry.coordinates
+
+      this.$dispatch('editor/editFeature', [feat])
+      return this.resetScene()
+    }
   }
 
   async handleEditFeatureProps() {

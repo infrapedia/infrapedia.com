@@ -126,7 +126,7 @@ export const editCable = async ({
     )
   } else form.append('geom', '')
 
-  const res = await $axios.post(url, form, {
+  const res = await $axios.put(url, form, {
     withCredentials: true,
     headers: {
       user_id,

@@ -101,7 +101,7 @@ export default {
             geom: this.$store.state.editor.scene.features.list
           }
           break
-        default:
+        case 'cable':
           this.form = {
             cls: [],
             urls: [],
@@ -140,6 +140,7 @@ export default {
             type: feat.geometry.type
           })
         }
+        this.form.geom = this.$store.state.editor.scene.features.list
         bus.$emit(`${EDITOR_LOAD_DRAW}`)
       }
     },
