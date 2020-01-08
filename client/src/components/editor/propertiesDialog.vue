@@ -16,7 +16,13 @@
         <el-input v-model="form.name" />
       </el-form-item>
       <el-form-item label="Color" v-if="feature.type !== 'Point'">
-        <el-switch v-model="form.color" />
+        <el-switch
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+          active-text="Active"
+          inactive-text="Inactive"
+          v-model="form.color"
+        />
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -60,6 +66,7 @@ export default {
     },
     mode(str) {
       if (str === 'edit') {
+        console.log(this.feature)
         this.form = {
           ...this.feature.feature.properties
         }

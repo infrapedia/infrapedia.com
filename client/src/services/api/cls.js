@@ -69,7 +69,7 @@ export const editCls = async ({
       'geom',
       JSON.stringify({
         type: 'FeatureCollection',
-        features: geom[0].feature
+        features: geom.map(f => f.feature)
       })
     )
   } else form.append('geom', '')

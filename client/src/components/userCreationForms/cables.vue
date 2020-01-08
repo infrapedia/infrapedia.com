@@ -1,9 +1,7 @@
 <template>
   <div class="pb6 pt6 pr8 pl8">
     <header slot="header" class="w-fit-full mb8">
-      <h1 class="title">
-        Create cable
-      </h1>
+      <h1 class="title">{{ title }} cable</h1>
     </header>
     <el-form ref="form" :model="form">
       <el-form-item label="Name">
@@ -14,7 +12,7 @@
           :min="0"
           class="w-fit-full"
           controls-position="right"
-          v-model="form.system_length"
+          v-model="form.systemLength"
         />
       </el-form-item>
       <el-form-item label="Activation date">
@@ -66,7 +64,7 @@
           :min="0"
           class="w-fit-full"
           controls-position="right"
-          v-model="form.capacity_tbps"
+          v-model="form.capacityTBPS"
         />
       </el-form-item>
       <el-form-item label="Fiber pairs">
@@ -76,27 +74,41 @@
         <el-input
           type="textarea"
           class="w-fit-full"
-          v-model="form.fiberPairs"
+          v-model="form.notes"
           :rows="4"
         />
       </el-form-item>
       <el-form-item label="Facilities">
-        <el-select class="w-fit-full" v-model="form.facilities" placeholder>
+        <el-select
+          multiple
+          filterable
+          collapse-tags
+          class="w-fit-full"
+          v-model="form.facilities"
+          placeholder
+        >
           <el-option
-            v-for="(opt, i) in []"
+            v-for="(opt, i) in facsList"
             :key="i"
-            :label="opt.label"
-            :value="opt.value"
+            :label="opt.name"
+            :value="opt._id"
           />
         </el-select>
       </el-form-item>
       <el-form-item label="CLS">
-        <el-select class="w-fit-full" v-model="form.cls" placeholder>
+        <el-select
+          multiple
+          filterable
+          collapse-tags
+          class="w-fit-full"
+          v-model="form.cls"
+          placeholder
+        >
           <el-option
-            v-for="(opt, i) in []"
+            v-for="(opt, i) in clsList"
             :key="i"
-            :label="opt.label"
-            :value="opt.value"
+            :label="opt.name"
+            :value="opt._id"
           />
         </el-select>
       </el-form-item>
@@ -104,8 +116,14 @@
         <dragger />
       </el-form-item>
       <el-form-item class="mt12">
-        <el-button type="primary" class="w-fit-full" round @click="sendData">
-          Create and start drawing
+        <el-button
+          type="primary"
+          class="w-fit-full"
+          round
+          :disabled="checkGeomLength"
+          @click="sendData"
+        >
+          {{ title }} cable
         </el-button>
       </el-form-item>
     </el-form>
@@ -114,6 +132,7 @@
 
 <script>
 import Dragger from '../../components/Dragger'
+import { getClss } from '../../services/api/cls'
 
 export default {
   name: 'CableForm',
@@ -122,15 +141,38 @@ export default {
   },
   data: () => ({
     tag: '',
+    clsList: [],
+    facsList: [],
     inputVisible: false
   }),
   props: {
     form: {
       type: Object,
       required: true
+    },
+    mode: {
+      type: String,
+      required: true
     }
   },
+  computed: {
+    title() {
+      return this.mode === 'create' ? 'Create' : 'Edit'
+    },
+    checkGeomLength() {
+      return this.$store.state.editor.scene.features.list.length ? false : true
+    }
+  },
+  mounted() {
+    this.getCLSList()
+  },
   methods: {
+    async getCLSList() {
+      const res = await getClss({ user_id: this.$auth.user.sub })
+      if (res && res.data && res.data.r) {
+        this.clsList = res.data.r
+      }
+    },
     sendData() {
       return this.$emit('send-data')
     },

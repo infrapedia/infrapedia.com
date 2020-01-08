@@ -9,14 +9,8 @@
           <fa :icon="['fas', 'arrow-left']" />
         </router-link>
       </header>
-      <cable-form
-        v-if="creationType === 'cables'"
-        :form="form"
-        :mode="mode"
-        @send-data="checkType"
-      />
-      <cls-form
-        v-else-if="creationType === 'cls'"
+      <component
+        :is="currentView"
         :form="form"
         :mode="mode"
         @send-data="checkType"
@@ -35,6 +29,7 @@ import EditorMap from '../../../components/editor/Editor'
 import CLSForm from '../../../components/userCreationForms/cls'
 import CableForm from '../../../components/userCreationForms/cables'
 import { createCls, editCls, viewCls } from '../../../services/api/cls'
+import { createCable, editCable, viewCable } from '../../../services/api/cables'
 
 export default {
   name: 'CreateSection',
@@ -54,6 +49,9 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    currentView() {
+      return this.creationType === 'cls' ? CLSForm : CableForm
     },
     checkType() {
       if (this.mode === 'edit') {
@@ -83,19 +81,16 @@ export default {
 
     this.creationType = this.$route.query.id
     this.checkCreationType(this.creationType)
+
     if (this.$route.query.item) {
-      if (this.creationType === 'cls') {
-        this.getElementOnEdit(this.$route.query.item)
-      } else {
-        this.getElementOnEdit(this.$route.query.item, [])
-      }
+      this.getElementOnEdit(this.$route.query.item)
     }
   },
   methods: {
     handleDialogVisibility(bool) {
       this.isPropertiesDialog = bool
     },
-    checkCreationType(type) {
+    async checkCreationType(type) {
       switch (type) {
         case 'cls':
           this.form = {
@@ -108,16 +103,17 @@ export default {
           break
         default:
           this.form = {
-            cls: '',
-            name: '',
+            cls: [],
             urls: [],
+            name: '',
             notes: '',
-            facilities: '',
+            facilities: [],
             fiberPairs: '',
-            system_length: 0,
-            capacity_tbps: 0,
+            systemLength: 0,
+            capacityTBPS: 0,
             terrestrial: false,
-            activationDateTime: ''
+            activationDateTime: '',
+            geom: this.$store.state.editor.scene.features.list
           }
           break
       }
@@ -125,11 +121,14 @@ export default {
     async getElementOnEdit(_id) {
       this.mode = 'edit'
       let currentElement = {}
-      if (this.creationType === 'cls') {
-        const res = await viewCls({ user_id: this.$auth.user.sub, _id })
-        if (res && res.data && res.data.r) {
-          currentElement = res.data.r
-        }
+
+      switch (this.creationType) {
+        case 'cls':
+          currentElement = await this.viewCurrentCLS(_id)
+          break
+        case 'cable':
+          currentElement = await this.viewCurrentCable(_id)
+          break
       }
 
       this.form = { ...currentElement }
@@ -143,6 +142,14 @@ export default {
         }
         bus.$emit(`${EDITOR_LOAD_DRAW}`)
       }
+    },
+    async viewCurrentCLS(_id) {
+      const res = await viewCls({ user_id: this.$auth.user.sub, _id })
+      return res && res.data && res.data.r ? res.data.r : {}
+    },
+    async viewCurrentCable(_id) {
+      const res = await viewCable({ user_id: this.$auth.user.sub, _id })
+      return res && res.data && res.data.r ? res.data.r : {}
     },
     async createCLS() {
       const res = await createCls({
@@ -161,6 +168,25 @@ export default {
       })
       if (res.t !== 'err') {
         return this.$router.push('/user/section/cls')
+      }
+    },
+    async createCable() {
+      const res = await createCable({
+        ...this.form,
+        user_id: this.$auth.user.sub
+      })
+      if (res.t !== 'err') {
+        return this.$router.push('/user/section/cables')
+      }
+    },
+    async editCable() {
+      const res = await editCable({
+        ...this.form,
+        user_id: this.$auth.user.sub,
+        _id: this.$route.query.item
+      })
+      if (res.t !== 'err') {
+        return this.$router.push('/user/section/cables')
       }
     }
   }

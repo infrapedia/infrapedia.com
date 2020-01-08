@@ -48,7 +48,7 @@ class EditorControls {
         container: this.controlGroup,
         className: 'editor-ctrl editor-point',
         title: 'Create point',
-        visible: true,
+        visible: !this.isCLS ? false : true,
         eventListener: () => {
           this.$dispatch('editor/beginCreation')
           this.draw.changeMode(this.draw.modes.DRAW_POINT)
@@ -140,7 +140,9 @@ class EditorControls {
       this.buttons.trash.style.setProperty('display', 'none')
       this.buttons.editProperties.style.setProperty('display', 'none')
 
-      this.buttons.point.style.setProperty('display', 'block')
+      if (this.isCLS) this.buttons.point.style.setProperty('display', 'block')
+      else this.buttons.point.style.setProperty('display', 'none')
+
       if (!this.isCLS) {
         this.buttons.line_string.style.setProperty('display', 'block')
       } else {

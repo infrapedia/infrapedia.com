@@ -69,14 +69,14 @@ export default {
     },
     handleDeleteCable(_id) {
       this.$confirm(
-        'Are you sure you want to delete this CLS. This action is irreversible',
+        'Are you sure you want to delete this Cable. This action is irreversible',
         'Please confirm to continue'
       )
         .then(async () => {
           await deleteCable({
             user_id: this.$auth.user.sub,
             _id
-          }).then(() => this.getClssList())
+          }).then(() => this.getCablesList())
         })
         .catch(() => {})
     }

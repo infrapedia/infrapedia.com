@@ -45,7 +45,13 @@
         <dragger />
       </el-form-item>
       <el-form-item class="mt24">
-        <el-button type="primary" class="w-fit-full" round @click="sendData">
+        <el-button
+          type="primary"
+          class="w-fit-full"
+          round
+          :disabled="checkGeomLength"
+          @click="sendData"
+        >
           {{ this.title }} CLS
         </el-button>
       </el-form-item>
@@ -74,6 +80,9 @@ export default {
   computed: {
     title() {
       return this.mode === 'create' ? 'Create' : 'Edit'
+    },
+    checkGeomLength() {
+      return this.$store.state.editor.scene.features.list.length ? false : true
     }
   },
   methods: {

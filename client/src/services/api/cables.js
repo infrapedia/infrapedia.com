@@ -16,7 +16,7 @@ export const createCable = async ({
   notes,
   cls,
   user_id,
-  geometry
+  geom
 }) => {
   url = `${apiConfig.url}/auth/cables/add`
   form = new FormData()
@@ -24,14 +24,39 @@ export const createCable = async ({
   form.append('name', name)
   form.append('systemLength', systemLength)
   form.append('activationDateTime', activationDateTime)
-  form.append('urls', urls) // Array
-  form.append('terrestrial', terrestrial) // Boolean
+
   form.append('capacityTBPS', capacityTBPS)
+  form.append('terrestrial', terrestrial) // Bool
   form.append('fiberPairs', fiberPairs)
-  form.append('facilities', facilities)
   form.append('notes', notes)
-  form.append('cls', cls)
-  form.append('geometry', geometry)
+
+  if (cls.length) {
+    cls.forEach((c, i) => {
+      form.append(`cls[${i}]`, c)
+    })
+  } else form.append('cls', JSON.stringify([]))
+
+  if (urls.length) {
+    urls.forEach((url, i) => {
+      form.append(`urls[${i}]`, url)
+    })
+  } else form.append('urls', JSON.stringify([]))
+
+  if (facilities.length) {
+    facilities.forEach((fac, i) => {
+      form.append(`facilities[${i}]`, fac)
+    })
+  } else form.append('facilities', '')
+
+  if (geom) {
+    form.append(
+      'geom',
+      JSON.stringify({
+        type: 'FeatureCollection',
+        features: geom.map(f => f.feature)
+      })
+    )
+  } else form.append('geom', '')
 
   const res = await $axios.post(url, form, {
     withCredentials: true,
@@ -58,7 +83,7 @@ export const editCable = async ({
   notes,
   cls,
   user_id,
-  geometry
+  geom
 }) => {
   url = `${apiConfig.url}/auth/cables/edit`
   form = new FormData()
@@ -67,14 +92,39 @@ export const editCable = async ({
   form.append('name', name)
   form.append('systemLength', systemLength)
   form.append('activationDateTime', activationDateTime)
-  form.append('urls', urls) // Array
-  form.append('terrestrial', terrestrial) // Bool
+
   form.append('capacityTBPS', capacityTBPS)
+  form.append('terrestrial', terrestrial) // Bool
   form.append('fiberPairs', fiberPairs)
-  form.append('facilities', facilities)
   form.append('notes', notes)
-  form.append('cls', cls)
-  form.append('geometry', geometry)
+
+  if (cls.length) {
+    cls.forEach((c, i) => {
+      form.append(`cls[${i}]`, c)
+    })
+  } else form.append('cls', JSON.stringify([]))
+
+  if (urls.length) {
+    urls.forEach((url, i) => {
+      form.append(`urls[${i}]`, url)
+    })
+  } else form.append('urls', JSON.stringify([]))
+
+  if (facilities.length) {
+    facilities.forEach((fac, i) => {
+      form.append(`facilities[${i}]`, fac)
+    })
+  } else form.append('facilities', '')
+
+  if (geom) {
+    form.append(
+      'geom',
+      JSON.stringify({
+        type: 'FeatureCollection',
+        features: geom.map(f => f.feature)
+      })
+    )
+  } else form.append('geom', '')
 
   const res = await $axios.post(url, form, {
     withCredentials: true,
@@ -116,7 +166,7 @@ export const deleteCable = async ({ user_id, _id }) => {
   return res
 }
 
-export const viewCls = async ({ user_id, _id }) => {
+export const viewCable = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/cables/owner/${_id}`
   const res = await $axios.get(url, {
     withCredentials: true,
