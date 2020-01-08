@@ -174,16 +174,15 @@ class EditorControls {
       }
       this.resetScene()
     } else if (this.scene.edition) {
-      // Deleting all draws
-      this.draw.trash()
       // Because you cancel the edition we need to recreate all the draw(s) again
-      // It will work like this for now, but I know it can't be cost-effective
-      const savedFeatures = Array.from(this.scene.features.list, i => ({
-        ...i.feature
-      }))
-      for (let feat of savedFeatures) {
-        this.draw.add(feat)
-      }
+      // This function does the same as doing this.draw.trash() and them this.draw.add() for each feature
+      // The difference is that this one has better performance
+      this.draw.set({
+        type: 'FeatureCollection',
+        features: Array.from(this.scene.features.list, i => ({
+          ...i.feature
+        }))
+      })
       this.resetScene()
     }
   }
