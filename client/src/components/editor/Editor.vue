@@ -145,7 +145,11 @@ export default {
       }
     },
     handleDrawSelectionChange(e) {
-      return this.controls.handleDrawSelectionChange(e.features)
+      if (!e.features.length) return
+      const featureSelected = this.scene.features.list.filter(
+        feat => feat.id === e.features[0].id
+      )
+      return this.controls.handleDrawSelectionChange(featureSelected)
     },
     handleCreateFeature(feat) {
       this.$store.dispatch('editor/confirmCreation', feat)

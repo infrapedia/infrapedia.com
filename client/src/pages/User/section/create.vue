@@ -132,7 +132,7 @@ export default {
       }
 
       this.form = { ...currentElement }
-      if (this.form.geom.features) {
+      if (this.form.geom && this.form.geom.features) {
         for (let feat of this.form.geom.features) {
           this.$store.dispatch('editor/confirmCreation', {
             id: feat.id,
