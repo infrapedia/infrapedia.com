@@ -202,15 +202,11 @@ class EditorControls {
     const { features } = this.scene
 
     if (features && features.selected.length) {
-      return await this.handleBeforeFeatureCreation(
-        features.selected[0].geometry.type
-      )
-      // const featWProps = await this.handleBeforeFeatureCreation({
-      //   id: features.selected[0].id,
-      //   feature: { ...features.selected[0] },
-      //   type: features.selected[0].geometry.type
-      // })
-      // await this.$dispatch('editor/confirmCreation', { ...featWProps })
+      return await this.handleBeforeFeatureCreation({
+        id: features.selected[0].id,
+        feature: { ...features.selected[0] },
+        type: features.selected[0].geometry.type
+      })
     } else return
   }
   /**
@@ -218,7 +214,8 @@ class EditorControls {
    * @param { Object } features - Features that has been edited
    */
   handleFeatureEdition(features) {
-    return this.$dispatch('editor/editFeature', features)
+    this.$dispatch('editor/editFeature', features)
+    return this.resetScene()
   }
 
   async handleEditFeatureProps() {
@@ -227,9 +224,6 @@ class EditorControls {
     await this.handleEditFeatureProperties(
       features.length ? JSON.parse(JSON.stringify(features[0])) : null
     )
-    // const featEdited = await this.handleEditFeatureProperties(feature)
-    // this.handleFeatureEdition([{ ...featEdited }])
-    // this.resetScene()
   }
 }
 

@@ -1,5 +1,13 @@
 <template>
-  <div id="map" />
+  <div class="map-wrapper">
+    <div id="map" />
+    <properties-dialog
+      :mode="dialog.mode"
+      :is-visible="dialog.visible"
+      :feature="dialog.selectedFeature"
+      @close="handleDialogData"
+    />
+  </div>
 </template>
 
 <script>
@@ -7,26 +15,26 @@ import { mapConfig } from '../../config/mapConfig'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import EditorControls from './editorControls'
+import PropertiesDialog from './propertiesDialog'
 
 export default {
+  components: {
+    PropertiesDialog
+  },
   data: () => ({
     map: null,
     draw: null,
     controls: null,
-    interactions: null
+    dialog: {
+      visible: false,
+      mode: 'create',
+      selectedFeature: {}
+    }
   }),
   props: {
     isCls: {
       type: Boolean,
       default: () => false
-    },
-    propertiesDialogForm: {
-      type: Object,
-      required: true
-    },
-    isDialogDone: {
-      type: Boolean,
-      required: true
     }
   },
   computed: {
@@ -46,25 +54,6 @@ export default {
   watch: {
     dark(bool) {
       return this.toggleDarkMode(bool)
-    },
-    isDialogDone(bool) {
-      if (!bool) return
-
-      const { features } = this.scene
-      const feature = {
-        id: features.selected[0].id,
-        feature: { ...features.selected[0] },
-        type: features.selected[0].geometry.type
-      }
-      feature.feature.properties = {
-        ...feature.feature.properties,
-        ...this.propertiesDialogForm
-      }
-      if (this.scene.creation) {
-        return this.handleCreateFeature(feature)
-      } else if (this.scene.edition) {
-        return this.handleEditFeatureProperties()
-      }
     },
     scene: {
       handler(newState) {
@@ -86,6 +75,25 @@ export default {
     }
   },
   methods: {
+    handleDialogData(data) {
+      this.dialog.visible = false
+      const feature = { ...this.dialog.selectedFeature }
+
+      feature.feature.properties = {
+        ...feature.feature.properties,
+        ...data
+      }
+
+      this.dialog.mode === 'create'
+        ? this.handleCreateFeature(feature)
+        : this.handleEditFeatProps([feature])
+
+      this.dialog = {
+        visible: false,
+        mode: 'create',
+        selectedFeature: {}
+      }
+    },
     createMap() {
       mapboxgl.accessToken = mapConfig.mapToken
 
@@ -104,8 +112,15 @@ export default {
         scene: this.scene,
         isCLS: this.isCls,
         $dispatch: this.$store.dispatch,
-        handleEditFeatureProperties: this.handleEditFeatureProperties,
-        handleBeforeFeatureCreation: this.handleBeforeFeatureCreation
+        handleEditFeatureProperties: feat => {
+          this.dialog.mode = 'edit'
+          this.dialog.visible = true
+          this.dialog.selectedFeature = feat
+        },
+        handleBeforeFeatureCreation: feat => {
+          this.dialog.visible = true
+          this.dialog.selectedFeature = feat
+        }
       })
 
       map.addControl(this.controls)
@@ -129,26 +144,13 @@ export default {
     handleDrawSelectionChange(e) {
       return this.controls.handleDrawSelectionChange(e.features)
     },
-    async handleBeforeFeatureCreation(type) {
-      return await this.$emit('open-properties-dialog', type)
-    },
     handleCreateFeature(feat) {
       this.$store.dispatch('editor/confirmCreation', feat)
       return this.controls.resetScene()
     },
-    async handleEditFeatureProperties(feat) {
-      await this.$prompt('Please input a valid name', 'Edit ...', {
-        confirmButtonText: 'OK',
-        showClose: false,
-        roundButton: true,
-        showCancelButton: false,
-        closeOnClickModal: false,
-        closeOnPressEscape: false,
-        inputValue: feat.feature.properties.name,
-        inputValidator: val => val !== '',
-        inputErrorMessage: 'Invalid name'
-      }).then(({ value }) => (feat.feature.properties.name = value))
-      return feat
+    handleEditFeatProps(feat) {
+      this.$store.dispatch('editor/editFeature', feat)
+      return this.controls.resetScene()
     },
     toggleDarkMode(dark) {
       const style = dark ? mapConfig.darkBasemap : mapConfig.default

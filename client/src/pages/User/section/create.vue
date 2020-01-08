@@ -23,18 +23,7 @@
       />
     </div>
     <div class="right w-fit-full">
-      <editor-map
-        @open-properties-dialog="handleDialogVisibility($event, true)"
-        :properties-dialog-form="dialogForm"
-        :is-dialog-done="isDialogDone"
-        :is-cls="creationType === 'cls'"
-      />
-      <properties-dialog
-        :form="dialogForm"
-        :title="dialogTitle"
-        :is-visible="isPropertiesDialog"
-        @close="handleDialogVisibility('', false)"
-      />
+      <editor-map :is-cls="creationType === 'cls'" />
     </div>
   </div>
 </template>
@@ -44,23 +33,18 @@ import EditorMap from '../../../components/editor/Editor'
 import CLSForm from '../../../components/userCreationForms/cls'
 import CableForm from '../../../components/userCreationForms/cables'
 import { createCls, editCls, viewCls } from '../../../services/api/cls'
-import PropertiesDialog from '../../../components/editor/propertiesDialog'
 
 export default {
   name: 'CreateSection',
   components: {
     'cls-form': CLSForm,
     'editor-map': EditorMap,
-    'cable-form': CableForm,
-    'properties-dialog': PropertiesDialog
+    'cable-form': CableForm
   },
   data() {
     return {
       form: {},
       mode: 'create',
-      dialogForm: {},
-      dialogTitle: '',
-      isDialogDone: false,
       isPropertiesDialog: false,
       creationType: this.$route.query.id
     }
@@ -106,14 +90,8 @@ export default {
     }
   },
   methods: {
-    handleDialogVisibility(type, bool) {
+    handleDialogVisibility(bool) {
       this.isPropertiesDialog = bool
-      if (bool) this.dialogForm = {}
-      else if (!bool) {
-        this.isDialogDone = true
-        setTimeout(() => (this.isDialogDone = false), 300)
-      }
-      this.dialogTitle = type === 'Point' ? 'CLS' : 'Cable'
     },
     checkCreationType(type) {
       switch (type) {
@@ -172,9 +150,7 @@ export default {
       if (res.t !== 'err') {
         return this.$router.push('/user/section/cls')
       }
-    },
-    createCable() {},
-    editCable() {}
+    }
   }
 }
 </script>
