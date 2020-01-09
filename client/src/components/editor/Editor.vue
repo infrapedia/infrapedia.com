@@ -17,6 +17,7 @@ import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import PropertiesDialog from './propertiesDialog'
 import { mapConfig } from '../../config/mapConfig'
+// import { fCollectionFormat } from '../../helpers/featureCollection'
 import { EDITOR_LOAD_DRAW, EDITOR_FILE_CONVERTED } from '../../events/editor'
 
 export default {
@@ -87,16 +88,9 @@ export default {
       this.dialog.visible = false
       const feature = { ...this.dialog.selectedFeature }
 
-      if (feature.feature) {
-        feature.feature.properties = {
-          ...feature.feature.properties,
-          ...data
-        }
-      } else {
-        feature.properties = {
-          ...feature.properties,
-          ...data
-        }
+      feature.properties = {
+        ...feature.properties,
+        ...data
       }
 
       this.dialog.mode === 'create'
@@ -153,7 +147,7 @@ export default {
       // Deleting everything in case there's something already drawn that could be repeted
       this.draw.trash()
       for (let feat of this.scene.features.list) {
-        this.draw.add(feat.feature)
+        this.draw.add(feat)
       }
     },
     handleDrawSelectionChange(e) {

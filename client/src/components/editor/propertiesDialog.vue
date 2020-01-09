@@ -89,19 +89,15 @@ export default {
     isVisible(bool) {
       if (!bool) return
 
-      const type =
-        this.feature.type && this.feature.type !== 'Feature'
-          ? this.feature.type
-          : this.feature.geometry.type
+      const type = this.feature.geometry.type
 
       if (this.mode !== 'create') {
         this.form = { ...this.feature.properties }
-        this.form.status = this.form.status ? 'Active' : 'Inactive'
       } else {
         if (type !== 'Point') {
           this.form = {
             name: '',
-            status: 'Active',
+            status: true,
             stroke: '#cccccc',
             'stroke-width': 0.4,
             'stroke-opacity': 1
@@ -132,7 +128,9 @@ export default {
     },
     checkFields() {
       const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
-      return emptyFields.length ? true : false
+      return emptyFields.length && !emptyFields.includes('status')
+        ? true
+        : false
     }
   },
   methods: {

@@ -231,6 +231,9 @@
     background-color: lighten($dark-charcoal, 70%);
   }
 }
+.no-opacity {
+  opacity: 0;
+}
 .transition-all {
   transition: all $regular-transition;
 }

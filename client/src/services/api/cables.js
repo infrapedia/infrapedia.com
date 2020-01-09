@@ -1,5 +1,6 @@
 import $axios from '../axios'
 import apiConfig from '../../config/apiConfig'
+import { fCollectionFormat } from '../../helpers/featureCollection'
 // eslint-disable-next-line
 var url
 var form
@@ -49,13 +50,7 @@ export const createCable = async ({
   } else form.append('facilities', '')
 
   if (geom) {
-    form.append(
-      'geom',
-      JSON.stringify({
-        type: 'FeatureCollection',
-        features: geom.map(f => f.feature)
-      })
-    )
+    form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   } else form.append('geom', '')
 
   const res = await $axios.post(url, form, {
@@ -117,13 +112,7 @@ export const editCable = async ({
   } else form.append('facilities', '')
 
   if (geom) {
-    form.append(
-      'geom',
-      JSON.stringify({
-        type: 'FeatureCollection',
-        features: geom.map(f => f.feature)
-      })
-    )
+    form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   } else form.append('geom', '')
 
   const res = await $axios.put(url, form, {

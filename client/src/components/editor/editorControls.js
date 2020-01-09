@@ -109,9 +109,9 @@ class EditorControls {
     const { selected } = this.scene.features
     if (selected && selected.length) {
       for (let feat of selected) {
+        this.draw.delete(feat.id)
         this.$dispatch('editor/deleteFeature', feat.id)
       }
-      this.draw.trash()
       this.resetScene()
     }
   }
@@ -179,8 +179,8 @@ class EditorControls {
       // The difference is that this one has better performance
       this.draw.set({
         type: 'FeatureCollection',
-        features: Array.from(this.scene.features.list, i => ({
-          ...i.feature
+        features: Array.from(this.scene.features.list, f => ({
+          ...f
         }))
       })
       this.resetScene()
@@ -203,11 +203,7 @@ class EditorControls {
     const { features } = this.scene
 
     if (features && features.selected.length) {
-      return await this.handleBeforeFeatureCreation({
-        id: features.selected[0].id,
-        feature: { ...features.selected[0] },
-        type: features.selected[0].geometry.type
-      })
+      return await this.handleBeforeFeatureCreation({ ...features.selected[0] })
     } else return
   }
   /**
@@ -226,7 +222,7 @@ class EditorControls {
         )
       )
 
-      feat.feature.geometry.coordinates =
+      feat.geometry.coordinates =
         currentFeature.features[0].geometry.coordinates
 
       this.$dispatch('editor/editFeature', [feat])

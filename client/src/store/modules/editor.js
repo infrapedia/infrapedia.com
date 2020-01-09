@@ -33,13 +33,7 @@ const mutations = {
     state.scene.features.list.forEach((feat, i) => {
       for (let featEdit of features) {
         if (feat.id === featEdit.id) {
-          state.scene.features.list[i] = {
-            feature: featEdit.feature
-              ? { ...featEdit.feature }
-              : { ...featEdit },
-            id: featEdit.id,
-            type: featEdit.type
-          }
+          state.scene.features.list[i] = { ...featEdit }
         }
       }
     })

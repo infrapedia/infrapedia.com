@@ -105,7 +105,7 @@ export default {
             geom: this.$store.state.editor.scene.features.list
           }
           break
-        case 'cable':
+        case 'cables':
           this.form = {
             cls: [],
             urls: [],
@@ -137,13 +137,7 @@ export default {
 
       this.form = { ...currentElement }
       if (this.form.geom && this.form.geom.features) {
-        for (let feat of this.form.geom.features) {
-          this.$store.dispatch('editor/confirmCreation', {
-            id: feat.id,
-            feature: feat,
-            type: feat.geometry.type
-          })
-        }
+        this.$store.dispatch('editor/setList', this.form.geom.features)
         this.form.geom = this.$store.state.editor.scene.features.list
         bus.$emit(`${EDITOR_LOAD_DRAW}`)
       }
