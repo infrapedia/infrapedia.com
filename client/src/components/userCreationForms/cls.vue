@@ -42,7 +42,10 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <dragger />
+        <dragger
+          creation-type="cls"
+          @handle-file-converted="handleFileConverted"
+        />
       </el-form-item>
       <el-form-item class="mt24">
         <el-button
@@ -86,6 +89,9 @@ export default {
     }
   },
   methods: {
+    handleFileConverted(fc) {
+      return this.$emit('handle-file-converted', fc)
+    },
     sendData() {
       return this.$emit('send-data')
     }

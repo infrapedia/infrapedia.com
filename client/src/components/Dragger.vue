@@ -26,13 +26,19 @@
       v-if="isUploadingKMZ"
     >
       <loading-bar />
-      {{ loadingText }}
+      <p class="m0">
+        {{ loadingText }}
+      </p>
     </div>
   </div>
 </template>
 
 <script>
-import { kmzToJSON, uploadKmz } from '../services/api/uploads'
+import {
+  kmzPointsToJSON,
+  kmzLinesToJSON,
+  uploadKmz
+} from '../services/api/uploads'
 import LoadingBar from './LoadingBar'
 
 export default {
@@ -45,6 +51,12 @@ export default {
     dragover: false,
     isUploadingKMZ: false
   }),
+  props: {
+    creationType: {
+      type: String,
+      default: () => 'cables'
+    }
+  },
   methods: {
     onDrop(e) {
       const file = e.dataTransfer.files
@@ -79,7 +91,10 @@ export default {
       if (res && res.data.r && res.data.r.length) {
         this.loadingText =
           'We are converting your file from kmz to geojson format'
-        const fCollection = await kmzToJSON({ link: res.data.r[0], user_id })
+        const fCollection =
+          this.creationType === 'cables'
+            ? await kmzLinesToJSON({ link: res.data.r[0], user_id })
+            : await kmzPointsToJSON({ link: res.data.r[0], user_id })
 
         if (fCollection && fCollection.data.r) {
           this.$emit('handle-file-converted', fCollection.data.r)

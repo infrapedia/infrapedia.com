@@ -15,7 +15,7 @@
       <el-form-item label="Name">
         <el-input v-model="form.name" />
       </el-form-item>
-      <template v-if="feature.type !== 'Point'">
+      <template v-if="feature.geometry && feature.geometry.type !== 'Point'">
         <el-form-item label="Status">
           <el-switch
             active-color="#13ce66"
@@ -113,16 +113,18 @@ export default {
   computed: {
     title() {
       let title = ''
-      if (this.mode === 'create') {
-        title =
-          this.feature.type === 'Point'
-            ? 'Create CLS properties'
-            : 'Create segment properties'
-      } else if (this.mode === 'edit') {
-        title =
-          this.feature.type === 'Point'
-            ? 'Edit CLS properties'
-            : 'Edit segment properties'
+      if (this.feature.geometry) {
+        if (this.mode === 'create') {
+          title =
+            this.feature.geometry.type === 'Point'
+              ? 'Create CLS properties'
+              : 'Create segment properties'
+        } else if (this.mode === 'edit') {
+          title =
+            this.feature.geometry.type === 'Point'
+              ? 'Edit CLS properties'
+              : 'Edit cls properties'
+        }
       }
       return title
     },

@@ -35,8 +35,23 @@ export const uploadKmz = async ({ file, user_id }) => {
   return res
 }
 
-export const kmzToJSON = async ({ link, user_id }) => {
-  url = `${apiConfig.url}/auth/kmz/togeojson`
+export const kmzLinesToJSON = async ({ link, user_id }) => {
+  url = `${apiConfig.url}/auth/kmz/lines/togeojson`
+  form = new FormData()
+  form.append('link', link)
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+  return res
+}
+
+export const kmzPointsToJSON = async ({ link, user_id }) => {
+  url = `${apiConfig.url}/auth/kmz/points/togeojson`
   form = new FormData()
   form.append('link', link)
   const res = await $axios.post(url, form, {
