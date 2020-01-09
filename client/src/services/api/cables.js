@@ -16,12 +16,14 @@ export const createCable = async ({
   facilities,
   notes,
   cls,
+  category,
   user_id,
   geom
 }) => {
   url = `${apiConfig.url}/auth/cables/add`
   form = new FormData()
 
+  form.append('category', category)
   form.append('name', name)
   form.append('systemLength', systemLength)
   form.append('activationDateTime', activationDateTime)
@@ -77,6 +79,7 @@ export const editCable = async ({
   facilities,
   notes,
   cls,
+  category,
   user_id,
   geom
 }) => {
@@ -85,6 +88,7 @@ export const editCable = async ({
 
   form.append('_id', _id)
   form.append('name', name)
+  form.append('category', category)
   form.append('systemLength', systemLength)
   form.append('activationDateTime', activationDateTime)
 

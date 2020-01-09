@@ -30,6 +30,14 @@
         {{ loadingText }}
       </p>
     </div>
+    <el-alert
+      v-if="showAlert"
+      type="success"
+      class="mt4"
+      title="The conversion has been successful! You should see the result on the map now"
+      :closable="false"
+      show-icon
+    />
   </div>
 </template>
 
@@ -49,6 +57,7 @@ export default {
     file: [],
     loadingText: '',
     dragover: false,
+    showAlert: false,
     isUploadingKMZ: false
   }),
   props: {
@@ -80,6 +89,7 @@ export default {
     },
     async handleFileReadProcess() {
       this.isUploadingKMZ = true
+      this.showAlert = false
       this.loadingText = 'We are loading your file. This will take a moment'
       if (this.file.length > 1) {
         this.file = this.file.splice(1)
@@ -98,8 +108,7 @@ export default {
 
         if (fCollection && fCollection.data.r) {
           this.$emit('handle-file-converted', fCollection.data.r)
-          this.loadingText =
-            'The conversion has being succesfull! You should see now the result on the map'
+          this.showAlert = true
         } else {
           this.loadingText = 'The conversion has failed! ... Please try again'
         }

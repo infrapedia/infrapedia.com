@@ -4,11 +4,11 @@
       <h1 class="title">{{ title }} cable</h1>
     </header>
     <el-form ref="form" :model="form">
-      <el-form-item label="Status">
+      <el-form-item label="Category">
         <el-select
           class="w-fit-full"
           filterable
-          v-model="form.status"
+          v-model="form.category"
           placeholder
         >
           <el-option

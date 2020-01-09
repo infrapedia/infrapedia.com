@@ -48,12 +48,22 @@ export default {
       creationType: this.$route.query.id
     }
   },
+  watch: {
+    '$store.state.editor.scene.features.list'(fc) {
+      if (this.form.geom && fc.length) {
+        this.form.geom = JSON.parse(JSON.stringify(fc))
+      }
+    }
+  },
   computed: {
     dark() {
       return this.$store.state.isDark
     },
     currentView() {
       return this.creationType === 'cls' ? CLSForm : CableForm
+    },
+    featuresList() {
+      return this.$store.state.editor.scene.features.list
     },
     checkType() {
       if (this.mode === 'edit') {
@@ -103,7 +113,7 @@ export default {
             slug: '',
             cables: [],
             state: null,
-            geom: this.$store.state.editor.scene.features.list
+            geom: this.featuresList
           }
           break
         case 'cables':
@@ -117,9 +127,9 @@ export default {
             systemLength: 0,
             capacityTBPS: 0,
             terrestrial: false,
-            status: cableStates[0],
+            category: cableStates[0],
             activationDateTime: '',
-            geom: this.$store.state.editor.scene.features.list
+            geom: this.featuresList
           }
           break
       }
