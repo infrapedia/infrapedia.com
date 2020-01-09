@@ -25,6 +25,7 @@
 
 <script>
 import { bus } from '../../../helpers/eventBus'
+import cableStates from '../../../config/cableStates'
 import EditorMap from '../../../components/editor/Editor'
 import CLSForm from '../../../components/userCreationForms/cls'
 import CableForm from '../../../components/userCreationForms/cables'
@@ -116,6 +117,7 @@ export default {
             systemLength: 0,
             capacityTBPS: 0,
             terrestrial: false,
+            status: cableStates[0],
             activationDateTime: '',
             geom: this.$store.state.editor.scene.features.list
           }

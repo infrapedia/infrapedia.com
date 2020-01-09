@@ -4,6 +4,21 @@
       <h1 class="title">{{ title }} cable</h1>
     </header>
     <el-form ref="form" :model="form">
+      <el-form-item label="Status">
+        <el-select
+          class="w-fit-full"
+          filterable
+          v-model="form.status"
+          placeholder
+        >
+          <el-option
+            v-for="(opt, i) in cableStates"
+            :key="i"
+            :label="opt"
+            :value="opt"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="Name">
         <el-input class="w-fit-full" v-model="form.name" />
       </el-form-item>
@@ -133,6 +148,7 @@
 <script>
 import Dragger from '../../components/Dragger'
 import { getClss } from '../../services/api/cls'
+import cableStates from '../../config/cableStates'
 
 export default {
   name: 'CableForm',
@@ -141,6 +157,7 @@ export default {
   },
   data: () => ({
     tag: '',
+    cableStates,
     clsList: [],
     facsList: [],
     inputVisible: false
