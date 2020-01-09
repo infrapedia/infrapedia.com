@@ -21,7 +21,6 @@ export default {
     isUserBlock: false
   }),
   async mounted() {
-    // console.log(this.$auth.isAuthenticated)
     try {
       await setTimeout(() => {
         return this.$auth && this.$auth.isAuthenticated

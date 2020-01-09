@@ -12,13 +12,30 @@
     <el-form :model="form" :rules="formRules" class="pr6 pl6" ref="form">
       <el-row :gutter="15">
         <el-col :span="12">
-          <el-form-item label="First Name" prop="name">
-            <el-input v-model="form.name" :class="{ dark }" />
+          <el-form-item label="Full Name" prop="name">
+            <el-input v-model="form.fullname" :class="{ dark }" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="Last Name" prop="lastname">
-            <el-input v-model="form.lastname" :class="{ dark }" />
+          <el-form-item label="Phone number">
+            <div class="el-input">
+              <i-phone-input
+                inputClasses="el-input__inner issues-dialog"
+                v-model="form.phonenumber.num"
+                @onInput="validatePhoneNumber"
+                class="m0 p0 el-input__inner"
+              />
+            </div>
+            <el-collapse-transition>
+              <el-alert
+                type="error"
+                class="mt2 h8"
+                show-icon
+                title="This phone number is not valid"
+                :closable="false"
+                v-if="form.phonenumber.num && !form.phonenumber.valid"
+              />
+            </el-collapse-transition>
           </el-form-item>
         </el-col>
       </el-row>
@@ -58,42 +75,27 @@
 </template>
 
 <script>
-import { issueRequest } from '@/services/api'
-import { DATA_CENTER_MODE } from '../../config/sidebarModes'
+// import { createIssue } from '../../services/api/issues'
 import { TOGGLE_ISSUES_DIALOG } from '@/store/actionTypes'
 
 export default {
   data: () => ({
     form: {
-      name: '',
       email: '',
       issue: '',
-      lastname: ''
+      elemnt: '',
+      phonenumber: {
+        num: '',
+        valid: null
+      },
+      fullname: ''
     },
     formRules: {
-      name: [
-        {
-          required: true,
-          message: 'Please input your first name',
-          trigger: 'blur'
-        },
-        {
-          min: 3,
-          max: 10,
-          message: 'Length should be 3 to 10',
-          trigger: 'blur'
-        }
-      ],
+      phonenumber: [],
       lastname: [
         {
           required: true,
-          message: 'Please input your last name name',
-          trigger: 'blur'
-        },
-        {
-          min: 3,
-          max: 10,
-          message: 'Length should be 3 to 10',
+          message: 'Please input your full name',
           trigger: 'blur'
         }
       ],
@@ -110,7 +112,11 @@ export default {
         }
       ],
       issue: [
-        { required: true, message: 'Please input the issue', trigger: 'blur' },
+        {
+          required: true,
+          message: 'Please input the issue',
+          trigger: ['blur', 'change']
+        },
         {
           min: 10,
           message: 'Issue length should be at least 10',
@@ -132,9 +138,14 @@ export default {
       return this.$store.state.isDark
     },
     isFormUncomplete() {
-      const { name, lastname, email, issue } = this.form
+      const { fullname, phonenumber, email, issue } = this.form
       let isDisabled = true
-      if (name !== '' && lastname !== '' && email !== '' && issue !== '') {
+      if (
+        fullname !== '' &&
+        phonenumber.num !== '' &&
+        email !== '' &&
+        issue !== ''
+      ) {
         isDisabled = false
       }
       return isDisabled
@@ -145,30 +156,25 @@ export default {
   },
   methods: {
     async sendIssueRequest() {
-      const {
-        sidebarMode,
-        map: { currentSelection }
-      } = this.$store.state
-      const { name, email, lastname } = this.form
-      const isDataCenter = sidebarMode === DATA_CENTER_MODE
-      const type = isDataCenter ? 'Facility' : 'Submarine Cable'
+      console.warn('NOT DONE YET')
+      // const { focus } = this.$store.state.map
 
-      const data = {
-        data: {
-          subject: `Infrapedia Issue Report ${name} ${lastname}`,
-          text: `Hi, ${name} ${lastname} reported an error in the ${currentSelection.name} (${type}). If you want to contact him, this is his email: ${email}`
-        },
-        email
-      }
-
-      const res = await issueRequest(data)
-      if (res && res.length && res[0].reject_reason === null) {
-        this.$notify({
-          type: 'success',
-          title: 'Your issue has being sent succesfully!',
-          message: 'You will hear from us in the next few days'
-        })
-        this.closeDialog()
+      // const res = await createIssue({
+      //   user_id: this.$auth.user.sub,
+      //   ...this.form,
+      //   id: focus.id,
+      //   t: focus.type === 'fac' || focus.type === 'facility' ? 3 : 1
+      // })
+      // if (res && res.t !== 'error') this.closeDialog()
+    },
+    validatePhoneNumber({ number, isValid }) {
+      try {
+        this.form.phonenumber = {
+          num: number,
+          valid: isValid
+        }
+      } catch {
+        // Ignore
       }
     },
     submitForm(formRef) {
@@ -181,10 +187,14 @@ export default {
       this.$store.commit(`${TOGGLE_ISSUES_DIALOG}`, false)
       this.$refs.form.resetFields()
       this.form = {
-        name: '',
         email: '',
         issue: '',
-        lastname: ''
+        elemnt: '',
+        phonenumber: {
+          num: '',
+          valid: null
+        },
+        fullname: ''
       }
     }
   }
