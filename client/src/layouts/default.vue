@@ -10,6 +10,7 @@
       />
       <i-buy-dialog />
       <i-issues-dialog />
+      <user-cables-button />
       <transition name="fade" mode="out-in">
         <router-view />
       </transition>
@@ -30,6 +31,7 @@ import {
   TOGGLE_BUY_DIALOG,
   TOGGLE_ISSUES_DIALOG
 } from '../store/actionTypes'
+import UserCablesButton from '../components/UserCablesButton'
 
 export default {
   components: {
@@ -37,7 +39,8 @@ export default {
     INavbar,
     ISidebar,
     IBuyDialog,
-    IIssuesDialog
+    IIssuesDialog,
+    UserCablesButton
   },
   data: () => ({
     BUY_CAPACITY,
