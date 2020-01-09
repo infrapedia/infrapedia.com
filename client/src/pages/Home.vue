@@ -62,7 +62,7 @@ export default {
     await setTimeout(() => {
       if (this.$auth.isAuthenticated) return
       else this.$router.push('/login')
-    }, 1000)
+    }, 1200)
   },
   methods: {
     /**

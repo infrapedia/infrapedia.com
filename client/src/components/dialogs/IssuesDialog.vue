@@ -77,6 +77,7 @@
 <script>
 // import { createIssue } from '../../services/api/issues'
 import { TOGGLE_ISSUES_DIALOG } from '@/store/actionTypes'
+import { getUserData } from '../../services/api/auth'
 
 export default {
   data: () => ({
@@ -138,23 +139,44 @@ export default {
       return this.$store.state.isDark
     },
     isFormUncomplete() {
-      const { fullname, phonenumber, email, issue } = this.form
-      let isDisabled = true
-      if (
-        fullname !== '' &&
-        phonenumber.num !== '' &&
-        email !== '' &&
-        issue !== ''
-      ) {
-        isDisabled = false
-      }
-      return isDisabled
+      const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
+      return emptyFields.length ? true : false
     },
     customDialogClass() {
       return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
     }
   },
+  watch: {
+    isVisible(bool) {
+      if (!bool) return
+      this.setUserData()
+    }
+  },
   methods: {
+    async setUserData() {
+      if (!this.$auth || !this.$auth.user) return
+      const userData = await getUserData(this.$auth.user.sub)
+
+      if (userData) {
+        const { user_metadata } = userData
+
+        this.form.fullname = user_metadata.name
+          ? user_metadata.name
+          : userData.name
+        this.form.email = user_metadata.email
+          ? user_metadata.email
+          : userData.email
+        this.form.company = user_metadata.companyname
+          ? user_metadata.companyname
+          : ''
+        this.form.phonenumber = user_metadata.phonenumber
+          ? user_metadata.phonenumber
+          : {
+              num: '',
+              valid: null
+            }
+      }
+    },
     async sendIssueRequest() {
       console.warn('NOT DONE YET')
       // const { focus } = this.$store.state.map

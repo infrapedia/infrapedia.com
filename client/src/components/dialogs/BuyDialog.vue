@@ -20,13 +20,30 @@
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="First Name" prop="name">
-            <el-input v-model="form.name" :class="{ dark }" />
+          <el-form-item label="Full Name" prop="fullname">
+            <el-input v-model="form.fullname" :class="{ dark }" />
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
-          <el-form-item label="Last Name" prop="lastname">
-            <el-input v-model="form.lastname" :class="{ dark }" />
+          <el-form-item label="Phone number">
+            <div class="el-input">
+              <i-phone-input
+                inputClasses="el-input__inner issues-dialog"
+                v-model="form.phonenumber.num"
+                @onInput="validatePhoneNumber"
+                class="m0 p0 el-input__inner"
+              />
+            </div>
+            <el-collapse-transition>
+              <el-alert
+                type="error"
+                class="mt2 h8"
+                show-icon
+                title="This phone number is not valid"
+                :closable="false"
+                v-if="form.phonenumber.num && !form.phonenumber.valid"
+              />
+            </el-collapse-transition>
           </el-form-item>
         </el-col>
       </el-row>
@@ -108,7 +125,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import { buyRequest } from '@/services/api'
+// import { buyRequest } from '@/services/api'
+import { getUserData } from '../../services/api/auth'
 import { TOGGLE_BUY_DIALOG, BUY_TYPE } from '@/store/actionTypes'
 
 export default {
@@ -117,30 +135,20 @@ export default {
     form: {
       company: '',
       email: '',
-      name: '',
-      lastname: '',
+      fullname: '',
       capacity: '',
       totalRack: 0,
-      issue: ''
+      phonenumber: {
+        num: '',
+        valid: null
+      }
     },
     formRules: {
-      name: [
+      phonenumber: [],
+      fullname: [
         {
           required: true,
-          message: 'Please input your first name',
-          trigger: 'blur'
-        },
-        {
-          min: 3,
-          max: 10,
-          message: 'Length should be 3 to 10',
-          trigger: 'blur'
-        }
-      ],
-      lastname: [
-        {
-          required: true,
-          message: 'Please input your last name name',
+          message: 'Please input your fullname',
           trigger: 'blur'
         },
         {
@@ -188,50 +196,73 @@ export default {
       return (this.buyType && this.buyType.title) || ''
     },
     isFormUncomplete() {
-      const { name, lastname, capacity, email, company } = this.form
-      let title = this.dialogTitle.toLowerCase()
-      let isDisabled = true
-
-      if (
-        title !== 'datacenter' &&
-        name !== '' &&
-        lastname !== '' &&
-        capacity !== '' &&
-        email !== '' &&
-        company !== ''
-      ) {
-        isDisabled = false
-      } else if (
-        (title === 'datacenter' || title === 'other') &&
-        company !== '' &&
-        name !== '' &&
-        lastname !== '' &&
-        email !== ''
-      ) {
-        isDisabled = false
-      }
-
-      return isDisabled
+      // TODO: fix this form uncomplete checker for when using & !using: totalRack
+      const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
+      return emptyFields.length &&
+        this.dialogTitle === 'Datacenter' &&
+        emptyFields.includes('totalRack')
+        ? true
+        : false
     },
     customDialogClass() {
       return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
     }
   },
+  watch: {
+    isVisible(bool) {
+      if (!bool) return
+      this.setUserData()
+    }
+  },
   methods: {
-    async sendBuyRequest() {
-      const res = await buyRequest({
-        ...this.form,
-        type: this.dialogTitle,
-        cable: this.$store.state.map.currentSelection.name
-      })
+    async setUserData() {
+      if (!this.$auth || !this.$auth.user) return
+      const userData = await getUserData(this.$auth.user.sub)
 
-      if (res && res.status !== 'error') {
-        this.$notify({
-          type: 'success',
-          title: 'Email sent!',
-          message: 'You will hear from us in the next few days'
-        })
-        this.closeDialog()
+      if (userData) {
+        const { user_metadata } = userData
+
+        this.form.fullname = user_metadata.name
+          ? user_metadata.name
+          : userData.name
+        this.form.email = user_metadata.email
+          ? user_metadata.email
+          : userData.email
+        this.form.company = user_metadata.companyname
+          ? user_metadata.companyname
+          : ''
+        this.form.phonenumber = user_metadata.phonenumber
+          ? user_metadata.phonenumber
+          : {
+              num: '',
+              valid: null
+            }
+      }
+    },
+    async sendBuyRequest() {
+      await console.warn('NOT DONE YET')
+      // const res = await buyRequest({
+      //   ...this.form,
+      //   type: this.dialogTitle,
+      //   cable: this.$store.state.map.currentSelection.name
+      // })
+
+      // if (res && res.status !== 'error') {
+      //   this.$notify({
+      //     type: 'success',
+      //     title: 'Email sent!',
+      //     message: 'You will hear from us in the next few days'
+      //   })
+      this.closeDialog()
+    },
+    validatePhoneNumber({ number, isValid }) {
+      try {
+        this.form.phonenumber = {
+          num: number,
+          valid: isValid
+        }
+      } catch {
+        // Ignore
       }
     },
     submitForm(formRef) {
@@ -246,11 +277,13 @@ export default {
       this.form = {
         company: '',
         email: '',
-        name: '',
-        lastname: '',
+        fullname: '',
         capacity: '',
         totalRack: 0,
-        issue: ''
+        phonenumber: {
+          num: '',
+          valid: null
+        }
       }
       this.$store.commit(`${BUY_TYPE}`, null)
     }

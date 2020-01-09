@@ -527,12 +527,16 @@ export default {
 
       if (closesSidebar) this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, ['in', 'cable_id', false])
-      this.map.setFilter(mapConfig.highlightLayer, this.currentMapFilter)
-      map.setPaintProperty(
-        mapConfig.cableLayer,
-        'line-color',
-        mapConfig.data.layers[0].paint['line-color']
-      )
+      try {
+        map.setFilter(mapConfig.highlightLayer, this.currentMapFilter)
+        map.setPaintProperty(
+          mapConfig.cableLayer,
+          'line-color',
+          mapConfig.data.layers[0].paint['line-color']
+        )
+      } catch {
+        // Ignore
+      }
     },
     /**
      * @param e { Object } Map's any clicking event
