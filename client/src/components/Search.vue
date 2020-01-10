@@ -122,12 +122,15 @@ export default {
       if (this.searchResults.length) this.isResultsVisible = true
     },
     handlePlaceSelection(selection) {
-      // If the selection has geometry it mind it's a city
+      // If the selection has geometry it's a city
       if (selection.geometry) {
         let bounds = []
-        if (selection.bbox) bounds = selection.bbox
-        else if (selection.center)
+
+        if (selection.bbox) {
+          bounds = selection.bbox
+        } else if (selection.center) {
           bounds = [...selection.center, ...selection.center]
+        }
 
         if (bounds.length) this.$store.commit(`${MAP_BOUNDS}`, bounds)
         bus.$emit(FOCUS_ON, {
@@ -142,6 +145,8 @@ export default {
         })
       }
 
+      this.search = ''
+      this.searchResults = []
       this.isResultsVisible = false
     }
   }

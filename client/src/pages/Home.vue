@@ -20,14 +20,9 @@
 <script>
 import Map from '../components/Map.vue'
 import { bus } from '../helpers/eventBus'
-import debounce from '../helpers/debounce'
 import dataCollection from '../mixins/dataCollection.vue'
 import { IS_DRAWING, TOGGLE_SIDEBAR } from '../store/actionTypes'
-import {
-  FOCUS_ON_CITY,
-  REMOVE_QUERY_ROUTE_REPLACE,
-  DESTROY_MAP
-} from '../events'
+import { FOCUS_ON_CITY, REMOVE_QUERY_ROUTE_REPLACE } from '../events'
 import { HAS_TO_EASE_TO, EASE_POINT } from '../store/actionTypes/map'
 
 export default {
@@ -49,18 +44,20 @@ export default {
   },
   beforeCreate() {
     // If the route has a query it must be a link shared
-    if (this.$route.query.neLng) this.$store.commit(`${HAS_TO_EASE_TO}`, true)
+    if (this.$route.query.hasToEase) {
+      this.$store.commit(`${HAS_TO_EASE_TO}`, true)
+    }
   },
   beforeRouteLeave(to, from, next) {
     if (this.isSidebar) this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
     bus.$emit(REMOVE_QUERY_ROUTE_REPLACE)
-    bus.$emit(DESTROY_MAP)
     next()
   },
   async mounted() {
     await this.loadDataIfQueryParamsExist()
-    await setTimeout(() => {
-      if (this.$auth.isAuthenticated) return
+    setTimeout(() => {
+      if (this.$auth && window.localStorage.getItem('auth.token-session'))
+        return
       else this.$router.push('/login')
     }, 1200)
   },
@@ -71,7 +68,7 @@ export default {
     handleIsDrawing(bool) {
       this.$store.commit(`${IS_DRAWING}`, bool)
     },
-    loadDataIfQueryParamsExist: debounce(async function() {
+    async loadDataIfQueryParamsExist() {
       const {
         id,
         type,
@@ -83,7 +80,8 @@ export default {
         pitch,
         bearing,
         centerLat,
-        centerLng
+        centerLng,
+        hasToEase
       } = this.$route.query
 
       // If all this query params exist we can assume it's a view sharing
@@ -97,7 +95,8 @@ export default {
         bearing &&
         pitch &&
         centerLat &&
-        centerLng
+        centerLng &&
+        hasToEase === 'true'
       ) {
         this.$store.commit(`${EASE_POINT}`, {
           center: [
@@ -113,10 +112,11 @@ export default {
       }
 
       // If there is there is no id or nor type only ease to the coordinates point
-      if (!id || !type) return bus.$emit(`${FOCUS_ON_CITY}`)
       // Otherwise if only cable and type exist we open the sidebar and not ease
-      await this.handleItemListSelection({ option: type, id })
-    }, 4200)
+      return !id || !type
+        ? bus.$emit(`${FOCUS_ON_CITY}`)
+        : await this.handleItemListSelection({ option: type, id })
+    }
   }
 }
 </script>

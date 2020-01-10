@@ -52,7 +52,6 @@ import { mapState } from 'vuex'
 import { bus } from '../helpers/eventBus'
 import { CLEAR_SELECTION } from '../events'
 import * as modes from '../config/sidebarModes'
-import { createBitlyURL } from '../services/api/bitly'
 import copyToClipboard from '../helpers/copyToClipboard'
 import { CURRENT_SELECTION, MAP_FOCUS_ON } from '../store/actionTypes/map'
 import { BUY_CAPACITY, EDIT_CABLE, REPORT_ISSUE } from '../events/sidebar'
@@ -137,11 +136,11 @@ export default {
       this.isBadge = true
       if (this.$route.query.neLng) {
         url = `${window.location.origin}${this.$route.fullPath}`
-      } else
+      } else {
         url = `${window.location.origin}?name=${name}&type=${type}&id=${id}`
+      }
 
-      const res = await createBitlyURL(url)
-      if (res) copyToClipboard(encodeURI(res.link))
+      copyToClipboard(encodeURI(`${url}&hasToEase=true`))
       setTimeout(() => (this.isBadge = false), 820)
     },
     closeSidebar() {

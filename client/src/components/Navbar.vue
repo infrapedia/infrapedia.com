@@ -749,6 +749,7 @@ export default {
       this.isUserMenuOpen = !this.isUserMenuOpen
     },
     logOutUser() {
+      window.localStorage.removeItem('auth.token-session')
       return this.$auth.logout()
     },
     userRegistration() {

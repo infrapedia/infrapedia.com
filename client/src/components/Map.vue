@@ -95,7 +95,6 @@ import {
 } from '../store/actionTypes/map'
 import ILocationButton from '../components/LocationButton'
 import copyToClipboard from '../helpers/copyToClipboard'
-import { createBitlyURL } from '../services/api/bitly'
 import IThemeToggler from '../components/ThemeToggler'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../config/mapConfig'
@@ -443,7 +442,7 @@ export default {
       popup.remove()
     },
     async handleBoundsChange() {
-      if (!this.map || this.hasToEase) return
+      if (!this.map) return
 
       const { map } = this
       const pitch = map.getPitch()
@@ -700,11 +699,12 @@ export default {
         this.map.easeTo({ pitch: this.is3D ? 45 : 0, duration: 850 })
       })
     },
-    async shareViewLink() {
-      const link = `${window.location.origin}${this.$route.fullPath}`
-      const res = await createBitlyURL(link, this.$axios)
-      if (!res) return
-      copyToClipboard(encodeURI(res.link))
+    shareViewLink() {
+      return copyToClipboard(
+        encodeURI(
+          `${window.location.origin}${this.$route.fullPath}&hasToEase=true`
+        )
+      )
     },
     clearLocation() {
       if (this.trackID) {
@@ -900,27 +900,24 @@ export default {
       }
     },
     async handleCityFocus() {
-      try {
-        if (!this.bounds.length) throw { message: 'There is no bounds' }
-        const { map, bounds, isMobile, hasToEase } = this
-        /**
-         * - The ease point is exclusibly use when the user wants to share
-         *  the view of a given point
-         */
-        if (hasToEase) await this.handleFocusOnEasePoints()
-        else {
-          await map.fitBounds(bounds, {
-            padding: isMobile ? 10 : 35,
-            maxZoom: 16.5,
-            animate: true,
-            speed: 1.75,
-            pan: {
-              duration: 25
-            }
-          })
-        }
-      } catch {
-        // Ignore
+      const { map, bounds, isMobile, hasToEase } = this
+      /**
+       * - The ease point is exclusibly use when the user wants to share
+       *  the view of a given point
+       */
+
+      if (hasToEase) {
+        await this.handleFocusOnEasePoints()
+      } else {
+        await map.fitBounds(bounds, {
+          padding: isMobile ? 10 : 35,
+          maxZoom: 16.5,
+          animate: true,
+          speed: 1.75,
+          pan: {
+            duration: 25
+          }
+        })
       }
     },
     /**
