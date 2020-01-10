@@ -99,8 +99,8 @@ export default {
         place => (place.name = place.place_name)
       )
 
-      if (res && res.data.length && res.data[0].r) {
-        this.searchResults = res.data[0].r.concat(places.features)
+      if (res && res.data.length) {
+        this.searchResults = res.data.concat(places.features)
       } else this.searchResults = places.features
 
       this.isResultsVisible = true

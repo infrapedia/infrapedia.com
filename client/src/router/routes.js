@@ -1,4 +1,4 @@
-import Home from '../pages/home.vue'
+import Home from '../pages/Home.vue'
 import Login from '../pages/login.vue'
 import NotFound from '../layouts/404.vue'
 import User from '../pages/user/index.vue'

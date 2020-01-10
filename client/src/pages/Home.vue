@@ -20,6 +20,7 @@
 <script>
 import Map from '../components/Map.vue'
 import { bus } from '../helpers/eventBus'
+import debounce from '../helpers/debounce'
 import dataCollection from '../mixins/dataCollection.vue'
 import { IS_DRAWING, TOGGLE_SIDEBAR } from '../store/actionTypes'
 import { FOCUS_ON_CITY, REMOVE_QUERY_ROUTE_REPLACE } from '../events'
@@ -68,7 +69,7 @@ export default {
     handleIsDrawing(bool) {
       this.$store.commit(`${IS_DRAWING}`, bool)
     },
-    async loadDataIfQueryParamsExist() {
+    loadDataIfQueryParamsExist: debounce(async function() {
       const {
         id,
         type,
@@ -116,7 +117,7 @@ export default {
       return !id || !type
         ? bus.$emit(`${FOCUS_ON_CITY}`)
         : await this.handleItemListSelection({ option: type, id })
-    }
+    }, 2200)
   }
 }
 </script>
