@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute hidden-sm-and-down mainw">
+  <div class="absolute mainw">
     <el-popover
       :visible-arrow="false"
       placement="bottom-end"

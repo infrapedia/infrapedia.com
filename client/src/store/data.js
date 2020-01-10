@@ -11,13 +11,11 @@ import {
   getSubseaCableBounds,
   getFacilityBounds,
   getFacilityPoints,
-  searchPlace,
-  getSearchQueryResults
+  searchPlace
 } from '../services/api/data'
+import { getSearch } from '../services/api/search'
 import * as types from './actionTypes'
 import { MAP_BOUNDS, MAP_POINTS } from './actionTypes/map'
-
-const NO_RES_ERR = { message: 'THERE WAS NO RESPONSE' }
 
 export const dataMutations = {
   [types.GET_PREMIUM_DATA](state, data) {
@@ -107,28 +105,26 @@ export const dataActions = {
   // --- NAVBAR PREMIUM ITEM SELECTION --- START
   async getPremiumSelectedBoundsData({ commit }, id) {
     const bounds = await getPremiumSelectedBounds(id)
-    if (!bounds) throw NO_RES_ERR
     commit(`${MAP_BOUNDS}`, bounds)
   },
 
   async getPremiumSelectedFeaturesData({ commit }, id) {
     const res = await getPremiumSelectedFeatures(id)
-    if (!res) throw NO_RES_ERR
-    commit(`${types.GET_PREMIUM_SELECTED_FEATURES}`)
+    if (res) commit(`${types.GET_PREMIUM_SELECTED_FEATURES}`)
     return res
   },
 
   async getPremiumSelectedData({ commit }, id) {
     const res = await getFacility(id)
-    if (!res) throw NO_RES_ERR
-    commit(`${types.GET_SELECTION_DATA}`)
+    if (res) commit(`${types.GET_SELECTION_DATA}`)
+
     return res
   },
 
   async getOrganizationID({ commit }, id) {
     const res = await getOrganization(id)
-    if (!res) throw NO_RES_ERR
-    commit(`${types.GET_CABLES_BY_ORG}`)
+    if (res) commit(`${types.GET_CABLES_BY_ORG}`)
+
     return res
   },
 
@@ -137,7 +133,6 @@ export const dataActions = {
   // --- NAVBAR SUBMARINE CABLES ITEM SELECTION --- START
   async getSubseaCableBoundsData({ commit }, id) {
     const bounds = await getSubseaCableBounds(id)
-    if (!bounds) throw NO_RES_ERR
     commit(`${MAP_BOUNDS}`, bounds)
   },
 
@@ -146,7 +141,6 @@ export const dataActions = {
   // --- NAVBAR DATA CENTERS ITEM SELECTION --- START
   async getFacilityBoundsData({ commit }, id) {
     const bounds = await getFacilityBounds(id)
-    if (!bounds) throw NO_RES_ERR
     commit(`${MAP_BOUNDS}`, bounds)
   },
 
@@ -155,7 +149,6 @@ export const dataActions = {
   // --- NAVBAR IXPS-NETWORKS ITEM SELECTION --- START
   async getFacilityPointsData({ commit }, data) {
     const res = await getFacilityPoints(data)
-    if (!res) throw NO_RES_ERR
     commit(`${MAP_POINTS}`, res.features)
   },
 
@@ -163,16 +156,15 @@ export const dataActions = {
 
   // Places
   async getSearchQueryData({ commit }, s) {
-    const res = await getSearchQueryResults(s)
-    if (!res) throw NO_RES_ERR
-    commit(`${types.QUERY_RESULTS}`)
+    const res = await getSearch(s)
+    if (res && res.t !== 'err') commit(`${types.QUERY_RESULTS}`)
     return res
   },
 
   async getSearchQueryDataMapbox({ commit }, s) {
     const res = await searchPlace(s)
-    if (!res) throw NO_RES_ERR
-    commit(`${types.QUERY_RESULTS}`)
+    if (res) commit(`${types.QUERY_RESULTS}`)
+
     return res
   }
 }

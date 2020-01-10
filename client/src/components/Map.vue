@@ -71,7 +71,6 @@ import {
   CLEAR_SELECTION,
   FOCUS_ON,
   FOCUS_ON_CITY,
-  DESTROY_MAP,
   REMOVE_QUERY_ROUTE_REPLACE
 } from '../events'
 import {
@@ -148,7 +147,6 @@ export default {
     bus.$on(UPDATE_TIME_MACHINE, this.handleUpdateTimeMachine)
     bus.$on(TOGGLE_FILTER_SELECTION, this.handleFilterSelection)
     bus.$on(SUBSEA_FILTER, this.handleSubseaToggle)
-    bus.$on(DESTROY_MAP, this.destroyMap)
     bus.$on(REMOVE_QUERY_ROUTE_REPLACE, this.handleRemoveQueryRouteReplacer)
 
     if (this.dark) this.map.setStyle(mapConfig.darkBasemap)
@@ -160,9 +158,6 @@ export default {
       changeSidebarMode: 'changeSidebarMode',
       getCurrentSelectionData: 'map/getCurrentSelectionData'
     }),
-    destroyMap() {
-      return this.map.remove()
-    },
     createMap() {
       mapboxgl.accessToken = mapConfig.mapToken
 
@@ -171,7 +166,6 @@ export default {
         zoom: mapConfig.zoom,
         center: mapConfig.center,
         style: mapConfig.default
-        // maptiks_id: mapConfig.maptiks_id
       })
 
       const draw = new MapboxDraw({

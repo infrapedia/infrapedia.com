@@ -87,19 +87,22 @@ export default {
     document.removeEventListener('click', this.close)
   },
   methods: {
-    getQueryData: debounce(async function(querystring) {
-      if (querystring.length <= 1) return
-      const res = await this.$store.dispatch('getSearchQueryData', querystring)
+    getQueryData: debounce(async function(search) {
+      if (search.length <= 1) return
+      const res = await this.$store.dispatch('getSearchQueryData', search)
       const places = await this.$store.dispatch(
         'getSearchQueryDataMapbox',
-        querystring
+        search
       )
 
-      if (!res) return
       Array.from(places.features).forEach(
         place => (place.name = place.place_name)
       )
-      this.searchResults = res.concat(places.features)
+
+      if (res && res.data.length && res.data[0].r) {
+        this.searchResults = res.data[0].r.concat(places.features)
+      } else this.searchResults = places.features
+
       this.isResultsVisible = true
     }, 820),
     close() {
