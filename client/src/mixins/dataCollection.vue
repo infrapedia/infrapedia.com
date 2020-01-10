@@ -119,7 +119,10 @@ export default {
 
       await this.$store.commit(`${TOGGLE_LOADING}`, true)
       try {
-        await this.getCurrentSelectionData(cable_id).then(() => {
+        await this.getCurrentSelectionData({
+          user_id: this.$auth.user.sub,
+          _id: cable_id
+        }).then(() => {
           this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
           this.$store.commit(`${MAP_FOCUS_ON}`, {
             name,
@@ -127,8 +130,9 @@ export default {
             type: 'cable'
           })
         })
-      } catch {
+      } catch (err) {
         // Ignore
+        console.error(err)
       } finally {
         this.$store.commit(`${TOGGLE_LOADING}`, false)
       }
@@ -201,10 +205,17 @@ export default {
       else bus.$emit(`${FOCUS_ON}`, { id: orgID, type: 'org' })
     },
     async handleSubmarineCableItemSelected(id) {
-      if (!id) throw { message: 'MISSING ID PARAMETER' }
+      if (!id)
+        throw {
+          message:
+            'MISSING ID PARAMETER, handleSubmarineCableItemSelected() - dataCollection.vue: line 203'
+        }
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
-      await this.getSubseaCableBoundsData(id)
+      await this.getSubseaCableBoundsData({
+        user_id: this.$auth.user.sub,
+        _id: id
+      })
       bus.$emit(`${FOCUS_ON}`, { id, type: 'cable' })
     },
     async handleDataCenterItemSelected(id) {

@@ -1,5 +1,6 @@
 <template>
   <transition
+    v-if="currentSelection"
     tag="div"
     mode="out-in"
     :name="transitionsClasses.name"

@@ -1,4 +1,5 @@
-import { getSelectionData, getFacility } from '../../services/api/data'
+import { getFacility } from '../../services/api/data'
+import { viewCable } from '../../services/api/cables'
 
 const state = {
   bounds: [],
@@ -35,9 +36,14 @@ const mutations = {
 }
 
 const actions = {
-  async getCurrentSelectionData({ commit }, id) {
-    const res = await getSelectionData(id)
-    if (res && res.length) commit('CURRENT_SELECTION', res[0])
+  async getCurrentSelectionData({ commit }, { user_id, _id }) {
+    const res = await viewCable({
+      user_id,
+      _id
+    })
+    if (res && res.data.r && res.data.r.length) {
+      commit('CURRENT_SELECTION', res.data.r[0])
+    }
   },
   async getFacilityData({ commit }, id) {
     const res = await getFacility(id)

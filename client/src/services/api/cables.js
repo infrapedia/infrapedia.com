@@ -173,8 +173,34 @@ export const deleteCable = async ({ user_id, _id }) => {
   return res
 }
 
-export const viewCable = async ({ user_id, _id }) => {
+export const viewCableOwner = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/cables/owner/${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+  return res
+}
+
+export const viewCable = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/cables/view/${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+  return res
+}
+
+export const viewCableBBox = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/cables/box/${_id}`
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {

@@ -30,7 +30,11 @@ import EditorMap from '../../../components/editor/Editor'
 import CLSForm from '../../../components/userCreationForms/cls'
 import CableForm from '../../../components/userCreationForms/cables'
 import { createCls, editCls, viewCls } from '../../../services/api/cls'
-import { createCable, editCable, viewCable } from '../../../services/api/cables'
+import {
+  createCable,
+  editCable,
+  viewCableOwner
+} from '../../../services/api/cables'
 import { EDITOR_LOAD_DRAW, EDITOR_FILE_CONVERTED } from '../../../events/editor'
 
 export default {
@@ -159,7 +163,7 @@ export default {
       return res && res.data && res.data.r ? res.data.r : {}
     },
     async viewCurrentCable(_id) {
-      const res = await viewCable({ user_id: this.$auth.user.sub, _id })
+      const res = await viewCableOwner({ user_id: this.$auth.user.sub, _id })
       return res && res.data && res.data.r ? res.data.r : {}
     },
     async createCLS() {
@@ -167,7 +171,7 @@ export default {
         ...this.form,
         user_id: this.$auth.user.sub
       })
-      if (res.t !== 'err') {
+      if (res.t !== 'error') {
         return this.$router.push('/user/section/cls')
       }
     },
@@ -177,7 +181,7 @@ export default {
         user_id: this.$auth.user.sub,
         _id: this.$route.query.item
       })
-      if (res.t !== 'err') {
+      if (res.t !== 'error') {
         return this.$router.push('/user/section/cls')
       }
     },
@@ -186,7 +190,7 @@ export default {
         ...this.form,
         user_id: this.$auth.user.sub
       })
-      if (res.t !== 'err') {
+      if (res.t !== 'error') {
         return this.$router.push('/user/section/cables')
       }
     },
@@ -196,7 +200,7 @@ export default {
         user_id: this.$auth.user.sub,
         _id: this.$route.query.item
       })
-      if (res.t !== 'err') {
+      if (res.t !== 'error') {
         return this.$router.push('/user/section/cables')
       }
     }

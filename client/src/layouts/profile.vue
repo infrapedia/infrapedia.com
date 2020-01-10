@@ -62,8 +62,9 @@ export default {
         let pathName = link.url.split('/')
         pathName = pathName[pathName.length - 1]
         obj = {
-          'router-link-exact-active router-link-active':
-            this.$route.query.id.toLowerCase() === pathName
+          'router-link-exact-active router-link-active': pathName.includes(
+            this.$route.query.id.toLowerCase()
+          )
         }
       }
       return obj

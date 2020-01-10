@@ -18,7 +18,11 @@
           @click="handlePlaceSelection(place)"
           @keyup.enter.space="handlePlaceSelection(place)"
         >
-          {{ place.name }}
+          <span>
+            {{ place.name }}
+          </span>
+          (<small>{{ place.t }}</small
+          >)
           <span
             v-if="place.premium && place.premium === 'true'"
             class="w22 p1 h6 partner round flo-right vertical-align mt-2"
@@ -140,8 +144,8 @@ export default {
       } else {
         // Otherwise if must be an org/facility/datacenter, etc...
         this.$emit(SEARCH_SELECTION, {
-          id: selection.id,
-          option: selection.type
+          id: selection.id ? selection.id : selection._id,
+          option: selection.type ? selection.type : selection.t
         })
       }
 

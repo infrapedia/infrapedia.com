@@ -8,7 +8,6 @@ import {
   getPremiumSelectedBounds,
   getPremiumSelectedFeatures,
   getOrganization,
-  getSubseaCableBounds,
   getFacilityBounds,
   getFacilityPoints,
   searchPlace
@@ -16,6 +15,7 @@ import {
 import { getSearch } from '../services/api/search'
 import * as types from './actionTypes'
 import { MAP_BOUNDS, MAP_POINTS } from './actionTypes/map'
+import { viewCableBBox } from '../services/api/cables'
 
 export const dataMutations = {
   [types.GET_PREMIUM_DATA](state, data) {
@@ -131,9 +131,17 @@ export const dataActions = {
   // ---------------- END ---------------------
 
   // --- NAVBAR SUBMARINE CABLES ITEM SELECTION --- START
-  async getSubseaCableBoundsData({ commit }, id) {
-    const bounds = await getSubseaCableBounds(id)
-    commit(`${MAP_BOUNDS}`, bounds)
+  async getSubseaCableBoundsData({ commit }, data) {
+    const res = await viewCableBBox(data)
+    if (res && res.data && res.data.r && res.data.r.length) {
+      // const turf = require('turf')
+      const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
+      const coords = res.data.r[0].coordinates
+      const bbox = coords.reduce(function(bounds, coord) {
+        return bounds.extend(coord)
+      }, new mapboxgl.LngLatBounds(coords[0], coords[0]))
+      commit(`${MAP_BOUNDS}`, [bbox._ne, bbox._sw])
+    }
   },
 
   // ---------------- END ---------------------

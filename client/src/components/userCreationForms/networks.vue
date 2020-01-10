@@ -10,7 +10,7 @@
         {{ title }} network
       </h1>
     </header>
-    <el-form ref="form" :model="form" class="p2">
+    <el-form ref="form" :model="form" class="p2" v-loading="loading">
       <el-form-item label="Name">
         <el-input class="w-fit-full" v-model="form.name" />
       </el-form-item>
@@ -53,10 +53,10 @@
           placeholder
         >
           <el-option
-            v-for="(opt, i) in []"
+            v-for="(opt, i) in orgs"
             :key="i"
-            :label="opt.label"
-            :value="opt.value"
+            :label="opt.name"
+            :value="opt._id"
           />
         </el-select>
       </el-form-item>
@@ -71,10 +71,10 @@
           placeholder
         >
           <el-option
-            v-for="(opt, i) in []"
+            v-for="(opt, i) in facs"
             :key="i"
-            :label="opt.label"
-            :value="opt.value"
+            :label="opt.name"
+            :value="opt._id"
           />
         </el-select>
       </el-form-item>
@@ -89,10 +89,10 @@
           placeholder
         >
           <el-option
-            v-for="(opt, i) in []"
+            v-for="(opt, i) in cables"
             :key="i"
-            :label="opt.label"
-            :value="opt.value"
+            :label="opt.name"
+            :value="opt._id"
           />
         </el-select>
       </el-form-item>
@@ -107,10 +107,10 @@
           placeholder
         >
           <el-option
-            v-for="(opt, i) in []"
+            v-for="(opt, i) in ixps"
             :key="i"
-            :label="opt.label"
-            :value="opt.value"
+            :label="opt.name"
+            :value="opt._id"
           />
         </el-select>
       </el-form-item>
@@ -125,10 +125,10 @@
           placeholder
         >
           <el-option
-            v-for="(opt, i) in []"
+            v-for="(opt, i) in cls"
             :key="i"
-            :label="opt.label"
-            :value="opt.value"
+            :label="opt.name"
+            :value="opt._id"
           />
         </el-select>
       </el-form-item>
@@ -145,10 +145,19 @@
 </template>
 
 <script>
+import { getOrganizations } from '../../services/api/organizations'
+import { getCables } from '../../services/api/cables'
+
 export default {
   name: 'NetworkForm',
   data: () => ({
     tag: '',
+    cls: [],
+    orgs: [],
+    ixps: [],
+    facs: [],
+    cables: [],
+    loading: false,
     inputVisible: false
   }),
   props: {
@@ -170,15 +179,44 @@ export default {
       return this.mode === 'create' ? 'Create' : 'Edit'
     }
   },
+  watch: {
+    visible(bool) {
+      return bool ? this.loadAll() : this.clearAll()
+    }
+  },
   methods: {
+    clearAll() {
+      this.cls = []
+      this.orgs = []
+      this.ixps = []
+      this.facs = []
+      this.cables = []
+    },
+    async loadAll() {
+      this.loading = true
+      await Promise.all([this.loadOrgs(), this.loadCables()])
+      this.loading = false
+    },
     sendData() {
-      this.$emit('send-data')
+      return this.$emit('send-data')
+    },
+    async loadOrgs() {
+      const res = await getOrganizations({ user_id: this.$auth.user.sub })
+      if (res && res.data && res.data.r) {
+        this.orgs = res.data.r
+      }
+    },
+    async loadCables() {
+      const res = await getCables({ user_id: this.$auth.user.sub })
+      if (res && res.data && res.data.r) {
+        this.cables = res.data.r
+      }
     },
     handleBeforeClose() {
-      this.$emit('close')
+      return this.$emit('close')
     },
     handleClose(tag) {
-      this.form.websites.splice(this.form.websites.indexOf(tag), 1)
+      return this.form.websites.splice(this.form.websites.indexOf(tag), 1)
     },
     showInput() {
       this.inputVisible = true

@@ -900,15 +900,14 @@ export default {
       }
     },
     async handleCityFocus() {
-      const { map, bounds, isMobile, hasToEase } = this
+      const { map, bounds, focus, isMobile, hasToEase } = this
       /**
        * - The ease point is exclusibly use when the user wants to share
        *  the view of a given point
        */
-
       if (hasToEase) {
         await this.handleFocusOnEasePoints()
-      } else {
+      } else if (focus && bounds && bounds.length) {
         await map.fitBounds(bounds, {
           padding: isMobile ? 10 : 35,
           maxZoom: 16.5,
@@ -924,17 +923,12 @@ export default {
      * @param id { String } - Cable ID
      */
     async handleCableFocus(id) {
-      const { map, bounds, isMobile, hasToEase } = this
+      const { map, focus, bounds, hasToEase } = this
 
       if (hasToEase) await this.handleFocusOnEasePoints()
-      else {
+      else if (focus && bounds && bounds.length) {
         await map.fitBounds(bounds, {
-          padding: isMobile ? 10 : 50,
-          animate: true,
-          speed: 1.25,
-          pan: {
-            duration: 30
-          }
+          padding: 20
         })
       }
 
@@ -1001,11 +995,11 @@ export default {
      * @param id { String } - Building/DataCenter/Dot ID
      */
     async handleFacilityFocus(id) {
-      const { map, isMobile, bounds, hasToEase } = this
+      const { map, isMobile, focus, bounds, hasToEase } = this
 
       await this.handleFacilitySelection(id)
       if (hasToEase) await this.handleFocusOnEasePoints()
-      else {
+      else if (focus && bounds && bounds.length) {
         map.fitBounds(bounds, {
           padding: isMobile ? 10 : 40,
           pan: { duration: 25 },
@@ -1017,7 +1011,7 @@ export default {
       }
     },
     async handleIxpsFocus() {
-      const { points, map, isMobile, hasToEase } = this
+      const { points, map, focus, isMobile, hasToEase } = this
       const fc = { features: points, type: 'FeatureCollection' }
       const bounds = await geojsonExtent(JSON.parse(JSON.stringify(fc)))
 
@@ -1045,7 +1039,7 @@ export default {
       } else if (hasToEase) {
         // console.info('HERE 2')
         await this.handleFocusOnEasePoints()
-      } else {
+      } else if (focus && bounds && bounds.length) {
         // console.info('HERE 3')
         await map.fitBounds(bounds, {
           padding: isMobile ? 10 : 35,
