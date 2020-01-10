@@ -12,7 +12,7 @@
   background-color: $white-partial;
 
   li.inline-block {
-    background-color: $white-full;
+    background-color: $white-partial;
   }
   .icon {
     color: #757575;
@@ -29,4 +29,19 @@
 
 .off {
   color: #ff4e46;
+}
+
+.list-wrapper.dark {
+  color: $white-hsl;
+  background-color: $dark-charcoal;
+  .el-button {
+    color: $dark-charcoal;
+    background-color: $light-yellow;
+    border: 1px solid $light-yellow;
+    &:hover,
+    &:focus,
+    &:focus-within {
+      background: darken($light-yellow, 10%);
+    }
+  }
 }

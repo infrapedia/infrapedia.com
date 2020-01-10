@@ -14,12 +14,13 @@
         @click="toggleListVisibility"
         type="primary"
       >
-        <fa :icon="['fas', 'bezier-curve']" /> My cables
+        <fa :icon="['fas', 'bezier-curve']" class="mr1" /> My cables
       </el-button>
       <div
+        :class="{ dark, light: !dark }"
         class="list-wrapper bottom-shadow sm-round absolute w90 p4 mt4 flex row wrap"
       >
-        <header class="w-fit-full h12 text-right">
+        <header class="w-fit-full h8 text-right">
           <span
             @click="toggleListVisibility"
             class="inline-block cursor-pointer"
@@ -82,6 +83,11 @@ export default {
     cablesList: [],
     loading: false
   }),
+  computed: {
+    dark() {
+      return this.$store.state.isDark
+    }
+  },
   watch: {
     isListOpen(bool) {
       if (!bool) return
