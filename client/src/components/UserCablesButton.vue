@@ -1,25 +1,110 @@
 <template>
-  <div class="absolute mainw">
-    <el-button round @click="toggleListVisibility">
-      My cables
-    </el-button>
-    <div v-if="isListOpen">
-      <div v-for="i in 10" :key="i">
-        {{ i }}
+  <div class="absolute hidden-sm-and-down mainw">
+    <el-popover
+      :visible-arrow="false"
+      placement="bottom-end"
+      width="320"
+      trigger="manual"
+      transition="el-zoom-in-top"
+      v-model="isListOpen"
+    >
+      <el-button
+        slot="reference"
+        round
+        @click="toggleListVisibility"
+        type="primary"
+      >
+        <fa :icon="['fas', 'bezier-curve']" /> My cables
+      </el-button>
+      <div
+        class="list-wrapper bottom-shadow sm-round absolute w90 p4 mt4 flex row wrap"
+      >
+        <header class="w-fit-full h12 text-right">
+          <span
+            @click="toggleListVisibility"
+            class="inline-block cursor-pointer"
+          >
+            <fa :icon="['fas', 'times']" class="fs-large icon" />
+          </span>
+        </header>
+        <ul
+          class="flex w-fit-full row wrap m0 p0 h-fit-content h78"
+          v-loading="loading"
+          role="group"
+        >
+          <li
+            v-for="(cable, i) in cablesList"
+            class="w-fit-full cursor-pointer mt4 no-outline pr4 pl4 h20"
+            role="listitem"
+            :key="i"
+          >
+            <div
+              class="flex row pt5 pb4 pl2 pr2 nowrap justify-content-space-between align-items-center"
+              @click="loadCable(cable._id)"
+            >
+              <div>
+                <strong>
+                  <p class="m0 p0 mb1">
+                    {{ cable.name }}
+                  </p>
+                </strong>
+                <small> Cable ID: {{ cable._id }} </small>
+              </div>
+              <p
+                class="m0 p0 status-text"
+                :class="{ on: cable.status, off: !cable.status }"
+              >
+                {{ cable.status ? 'On' : 'Off' }}
+              </p>
+            </div>
+          </li>
+        </ul>
+        <el-button
+          class="mt2 mb2 w-fit-full h10"
+          round
+          plain
+          @click="headToCreationRoute"
+        >
+          <fa :icon="['fas', 'plus']" class="mr1" /> Create new cable
+        </el-button>
       </div>
-    </div>
+    </el-popover>
   </div>
 </template>
 
 <script>
+import { getCablesShortList } from '../services/api/cables'
+
 export default {
   name: 'UserCablesButton',
   data: () => ({
-    isListOpen: false
+    isListOpen: false,
+    cablesList: [],
+    loading: false
   }),
+  watch: {
+    isListOpen(bool) {
+      if (!bool) return
+      else return this.getCablesList()
+    }
+  },
   methods: {
     toggleListVisibility() {
       this.isListOpen = !this.isListOpen
+    },
+    async getCablesList() {
+      this.loading = true
+      const res = await getCablesShortList({ user_id: this.$auth.user.sub })
+      if (res && res.data && res.data.r) {
+        this.cablesList = res.data.r
+      }
+      this.loading = false
+    },
+    loadCable(id) {
+      return console.warn('NOT READY YET', id)
+    },
+    headToCreationRoute() {
+      return this.$router.push('/user/section/create?id=cables')
     }
   }
 }

@@ -1,7 +1,32 @@
 @import '../base/variables';
 
 .mainw {
-  top: 8vh;
-  right: 2rem;
+  top: 7vh;
+  right: 2.4rem;
   z-index: 100;
+}
+
+.list-wrapper {
+  right: 0.2rem;
+  overflow-y: auto;
+  background-color: $white-partial;
+
+  li.inline-block {
+    background-color: $white-full;
+  }
+  .icon {
+    color: #757575;
+  }
+}
+
+.status-text {
+  line-height: 17px;
+}
+
+.on {
+  color: #2aa9b7;
+}
+
+.off {
+  color: #ff4e46;
 }

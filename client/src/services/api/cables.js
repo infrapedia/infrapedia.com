@@ -145,6 +145,20 @@ export const getCables = async ({ user_id }) => {
   return res
 }
 
+export const getCablesShortList = async ({ user_id }) => {
+  url = `${apiConfig.url}/auth/cables/shortlist`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+
+  return res
+}
+
 export const deleteCable = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/cables/delete/${_id}`
   const res = await $axios.delete(url, {

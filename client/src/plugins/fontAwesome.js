@@ -27,6 +27,8 @@ import {
   faShareAlt,
   faHeart,
   faTrash,
+  faPlus,
+  faBezierCurve,
   faCloudUploadAlt
 } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -41,6 +43,8 @@ library.add(
   faBell,
   faPen,
   faCog,
+  faPlus,
+  faBezierCurve,
   faExpandArrowsAlt,
   faCaretUp,
   faCaretDown,

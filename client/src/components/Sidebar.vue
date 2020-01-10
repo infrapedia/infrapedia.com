@@ -6,11 +6,7 @@
     :enter-active-class="transitionsClasses.active"
     :leave-active-class="transitionsClasses.leave"
   >
-    <div
-      v-if="isSidebar"
-      class="sidebar-wrapper"
-      :class="classGiver"
-    >
+    <div v-if="isSidebar" class="sidebar-wrapper" :class="classGiver">
       <el-card shadow="hover" v-loading="isSidebarLoad">
         <header
           class="header pt10 pr8 pl8 pb10 h12 relative"

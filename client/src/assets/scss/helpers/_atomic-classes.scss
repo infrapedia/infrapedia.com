@@ -326,6 +326,9 @@
 .bottom-shadow {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
+.regular-transition {
+  transition: all $regular-transition;
+}
 
 @for $i from 1 through 120 {
   $base: 0.25rem;
