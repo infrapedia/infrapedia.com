@@ -8,6 +8,7 @@ import CLS from '../pages/user/section/cls.vue'
 import IxpsSection from '../pages/user/section/ixps.vue'
 import CreateSection from '../pages/user/section/create.vue'
 import CablesSection from '../pages/user/section/cables.vue'
+import IssuesSection from '../pages/user/section/issues.vue'
 import ChangePassword from '../pages/user/recover-password.vue'
 import NetworksSection from '../pages/user/section/network.vue'
 import OrgsSection from '../pages/user/section/organization.vue'
@@ -68,6 +69,11 @@ const routes = [
     path: '/user/section/networks',
     name: 'user/networks-section',
     component: NetworksSection
+  },
+  {
+    path: '/user/section/issues',
+    name: 'user/issues-section',
+    component: IssuesSection
   },
   {
     path: '/user/section/create',

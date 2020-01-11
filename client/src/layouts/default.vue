@@ -53,7 +53,6 @@ export default {
     }
   }),
   async mounted() {
-    // console.log(this.$auth)
     if (this.$auth && this.$auth.isAuthenticated) {
       await this.setToken()
     }

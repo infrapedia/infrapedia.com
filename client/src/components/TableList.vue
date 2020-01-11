@@ -38,6 +38,7 @@
         <el-table-column fixed="right" label="Operations" width="120">
           <template slot-scope="scope">
             <el-button
+              v-if="canEdit"
               plain
               size="small"
               class="p2 mr4 fs-regular"
@@ -79,6 +80,10 @@ export default {
     admittedKeys: {
       type: Array,
       default: () => []
+    },
+    canEdit: {
+      type: Boolean,
+      default: () => true
     }
   },
   methods: {

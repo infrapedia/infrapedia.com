@@ -55,6 +55,9 @@ export default {
     next()
   },
   async mounted() {
+    if (this.$store.state.editor.scene.features.list.length) {
+      this.$store.dispatch('editor/setList', [])
+    }
     await this.loadDataIfQueryParamsExist()
     setTimeout(() => {
       if (this.$auth && window.localStorage.getItem('auth.token-session'))

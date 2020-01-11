@@ -147,6 +147,7 @@
 <script>
 import { getOrganizations } from '../../services/api/organizations'
 import { getCables } from '../../services/api/cables'
+import { getClss } from '../../services/api/cls'
 
 export default {
   name: 'NetworkForm',
@@ -194,7 +195,7 @@ export default {
     },
     async loadAll() {
       this.loading = true
-      await Promise.all([this.loadOrgs(), this.loadCables()])
+      await Promise.all([this.loadOrgs(), this.loadCables(), this.loadCls()])
       this.loading = false
     },
     sendData() {
@@ -204,6 +205,12 @@ export default {
       const res = await getOrganizations({ user_id: this.$auth.user.sub })
       if (res && res.data && res.data.r) {
         this.orgs = res.data.r
+      }
+    },
+    async loadCls() {
+      const res = await getClss({ user_id: this.$auth.user.sub })
+      if (res && res.data && res.data.r) {
+        this.cls = res.data.r
       }
     },
     async loadCables() {

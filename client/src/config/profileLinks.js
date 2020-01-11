@@ -30,6 +30,10 @@ const profileLinks = [
   {
     label: 'Cables',
     url: '/user/section/cables'
+  },
+  {
+    label: 'Issues',
+    url: '/user/section/issues'
   }
 ]
 
