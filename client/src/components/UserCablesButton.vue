@@ -18,7 +18,7 @@
       </el-button>
       <div
         :class="{ dark, light: !dark }"
-        class="list-wrapper bottom-shadow sm-round absolute w90 p4 mt4 flex row wrap"
+        class="list-wrapper bottom-shadow sm-round h70 absolute w90 p4 mt4 flex row wrap"
       >
         <header class="w-fit-full h8 text-right">
           <span
@@ -29,13 +29,13 @@
           </span>
         </header>
         <ul
-          class="flex w-fit-full row wrap m0 p0 h-fit-content h78"
+          class="flex w-fit-full row wrap m0 p0"
           v-loading="loading"
           role="group"
         >
           <li
             v-for="(cable, i) in cablesList"
-            class="w-fit-full cursor-pointer mt4 no-outline pr4 pl4 h20"
+            class="w-fit-full cursor-pointer bg-white no-outline mt4 pr4 pl4 h-fit"
             role="listitem"
             :key="i"
           >
