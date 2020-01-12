@@ -38,6 +38,7 @@
           <component
             :is="currentView"
             :info="currentSelection"
+            :columns="currentSelectionColumns"
             @edit-cable="$emit(EDIT_CABLE, $event)"
             @buy-capacity="$emit(BUY_CAPACITY, $event)"
             @report-issue="$emit(REPORT_ISSUE, $event)"
@@ -68,6 +69,7 @@ export default {
     BUY_CAPACITY,
     EDIT_CABLE,
     REPORT_ISSUE,
+    currentSelectionColumns: [],
     isSidebarActive: false,
     transitionsClasses: {
       name: 'animated faster',
@@ -77,10 +79,10 @@ export default {
   }),
   computed: {
     ...mapState({
+      focus: state => state.map.focus,
       isLoading: state => state.isLoading,
       isSidebar: state => state.isSidebar,
       sidebarMode: state => state.sidebarMode,
-      focus: state => state.map.focus,
       currentSelection: state => state.map.currentSelection
     }),
     classGiver() {

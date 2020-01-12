@@ -130,9 +130,8 @@ export default {
             type: 'cable'
           })
         })
-      } catch (err) {
+      } catch {
         // Ignore
-        console.error(err)
       } finally {
         this.$store.commit(`${TOGGLE_LOADING}`, false)
       }

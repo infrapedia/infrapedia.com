@@ -12,7 +12,13 @@ import {
   getFacilityPoints,
   searchPlace
 } from '../services/api/data'
-import { getSearch } from '../services/api/search'
+import {
+  getSearch,
+  getSearchByNet,
+  getSearchByCables,
+  getSearchByCls,
+  getSearchByOrg
+} from '../services/api/search'
 import * as types from './actionTypes'
 import { MAP_BOUNDS, MAP_POINTS } from './actionTypes/map'
 import { viewCableBBox } from '../services/api/cables'
@@ -162,13 +168,32 @@ export const dataActions = {
 
   // ---------------- END ---------------------
 
-  // Places
-  async getSearchQueryData({ commit }, s) {
-    const res = await getSearch(s)
+  // SEARCH
+  async getSearchQueryData({ commit }, { s, type }) {
+    let service = getSearch
+    switch (type.toLowerCase()) {
+      case 'networks':
+        service = getSearchByNet
+        break
+      case 'cables':
+        service = getSearchByCables
+        break
+      case 'cls':
+        service = getSearchByCls
+        break
+      case 'orgs':
+        service = getSearchByOrg
+        break
+      default:
+        service = getSearch
+        break
+    }
+    const res = await service(s)
     if (res && res.t !== 'err') commit(`${types.QUERY_RESULTS}`)
     return res
   },
 
+  // PLACES
   async getSearchQueryDataMapbox({ commit }, s) {
     const res = await searchPlace(s)
     if (res) commit(`${types.QUERY_RESULTS}`)

@@ -32,6 +32,7 @@ import {
   editNetwork,
   viewNetwork
 } from '../../../services/api/networks'
+import { netColumns } from '../../../config/sidebarColumns'
 
 export default {
   name: 'CablesSection',
@@ -58,15 +59,7 @@ export default {
       ixps: [],
       cls: []
     },
-    columns: [
-      'name',
-      'websites', // (Array)
-      'organizations', // (Array)
-      'facilities', // (Array)
-      'ixps', // (Array)
-      'cls', //(Array)
-      'cables' //(Array)
-    ]
+    columns: [...netColumns]
   }),
   computed: {
     dark() {

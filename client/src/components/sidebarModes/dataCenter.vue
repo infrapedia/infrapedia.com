@@ -1,74 +1,17 @@
 <template>
   <div class="pr8 pl8 pt2 pb8">
-    <el-row :gutter="20" v-if="info.address1">
-      <el-col :span="10" class="p2">
-        <p class="label capitalize">Address</p>
-      </el-col>
-      <el-col :span="12" class="p2">
-        <p class="text-bold">{{ info.address1 }}</p>
-      </el-col>
-    </el-row>
-    <el-row :gutter="30" v-if="info.city">
-      <el-col :span="10" class="p2">
-        <p class="label capitalize">City</p>
-      </el-col>
-      <el-col :span="12" class="p2">
-        <p class="text-bold">{{ info.city }}</p>
-      </el-col>
-    </el-row>
-    <el-row :gutter="30" v-if="info.zipcode">
-      <el-col :span="10" class="p2">
-        <p class="label capitalize">Zip</p>
-      </el-col>
-      <el-col :span="12" class="p2">
-        <p class="text-bold">{{ info.zipcode }}</p>
-      </el-col>
-    </el-row>
-    <el-row :gutter="30" v-if="info.org_name">
-      <el-col :span="10" class="p2">
-        <p class="label capitalize">Org Name</p>
-      </el-col>
-      <el-col :span="12" class="p2">
-        <p class="text-bold">{{ info.org_name }}</p>
-      </el-col>
-    </el-row>
-    <el-row :gutter="30" v-if="info.net_count">
-      <el-col :span="10" class="p2">
-        <p class="label capitalize">Network Count</p>
-      </el-col>
-      <el-col :span="12" class="p2">
-        <p class="text-bold">{{ info.net_count }}</p>
-      </el-col>
-    </el-row>
-    <el-row :gutter="30" v-if="info.website">
-      <el-col :span="10" class="p2">
-        <p class="label capitalize">Website</p>
-      </el-col>
-      <el-col :span="12" class="p2">
-        <a
-          class="inline-block text-bold underline mt3 mb0 truncate"
-          :href="info.website"
-          target="_blank"
-          v-text="info.website"
-        />
-      </el-col>
-    </el-row>
-    <el-row :gutter="30" v-if="info.updated">
-      <el-col :span="10" class="p2">
-        <p class="label capitalize">Last Updated</p>
-      </el-col>
-      <el-col :span="12" class="p2">
-        <p class="text-bold">{{ info.updated }}</p>
-      </el-col>
-    </el-row>
-    <el-row :gutter="30" v-if="info.status">
-      <el-col :span="10" class="p2">
-        <p class="label capitalize">Status</p>
-      </el-col>
-      <el-col :span="12" class="p2">
-        <p class="text-bold">{{ info.status }}</p>
-      </el-col>
-    </el-row>
+    <template>
+      <div v-for="(col, i) in columns" :key="i">
+        <el-row :gutter="20" v-if="info[col.value]">
+          <el-col :span="10" class="p2">
+            <p class="label capitalize">{{ col.label }}</p>
+          </el-col>
+          <el-col :span="12" class="p2">
+            <p class="text-bold">{{ info[col.value] }}</p>
+          </el-col>
+        </el-row>
+      </div>
+    </template>
     <el-divider />
     <footer class="p0">
       <el-row :gutter="20">
@@ -131,6 +74,10 @@ export default {
   props: {
     info: {
       type: Object,
+      required: true
+    },
+    columns: {
+      type: Array,
       required: true
     }
   },

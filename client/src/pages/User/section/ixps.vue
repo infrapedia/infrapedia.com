@@ -14,6 +14,7 @@
 <script>
 import cablesList from '../../../mokedData/cablesList'
 import TableList from '../../../components/TableList.vue'
+import { ixpsColumns } from '../../../config/sidebarColumns'
 
 export default {
   name: 'IxpsSection',
@@ -27,13 +28,7 @@ export default {
       creation_link: '/user/section/create?id=ixps',
       btn_label: 'Create Ixps'
     },
-    columns: [
-      'name',
-      'state', // Bool
-      'slug',
-      'geom',
-      'cables' // (Array)
-    ]
+    columns: [...ixpsColumns]
   }),
   computed: {
     dark() {

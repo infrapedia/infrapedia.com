@@ -16,6 +16,7 @@
 
 <script>
 import TableList from '../../../components/TableList.vue'
+import { clsColumns } from '../../../config/sidebarColumns'
 import { getClss, deleteCls } from '../../../services/api/cls'
 
 export default {
@@ -31,13 +32,7 @@ export default {
       creation_link: '/user/section/create?id=cls',
       btn_label: 'Create cls'
     },
-    columns: [
-      'name',
-      'state', // Bool
-      'slug',
-      'geom',
-      'cables' // (Array)
-    ]
+    columns: [...clsColumns]
   }),
   async mounted() {
     await this.getClssList()

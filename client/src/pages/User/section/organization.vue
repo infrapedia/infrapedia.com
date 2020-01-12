@@ -32,6 +32,7 @@ import {
   editOrganization,
   viewOrganization
 } from '../../../services/api/organizations'
+import { orgsColumns } from '../../../config/sidebarColumns'
 
 export default {
   name: 'CablesSection',
@@ -55,12 +56,7 @@ export default {
       title: 'Organizations',
       btn_label: 'Create organization'
     },
-    columns: [
-      'name',
-      'logo',
-      // 'notes',
-      'address' // (Array)
-    ]
+    columns: [...orgsColumns]
   }),
   computed: {
     dark() {

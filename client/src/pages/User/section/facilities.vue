@@ -14,6 +14,7 @@
 <script>
 import cablesList from '../../../mokedData/cablesList'
 import TableList from '../../../components/TableList.vue'
+import { facsColumns } from '../../../config/sidebarColumns'
 
 export default {
   name: 'FacilitiesSection',
@@ -27,12 +28,7 @@ export default {
       creation_link: '/user/section/create?id=facs',
       btn_label: 'Create facility'
     },
-    columns: [
-      'name',
-      'point', // Bool
-      'address',
-      'websites' // (Array)
-    ]
+    columns: [...facsColumns]
   }),
   computed: {
     dark() {

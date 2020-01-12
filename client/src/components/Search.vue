@@ -42,6 +42,20 @@
         @focus="setFocus"
         @input="getQueryData"
       >
+        <el-select
+          v-model="categories.selected"
+          slot="prepend"
+          class="w24 p0"
+          placeholder
+          @change="getQueryData(search)"
+        >
+          <el-option
+            v-for="(opt, i) in categories.list"
+            :key="i"
+            :label="opt"
+            :value="opt"
+          />
+        </el-select>
         <fa slot="prefix" :icon="['fas', 'search']" class="mt3 ml1" />
         <fa
           v-if="!isFocused"
@@ -75,6 +89,10 @@ import { FOCUS_ON, SEARCH_SELECTION } from '../events'
 export default {
   data: () => ({
     search: '',
+    categories: {
+      list: ['All', 'Cables', 'CLS', 'Networks', 'Orgs'],
+      selected: 'All'
+    },
     isFocused: false,
     searchResults: [],
     isResultsVisible: false
@@ -93,7 +111,10 @@ export default {
   methods: {
     getQueryData: debounce(async function(search) {
       if (search.length <= 1) return
-      const res = await this.$store.dispatch('getSearchQueryData', search)
+      const res = await this.$store.dispatch('getSearchQueryData', {
+        s: search,
+        type: this.categories.selected
+      })
       const places = await this.$store.dispatch(
         'getSearchQueryDataMapbox',
         search
