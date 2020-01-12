@@ -32,7 +32,7 @@ import {
   editOrganization,
   viewOrganization
 } from '../../../services/api/organizations'
-import { orgsColumns } from '../../../config/sidebarColumns'
+import { orgsColumns } from '../../../config/columns'
 
 export default {
   name: 'CablesSection',

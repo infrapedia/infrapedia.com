@@ -15,8 +15,8 @@
 </template>
 
 <script>
+import { cablesColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { cablesColumns } from '../../../config/sidebarColumns'
 import { getCables, deleteCable } from '../../../services/api/cables'
 
 export default {
@@ -32,7 +32,7 @@ export default {
       creation_link: '/user/section/create?id=cables',
       btn_label: 'Create cable'
     },
-    columns: [...cablesColumns]
+    columns: [...cablesColumns].map(col => col.value)
   }),
   computed: {
     dark() {

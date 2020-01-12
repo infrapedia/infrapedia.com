@@ -4,31 +4,52 @@
     width="420"
     transition="el-zoom-in-top"
     trigger="manual"
-    v-model="isResultsVisible"
+    :value.sync="isResultsVisible"
   >
     <el-card class="p0 no-border" shadow="never">
       <ul role="list" class="w-fit-full h80 no-outline no-selectable">
         <li
-          v-for="(place, i) in searchResults"
-          :key="i"
+          v-for="(item, i) in searchResults.r"
+          :key="i + item"
           tabindex="0"
           role="listitem"
           :class="{ dark, light: !dark }"
-          class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
-          @click="handlePlaceSelection(place)"
-          @keyup.enter.space="handlePlaceSelection(place)"
+          class="pt2 pb2 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
+          @click="handlePlaceSelection(item)"
+          @keyup.enter.space="handlePlaceSelection(item)"
         >
-          <span>
-            {{ place.name }}
+          <div v-if="item.address" class="inline-block">
+            {{ item.name }} in
+            <small v-for="(a, index) in item.address" :key="a.state + index">
+              {{ a.city }}, {{ a.state }};
+            </small>
+          </div>
+          <span v-else>
+            {{ item.name }}
           </span>
-          (<small>{{ place.t }}</small
-          >)
+          -
+          <small class="capitalize">{{ item.t }}</small>
           <span
-            v-if="place.premium && place.premium === 'true'"
+            v-if="item.premium && item.premium === 'true'"
             class="w22 p1 h6 partner round flo-right vertical-align mt-2"
           >
             Partner
             <fa :icon="['fas', 'star']" class="sm-icon ml2" />
+          </span>
+        </li>
+        <el-divider class="m0" v-if="searchResults.r.length" />
+        <li
+          v-for="(item, i) in searchResults.places"
+          :key="i"
+          tabindex="0"
+          role="listitem"
+          :class="{ dark, light: !dark }"
+          class="pt2 pb2 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
+          @click="handlePlaceSelection(item)"
+          @keyup.enter.space="handlePlaceSelection(item)"
+        >
+          <span>
+            {{ item.name }}
           </span>
         </li>
       </ul>
@@ -94,7 +115,10 @@ export default {
       selected: 'All'
     },
     isFocused: false,
-    searchResults: [],
+    searchResults: {
+      r: [],
+      places: []
+    },
     isResultsVisible: false
   }),
   computed: {
@@ -125,18 +149,22 @@ export default {
       )
 
       if (res && res.data.length) {
-        this.searchResults = res.data.concat(places.features)
-      } else this.searchResults = places.features
+        this.searchResults.r = res.data
+      }
 
+      this.searchResults.places = places.features
       this.isResultsVisible = true
     }, 820),
     close() {
-      this.searchResults = []
+      this.searchResults = {
+        r: [],
+        places: []
+      }
       this.isResultsVisible = false
     },
     loseFocus() {
       this.isFocused = false
-      if (!this.searchResults.length) this.close()
+      // this.isResultsVisible = false
     },
     clearSearch() {
       this.search = ''
@@ -144,7 +172,6 @@ export default {
     },
     setFocus() {
       this.isFocused = true
-      if (this.searchResults.length) this.isResultsVisible = true
     },
     handlePlaceSelection(selection) {
       // If the selection has geometry it's a city
@@ -170,9 +197,7 @@ export default {
         })
       }
 
-      this.search = ''
-      this.searchResults = []
-      this.isResultsVisible = false
+      this.clearSearch()
     }
   }
 }

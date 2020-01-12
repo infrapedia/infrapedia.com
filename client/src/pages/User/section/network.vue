@@ -32,7 +32,7 @@ import {
   editNetwork,
   viewNetwork
 } from '../../../services/api/networks'
-import { netColumns } from '../../../config/sidebarColumns'
+import { netColumns } from '../../../config/columns'
 
 export default {
   name: 'CablesSection',

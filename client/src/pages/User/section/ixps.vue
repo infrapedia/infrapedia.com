@@ -6,15 +6,14 @@
     <table-list
       :columns="columns"
       :config="tableConfig"
-      :table-data="cablesList"
+      :table-data="tableData"
     />
   </div>
 </template>
 
 <script>
-import cablesList from '../../../mokedData/cablesList'
+import { ixpsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { ixpsColumns } from '../../../config/sidebarColumns'
 
 export default {
   name: 'IxpsSection',
@@ -22,7 +21,7 @@ export default {
     TableList
   },
   data: () => ({
-    cablesList,
+    tableData: [],
     tableConfig: {
       title: 'Ixps',
       creation_link: '/user/section/create?id=ixps',

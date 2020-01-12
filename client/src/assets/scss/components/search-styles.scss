@@ -1,27 +1,24 @@
 @import '../helpers/atomic-classes';
 @import '../base/variables';
 
-ul[role="list"] {
+ul[role='list'] {
   overflow: scroll;
   max-height: 28rem;
-  li[role="listitem"] {
-    border-bottom: 1px solid $grey-ligthen;
-  }
 }
 
 .partner {
   color: $white-partial;
-  background-color: orange
+  background-color: orange;
 }
 
 .sm-icon {
-  color: rgba(0,0,0,.54);
+  color: rgba(0, 0, 0, 0.54);
 }
 
 .el-input {
   min-width: 8rem;
   width: 24rem;
   @media screen and (max-width: $break-md) {
-    width: 8rem
+    width: 8rem;
   }
 }

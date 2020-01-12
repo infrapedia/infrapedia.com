@@ -6,15 +6,14 @@
     <table-list
       :columns="columns"
       :config="tableConfig"
-      :table-data="cablesList"
+      :table-data="tableData"
     />
   </div>
 </template>
 
 <script>
-import cablesList from '../../../mokedData/cablesList'
+import { facsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { facsColumns } from '../../../config/sidebarColumns'
 
 export default {
   name: 'FacilitiesSection',
@@ -22,7 +21,7 @@ export default {
     TableList
   },
   data: () => ({
-    cablesList,
+    tableData: [],
     tableConfig: {
       title: 'Facilities',
       creation_link: '/user/section/create?id=facs',

@@ -15,8 +15,8 @@
 </template>
 
 <script>
+import { clsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { clsColumns } from '../../../config/sidebarColumns'
 import { getClss, deleteCls } from '../../../services/api/cls'
 
 export default {

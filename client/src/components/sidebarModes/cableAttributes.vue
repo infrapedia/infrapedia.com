@@ -1,6 +1,33 @@
 <template>
   <div class="pr8 pl8 pt2 pb8">
-    <el-row :gutter="20">
+    <div v-for="(col, i) in columns" :key="i">
+      <el-row :gutter="20" v-if="info[col.value]">
+        <el-col :span="10" class="p2">
+          <p class="label capitalize">{{ col.label }}</p>
+        </el-col>
+        <el-col :span="12" class="p2">
+          <template v-if="col.label.toLowerCase().includes('url')">
+            <a
+              class="text-bold underline truncate mt3 inline-block"
+              v-for="(url, i) in info[col.value]"
+              :href="url"
+              target="_blank"
+              :key="i"
+            >
+              {{ url }}
+            </a>
+          </template>
+          <p
+            class="text-bold"
+            v-else-if="col.label.toLowerCase().includes('date')"
+          >
+            {{ formatDate(info[col.value]) }}
+          </p>
+          <p class="text-bold" v-else>{{ info[col.value] }}</p>
+        </el-col>
+      </el-row>
+    </div>
+    <!-- <el-row :gutter="20">
       <el-col :span="10" class="p2">
         <p class="label capitalize">System status</p>
       </el-col>
@@ -64,7 +91,7 @@
         target="_blank"
         class="inline-block underline fs-regular truncate"
       />
-    </div>
+    </div> -->
     <el-divider />
     <footer class="p0">
       <el-row :gutter="20">
@@ -138,6 +165,7 @@
 </template>
 
 <script>
+import { formatDate } from '../../helpers/formatDate'
 import convertToYear from '../../helpers/converToYear'
 import { BUY_CAPACITY, EDIT_CABLE, REPORT_ISSUE } from '../../events/sidebar'
 
@@ -147,10 +175,15 @@ export default {
     info: {
       type: Object,
       required: true
+    },
+    columns: {
+      type: Array,
+      required: true
     }
   },
   data: () => ({
     EDIT_CABLE,
+    formatDate,
     BUY_CAPACITY,
     REPORT_ISSUE,
     convertToYear,

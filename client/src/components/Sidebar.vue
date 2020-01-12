@@ -55,6 +55,7 @@ import { bus } from '../helpers/eventBus'
 import { CLEAR_SELECTION } from '../events'
 import * as modes from '../config/sidebarModes'
 import copyToClipboard from '../helpers/copyToClipboard'
+import { getSelectionCols } from '../helpers/getSelectionCols'
 import { CURRENT_SELECTION, MAP_FOCUS_ON } from '../store/actionTypes/map'
 import { BUY_CAPACITY, EDIT_CABLE, REPORT_ISSUE } from '../events/sidebar'
 
@@ -99,6 +100,14 @@ export default {
     },
     isSidebarLoad() {
       return this.isLoading && !this.isSidebar
+    }
+  },
+  watch: {
+    isSidebar(bool) {
+      if (!bool) return
+
+      this.currentSelectionColumns = getSelectionCols(this.focus.type)
+      console.log(this.currentSelectionColumns, this.currentSelection)
     }
   },
   beforeMount() {
