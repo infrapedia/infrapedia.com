@@ -49,7 +49,7 @@ export const createCable = async ({
     facilities.forEach((fac, i) => {
       form.append(`facilities[${i}]`, fac)
     })
-  } else form.append('facilities', '')
+  } else form.append('facilities', JSON.stringify([]))
 
   if (geom) {
     form.append('geom', JSON.stringify(fCollectionFormat(geom)))
@@ -113,7 +113,7 @@ export const editCable = async ({
     facilities.forEach((fac, i) => {
       form.append(`facilities[${i}]`, fac)
     })
-  } else form.append('facilities', '')
+  } else form.append('facilities', JSON.stringify([]))
 
   if (geom) {
     form.append('geom', JSON.stringify(fCollectionFormat(geom)))

@@ -17,7 +17,6 @@ import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import PropertiesDialog from './propertiesDialog'
 import { mapConfig } from '../../config/mapConfig'
-// import { fCollectionFormat } from '../../helpers/featureCollection'
 import { EDITOR_LOAD_DRAW, EDITOR_FILE_CONVERTED } from '../../events/editor'
 
 export default {
@@ -81,8 +80,45 @@ export default {
   },
   methods: {
     async handleFileConverted(fc) {
-      await this.$store.dispatch('editor/setList', fc.features)
-      return this.draw.set(fc)
+      if (!fc.features.length) return
+
+      const { map, draw, $store } = this
+
+      await $store.dispatch('editor/setList', fc.features)
+      draw.set(fc)
+      let bbox = []
+      let coords = []
+
+      // Calculation of bounds for cables
+      if (fc.features[0].geometry.type !== 'Point') {
+        coords = [
+          fc.features[0].geometry.coordinates[0],
+          fc.features[fc.features.length - 1].geometry.coordinates[0]
+        ]
+        bbox = coords.reduce(
+          (bounds, coord) => bounds.extend(coord),
+          new mapboxgl.LngLatBounds(coords[0], coords[0])
+        )
+      } else {
+        // Calculation of bounds for points
+        coords = [
+          fc.features[0].geometry.coordinates,
+          fc.features[fc.features.length - 1].geometry.coordinates
+        ]
+        bbox = coords.reduce(
+          (bounds, coord) => bounds.extend(coord),
+          new mapboxgl.LngLatBounds(coords[0], coords[0])
+        )
+      }
+
+      map.fitBounds(bbox, {
+        padding: 90,
+        animate: true,
+        speed: 1.75,
+        pan: {
+          duration: 25
+        }
+      })
     },
     handleDialogData(data) {
       this.dialog.visible = false
