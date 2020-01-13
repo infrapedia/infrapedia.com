@@ -2,6 +2,13 @@
 
 ## Version 1.0.0
 
+Upload of KMZ for:
+
+- cls
+- cables
+
+note: Zoom to bounds of both of them done too
+
 - Dragger component for uploading files
 
 New pages:
