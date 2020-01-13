@@ -3,6 +3,7 @@
     :visible.sync="isVisible"
     width="20%"
     top="20vh"
+    append-to-body
     :show-close="false"
     :close-on-press-escape="false"
     :close-on-click-modal="false"

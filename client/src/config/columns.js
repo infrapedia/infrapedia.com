@@ -2,24 +2,21 @@ export const clsColumns = [
   { label: 'name', value: 'name', showSidebar: true, showTable: true },
   { label: 'state', value: 'state', showSidebar: true, showTable: true },
   { label: 'slug', value: 'slug', showSidebar: true, showTable: true },
-  { label: 'geom', value: 'geom', showSidebar: false, showTable: true },
+  { label: 'geom', value: 'geom', showTable: true },
   {
     label: 'cables',
     value: 'cables',
-    showSidebar: true,
-    showTable: false
+    showSidebar: true
   },
   {
     label: 'networks',
     value: 'networks',
-    showSidebar: true,
-    showTable: false
+    showSidebar: true
   },
   {
     label: 'organizations',
     value: 'organizations',
-    showSidebar: true,
-    showTable: false
+    showSidebar: true
   }
 ]
 
@@ -27,8 +24,8 @@ export const clsColumns = [
 export const cablesColumns = [
   { label: 'name', value: 'name', showSidebar: true, showTable: true },
   {
-    label: 'system length',
-    value: 'system_length',
+    label: 'Latency',
+    value: 'systemLength',
     showSidebar: true
   },
   {
@@ -37,7 +34,6 @@ export const cablesColumns = [
     showSidebar: true,
     showTable: true
   },
-  { label: 'urls', value: 'urls', showSidebar: true }, // (Array)
   // 'terrestrial', // (Bool)
   {
     label: 'capacity tbps',
@@ -66,7 +62,8 @@ export const cablesColumns = [
     label: 'organizations',
     value: 'organizations',
     showSidebar: true
-  }
+  },
+  { label: 'urls', value: 'urls', showSidebar: true } // (Array)
   // 'facilities', // (Array)
 ]
 

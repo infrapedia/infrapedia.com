@@ -1,14 +1,40 @@
 <template>
   <div class="pr8 pl8 pt2 pb8">
-    <div v-for="(col, i) in columns" :key="i">
+    <div v-for="(col, i) in cableColumns" :key="i">
       <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
-        <el-col :span="10" class="p2">
+        <!--- Labels ---->
+        <template
+          v-if="
+            col.label.includes('org') ||
+              col.label.includes('cls') ||
+              col.label.includes('networks') ||
+              col.label.includes('fac')
+          "
+        >
+          <el-divider class="m0 mt2 mb2" />
+          <el-col :span="20" class="p2">
+            <p class="label capitalize">{{ col.label }}</p>
+          </el-col>
+        </template>
+        <template v-else-if="col.label.includes('url')">
+          <el-col :span="20" class="p2">
+            <small>
+              <p class="m0 capitalize">
+                More information:
+              </p>
+            </small>
+          </el-col>
+        </template>
+        <el-col :span="10" class="p2" v-else>
           <p class="label capitalize">{{ col.label }}</p>
         </el-col>
+        <!--- Labels END ---->
+
+        <!--- Values ---->
         <el-col :span="12" class="p2">
           <template v-if="col.label.toLowerCase().includes('url')">
             <a
-              class="text-bold underline truncate mt3 inline-block"
+              class="underline truncate ml2"
               v-for="(url, i) in info[col.value]"
               :href="url"
               target="_blank"
@@ -21,92 +47,42 @@
             class="text-bold"
             v-else-if="col.label.toLowerCase().includes('date')"
           >
-            {{ formatDate(info[col.value]) }}
+            {{ convertToYear(info[col.value]) }}
           </p>
           <template
             class="text-bold"
             v-else-if="isArrCol(info[col.value]) && hasLength(info[col.value])"
           >
-            <span
-              v-for="(item, index) in info[col.value]"
-              :key="index + item"
-              class="text-bold cursor-pointer inline-block mt4 mr1 underline-hover"
-              @click="handleSelection(item._id, col.label)"
-            >
-              {{ item.name }}
-            </span>
+            <div class="w-fit-full mb6">
+              <span
+                v-for="(item, index) in info[col.value]"
+                :key="index + item"
+                @click="handleSelection(item._id, col.label)"
+                :class="{
+                  'text-bold underline-hover cursor-pointer':
+                    col.label === 'cls'
+                }"
+              >
+                {{ item.name }}
+                <template v-if="index !== info[col.value].length - 1"
+                  >,</template
+                >
+              </span>
+            </div>
           </template>
+          <p
+            class="text-bold"
+            v-else-if="!isArrCol(info[col.value]) && col.label === 'Latency'"
+          >
+            {{ getCableLatency(info[col.value]) }} ms
+          </p>
           <p class="text-bold" v-else-if="!isArrCol(info[col.value])">
             {{ info[col.value] }}
           </p>
         </el-col>
+        <!--- Values END ---->
       </el-row>
     </div>
-    <!-- <el-row :gutter="20">
-      <el-col :span="10" class="p2">
-        <p class="label capitalize">System status</p>
-      </el-col>
-      <el-col :span="12" class="p2">
-        <p v-if="info.has_partial_outage">Partial Outage</p>
-        <p
-          v-else
-          class="status-text"
-          :class="{ 'active-cable': !currentCableStatus }"
-        >
-          {{ currentCableStatus ? 'Off' : 'On' }}
-        </p>
-      </el-col>
-    </el-row>
-    <el-row :gutter="30" v-if="info.system_length">
-      <el-col :span="10" class="p2">
-        <p class="label capitalize">System Length</p>
-      </el-col>
-      <el-col :span="12" class="p2">
-        <p class="text-bold">{{ `${info.system_length} km` }}</p>
-      </el-col>
-    </el-row>
-    <el-row :gutter="30" v-if="info.system_length && !info.is_terrestrial">
-      <el-col :span="10" class="p2">
-        <p class="label capitalize">Latency</p>
-      </el-col>
-      <el-col :span="12" class="p2">
-        <p class="text-bold">
-          {{ `${getCableLatency(info.system_length)} ms` }}
-        </p>
-      </el-col>
-    </el-row>
-    <el-row :gutter="30" v-if="info.activation_datetime">
-      <el-col :span="10" class="p2">
-        <p class="label capitalize">Activation Year</p>
-      </el-col>
-      <el-col :span="12" class="p2">
-        <p class="text-bold">{{ convertToYear(info.activation_datetime) }}</p>
-      </el-col>
-    </el-row>
-    <el-row :gutter="30" v-if="info.capacity_tbps > 0">
-      <el-col :span="10" class="p2">
-        <p class="label capitalize">Capacity</p>
-      </el-col>
-      <el-col :span="12" class="p2">
-        <p>{{ `${info.capacity_tbps} tbps` }}</p>
-      </el-col>
-    </el-row>
-    <el-divider />
-    <div class="w-fit-full">
-      <p class="label">Owners</p>
-      <p class="mt4">{{ info.orgs ? info.orgs : 'There is no owners ...' }}</p>
-    </div>
-    <div class="w-fit-full mt10" v-if="currentCableUrls.length">
-      <p class="mb1">More information:</p>
-      <a
-        v-for="(link, i) in currentCableUrls"
-        v-text="link"
-        :key="i"
-        :href="link"
-        target="_blank"
-        class="inline-block underline fs-regular truncate"
-      />
-    </div> -->
     <el-divider />
     <footer class="p0">
       <el-row :gutter="20">
@@ -180,7 +156,6 @@
 </template>
 
 <script>
-import { formatDate } from '../../helpers/formatDate'
 import convertToYear from '../../helpers/converToYear'
 import { BUY_CAPACITY, EDIT_CABLE, REPORT_ISSUE } from '../../events/sidebar'
 
@@ -198,7 +173,6 @@ export default {
   },
   data: () => ({
     EDIT_CABLE,
-    formatDate,
     BUY_CAPACITY,
     REPORT_ISSUE,
     convertToYear,
@@ -207,6 +181,26 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    cableColumns() {
+      const cols = [...this.columns]
+        .map(col => {
+          if (
+            Array.isArray(this.info[col.value]) &&
+            this.info[col.value].length
+          ) {
+            return col
+          } else if (
+            Array.isArray(this.info[col.value]) &&
+            !this.info[col.value].length
+          ) {
+            return false
+          } else if (col.showSidebar) {
+            return col
+          }
+        })
+        .filter(col => col)
+      return cols
     },
     isFutureState() {
       const date = this.info.activation_datetime

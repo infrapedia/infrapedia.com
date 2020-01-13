@@ -1,9 +1,30 @@
 <template>
   <div class="pr8 pl8 pt2 pb8">
     <template>
-      <div v-for="(col, i) in columns" :key="i">
+      <div v-for="(col, i) in facColumns" :key="i">
         <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
-          <el-col :span="10" class="p2">
+          <template
+            v-if="
+              col.label.includes('org') ||
+                col.label.includes('networks') ||
+                col.label.includes('cables')
+            "
+          >
+            <el-divider class="m0 mt2 mb2" />
+            <el-col :span="20" class="p2">
+              <p class="label capitalize">{{ col.label }}</p>
+            </el-col>
+          </template>
+          <template v-else-if="col.label.includes('url')">
+            <el-col :span="20" class="p2">
+              <small>
+                <p class="m0 capitalize">
+                  More information:
+                </p>
+              </small>
+            </el-col>
+          </template>
+          <el-col :span="10" class="p2" v-else>
             <p class="label capitalize">{{ col.label }}</p>
           </el-col>
           <el-col :span="12" class="p2">
@@ -22,7 +43,7 @@
               class="text-bold"
               v-else-if="col.label.toLowerCase().includes('date')"
             >
-              {{ formatDate(info[col.value]) }}
+              {{ convertToYear(info[col.value]) }}
             </p>
             <template
               class="text-bold"
@@ -108,6 +129,7 @@
 </template>
 
 <script>
+import convertToYear from '../../helpers/converToYear'
 import { BUY_CAPACITY, REPORT_ISSUE } from '../../events/sidebar'
 
 export default {
@@ -125,12 +147,33 @@ export default {
   data: () => ({
     BUY_CAPACITY,
     REPORT_ISSUE,
+    convertToYear,
     buyOptions: ['Transit', 'Backbone', 'Datacenter', 'Other'],
     isMenuOpen: false
   }),
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    facColumns() {
+      const cols = [...this.columns]
+        .map(col => {
+          if (
+            Array.isArray(this.info[col.value]) &&
+            this.info[col.value].length
+          ) {
+            return col
+          } else if (
+            Array.isArray(this.info[col.value]) &&
+            !this.info[col.value].length
+          ) {
+            return false
+          } else if (col.showSidebar) {
+            return col
+          }
+        })
+        .filter(col => col)
+      return cols
     }
   },
   methods: {

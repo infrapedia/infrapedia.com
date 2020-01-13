@@ -98,7 +98,7 @@ export default {
       const user_id = this.$auth.user.sub
       const res = await uploadKmz({ file: this.file, user_id })
 
-      if (res && res.data.r && res.data.r.length) {
+      if (res && res.data && res.data.r && res.data.r.length) {
         this.loadingText =
           'We are converting your file from kmz to geojson format'
         const fCollection =

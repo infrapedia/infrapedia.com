@@ -150,6 +150,7 @@ export default {
       })
 
       map.addControl(new mapboxgl.NavigationControl())
+      map.addControl(new mapboxgl.FullscreenControl())
       this.draw = new MapboxDraw({ displayControlsDefault: false })
 
       this.controls = new EditorControls({
