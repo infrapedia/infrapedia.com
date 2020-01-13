@@ -16,7 +16,7 @@
             :class="checkURL(link)"
             class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
           >
-            {{ link.label }}
+            <fa :icon="link.icon" class="mr2" /> {{ link.label }}
           </router-link>
         </li>
       </ul>

@@ -9,6 +9,7 @@
 .list-wrapper {
   right: 0.2rem;
   overflow-y: auto;
+  max-height: 20rem;
   background-color: $white-partial;
 
   li.inline-block {

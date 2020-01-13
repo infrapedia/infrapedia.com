@@ -29,7 +29,13 @@ import {
   faTrash,
   faPlus,
   faBezierCurve,
-  faCloudUploadAlt
+  faUser,
+  faBug,
+  faSitemap,
+  faProjectDiagram,
+  faExclamationTriangle,
+  faCloudUploadAlt,
+  faBraille
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faFacebook,
@@ -39,9 +45,15 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
+  faBraille,
+  faSitemap,
+  faProjectDiagram,
+  faExclamationTriangle,
   faUserCircle,
   faBell,
   faPen,
+  faUser,
+  faBug,
   faCog,
   faPlus,
   faBezierCurve,

@@ -81,14 +81,22 @@
       <ul class="links-wrapper m0 mb4 p0">
         <li class="w-fit-full" data-no-outline="true">
           <div class="no-selectable">
-            <a href="https://www.infrapedia.com/blog" target="_blank" class="no-underline inherit color-inherit">
+            <a
+              href="https://www.infrapedia.com/blog"
+              target="_blank"
+              class="no-underline inherit color-inherit"
+            >
               Blog
             </a>
           </div>
         </li>
         <li class="w-fit-full" data-no-outline="true">
           <div class="no-selectable">
-            <a href="https://www.infrapedia.com" target="_blank" class="no-underline inherit color-inherit">
+            <a
+              href="https://www.infrapedia.com"
+              target="_blank"
+              class="no-underline inherit color-inherit"
+            >
               Contact us
             </a>
           </div>
@@ -105,10 +113,10 @@
             role="listitem"
           >
             <div class="list-item" data-no-hover-bg="true">
-              <a href="https://www.catchpoint.com" target="_blank" >
+              <a href="https://www.catchpoint.com" target="_blank">
                 <el-image
                   src="https://storage.googleapis.com/infrapedia_bucket/sponsors/catchpoint-logo.png"
-                  class="w46 h16"
+                  class="w46 h14"
                   fit="cover"
                   alt="catchpoint logo"
                   referrer-policy="strict-origin-when-cross-origin"
@@ -123,11 +131,11 @@
             role="listitem"
           >
             <div class="list-item" data-no-hover-bg="true">
-              <a href="https://ipv4.global" target="_blank" >
+              <a href="https://ipv4.global" target="_blank">
                 <el-image
                   src="https://storage.googleapis.com/infrapedia_bucket/sponsors/ipv4global-footer.png"
                   fit="cover"
-                  class="w46 h16"
+                  class="w46 h6"
                   alt="ipv4 logo"
                   referrer-policy="strict-origin-when-cross-origin"
                 />

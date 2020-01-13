@@ -18,7 +18,7 @@
       </el-button>
       <div
         :class="{ dark, light: !dark }"
-        class="list-wrapper bottom-shadow sm-round h70 absolute w90 p4 mt4 flex row wrap"
+        class="list-wrapper bottom-shadow sm-round h-fit-content absolute w90 p4 mt4 flex row wrap"
       >
         <header class="w-fit-full h8 text-right">
           <span
@@ -74,6 +74,7 @@
 </template>
 
 <script>
+import dataCollection from '../mixins/dataCollection'
 import { getCablesShortList } from '../services/api/cables'
 
 export default {
@@ -83,6 +84,7 @@ export default {
     cablesList: [],
     loading: false
   }),
+  mixins: [dataCollection],
   computed: {
     dark() {
       return this.$store.state.isDark
@@ -107,7 +109,8 @@ export default {
       this.loading = false
     },
     loadCable(id) {
-      return console.warn('NOT READY YET', id)
+      this.toggleListVisibility()
+      return this.handleItemListSelection({ option: 'cable', id })
     },
     headToCreationRoute() {
       return this.$router.push('/user/section/create?id=cables')
