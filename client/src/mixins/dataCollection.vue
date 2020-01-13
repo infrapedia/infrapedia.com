@@ -164,6 +164,9 @@ export default {
         case 'facility':
           await this.handleDataCenterItemSelected(id)
           break
+        case 'cls':
+          await this.handleDataCenterItemSelected(id)
+          break
         case 'fac':
           await this.handleDataCenterItemSelected(id)
           break
@@ -221,7 +224,10 @@ export default {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
-      await this.getFacilityBoundsData(id)
+      await this.getFacilityBoundsData({
+        user_id: this.$auth.user.sub,
+        _id: id
+      })
       bus.$emit(`${FOCUS_ON}`, { id, type: 'fac' })
     },
     async handleFacilityItemSelected({ id, type }) {

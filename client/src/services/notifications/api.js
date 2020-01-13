@@ -3,7 +3,7 @@ import { Notification } from 'element-ui'
 export function handleReqErrors(err) {
   Notification({
     type: 'error',
-    message: err.message,
+    message: err.message || err.data.m || err.data.message || '',
     title: 'Something wrong happened'
   })
 

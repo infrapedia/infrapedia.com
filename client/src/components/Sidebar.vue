@@ -42,6 +42,8 @@
             @edit-cable="$emit(EDIT_CABLE, $event)"
             @buy-capacity="$emit(BUY_CAPACITY, $event)"
             @report-issue="$emit(REPORT_ISSUE, $event)"
+            @cls-selection="handleItemListSelection"
+            @cable-selection="handleItemListSelection"
           />
         </transition>
       </el-card>
@@ -54,6 +56,7 @@ import { mapState } from 'vuex'
 import { bus } from '../helpers/eventBus'
 import { CLEAR_SELECTION } from '../events'
 import * as modes from '../config/sidebarModes'
+import dataCollection from '../mixins/dataCollection'
 import copyToClipboard from '../helpers/copyToClipboard'
 import { getSelectionCols } from '../helpers/getSelectionCols'
 import { CURRENT_SELECTION, MAP_FOCUS_ON } from '../store/actionTypes/map'
@@ -78,6 +81,7 @@ export default {
       leave: 'slideOutLeft'
     }
   }),
+  mixins: [dataCollection],
   computed: {
     ...mapState({
       focus: state => state.map.focus,
@@ -105,9 +109,11 @@ export default {
   watch: {
     isSidebar(bool) {
       if (!bool) return
-
       this.currentSelectionColumns = getSelectionCols(this.focus.type)
-      console.log(this.currentSelectionColumns, this.currentSelection)
+    },
+    // eslint-disable-next-line
+    sidebarMode(mode) {
+      this.currentSelectionColumns = getSelectionCols(this.focus.type)
     }
   },
   beforeMount() {

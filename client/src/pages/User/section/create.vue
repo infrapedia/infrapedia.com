@@ -29,7 +29,7 @@ import cableStates from '../../../config/cableStates'
 import EditorMap from '../../../components/editor/Editor'
 import CLSForm from '../../../components/userCreationForms/cls'
 import CableForm from '../../../components/userCreationForms/cables'
-import { createCls, editCls, viewCls } from '../../../services/api/cls'
+import { createCls, editCls, viewClsOwner } from '../../../services/api/cls'
 import {
   createCable,
   editCable,
@@ -159,7 +159,7 @@ export default {
       }
     },
     async viewCurrentCLS(_id) {
-      const res = await viewCls({ user_id: this.$auth.user.sub, _id })
+      const res = await viewClsOwner({ user_id: this.$auth.user.sub, _id })
       return res && res.data && res.data.r ? res.data.r : {}
     },
     async viewCurrentCable(_id) {

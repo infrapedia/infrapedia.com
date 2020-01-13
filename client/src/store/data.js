@@ -8,7 +8,6 @@ import {
   getPremiumSelectedBounds,
   getPremiumSelectedFeatures,
   getOrganization,
-  getFacilityBounds,
   getFacilityPoints,
   searchPlace
 } from '../services/api/data'
@@ -22,6 +21,7 @@ import {
 import * as types from './actionTypes'
 import { MAP_BOUNDS, MAP_POINTS } from './actionTypes/map'
 import { viewCableBBox } from '../services/api/cables'
+import { viewClsBBox } from '../services/api/cls'
 
 export const dataMutations = {
   [types.GET_PREMIUM_DATA](state, data) {
@@ -140,12 +140,12 @@ export const dataActions = {
   async getSubseaCableBoundsData({ commit }, data) {
     const res = await viewCableBBox(data)
     if (res && res.data && res.data.r && res.data.r.length) {
-      // const turf = require('turf')
       const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
       const coords = res.data.r[0].coordinates
-      const bbox = coords.reduce(function(bounds, coord) {
-        return bounds.extend(coord)
-      }, new mapboxgl.LngLatBounds(coords[0], coords[0]))
+      const bbox = coords.reduce(
+        (bounds, coord) => bounds.extend(coord),
+        new mapboxgl.LngLatBounds(coords[0], coords[0])
+      )
       commit(`${MAP_BOUNDS}`, [bbox._ne, bbox._sw])
     }
   },
@@ -153,9 +153,13 @@ export const dataActions = {
   // ---------------- END ---------------------
 
   // --- NAVBAR DATA CENTERS ITEM SELECTION --- START
-  async getFacilityBoundsData({ commit }, id) {
-    const bounds = await getFacilityBounds(id)
-    commit(`${MAP_BOUNDS}`, bounds)
+  async getFacilityBoundsData({ commit }, data) {
+    const res = await viewClsBBox(data)
+    if (res && res.data && res.data.r && res.data.r.length) {
+      // const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
+      const coords = res.data.r[0].coordinates
+      commit(`${MAP_BOUNDS}`, [coords, coords])
+    }
   },
 
   // ---------------- END ---------------------

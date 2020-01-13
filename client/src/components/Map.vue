@@ -636,8 +636,10 @@ export default {
      * @param id { String } - ID of the facility (data centers)
      */
     async handleFacilitySelection(id) {
-      const data = await this.getFacilityData(id)
-      if (!data) throw { message: "We couldn't load the facility ..." }
+      const data = await this.getFacilityData({
+        user_id: this.$auth.user.sub,
+        _id: id
+      })
       this.$store.commit(`${MAP_FOCUS_ON}`, {
         id,
         name: data.name,
@@ -646,7 +648,7 @@ export default {
 
       // Changing the sidebar mode to data_center mode
       this.changeSidebarMode(1)
-      this.$store.commit(`${CURRENT_SELECTION}`, data)
+      // this.$store.commit(`${CURRENT_SELECTION}`, data)
       // Opening the sidebar
       this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
       // Removing cables highlight if any
@@ -995,17 +997,17 @@ export default {
      * @param id { String } - Building/DataCenter/Dot ID
      */
     async handleFacilityFocus(id) {
-      const { map, isMobile, focus, bounds, hasToEase } = this
+      const { map, focus, bounds, hasToEase } = this
 
       await this.handleFacilitySelection(id)
       if (hasToEase) await this.handleFocusOnEasePoints()
       else if (focus && bounds && bounds.length) {
         map.fitBounds(bounds, {
-          padding: isMobile ? 10 : 40,
           pan: { duration: 25 },
           animate: true,
-          maxZoom: 17,
+          padding: 20,
           speed: 1.1,
+          zoom: 12,
           pitch: 45
         })
       }

@@ -42,6 +42,13 @@ footer {
   p.label {
     color: $dark-blue;
   }
+
+  .status-text {
+    color: #ff8282;
+    &.active {
+      color: #2aa9b7;
+    }
+  }
 }
 .application.dark {
   p {
@@ -49,7 +56,7 @@ footer {
   }
   .status-text {
     color: #ff4e46;
-    &.active-cable {
+    &.active {
       color: #57ced8;
     }
   }

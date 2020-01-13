@@ -2,12 +2,53 @@
   <div class="pr8 pl8 pt2 pb8">
     <template>
       <div v-for="(col, i) in columns" :key="i">
-        <el-row :gutter="20" v-if="info[col.value]">
+        <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
           <el-col :span="10" class="p2">
             <p class="label capitalize">{{ col.label }}</p>
           </el-col>
           <el-col :span="12" class="p2">
-            <p class="text-bold">{{ info[col.value] }}</p>
+            <template v-if="col.label.toLowerCase().includes('url')">
+              <a
+                class="text-bold underline truncate mt3 inline-block"
+                v-for="(url, i) in info[col.value]"
+                :href="url"
+                target="_blank"
+                :key="i"
+              >
+                {{ url }}
+              </a>
+            </template>
+            <p
+              class="text-bold"
+              v-else-if="col.label.toLowerCase().includes('date')"
+            >
+              {{ formatDate(info[col.value]) }}
+            </p>
+            <template
+              class="text-bold"
+              v-else-if="
+                isArrCol(info[col.value]) && hasLength(info[col.value])
+              "
+            >
+              <p
+                v-for="(item, index) in info[col.value]"
+                :key="index + item"
+                class="text-bold cursor-pointer underline-hover"
+                @click="handleSelection(item._id, col.label)"
+              >
+                {{ item.name }}
+              </p>
+            </template>
+            <p
+              class="text-bold status-text"
+              :class="{ active: info[col.value] === 'true' }"
+              v-else-if="col.label.toLowerCase().includes('state')"
+            >
+              {{ info[col.value] === 'true' ? 'On' : 'Off' }}
+            </p>
+            <p class="text-bold" v-else-if="!isArrCol(info[col.value])">
+              {{ info[col.value] }}
+            </p>
           </el-col>
         </el-row>
       </div>
@@ -93,6 +134,20 @@ export default {
     }
   },
   methods: {
+    isArrCol(item) {
+      return Array.isArray(item)
+    },
+    hasLength(arr) {
+      return Boolean(arr.length)
+    },
+    handleSelection(_id, opt) {
+      if (opt === 'cables') {
+        this.$emit('cable-selection', {
+          id: _id,
+          option: 'cable'
+        })
+      }
+    },
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen
     },

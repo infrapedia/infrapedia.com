@@ -1,5 +1,5 @@
 <template>
-  <div class="pb6 pt6 pr8 pl8">
+  <div class="pb6 pt6 pr8 pl8" v-loading="loading">
     <header slot="header" class="w-fit-full mb8">
       <h1 class="title">{{ title }} CLS</h1>
     </header>
@@ -34,10 +34,10 @@
           placeholder
         >
           <el-option
-            v-for="(opt, i) in []"
+            v-for="(opt, i) in cablesList"
             :key="i"
-            :label="opt.label"
-            :value="opt.value"
+            :label="opt.name"
+            :value="opt._id"
           />
         </el-select>
       </el-form-item>
@@ -64,9 +64,14 @@
 
 <script>
 import Dragger from '../../components/Dragger'
+import { getCables } from '../../services/api/cables'
 
 export default {
   name: 'CLSForm',
+  data: () => ({
+    cablesList: [],
+    loading: false
+  }),
   components: {
     Dragger
   },
@@ -88,7 +93,18 @@ export default {
       return this.$store.state.editor.scene.features.list.length ? false : true
     }
   },
+  async mounted() {
+    await this.getCablesList()
+  },
   methods: {
+    async getCablesList() {
+      this.loading = true
+      const res = await getCables({ user_id: this.$auth.user.sub })
+      if (res.t !== 'error' && res.data) {
+        this.cablesList = res.data.r
+      }
+      this.loading = false
+    },
     handleFileConverted(fc) {
       return this.$emit('handle-file-converted', fc)
     },

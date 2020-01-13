@@ -1,5 +1,7 @@
 import $axios from '../axios'
 import apiConfig from '../../config/apiConfig'
+import { fCollectionFormat } from '../../helpers/featureCollection'
+
 // eslint-disable-next-line
 var url
 var form
@@ -20,13 +22,7 @@ export const createCls = async ({
   form.append('slug', slug)
 
   if (geom) {
-    form.append(
-      'geom',
-      JSON.stringify({
-        type: 'FeatureCollection',
-        features: geom.map(f => f.feature)
-      })
-    )
+    form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   } else form.append('geom', '')
 
   if (cables.length) {
@@ -65,13 +61,7 @@ export const editCls = async ({
   form.append('slug', slug)
 
   if (geom) {
-    form.append(
-      'geom',
-      JSON.stringify({
-        type: 'FeatureCollection',
-        features: geom.map(f => f.feature)
-      })
-    )
+    form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   } else form.append('geom', '')
 
   if (cables.length) {
@@ -120,8 +110,34 @@ export const deleteCls = async ({ user_id, _id }) => {
   return res
 }
 
-export const viewCls = async ({ user_id, _id }) => {
+export const viewClsOwner = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/cls/owner/${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+  return res
+}
+
+export const viewCls = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/cls/view/${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+  return res
+}
+
+export const viewClsBBox = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/cls/box/${_id}`
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {

@@ -1,7 +1,7 @@
 <template>
   <div class="pr8 pl8 pt2 pb8">
     <div v-for="(col, i) in columns" :key="i">
-      <el-row :gutter="20" v-if="info[col.value]">
+      <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
         <el-col :span="10" class="p2">
           <p class="label capitalize">{{ col.label }}</p>
         </el-col>
@@ -23,7 +23,22 @@
           >
             {{ formatDate(info[col.value]) }}
           </p>
-          <p class="text-bold" v-else>{{ info[col.value] }}</p>
+          <template
+            class="text-bold"
+            v-else-if="isArrCol(info[col.value]) && hasLength(info[col.value])"
+          >
+            <span
+              v-for="(item, index) in info[col.value]"
+              :key="index + item"
+              class="text-bold cursor-pointer inline-block mt4 mr1 underline-hover"
+              @click="handleSelection(item._id, col.label)"
+            >
+              {{ item.name }}
+            </span>
+          </template>
+          <p class="text-bold" v-else-if="!isArrCol(info[col.value])">
+            {{ info[col.value] }}
+          </p>
         </el-col>
       </el-row>
     </div>
@@ -213,6 +228,20 @@ export default {
     }
   },
   methods: {
+    isArrCol(item) {
+      return Array.isArray(item)
+    },
+    hasLength(arr) {
+      return Boolean(arr.length)
+    },
+    handleSelection(_id, opt) {
+      if (opt === 'cls') {
+        this.$emit('cls-selection', {
+          id: _id,
+          option: 'fac'
+        })
+      }
+    },
     getCableLatency(distance) {
       const _constant = 200
       return distance / _constant

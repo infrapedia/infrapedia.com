@@ -1,22 +1,77 @@
 export const clsColumns = [
-  'name',
-  'state', // Bool
-  'slug',
-  'geom',
-  'cables' // (Array)
+  { label: 'name', value: 'name', showSidebar: true, showTable: true },
+  { label: 'state', value: 'state', showSidebar: true, showTable: true },
+  { label: 'slug', value: 'slug', showSidebar: true, showTable: true },
+  { label: 'geom', value: 'geom', showSidebar: false, showTable: true },
+  {
+    label: 'cables',
+    value: 'cables',
+    showSidebar: true,
+    showTable: false
+  },
+  {
+    label: 'networks',
+    value: 'networks',
+    showSidebar: true,
+    showTable: false
+  },
+  {
+    label: 'organizations',
+    value: 'organizations',
+    showSidebar: true,
+    showTable: false
+  }
 ]
 
 export const cablesColumns = [
-  { label: 'name', value: 'name' },
-  { label: 'system length', value: 'system_length' },
-  { label: 'activation date', value: 'activationDateTime' },
-  { label: 'urls', value: 'urls' }, // (Array)
+  { label: 'name', value: 'name', showSidebar: true, showTable: true },
+  {
+    label: 'system length',
+    value: 'system_length',
+    showSidebar: true,
+    showTable: true
+  },
+  {
+    label: 'activation date',
+    value: 'activationDateTime',
+    showSidebar: true,
+    showTable: true
+  },
+  { label: 'urls', value: 'urls', showSidebar: true, showTable: true }, // (Array)
   // 'terrestrial', // (Bool)
-  { label: 'capacity tbps', value: 'capacity_tbps' },
-  { label: 'fiberPairs', value: 'fiberPairs' },
-  { label: 'notes', value: 'notes' }
+  {
+    label: 'capacity tbps',
+    value: 'capacity_tbps',
+    showSidebar: true,
+    showTable: true
+  },
+  {
+    label: 'fiberPairs',
+    value: 'fiberPairs',
+    showSidebar: true,
+    showTable: true
+  },
+  { label: 'notes', value: 'notes' },
+  { label: 'cls', value: 'cls', showSidebar: true, showTable: true },
+  {
+    label: 'facilities',
+    value: 'facilities',
+    showSidebar: true,
+    showTable: true
+  },
+  {
+    label: 'networks',
+    value: 'networks',
+    showSidebar: true,
+    showTable: false
+  },
+  {
+    label: 'organizations',
+    value: 'organizations',
+    showSidebar: true,
+    showTable: false
+  }
   // 'facilities', // (Array)
-  // 'cls' // (Array)
 ]
 
 export const facsColumns = [

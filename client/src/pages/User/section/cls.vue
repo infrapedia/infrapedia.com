@@ -32,7 +32,7 @@ export default {
       creation_link: '/user/section/create?id=cls',
       btn_label: 'Create cls'
     },
-    columns: [...clsColumns]
+    columns: [...clsColumns].map(col => col.value)
   }),
   async mounted() {
     await this.getClssList()

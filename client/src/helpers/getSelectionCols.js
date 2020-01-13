@@ -3,8 +3,8 @@ import {
   cablesColumns,
   ixpsColumns,
   orgsColumns,
-  netColumns,
-  facsColumns
+  netColumns
+  // facsColumns
 } from '../config/columns'
 
 export const getSelectionCols = type => {
@@ -12,10 +12,10 @@ export const getSelectionCols = type => {
 
   let col = []
 
-  if (type === 'cls') {
+  if (type === 'cls' || type === 'fac') {
     col = [...clsColumns]
-  } else if (type.includes('fac')) {
-    col = [...facsColumns]
+    // } else if (type.includes('fac')) {
+    // col = [...facsColumns]
   } else if (type.includes('cable') || type.includes('submarine')) {
     col = [...cablesColumns]
   } else if (type.includes('ixp')) {
