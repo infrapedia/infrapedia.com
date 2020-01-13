@@ -41,13 +41,13 @@
               :key="1"
               v-if="!isUserNavbar"
             >
-              <li class="inline-block relative" data-no-outline="true">
+              <!-- <li class="inline-block relative" data-no-outline="true">
                 <router-link class="list-item pl3 pr3" to="/blog">
                   Blog
                 </router-link>
-              </li>
+              </li> -->
 
-              <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
+              <!-- <el-divider direction="vertical" class="m0 hidden-sm-and-down" /> -->
 
               <!-- <li
                 class="inline-block no-selectable relative hidden-sm-and-down"
@@ -103,9 +103,9 @@
                 </div>
               </li>
 
-              <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
+              <!-- <el-divider direction="vertical" class="m0 hidden-sm-and-down" /> -->
 
-              <li
+              <!-- <li
                 class="inline-block relative hidden-sm-and-down"
                 data-no-outline="true"
               >
@@ -118,7 +118,7 @@
                     Contact us
                   </a>
                 </div>
-              </li>
+              </li> -->
 
               <!-- <li
                 class="inline-block no-selectable relative hidden-sm-and-down"
@@ -495,12 +495,19 @@
                           :key="i"
                           class="w-fit-full h6 mb4 link-info"
                         >
+                          <router-link
+                            v-if="link.router"
+                            :to="link.url"
+                            v-text="link.label"
+                            class="inline-block w-inherit color-inherit underline-hover"
+                          />
                           <a
+                            v-else
                             :href="link.url"
                             v-text="link.label"
                             target="_blank"
                             rel="noopener"
-                            class="inline-block w-inherit color-inherit"
+                            class="inline-block w-inherit color-inherit underline-hover"
                           />
                         </li>
                       </ul>
@@ -676,7 +683,7 @@ export default {
       return isProfile
     },
     userName() {
-      return 'Jhon Doe'
+      return this.$auth.user.name
     }
   },
   async mounted() {

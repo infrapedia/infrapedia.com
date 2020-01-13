@@ -8,7 +8,7 @@
         Account
       </h1>
     </header>
-    <el-card shadow="never" class="p8">
+    <el-card shadow="never" class="p8" v-loading="loading">
       <div class="flex justify-content-space-between">
         <div>
           <p class="m0 fs-large">
@@ -21,11 +21,7 @@
             </strong>
           </p>
           <p class="mt6 fs-small">
-            {{
-              userData.user_metadata && userData.user_metadata.company
-                ? userData.user_metadata.company
-                : 'Company: Unknown'
-            }}
+            {{ userData.company ? userData.company : 'Company: Unknown' }}
           </p>
         </div>
         <router-link
@@ -62,15 +58,21 @@
 </template>
 
 <script>
+import { getUserData } from '../../services/api/auth'
+
 export default {
   name: 'user',
+  data: () => ({
+    userData: {},
+    loading: false
+  }),
   computed: {
-    userData() {
-      return this.$auth.user || {}
-    },
     dark() {
       return this.$store.state.isDark
     }
+  },
+  async created() {
+    await this.setUserData()
   },
   mounted() {
     if (Object.keys(this.$route.query).length) this.$router.replace('/user')
@@ -79,6 +81,21 @@ export default {
     next(vm => {
       if (Object.keys(vm.$route.query).length) vm.$router.replace('/user')
     })
+  },
+  methods: {
+    async setUserData() {
+      if (!this.$auth || !this.$auth.user) return
+      this.loading = true
+      const userData = await getUserData(this.$auth.user.sub)
+      if (userData) {
+        const { user_metadata } = userData
+        this.userData = {
+          name: user_metadata.name ? user_metadata.name : userData.name,
+          company: user_metadata.companyname ? user_metadata.companyname : ''
+        }
+      }
+      this.loading = false
+    }
   }
 }
 </script>

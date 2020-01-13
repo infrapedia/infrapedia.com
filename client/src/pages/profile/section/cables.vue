@@ -32,7 +32,9 @@ export default {
       creation_link: '/user/section/create?id=cables',
       btn_label: 'Create cable'
     },
-    columns: [...cablesColumns].map(col => col.value)
+    columns: [...cablesColumns]
+      .filter(col => col.showTable)
+      .map(col => col.value)
   }),
   computed: {
     dark() {

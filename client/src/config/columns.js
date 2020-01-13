@@ -23,13 +23,13 @@ export const clsColumns = [
   }
 ]
 
+// name, activation time, cls, facilities, operations
 export const cablesColumns = [
   { label: 'name', value: 'name', showSidebar: true, showTable: true },
   {
     label: 'system length',
     value: 'system_length',
-    showSidebar: true,
-    showTable: true
+    showSidebar: true
   },
   {
     label: 'activation date',
@@ -37,19 +37,17 @@ export const cablesColumns = [
     showSidebar: true,
     showTable: true
   },
-  { label: 'urls', value: 'urls', showSidebar: true, showTable: true }, // (Array)
+  { label: 'urls', value: 'urls', showSidebar: true }, // (Array)
   // 'terrestrial', // (Bool)
   {
     label: 'capacity tbps',
     value: 'capacity_tbps',
-    showSidebar: true,
-    showTable: true
+    showSidebar: true
   },
   {
     label: 'fiberPairs',
     value: 'fiberPairs',
-    showSidebar: true,
-    showTable: true
+    showSidebar: true
   },
   { label: 'notes', value: 'notes' },
   { label: 'cls', value: 'cls', showSidebar: true, showTable: true },
@@ -62,14 +60,12 @@ export const cablesColumns = [
   {
     label: 'networks',
     value: 'networks',
-    showSidebar: true,
-    showTable: false
+    showSidebar: true
   },
   {
     label: 'organizations',
     value: 'organizations',
-    showSidebar: true,
-    showTable: false
+    showSidebar: true
   }
   // 'facilities', // (Array)
 ]
