@@ -46,7 +46,7 @@ export const cablesColumns = [
     showSidebar: true
   },
   { label: 'notes', value: 'notes' },
-  { label: 'cls', value: 'cls', showSidebar: true, showTable: true },
+  { label: 'cls', value: 'cls', showSidebar: true },
   {
     label: 'facilities',
     value: 'facilities',

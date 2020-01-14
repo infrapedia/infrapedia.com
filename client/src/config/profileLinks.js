@@ -11,7 +11,7 @@ const profileLinks = [
   },
   {
     label: 'Alerts',
-    url: '/user/alerts',
+    url: '/user/section/alerts',
     icon: ['fas', 'exclamation-triangle']
   },
   {
