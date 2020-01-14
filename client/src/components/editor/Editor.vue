@@ -1,6 +1,11 @@
 <template>
-  <div class="map-wrapper">
+  <div class="map-editor-wrapper">
     <div id="map" />
+    <div class="absolute coords-box z-index20 p2 w25">
+      <p class="m0"><strong>Lat:</strong> {{ infoBox.lat }}</p>
+      <p class="m0 mt1"><strong>Lng:</strong> {{ infoBox.lng }}</p>
+      <p class="m0 mt1"><strong>Zoom:</strong> {{ infoBox.zoom }}</p>
+    </div>
     <properties-dialog
       :mode="dialog.mode"
       :is-visible="dialog.visible"
@@ -26,6 +31,11 @@ export default {
   data: () => ({
     map: null,
     draw: null,
+    infoBox: {
+      lat: mapConfig.center[1],
+      lng: mapConfig.center[0],
+      zoom: mapConfig.zoom
+    },
     controls: null,
     dialog: {
       visible: false,
@@ -148,7 +158,12 @@ export default {
         center: mapConfig.center,
         style: mapConfig.default
       })
+      const scaleCtrl = new mapboxgl.ScaleControl({
+        maxWidth: 80,
+        unit: 'metric'
+      })
 
+      map.addControl(scaleCtrl, 'top-left')
       map.addControl(new mapboxgl.NavigationControl())
       map.addControl(new mapboxgl.FullscreenControl())
       this.draw = new MapboxDraw({ displayControlsDefault: false })
@@ -177,6 +192,14 @@ export default {
       const vm = this
       map.on('load', function() {
         map.on('draw.selectionchange', vm.handleDrawSelectionChange)
+        map.on('mousemove', function(e) {
+          const coords = e.lngLat.wrap()
+          vm.infoBox.lat = coords.lat.toFixed(5)
+          vm.infoBox.lng = coords.lng.toFixed(5)
+        })
+        map.on('zoom', function() {
+          vm.infoBox.zoom = map.getZoom().toFixed(5)
+        })
       })
       return map
     },
@@ -210,9 +233,6 @@ export default {
 }
 </script>
 
-<style scoped>
-#map {
-  width: 100%;
-  height: 100vh;
-}
+<style lang="scss" scoped>
+@import '../../assets/scss/components/editor-styles.scss';
 </style>

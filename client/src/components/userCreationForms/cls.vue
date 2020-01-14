@@ -5,10 +5,10 @@
     </header>
     <el-form ref="form" :model="form">
       <el-form-item label="Name of group">
-        <el-input class="w-fit-full" v-model="form.name" />
+        <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
       <el-form-item label="State">
-        <el-radio-group v-model="form.state">
+        <el-radio-group :class="{ dark }" v-model="form.state">
           <el-radio :label="true">
             Yes
           </el-radio>
@@ -20,6 +20,7 @@
       <el-form-item label="Slug">
         <el-input
           class="w-fit-full"
+          :class="{ dark }"
           controls-position="right"
           v-model="form.slug"
         />
@@ -28,6 +29,7 @@
         <el-select
           class="w-fit-full"
           v-model="form.cables"
+          :class="{ dark }"
           multiple
           filterable
           collapse-tags
@@ -86,6 +88,9 @@ export default {
     }
   },
   computed: {
+    dark() {
+      return this.$store.state.isDark
+    },
     title() {
       return this.mode === 'create' ? 'Create' : 'Edit'
     },

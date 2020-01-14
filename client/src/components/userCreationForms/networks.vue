@@ -2,23 +2,34 @@
   <el-dialog
     :visible="visible"
     width="30%"
+    :custom-class="{ dark }"
     :before-close="handleBeforeClose"
     :close-on-click-modal="false"
   >
     <header slot="title" class="w-fit-full">
-      <h1 class="title-user-variant w-fit-full fs-xlarge text-center">
+      <h1
+        class="title-user-variant w-fit-full fs-xlarge text-center"
+        :class="{ dark }"
+      >
         {{ title }} network
       </h1>
     </header>
-    <el-form ref="form" :model="form" class="p2" v-loading="loading">
+    <el-form
+      ref="form"
+      :model="form"
+      class="p2"
+      v-loading="loading"
+      :class="{ dark }"
+    >
       <el-form-item label="Name">
-        <el-input class="w-fit-full" v-model="form.name" />
+        <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
       <el-form-item label="Websites">
         <el-tag
           :key="tag"
           v-for="tag in form.websites"
           closable
+          :class="{ dark }"
           :disable-transitions="false"
           @close="handleClose(tag)"
         >
@@ -26,6 +37,7 @@
         </el-tag>
         <el-input
           type="url"
+          :class="{ dark }"
           v-if="inputVisible"
           v-model="tag"
           ref="saveTagInput"
@@ -35,6 +47,7 @@
         />
         <el-button
           v-else
+          :class="{ dark }"
           class="w42 text-center"
           size="small"
           @click="showInput"
@@ -46,6 +59,7 @@
         <el-select
           multiple
           clearable
+          :class="{ dark }"
           collapse-tags
           filterable
           class="w-fit-full"
@@ -64,6 +78,7 @@
         <el-select
           multiple
           clearable
+          :class="{ dark }"
           collapse-tags
           filterable
           class="w-fit-full"
@@ -83,6 +98,7 @@
           multiple
           clearable
           collapse-tags
+          :class="{ dark }"
           filterable
           class="w-fit-full"
           v-model="form.cables"
@@ -100,6 +116,7 @@
         <el-select
           multiple
           clearable
+          :class="{ dark }"
           collapse-tags
           filterable
           class="w-fit-full"
@@ -118,6 +135,7 @@
         <el-select
           multiple
           clearable
+          :class="{ dark }"
           collapse-tags
           filterable
           class="w-fit-full"
@@ -133,10 +151,17 @@
         </el-select>
       </el-form-item>
       <el-form-item class="mt12">
-        <el-button type="primary" class="mr8" round @click="sendData">
+        <el-button
+          :class="{ dark }"
+          type="primary"
+          class="mr8"
+          round
+          plain
+          @click="sendData"
+        >
           {{ title }} network
         </el-button>
-        <el-button round @click="handleBeforeClose">
+        <el-button :class="{ dark }" round @click="handleBeforeClose">
           Cancel
         </el-button>
       </el-form-item>
@@ -178,6 +203,9 @@ export default {
   computed: {
     title() {
       return this.mode === 'create' ? 'Create' : 'Edit'
+    },
+    dark() {
+      return this.$store.state.isDark
     }
   },
   watch: {

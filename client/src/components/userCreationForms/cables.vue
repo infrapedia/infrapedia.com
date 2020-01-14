@@ -8,6 +8,7 @@
         <el-select
           class="w-fit-full"
           filterable
+          :class="{ dark }"
           v-model="form.category"
           placeholder
         >
@@ -20,11 +21,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="Name">
-        <el-input class="w-fit-full" v-model="form.name" />
+        <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
       <el-form-item label="System length">
         <el-input-number
           :min="0"
+          :class="{ dark }"
           class="w-fit-full"
           controls-position="right"
           v-model="form.systemLength"
@@ -32,6 +34,7 @@
       </el-form-item>
       <el-form-item label="Activation date">
         <el-date-picker
+          :class="{ dark }"
           class="w-fit-full-imp"
           v-model="form.activationDateTime"
         />
@@ -52,11 +55,13 @@
           v-model="tag"
           ref="saveTagInput"
           size="mini"
+          :class="{ dark }"
           @keyup.enter.native="confirmTag"
           @blur="confirmTag"
         />
         <el-button
           v-else
+          :class="{ dark }"
           class="w42 text-center"
           size="small"
           @click="showInput"
@@ -77,16 +82,22 @@
       <el-form-item label="Tbps capacity">
         <el-input-number
           :min="0"
+          :class="{ dark }"
           class="w-fit-full"
           controls-position="right"
           v-model="form.capacityTBPS"
         />
       </el-form-item>
       <el-form-item label="Fiber pairs">
-        <el-input class="w-fit-full" v-model="form.fiberPairs" />
+        <el-input
+          :class="{ dark }"
+          class="w-fit-full"
+          v-model="form.fiberPairs"
+        />
       </el-form-item>
       <el-form-item label="Notes">
         <el-input
+          :class="{ dark }"
           type="textarea"
           class="w-fit-full"
           v-model="form.notes"
@@ -96,6 +107,7 @@
       <el-form-item label="Facilities">
         <el-select
           multiple
+          :class="{ dark }"
           filterable
           collapse-tags
           class="w-fit-full"
@@ -113,6 +125,7 @@
       <el-form-item label="CLS">
         <el-select
           multiple
+          :class="{ dark }"
           filterable
           collapse-tags
           class="w-fit-full"
@@ -175,6 +188,9 @@ export default {
   computed: {
     title() {
       return this.mode === 'create' ? 'Create' : 'Edit'
+    },
+    dark() {
+      return this.$store.state.isDark
     },
     checkGeomLength() {
       return this.$store.state.editor.scene.features.list.length ? false : true

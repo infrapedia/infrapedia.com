@@ -2,20 +2,25 @@
   <el-dialog
     :visible="visible"
     width="30%"
+    :custom-class="{ dark }"
     :before-close="handleBeforeClose"
     :close-on-click-modal="false"
   >
     <header slot="title" class="w-fit-full">
-      <h1 class="title-user-variant w-fit-full fs-xlarge text-center">
+      <h1
+        class="title-user-variant w-fit-full fs-xlarge text-center"
+        :class="{ dark }"
+      >
         {{ title }} organization
       </h1>
     </header>
     <el-form ref="form" :model="form" class="p2">
       <el-form-item label="Name">
-        <el-input class="w-fit-full" v-model="form.name" />
+        <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
       <el-form-item label="Notes">
         <el-input
+          :class="{ dark }"
           type="textarea"
           class="w-fit-full"
           v-model="form.notes"
@@ -30,7 +35,7 @@
         :on-success="handleLogoUpload"
       >
         <el-button size="small" type="primary">Click to upload</el-button>
-        <div slot="tip" class="el-upload__tip mt2 ml1">
+        <div slot="tip" class="el-upload__tip mt2 ml1" :class="{ dark }">
           - jpg files only
         </div>
       </el-upload>
@@ -58,6 +63,7 @@
               </label>
               <el-input
                 name="street"
+                :class="{ dark }"
                 type="url"
                 v-model="tag.reference"
                 ref="saveTagInput"
@@ -71,11 +77,13 @@
               <el-input
                 name="street"
                 type="url"
+                :class="{ dark }"
                 v-model="tag.street"
                 size="mini"
                 placeholder="Street and number, P.O. box, c/o."
               />
               <el-input
+                :class="{ dark }"
                 size="mini"
                 v-model="tag.apt"
                 placeholder="Apartment, suite, unit, building, floor, etc"
@@ -88,6 +96,7 @@
               <el-input
                 name="street"
                 type="url"
+                :class="{ dark }"
                 v-model="tag.city"
                 size="mini"
                 placeholder
@@ -95,13 +104,14 @@
             </div>
             <div>
               <label for="state">State / Province / Region</label>
-              <el-input size="mini" v-model="tag.state" />
+              <el-input :class="{ dark }" size="mini" v-model="tag.state" />
             </div>
             <div>
               <label for="state">
                 Zip Code
               </label>
               <el-input
+                :class="{ dark }"
                 size="mini"
                 type="number"
                 v-model="tag.zipcode"
@@ -111,6 +121,7 @@
             <div class="flex justify-content-end pt3">
               <el-button
                 plain
+                :class="{ dark }"
                 type="success"
                 size="mini"
                 class="mr4"
@@ -118,13 +129,14 @@
               >
                 Save address
               </el-button>
-              <el-button plain size="mini" @click="clearAddress">
+              <el-button :class="{ dark }" size="mini" @click="clearAddress">
                 Cancel
               </el-button>
             </div>
           </el-card>
           <el-button
             v-else
+            :class="{ dark }"
             class="w42 text-center"
             size="small"
             @click="showInput"
@@ -134,10 +146,17 @@
         </el-collapse-transition>
       </el-form-item>
       <el-form-item class="mt12">
-        <el-button type="primary" class="mr8" round @click="sendData">
+        <el-button
+          :class="{ dark }"
+          type="primary"
+          plain
+          class="mr8"
+          round
+          @click="sendData"
+        >
           {{ title }} organization
         </el-button>
-        <el-button round @click="handleBeforeClose">
+        <el-button :class="{ dark }" round @click="handleBeforeClose">
           Cancel
         </el-button>
       </el-form-item>
@@ -183,6 +202,9 @@ export default {
     },
     title() {
       return this.mode === 'create' ? 'Create' : 'Edit'
+    },
+    dark() {
+      return this.$store.state.isDark
     },
     uploadURL() {
       return `${apiConfig.url}/auth/upload/logo`
