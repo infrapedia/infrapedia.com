@@ -2,7 +2,7 @@
   <el-dialog
     :visible="visible"
     width="30%"
-    :custom-class="{ dark }"
+    :custom-class="dark ? dark : ''"
     :before-close="handleBeforeClose"
     :close-on-click-modal="false"
   >
@@ -64,7 +64,6 @@
               <el-input
                 name="street"
                 :class="{ dark }"
-                type="url"
                 v-model="tag.reference"
                 ref="saveTagInput"
                 size="mini"
@@ -76,7 +75,6 @@
               </label>
               <el-input
                 name="street"
-                type="url"
                 :class="{ dark }"
                 v-model="tag.street"
                 size="mini"
@@ -95,7 +93,6 @@
               </label>
               <el-input
                 name="street"
-                type="url"
                 :class="{ dark }"
                 v-model="tag.city"
                 size="mini"
@@ -210,13 +207,6 @@ export default {
       return `${apiConfig.url}/auth/upload/logo`
     }
   },
-  // watch: {
-  //   visible(bool) {
-  //     if (bool && this.form.logo && this.mode === 'edit') {
-  //       this.fileList.push([{ name: this.form.logo, url: this.form.logo }])
-  //     }
-  //   }
-  // },
   methods: {
     handleLogoUpload(res) {
       if (!res.data && res.data.r.length) return

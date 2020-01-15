@@ -4,7 +4,7 @@
       <h1 class="title-user color-inherit">
         {{ config.title }}
       </h1>
-      <el-button type="warning" round @click="handleRoute">
+      <el-button type="warning" round @click="handleRoute" v-if="canCreate">
         {{ config.btn_label }}
       </el-button>
     </header>
@@ -82,6 +82,10 @@ export default {
       default: () => []
     },
     canEdit: {
+      type: Boolean,
+      default: () => true
+    },
+    canCreate: {
       type: Boolean,
       default: () => true
     }

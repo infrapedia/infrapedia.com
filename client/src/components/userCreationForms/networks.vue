@@ -2,7 +2,7 @@
   <el-dialog
     :visible="visible"
     width="30%"
-    :custom-class="{ dark }"
+    :custom-class="dark ? dark : ''"
     :before-close="handleBeforeClose"
     :close-on-click-modal="false"
   >
@@ -35,16 +35,28 @@
         >
           {{ tag }}
         </el-tag>
-        <el-input
-          type="url"
-          :class="{ dark }"
-          v-if="inputVisible"
-          v-model="tag"
-          ref="saveTagInput"
-          size="mini"
-          @keyup.enter.native="confirmTag"
-          @blur="confirmTag"
-        />
+        <template v-if="inputVisible">
+          <el-input
+            :class="{ dark }"
+            v-model="tag"
+            ref="saveTagInput"
+            size="mini"
+            @input="validateURL"
+            @keyup.enter.native="confirmTag"
+            @blur="confirmTag"
+          />
+          <el-collapse-transition>
+            <el-alert
+              v-if="isURLValid !== null && !isURLValid"
+              title="This url is not valid"
+              show-icon
+              type="warning"
+              effect="dark"
+              class="h6"
+              :closable="false"
+            />
+          </el-collapse-transition>
+        </template>
         <el-button
           v-else
           :class="{ dark }"
@@ -172,6 +184,7 @@
 <script>
 import { getOrganizations } from '../../services/api/organizations'
 import { getCables } from '../../services/api/cables'
+import validateUrl from '../../helpers/validateUrl'
 import { getClss } from '../../services/api/cls'
 
 export default {
@@ -184,6 +197,7 @@ export default {
     facs: [],
     cables: [],
     loading: false,
+    isURLValid: null,
     inputVisible: false
   }),
   props: {
@@ -250,6 +264,9 @@ export default {
     handleBeforeClose() {
       return this.$emit('close')
     },
+    validateURL(url) {
+      this.isURLValid = validateUrl(url)
+    },
     handleClose(tag) {
       return this.form.websites.splice(this.form.websites.indexOf(tag), 1)
     },
@@ -267,10 +284,11 @@ export default {
     confirmTag() {
       let tag = this.tag
       const isTagAlreadyCreated = this.form.websites.includes(tag)
-      if (isTagAlreadyCreated) return
+      if (isTagAlreadyCreated || !this.isURLValid) return
 
       if (tag) this.form.websites.push(tag)
       this.inputVisible = false
+      this.isURLValid = null
       this.tag = ''
     }
   }

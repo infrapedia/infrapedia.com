@@ -6,6 +6,7 @@
     <table-list
       v-loading="loading"
       :can-edit="false"
+      :can-create="false"
       :columns="columns"
       :config="tableConfig"
       :table-data="tableData"

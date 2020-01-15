@@ -34,7 +34,7 @@
         <el-col :span="12" class="p2">
           <template v-if="col.label.toLowerCase().includes('url')">
             <a
-              class="underline truncate ml2"
+              class="underline truncate fs-regular"
               v-for="(url, i) in info[col.value]"
               :href="url"
               target="_blank"
@@ -50,7 +50,6 @@
             {{ convertToYear(info[col.value]) }}
           </p>
           <template
-            class="text-bold"
             v-else-if="isArrCol(info[col.value]) && hasLength(info[col.value])"
           >
             <div class="w-fit-full mb6">
@@ -58,8 +57,9 @@
                 v-for="(item, index) in info[col.value]"
                 :key="index + item"
                 @click="handleSelection(item._id, col.label)"
+                class="fs-regular"
                 :class="{
-                  'text-bold underline-hover cursor-pointer':
+                  'text-bold underline-hover fs-regular cursor-pointer':
                     col.label === 'cls'
                 }"
               >

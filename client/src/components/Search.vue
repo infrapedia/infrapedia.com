@@ -66,7 +66,7 @@
         <el-select
           v-model="categories.selected"
           slot="prepend"
-          class="w24 p0"
+          class="w28 p0"
           placeholder
           @change="getQueryData(search)"
         >

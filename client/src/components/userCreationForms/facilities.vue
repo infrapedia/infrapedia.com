@@ -39,8 +39,14 @@
           v-model="tag"
           ref="saveTagInput"
           size="mini"
+          @input="validateURL"
           @keyup.enter.native="confirmTag"
           @blur="confirmTag"
+        />
+        <el-alert
+          v-if="isURLValid !== null && !isURLValid"
+          title="This url is not valid"
+          type="danger"
         />
         <el-button
           v-else
@@ -65,6 +71,7 @@
 
 <script>
 import Dragger from '../../components/Dragger'
+import validateUrl from '../../helpers/validateUrl'
 
 export default {
   name: 'FacsForm',
@@ -73,6 +80,7 @@ export default {
   },
   data: () => ({
     tag: '',
+    isURLValid: null,
     inputVisible: false
   }),
   props: {
@@ -98,13 +106,17 @@ export default {
         console.error(err)
       }
     },
+    validateURL(url) {
+      this.isURLValid = validateUrl(url)
+    },
     confirmTag() {
       let tag = this.tag
       const isTagAlreadyCreated = this.form.websites.includes(tag)
-      if (isTagAlreadyCreated) return
+      if (isTagAlreadyCreated || !this.isURLValid) return
 
       if (tag) this.form.websites.push(tag)
       this.inputVisible = false
+      this.isURLValid = null
       this.tag = ''
     }
   }
