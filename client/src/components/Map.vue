@@ -1,64 +1,71 @@
 <template>
-  <div id="map">
-    <el-button
-      id="FScreen"
-      type="text"
-      @click="toggleThreeD"
-      size="small"
-      class="m0 p0"
-      :class="{ dark }"
-      >3D</el-button
-    >
-    <el-button
-      id="ThreeD"
-      type="text"
-      size="small"
-      class="m0 p0"
-      :class="{ dark }"
-      @click="toggleFullScreen"
-    >
-      <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
-    </el-button>
-    <i-location-button
-      @click="geolocateUser(true)"
-      @enter="geolocateUser(true)"
-    />
-    <el-button
-      id="menuOpener"
-      circle
-      size="small"
-      class="absolute z-index1 w11 h11"
-      @click.stop="toggleMenu"
-      tabindex="0"
-    >
-      <fa
-        :icon="['fas', 'user-circle']"
-        class="icon fs-medium"
-        v-if="!isMenuOpen"
-      />
-      <fa :icon="['fas', 'times']" class="icon fs-medium" v-else />
-
-      <ul
-        v-if="isMenuOpen"
-        role="group"
-        class="absolute flex justify-content-space-around align-items-center"
-        :class="{ active: isMenuOpen }"
+  <div>
+    <div id="map">
+      <el-button
+        id="FScreen"
+        type="text"
+        @click="toggleThreeD"
+        size="small"
+        class="m0 p0"
+        :class="{ dark }"
+        >3D</el-button
       >
-        <li role="listitem">
-          <i-theme-toggler @click="toggleDarkMode" id="toggleTheme" />
-        </li>
-        <li role="listitem">
-          <el-button
-            circle
-            class="color-inherit"
-            @click="shareViewLink"
-            :class="{ dark }"
-          >
-            <fa :icon="['fas', 'share-alt']" class="sm-icon" />
-          </el-button>
-        </li>
-      </ul>
-    </el-button>
+      <el-button
+        id="ThreeD"
+        type="text"
+        size="small"
+        class="m0 p0"
+        :class="{ dark }"
+        @click="toggleFullScreen"
+      >
+        <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
+      </el-button>
+      <i-location-button
+        @click="geolocateUser(true)"
+        @enter="geolocateUser(true)"
+      />
+      <el-button
+        id="menuOpener"
+        circle
+        size="small"
+        class="absolute z-index1 w11 h11"
+        @click.stop="toggleMenu"
+        tabindex="0"
+      >
+        <fa
+          :icon="['fas', 'user-circle']"
+          class="icon fs-medium"
+          v-if="!isMenuOpen"
+        />
+        <fa :icon="['fas', 'times']" class="icon fs-medium" v-else />
+
+        <ul
+          v-if="isMenuOpen"
+          role="group"
+          class="absolute flex justify-content-space-around align-items-center"
+          :class="{ active: isMenuOpen }"
+        >
+          <li role="listitem">
+            <i-theme-toggler @click="toggleDarkMode" id="toggleTheme" />
+          </li>
+          <li role="listitem">
+            <el-button
+              circle
+              class="color-inherit"
+              @click="shareViewLink"
+              :class="{ dark }"
+            >
+              <fa :icon="['fas', 'share-alt']" class="sm-icon" />
+            </el-button>
+          </li>
+        </ul>
+      </el-button>
+    </div>
+    <div class="absolute coords-box z-index20 p2 w25">
+      <p class="m0"><strong>Lat:</strong> {{ infoBox.lat }}</p>
+      <p class="m0 mt1"><strong>Lng:</strong> {{ infoBox.lng }}</p>
+      <p class="m0 mt1"><strong>Zoom:</strong> {{ infoBox.zoom }}</p>
+    </div>
   </div>
 </template>
 
@@ -121,7 +128,12 @@ export default {
     mapTooltip: {},
     map: undefined,
     isMenuOpen: false,
-    isLocationZoomIn: true
+    isLocationZoomIn: true,
+    infoBox: {
+      lat: mapConfig.center[1],
+      lng: mapConfig.center[0],
+      zoom: mapConfig.zoom
+    }
   }),
   computed: {
     ...mapState({
@@ -175,8 +187,13 @@ export default {
           line_string: true
         }
       })
+      const scaleCtrl = new mapboxgl.ScaleControl({
+        maxWidth: 80,
+        unit: 'metric'
+      })
 
       map.addControl(draw, 'top-right')
+      map.addControl(scaleCtrl, 'bottom-left')
       map.addControl(new mapboxgl.NavigationControl(), 'top-right')
 
       const mbCtrl = document.querySelector('.mapboxgl-ctrl-group')
@@ -319,6 +336,14 @@ export default {
       map.on('draw.update', this.handleDraw)
 
       map.on('render', this.handleBoundsChange)
+      map.on('mousemove', function(e) {
+        const coords = e.lngLat.wrap()
+        vm.infoBox.lat = coords.lat.toFixed(5)
+        vm.infoBox.lng = coords.lng.toFixed(5)
+      })
+      map.on('zoom', function() {
+        vm.infoBox.zoom = map.getZoom().toFixed(5)
+      })
 
       return map
     },
