@@ -1,71 +1,64 @@
 <template>
-  <div>
-    <div id="map">
-      <el-button
-        id="FScreen"
-        type="text"
-        @click="toggleThreeD"
-        size="small"
-        class="m0 p0"
-        :class="{ dark }"
-        >3D</el-button
-      >
-      <el-button
-        id="ThreeD"
-        type="text"
-        size="small"
-        class="m0 p0"
-        :class="{ dark }"
-        @click="toggleFullScreen"
-      >
-        <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
-      </el-button>
-      <i-location-button
-        @click="geolocateUser(true)"
-        @enter="geolocateUser(true)"
+  <div id="map">
+    <el-button
+      id="FScreen"
+      type="text"
+      @click="toggleThreeD"
+      size="small"
+      class="m0 p0"
+      :class="{ dark }"
+      >3D</el-button
+    >
+    <el-button
+      id="ThreeD"
+      type="text"
+      size="small"
+      class="m0 p0"
+      :class="{ dark }"
+      @click="toggleFullScreen"
+    >
+      <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
+    </el-button>
+    <i-location-button
+      @click="geolocateUser(true)"
+      @enter="geolocateUser(true)"
+    />
+    <el-button
+      id="menuOpener"
+      circle
+      size="small"
+      class="absolute z-index1 w11 h11"
+      @click.stop="toggleMenu"
+      tabindex="0"
+    >
+      <fa
+        :icon="['fas', 'user-circle']"
+        class="icon fs-medium"
+        v-if="!isMenuOpen"
       />
-      <el-button
-        id="menuOpener"
-        circle
-        size="small"
-        class="absolute z-index1 w11 h11"
-        @click.stop="toggleMenu"
-        tabindex="0"
-      >
-        <fa
-          :icon="['fas', 'user-circle']"
-          class="icon fs-medium"
-          v-if="!isMenuOpen"
-        />
-        <fa :icon="['fas', 'times']" class="icon fs-medium" v-else />
+      <fa :icon="['fas', 'times']" class="icon fs-medium" v-else />
 
-        <ul
-          v-if="isMenuOpen"
-          role="group"
-          class="absolute flex justify-content-space-around align-items-center"
-          :class="{ active: isMenuOpen }"
-        >
-          <li role="listitem">
-            <i-theme-toggler @click="toggleDarkMode" id="toggleTheme" />
-          </li>
-          <li role="listitem">
-            <el-button
-              circle
-              class="color-inherit"
-              @click="shareViewLink"
-              :class="{ dark }"
-            >
-              <fa :icon="['fas', 'share-alt']" class="sm-icon" />
-            </el-button>
-          </li>
-        </ul>
-      </el-button>
-    </div>
-    <div class="absolute coords-box z-index20 p2 w25">
-      <p class="m0"><strong>Lat:</strong> {{ infoBox.lat }}</p>
-      <p class="m0 mt1"><strong>Lng:</strong> {{ infoBox.lng }}</p>
-      <p class="m0 mt1"><strong>Zoom:</strong> {{ infoBox.zoom }}</p>
-    </div>
+      <ul
+        v-if="isMenuOpen"
+        role="group"
+        class="absolute flex justify-content-space-around align-items-center"
+        :class="{ active: isMenuOpen }"
+      >
+        <li role="listitem">
+          <i-theme-toggler @click="toggleDarkMode" id="toggleTheme" />
+        </li>
+        <li role="listitem">
+          <el-button
+            circle
+            class="color-inherit"
+            @click="shareViewLink"
+            :class="{ dark }"
+          >
+            <fa :icon="['fas', 'share-alt']" class="sm-icon" />
+          </el-button>
+        </li>
+      </ul>
+    </el-button>
   </div>
 </template>
 
@@ -128,12 +121,7 @@ export default {
     mapTooltip: {},
     map: undefined,
     isMenuOpen: false,
-    isLocationZoomIn: true,
-    infoBox: {
-      lat: mapConfig.center[1],
-      lng: mapConfig.center[0],
-      zoom: mapConfig.zoom
-    }
+    isLocationZoomIn: true
   }),
   computed: {
     ...mapState({
@@ -336,14 +324,6 @@ export default {
       map.on('draw.update', this.handleDraw)
 
       map.on('render', this.handleBoundsChange)
-      map.on('mousemove', function(e) {
-        const coords = e.lngLat.wrap()
-        vm.infoBox.lat = coords.lat.toFixed(5)
-        vm.infoBox.lng = coords.lng.toFixed(5)
-      })
-      map.on('zoom', function() {
-        vm.infoBox.zoom = map.getZoom().toFixed(5)
-      })
 
       return map
     },
