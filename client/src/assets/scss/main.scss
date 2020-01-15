@@ -236,6 +236,15 @@ input.issues-dialog {
     }
   }
 }
+
+.profile-drawer {
+  ul[role='group'] {
+    li[role='listitem'] {
+      font-size: 14px;
+    }
+  }
+}
+
 /*
 *  THEME VARIANT'S
 */
@@ -545,6 +554,46 @@ input.issues-dialog {
     background-color: $dark-charcoal !important;
   }
 }
+
+#html-wrapper.light {
+  .dialog-profile-wrapper {
+  color: $white-partial;
+    background-color: $blue-user-interface;
+
+    .el-button.el-button--text {
+      &:hover:not(.router-link-exact-active),
+        &:focus:not(.router-link-exact-active),
+        &:focus-within:not(.router-link-exact-active) {
+          background-color: lighten($blue-user-interface, 4%);
+        }
+    }
+    .router-link-exact-active {
+      background-color: $dark-blue;
+    }
+  }
+}
+
+#html-wrapper.dark {
+  .dialog-profile-wrapper {
+    color: $white-partial;
+    background-color: $light-charcoal;
+    li .el-button.el-button--text {
+      font-weight: bold;
+      a {
+        &:hover:not(.router-link-exact-active),
+        &:focus:not(.router-link-exact-active),
+        &:focus-within:not(.router-link-exact-active) {
+          background-color: lighten($dark-charcoal, 4%);
+        }
+      }
+      .router-link-exact-active {
+        background-color: $dark-charcoal;
+      }
+    }
+  }
+}
+
+
 
 .dark,
 .light {

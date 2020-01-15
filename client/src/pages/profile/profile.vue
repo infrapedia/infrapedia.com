@@ -11,12 +11,12 @@
     <el-card shadow="never" class="pt2 pr5 pl5 pb4 mt8" v-loading="loading">
       <el-form :model="form" :rules="rules" ref="form">
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :sm="24" :md="24" :lg="12">
             <el-form-item prop="name" label="First name">
               <el-input v-model="form.name" :class="{ dark }" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :sm="24" :md="24" :lg="12">
             <el-form-item prop="user_metadata.lastname" label="Last name">
               <el-input
                 v-model="form.user_metadata.lastname"
@@ -26,12 +26,12 @@
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :sm="24" :md="24" :lg="12">
             <el-form-item prop="email" label="Email address">
               <el-input v-model="form.email" :class="{ dark }" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :sm="24" :md="24" :lg="12">
             <el-form-item label="Phone number">
               <div class="el-input">
                 <i-phone-input
@@ -58,7 +58,7 @@
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :sm="24" :md="24" :lg="12">
             <el-form-item prop="user_metadata.companyname" label="Company name">
               <el-input
                 v-model="form.user_metadata.companyname"

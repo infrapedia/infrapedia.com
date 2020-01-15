@@ -14,6 +14,7 @@
 
         <h1>
           <i-mobile-drawer
+            v-if="!isUserNavbar"
             class="hidden-md-and-up"
             @clear-subsea="clearSubsea"
             @clear-data-centers="clearDataCenters"
@@ -26,6 +27,7 @@
             @load-more="handleLoadMoreItems"
             @click-list-item="handleBeforeLoadItem"
           />
+          <i-mobile-drawer-profile class="hidden-md-and-up" v-else />
         </h1>
 
         <div aria-labelledby="rightnavheading" class="links-wrapper">
@@ -636,7 +638,8 @@ export default {
     BottomSheet: () => import('./BottomSheet'),
     IMobileDrawer: () => import('./MobileDrawer'),
     IFullScreenSearch: () => import('./FullScreenSearch'),
-    PremiumPartnersButton: () => import('./PremiumPartners')
+    PremiumPartnersButton: () => import('./PremiumPartners'),
+    IMobileDrawerProfile: () => import('./MobileDrawerProfile')
   },
   mixins: [dataCollection],
   props: {

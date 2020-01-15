@@ -10,10 +10,11 @@
       size="100%"
       :visible.sync="isDrawer"
       direction="ltr"
+      :before-close="toggleVisibility"
       :custom-class="drawerClass"
     >
       <header
-        class="h14 w-fit-full pr4 pl4 pb2 flex justify-content-space-between align-items-center"
+        class="h14 pr4 pl4 pb2 flex justify-content-space-between align-items-center"
         :class="{ dark, light: !dark }"
       >
         <router-link to="/">

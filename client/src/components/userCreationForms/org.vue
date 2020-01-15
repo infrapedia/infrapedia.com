@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     :visible="visible"
-    width="30%"
+    width="80%"
     :custom-class="dark ? dark : ''"
     :before-close="handleBeforeClose"
     :close-on-click-modal="false"
@@ -115,18 +115,25 @@
                 placeholder
               />
             </div>
-            <div class="flex justify-content-end pt3">
+            <div
+              class="flex row wrap justify-content-end justify-center-sm pt3"
+            >
               <el-button
                 plain
                 :class="{ dark }"
                 type="success"
                 size="mini"
-                class="mr4"
+                class="w25 h8 mb4"
                 @click="handleSaveAddress"
               >
                 Save address
               </el-button>
-              <el-button :class="{ dark }" size="mini" @click="clearAddress">
+              <el-button
+                class="w25 h8"
+                :class="{ dark }"
+                size="mini"
+                @click="clearAddress"
+              >
                 Cancel
               </el-button>
             </div>
@@ -147,13 +154,18 @@
           :class="{ dark }"
           type="primary"
           plain
-          class="mr8"
+          class="mr8 mb2"
           round
           @click="sendData"
         >
           {{ title }} organization
         </el-button>
-        <el-button :class="{ dark }" round @click="handleBeforeClose">
+        <el-button
+          class="w42"
+          :class="{ dark }"
+          round
+          @click="handleBeforeClose"
+        >
           Cancel
         </el-button>
       </el-form-item>
@@ -253,8 +265,8 @@ export default {
         this.$nextTick(() => {
           this.$refs.saveTagInput.$refs.input.focus()
         })
-      } catch (err) {
-        console.error(err)
+      } catch {
+        // Ignore
       }
     },
     confirmTag() {

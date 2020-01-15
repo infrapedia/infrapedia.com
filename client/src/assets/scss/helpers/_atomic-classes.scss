@@ -160,6 +160,11 @@
 .align-self-end {
   align-self: flex-end;
 }
+.justify-center-sm {
+  @media screen and (max-width: $break-sm) {
+    justify-content: center;
+  }
+}
 .w-full {
   width: 100vw;
 }

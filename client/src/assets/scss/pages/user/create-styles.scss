@@ -7,6 +7,9 @@
     &.el-card {
       width: 30vw;
       overflow-y: auto;
+      @media screen and (max-width: $break-md) {
+        width: 45vw;
+      }
     }
   }
 }

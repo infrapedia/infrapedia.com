@@ -2,7 +2,7 @@
   <el-container class="vph-full no-overflow">
     <i-navbar role="navigation" :is-user-navbar="true" />
 
-    <el-aside class="pt9 no-overflow">
+    <el-aside class="pt9 no-overflow hidden-md-and-down">
       <ul role="group" class="pt10 h-fit-full">
         <li
           role="listitem"
@@ -24,22 +24,23 @@
     <transition name="fade" mode="out-in"><router-view /></transition>
 
     <i-theme-toggler @click="toggleTheme" />
-    <i-footer role="contentinfo" class="ml80 mb3" />
+    <i-footer
+      role="contentinfo"
+      id="footer-profile"
+      class="mb1 ml80 hidden-md-and-down"
+    />
   </el-container>
 </template>
 
 <script>
-import IThemeToggler from '../components/ThemeToggler'
 import { TOGGLE_DARK } from '../store/actionTypes'
 import profileLinks from '../config/profileLinks'
-import INavbar from '../components/Navbar'
-import IFooter from '../components/Footer'
 
 export default {
   components: {
-    IFooter,
-    INavbar,
-    IThemeToggler
+    INavbar: () => import('../components/Navbar'),
+    IFooter: () => import('../components/Footer'),
+    IThemeToggler: () => import('../components/ThemeToggler')
   },
   data: () => ({
     profileLinks
@@ -49,10 +50,12 @@ export default {
       return this.$store.state.isDark
     }
   },
-  async mounted() {
-    if (!this.$auth.user) {
-      await this.$auth.loginWithRedirect().then(async () => this.setToken())
-    }
+  mounted() {
+    setTimeout(() => {
+      if (this.$auth && window.localStorage.getItem('auth.token-session'))
+        return
+      else this.$router.push('/login')
+    }, 1200)
   },
   methods: {
     checkURL(link) {

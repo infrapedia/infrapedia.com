@@ -2,8 +2,8 @@
 @import '../helpers/atomic-classes';
 
 .el-aside {
-  ul[role="group"] {
-    li[role="listitem"] {
+  ul[role='group'] {
+    li[role='listitem'] {
       font-size: 14px;
     }
   }
@@ -15,7 +15,7 @@
 
 .application.light {
   .el-aside {
-    ul[role="group"] {
+    ul[role='group'] {
       color: $white-partial;
       background-color: $blue-user-interface;
 
@@ -37,11 +37,11 @@
 
 .application.dark {
   .el-aside {
-    ul[role="group"] {
+    ul[role='group'] {
       color: $white-partial;
       background-color: $light-charcoal;
 
-      li[role="listitem"] {
+      li[role='listitem'] {
         font-weight: bold;
         a {
           &:hover:not(.router-link-exact-active),

@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     :visible="visible"
-    width="30%"
+    width="80%"
     :custom-class="dark ? dark : ''"
     :before-close="handleBeforeClose"
     :close-on-click-modal="false"
@@ -166,14 +166,19 @@
         <el-button
           :class="{ dark }"
           type="primary"
-          class="mr8"
+          class="mr8 mb2"
           round
           plain
           @click="sendData"
         >
           {{ title }} network
         </el-button>
-        <el-button :class="{ dark }" round @click="handleBeforeClose">
+        <el-button
+          class="w36"
+          :class="{ dark }"
+          round
+          @click="handleBeforeClose"
+        >
           Cancel
         </el-button>
       </el-form-item>
@@ -276,9 +281,8 @@ export default {
         this.$nextTick(() => {
           this.$refs.saveTagInput.$refs.input.focus()
         })
-      } catch (err) {
-        console.warn(this.$refs)
-        console.error(err)
+      } catch {
+        // Ignore
       }
     },
     confirmTag() {
