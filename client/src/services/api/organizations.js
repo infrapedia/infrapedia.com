@@ -107,3 +107,16 @@ export const viewOrganization = async ({ user_id, _id }) => {
   })
   return res
 }
+
+export const searchOrganization = async ({ user_id, s }) => {
+  url = `${apiConfig.url}/organization/search?s=${s}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+  return res
+}

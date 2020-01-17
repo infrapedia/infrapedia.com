@@ -32,6 +32,9 @@
           :class="{ dark }"
           multiple
           filterable
+          remote
+          :remote-method="loadCablesSearch"
+          :loading="isLoadingCables"
           collapse-tags
           placeholder
         >
@@ -40,7 +43,12 @@
             :key="i"
             :label="opt.name"
             :value="opt._id"
-          />
+          >
+            <div>
+              <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
+              {{ opt.name }}
+            </div>
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -66,13 +74,14 @@
 
 <script>
 import Dragger from '../../components/Dragger'
-import { getCables } from '../../services/api/cables'
+import { getCables, searchCables } from '../../services/api/cables'
 
 export default {
   name: 'CLSForm',
   data: () => ({
     cablesList: [],
-    loading: false
+    loading: false,
+    isLoadingCables: false
   }),
   components: {
     Dragger
@@ -109,6 +118,15 @@ export default {
         this.cablesList = res.data.r
       }
       this.loading = false
+    },
+    async loadCablesSearch(s) {
+      if (s === '') return
+      this.isLoadingCables = true
+      const res = await searchCables({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.cablesList = res.data
+      }
+      this.isLoadingCables = false
     },
     handleFileConverted(fc) {
       return this.$emit('handle-file-converted', fc)

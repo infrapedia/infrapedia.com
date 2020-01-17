@@ -49,16 +49,28 @@
         >
           {{ tag }}
         </el-tag>
-        <el-input
-          type="url"
-          v-if="inputVisible"
-          v-model="tag"
-          ref="saveTagInput"
-          size="mini"
-          :class="{ dark }"
-          @keyup.enter.native="confirmTag"
-          @blur="confirmTag"
-        />
+        <template v-if="inputVisible">
+          <el-input
+            :class="{ dark }"
+            v-model="tag"
+            ref="saveTagInput"
+            size="mini"
+            @input="validateURL"
+            @keyup.enter.native="confirmTag"
+            @blur="confirmTag"
+          />
+          <el-collapse-transition>
+            <el-alert
+              v-if="isURLValid !== null && !isURLValid"
+              title="This url is not valid"
+              show-icon
+              type="warning"
+              effect="dark"
+              class="h6"
+              :closable="false"
+            />
+          </el-collapse-transition>
+        </template>
         <el-button
           v-else
           :class="{ dark }"
@@ -95,45 +107,21 @@
           v-model="form.fiberPairs"
         />
       </el-form-item>
-      <el-form-item label="Notes">
-        <el-input
-          :class="{ dark }"
-          type="textarea"
-          class="w-fit-full"
-          v-model="form.notes"
-          :rows="4"
-        />
-      </el-form-item>
       <el-form-item label="Facilities">
         <el-select
           multiple
           :class="{ dark }"
           filterable
           collapse-tags
+          remote
+          :remote-method="loadFacsSearch"
+          :loading="isLoadingFacs"
           class="w-fit-full"
           v-model="form.facilities"
           placeholder
         >
           <el-option
             v-for="(opt, i) in facsList"
-            :key="i"
-            :label="opt.name"
-            :value="opt._id"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="CLS">
-        <el-select
-          multiple
-          :class="{ dark }"
-          filterable
-          collapse-tags
-          class="w-fit-full"
-          v-model="form.cls"
-          placeholder
-        >
-          <el-option
-            v-for="(opt, i) in clsList"
             :key="i"
             :label="opt.name"
             :value="opt._id"
@@ -162,6 +150,7 @@
 import Dragger from '../../components/Dragger'
 import { getClss } from '../../services/api/cls'
 import cableStates from '../../config/cableStates'
+import validateUrl from '../../helpers/validateUrl'
 
 export default {
   name: 'CableForm',
@@ -173,7 +162,10 @@ export default {
     cableStates,
     clsList: [],
     facsList: [],
-    inputVisible: false
+    oading: false,
+    isURLValid: null,
+    inputVisible: false,
+    isLoadingFacs: false
   }),
   props: {
     form: {
@@ -212,6 +204,18 @@ export default {
     sendData() {
       return this.$emit('send-data')
     },
+    async loadFacsSearch(s) {
+      if (s === '') return
+      this.isLoadingFacs = true
+      // const res = await searchCables({ user_id: this.$auth.user.sub, s })
+      // if (res && res.data) {
+      //   this.cables = res.data
+      // }
+      this.isLoadingFacs = false
+    },
+    validateURL(url) {
+      this.isURLValid = validateUrl(url)
+    },
     handleClose(tag) {
       this.form.urls.splice(this.form.urls.indexOf(tag), 1)
     },
@@ -221,14 +225,14 @@ export default {
         this.$nextTick(() => {
           this.$refs.saveTagInput.$refs.input.focus()
         })
-      } catch (err) {
-        console.error(err)
+      } catch {
+        // Ignore
       }
     },
     confirmTag() {
       let tag = this.tag
       const isTagAlreadyCreated = this.form.urls.includes(tag)
-      if (isTagAlreadyCreated) return
+      if (isTagAlreadyCreated || !this.isURLValid) return
 
       if (tag) this.form.urls.push(tag)
       this.inputVisible = false

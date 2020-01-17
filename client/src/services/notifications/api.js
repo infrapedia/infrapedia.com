@@ -11,7 +11,7 @@ export function handleReqErrors(err) {
 }
 
 export function handleReqSuccess(res) {
-  if (res.data && res.data.m) {
+  if (res.data && res.data.m && res.n !== false) {
     Notification({
       type: 'success',
       message: res.data.m,

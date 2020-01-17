@@ -148,3 +148,16 @@ export const viewClsBBox = async ({ user_id, _id }) => {
   })
   return res
 }
+
+export const searchCls = async ({ user_id, s }) => {
+  url = `${apiConfig.url}/cls/search?s=${s}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+  return res
+}

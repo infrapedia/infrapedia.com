@@ -31,6 +31,7 @@ import {
   faBezierCurve,
   faUser,
   faBug,
+  faAward,
   faSitemap,
   faProjectDiagram,
   faExclamationTriangle,
@@ -45,6 +46,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
+  faAward,
   faBraille,
   faSitemap,
   faProjectDiagram,

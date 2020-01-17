@@ -1,8 +1,8 @@
 <template>
   <el-dialog
     :visible="visible"
-    width="80%"
-    :custom-class="dark ? dark : ''"
+    :width="dialogWidth"
+    :custom-class="dark ? 'dark' : ''"
     :before-close="handleBeforeClose"
     :close-on-click-modal="false"
   >
@@ -71,6 +71,9 @@
         <el-select
           multiple
           clearable
+          remote
+          :remote-method="loadOrgSearch"
+          :loading="isLoadingOrg"
           :class="{ dark }"
           collapse-tags
           filterable
@@ -83,7 +86,12 @@
             :key="i"
             :label="opt.name"
             :value="opt._id"
-          />
+          >
+            <div>
+              <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
+              {{ opt.name }}
+            </div>
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="Facilities">
@@ -102,7 +110,12 @@
             :key="i"
             :label="opt.name"
             :value="opt._id"
-          />
+          >
+            <div>
+              <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
+              {{ opt.name }}
+            </div>
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="Cables">
@@ -112,6 +125,9 @@
           collapse-tags
           :class="{ dark }"
           filterable
+          remote
+          :remote-method="loadCablesSearch"
+          :loading="isLoadingCables"
           class="w-fit-full"
           v-model="form.cables"
           placeholder
@@ -121,7 +137,12 @@
             :key="i"
             :label="opt.name"
             :value="opt._id"
-          />
+          >
+            <div>
+              <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
+              {{ opt.name }}
+            </div>
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="Ixps">
@@ -140,7 +161,12 @@
             :key="i"
             :label="opt.name"
             :value="opt._id"
-          />
+          >
+            <div>
+              <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
+              {{ opt.name }}
+            </div>
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="CLS">
@@ -149,6 +175,9 @@
           clearable
           :class="{ dark }"
           collapse-tags
+          remote
+          :remote-method="loadClsSearch"
+          :loading="isLoadingCls"
           filterable
           class="w-fit-full"
           v-model="form.cls"
@@ -159,7 +188,12 @@
             :key="i"
             :label="opt.name"
             :value="opt._id"
-          />
+          >
+            <div>
+              <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
+              {{ opt.name }}
+            </div>
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item class="mt12">
@@ -187,8 +221,11 @@
 </template>
 
 <script>
-import { getOrganizations } from '../../services/api/organizations'
-import { getCables } from '../../services/api/cables'
+import {
+  getOrganizations,
+  searchOrganization
+} from '../../services/api/organizations'
+import { getCables, searchCables } from '../../services/api/cables'
 import validateUrl from '../../helpers/validateUrl'
 import { getClss } from '../../services/api/cls'
 
@@ -203,7 +240,10 @@ export default {
     cables: [],
     loading: false,
     isURLValid: null,
-    inputVisible: false
+    inputVisible: false,
+    isLoadingOrg: false,
+    isLoadingCables: false,
+    isLoadingCls: false
   }),
   props: {
     visible: {
@@ -222,6 +262,9 @@ export default {
   computed: {
     title() {
       return this.mode === 'create' ? 'Create' : 'Edit'
+    },
+    dialogWidth() {
+      return window.innerWidth < 620 ? '80%' : '30%'
     },
     dark() {
       return this.$store.state.isDark
@@ -247,6 +290,33 @@ export default {
     },
     sendData() {
       return this.$emit('send-data')
+    },
+    async loadOrgSearch(s) {
+      if (s === '') return
+      this.isLoadingOrg = true
+      const res = await searchOrganization({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.orgs = res.data
+      }
+      this.isLoadingOrg = false
+    },
+    async loadCablesSearch(s) {
+      if (s === '') return
+      this.isLoadingCables = true
+      const res = await searchCables({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.cables = res.data
+      }
+      this.isLoadingCables = false
+    },
+    async loadClsSearch(s) {
+      if (s === '') return
+      this.isLoadingCls = true
+      const res = await searchCables({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.cls = res.data
+      }
+      this.isLoadingCls = false
     },
     async loadOrgs() {
       const res = await getOrganizations({ user_id: this.$auth.user.sub })
