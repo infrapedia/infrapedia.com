@@ -13,6 +13,7 @@ import AlertsSection from '../pages/profile/section/alerts.vue'
 import ChangePassword from '../pages/profile/recover-password.vue'
 import NetworksSection from '../pages/profile/section/network.vue'
 import OrgsSection from '../pages/profile/section/organization.vue'
+import MyIssuesSection from '../pages/profile/section/myissues.vue'
 import FacilitiesSection from '../pages/profile/section/facilities.vue'
 
 const routes = [
@@ -75,6 +76,11 @@ const routes = [
     path: '/user/section/issues',
     name: 'user/issues-section',
     component: IssuesSection
+  },
+  {
+    path: '/user/section/issues-reported',
+    name: 'user/issues-reported',
+    component: MyIssuesSection
   },
   {
     path: '/user/section/alerts',

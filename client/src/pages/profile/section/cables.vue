@@ -4,7 +4,7 @@
     :class="{ dark, light: !dark }"
   >
     <table-list
-      v-loading="loading"
+      :is-loading="loading"
       :columns="columns"
       :config="tableConfig"
       :table-data="tableData"

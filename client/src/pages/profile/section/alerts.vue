@@ -4,7 +4,7 @@
     :class="{ dark, light: !dark }"
   >
     <table-list
-      v-loading="loading"
+      :is-loading="loading"
       :can-edit="false"
       :can-create="false"
       :columns="columns"
@@ -50,12 +50,15 @@ export default {
   computed: {
     totalPages() {
       return 20
+    },
+    dark() {
+      return this.$store.state.isDark
     }
   },
   methods: {
     toggleDialog() {},
     async getALertsList() {
-      return await console.log('NOT DONE YET')
+      return await console.warn('NOT DONE YET')
       // this.loading = true
       // const res = await getIssues({
       //   page,

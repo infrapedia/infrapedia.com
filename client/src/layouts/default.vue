@@ -7,9 +7,11 @@
         @buy-capacity="openBuyDialog"
         @edit-cable="handleEditCable"
         @report-issue="openIssuesDialog"
+        @create-alert="openAlertsDialog"
       />
       <i-buy-dialog />
       <i-issues-dialog />
+      <i-alerts-dialog />
       <user-cables-button />
       <transition name="fade" mode="out-in">
         <router-view />
@@ -22,25 +24,24 @@
 <script>
 import INavbar from '@/components/Navbar'
 import IFooter from '@/components/Footer'
-import ISidebar from '@/components/Sidebar'
-import IBuyDialog from '@/components/dialogs/BuyDialog'
-import IIssuesDialog from '@/components/dialogs/IssuesDialog'
 import { BUY_CAPACITY, EDIT_CABLE } from '../events/sidebar'
 import {
   BUY_TYPE,
   TOGGLE_BUY_DIALOG,
+  TOGGLE_ALERT_DIALOG,
   TOGGLE_ISSUES_DIALOG
 } from '../store/actionTypes'
-import UserCablesButton from '../components/UserCablesButton'
+import { disableAlert } from '../services/api/alerts'
 
 export default {
   components: {
     IFooter,
     INavbar,
-    ISidebar,
-    IBuyDialog,
-    IIssuesDialog,
-    UserCablesButton
+    ISidebar: () => import('../components/Sidebar'),
+    IBuyDialog: () => import('../components/dialogs/BuyDialog'),
+    UserCablesButton: () => import('../components/UserCablesButton'),
+    IIssuesDialog: () => import('../components/dialogs/IssuesDialog'),
+    IAlertsDialog: () => import('../components/dialogs/AlertsDialog')
   },
   data: () => ({
     BUY_CAPACITY,
@@ -60,14 +61,27 @@ export default {
   methods: {
     async setToken() {
       const token = await this.$auth.getIdTokenClaims()
-      window.localStorage.setItem('auth.token-session', token.__raw)
+      return window.localStorage.setItem('auth.token-session', token.__raw)
     },
     openBuyDialog(option) {
       this.$store.commit(`${BUY_TYPE}`, { title: option })
-      this.$store.commit(`${TOGGLE_BUY_DIALOG}`, true)
+      return this.$store.commit(`${TOGGLE_BUY_DIALOG}`, true)
     },
     openIssuesDialog() {
-      this.$store.commit(`${TOGGLE_ISSUES_DIALOG}`, true)
+      return this.$store.state.map.currentSelection.hasAlert
+        ? this.disableCurrentSelectionAlert()
+        : this.$store.commit(`${TOGGLE_ISSUES_DIALOG}`, true)
+    },
+    async disableCurrentSelectionAlert() {
+      const { focus } = this.$store.state.map
+      await disableAlert({
+        t: focus.type,
+        elemnt: focus.id,
+        user_id: this.$auth.user.sub
+      })
+    },
+    openAlertsDialog() {
+      return this.$store.commit(`${TOGGLE_ALERT_DIALOG}`, true)
     },
     handleEditCable() {
       console.warn('NOT DONE YET')

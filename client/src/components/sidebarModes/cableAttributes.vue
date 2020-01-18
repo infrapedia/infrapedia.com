@@ -82,6 +82,7 @@
         </el-col>
         <!--- Values END ---->
       </el-row>
+      <template v-if="info.notes" v-html="info.notes" />
     </div>
     <el-divider />
     <footer class="p0">
@@ -121,10 +122,19 @@
           </el-popover>
         </el-col>
         <el-col :xs="24" :sm="12" :md="24" :lg="12">
-          <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
-            <fa :icon="['fas', 'bell']" class="sm-icon mt-1" />
-          </el-button>
-          <span class="cursor-pointer fs-regular label">Receive alerts</span>
+          <div
+            class="cursor-pointer no-selectable"
+            @click="$emit(CREATE_ALERT)"
+          >
+            <el-button
+              :type="info.hasAlert ? 'primary' : 'warning'"
+              circle
+              class="mr1 w9 h9 vertical-align"
+            >
+              <fa :icon="['fas', 'bell']" class="sm-icon mt-1" />
+            </el-button>
+            <span class="cursor-pointer fs-regular label">Receive alerts</span>
+          </div>
         </el-col>
       </el-row>
       <el-row :gutter="20" class="mt8">
@@ -157,7 +167,12 @@
 
 <script>
 import convertToYear from '../../helpers/converToYear'
-import { BUY_CAPACITY, EDIT_CABLE, REPORT_ISSUE } from '../../events/sidebar'
+import {
+  BUY_CAPACITY,
+  EDIT_CABLE,
+  REPORT_ISSUE,
+  CREATE_ALERT
+} from '../../events/sidebar'
 
 export default {
   name: 'ICableAttributes',
@@ -175,6 +190,7 @@ export default {
     EDIT_CABLE,
     BUY_CAPACITY,
     REPORT_ISSUE,
+    CREATE_ALERT,
     convertToYear,
     isMenuOpen: false
   }),

@@ -245,6 +245,10 @@ input.issues-dialog {
   }
 }
 
+.light-yellow-bg {
+  background-color: lighten($light-yellow, 12%) !important;
+}
+
 /*
 *  THEME VARIANT'S
 */
@@ -557,15 +561,15 @@ input.issues-dialog {
 
 #html-wrapper.light {
   .dialog-profile-wrapper {
-  color: $white-partial;
+    color: $white-partial;
     background-color: $blue-user-interface;
 
     .el-button.el-button--text {
       &:hover:not(.router-link-exact-active),
-        &:focus:not(.router-link-exact-active),
-        &:focus-within:not(.router-link-exact-active) {
-          background-color: lighten($blue-user-interface, 4%);
-        }
+      &:focus:not(.router-link-exact-active),
+      &:focus-within:not(.router-link-exact-active) {
+        background-color: lighten($blue-user-interface, 4%);
+      }
     }
     .router-link-exact-active {
       background-color: $dark-blue;
@@ -592,8 +596,6 @@ input.issues-dialog {
     }
   }
 }
-
-
 
 .dark,
 .light {

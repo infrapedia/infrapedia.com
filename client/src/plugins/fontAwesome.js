@@ -31,6 +31,7 @@ import {
   faBezierCurve,
   faUser,
   faBug,
+  faEye,
   faAward,
   faSitemap,
   faProjectDiagram,
@@ -47,6 +48,7 @@ import {
 
 library.add(
   faAward,
+  faEye,
   faBraille,
   faSitemap,
   faProjectDiagram,

@@ -197,7 +197,7 @@ export default {
         })
       }
 
-      this.clearSearch()
+      this.close()
     }
   }
 }

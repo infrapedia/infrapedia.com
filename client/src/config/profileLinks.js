@@ -20,6 +20,11 @@ const profileLinks = [
     icon: ['fas', 'bug']
   },
   {
+    label: 'My issues reported',
+    url: '/user/section/issues-reported',
+    icon: ['fas', 'bug']
+  },
+  {
     label: 'Organizations',
     url: '/user/section/orgs',
     icon: ['fas', 'sitemap']

@@ -2,6 +2,9 @@
 
 ## Version 1.0.0
 
+- Alerts page and services
+- Issues page(s) and services
+
 Upload of KMZ for:
 
 - cls

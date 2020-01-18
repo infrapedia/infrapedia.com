@@ -21,7 +21,7 @@
             <div class="el-input">
               <i-phone-input
                 inputClasses="el-input__inner issues-dialog"
-                v-model="form.phonenumber.num"
+                v-model="form.phone.num"
                 @onInput="validatePhoneNumber"
                 class="m0 p0 el-input__inner"
               />
@@ -33,7 +33,7 @@
                 show-icon
                 title="This phone number is not valid"
                 :closable="false"
-                v-if="form.phonenumber.num && !form.phonenumber.valid"
+                v-if="form.phone.num && !form.phone.valid"
               />
             </el-collapse-transition>
           </el-form-item>
@@ -75,8 +75,8 @@
 </template>
 
 <script>
-// import { createIssue } from '../../services/api/issues'
 import { TOGGLE_ISSUES_DIALOG } from '@/store/actionTypes'
+import { createIssue } from '../../services/api/issues'
 import { getUserData } from '../../services/api/auth'
 
 export default {
@@ -84,24 +84,20 @@ export default {
     form: {
       email: '',
       issue: '',
-      elemnt: '',
-      phonenumber: {
+      phone: {
         num: '',
         valid: null
       },
       fullname: ''
     },
     formRules: {
-      phonenumber: [],
+      phone: [],
       lastname: [
         {
           required: true,
           message: 'Please input your full name',
           trigger: 'blur'
         }
-      ],
-      company: [
-        { required: true, message: 'Company name is required', trigger: 'blur' }
       ],
       email: [
         { required: true, message: 'Please input your email', trigger: 'blur' },
@@ -166,10 +162,7 @@ export default {
         this.form.email = user_metadata.email
           ? user_metadata.email
           : userData.email
-        this.form.company = user_metadata.companyname
-          ? user_metadata.companyname
-          : ''
-        this.form.phonenumber = user_metadata.phonenumber
+        this.form.phone = user_metadata.phonenumber
           ? user_metadata.phonenumber
           : {
               num: '',
@@ -178,25 +171,57 @@ export default {
       }
     },
     async sendIssueRequest() {
-      console.warn('NOT DONE YET')
-      // const { focus } = this.$store.state.map
+      const { focus } = this.$store.state.map
 
-      // const res = await createIssue({
-      //   user_id: this.$auth.user.sub,
-      //   ...this.form,
-      //   id: focus.id,
-      //   t: focus.type === 'fac' || focus.type === 'facility' ? 3 : 1
-      // })
-      // if (res && res.t !== 'error') this.closeDialog()
+      const res = await createIssue({
+        user_id: this.$auth.user.sub,
+        ...this.form,
+        elemnt: focus.id,
+        t: this.getType(focus.type)
+      })
+      if (res && res.t !== 'error') this.closeDialog()
+    },
+    getType(type) {
+      const types = [
+        {
+          value: 1,
+          t: ['submarine', 'cable']
+        },
+        {
+          value: 2,
+          t: ['cls']
+        },
+        {
+          value: 3,
+          t: ['fac', 'facility', 'datacenters', 'data centers']
+        },
+        {
+          value: 4,
+          t: ['ixp', 'ixps']
+        },
+        {
+          value: 5,
+          t: []
+        },
+        {
+          value: 6,
+          t: ['net', 'networks', 'network']
+        },
+        {
+          value: 7,
+          t: ['org', 'organizations']
+        }
+      ]
+
+      for (let t of types) {
+        if (t.t.includes(type)) return t.value
+        else continue
+      }
     },
     validatePhoneNumber({ number, isValid }) {
-      try {
-        this.form.phonenumber = {
-          num: number,
-          valid: isValid
-        }
-      } catch {
-        // Ignore
+      this.form.phone = {
+        num: number,
+        valid: isValid
       }
     },
     submitForm(formRef) {
@@ -211,8 +236,7 @@ export default {
       this.form = {
         email: '',
         issue: '',
-        elemnt: '',
-        phonenumber: {
+        phone: {
           num: '',
           valid: null
         },

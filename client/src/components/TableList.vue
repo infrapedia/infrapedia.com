@@ -10,7 +10,7 @@
     </header>
     <el-divider />
     <el-card shadow="never">
-      <el-table :data="tableData" max-height="700">
+      <el-table :data="tableData" max-height="700" v-loading="isLoading">
         <el-table-column :label="col" v-for="(col, i) in columns" :key="i">
           <template slot-scope="scope">
             <div v-if="Array.isArray(scope.row[col]) && scope.row[col].length">
@@ -45,6 +45,20 @@
               @click="$emit('edit-item', scope.row._id)"
             >
               <fa :icon="['fas', 'pen']" />
+            </el-button>
+            <el-button
+              v-if="canView"
+              plain
+              size="small"
+              class="p2 mr4 fs-regular"
+              @click="
+                $emit('view-item', {
+                  _id: scope.row.t || scope.row._id,
+                  idReport: scope.row.idReport || false
+                })
+              "
+            >
+              <fa :icon="['fas', 'eye']" />
             </el-button>
             <el-button
               type="danger"
@@ -84,6 +98,14 @@ export default {
     canEdit: {
       type: Boolean,
       default: () => true
+    },
+    isLoading: {
+      type: Boolean,
+      default: () => false
+    },
+    canView: {
+      type: Boolean,
+      default: () => false
     },
     canCreate: {
       type: Boolean,

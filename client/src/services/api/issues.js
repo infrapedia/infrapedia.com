@@ -27,9 +27,9 @@ export const createIssue = async ({ t, elemnt, email, phone, user_id }) => {
 }
 
 export const getIssues = async ({ page, user_id }) => {
-  url = `${apiConfig.url}/auth/issues/reports=?page=${page}`
+  url = `${apiConfig.url}/auth/issues/reports?page=${page}`
 
-  const res = await $axios.get(url, form, {
+  const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
       user_id,
@@ -42,9 +42,9 @@ export const getIssues = async ({ page, user_id }) => {
 }
 
 export const getMyIssues = async ({ page, user_id }) => {
-  url = `${apiConfig.url}/auth/issues/myreports=?page=${page}`
+  url = `${apiConfig.url}/auth/issues/myreports?page=${page}`
 
-  const res = await $axios.get(url, form, {
+  const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
       user_id,
@@ -59,7 +59,7 @@ export const getMyIssues = async ({ page, user_id }) => {
 export const viewIssue = async ({ elemnt, id, user_id }) => {
   url = `${apiConfig.url}/auth/issues/view/${elemnt}/${id}`
 
-  const res = await $axios.get(url, form, {
+  const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
       user_id,

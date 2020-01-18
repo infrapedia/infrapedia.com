@@ -12,7 +12,7 @@ export const createAlert = async ({ t, elemnt, email, phone, user_id }) => {
   form.append('t', t)
   form.append('email', email)
 
-  form.append('phone', phone)
+  form.append('phone', phone.num)
   form.append('elemnt', elemnt)
 
   const res = await $axios.post(url, form, {
@@ -27,14 +27,11 @@ export const createAlert = async ({ t, elemnt, email, phone, user_id }) => {
   return res
 }
 
-export const disableAlert = async ({ t, elemnt, email, phone, user_id }) => {
+export const disableAlert = async ({ t, elemnt, user_id }) => {
   url = `${apiConfig.url}/auth/alerts/disabled`
   form = new FormData()
 
   form.append('t', t)
-  form.append('email', email)
-
-  form.append('phone', phone)
   form.append('elemnt', elemnt)
 
   const res = await $axios.patch(url, form, {

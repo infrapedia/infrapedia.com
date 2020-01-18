@@ -4,22 +4,20 @@
     :class="{ dark, light: !dark }"
   >
     <table-list
-      v-loading="loading"
+      :is-loading="loading"
       :can-edit="false"
       :can-create="false"
       :columns="columns"
-      :config="tableConfig"
-      :table-data="tableData"
-      @btn-click="toggleDialog"
-      @delete-item="deleteIssue"
+      :config="issuesConf"
+      :table-data="issues"
+      @delete-item="deleteIssues"
     />
 
     <div class="flex w-fit-full align-items-center justify-content-center mt12">
       <el-pagination
-        background
         @current-change="getIssuesList"
         :current-page.sync="currentPage"
-        layout="prev, pager, next"
+        layout="prev, next"
         :total="totalPages"
       />
     </div>
@@ -35,12 +33,13 @@ export default {
     TableList
   },
   data: () => ({
-    tableData: [],
+    issues: [],
+    myIssues: [],
     loading: false,
     isDialog: false,
     currentPage: 0,
     mode: 'create',
-    tableConfig: {
+    issuesConf: {
       title: 'Issues',
       creation_link: false,
       btn_label: 'Create Issue'
@@ -50,10 +49,15 @@ export default {
   computed: {
     totalPages() {
       return 20
+    },
+    dark() {
+      return this.$store.state.isDark
     }
   },
+  async mounted() {
+    await this.getIssuesList()
+  },
   methods: {
-    toggleDialog() {},
     async getIssuesList(page = this.currentPage) {
       this.loading = true
       const res = await getIssues({
@@ -61,7 +65,7 @@ export default {
         user_id: this.$auth.user.sub
       })
       if (res && res.data && res.data.r) {
-        this.tableData = res.data.r
+        this.issues = res.data.r
       }
       this.loading = false
     },

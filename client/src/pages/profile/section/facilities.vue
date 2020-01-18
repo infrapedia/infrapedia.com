@@ -4,6 +4,7 @@
     :class="{ dark, light: !dark }"
   >
     <table-list
+      :is-loading="loading"
       :columns="columns"
       :config="tableConfig"
       :table-data="tableData"
@@ -22,6 +23,7 @@ export default {
   },
   data: () => ({
     tableData: [],
+    loading: false,
     tableConfig: {
       title: 'Facilities',
       creation_link: '/user/section/create?id=facs',

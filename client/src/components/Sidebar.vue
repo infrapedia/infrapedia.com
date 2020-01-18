@@ -42,6 +42,7 @@
             @edit-cable="$emit(EDIT_CABLE, $event)"
             @buy-capacity="$emit(BUY_CAPACITY, $event)"
             @report-issue="$emit(REPORT_ISSUE, $event)"
+            @create-alert="$emit(CREATE_ALERT, $event)"
             @cls-selection="handleItemListSelection"
             @cable-selection="handleItemListSelection"
           />
@@ -60,7 +61,12 @@ import dataCollection from '../mixins/dataCollection'
 import copyToClipboard from '../helpers/copyToClipboard'
 import { getSelectionCols } from '../helpers/getSelectionCols'
 import { CURRENT_SELECTION, MAP_FOCUS_ON } from '../store/actionTypes/map'
-import { BUY_CAPACITY, EDIT_CABLE, REPORT_ISSUE } from '../events/sidebar'
+import {
+  BUY_CAPACITY,
+  EDIT_CABLE,
+  REPORT_ISSUE,
+  CREATE_ALERT
+} from '../events/sidebar'
 
 export default {
   name: 'ISidebar',
@@ -73,6 +79,7 @@ export default {
     BUY_CAPACITY,
     EDIT_CABLE,
     REPORT_ISSUE,
+    CREATE_ALERT,
     currentSelectionColumns: [],
     isSidebarActive: false,
     transitionsClasses: {
