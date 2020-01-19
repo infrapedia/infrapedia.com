@@ -44,7 +44,7 @@ export default {
       creation_link: false,
       btn_label: 'Create Issue'
     },
-    columns: ['fullname', 'issue', 'email', 'phonenumber']
+    columns: ['name', 'rgDate', 'uDate']
   }),
   computed: {
     totalPages() {

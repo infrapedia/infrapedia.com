@@ -61,27 +61,11 @@
         layout="prev, next"
       />
     </div>
-    <el-dialog
-      :visible.sync="isViewDialog"
-      width="40%"
-      top="12vh"
-      :custom-class="customDialogClass"
-      :close-on-click-modal="false"
-    >
-      <header slot="title" class="p0 no-selectable">
-        <h1 class="inline-block font-semibold fs-xlarge">
-          Viewing issue: {{ issueOnView.name }}
-        </h1>
-      </header>
-      <el-row>
-        <el-col :span="18">
-          <p>Issue:</p>
-        </el-col>
-        <el-col :span="6">
-          <p>{{ issueOnView.issue }}</p>
-        </el-col>
-      </el-row>
-    </el-dialog>
+    <view-issue-dialog
+      @close="() => (isViewDialog = false)"
+      :is-visible="isViewDialog"
+      :data="issueOnView"
+    />
   </div>
 </template>
 
@@ -93,6 +77,9 @@ import {
 } from '../../../services/api/issues'
 
 export default {
+  components: {
+    ViewIssueDialog: () => import('../../../components/dialogs/ViewIssue')
+  },
   data: () => ({
     issues: [],
     tableData: [],
@@ -109,9 +96,6 @@ export default {
     columns: ['name', 'rgDate', 't', 'elemntStatus', 'uDate']
   }),
   computed: {
-    customDialogClass() {
-      return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
-    },
     dark() {
       return this.$store.state.isDark
     }
