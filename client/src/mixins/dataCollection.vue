@@ -153,22 +153,22 @@ export default {
           await this.handleFacilityItemSelected({ id, type: 'net' })
           break
         case 'datacenters':
-          await this.handleDataCenterItemSelected(id)
+          await this.handleDataCenterItemSelected({ id, type: option })
           break
         case 'data centers':
-          await this.handleDataCenterItemSelected(id)
+          await this.handleDataCenterItemSelected({ id, type: option })
           break
         case 'org':
           await this.handlePremiumPartnerItemSelected(id)
           break
         case 'facility':
-          await this.handleDataCenterItemSelected(id)
+          await this.handleDataCenterItemSelected({ id, type: option })
           break
         case 'cls':
-          await this.handleDataCenterItemSelected(id)
+          await this.handleDataCenterItemSelected({ id, type: option })
           break
         case 'fac':
-          await this.handleDataCenterItemSelected(id)
+          await this.handleDataCenterItemSelected({ id, type: option })
           break
         case 'cable':
           await this.handleSubmarineCableItemSelected(id)
@@ -220,7 +220,7 @@ export default {
       })
       bus.$emit(`${FOCUS_ON}`, { id, type: 'cable' })
     },
-    async handleDataCenterItemSelected(id) {
+    async handleDataCenterItemSelected({ id, type }) {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
@@ -228,7 +228,9 @@ export default {
         user_id: this.$auth.user.sub,
         _id: id
       })
-      bus.$emit(`${FOCUS_ON}`, { id, type: 'fac' })
+
+      console.log(type)
+      bus.$emit(`${FOCUS_ON}`, { id, type })
     },
     async handleFacilityItemSelected({ id, type }) {
       if (!id) throw { message: 'MISSING ID PARAMETER' }

@@ -573,7 +573,7 @@ export default {
       // If in the region selected there is a point or a building
       // Call the api to retrieve that facility data and open the sidebar
       if (selectionID) {
-        await this.handleFacilitySelection(selectionID)
+        await this.handleFacilitySelection({ id: selectionID, type: 'fac' })
       }
 
       // If there is no clusters or didn't select a building/point
@@ -640,7 +640,7 @@ export default {
     /**
      * @param id { String } - ID of the facility (data centers)
      */
-    async handleFacilitySelection(id) {
+    async handleFacilitySelection({ id, type }) {
       const data = await this.getFacilityData({
         user_id: this.$auth.user.sub,
         _id: id
@@ -648,7 +648,7 @@ export default {
       this.$store.commit(`${MAP_FOCUS_ON}`, {
         id,
         name: data.name,
-        type: 'fac'
+        type
       })
 
       // Changing the sidebar mode to data_center mode
@@ -893,7 +893,10 @@ export default {
           await this.handleCableFocus(id)
           break
         case 'fac':
-          await this.handleFacilityFocus(id)
+          await this.handleFacilityFocus({ id, type })
+          break
+        case 'cls':
+          await this.handleFacilityFocus({ id, type })
           break
         case 'ixps':
           await this.handleIxpsFocus()
@@ -985,7 +988,7 @@ export default {
         featureCollection.features.length === 1
       ) {
         const id = featureCollection.features[0].properties.fac_id
-        if (id) await this.handleFacilitySelection(id)
+        if (id) await this.handleFacilitySelection({ id, type: 'fac' })
       } else throw { message: `FOUND EXCEPTION: ${id}` }
 
       if (!bounds.length) return
@@ -1001,10 +1004,10 @@ export default {
     /**
      * @param id { String } - Building/DataCenter/Dot ID
      */
-    async handleFacilityFocus(id) {
+    async handleFacilityFocus({ id, type }) {
       const { map, focus, bounds, hasToEase } = this
 
-      await this.handleFacilitySelection(id)
+      await this.handleFacilitySelection({ id, type })
       if (hasToEase) await this.handleFocusOnEasePoints()
       else if (focus && bounds && bounds.length) {
         map.fitBounds(bounds, {
@@ -1181,7 +1184,7 @@ export default {
         if (type === 'cable') {
           this.handleCablesSelection(true, [{ properties: { cable_id: id } }])
         } else if (type) {
-          this.handleFacilitySelection(id)
+          this.handleFacilitySelection({ id, type: 'fac' })
         }
       }
     }, 320),

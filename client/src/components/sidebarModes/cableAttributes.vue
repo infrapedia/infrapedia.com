@@ -127,7 +127,7 @@
             @click="$emit(CREATE_ALERT)"
           >
             <el-button
-              :type="info.hasAlert ? 'primary' : 'warning'"
+              :type="info.alert !== 1 ? 'info' : 'warning'"
               circle
               class="mr1 w9 h9 vertical-align"
             >
@@ -245,12 +245,10 @@ export default {
       return Boolean(arr.length)
     },
     handleSelection(_id, opt) {
-      if (opt === 'cls') {
-        this.$emit('cls-selection', {
-          id: _id,
-          option: 'fac'
-        })
-      }
+      return this.$emit('cls-selection', {
+        id: _id,
+        option: opt
+      })
     },
     getCableLatency(distance) {
       const _constant = 200
@@ -261,7 +259,7 @@ export default {
     },
     emitEvent() {
       this.toggleMenu()
-      this.$emit(`${BUY_CAPACITY}`, 'backbone')
+      return this.$emit(`${BUY_CAPACITY}`, 'backbone')
     }
   }
 }

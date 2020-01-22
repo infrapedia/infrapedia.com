@@ -123,6 +123,21 @@
             <span class="cursor-pointer fs-regular label">Report issue</span>
           </div>
         </el-col>
+        <el-col :xs="24" :sm="12" :md="24" :lg="12" class="mt8">
+          <div
+            class="cursor-pointer no-selectable"
+            @click="$emit(CREATE_ALERT)"
+          >
+            <el-button
+              :type="info.alert !== 1 ? 'info' : 'warning'"
+              circle
+              class="mr1 w9 h9 vertical-align"
+            >
+              <fa :icon="['fas', 'bell']" class="sm-icon mt-1" />
+            </el-button>
+            <span class="cursor-pointer fs-regular label">Receive alerts</span>
+          </div>
+        </el-col>
       </el-row>
     </footer>
   </div>
@@ -130,7 +145,7 @@
 
 <script>
 import convertToYear from '../../helpers/converToYear'
-import { BUY_CAPACITY, REPORT_ISSUE } from '../../events/sidebar'
+import { BUY_CAPACITY, REPORT_ISSUE, CREATE_ALERT } from '../../events/sidebar'
 
 export default {
   name: 'IDataCenter',
@@ -147,6 +162,7 @@ export default {
   data: () => ({
     BUY_CAPACITY,
     REPORT_ISSUE,
+    CREATE_ALERT,
     convertToYear,
     buyOptions: ['Transit', 'Backbone', 'Datacenter', 'Other'],
     isMenuOpen: false
