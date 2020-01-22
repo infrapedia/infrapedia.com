@@ -7,7 +7,9 @@
             v-if="
               col.label.includes('org') ||
                 col.label.includes('networks') ||
-                col.label.includes('cables')
+                col.label.includes('cables') ||
+                col.label.includes('cls') ||
+                col.label.includes('address')
             "
           >
             <el-divider class="m0 mt2 mb2" />
@@ -48,7 +50,10 @@
             <template
               class="text-bold"
               v-else-if="
-                isArrCol(info[col.value]) && hasLength(info[col.value])
+                isArrCol(info[col.value]) &&
+                  hasLength(info[col.value]) &&
+                  !col.label.includes('web') &&
+                  !col.label.includes('address')
               "
             >
               <p
@@ -60,6 +65,23 @@
                 {{ item.name }}
               </p>
             </template>
+            <template
+              class="text-bold"
+              v-else-if="
+                isArrCol(info[col.value]) &&
+                  hasLength(info[col.value]) &&
+                  col.label.includes('address')
+              "
+            >
+              <p
+                v-for="(item, index) in info[col.value]"
+                :key="index + item"
+                class="text-bold"
+                @click="handleSelection(item._id, col.label)"
+              >
+                {{ item.street }} {{ item.city }}, {{ item.state }}.
+              </p>
+            </template>
             <p
               class="text-bold status-text"
               :class="{ active: info[col.value] === 'true' }"
@@ -67,6 +89,19 @@
             >
               {{ info[col.value] === 'true' ? 'On' : 'Off' }}
             </p>
+            <template
+              v-else-if="isArrCol(info[col.value]) && col.label.includes('web')"
+            >
+              <a
+                class="text-bold underline truncate mt3 inline-block"
+                v-for="(url, i) in info[col.value]"
+                :href="url"
+                target="_blank"
+                :key="i"
+              >
+                {{ url }}
+              </a>
+            </template>
             <p class="text-bold" v-else-if="!isArrCol(info[col.value])">
               {{ info[col.value] }}
             </p>
@@ -200,12 +235,10 @@ export default {
       return Boolean(arr.length)
     },
     handleSelection(_id, opt) {
-      if (opt === 'cables') {
-        this.$emit('cable-selection', {
-          id: _id,
-          option: 'cable'
-        })
-      }
+      return this.$emit('selection', {
+        id: _id,
+        option: opt
+      })
     },
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen

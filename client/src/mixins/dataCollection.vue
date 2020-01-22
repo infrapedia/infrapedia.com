@@ -149,17 +149,11 @@ export default {
         case 'ixps':
           await this.handleFacilityItemSelected({ id, type: 'ix' })
           break
-        case 'networks':
-          await this.handleFacilityItemSelected({ id, type: 'net' })
-          break
         case 'datacenters':
           await this.handleDataCenterItemSelected({ id, type: option })
           break
         case 'data centers':
           await this.handleDataCenterItemSelected({ id, type: option })
-          break
-        case 'org':
-          await this.handlePremiumPartnerItemSelected(id)
           break
         case 'facility':
           await this.handleDataCenterItemSelected({ id, type: option })
@@ -170,17 +164,29 @@ export default {
         case 'fac':
           await this.handleDataCenterItemSelected({ id, type: option })
           break
-        case 'cable':
-          await this.handleSubmarineCableItemSelected(id)
-          break
-        case 'network':
-          await this.handleFacilityItemSelected({ id, type: 'net' })
-          break
         case 'ixp':
           await this.handleFacilityItemSelected({ id, type: 'ix' })
           break
+        case 'networks':
+          await this.handleNetworkItemSelected(id)
+          break
+        case 'network':
+          await this.handleNetworkItemSelected(id)
+          break
         case 'net':
-          await this.handleFacilityItemSelected({ id, type: 'net' })
+          await this.handleNetworkItemSelected(id)
+          break
+        case 'cable':
+          await this.handleSubmarineCableItemSelected(id)
+          break
+        case 'cables':
+          await this.handleSubmarineCableItemSelected(id)
+          break
+        case 'organizations':
+          await this.handleOrgItemSelected(id)
+          break
+        case 'orgs':
+          await this.handleOrgItemSelected(id)
           break
       }
     },
@@ -229,8 +235,15 @@ export default {
         _id: id
       })
 
-      console.log(type)
       bus.$emit(`${FOCUS_ON}`, { id, type })
+    },
+    handleNetworkItemSelected(id) {
+      if (!id) throw { message: 'MISSING ID PARAMETER' }
+      return bus.$emit(`${FOCUS_ON}`, { id, type: 'network' })
+    },
+    handleOrgItemSelected(id) {
+      if (!id) throw { message: 'MISSING ID PARAMETER' }
+      return bus.$emit(`${FOCUS_ON}`, { id, type: 'organizations' })
     },
     async handleFacilityItemSelected({ id, type }) {
       if (!id) throw { message: 'MISSING ID PARAMETER' }

@@ -43,8 +43,7 @@
             @buy-capacity="$emit(BUY_CAPACITY, $event)"
             @report-issue="$emit(REPORT_ISSUE, $event)"
             @create-alert="$emit(CREATE_ALERT, $event)"
-            @cls-selection="handleItemListSelection"
-            @cable-selection="handleItemListSelection"
+            @selection="handleItemListSelection"
           />
         </transition>
       </el-card>
@@ -115,12 +114,21 @@ export default {
   },
   watch: {
     isSidebar(bool) {
-      if (!bool) return
+      if (!bool || !this.focus) return
+
       this.currentSelectionColumns = getSelectionCols(this.focus.type)
     },
     // eslint-disable-next-line
+    currentSelection(selection) {
+      if (this.focus) {
+        this.currentSelectionColumns = getSelectionCols(this.focus.type)
+      }
+    },
+    // eslint-disable-next-line
     sidebarMode(mode) {
-      this.currentSelectionColumns = getSelectionCols(this.focus.type)
+      if (this.focus) {
+        this.currentSelectionColumns = getSelectionCols(this.focus.type)
+      }
     }
   },
   beforeMount() {

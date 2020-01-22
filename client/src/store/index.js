@@ -78,7 +78,7 @@ export default new Vuex.Store({
   },
   actions: {
     changeSidebarMode({ commit }, num) {
-      commit(
+      return commit(
         `${types.TOGGLE_SIDEBAR_MODE}`,
         num > 0 ? modes.DATA_CENTER_MODE : modes.CABLE_MODE
       )

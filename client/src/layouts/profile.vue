@@ -60,8 +60,14 @@ export default {
   methods: {
     checkURL(link) {
       let obj = {}
-      if (!this.$route.query.id) return obj
-      else if (this.$route.query.id) {
+
+      if (this.$route.fullPath === '/user/section/issues-reported') {
+        obj = {
+          'router-link-exact-active router-link-active': link.url.includes(
+            'issues'
+          )
+        }
+      } else if (this.$route.query.id) {
         let pathName = link.url.split('/')
         pathName = pathName[pathName.length - 1]
         obj = {

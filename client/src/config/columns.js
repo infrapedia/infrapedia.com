@@ -83,18 +83,62 @@ export const ixpsColumns = [
 ]
 
 export const netColumns = [
-  'name',
-  'websites', // (Array)
-  'organizations', // (Array)
-  'facilities', // (Array)
-  'ixps', // (Array)
-  'cls', //(Array)
-  'cables' //(Array)
+  {
+    label: 'name',
+    value: 'name',
+    showTable: true
+  },
+  {
+    label: 'websites',
+    value: 'websites',
+    showSidebar: true,
+    showTable: true
+  },
+  {
+    label: 'facilities',
+    value: 'facilities',
+    showSidebar: true
+  },
+  {
+    label: 'cables',
+    value: 'cables',
+    showSidebar: true,
+    showTable: true
+  },
+  {
+    label: 'cls',
+    value: 'cls',
+    showSidebar: true,
+    showTable: true
+  },
+  {
+    label: 'orgs',
+    value: 'orgs',
+    showSidebar: true,
+    showTable: true
+  }
 ]
 
 export const orgsColumns = [
-  'name',
-  'logo',
-  // 'notes',
-  'address' // (Array)
+  {
+    label: 'name',
+    value: 'name',
+    showTable: true
+  },
+  {
+    label: 'logo',
+    value: 'logo',
+    showTable: true
+  },
+  {
+    label: 'address',
+    value: 'address',
+    showTable: true,
+    showSidebar: true
+  },
+  {
+    label: 'networks',
+    value: 'networks',
+    showSidebar: true
+  }
 ]

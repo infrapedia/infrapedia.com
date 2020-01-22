@@ -30,7 +30,7 @@ import {
   getOrganizations,
   deleteOrganization,
   editOrganization,
-  viewOrganization
+  viewOrganizationOwner
 } from '../../../services/api/organizations'
 import { orgsColumns } from '../../../config/columns'
 
@@ -56,7 +56,7 @@ export default {
       title: 'Organizations',
       btn_label: 'Create organization'
     },
-    columns: [...orgsColumns]
+    columns: [...orgsColumns].filter(col => col.showTable).map(col => col.value)
   }),
   computed: {
     dark() {
@@ -71,7 +71,10 @@ export default {
   },
   methods: {
     async viewOrg(_id) {
-      const res = await viewOrganization({ user_id: this.$auth.user.sub, _id })
+      const res = await viewOrganizationOwner({
+        user_id: this.$auth.user.sub,
+        _id
+      })
       if (res && res.data && res.data.r) {
         this.form = res.data.r
       }

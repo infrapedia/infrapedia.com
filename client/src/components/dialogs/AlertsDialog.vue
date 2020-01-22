@@ -140,8 +140,6 @@ export default {
       }
     },
     async submitForm() {
-      console.log(this.focus)
-
       const res = await createAlert({
         user_id: this.$auth.user.sub,
         elemnt: this.focus.id,

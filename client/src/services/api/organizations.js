@@ -95,8 +95,21 @@ export const deleteOrganization = async ({ user_id, _id }) => {
   return res
 }
 
-export const viewOrganization = async ({ user_id, _id }) => {
+export const viewOrganizationOwner = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/organization/owner/${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+  return res
+}
+
+export const viewOrganization = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/organization/view/${_id}`
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {

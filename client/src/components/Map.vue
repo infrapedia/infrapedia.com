@@ -106,6 +106,8 @@ import turf from 'turf'
 import currentYear from '../helpers/currentYear'
 import debounce from '../helpers/debounce'
 import geojsonExtent from 'geojson-extent'
+import { viewNetwork } from '../services/api/networks'
+import { viewOrganization } from '../services/api/organizations'
 
 const GEOLOCATION_POINT = 'geolocation-point'
 
@@ -133,6 +135,7 @@ export default {
       bounds: state => state.map.bounds,
       focus: state => state.map.focus,
       points: state => state.map.points,
+      isSidebar: state => state.isSidebar,
       easePoint: state => state.map.easePoint,
       hasToEase: state => state.map.hasToEase
     })
@@ -583,6 +586,31 @@ export default {
         await this.handleCablesSelection(!!cables.length, cables)
       }
     },
+    async handleOrganizationFocus(_id) {
+      const res = await viewOrganization({ user_id: this.$auth.user.sub, _id })
+      if (res && res.data && res.data.r && res.data.r.length) {
+        // Change sidebar mode to data_centers mode
+        this.changeSidebarMode(1)
+        // In case there was a cable selected before
+        await this.disableCableHighlight(false)
+        await this.$store.commit(`${CURRENT_SELECTION}`, res.data.r[0])
+        // Updating focus for if the user wants to send alerts
+
+        if (!this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
+      }
+    },
+    async handleNetworkSelection(_id) {
+      const res = await viewNetwork({ user_id: this.$auth.user.sub, _id })
+      if (res && res.data && res.data.r && res.data.r.length) {
+        // Change sidebar mode to data_centers mode
+        this.changeSidebarMode(1)
+        // In case there was a cable selected before
+        await this.disableCableHighlight(false)
+        await this.$store.commit(`${CURRENT_SELECTION}`, res.data.r[0])
+
+        if (!this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
+      }
+    },
     /**
      * @param bool { Boolean } - If it opens the sidebar
      * @param cables { Object } [{ properties: { cable_id: String } }]
@@ -590,9 +618,9 @@ export default {
     async handleCablesSelection(bool, cables) {
       switch (bool) {
         case true:
-          // Change sidebar mode bck to cable in case is on data_centers mode
+          // Change sidebar mode back to cable in case is on data_centers mode
           await this.changeSidebarMode(-1)
-          // Highlight the far most close clicked cable
+          // Highlight the nearest clicked cable
           await this.highlightCable(cables[0].properties)
           await this.$emit(`${CABLE_SELECTED}`, cables[0].properties)
           break
@@ -872,21 +900,22 @@ export default {
           message: `Expected @param type to be string, but found ${typeof type}`
         }
       }
-      this.$store.commit(`${MAP_FOCUS_ON}`, { id, type })
+
+      this.$store.commit(`${MAP_FOCUS_ON}`, {
+        id,
+        type: type === 'orgs' ? 'organizations' : type
+      })
       // Cleaning source
       await this.map.getSource(mapConfig.clusterPts).setData({
         type: 'FeatureCollection',
         features: []
       })
 
-      // If it is an ixps or a network the sidebar has to be close
-      if (type !== 'cable' && type !== 'fac') {
-        await this.disableCableHighlight()
-        await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
-      }
-
       switch (type.toLowerCase()) {
-        case 'org':
+        case 'organizations':
+          await this.handleOrganizationFocus(id)
+          break
+        case 'orgs':
           await this.handleOrganizationFocus(id)
           break
         case 'cable':
@@ -905,7 +934,10 @@ export default {
           await this.handleCityFocus()
           break
         case 'net':
-          await this.handleOrganizationFocus(id)
+          await this.handleNetworkSelection(id)
+          break
+        case 'network':
+          await this.handleNetworkSelection(id)
           break
       }
     },
@@ -943,63 +975,6 @@ export default {
       }
 
       await this.handleCablesSelection(true, [{ properties: { cable_id: id } }])
-    },
-    /**
-     * @param id { String } - Organization ID
-     */
-    async handleOrganizationFocus(id) {
-      const { map, points, isMobile } = this
-      const clustersSource = map.getSource(mapConfig.clusterPts)
-      const featureCollection = JSON.parse(JSON.stringify(points || {}))
-      // console.log(id, featureCollection)
-      const bounds = await geojsonExtent({
-        features: featureCollection,
-        type: 'FeatureCollection'
-      })
-
-      if (featureCollection && featureCollection.length && clustersSource) {
-        clustersSource.setData({ features: featureCollection })
-      } else if (id && !featureCollection.length && map.areTilesLoaded()) {
-        const tilesLoaded = () => {
-          const feats = map.querySourceFeatures(mapConfig.data.source2, {
-            filter: ['in', 'id', id],
-            sourceLayer: mapConfig.data.sourceLayer,
-            validate: false
-          })
-
-          if (feats.length) {
-            const prop = feats[0].properties
-
-            this.disableCableHighlight()
-            this.mapTooltip = {
-              id: parseInt(prop.cable_id),
-              name: prop.Name
-            }
-          } else {
-            map.off('render', tilesLoaded)
-            throw { message: "THERE'S NO FEATURES DATA" }
-          }
-          map.off('render', tilesLoaded)
-        }
-        map.on('render', tilesLoaded)
-      } else if (
-        featureCollection &&
-        featureCollection.features &&
-        featureCollection.features.length === 1
-      ) {
-        const id = featureCollection.features[0].properties.fac_id
-        if (id) await this.handleFacilitySelection({ id, type: 'fac' })
-      } else throw { message: `FOUND EXCEPTION: ${id}` }
-
-      if (!bounds.length) return
-      map.fitBounds(bounds, {
-        padding: isMobile ? 10 : 50,
-        animate: true,
-        speed: 1.25,
-        pan: {
-          duration: 30
-        }
-      })
     },
     /**
      * @param id { String } - Building/DataCenter/Dot ID

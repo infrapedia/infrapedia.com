@@ -30,7 +30,7 @@ import {
   getNetworks,
   deleteNetwork,
   editNetwork,
-  viewNetwork
+  viewNetworkOwner
 } from '../../../services/api/networks'
 import { netColumns } from '../../../config/columns'
 
@@ -59,7 +59,7 @@ export default {
       ixps: [],
       cls: []
     },
-    columns: [...netColumns]
+    columns: [...netColumns].filter(col => col.showTable).map(col => col.value)
   }),
   computed: {
     dark() {
@@ -87,7 +87,7 @@ export default {
       }
     },
     async viewNet(_id) {
-      const res = await viewNetwork({ user_id: this.$auth.user.sub, _id })
+      const res = await viewNetworkOwner({ user_id: this.$auth.user.sub, _id })
       if (res && res.data && res.data.r) {
         this.form = res.data.r
       }

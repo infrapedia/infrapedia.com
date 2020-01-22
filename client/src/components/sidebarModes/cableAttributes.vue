@@ -34,7 +34,7 @@
         <el-col :span="12" class="p2">
           <template v-if="col.label.toLowerCase().includes('url')">
             <a
-              class="underline truncate fs-regular"
+              class="underline truncate fs-regular mr2"
               v-for="(url, i) in info[col.value]"
               :href="url"
               target="_blank"
@@ -57,11 +57,7 @@
                 v-for="(item, index) in info[col.value]"
                 :key="index + item"
                 @click="handleSelection(item._id, col.label)"
-                class="fs-regular"
-                :class="{
-                  'text-bold underline-hover fs-regular cursor-pointer':
-                    col.label === 'cls'
-                }"
+                class="fs-regular text-bold underline-hover cursor-pointer"
               >
                 {{ item.name }}
                 <template v-if="index !== info[col.value].length - 1"
@@ -245,7 +241,7 @@ export default {
       return Boolean(arr.length)
     },
     handleSelection(_id, opt) {
-      return this.$emit('cls-selection', {
+      return this.$emit('selection', {
         id: _id,
         option: opt
       })
