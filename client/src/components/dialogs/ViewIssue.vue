@@ -89,6 +89,9 @@ export default {
     draw: null
   }),
   computed: {
+    dark() {
+      return this.$store.state.isDark
+    },
     customDialogClass() {
       return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
     }
@@ -99,6 +102,7 @@ export default {
 
       this.map = this.createMap()
       this.addIssueDraw()
+      this.toggleTheme(this.dark)
     }
   },
   methods: {
@@ -162,6 +166,12 @@ export default {
           duration: 25
         }
       })
+    },
+    toggleTheme(dark) {
+      if (!this.map) return
+
+      const style = dark ? mapConfig.darkBasemap : mapConfig.default
+      this.map.setStyle(style)
     }
   }
 }

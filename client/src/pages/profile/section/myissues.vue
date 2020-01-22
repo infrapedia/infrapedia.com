@@ -8,7 +8,10 @@
         class="flex w-fit-full p2 row nowrap justify-content-space-between"
       >
         <h1 class="title-user color-inherit">
-          My issues reported
+          <router-link to="/user/section/issues">
+            <fa :icon="['fas', 'arrow-left']" class="fs-regular mr2 mb1" />
+          </router-link>
+          Issues reported
         </h1>
       </header>
       <el-divider />

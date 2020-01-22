@@ -1,3 +1,5 @@
+@import '../base/variables';
+
 .el-dialog__wrapper {
   background-color: rgba(39, 38, 38, 0.329);
 }
@@ -5,6 +7,9 @@
 .inner-wrapper {
   top: 25vh;
   width: 40%;
+  @media screen and (max-width: $break-md) {
+    width: 80%;
+  }
 }
 
 #map {
@@ -17,4 +22,13 @@
 
 .map-elm {
   width: 40%;
+}
+
+.application.dark {
+  .inner-wrapper {
+    background-color: $dark-charcoal;
+    p {
+      color: $white-partial;
+    }
+  }
 }

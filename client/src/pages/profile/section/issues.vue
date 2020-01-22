@@ -6,7 +6,6 @@
     <table-list
       :is-loading="loading"
       :can-edit="false"
-      :can-create="false"
       :columns="columns"
       :config="issuesConf"
       :table-data="issues"
@@ -41,8 +40,8 @@ export default {
     mode: 'create',
     issuesConf: {
       title: 'Issues',
-      creation_link: false,
-      btn_label: 'Create Issue'
+      creation_link: '/user/section/issues-reported',
+      btn_label: 'View my issues'
     },
     columns: ['name', 'rgDate', 'uDate']
   }),

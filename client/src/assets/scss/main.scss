@@ -245,10 +245,6 @@ input.issues-dialog {
   }
 }
 
-.light-yellow-bg {
-  background-color: lighten($light-yellow, 12%) !important;
-}
-
 /*
 *  THEME VARIANT'S
 */
@@ -256,6 +252,9 @@ input.issues-dialog {
 .application.light {
   color: rgba(0, 0, 0, 0.87);
   background-color: $white-full;
+  .light-yellow-bg {
+    background-color: lighten($light-yellow, 12%) !important;
+  }
 }
 
 .popover.light {
@@ -339,6 +338,9 @@ input.issues-dialog {
 
 .application.dark {
   color: $white-partial;
+  .light-yellow-bg {
+    background-color: darken($light-yellow, 14%) !important;
+  }
   .el-upload__tip {
     color: $white-partial;
   }
@@ -377,6 +379,7 @@ input.issues-dialog {
 }
 
 #html-wrapper.dark {
+  .el-pagination button,
   .el-radio__label,
   div[role='tooltip'],
   .el-input-group__prepend,
