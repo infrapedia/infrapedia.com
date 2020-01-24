@@ -4,21 +4,18 @@
 
     <el-aside class="pt9 no-overflow hidden-md-and-down">
       <ul role="group" class="pt10 h-fit-full">
-        <li
-          role="listitem"
-          class="h18"
-          v-for="(link, i) in profileLinks"
-          :key="i"
-        >
-          <router-link
-            exact
-            :to="link.url"
-            :class="checkURL(link)"
-            class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
-          >
-            <fa :icon="link.icon" class="mr2" /> {{ link.label }}
-          </router-link>
-        </li>
+        <template v-for="(link, i) in profileLinks">
+          <li role="listitem" class="h18" :key="i">
+            <router-link
+              exact
+              :to="link.url"
+              :class="checkURL(link)"
+              class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
+            >
+              <fa :icon="link.icon" class="mr2" /> {{ link.label }}
+            </router-link>
+          </li>
+        </template>
       </ul>
     </el-aside>
     <transition name="fade" mode="out-in"><router-view /></transition>
@@ -65,6 +62,12 @@ export default {
         obj = {
           'router-link-exact-active router-link-active': link.url.includes(
             'issues'
+          )
+        }
+      } else if (this.$route.fullPath === '/user/profile/email-providers') {
+        obj = {
+          'router-link-exact-active router-link-active': link.url.includes(
+            'profile'
           )
         }
       } else if (this.$route.query.id) {

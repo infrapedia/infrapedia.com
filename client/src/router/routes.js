@@ -15,6 +15,7 @@ import NetworksSection from '../pages/profile/section/network.vue'
 import OrgsSection from '../pages/profile/section/organization.vue'
 import MyIssuesSection from '../pages/profile/section/myissues.vue'
 import FacilitiesSection from '../pages/profile/section/facilities.vue'
+import EmailProviders from '../pages/profile/email-providers.vue'
 
 const routes = [
   {
@@ -36,6 +37,11 @@ const routes = [
     path: '/user/profile',
     name: 'user-profile',
     component: Profile
+  },
+  {
+    path: '/user/profile/email-providers',
+    name: 'user-profile/email-providers',
+    component: EmailProviders
   },
   {
     path: '/change-password',

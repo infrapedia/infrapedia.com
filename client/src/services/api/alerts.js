@@ -45,3 +45,49 @@ export const disableAlert = async ({ t, elemnt, user_id }) => {
 
   return res
 }
+
+export const configProviders = async data => {
+  url = `${apiConfig.url}/auth/alerts/config/provider`
+  form = new FormData()
+
+  const { user_id, provider } = data
+  let options = {}
+
+  switch (provider) {
+    case 'mandrill':
+      options.from = data.email
+      options.apiKey = data.apiKey
+      break
+    case 'sendgrip':
+      options.from = data.email
+      options.apiKey = data.apiKey
+      break
+    case 'mailgun':
+      options.from = data.email
+      options.apiKey = data.apiKey
+      options.domain = data.domain
+      options.region = data.region
+      break
+    case 'smtp':
+      options.from = data.email
+      options.host = data.host
+      options.port = data.port
+      options.username = data.username
+      options.password = data.password
+      break
+  }
+
+  form.append('provider', provider)
+  form.append('options', JSON.stringify(options))
+
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+
+  return res
+}

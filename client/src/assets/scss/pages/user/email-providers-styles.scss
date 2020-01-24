@@ -1,0 +1,16 @@
+@import '../../base/variables';
+@import '../../helpers/atomic-classes';
+
+.main-wrapper {
+  max-height: 80vh;
+}
+
+.box {
+  border: 2px solid #ccc;
+  &:hover {
+    @extend .bottom-shadow;
+  }
+  &.selected {
+    border-color: $blue;
+  }
+}

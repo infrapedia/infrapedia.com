@@ -14,9 +14,6 @@ html,
   @extend .no-overflow;
   font-family: 'helvetica';
 }
-.application {
-  overflow-y: scroll;
-}
 
 .el-form-item__label {
   color: inherit !important;

@@ -3,10 +3,13 @@
     class="main-wrapper w-fit-full vph-full pt20 pb24 pr7 pl7"
     :class="{ dark, light: !dark }"
   >
-    <header class="mb8">
+    <header class="mb8 flex row nowrap justify-content-space-between">
       <h1 class="title-user color-inherit">
         Profile
       </h1>
+      <el-button round @click="goToRoute" type="warning">
+        Email providers
+      </el-button>
     </header>
     <el-card shadow="never" class="pt2 pr5 pl5 pb4 mt8" v-loading="loading">
       <el-form :model="form" :rules="rules" ref="form">
@@ -164,6 +167,9 @@ export default {
     })
   },
   methods: {
+    goToRoute() {
+      return this.$router.push('/user/profile/email-providers')
+    },
     async setUserData() {
       if (!this.$auth || !this.$auth.user) return
       this.loading = true
