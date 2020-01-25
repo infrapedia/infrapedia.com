@@ -47,7 +47,7 @@ export const disableAlert = async ({ t, elemnt, user_id }) => {
 }
 
 export const configProviders = async data => {
-  url = `${apiConfig.url}/auth/alerts/config/provider`
+  url = `${apiConfig.url}/auth/alerts/config/provider/email`
   form = new FormData()
 
   const { user_id, provider } = data
@@ -81,6 +81,21 @@ export const configProviders = async data => {
   form.append('options', JSON.stringify(options))
 
   const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+
+  return res
+}
+
+export const activeEmailProvider = async ({ user_id }) => {
+  url = `${apiConfig.url}/auth/alerts/provider/email`
+
+  const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
       user_id,

@@ -10,6 +10,15 @@
         </router-link>
         Email providers
       </h1>
+
+      <el-tag
+        size="medium"
+        class="cursor-pointer"
+        @click="toggleProviderInfoDialog(true)"
+      >
+        Current email provider:
+        <span class="capitalize"> {{ currentEmailProvider }} </span>
+      </el-tag>
     </header>
     <div class="flex row wrap w-fit-full">
       <div
@@ -102,17 +111,56 @@
         </el-form-item>
       </el-form>
     </el-card>
+
+    <el-dialog
+      :visible.sync="providerInfoDialog.isVisible"
+      width="30%"
+      title="Email provider information"
+      :before-close="() => toggleProviderInfoDialog(false)"
+    >
+      <el-form>
+        <el-form-item label="From">
+          <el-input
+            type="password"
+            show-password
+            v-model="providerInfoDialog.data.from"
+          />
+        </el-form-item>
+        <el-form-item label="apiKey">
+          <el-input
+            type="password"
+            show-password
+            v-model="providerInfoDialog.data.apiKey"
+          />
+        </el-form-item>
+        <el-form-item>
+          <div class="flex justify-content-end">
+            <el-button plain @click="toggleProviderInfoDialog(false)">
+              Close
+            </el-button>
+          </div>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { configProviders } from '../../services/api/alerts.js'
+import {
+  configProviders,
+  activeEmailProvider
+} from '../../services/api/alerts.js'
 
 export default {
   data() {
     let vm = this
     return {
       loading: false,
+      providerInfoDialog: {
+        isVisible: false,
+        data: {}
+      },
+      currentEmailProvider: 'None',
       emailProviders: {
         providers: [
           {
@@ -273,7 +321,26 @@ export default {
       return prop
     }
   },
+  mounted() {
+    this.getCurrentEmailProvider()
+  },
   methods: {
+    toggleProviderInfoDialog(bool) {
+      this.providerInfoDialog.isVisible = bool
+    },
+    async getCurrentEmailProvider() {
+      this.currentEmailProvider = 'Loading ...'
+      const res = await activeEmailProvider({ user_id: this.$auth.user.sub })
+      if (res && res.data && res.data.r) {
+        if (res.data.r.length) {
+          this.currentEmailProvider = res.data.r[0].provider
+          this.providerInfoDialog.data = {
+            from: res.data.r[0].options.from,
+            apiKey: res.data.r[0].options.apiKey
+          }
+        } else this.currentEmailProvider = 'None'
+      }
+    },
     changeProviderSelected(p) {
       this.form.apiKey = ''
       this.emailProviders.selected = p
@@ -287,6 +354,7 @@ export default {
       })
       if (res && res.data && res.data.t !== 'error') {
         this.clear()
+        this.getCurrentEmailProvider()
       }
       this.loading = false
     },

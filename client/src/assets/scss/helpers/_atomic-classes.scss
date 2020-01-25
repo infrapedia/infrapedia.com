@@ -335,6 +335,10 @@
   transition: all $regular-transition;
 }
 
+.uppercase {
+  text-transform: uppercase;
+}
+
 @for $i from 1 through 120 {
   $base: 0.25rem;
   $val: $base * $i;
