@@ -7,7 +7,9 @@
       class="bgcolor-inherit flex justify-content-space-around wrap align-items-center"
     >
       <span>&copy; 2019 Copyright, All Rights Reserved by Infrapedia</span>
-      <router-link class="link ml2 mr2 mt2 color-inherit" to="/terms-and-conditions"
+      <router-link
+        class="link ml2 mr2 mt2 color-inherit"
+        to="/terms-and-conditions"
         >Terms & Conditions</router-link
       >
       <el-divider direction="vertical" class="hidden-sm-and-down" />

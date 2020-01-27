@@ -632,7 +632,6 @@ import dataCollection from '../mixins/dataCollection'
 export default {
   name: 'INavbar',
   components: {
-    // IList: () => import('./List'),
     IFilter: () => import('./Filter'),
     ISearch: () => import('./Search'),
     BottomSheet: () => import('./BottomSheet'),

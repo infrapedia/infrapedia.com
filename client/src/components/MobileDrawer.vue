@@ -143,6 +143,23 @@
               </a>
             </div>
           </li>
+          <li
+            class="inline-block relative mt8"
+            data-no-outline="true"
+            role="listitem"
+          >
+            <div class="list-item" data-no-hover-bg="true">
+              <a href="https://aptelecom.com/" target="_blank">
+                <el-image
+                  src="https://cdn.infrapedia.com/sponsors/aptelecom_logo.png"
+                  fit="center"
+                  class="w46 h18 image-sponsor"
+                  alt="aptelecom logo"
+                  referrer-policy="strict-origin-when-cross-origin"
+                />
+              </a>
+            </div>
+          </li>
         </ul>
       </div>
       <i-footer class="footer relative m0 mt54 ml-5 p4" />

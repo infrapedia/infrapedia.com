@@ -17,10 +17,15 @@
   top: 0;
 
   li {
-    max-width: 20rem;
     .partner {
       color: $white-partial;
-      background-color: orange
+      background-color: orange;
+    }
+    @media screen and (max-width: $break-sm) {
+      max-width: 20rem;
+    }
+    @media screen and (max-width: $break-md) {
+      max-width: 32rem;
     }
   }
 }

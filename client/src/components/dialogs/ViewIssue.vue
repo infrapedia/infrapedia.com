@@ -1,7 +1,13 @@
 <template>
-  <transition tag="div" mode="in-out" name="animated fadeIn faster">
-    <div class="el-dialog__wrapper z-index120" v-show="isVisible">
-      <div class="inner-wrapper el-dialog">
+  <div class="el-dialog__wrapper z-index120" v-show="isVisible">
+    <transition
+      tag="div"
+      mode="in-out"
+      name="animated faster"
+      enter-active-class="fadeInDown"
+      leave-active-class="fadeOutUp"
+    >
+      <div class="inner-wrapper el-dialog" v-show="isVisible">
         <div class="el-dialog__header">
           <header class="w-fit-full p0 no-selectable">
             <h1 class="inline-block font-semibold fs-xlarge">
@@ -63,8 +69,8 @@
           </div>
         </div>
       </div>
-    </div>
-  </transition>
+    </transition>
+  </div>
 </template>
 
 <script>
