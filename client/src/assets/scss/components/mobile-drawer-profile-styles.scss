@@ -2,7 +2,26 @@
 @import '../base/variables';
 
 .el-button.no-border {
-  color: $dark-charcoal;
+  &.light {
+    color: $dark-charcoal;
+  }
+  &.dark {
+    color: $white-partial;
+    background-color: $dark-charcoal;
+    &:hover {
+      background-color: $light-charcoal;
+    }
+  }
+}
+
+.el-button {
+  &.dark {
+    color: $white-partial;
+    background-color: $dark-charcoal;
+    &:hover {
+      background-color: $light-charcoal;
+    }
+  }
 }
 
 .logo-img {
@@ -13,7 +32,12 @@
 header {
   border-bottom: 1px solid $light-hover;
   .icon {
-    color: $dark-charcoal;
+    &.light {
+      color: $dark-charcoal;
+    }
+    &.dark {
+      color: $white-partial;
+    }
     &:active {
       background-color: $light-hover;
     }

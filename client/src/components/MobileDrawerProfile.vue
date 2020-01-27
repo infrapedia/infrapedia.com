@@ -5,6 +5,7 @@
       icon="el-icon-menu"
       class="no-border color-inherit w8 vertical-align mt1"
       @click="toggleVisibility"
+      :class="{ dark, light: !dark }"
     />
     <el-drawer
       size="100%"
@@ -23,6 +24,7 @@
           </router-link>
           <span
             class="inline-block w4 h4 icon mt2 fs-medium p2 transition-all circle vertical-align cursor-pointer"
+            :class="{ dark, light: !dark }"
             @click="toggleVisibility"
           >
             <fa :icon="['fas', 'times']" />
@@ -40,6 +42,7 @@
               type="text"
               class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
               @click="goToRoute(link.url)"
+              :class="{ dark, light: !dark }"
             >
               <fa :icon="link.icon" class="mr2" /> {{ link.label }}
             </el-button>
