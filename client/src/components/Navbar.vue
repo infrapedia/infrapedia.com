@@ -628,6 +628,9 @@
 import sponsors from '../config/navbarSponsors'
 import infoMenuLinks from '../config/infoMenuLinks'
 import dataCollection from '../mixins/dataCollection'
+import MobileDrawer from './MobileDrawer.vue'
+import FullScreenSearch from './FullScreenSearch.vue'
+import MobileDrawerProfile from './MobileDrawerProfile.vue'
 
 export default {
   name: 'INavbar',
@@ -635,10 +638,10 @@ export default {
     IFilter: () => import('./Filter'),
     ISearch: () => import('./Search'),
     BottomSheet: () => import('./BottomSheet'),
-    IMobileDrawer: () => import('./MobileDrawer'),
-    IFullScreenSearch: () => import('./FullScreenSearch'),
     PremiumPartnersButton: () => import('./PremiumPartners'),
-    IMobileDrawerProfile: () => import('./MobileDrawerProfile')
+    IMobileDrawer: MobileDrawer,
+    IFullScreenSearch: FullScreenSearch,
+    IMobileDrawerProfile: MobileDrawerProfile
   },
   mixins: [dataCollection],
   props: {
