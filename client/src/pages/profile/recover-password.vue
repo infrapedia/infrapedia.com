@@ -23,6 +23,7 @@
             <el-input
               show-password
               type="password"
+              :class="{ dark }"
               placeholder="New password"
               v-model="passw"
             />
@@ -31,6 +32,7 @@
             <el-input
               show-password
               type="password"
+              :class="{ dark }"
               placeholder="Confirm new password"
               v-model="passwr"
             />

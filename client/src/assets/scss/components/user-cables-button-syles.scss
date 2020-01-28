@@ -33,6 +33,13 @@
 }
 
 .list-wrapper.dark {
+  li[role='listitem'] {
+    color: $white-hsl;
+    background-color: $light-charcoal;
+    &:hover {
+      background-color: darken($dark-charcoal, 2%);
+    }
+  }
   color: $white-hsl;
   background-color: $dark-charcoal;
   .el-button {

@@ -30,7 +30,7 @@
             <fa :icon="['fas', 'times']" />
           </span>
         </header>
-        <ul role="group" class="p0 mb4 h-fit-full">
+        <ul role="group" class="p0 h-fit-full">
           <li
             role="listitem"
             class="h18"
@@ -40,7 +40,7 @@
             <el-button
               plain
               type="text"
-              class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
+              class="inline-flex no-border-radius align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
               @click="goToRoute(link.url)"
               :class="{ dark, light: !dark }"
             >
@@ -48,7 +48,7 @@
             </el-button>
           </li>
         </ul>
-        <i-footer class="footer relative m0 ml-8 p2" />
+        <i-footer class="footer relative m0" />
       </div>
     </el-drawer>
   </div>

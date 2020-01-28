@@ -339,6 +339,13 @@
   text-transform: uppercase;
 }
 
+.no-border-radius {
+  border-radius: 0;
+}
+.no-border-radius-imp {
+  border-radius: 0 !important;
+}
+
 @for $i from 1 through 120 {
   $base: 0.25rem;
   $val: $base * $i;

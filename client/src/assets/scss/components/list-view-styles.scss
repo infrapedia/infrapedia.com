@@ -8,9 +8,9 @@ ul[role='list'] {
   @media screen and (max-width: $break-md) {
     width: 100%;
   }
-  @media screen and (max-width: $break-xs) {
-    width: 17.4rem;
-  }
+  // @media screen and (max-width: $break-xs) {
+  //   width: 17.4rem;
+  // }
 }
 
 #html-wrapper.light {

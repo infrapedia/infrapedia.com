@@ -27,7 +27,7 @@
             @load-more="handleLoadMoreItems"
             @click-list-item="handleBeforeLoadItem"
           />
-          <i-mobile-drawer-profile class="hidden-md-and-up" v-else />
+          <i-mobile-drawer-profile class="hidden-lg-and-up" v-else />
         </h1>
 
         <div aria-labelledby="rightnavheading" class="links-wrapper">

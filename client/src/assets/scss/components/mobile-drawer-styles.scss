@@ -13,9 +13,17 @@
 header {
   border-bottom: 1px solid $light-hover;
   .icon {
-    color: $dark-charcoal;
-    &:active {
-      background-color: $light-hover;
+    &.light {
+      color: $dark-charcoal;
+      &:hover {
+        background-color: $light-hover;
+      }
+    }
+    &.dark {
+      color: $white-partial;
+      &:hover {
+        background-color: $dark-charcoal;
+      }
     }
   }
 }
@@ -30,12 +38,10 @@ header {
 .links-wrapper {
   margin-bottom: 1rem;
   a {
-    display: inline-block;
-    width: 100%;
+    width: 90.4%;
     outline: 0;
-    padding: 1rem;
     color: #333;
-    border-bottom: 1px solid #ebeef5
+    border-bottom: 1px solid #ebeef5;
   }
 }
 
@@ -51,6 +57,13 @@ header {
   .el-button {
     color: $white-partial;
     background-color: inherit;
+  }
+}
+
+.links-wrapper.dark {
+  a {
+    color: $white-partial;
+    border-bottom: 1px solid $light-charcoal;
   }
 }
 

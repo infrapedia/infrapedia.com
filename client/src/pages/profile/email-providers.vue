@@ -35,7 +35,11 @@
     <el-card class="mt4 transition-all p4" v-loading="loading">
       <el-form :model="form" :rules="formRules" ref="form">
         <el-form-item prop="email" label="From email">
-          <el-input v-model="form.email" placeholder="From email" />
+          <el-input
+            v-model="form.email"
+            :class="{ dark }"
+            placeholder="From email"
+          />
         </el-form-item>
         <el-collapse-transition>
           <el-form-item
@@ -46,6 +50,7 @@
             <el-input
               type="password"
               v-model="form.apiKey"
+              :class="{ dark }"
               :placeholder="placeholderApiKey"
             />
             <small>Your {{ placeholderApiKey }}</small>
@@ -55,7 +60,11 @@
           <template v-if="this.emailProviderSelected === 'mailgun'">
             <div>
               <el-form-item prop="domain" label="Domain">
-                <el-input v-model="form.domain" placeholder="Domain" />
+                <el-input
+                  v-model="form.domain"
+                  :class="{ dark }"
+                  placeholder="Domain"
+                />
                 <small>Your domain registered with Mailgun</small>
               </el-form-item>
               <el-form-item label="Region">
@@ -72,13 +81,18 @@
             <div>
               <el-form-item prop="host" label="Host">
                 <el-input
+                  :class="{ dark }"
                   v-model="form.host"
                   placeholder="your.smtp.host.com"
                 />
                 <small>Hostname or IP address of your SMTP server.</small>
               </el-form-item>
               <el-form-item prop="port" label="Port">
-                <el-input-number v-model="form.port" placeholder="482" />
+                <el-input-number
+                  v-model="form.port"
+                  :class="{ dark }"
+                  placeholder="482"
+                />
                 <br />
                 <small
                   >Port used by your SMTP server. Common ports include 25, 465,
@@ -87,12 +101,17 @@
                 >
               </el-form-item>
               <el-form-item prop="username" label="Username">
-                <el-input v-model="form.username" placeholder="SMTP Username" />
+                <el-input
+                  v-model="form.username"
+                  :class="{ dark }"
+                  placeholder="SMTP Username"
+                />
               </el-form-item>
               <el-form-item prop="password" label="Password">
                 <el-input
                   type="password"
                   v-model="form.password"
+                  :class="{ dark }"
                   placeholder="SMTP Password"
                 />
               </el-form-item>

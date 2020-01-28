@@ -36,56 +36,20 @@
         <el-collapse-item name="partners" class="pr4 pl4">
           <p slot="title">Our Partners</p>
           <i-list
+            class="w-fit-full-imp overflow-y-auto no-overflow-x"
             option="partners"
             @click="emitSelected"
             :is-search-visible="false"
           />
         </el-collapse-item>
-
-        <!-- <el-collapse-item name="submarine" class="pr4 pl4">
-          <p slot="title">Submarine Cables</p>
-          <i-list
-            option="submarine"
-            @click="emitSelected"
-            :is-search-visible="false"
-            @load-more="emitLoadMore('submarine')"
-          />
-        </el-collapse-item>
-        <el-collapse-item name="dataCenters" class="pr4 pl4">
-          <p slot="title">Data Centers</p>
-          <i-list
-            option="dataCenters"
-            @click="emitSelected"
-            :is-search-visible="false"
-            @load-more="emitLoadMore('dataCenters')"
-          />
-        </el-collapse-item>
-        <el-collapse-item name="ixps" class="pr4 pl4">
-          <p slot="title">IXPs</p>
-          <i-list
-            option="ixps"
-            @click="emitSelected"
-            :is-search-visible="false"
-            @load-more="emitLoadMore('ixps')"
-          />
-        </el-collapse-item>
-        <el-collapse-item name="networks" class="pr4 pl4">
-          <p slot="title">Networks</p>
-          <i-list
-            option="networks"
-            @click="emitSelected"
-            :is-search-visible="false"
-            @load-more="emitLoadMore('networks')"
-          />
-        </el-collapse-item> -->
       </el-collapse>
-      <ul class="links-wrapper m0 mb4 p0">
+      <ul class="links-wrapper m0 mb4 p0" :class="{ dark }">
         <li class="w-fit-full" data-no-outline="true">
           <div class="no-selectable">
             <a
               href="https://www.infrapedia.com/blog"
               target="_blank"
-              class="no-underline inherit color-inherit"
+              class="no-underline inherit color-inherit p4 mr4 ml4 inline-block"
             >
               Blog
             </a>
@@ -96,7 +60,7 @@
             <a
               href="https://www.infrapedia.com"
               target="_blank"
-              class="no-underline inherit color-inherit"
+              class="no-underline inherit color-inherit p4 mr4 ml4 inline-block"
             >
               Contact us
             </a>

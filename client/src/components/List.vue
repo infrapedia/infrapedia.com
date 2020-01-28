@@ -37,7 +37,7 @@
             tabindex="0"
             role="listitem"
             class="pt7 pb7 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
-            :class="{ dark, light: !dark }"
+            :class="{ dark }"
             @click="emitSelected(option)"
             @keyup.enter.space="emitSelected(option)"
           >
@@ -46,7 +46,7 @@
           <el-button
             v-if="isFinal(i) && !isPremiumPartners"
             :loading="isLoading"
-            :class="{ dark, light: !dark }"
+            :class="{ dark }"
             :key="option.name + ' ' + i"
             class="w-fit-full p4 h20 no-border seamless-hoverbg"
             @click="$emit(LOAD_MORE, option)"

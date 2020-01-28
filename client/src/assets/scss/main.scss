@@ -377,7 +377,6 @@ input.issues-dialog {
 
 #html-wrapper.dark {
   .el-pagination button,
-  .el-radio__label,
   div[role='tooltip'],
   .el-input-group__prepend,
   div[role='tooltip'] .el-card,
@@ -517,12 +516,21 @@ input.issues-dialog {
 }
 
 .application.dark {
+  .el-pagination .btn-prev,
+  .el-pagination .btn-next,
+  .el-loading-mask,
+  .el-input-group__prepend,
   .el-table__body tr.hover-row > td,
   .el-table__body tr.hover-row.current-row > td,
   .el-table__body tr.hover-row.el-table__row--striped > td,
   .el-table__body tr.hover-row.el-table__row--striped.current-row > td {
     background-color: $dark-charcoal;
   }
+
+  .el-input-group__prepend {
+    border-color: $dark-charcoal;
+  }
+
   .main-wrapper {
     color: $white-partial;
     background: $dark-charcoal;
@@ -578,9 +586,16 @@ input.issues-dialog {
 }
 
 #html-wrapper.dark {
+  .el-radio__label {
+    color: $white-partial;
+  }
+  .el-loading-mask {
+    background-color: $dark-charcoal;
+  }
+
   .dialog-profile-wrapper {
     color: $white-partial;
-    background-color: $light-charcoal;
+    // background-color: $light-charcoal;
     li .el-button.el-button--text {
       font-weight: bold;
       a {

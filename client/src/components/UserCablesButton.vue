@@ -35,7 +35,7 @@
         >
           <li
             v-for="(cable, i) in cablesList"
-            class="w-fit-full cursor-pointer bg-white no-outline mt4 pr4 pl4 h-fit"
+            class="w-fit-full transition-all cursor-pointer bg-white no-outline mt4 mb4 pr4 pl4 h-fit"
             role="listitem"
             :key="i"
           >
