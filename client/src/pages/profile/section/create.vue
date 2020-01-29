@@ -13,6 +13,7 @@
         :is="currentView"
         :form="form"
         :mode="mode"
+        :is-sending-data="isSendingData"
         @send-data="checkType"
         @handle-file-converted="handleFileConverted"
       />
@@ -48,6 +49,7 @@ export default {
     return {
       form: {},
       mode: 'create',
+      isSendingData: false,
       isPropertiesDialog: false,
       creationType: this.$route.query.id
     }
@@ -167,39 +169,51 @@ export default {
       return res && res.data && res.data.r ? res.data.r : {}
     },
     async createCLS() {
+      this.isSendingData = true
       const res = await createCls({
         ...this.form,
         user_id: this.$auth.user.sub
       })
+
+      this.isSendingData = false
       if (res.t !== 'error') {
         return this.$router.push('/user/section/cls')
       }
     },
     async editCLS() {
+      this.isSendingData = true
       const res = await editCls({
         ...this.form,
         user_id: this.$auth.user.sub,
         _id: this.$route.query.item
       })
+
+      this.isSendingData = false
       if (res.t !== 'error') {
         return this.$router.push('/user/section/cls')
       }
     },
     async createCable() {
+      this.isSendingData = true
       const res = await createCable({
         ...this.form,
         user_id: this.$auth.user.sub
       })
+
+      this.isSendingData = false
       if (res.t !== 'error') {
         return this.$router.push('/user/section/cables')
       }
     },
     async editCable() {
+      this.isSendingData = true
       const res = await editCable({
         ...this.form,
         user_id: this.$auth.user.sub,
         _id: this.$route.query.item
       })
+
+      this.isSendingData = false
       if (res.t !== 'error') {
         return this.$router.push('/user/section/cables')
       }

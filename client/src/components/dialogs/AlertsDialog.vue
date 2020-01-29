@@ -69,6 +69,7 @@ import { mapState } from 'vuex'
 import { getUserData } from '../../services/api/auth'
 import { createAlert } from '../../services/api/alerts'
 import { TOGGLE_ALERT_DIALOG } from '../../store/actionTypes'
+import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
 
 export default {
   data: () => ({
@@ -143,47 +144,10 @@ export default {
       const res = await createAlert({
         user_id: this.$auth.user.sub,
         elemnt: this.focus.id,
-        t: this.getType(this.focus.type),
+        t: getSelectionTypeNumber(this.focus.type),
         ...this.form
       })
       if (res && res.t !== 'error') this.closeDialog()
-    },
-    getType(type) {
-      const types = [
-        {
-          value: 1,
-          t: ['submarine', 'cable']
-        },
-        {
-          value: 2,
-          t: ['cls']
-        },
-        {
-          value: 3,
-          t: ['fac', 'facility', 'datacenters', 'data centers']
-        },
-        {
-          value: 4,
-          t: ['ixp', 'ixps']
-        },
-        {
-          value: 5,
-          t: []
-        },
-        {
-          value: 6,
-          t: ['net', 'networks', 'network']
-        },
-        {
-          value: 7,
-          t: ['org', 'organizations']
-        }
-      ]
-
-      for (let t of types) {
-        if (t.t.includes(type)) return t.value
-        else continue
-      }
     },
     closeDialog() {
       this.$store.commit(`${TOGGLE_ALERT_DIALOG}`, false)

@@ -136,6 +136,7 @@
           type="primary"
           class="w-fit-full"
           round
+          :loading="isSendingData"
           :disabled="checkGeomLength"
           @click="sendData"
         >
@@ -162,7 +163,6 @@ export default {
     cableStates,
     clsList: [],
     facsList: [],
-    oading: false,
     isURLValid: null,
     inputVisible: false,
     isLoadingFacs: false
@@ -175,6 +175,10 @@ export default {
     mode: {
       type: String,
       required: true
+    },
+    isSendingData: {
+      type: Boolean,
+      default: () => false
     }
   },
   computed: {

@@ -78,6 +78,7 @@
 import { TOGGLE_ISSUES_DIALOG } from '@/store/actionTypes'
 import { createIssue } from '../../services/api/issues'
 import { getUserData } from '../../services/api/auth'
+import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
 
 export default {
   data: () => ({
@@ -177,46 +178,9 @@ export default {
         user_id: this.$auth.user.sub,
         ...this.form,
         elemnt: focus.id,
-        t: this.getType(focus.type)
+        t: getSelectionTypeNumber(focus.type)
       })
       if (res && res.t !== 'error') this.closeDialog()
-    },
-    getType(type) {
-      const types = [
-        {
-          value: 1,
-          t: ['submarine', 'cable']
-        },
-        {
-          value: 2,
-          t: ['cls']
-        },
-        {
-          value: 3,
-          t: ['fac', 'facility', 'datacenters', 'data centers']
-        },
-        {
-          value: 4,
-          t: ['ixp', 'ixps']
-        },
-        {
-          value: 5,
-          t: []
-        },
-        {
-          value: 6,
-          t: ['net', 'networks', 'network']
-        },
-        {
-          value: 7,
-          t: ['org', 'organizations']
-        }
-      ]
-
-      for (let t of types) {
-        if (t.t.includes(type)) return t.value
-        else continue
-      }
     },
     validatePhoneNumber({ number, isValid }) {
       this.form.phone = {
