@@ -106,3 +106,18 @@ export const activeEmailProvider = async ({ user_id }) => {
 
   return res
 }
+
+export const getAlerts = async ({ user_id, page }) => {
+  url = `${apiConfig.url}/auth/alerts/configured?page=${page}`
+
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+
+  return res
+}

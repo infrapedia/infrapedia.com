@@ -37,7 +37,8 @@ import {
   faProjectDiagram,
   faExclamationTriangle,
   faCloudUploadAlt,
-  faBraille
+  faBraille,
+  faStopCircle
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faFacebook,
@@ -47,6 +48,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
+  faStopCircle,
   faAward,
   faEye,
   faBraille,

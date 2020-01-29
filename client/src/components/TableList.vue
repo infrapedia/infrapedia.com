@@ -2,6 +2,9 @@
   <div>
     <header class="flex w-fit-full p2 row nowrap justify-content-space-between">
       <h1 class="title-user color-inherit">
+        <router-link v-if="returnLink.visible" :to="returnLink.url">
+          <fa :icon="['fas', 'arrow-left']" class="fs-regular mr2 mb1" />
+        </router-link>
         {{ config.title }}
       </h1>
       <el-button type="warning" round @click="handleRoute" v-if="canCreate">
@@ -14,13 +17,22 @@
         <el-table-column :label="col" v-for="(col, i) in columns" :key="i">
           <template slot-scope="scope">
             <div v-if="Array.isArray(scope.row[col]) && scope.row[col].length">
-              <p v-for="(address, i) in scope.row[col]" :key="i">
-                <template v-if="address.city">
-                  City: {{ address.city }}
-                </template>
+              <p v-for="(item, i) in scope.row[col]" :key="i">
+                <template v-if="item.city"> City: {{ item.city }} </template>
                 <br />
-                <template v-if="address.street">
-                  Street: {{ address.street }}
+                <template v-if="item.street">
+                  Street: {{ item.street }}
+                </template>
+                <el-tag
+                  size="small"
+                  v-else-if="
+                    col === 'websites' || col === 'cables' || col === 'cls'
+                  "
+                >
+                  {{ item }}
+                </el-tag>
+                <template v-else>
+                  {{ item }}
                 </template>
               </p>
             </div>
@@ -30,7 +42,16 @@
               :src="scope.row[col]"
               class="w12 h12 circle"
             />
-            <span v-else-if="typeof scope.row[col] === 'string'">
+            <span v-else-if="col === 'alerts' && !scope.row[col]">
+              0
+            </span>
+            <span
+              v-else-if="
+                !Array.isArray(scope.row[col]) &&
+                  typeof scope.row[col] !== 'object' &&
+                  typeof scope.row[col] !== 'undefined'
+              "
+            >
               {{ `${scope.row[col]}` }}
             </span>
           </template>
@@ -51,12 +72,7 @@
               plain
               size="small"
               class="p2 mr4 fs-regular"
-              @click="
-                $emit('view-item', {
-                  _id: scope.row.t || scope.row._id,
-                  idReport: scope.row.idReport || false
-                })
-              "
+              @click="$emit('view-item', scope.row._id)"
             >
               <fa :icon="['fas', 'eye']" />
             </el-button>
@@ -66,7 +82,7 @@
               size="small"
               @click="$emit('delete-item', scope.row._id)"
             >
-              <fa :icon="['fas', 'trash']" />
+              <fa :icon="deleteIcon" />
             </el-button>
           </template>
         </el-table-column>
@@ -110,6 +126,17 @@ export default {
     canCreate: {
       type: Boolean,
       default: () => true
+    },
+    deleteIcon: {
+      type: Array,
+      default: () => ['fas', 'trash']
+    },
+    returnLink: {
+      type: Object,
+      default: () => ({
+        visible: false,
+        url: ''
+      })
     }
   },
   methods: {
@@ -118,12 +145,9 @@ export default {
       return Object.keys(arr[0]).sort()
     },
     handleRoute() {
-      0
-      if (this.config.creation_link) {
-        this.$router.push(this.config.creation_link)
-      } else if (!this.config.creation_link) {
-        this.$emit('btn-click')
-      }
+      return this.config.creation_link
+        ? this.$router.push(this.config.creation_link)
+        : this.$emit('btn-click')
     }
   }
 }

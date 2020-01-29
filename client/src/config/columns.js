@@ -17,6 +17,11 @@ export const clsColumns = [
     label: 'organizations',
     value: 'organizations',
     showSidebar: true
+  },
+  {
+    label: 'alerts',
+    value: 'alerts',
+    showTable: true
   }
 ]
 
@@ -63,7 +68,12 @@ export const cablesColumns = [
     value: 'organizations',
     showSidebar: true
   },
-  { label: 'urls', value: 'urls', showSidebar: true } // (Array)
+  { label: 'urls', value: 'urls', showSidebar: true },
+  {
+    label: 'alerts',
+    value: 'alerts',
+    showTable: true
+  }
   // 'facilities', // (Array)
 ]
 
@@ -116,6 +126,11 @@ export const netColumns = [
     value: 'orgs',
     showSidebar: true,
     showTable: true
+  },
+  {
+    label: 'alerts',
+    value: 'alerts',
+    showTable: true
   }
 ]
 
@@ -140,5 +155,10 @@ export const orgsColumns = [
     label: 'networks',
     value: 'networks',
     showSidebar: true
+  },
+  {
+    label: 'alerts',
+    value: 'alerts',
+    showTable: true
   }
 ]

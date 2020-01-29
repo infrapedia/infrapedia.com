@@ -3,59 +3,18 @@
     class="main-wrapper w-fit-full vph-full pt20 pb24 pr7 pl7"
     :class="{ dark, light: !dark }"
   >
-    <div>
-      <header
-        class="flex w-fit-full p2 row nowrap justify-content-space-between"
-      >
-        <h1 class="title-user color-inherit">
-          <router-link to="/user/section/issues">
-            <fa :icon="['fas', 'arrow-left']" class="fs-regular mr2 mb1" />
-          </router-link>
-          Issues reported
-        </h1>
-      </header>
-      <el-divider />
-      <el-card shadow="never">
-        <el-table
-          :data="tableData"
-          :row-class-name="viewedClass"
-          max-height="700"
-          v-loading="loading"
-        >
-          <el-table-column :label="col" v-for="(col, i) in columns" :key="i">
-            <template slot-scope="scope">
-              <span>
-                {{ `${scope.row[col]}` }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column fixed="right" label="Operations" width="120">
-            <template slot-scope="scope">
-              <el-button
-                size="small"
-                class="p2 mr4 fs-regular no-y"
-                @click="
-                  viewIssue({
-                    _id: scope.row.t || scope.row._id,
-                    idReport: scope.row.idReport || false
-                  })
-                "
-              >
-                <fa :icon="['fas', 'eye']" />
-              </el-button>
-              <el-button
-                type="danger"
-                class="p2 fs-regular no-y"
-                size="small"
-                @click="deleteIssues(scope.row.idReport)"
-              >
-                <fa :icon="['fas', 'trash']" />
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-card>
-    </div>
+    <table-list
+      :is-loading="loading"
+      :can-edit="false"
+      :columns="columns"
+      :config="issuesConf"
+      :can-view="true"
+      :can-create="false"
+      :table-data="issues"
+      @view-item="viewSelectedIssue"
+      :return-link="returnLink"
+      @delete-item="deleteIssues"
+    />
 
     <div class="flex w-fit-full align-items-center justify-content-center mt12">
       <el-pagination
@@ -78,9 +37,11 @@ import {
   getMyIssues,
   viewIssue
 } from '../../../services/api/issues'
+import TableList from '../../../components/TableList.vue'
 
 export default {
   components: {
+    TableList,
     ViewIssueDialog: () => import('../../../components/dialogs/ViewIssue')
   },
   data: () => ({
@@ -90,6 +51,11 @@ export default {
     isDialog: false,
     currentPage: 0,
     mode: 'create',
+    issuesConf: {
+      title: 'Issues reported',
+      creation_link: false,
+      btn_label: false
+    },
     isViewDialog: false,
     issueOnView: {
       name: '',
@@ -101,6 +67,12 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    returnLink() {
+      return {
+        visible: true,
+        url: '/user/section/issues'
+      }
     }
   },
   async mounted() {
@@ -118,18 +90,22 @@ export default {
       }
       this.loading = false
     },
-    async viewIssue({ _id, idReport }) {
+    async viewSelectedIssue(_id) {
       this.loading = true
-      const res = await viewIssue({
-        elemnt: _id,
-        id: idReport,
-        user_id: this.$auth.user.sub
-      })
-      try {
-        this.issueOnView = res.data.r[0]
-        this.isViewDialog = true
-      } catch {
-        // Ignore
+
+      const issue = this.tableData.filter(i => i._id === _id)[0]
+      if (issue) {
+        const res = await viewIssue({
+          elemnt: issue.t,
+          id: issue.idReport,
+          user_id: this.$auth.user.sub
+        })
+        try {
+          this.issueOnView = res.data.r[0]
+          this.isViewDialog = true
+        } catch {
+          // Ignore
+        }
       }
       this.loading = false
     },
@@ -138,7 +114,7 @@ export default {
     },
     async deleteIssues(_id) {
       await this.$confirm(
-        'Are you sure you want to delete this organization. This action is irreversible',
+        'Are you sure you want to delete this reported issue. This action is irreversible',
         'Please confirm to continue'
       )
         .then(async () => {

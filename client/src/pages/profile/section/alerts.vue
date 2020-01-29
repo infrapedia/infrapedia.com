@@ -10,25 +10,25 @@
       :columns="columns"
       :config="tableConfig"
       :table-data="tableData"
+      :delete-icon="['fas', 'stop-circle']"
       @btn-click="toggleDialog"
       @delete-item="deleteSelectedAlert"
     />
 
-    <!-- <div class="flex w-fit-full align-items-center justify-content-center mt12">
+    <div class="flex w-fit-full align-items-center justify-content-center mt12">
       <el-pagination
-        background
         @current-change="getALertsList"
         :current-page.sync="currentPage"
-        layout="prev, pager, next"
-        :total="totalPages"
+        layout="prev, next"
       />
-    </div> -->
+    </div>
   </div>
 </template>
 
 <script>
 import TableList from '../../../components/TableList.vue'
-// import { deleteAlert, getAlerts } from '../../../services/api/alerts'
+import { getAlerts, disableAlert } from '../../../services/api/alerts'
+import { getSelectionTypeNumber } from '../../../helpers/getSelectionTypeNumber'
 
 export default {
   components: {
@@ -45,7 +45,7 @@ export default {
       creation_link: false,
       btn_label: 'Create Alert'
     },
-    columns: ['fullname', 'issue', 'alert', 'phonenumber']
+    columns: ['name', 't', 'status', 'disabled']
   }),
   computed: {
     totalPages() {
@@ -55,33 +55,38 @@ export default {
       return this.$store.state.isDark
     }
   },
+  async mounted() {
+    await this.getALertsList()
+  },
   methods: {
     toggleDialog() {},
-    async getALertsList() {
-      return await console.warn('NOT DONE YET')
-      // this.loading = true
-      // const res = await getIssues({
-      //   page,
-      //   user_id: this.$auth.user.sub
-      // })
-      // if (res && res.data && res.data.r) {
-      //   this.tableData = res.data.r
-      // }
-      // this.loading = false
+    async getALertsList(page = this.currentPage) {
+      this.loading = true
+      const res = await getAlerts({
+        page,
+        user_id: this.$auth.user.sub
+      })
+      if (res && res.data && res.data.r) {
+        this.tableData = res.data.r
+      }
+      this.loading = false
     },
     async deleteSelectedAlert(_id) {
-      return await console.warn('NOT DONE YET', _id)
-      // await this.$confirm(
-      //   'Are you sure you want to delete this organization. This action is irreversible',
-      //   'Please confirm to continue'
-      // )
-      //   .then(async () => {
-      //     await deleteIssue({
-      //       user_id: this.$auth.user.sub,
-      //       _id
-      //     }).then(() => this.getIssuesList())
-      //   })
-      //   .catch(() => {})
+      const elemnt = this.tableData.filter(alert => alert._id === _id)[0]
+      if (elemnt) {
+        return await this.$confirm(
+          'Are you sure you want to disable this alert?',
+          'Please confirm to continue'
+        )
+          .then(async () => {
+            await disableAlert({
+              user_id: this.$auth.user.sub,
+              elemnt: elemnt._idElement,
+              t: getSelectionTypeNumber(elemnt.t)
+            }).then(() => this.getALertsList())
+          })
+          .catch(() => {})
+      }
     }
   }
 }
