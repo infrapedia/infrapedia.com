@@ -65,6 +65,7 @@
           type="primary"
           class="w24"
           plain
+          :loading="isSendingData"
           @click="submitForm('form')"
           @keyup.enter.space="submitForm('form')"
           >Report</el-button
@@ -82,6 +83,8 @@ import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
 
 export default {
   data: () => ({
+    loading: false,
+    isSendingData: false,
     form: {
       email: '',
       issue: '',
@@ -152,6 +155,7 @@ export default {
   methods: {
     async setUserData() {
       if (!this.$auth || !this.$auth.user) return
+      this.loading = true
       const userData = await getUserData(this.$auth.user.sub)
 
       if (userData) {
@@ -170,16 +174,19 @@ export default {
               valid: null
             }
       }
+      this.loading = false
     },
     async sendIssueRequest() {
       const { focus } = this.$store.state.map
 
+      this.isSendingData = true
       const res = await createIssue({
         user_id: this.$auth.user.sub,
         ...this.form,
         elemnt: focus.id,
         t: getSelectionTypeNumber(focus.type)
       })
+      this.isSendingData = false
       if (res && res.t !== 'error') this.closeDialog()
     },
     validatePhoneNumber({ number, isValid }) {

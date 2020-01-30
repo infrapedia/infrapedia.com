@@ -26,47 +26,50 @@
           </header>
         </div>
         <div class="el-dialog__body">
-          <div class="w-fit-full flex justify-content-space-between">
-            <div class="info-wrapper">
+          <el-row :gutter="20">
+            <el-col :span="12">
               <el-row>
-                <el-col :span="3">
+                <el-col :lg="24">
                   <strong>
                     <p>Issue:</p>
                   </strong>
                 </el-col>
-                <el-col :span="21">
-                  <p>{{ data.issue }}</p>
+                <el-col :lg="24">
+                  <p class="ml5">{{ data.issue }}</p>
                 </el-col>
-                <el-col :span="3">
+                <br />
+                <el-col :lg="3">
                   <strong>
                     <p>rgDate:</p>
                   </strong>
                 </el-col>
-                <el-col :span="21">
+                <el-col :lg="21">
                   <p>{{ data.rgDate }}</p>
                 </el-col>
-                <el-col :span="3">
+                <el-col :lg="3">
                   <strong>
                     <p>Email:</p>
                   </strong>
                 </el-col>
-                <el-col :span="21">
+                <el-col :lg="21">
                   <p>{{ data.email }}</p>
                 </el-col>
-                <el-col :span="3">
+                <el-col :lg="3">
                   <strong>
                     <p>Phone:</p>
                   </strong>
                 </el-col>
-                <el-col :span="21">
+                <el-col :lg="21">
                   <p>{{ data.phone }}</p>
                 </el-col>
               </el-row>
-            </div>
-            <div class="map-elm relative">
-              <div id="map" class="w-fit-full" />
-            </div>
-          </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="map-elm relative">
+                <div id="map" class="w-fit-full" />
+              </div>
+            </el-col>
+          </el-row>
         </div>
       </div>
     </transition>

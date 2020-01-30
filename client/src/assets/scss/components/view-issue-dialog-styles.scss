@@ -7,8 +7,14 @@
 .inner-wrapper {
   top: 25vh;
   width: 40%;
-  @media screen and (max-width: $break-md) {
+  @media screen and (max-width: $break-lg) {
     width: 80%;
+  }
+  @media screen and (max-width: $break-md) {
+    width: 72%;
+  }
+  @media screen and (max-width: $break-sm) {
+    width: 92%;
   }
 }
 
@@ -21,7 +27,7 @@
 }
 
 .map-elm {
-  width: 40%;
+  width: 100%;
 }
 
 .application.dark {

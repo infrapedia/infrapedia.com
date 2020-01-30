@@ -5,7 +5,14 @@ import apiConfig from '../../config/apiConfig'
 var url
 var form
 
-export const createIssue = async ({ t, elemnt, email, phone, user_id }) => {
+export const createIssue = async ({
+  t,
+  elemnt,
+  issue,
+  email,
+  phone,
+  user_id
+}) => {
   url = `${apiConfig.url}/auth/issues/report`
   form = new FormData()
 
@@ -13,6 +20,7 @@ export const createIssue = async ({ t, elemnt, email, phone, user_id }) => {
   form.append('email', email)
   form.append('phone', phone.num)
   form.append('elemnt', elemnt)
+  form.append('issue', issue)
 
   const res = await $axios.post(url, form, {
     withCredentials: true,
