@@ -68,7 +68,7 @@ export default {
       }
       this.loading = false
     },
-    async deleteIssues(_id) {
+    async deleteIssues(id) {
       await this.$confirm(
         'Are you sure you want to delete this organization. This action is irreversible',
         'Please confirm to continue'
@@ -76,7 +76,7 @@ export default {
         .then(async () => {
           await deleteIssue({
             user_id: this.$auth.user.sub,
-            _id
+            id
           }).then(() => this.getIssuesList())
         })
         .catch(() => {})
