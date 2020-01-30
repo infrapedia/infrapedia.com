@@ -20,7 +20,7 @@
     </el-aside>
     <transition name="fade" mode="out-in"><router-view /></transition>
 
-    <i-theme-toggler @click="toggleTheme" />
+    <!-- <i-theme-toggler @click="toggleTheme" /> -->
     <i-footer
       role="contentinfo"
       id="footer-profile"
@@ -36,8 +36,8 @@ import profileLinks from '../config/profileLinks'
 export default {
   components: {
     INavbar: () => import('../components/Navbar'),
-    IFooter: () => import('../components/Footer'),
-    IThemeToggler: () => import('../components/ThemeToggler')
+    IFooter: () => import('../components/Footer')
+    // IThemeToggler: () => import('../components/ThemeToggler')
   },
   data: () => ({
     profileLinks
