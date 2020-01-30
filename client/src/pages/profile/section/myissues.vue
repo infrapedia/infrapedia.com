@@ -10,7 +10,7 @@
       :config="issuesConf"
       :can-view="true"
       :can-create="false"
-      :table-data="issues"
+      :table-data="tableData"
       @view-item="viewSelectedIssue"
       :return-link="returnLink"
       @delete-item="deleteIssues"
@@ -45,7 +45,6 @@ export default {
     ViewIssueDialog: () => import('../../../components/dialogs/ViewIssue')
   },
   data: () => ({
-    issues: [],
     tableData: [],
     loading: false,
     isDialog: false,
@@ -85,6 +84,7 @@ export default {
         page,
         user_id: this.$auth.user.sub
       })
+
       if (res && res.data && res.data.r) {
         this.tableData = res.data.r
       }
