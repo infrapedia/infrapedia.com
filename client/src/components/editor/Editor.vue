@@ -92,10 +92,12 @@ export default {
     async handleFileConverted(fc) {
       if (!fc.features.length) return
 
-      const { map, draw, $store } = this
-
-      await $store.dispatch('editor/setList', fc.features)
-      draw.set(fc)
+      const { draw, $store } = this
+      await draw.set(fc)
+      this.handleZoomToFeature(fc)
+      return await $store.dispatch('editor/setList', fc.features)
+    },
+    handleZoomToFeature(fc) {
       let bbox = []
       let coords = []
 
@@ -121,7 +123,7 @@ export default {
         )
       }
 
-      map.fitBounds(bbox, {
+      this.map.fitBounds(bbox, {
         padding: 90,
         animate: true,
         speed: 1.75,
@@ -209,6 +211,9 @@ export default {
       for (let feat of this.scene.features.list) {
         this.draw.add(feat)
       }
+      return this.handleZoomToFeature({
+        features: JSON.parse(JSON.stringify(this.scene.features.list))
+      })
     },
     handleDrawSelectionChange(e) {
       if (!e.features.length) return

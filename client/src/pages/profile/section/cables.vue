@@ -54,13 +54,13 @@ export default {
       this.loading = false
     },
     handleEditCable(_id) {
-      this.$router.push({
+      return this.$router.push({
         path: '/user/section/create',
         query: { id: 'cable', item: _id }
       })
     },
     handleDeleteCable(_id) {
-      this.$confirm(
+      return this.$confirm(
         'Are you sure you want to delete this Cable. This action is irreversible',
         'Please confirm to continue'
       )

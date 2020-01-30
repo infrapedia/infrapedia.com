@@ -3,7 +3,7 @@
     class="main-wrapper flex row nowrap w-fit-full vph-full pt12 text-center"
     :class="{ dark, light: !dark }"
   >
-    <div class="left el-card p6">
+    <div class="left el-card p6" v-loading="loading">
       <header class="w-fit-full text-left mb8">
         <router-link :to="routeGiver">
           <fa :icon="['fas', 'arrow-left']" />
@@ -49,6 +49,7 @@ export default {
     return {
       form: {},
       mode: 'create',
+      loading: false,
       isSendingData: false,
       isPropertiesDialog: false,
       creationType: this.$route.query.id
@@ -143,6 +144,7 @@ export default {
     async getElementOnEdit(_id) {
       this.mode = 'edit'
       let currentElement = {}
+      this.loading = true
 
       switch (this.creationType) {
         case 'cls':
@@ -159,6 +161,7 @@ export default {
         this.form.geom = this.$store.state.editor.scene.features.list
         bus.$emit(`${EDITOR_LOAD_DRAW}`)
       }
+      this.loading = false
     },
     async viewCurrentCLS(_id) {
       const res = await viewClsOwner({ user_id: this.$auth.user.sub, _id })
