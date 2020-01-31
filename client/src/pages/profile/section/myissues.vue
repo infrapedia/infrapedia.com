@@ -112,15 +112,15 @@ export default {
     viewedClass({ row }) {
       return row.viewed ? 'light-yellow-bg' : ''
     },
-    async deleteIssues(_id) {
-      await this.$confirm(
+    async deleteIssues(id) {
+      return await this.$confirm(
         'Are you sure you want to delete this reported issue. This action is irreversible',
         'Please confirm to continue'
       )
         .then(async () => {
           await deleteIssue({
             user_id: this.$auth.user.sub,
-            _id
+            id
           }).then(() => this.getMyIssuesList())
         })
         .catch(() => {})
