@@ -38,6 +38,7 @@ import {
   faExclamationTriangle,
   faCloudUploadAlt,
   faBraille,
+  faAdjust,
   faStopCircle
 } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -48,6 +49,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
+  faAdjust,
   faStopCircle,
   faAward,
   faEye,

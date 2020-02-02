@@ -594,6 +594,16 @@
                           </router-link>
                         </el-button>
                       </li>
+                      <li class="w-fit-full h10">
+                        <el-button
+                          type="text"
+                          class="inline-block color-inherit"
+                          @click="toggleDarkMode"
+                        >
+                          <fa :icon="['fas', 'adjust']" class="mr4 ml4" />
+                          Toggle {{ dark ? 'light' : 'dark' }} mode
+                        </el-button>
+                      </li>
                       <li class="w-fit-full h10" @click="logOutUser">
                         <el-button
                           type="text"
@@ -631,6 +641,7 @@ import dataCollection from '../mixins/dataCollection'
 import MobileDrawer from './MobileDrawer.vue'
 import FullScreenSearch from './FullScreenSearch.vue'
 import MobileDrawerProfile from './MobileDrawerProfile.vue'
+import { TOGGLE_DARK } from '../store/actionTypes'
 
 export default {
   name: 'INavbar',
@@ -704,6 +715,9 @@ export default {
     document.removeEventListener('click', this.closeUnwantedOpenMenus)
   },
   methods: {
+    toggleDarkMode() {
+      return this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
+    },
     toggleDrawerVisibility() {
       this.isDrawerOpen = !this.isDrawerOpen
     },
