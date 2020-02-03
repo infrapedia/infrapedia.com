@@ -12,6 +12,7 @@
       :can-view="true"
       @view-item="viewSelectedIssue"
       @delete-item="deleteIssues"
+      :row-classes="['viewed', 'light-yellow-bg']"
     />
 
     <div class="flex w-fit-full align-items-center justify-content-center mt12">
