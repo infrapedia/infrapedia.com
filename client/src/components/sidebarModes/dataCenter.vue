@@ -1,24 +1,43 @@
 <template>
   <div class="pr8 pl8 pt2 pb8">
-    <template>
-      <div v-for="(col, i) in facColumns" :key="i">
+    <div v-for="(col, i) in facColumns" :key="i">
+      <!---- COLLAPSE SECTION STARTS---->
+      <template
+        v-if="
+          col.label.includes('org') ||
+            col.label.includes('networks') ||
+            col.label.includes('cables') ||
+            col.label.includes('cls') ||
+            col.label.includes('address')
+        "
+      >
         <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
-          <template
-            v-if="
-              col.label.includes('org') ||
-                col.label.includes('networks') ||
-                col.label.includes('cables') ||
-                col.label.includes('cls') ||
-                col.label.includes('address')
-            "
-          >
-            <el-divider class="m0 mt2 mb2" />
-            <el-col :span="20" class="p2">
-              <p class="label capitalize">{{ col.label }}</p>
-            </el-col>
-          </template>
-          <template v-else-if="col.label.includes('url')">
-            <el-col :span="20" class="p2">
+          <el-col :span="24">
+            <el-collapse v-model="cableCollapse">
+              <el-collapse-item :title="col.label" :name="i">
+                <div
+                  v-for="(item, index) in info[col.value]"
+                  :key="index + item"
+                  @click="handleSelection(item._id, col.label)"
+                  class="fs-regular text-bold underline-hover cursor-pointer"
+                >
+                  {{ item.name }}
+                  <template v-if="index !== info[col.value].length - 1"
+                    >,</template
+                  >
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+          </el-col>
+        </el-row>
+      </template>
+      <!---- COLLAPSE SECTION END --->
+
+      <!---- VALUES SECTION STARTS---->
+      <template v-else>
+        <el-row :gutter="20">
+          <template v-if="col.label.includes('url')">
+            <el-col :span="24" class="p2">
               <small>
                 <p class="m0 capitalize">
                   More information:
@@ -107,10 +126,13 @@
             </p>
           </el-col>
         </el-row>
-      </div>
-    </template>
+      </template>
+    </div>
+    <!---- VALUES SECTION END ---->
+
     <el-divider />
-    <footer class="p0">
+    <!---- FOOTER SECTION STARTS ----->
+    <footer class="p0 mt12">
       <el-row :gutter="20">
         <el-col :sx="24" :md="12">
           <el-popover
@@ -175,6 +197,7 @@
         </el-col>
       </el-row>
     </footer>
+    <!---- FOOTER SECTION END ----->
   </div>
 </template>
 

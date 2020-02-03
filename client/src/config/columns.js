@@ -42,7 +42,7 @@ export const cablesColumns = [
   // 'terrestrial', // (Bool)
   {
     label: 'capacity tbps',
-    value: 'capacity_tbps',
+    value: 'capacityTBPS',
     showSidebar: true
   },
   {

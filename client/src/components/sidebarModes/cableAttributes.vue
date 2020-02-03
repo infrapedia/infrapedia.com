@@ -1,87 +1,95 @@
 <template>
   <div class="pr8 pl8 pt2 pb8">
     <div v-for="(col, i) in cableColumns" :key="i">
-      <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
-        <!--- Labels ---->
-        <template
-          v-if="
-            col.label.includes('org') ||
-              col.label.includes('cls') ||
-              col.label.includes('networks') ||
-              col.label.includes('fac')
-          "
-        >
-          <el-divider class="m0 mt2 mb2" />
-          <el-col :span="20" class="p2">
+      <!---- COLLAPSE SECTION STARTS---->
+      <template
+        v-if="
+          col.label.includes('org') ||
+            col.label.includes('cls') ||
+            col.label.includes('networks') ||
+            col.label.includes('fac')
+        "
+      >
+        <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
+          <el-col :span="24">
+            <el-collapse v-model="collapse">
+              <el-collapse-item :title="col.label" :name="i">
+                <div
+                  v-for="(item, index) in info[col.value]"
+                  :key="index + item"
+                  @click="handleSelection(item._id, col.label)"
+                  class="fs-regular text-bold underline-hover cursor-pointer"
+                >
+                  {{ item.name }}
+                  <template v-if="index !== info[col.value].length - 1"
+                    >,</template
+                  >
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+          </el-col>
+        </el-row>
+      </template>
+      <!---- COLLAPSE SECTION END --->
+
+      <!---- VALUES SECTION STARTS---->
+      <template v-else>
+        <el-row :gutter="20">
+          <template v-if="col.label.includes('url')">
+            <el-col :span="24" class="pt2 pb2">
+              <small>
+                <p class="capitalize">
+                  More information:
+                </p>
+              </small>
+            </el-col>
+          </template>
+          <el-col :span="10" class="p2" v-else>
             <p class="label capitalize">{{ col.label }}</p>
           </el-col>
-        </template>
-        <template v-else-if="col.label.includes('url')">
-          <el-col :span="20" class="p2">
-            <small>
-              <p class="m0 capitalize">
-                More information:
-              </p>
-            </small>
-          </el-col>
-        </template>
-        <el-col :span="10" class="p2" v-else>
-          <p class="label capitalize">{{ col.label }}</p>
-        </el-col>
-        <!--- Labels END ---->
-
-        <!--- Values ---->
-        <el-col :span="12" class="p2">
-          <template v-if="col.label.toLowerCase().includes('url')">
-            <a
-              class="underline truncate fs-regular mr2"
-              v-for="(url, i) in info[col.value]"
-              :href="url"
-              target="_blank"
-              :key="i"
+          <!--- Values ---->
+          <el-col :span="12" class="p2">
+            <template
+              v-if="
+                col.label.toLowerCase().includes('url') ||
+                  col.label.toLowerCase().includes('web')
+              "
             >
-              {{ url }}
-            </a>
-          </template>
-          <p
-            class="text-bold"
-            v-else-if="col.label.toLowerCase().includes('date')"
-          >
-            {{ convertToYear(info[col.value]) }}
-          </p>
-          <template
-            v-else-if="isArrCol(info[col.value]) && hasLength(info[col.value])"
-          >
-            <div class="w-fit-full mb6">
-              <span
-                v-for="(item, index) in info[col.value]"
-                :key="index + item"
-                @click="handleSelection(item._id, col.label)"
-                class="fs-regular text-bold underline-hover cursor-pointer"
+              <a
+                class="underline truncate fs-regular mr2"
+                v-for="(url, i) in info[col.value]"
+                :href="url"
+                target="_blank"
+                :key="i"
               >
-                {{ item.name }}
-                <template v-if="index !== info[col.value].length - 1"
-                  >,</template
-                >
-              </span>
-            </div>
-          </template>
-          <p
-            class="text-bold"
-            v-else-if="!isArrCol(info[col.value]) && col.label === 'Latency'"
-          >
-            {{ getCableLatency(info[col.value]) }} ms
-          </p>
-          <p class="text-bold" v-else-if="!isArrCol(info[col.value])">
-            {{ info[col.value] }}
-          </p>
-        </el-col>
-        <!--- Values END ---->
-      </el-row>
-      <template v-if="info.notes" v-html="info.notes" />
+                {{ url }}
+              </a>
+            </template>
+            <p
+              class="text-bold"
+              v-else-if="col.label.toLowerCase().includes('date')"
+            >
+              {{ convertToYear(info[col.value]) }}
+            </p>
+            <p
+              class="text-bold"
+              v-else-if="!isArrCol(info[col.value]) && col.label === 'Latency'"
+            >
+              {{ getCableLatency(info[col.value]) }} ms
+            </p>
+            <p class="text-bold" v-else-if="!isArrCol(info[col.value])">
+              {{ info[col.value] }}
+            </p>
+          </el-col>
+          <!--- Values END ---->
+          <div v-if="info.notes" v-html="info.notes" />
+        </el-row>
+      </template>
     </div>
+    <!---- VALUES SECTION END ---->
     <el-divider />
-    <footer class="p0">
+    <!---- FOOTER SECTION STARTS ----->
+    <footer class="p0 mt12">
       <el-row :gutter="20">
         <el-col :xs="24" :sm="12" :md="24" :lg="12">
           <el-popover
@@ -137,7 +145,9 @@
         <el-col :xs="24" :sm="12" :md="24" :lg="12">
           <div
             class="cursor-pointer no-selectable"
-            @click="$emit(`${EDIT_CABLE}`)"
+            @click="
+              $emit(`${EDIT_CABLE}`, { _id: info._id, owner: info.owner })
+            "
           >
             <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
               <fa :icon="['fas', 'pen']" class="sm-icon mt-1" />
@@ -158,6 +168,7 @@
         </el-col>
       </el-row>
     </footer>
+    <!---- FOOTER SECTION END ----->
   </div>
 </template>
 
@@ -188,6 +199,7 @@ export default {
     REPORT_ISSUE,
     CREATE_ALERT,
     convertToYear,
+    collapse: [],
     isMenuOpen: false
   }),
   computed: {
