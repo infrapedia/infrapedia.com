@@ -39,6 +39,7 @@ import {
   faCloudUploadAlt,
   faBraille,
   faAdjust,
+  faAngleDown,
   faStopCircle
 } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -50,6 +51,7 @@ import {
 
 library.add(
   faAdjust,
+  faAngleDown,
   faStopCircle,
   faAward,
   faEye,

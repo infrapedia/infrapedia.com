@@ -23,13 +23,12 @@
     <div
       class="mb24 news-wrapper flex align-items-center justify-content-center row wrap"
     >
-      <el-divider content-position="left">Latest news</el-divider>
-      <header class="p4 text-center mr20">
-        <el-button type="primary" plain class="mt12">
-          View more
-        </el-button>
-      </header>
-      <div class="flex row  wrap p2">
+      <el-divider content-position="left">
+        <h3>
+          Latest news
+        </h3>
+      </el-divider>
+      <div class="flex row  wrap p4">
         <div
           v-for="i in 4"
           class="box w60 h90 mr3 flex align-items-center justify-content-center"
@@ -38,6 +37,9 @@
           {{ i }}
         </div>
       </div>
+      <el-button type="primary" plain class="w80 ml40">
+        View more
+      </el-button>
     </div>
     <!------------- NEWS SECTION ENDS ------------->
     <el-divider />
@@ -47,10 +49,10 @@
       class="join-section p10 mb20 flex align-items-center column justify-content-center"
     >
       <h2 class="title">
-        Unlock Infrapedia. Create a free account today.
+        Join us today. Create a free Infrapedia account.
       </h2>
       <el-button class="mt4 w80" type="primary" @click="joinNow">
-        Join now
+        Open an account
       </el-button>
     </div>
     <!------------- JOIN SECTION ENDS ------------->

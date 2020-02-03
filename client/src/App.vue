@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import DashboardLayout from './layouts/dashboard'
 import ProfileLayout from './layouts/profile'
 import DefaultLayout from './layouts/default'
 import BlogLayout from './layouts/blog'
@@ -29,6 +30,8 @@ export default {
         layout = BlogLayout
       } else if (this.isRecoverPass) {
         layout = NoNav
+      } else if (this.isDashboard) {
+        layout = DashboardLayout
       } else {
         layout = DefaultLayout
       }
@@ -49,6 +52,11 @@ export default {
     },
     isRecoverPass() {
       return this.$route.name === 'change-password'
+    },
+    isDashboard() {
+      return (
+        this.$route.name === 'dashboard' || this.$route.name === 'marketplace'
+      )
     },
     isBlogLayout() {
       return this.$route.name === 'blog'

@@ -13,7 +13,12 @@
     </header>
     <el-divider />
     <el-card shadow="never">
-      <el-table :data="tableData" max-height="700" v-loading="isLoading">
+      <el-table
+        :data="tableData"
+        max-height="700"
+        v-loading="isLoading"
+        :row-class-name="tableRowClassName"
+      >
         <el-table-column :label="col" v-for="(col, i) in columns" :key="i">
           <template slot-scope="scope">
             <div v-if="Array.isArray(scope.row[col]) && scope.row[col].length">
@@ -131,6 +136,10 @@ export default {
       type: Array,
       default: () => ['fas', 'trash']
     },
+    rowClasses: {
+      type: Array,
+      default: () => []
+    },
     returnLink: {
       type: Object,
       default: () => ({
@@ -143,6 +152,12 @@ export default {
     getKeys(arr) {
       if (!arr.length) return []
       return Object.keys(arr[0]).sort()
+    },
+    tableRowClassName({ row }) {
+      if (this.rowClasses.length) {
+        return row[this.rowClasses[0]] ? this.rowClasses[1] : ''
+      }
+      return ''
     },
     handleRoute() {
       return this.config.creation_link

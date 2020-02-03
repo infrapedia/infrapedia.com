@@ -14,6 +14,7 @@
       @view-item="viewSelectedIssue"
       :return-link="returnLink"
       @delete-item="deleteIssues"
+      :row-classes="['viewed', 'light-yellow-bg']"
     />
 
     <div class="flex w-fit-full align-items-center justify-content-center mt12">
