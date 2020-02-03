@@ -527,8 +527,28 @@ input.issues-dialog {
     background-color: $dark-charcoal;
   }
 
+    .el-collapse-item__wrap,
+  .el-collapse-item__header {
+    background-color: $light-charcoal
+  }
+
   .el-input-group__prepend {
     border-color: $dark-charcoal;
+  }
+
+  .el-collapse-item__content,
+  .el-collapse-item__header {
+    color: $white-partial;
+  }
+
+  .el-collapse {
+    border-top: 1px solid $dark-charcoal;
+  }
+
+  .el-collapse,
+  .el-collapse-item__header,
+  .el-collapse-item__wrap {
+    border-bottom: 1px solid $dark-charcoal;
   }
 
   .main-wrapper {

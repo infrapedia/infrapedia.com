@@ -27,11 +27,13 @@ import IFooter from '@/components/Footer'
 import { BUY_CAPACITY, EDIT_CABLE } from '../events/sidebar'
 import {
   BUY_TYPE,
+  TOGGLE_SIDEBAR,
   TOGGLE_BUY_DIALOG,
   TOGGLE_ALERT_DIALOG,
   TOGGLE_ISSUES_DIALOG
 } from '../store/actionTypes'
 import { disableAlert } from '../services/api/alerts'
+import { MAP_FOCUS_ON, CURRENT_SELECTION } from '../store/actionTypes/map'
 
 export default {
   components: {
@@ -53,6 +55,13 @@ export default {
         'https://networkatlas.com/wp-content/uploads/2019/03/privacy-policy.pdf'
     }
   }),
+  beforeCreate() {
+    if (this.$store.state.map.focus) {
+      this.$store.commit(`${CURRENT_SELECTION}`, null)
+      this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
+      this.$store.commit(`${MAP_FOCUS_ON}`, null)
+    }
+  },
   async mounted() {
     if (this.$auth && this.$auth.isAuthenticated) {
       await this.setToken()
@@ -74,7 +83,7 @@ export default {
     },
     async disableCurrentSelectionAlert() {
       const { focus } = this.$store.state.map
-      await disableAlert({
+      return await disableAlert({
         t: focus.type,
         elemnt: focus.id,
         user_id: this.$auth.user.sub
@@ -84,7 +93,7 @@ export default {
       return this.$store.commit(`${TOGGLE_ALERT_DIALOG}`, true)
     },
     handleEditCable() {
-      console.warn('NOT DONE YET')
+      return console.warn('NOT DONE YET')
     }
   }
 }

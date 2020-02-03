@@ -1162,10 +1162,9 @@ export default {
           this.handleFacilitySelection({ id, type: 'fac' })
         }
       }
-    }, 320),
+    }, 1200),
     handleRemoveQueryRouteReplacer() {
-      const { map } = this
-      map.off('render', this.handleBoundsChange)
+      return this.map.off('render', this.handleBoundsChange)
     }
   }
 }

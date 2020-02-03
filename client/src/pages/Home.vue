@@ -70,7 +70,7 @@ export default {
      * @param bool { Boolean } - The current state of the drawing plugin (activated - deactivated)
      */
     handleIsDrawing(bool) {
-      this.$store.commit(`${IS_DRAWING}`, bool)
+      return this.$store.commit(`${IS_DRAWING}`, bool)
     },
     loadDataIfQueryParamsExist: debounce(async function() {
       const {
