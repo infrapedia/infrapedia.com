@@ -319,9 +319,9 @@
                 </div>
               </li>
 
-              <el-divider direction="vertical" class="m0" />
+              <!-- <el-divider direction="vertical" class="m0" /> -->
 
-              <li
+              <!-- <li
                 class="inline-block hidden-sm-and-down relative"
                 data-no-outline="true"
                 role="listitem"
@@ -338,7 +338,7 @@
                     />
                   </a>
                 </div>
-              </li>
+              </li> -->
               <!-- <li class="inline-block relative" role="listitem">
                 <div class="list-item sponsors-menu" aria-haspopup="true">
                   <el-popover
