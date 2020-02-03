@@ -122,7 +122,7 @@ export const netColumns = [
     showTable: true
   },
   {
-    label: 'orgs',
+    label: 'organizations',
     value: 'orgs',
     showSidebar: true,
     showTable: true
