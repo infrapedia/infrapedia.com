@@ -32,7 +32,7 @@
       tabindex="0"
     >
       <fa
-        :icon="['fas', 'user-circle']"
+        :icon="['far', 'hand-point-up']"
         class="icon fs-medium"
         v-if="!isMenuOpen"
       />
@@ -55,6 +55,26 @@
             :class="{ dark }"
           >
             <fa :icon="['fas', 'share-alt']" class="sm-icon" />
+          </el-button>
+        </li>
+        <li role="listitem">
+          <el-button
+            circle
+            class="color-inherit"
+            @click="shareViaWhatsApp"
+            :class="{ dark }"
+          >
+            <fa :icon="['fab', 'whatsapp']" class="sm-icon" />
+          </el-button>
+        </li>
+        <li role="listitem">
+          <el-button
+            circle
+            class="color-inherit"
+            @click="shareViaTelegram"
+            :class="{ dark }"
+          >
+            <fa :icon="['fab', 'telegram-plane']" class="sm-icon" />
           </el-button>
         </li>
       </ul>
@@ -108,6 +128,7 @@ import debounce from '../helpers/debounce'
 import geojsonExtent from 'geojson-extent'
 import { viewNetwork } from '../services/api/networks'
 import { viewOrganization } from '../services/api/organizations'
+import { shareLink } from '../services/api/shortener'
 
 const GEOLOCATION_POINT = 'geolocation-point'
 
@@ -734,12 +755,39 @@ export default {
         this.map.easeTo({ pitch: this.is3D ? 45 : 0, duration: 850 })
       })
     },
-    shareViewLink() {
-      return copyToClipboard(
-        encodeURI(
+    async shareViewLink() {
+      const res = await shareLink({
+        url: encodeURI(
           `${window.location.origin}${this.$route.fullPath}&hasToEase=true`
+        ),
+        user_id: this.$auth.user.sub
+      })
+
+      if (res && res.data && res.data.r) copyToClipboard(res.data.r)
+    },
+    async shareViaWhatsApp() {
+      const res = await shareLink({
+        url: encodeURI(
+          `${window.location.origin}${this.$route.fullPath}&hasToEase=true`
+        ),
+        user_id: this.$auth.user.sub
+      })
+      if (res && res.data && res.data.r) {
+        return copyToClipboard(`https://wa.me/?text=${res.data.r}`)
+      }
+    },
+    async shareViaTelegram() {
+      const res = await shareLink({
+        url: encodeURI(
+          `${window.location.origin}${this.$route.fullPath}&hasToEase=true`
+        ),
+        user_id: this.$auth.user.sub
+      })
+      if (res && res.data && res.data.r) {
+        return copyToClipboard(
+          `https://telegram.me/share/url?url=${res.data.r}`
         )
-      )
+      }
     },
     clearLocation() {
       if (this.trackID) {

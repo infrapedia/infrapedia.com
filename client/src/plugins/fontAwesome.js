@@ -42,15 +42,21 @@ import {
   faAngleDown,
   faStopCircle
 } from '@fortawesome/free-solid-svg-icons'
+import { faHandPointUp } from '@fortawesome/free-regular-svg-icons'
 import {
   faFacebook,
   faTwitter,
   faLinkedin,
-  faInstagram
+  faInstagram,
+  faWhatsapp,
+  faTelegramPlane
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
+  faWhatsapp,
+  faTelegramPlane,
   faAdjust,
+  faHandPointUp,
   faAngleDown,
   faStopCircle,
   faAward,
