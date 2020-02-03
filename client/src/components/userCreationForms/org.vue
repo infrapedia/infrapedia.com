@@ -18,6 +18,9 @@
       <el-form-item label="Name">
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
+      <el-form-item label="Url">
+        <el-input :class="{ dark }" class="w-fit-full" v-model="form.url" />
+      </el-form-item>
       <el-form-item label="Notes">
         <el-input
           :class="{ dark }"

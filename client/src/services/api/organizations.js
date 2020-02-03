@@ -9,12 +9,14 @@ export const createOrganization = async ({
   logo,
   notes,
   address,
+  url,
   user_id
 }) => {
   url = `${apiConfig.url}/auth/organization/add`
 
   form = new FormData()
   form.append('name', name)
+  form.append('url', url)
   form.append('notes', notes)
   form.append('logo', logo)
   if (address.length) {
@@ -39,6 +41,7 @@ export const editOrganization = async ({
   name,
   _id,
   logo,
+  url,
   notes,
   address,
   user_id
@@ -47,6 +50,7 @@ export const editOrganization = async ({
   form = new FormData()
   form.append('_id', _id)
   form.append('name', name)
+  form.append('url', url)
   form.append('notes', notes)
   form.append('logo', logo)
   if (address.length) {
