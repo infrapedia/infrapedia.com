@@ -38,12 +38,12 @@
                   <p class="ml5">{{ data.issue }}</p>
                 </el-col>
                 <br />
-                <el-col :lg="3">
+                <el-col :lg="5">
                   <strong>
                     <p>rgDate:</p>
                   </strong>
                 </el-col>
-                <el-col :lg="21">
+                <el-col :lg="19">
                   <p>{{ data.rgDate }}</p>
                 </el-col>
                 <el-col :lg="3">
@@ -54,12 +54,12 @@
                 <el-col :lg="21">
                   <p>{{ data.email }}</p>
                 </el-col>
-                <el-col :lg="3">
+                <el-col :lg="5">
                   <strong>
                     <p>Phone:</p>
                   </strong>
                 </el-col>
-                <el-col :lg="21">
+                <el-col :lg="19">
                   <p>{{ data.phone }}</p>
                 </el-col>
               </el-row>

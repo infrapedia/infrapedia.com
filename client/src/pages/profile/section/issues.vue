@@ -8,7 +8,9 @@
       :can-edit="false"
       :columns="columns"
       :config="issuesConf"
-      :table-data="issues"
+      :table-data="tableData"
+      :can-view="true"
+      @view-item="viewSelectedIssue"
       @delete-item="deleteIssues"
     />
 
@@ -20,28 +22,39 @@
         :total="totalPages"
       />
     </div>
+    <view-issue-dialog
+      @close="() => (isViewDialog = false)"
+      :is-visible="isViewDialog"
+      :data="issueOnView"
+    />
   </div>
 </template>
 
 <script>
 import TableList from '../../../components/TableList.vue'
-import { deleteIssue, getIssues } from '../../../services/api/issues'
+import { deleteIssue, viewIssue, getIssues } from '../../../services/api/issues'
 
 export default {
   components: {
-    TableList
+    TableList,
+    ViewIssueDialog: () => import('../../../components/dialogs/ViewIssue')
   },
   data: () => ({
-    issues: [],
-    myIssues: [],
+    tableData: [],
     loading: false,
     isDialog: false,
     currentPage: 0,
+    isViewDialog: false,
     mode: 'create',
     issuesConf: {
       title: 'Issues',
       creation_link: '/user/section/issues-reported',
       btn_label: 'View my issues'
+    },
+    issueOnView: {
+      name: '',
+      phone: '',
+      email: ''
     },
     columns: ['name', 'rgDate', 'uDate']
   }),
@@ -64,7 +77,26 @@ export default {
         user_id: this.$auth.user.sub
       })
       if (res && res.data && res.data.r) {
-        this.issues = res.data.r
+        this.tableData = res.data.r
+      }
+      this.loading = false
+    },
+    async viewSelectedIssue(_id) {
+      this.loading = true
+
+      const issue = this.tableData.filter(i => i._id === _id)[0]
+      if (issue) {
+        const res = await viewIssue({
+          elemnt: issue.t,
+          id: issue.idReport,
+          user_id: this.$auth.user.sub
+        })
+        try {
+          this.issueOnView = res.data.r[0]
+          this.isViewDialog = true
+        } catch {
+          // Ignore
+        }
       }
       this.loading = false
     },
