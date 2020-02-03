@@ -16,12 +16,24 @@ import OrgsSection from '../pages/profile/section/organization.vue'
 import MyIssuesSection from '../pages/profile/section/myissues.vue'
 import FacilitiesSection from '../pages/profile/section/facilities.vue'
 import EmailProviders from '../pages/profile/email-providers.vue'
+import MarketPlace from '../pages/marketplace'
+import Dashboard from '../pages/dashboard'
 
 const routes = [
   {
     path: '/',
     name: 'home',
     component: Home
+  },
+  {
+    path: '/marketplace',
+    name: 'marketplace',
+    component: MarketPlace
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard
   },
   {
     path: '/login',

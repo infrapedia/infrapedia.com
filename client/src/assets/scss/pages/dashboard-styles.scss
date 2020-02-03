@@ -1,0 +1,20 @@
+@import '../base/variables';
+
+.main-wrapper {
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.title-wrapper {
+  width: 80rem;
+}
+
+.news-wrapper {
+  .inner-wrapper {
+    width: 80rem;
+  }
+}
+
+.box {
+  border: 1px solid $blue;
+}
