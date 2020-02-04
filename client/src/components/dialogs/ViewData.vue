@@ -11,7 +11,7 @@
         <div class="el-dialog__header">
           <header class="w-fit-full p0 no-selectable">
             <h1 class="inline-block font-semibold fs-xlarge">
-              Viewing issue: {{ data.name }}
+              Viewing data: {{ data.name }}
             </h1>
             <el-button
               class="el-dialog__headerbtn p0"
@@ -75,7 +75,7 @@ import { mapConfig } from '../../config/mapConfig'
 import { formatDate } from '../../helpers/formatDate'
 
 export default {
-  name: 'ViewIssueDialog',
+  name: 'ViewDataDialog',
   props: {
     isVisible: {
       type: Boolean,
@@ -84,13 +84,16 @@ export default {
     data: {
       type: Object,
       required: true
+    },
+    acceptedKeys: {
+      type: Array,
+      required: true
     }
   },
   data: () => ({
     map: null,
     draw: null,
-    tableData: [],
-    acceptedKeys: ['rgDate', 'issue', 'email', 'phone']
+    tableData: []
   }),
   computed: {
     dark() {

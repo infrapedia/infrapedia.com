@@ -12,7 +12,13 @@
         <span class="capitalize">{{ dialogTitle }}</span>
       </h1>
     </header>
-    <el-form :model="form" :rules="formRules" class="pr2 pl2" ref="form">
+    <el-form
+      :model="form"
+      :rules="formRules"
+      class="pr2 pl2"
+      ref="form"
+      v-loading="loading"
+    >
       <el-row :gutter="15">
         <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8">
           <el-form-item label="Company name" prop="company">
@@ -125,13 +131,15 @@
 
 <script>
 import { mapState } from 'vuex'
-// import { buyRequest } from '@/services/api'
 import { getUserData } from '../../services/api/auth'
-import { TOGGLE_BUY_DIALOG, BUY_TYPE } from '@/store/actionTypes'
+import { sendMessage } from '../../services/api/messages'
+import { TOGGLE_BUY_DIALOG, BUY_TYPE } from '../../store/actionTypes'
+import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
 
 export default {
   data: () => ({
     capacities: ['1GB', '10GB', '100GB', 'Others'],
+    loading: false,
     form: {
       company: '',
       email: '',
@@ -182,7 +190,8 @@ export default {
   computed: {
     ...mapState({
       buyType: state => state.buyType,
-      dark: state => state.isDark
+      dark: state => state.isDark,
+      focus: state => state.map.focus
     }),
     isVisible: {
       get() {
@@ -211,7 +220,7 @@ export default {
   watch: {
     isVisible(bool) {
       if (!bool) return
-      this.setUserData()
+      return this.setUserData()
     }
   },
   methods: {
@@ -220,6 +229,7 @@ export default {
       const userData = await getUserData(this.$auth.user.sub)
 
       if (userData) {
+        this.loading = true
         const { user_metadata } = userData
 
         this.form.fullname = user_metadata.name
@@ -237,23 +247,30 @@ export default {
               num: '',
               valid: null
             }
+
+        this.loading = false
       }
     },
     async sendBuyRequest() {
-      await console.warn('NOT DONE YET')
-      // const res = await buyRequest({
-      //   ...this.form,
-      //   type: this.dialogTitle,
-      //   cable: this.$store.state.map.currentSelection.name
-      // })
+      const data = {
+        cable: this.$store.state.map.currentSelection.name,
+        type: this.dialogTitle,
+        ...this.form
+      }
 
-      // if (res && res.status !== 'error') {
-      //   this.$notify({
-      //     type: 'success',
-      //     title: 'Email sent!',
-      //     message: 'You will hear from us in the next few days'
-      //   })
-      this.closeDialog()
+      const res = await sendMessage({
+        email: data.email,
+        phone: data.phonenumber,
+        message: `Hi, ${data.fullname} (${data.email})
+          , you asked to buy an amount of ${data.capacity} for ${data.cable}(${data.type})`,
+        elemnt: this.focus.id,
+        user_id: this.$auth.user.sub,
+        t: getSelectionTypeNumber(this.focus.type)
+      })
+
+      if (res && res.status !== 'error') {
+        this.closeDialog()
+      }
     },
     validatePhoneNumber({ number, isValid }) {
       try {

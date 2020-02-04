@@ -16,7 +16,7 @@
       >
         <fa :icon="['fas', 'cloud-upload-alt']" class="icon upload fs-xlarge" />
         <span class="accent-text fs-regular mt2" @click.stop="clickFileInput">
-          Upload kmz
+          {{ helpText }}
         </span>
         <input ref="file" type="file" class="hidden" @change="selectFile" />
       </div>
@@ -64,6 +64,14 @@ export default {
     creationType: {
       type: String,
       default: () => 'cables'
+    },
+    isRawFile: {
+      type: Boolean,
+      default: () => false
+    },
+    helpText: {
+      type: String,
+      default: () => 'Upload kmz'
     }
   },
   methods: {
@@ -88,6 +96,10 @@ export default {
       this.handleFileReadProcess()
     },
     async handleFileReadProcess() {
+      if (this.isRawFile && this.file.length) {
+        return this.$emit('raw-file', this.file[0])
+      }
+
       this.isUploadingKMZ = true
       this.showAlert = false
       this.loadingText = 'We are loading your file. This will take a moment'

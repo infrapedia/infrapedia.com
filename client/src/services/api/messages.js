@@ -1,13 +1,27 @@
 import $axios from '../axios'
 import apiConfig from '../../config/apiConfig'
+
 // eslint-disable-next-line
 var url
 var form
 
-export const uploadOrgLogo = async ({ logo, user_id }) => {
-  url = `${apiConfig.url}/auth/upload/logo`
+export const sendMessage = async ({
+  user_id,
+  t,
+  elemnt,
+  email,
+  phone,
+  message
+}) => {
+  url = `${apiConfig.url}/auth/message/send`
   form = new FormData()
-  form.append('file', logo)
+
+  form.append('t', t)
+  form.append('email', email)
+  form.append('elemnt', elemnt)
+  form.append('message', message)
+  form.append('phone', phone.num)
+
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
@@ -19,27 +33,25 @@ export const uploadOrgLogo = async ({ logo, user_id }) => {
   return res
 }
 
-export const uploadKmz = async ({ file, user_id }) => {
-  url = `${apiConfig.url}/auth/upload/kmz`
-  form = new FormData()
-  form.append('file', file[0])
-  const res = await $axios.post(url, form, {
+export const getMessages = async ({ page, user_id }) => {
+  url = `${apiConfig.url}/auth/messages/sents?page=${page}`
+
+  const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
       user_id,
-      'Content-Type': 'multipart/form-data',
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
   })
+
   return res
 }
 
-export const kmzLinesToJSON = async ({ link, user_id }) => {
-  url = `${apiConfig.url}/auth/kmz/lines/togeojson`
-  form = new FormData()
-  form.append('link', link)
-  const res = await $axios.post(url, form, {
+export const getMyMessages = async ({ page, user_id }) => {
+  url = `${apiConfig.url}/auth/messages/mymessages?page=${page}`
+
+  const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
       user_id,
@@ -47,14 +59,14 @@ export const kmzLinesToJSON = async ({ link, user_id }) => {
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
   })
+
   return res
 }
 
-export const kmzPointsToJSON = async ({ link, user_id }) => {
-  url = `${apiConfig.url}/auth/kmz/points/togeojson`
-  form = new FormData()
-  form.append('link', link)
-  const res = await $axios.post(url, form, {
+export const viewMessage = async ({ elemnt, id, user_id }) => {
+  url = `${apiConfig.url}/auth/message/view/${elemnt}/${id}`
+
+  const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
       user_id,
@@ -62,17 +74,14 @@ export const kmzPointsToJSON = async ({ link, user_id }) => {
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
   })
+
   return res
 }
 
-export const editElemnt = async ({ file, information, user_id }) => {
-  url = `${apiConfig.url}/auth/elements/foredit`
-  form = new FormData()
+export const deleteMessage = async ({ id, user_id }) => {
+  url = `${apiConfig.url}/auth/message/delete/${id}`
 
-  form.append('file', file)
-  form.append('information', information)
-
-  const res = await $axios.post(url, form, {
+  const res = await $axios.delete(url, {
     withCredentials: true,
     headers: {
       user_id,
@@ -80,5 +89,6 @@ export const editElemnt = async ({ file, information, user_id }) => {
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
   })
+
   return res
 }

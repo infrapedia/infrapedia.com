@@ -24,10 +24,11 @@
         layout="prev, next"
       />
     </div>
-    <view-issue-dialog
+    <view-data-dialog
       @close="() => (isViewDialog = false)"
       :is-visible="isViewDialog"
       :data="issueOnView"
+      :accepted-keys="['rgDate', 'issue', 'email', 'phone']"
     />
   </div>
 </template>
@@ -43,7 +44,7 @@ import TableList from '../../../components/TableList.vue'
 export default {
   components: {
     TableList,
-    ViewIssueDialog: () => import('../../../components/dialogs/ViewIssue')
+    ViewDataDialog: () => import('../../../components/dialogs/ViewData')
   },
   data: () => ({
     tableData: [],

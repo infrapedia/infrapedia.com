@@ -145,9 +145,7 @@
         <el-col :xs="24" :sm="12" :md="24" :lg="12">
           <div
             class="cursor-pointer no-selectable"
-            @click="
-              $emit(`${EDIT_CABLE}`, { _id: info._id, owner: info.owner })
-            "
+            @click="$emit(`${EDIT_CABLE}`, { _id: info._id, owner: info.uuid })"
           >
             <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
               <fa :icon="['fas', 'pen']" class="sm-icon mt-1" />

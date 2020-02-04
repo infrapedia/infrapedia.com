@@ -7,34 +7,39 @@
       :is-loading="loading"
       :can-edit="false"
       :columns="columns"
-      :config="issuesConf"
-      :table-data="tableData"
+      :config="config"
       :can-view="true"
-      @view-item="viewSelectedIssue"
-      @delete-item="deleteIssues"
-      :row-classes="['viewed', 'light-yellow-bg', 'true']"
+      :can-create="false"
+      :table-data="tableData"
+      @view-item="viewSelectedMessage"
+      :return-link="returnLink"
+      @delete-item="deleteMessages"
+      :row-classes="['status', 'light-yellow-bg', 'false']"
     />
 
     <div class="flex w-fit-full align-items-center justify-content-center mt12">
       <el-pagination
-        @current-change="getIssuesList"
+        @current-change="getMyMessagesList"
         :current-page.sync="currentPage"
         layout="prev, next"
-        :total="totalPages"
       />
     </div>
     <view-data-dialog
       @close="() => (isViewDialog = false)"
       :is-visible="isViewDialog"
       :data="issueOnView"
-      :accepted-keys="['rgDate', 'issue', 'email', 'phone']"
+      :accepted-keys="['rgDate', 'message', 'email', 'phone']"
     />
   </div>
 </template>
 
 <script>
+import {
+  deleteMessage,
+  getMyMessages,
+  viewMessage
+} from '../../../services/api/messages'
 import TableList from '../../../components/TableList.vue'
-import { deleteIssue, viewIssue, getIssues } from '../../../services/api/issues'
 
 export default {
   components: {
@@ -46,13 +51,13 @@ export default {
     loading: false,
     isDialog: false,
     currentPage: 0,
-    isViewDialog: false,
     mode: 'create',
-    issuesConf: {
-      title: 'Issues',
-      creation_link: '/user/section/issues-reported',
-      btn_label: 'View my issues'
+    config: {
+      title: 'My messages',
+      creation_link: false,
+      btn_label: false
     },
+    isViewDialog: false,
     issueOnView: {
       name: '',
       phone: '',
@@ -61,40 +66,46 @@ export default {
     columns: [
       { label: 'Name', value: 'name' },
       { label: 'Register date', value: 'rgDate' },
+      { label: 'Type', value: 't' },
+      { label: 'Element status', value: 'elemntStatus' },
       { label: 'Update date', value: 'uDate' }
     ]
   }),
   computed: {
-    totalPages() {
-      return 20
-    },
     dark() {
       return this.$store.state.isDark
+    },
+    returnLink() {
+      return {
+        visible: true,
+        url: '/user/section/messages'
+      }
     }
   },
   async mounted() {
-    await this.getIssuesList()
+    await this.getMyMessagesList()
   },
   methods: {
-    async getIssuesList(page = this.currentPage) {
+    async getMyMessagesList(page = this.currentPage) {
       this.loading = true
-      const res = await getIssues({
+      const res = await getMyMessages({
         page,
         user_id: this.$auth.user.sub
       })
+
       if (res && res.data && res.data.r) {
         this.tableData = res.data.r
       }
       this.loading = false
     },
-    async viewSelectedIssue(_id) {
+    async viewSelectedMessage(_id) {
       this.loading = true
 
       const issue = this.tableData.filter(i => i._id === _id)[0]
       if (issue) {
-        const res = await viewIssue({
+        const res = await viewMessage({
           elemnt: issue.t,
-          id: issue.idReport,
+          id: issue.idMessage,
           user_id: this.$auth.user.sub
         })
         try {
@@ -106,16 +117,19 @@ export default {
       }
       this.loading = false
     },
-    async deleteIssues(id) {
-      await this.$confirm(
-        'Are you sure you want to delete this organization. This action is irreversible',
+    viewedClass({ row }) {
+      return row.viewed ? 'light-yellow-bg' : ''
+    },
+    async deleteMessages(id) {
+      return await this.$confirm(
+        'Are you sure you want to delete this message. This action is irreversible',
         'Please confirm to continue'
       )
         .then(async () => {
-          await deleteIssue({
+          await deleteMessage({
             user_id: this.$auth.user.sub,
             id
-          }).then(() => this.getIssuesList())
+          }).then(() => this.getMyMessagesList())
         })
         .catch(() => {})
     }

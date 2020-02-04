@@ -12,6 +12,11 @@
       <i-buy-dialog />
       <i-issues-dialog />
       <i-alerts-dialog />
+      <i-edit-dialog
+        :is-dialog="openEditDialog"
+        help-text="Upload kmz or geojson"
+        @close="() => (openEditDialog = false)"
+      />
       <user-cables-button />
       <transition name="fade" mode="out-in">
         <router-view />
@@ -27,13 +32,11 @@ import IFooter from '@/components/Footer'
 import { BUY_CAPACITY, EDIT_CABLE } from '../events/sidebar'
 import {
   BUY_TYPE,
-  TOGGLE_SIDEBAR,
   TOGGLE_BUY_DIALOG,
   TOGGLE_ALERT_DIALOG,
   TOGGLE_ISSUES_DIALOG
 } from '../store/actionTypes'
 import { disableAlert } from '../services/api/alerts'
-import { MAP_FOCUS_ON, CURRENT_SELECTION } from '../store/actionTypes/map'
 
 export default {
   components: {
@@ -43,11 +46,13 @@ export default {
     IBuyDialog: () => import('../components/dialogs/BuyDialog'),
     UserCablesButton: () => import('../components/UserCablesButton'),
     IIssuesDialog: () => import('../components/dialogs/IssuesDialog'),
-    IAlertsDialog: () => import('../components/dialogs/AlertsDialog')
+    IAlertsDialog: () => import('../components/dialogs/AlertsDialog'),
+    IEditDialog: () => import('../components/dialogs/EditDialog')
   },
   data: () => ({
     BUY_CAPACITY,
     EDIT_CABLE,
+    openEditDialog: false,
     cc: {
       message:
         'This website uses cookies to improve your experience. Visit our Privacy Policy page for more information about cookies and how we use them.',
@@ -55,13 +60,6 @@ export default {
         'https://networkatlas.com/wp-content/uploads/2019/03/privacy-policy.pdf'
     }
   }),
-  beforeCreate() {
-    if (this.$store.state.map.focus) {
-      this.$store.commit(`${CURRENT_SELECTION}`, null)
-      this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
-      this.$store.commit(`${MAP_FOCUS_ON}`, null)
-    }
-  },
   async mounted() {
     if (this.$auth && this.$auth.isAuthenticated) {
       await this.setToken()
@@ -92,8 +90,12 @@ export default {
     openAlertsDialog() {
       return this.$store.commit(`${TOGGLE_ALERT_DIALOG}`, true)
     },
-    handleEditCable() {
-      return console.warn('NOT DONE YET')
+    async handleEditCable({ _id, owner }) {
+      if (this.$auth && this.$auth.isAuthenticated) {
+        return owner === this.$auth.user.sub
+          ? this.$router.push(`/user/section/create?id=cable&item=${_id}`)
+          : (this.openEditDialog = true)
+      } else return this.$auth.loginWithRedirect()
     }
   }
 }
