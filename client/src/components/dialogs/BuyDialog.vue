@@ -60,14 +60,7 @@
           </el-form-item>
         </el-col>
         <template v-if="dialogTitle !== 'Other'">
-          <el-col
-            v-if="dialogTitle !== 'Datacenter'"
-            :xs="24"
-            :sm="12"
-            :md="12"
-            :lg="12"
-            :xl="12"
-          >
+          <el-col v-if="dialogTitle !== 'Datacenter'" :span="12">
             <el-form-item label="Capacity" prop="capacity">
               <el-select
                 class="w-fit-full"
@@ -105,6 +98,16 @@
             </div>
           </el-col>
         </template>
+        <el-col :span="24">
+          <el-form-item label="Message" prop="message">
+            <el-input
+              type="textarea"
+              rows="4"
+              v-model="form.message"
+              :class="{ dark }"
+            />
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
     <footer class="footer flex wrap justify-content-space-between pr0 pl6">
@@ -146,6 +149,7 @@ export default {
       fullname: '',
       capacity: '',
       totalRack: 0,
+      message: '',
       phonenumber: {
         num: '',
         valid: null
@@ -153,6 +157,7 @@ export default {
     },
     formRules: {
       phonenumber: [],
+      message: [],
       fullname: [
         {
           required: true,
@@ -261,7 +266,10 @@ export default {
       const res = await sendMessage({
         email: data.email,
         phone: data.phonenumber,
-        message: `Hi, ${data.fullname} (${data.email})
+        message:
+          data.message !== ''
+            ? data.message
+            : `Hi, ${data.fullname} (${data.email})
           , you asked to buy an amount of ${data.capacity} for ${data.cable}(${data.type})`,
         elemnt: this.focus.id,
         user_id: this.$auth.user.sub,
@@ -294,6 +302,7 @@ export default {
       this.form = {
         company: '',
         email: '',
+        message: '',
         fullname: '',
         capacity: '',
         totalRack: 0,
