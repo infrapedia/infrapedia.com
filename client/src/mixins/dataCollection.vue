@@ -47,7 +47,7 @@ export default {
       this.$store.commit(`${GET_NETWORKS}`, [])
     },
     async loadPremiumPartners() {
-      if (!this.$store.state.premium.length) await this.getPremiumData()
+      return await this.getPremiumData()
     },
     async handleSubmarineSelection(opensMenu = true) {
       if (opensMenu) {

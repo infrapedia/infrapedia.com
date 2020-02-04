@@ -1,5 +1,4 @@
 import {
-  getPremium,
   getSubsea,
   getDataCenters,
   getIxps,
@@ -11,6 +10,7 @@ import {
   getFacilityPoints,
   searchPlace
 } from '../services/api/data'
+import { getPartners } from '../services/api/organizations'
 import {
   getSearch,
   getSearchByNet,
@@ -82,8 +82,10 @@ export const dataMutations = {
 export const dataActions = {
   // NAVBAR OPTIONS GETTERS
   async getPremiumData({ commit }) {
-    const res = await getPremium()
-    if (res) commit(`${types.GET_PREMIUM_DATA}`, res)
+    const res = await getPartners()
+    if (res && res.data && res.data.r) {
+      commit(`${types.GET_PREMIUM_DATA}`, res.data.r)
+    }
   },
 
   async getSubseaData({ commit }, quantity) {

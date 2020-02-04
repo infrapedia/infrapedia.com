@@ -8,6 +8,7 @@ export const createOrganization = async ({
   name,
   logo,
   notes,
+  link,
   address,
   url,
   user_id
@@ -16,7 +17,7 @@ export const createOrganization = async ({
 
   form = new FormData()
   form.append('name', name)
-  form.append('url', url)
+  form.append('url', link)
   form.append('notes', notes)
   form.append('logo', logo)
   if (address.length) {
@@ -41,8 +42,8 @@ export const editOrganization = async ({
   name,
   _id,
   logo,
-  url,
   notes,
+  link,
   address,
   user_id
 }) => {
@@ -50,7 +51,7 @@ export const editOrganization = async ({
   form = new FormData()
   form.append('_id', _id)
   form.append('name', name)
-  form.append('url', url)
+  form.append('url', link)
   form.append('notes', notes)
   form.append('logo', logo)
   if (address.length) {
@@ -135,5 +136,17 @@ export const searchOrganization = async ({ user_id, s }) => {
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
   })
+  return res
+}
+
+export const getPartners = async () => {
+  url = `${apiConfig.url}/partners`
+  const res = await $axios.get(url)
+  return res
+}
+
+export const getTrustedBy = async () => {
+  url = `${apiConfig.url}/istrusted`
+  const res = await $axios.get(url)
   return res
 }

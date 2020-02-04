@@ -19,7 +19,7 @@
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
       <el-form-item label="Url">
-        <el-input :class="{ dark }" class="w-fit-full" v-model="form.url" />
+        <el-input :class="{ dark }" class="w-fit-full" v-model="form.link" />
       </el-form-item>
       <el-form-item label="Notes">
         <el-input

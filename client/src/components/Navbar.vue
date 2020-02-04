@@ -101,6 +101,7 @@
                   <bottom-sheet
                     :visibility="isDrawerOpen"
                     @close="toggleDrawerVisibility"
+                    @item-selected="handleBeforeLoadItem"
                   />
                 </div>
               </li>

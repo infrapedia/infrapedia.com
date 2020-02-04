@@ -22,7 +22,7 @@
           <template v-for="(item, i) in premium">
             <div
               :key="i"
-              @click="setActiveCable(item, 'partners')"
+              @click="setActiveCable({ id: item._id, option: 'organizations' })"
               class="img-wrapper"
             >
               <el-image :src="item.logo" class="img-sponsor" fit="contain" />
@@ -60,17 +60,9 @@ export default {
     handleCloseSheet() {
       this.isOpen = false
     },
-    setActiveCable(cable, option) {
+    setActiveCable(data) {
       bus.$emit('close-trustedby')
-      this.$emit('item-selected', {
-        option,
-        id:
-          cable.cable_id ||
-          cable.org_id ||
-          cable.fac_id ||
-          cable.ix_id ||
-          cable.net_id
-      })
+      return this.$emit('item-selected', data)
     }
   }
 }

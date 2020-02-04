@@ -50,14 +50,33 @@
           </el-col>
           <el-col :span="12" class="p2">
             <template v-if="col.label.toLowerCase().includes('url')">
+              <template v-if="Array.isArray(info[col.value])">
+                <a
+                  class="text-bold underline truncate mt3 inline-block"
+                  v-for="(url, i) in info[col.value]"
+                  :href="
+                    url.includes('http://') || url.includes('https://')
+                      ? url
+                      : `http://${url}`
+                  "
+                  target="_blank"
+                  :key="i"
+                >
+                  {{ url }}
+                </a>
+              </template>
               <a
+                v-else
                 class="text-bold underline truncate mt3 inline-block"
-                v-for="(url, i) in info[col.value]"
-                :href="url"
+                :href="
+                  info[col.value].includes('http://') ||
+                  info[col.value].includes('https://')
+                    ? info[col.value]
+                    : `http://${info[col.value]}`
+                "
                 target="_blank"
-                :key="i"
               >
-                {{ url }}
+                {{ info[col.value] }}
               </a>
             </template>
             <p

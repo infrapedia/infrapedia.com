@@ -16,11 +16,12 @@
       >
         <h1 class="title w34">Trusted by</h1>
         <div class="sponsors-wrapper">
-          <div class="img-wrapper" v-for="(src, i) in sponsors" :key="i">
+          <div class="img-wrapper" v-for="(img, i) in sponsors" :key="i">
             <el-image
-              :src="src"
+              :src="img.logo"
               fit="scale-down"
               class="img-sponsor w20 h16 no-selectable"
+              @click="loadOrg({ id: img._id, option: 'organizations' })"
             />
           </div>
         </div>
@@ -30,15 +31,17 @@
 </template>
 
 <script>
-import sponsors from '../config/sponsors'
+// import sponsors from '../config/sponsors'
 import { bus } from '../helpers/eventBus'
+import { getTrustedBy } from '../services/api/organizations'
 
 export default {
   data: () => ({
-    sponsors,
+    sponsors: [],
     isOpen: false
   }),
   mounted() {
+    this.loadTrustedBy()
     window.addEventListener('click', this.handleCloseSheet)
     bus.$on('close-trustedby', this.handleCloseSheet)
   },
@@ -46,6 +49,15 @@ export default {
     window.removeEventListener('click', this.handleCloseSheet)
   },
   methods: {
+    async loadTrustedBy() {
+      const res = await getTrustedBy()
+      if (res && res.data && res.data.r) {
+        this.sponsors = res.data.r
+      }
+    },
+    loadOrg(data) {
+      return this.$emit('item-selected', data)
+    },
     toggleVisibility() {
       this.isOpen = !this.isOpen
     },

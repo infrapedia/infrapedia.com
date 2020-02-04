@@ -152,6 +152,12 @@ export const orgsColumns = [
     showSidebar: true
   },
   {
+    label: 'URL',
+    value: 'url',
+    showTable: true,
+    showSidebar: true
+  },
+  {
     label: 'networks',
     value: 'networks',
     showSidebar: true

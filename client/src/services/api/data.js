@@ -17,11 +17,6 @@ export const getFacility = async id => {
 }
 
 // NAVBAR OPTIONS GETTERS
-export const getPremium = async () => {
-  const res = await $axios.get('/org/premium')
-  return res
-}
-
 export const getSubsea = async () => {
   const res = await $axios.get('/cable/subsea')
   return res
