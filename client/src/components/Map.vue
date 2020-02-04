@@ -47,34 +47,14 @@
         <li role="listitem">
           <i-theme-toggler @click="toggleDarkMode" id="toggleTheme" />
         </li>
-        <li role="listitem">
+        <li role="listitem" v-for="(btn, i) in shareLinkButtons" :key="i">
           <el-button
             circle
             class="color-inherit"
-            @click="shareViewLink"
+            @click="() => shareLinkButtonsCallers[btn.func]()"
             :class="{ dark }"
           >
-            <fa :icon="['fas', 'share-alt']" class="sm-icon" />
-          </el-button>
-        </li>
-        <li role="listitem">
-          <el-button
-            circle
-            class="color-inherit"
-            @click="shareViaWhatsApp"
-            :class="{ dark }"
-          >
-            <fa :icon="['fab', 'whatsapp']" class="sm-icon" />
-          </el-button>
-        </li>
-        <li role="listitem">
-          <el-button
-            circle
-            class="color-inherit"
-            @click="shareViaTelegram"
-            :class="{ dark }"
-          >
-            <fa :icon="['fab', 'telegram-plane']" class="sm-icon" />
+            <fa :icon="btn.icon" class="sm-icon" />
           </el-button>
         </li>
       </ul>
@@ -129,6 +109,7 @@ import geojsonExtent from 'geojson-extent'
 import { viewNetwork } from '../services/api/networks'
 import { viewOrganization } from '../services/api/organizations'
 import { shareLink } from '../services/api/shortener'
+import { shareLinkButtons } from '../config/shareLinkButtons'
 
 const GEOLOCATION_POINT = 'geolocation-point'
 
@@ -143,6 +124,14 @@ export default {
     trackID: null,
     mapTooltip: {},
     map: undefined,
+    shareLinkButtons,
+    shareLinkButtonsCallers: {
+      shareViaSkype: null,
+      shareViewLink: null,
+      shareViaTelegram: null,
+      shareViaWhatsApp: null,
+      shareViaFacebook: null
+    },
     isMenuOpen: false,
     isLocationZoomIn: true
   }),
@@ -174,6 +163,14 @@ export default {
 
     if (this.dark) this.map.setStyle(mapConfig.darkBasemap)
     this.handlePreviouslySelected()
+
+    this.shareLinkButtonsCallers = {
+      shareViaSkype: this.shareViaSkype,
+      shareViewLink: this.shareViewLink,
+      shareViaTelegram: this.shareViaTelegram,
+      shareViaWhatsApp: this.shareViaWhatsApp,
+      shareViaFacebook: this.shareViaFacebook
+    }
   },
   methods: {
     ...mapActions({
@@ -786,6 +783,30 @@ export default {
       if (res && res.data && res.data.r) {
         return copyToClipboard(
           `https://telegram.me/share/url?url=${res.data.r}`
+        )
+      }
+    },
+    async shareViaSkype() {
+      const res = await shareLink({
+        url: encodeURI(
+          `${window.location.origin}${this.$route.fullPath}&hasToEase=true`
+        ),
+        user_id: this.$auth.user.sub
+      })
+      if (res && res.data && res.data.r) {
+        return copyToClipboard(`https://web.skype.com/share?url=${res.data.r}`)
+      }
+    },
+    async shareViaFacebook() {
+      const res = await shareLink({
+        url: encodeURI(
+          `${window.location.origin}${this.$route.fullPath}&hasToEase=true`
+        ),
+        user_id: this.$auth.user.sub
+      })
+      if (res && res.data && res.data.r) {
+        return copyToClipboard(
+          `https://www.facebook.com/dialog/send?app_id=654189014992874&link=${res.data.r}`
         )
       }
     },

@@ -49,11 +49,15 @@ import {
   faLinkedin,
   faInstagram,
   faWhatsapp,
+  faSkype,
+  faFacebookSquare,
   faTelegramPlane
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
+  faSkype,
   faWhatsapp,
+  faFacebookSquare,
   faTelegramPlane,
   faAdjust,
   faHandPointUp,
