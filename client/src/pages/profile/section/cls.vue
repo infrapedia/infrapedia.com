@@ -10,6 +10,7 @@
       :table-data="tableData"
       @edit-item="handleEditCLS"
       @delete-item="handleDeleteCLS"
+      :row-classes="['state', 'light-yellow-bg', 'false']"
     />
   </div>
 </template>

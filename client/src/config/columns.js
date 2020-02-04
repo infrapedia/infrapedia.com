@@ -1,6 +1,6 @@
 export const clsColumns = [
   { label: 'Name', value: 'name', showSidebar: true, showTable: true },
-  { label: 'State', value: 'state', showSidebar: true, showTable: true },
+  { label: 'State', value: 'state', showSidebar: true },
   { label: 'Slug', value: 'slug', showSidebar: true, showTable: true },
   { label: 'Geom', value: 'geom' },
   {

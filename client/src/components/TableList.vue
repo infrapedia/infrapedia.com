@@ -176,7 +176,9 @@ export default {
     },
     tableRowClassName({ row }) {
       if (this.rowClasses.length) {
-        return row[this.rowClasses[0]] ? this.rowClasses[1] : ''
+        return String(row[this.rowClasses[0]]) === this.rowClasses[2]
+          ? this.rowClasses[1]
+          : ''
       }
       return ''
     },
