@@ -59,7 +59,7 @@ export default {
       ixps: [],
       cls: []
     },
-    columns: [...netColumns].filter(col => col.showTable).map(col => col.value)
+    columns: [...netColumns].filter(col => col.showTable)
   }),
   computed: {
     dark() {

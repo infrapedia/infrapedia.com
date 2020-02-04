@@ -57,7 +57,11 @@ export default {
       phone: '',
       email: ''
     },
-    columns: ['name', 'rgDate', 'uDate']
+    columns: [
+      { label: 'Name', value: 'name' },
+      { label: 'Register date', value: 'rgDate' },
+      { label: 'Update date', value: 'uDate' }
+    ]
   }),
   computed: {
     totalPages() {

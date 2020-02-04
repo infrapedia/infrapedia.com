@@ -1,25 +1,25 @@
 export const clsColumns = [
-  { label: 'name', value: 'name', showSidebar: true, showTable: true },
-  { label: 'state', value: 'state', showSidebar: true, showTable: true },
-  { label: 'slug', value: 'slug', showSidebar: true, showTable: true },
-  { label: 'geom', value: 'geom', showTable: true },
+  { label: 'Name', value: 'name', showSidebar: true, showTable: true },
+  { label: 'State', value: 'state', showSidebar: true, showTable: true },
+  { label: 'Slug', value: 'slug', showSidebar: true, showTable: true },
+  { label: 'Geom', value: 'geom' },
   {
-    label: 'cables',
+    label: 'Cables',
     value: 'cables',
     showSidebar: true
   },
   {
-    label: 'networks',
+    label: 'Networks',
     value: 'networks',
     showSidebar: true
   },
   {
-    label: 'organizations',
+    label: 'Organizations',
     value: 'organizations',
     showSidebar: true
   },
   {
-    label: 'alerts',
+    label: 'Configured alerts',
     value: 'alerts',
     showTable: true
   }
@@ -27,50 +27,50 @@ export const clsColumns = [
 
 // name, activation time, cls, facilities, operations
 export const cablesColumns = [
-  { label: 'name', value: 'name', showSidebar: true, showTable: true },
+  { label: 'Name', value: 'name', showSidebar: true, showTable: true },
   {
     label: 'Latency',
     value: 'systemLength',
     showSidebar: true
   },
   {
-    label: 'activation date',
+    label: 'Activation date',
     value: 'activationDateTime',
     showSidebar: true,
     showTable: true
   },
   // 'terrestrial', // (Bool)
   {
-    label: 'capacity tbps',
+    label: 'Capacity tbps',
     value: 'capacityTBPS',
     showSidebar: true
   },
   {
-    label: 'fiberPairs',
+    label: 'FiberPairs',
     value: 'fiberPairs',
     showSidebar: true
   },
-  { label: 'notes', value: 'notes' },
-  { label: 'cls', value: 'cls', showSidebar: true },
+  { label: 'Notes', value: 'notes' },
+  { label: 'Cls', value: 'cls', showSidebar: true },
   {
-    label: 'facilities',
+    label: 'Facilities',
     value: 'facilities',
     showSidebar: true,
     showTable: true
   },
   {
-    label: 'networks',
+    label: 'Networks',
     value: 'networks',
     showSidebar: true
   },
   {
-    label: 'organizations',
+    label: 'Organizations',
     value: 'organizations',
     showSidebar: true
   },
-  { label: 'urls', value: 'urls', showSidebar: true },
+  { label: 'Urls', value: 'urls', showSidebar: true },
   {
-    label: 'alerts',
+    label: 'Configured alerts',
     value: 'alerts',
     showTable: true
   }
@@ -94,41 +94,41 @@ export const ixpsColumns = [
 
 export const netColumns = [
   {
-    label: 'name',
+    label: 'Name',
     value: 'name',
     showTable: true
   },
   {
-    label: 'websites',
+    label: 'Websites',
     value: 'websites',
     showSidebar: true,
     showTable: true
   },
   {
-    label: 'facilities',
+    label: 'Facilities',
     value: 'facilities',
     showSidebar: true
   },
   {
-    label: 'cables',
+    label: 'Cables',
     value: 'cables',
     showSidebar: true,
     showTable: true
   },
   {
-    label: 'cls',
+    label: 'Cls',
     value: 'cls',
     showSidebar: true,
     showTable: true
   },
   {
-    label: 'organizations',
+    label: 'Organizations',
     value: 'orgs',
     showSidebar: true,
     showTable: true
   },
   {
-    label: 'alerts',
+    label: 'Configured alerts',
     value: 'alerts',
     showTable: true
   }
@@ -136,17 +136,17 @@ export const netColumns = [
 
 export const orgsColumns = [
   {
-    label: 'name',
+    label: 'Name',
     value: 'name',
     showTable: true
   },
   {
-    label: 'logo',
+    label: 'Logo',
     value: 'logo',
     showTable: true
   },
   {
-    label: 'address',
+    label: 'Address',
     value: 'address',
     showTable: true,
     showSidebar: true
@@ -158,12 +158,12 @@ export const orgsColumns = [
     showSidebar: true
   },
   {
-    label: 'networks',
+    label: 'Networks',
     value: 'networks',
     showSidebar: true
   },
   {
-    label: 'alerts',
+    label: 'Configured alerts',
     value: 'alerts',
     showTable: true
   }

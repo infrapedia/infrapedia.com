@@ -62,7 +62,13 @@ export default {
       phone: '',
       email: ''
     },
-    columns: ['name', 'rgDate', 't', 'elemntStatus', 'uDate']
+    columns: [
+      { label: 'Name', value: 'name' },
+      { label: 'Register date', value: 'rgDate' },
+      { label: 'Type', value: 't' },
+      { label: 'Element status', value: 'elemntStatus' },
+      { label: 'Update date', value: 'uDate' }
+    ]
   }),
   computed: {
     dark() {

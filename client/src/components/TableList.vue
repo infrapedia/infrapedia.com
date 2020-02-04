@@ -19,10 +19,19 @@
         v-loading="isLoading"
         :row-class-name="tableRowClassName"
       >
-        <el-table-column :label="col" v-for="(col, i) in columns" :key="i">
+        <el-table-column
+          v-for="(col, i) in columns"
+          :label="col.label"
+          :key="i"
+        >
           <template slot-scope="scope">
-            <div v-if="Array.isArray(scope.row[col]) && scope.row[col].length">
-              <p v-for="(item, i) in scope.row[col]" :key="i">
+            <div
+              v-if="
+                Array.isArray(scope.row[col.value]) &&
+                  scope.row[col.value].length
+              "
+            >
+              <p v-for="(item, i) in scope.row[col.value]" :key="i">
                 <template v-if="item.city"> City: {{ item.city }} </template>
                 <br />
                 <template v-if="item.street">
@@ -31,7 +40,9 @@
                 <el-tag
                   size="small"
                   v-else-if="
-                    col === 'websites' || col === 'cables' || col === 'cls'
+                    col.value === 'websites' ||
+                      col.value === 'cables' ||
+                      col.value === 'cls'
                   "
                 >
                   {{ item }}
@@ -42,22 +53,27 @@
               </p>
             </div>
             <el-image
-              v-if="col === 'logo'"
+              v-if="col.value === 'logo'"
               fit="cover"
-              :src="scope.row[col]"
+              :src="scope.row[col.value]"
               class="w12 h12 circle"
             />
-            <span v-else-if="col === 'alerts' && !scope.row[col]">
+            <span v-else-if="col.value === 'alerts' && !scope.row[col.value]">
               0
             </span>
             <span
+              v-else-if="col.label.includes('date') && scope.row[col.value]"
+            >
+              {{ formatDate(scope.row[col.value]) }}
+            </span>
+            <span
               v-else-if="
-                !Array.isArray(scope.row[col]) &&
-                  typeof scope.row[col] !== 'object' &&
-                  typeof scope.row[col] !== 'undefined'
+                !Array.isArray(scope.row[col.value]) &&
+                  typeof scope.row[col.value] !== 'object' &&
+                  typeof scope.row[col.value] !== 'undefined'
               "
             >
-              {{ `${scope.row[col]}` }}
+              {{ `${scope.row[col.value]}` }}
             </span>
           </template>
         </el-table-column>
@@ -97,6 +113,8 @@
 </template>
 
 <script>
+import { formatDate } from '../helpers/formatDate'
+
 export default {
   name: 'TableList',
   props: {
@@ -148,6 +166,9 @@ export default {
       })
     }
   },
+  data: () => ({
+    formatDate
+  }),
   methods: {
     getKeys(arr) {
       if (!arr.length) return []

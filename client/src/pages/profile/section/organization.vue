@@ -56,7 +56,7 @@ export default {
       title: 'Organizations',
       btn_label: 'Create organization'
     },
-    columns: [...orgsColumns].filter(col => col.showTable).map(col => col.value)
+    columns: [...orgsColumns].filter(col => col.showTable)
   }),
   computed: {
     dark() {
