@@ -28,46 +28,38 @@
         <div class="el-dialog__body">
           <el-row :gutter="20">
             <el-col :span="12">
-              <el-row>
-                <el-col :lg="24">
-                  <strong>
-                    <p>Issue:</p>
-                  </strong>
-                </el-col>
-                <el-col :lg="24">
-                  <p class="ml5">{{ data.issue }}</p>
-                </el-col>
-                <br />
-                <el-col :lg="5">
-                  <strong>
-                    <p>rgDate:</p>
-                  </strong>
-                </el-col>
-                <el-col :lg="19">
-                  <p>{{ data.rgDate }}</p>
-                </el-col>
-                <el-col :lg="3">
-                  <strong>
-                    <p>Email:</p>
-                  </strong>
-                </el-col>
-                <el-col :lg="21">
-                  <p>{{ data.email }}</p>
-                </el-col>
-                <el-col :lg="5">
-                  <strong>
-                    <p>Phone:</p>
-                  </strong>
-                </el-col>
-                <el-col :lg="19">
-                  <p>{{ data.phone }}</p>
-                </el-col>
-              </el-row>
+              <el-table :data="tableData" stripe>
+                <el-table-column label="Property">
+                  <template slot-scope="scope">
+                    <p
+                      v-if="scope.row.property === 'rgDate'"
+                      class="capitalize"
+                    >
+                      Register Date
+                    </p>
+                    <p v-else class="capitalize">
+                      {{ scope.row.property }}
+                    </p>
+                  </template>
+                </el-table-column>
+                <el-table-column label="Value">
+                  <template slot-scope="scope">
+                    <a
+                      v-if="scope.row.property === 'phone'"
+                      :href="`tel:${scope.row.value}`"
+                      target="_blank"
+                    >
+                      {{ scope.row.value }}
+                    </a>
+                    <p v-else>
+                      {{ scope.row.value }}
+                    </p>
+                  </template>
+                </el-table-column>
+              </el-table>
             </el-col>
             <el-col :span="12">
-              <div class="map-elm relative">
-                <div id="map" class="w-fit-full" />
-              </div>
+              <div id="map" class="w-fit-full" />
             </el-col>
           </el-row>
         </div>
@@ -80,6 +72,7 @@
 import mapboxgl from 'mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import { mapConfig } from '../../config/mapConfig'
+import { formatDate } from '../../helpers/formatDate'
 
 export default {
   name: 'ViewIssueDialog',
@@ -95,7 +88,9 @@ export default {
   },
   data: () => ({
     map: null,
-    draw: null
+    draw: null,
+    tableData: [],
+    acceptedKeys: ['rgDate', 'issue', 'email', 'phone']
   }),
   computed: {
     dark() {
@@ -108,13 +103,41 @@ export default {
   watch: {
     isVisible(bool) {
       if (!bool) return
-
-      this.map = this.createMap()
-      this.addIssueDraw()
-      this.toggleTheme(this.dark)
+      this.handleDataVisualization()
+      setTimeout(() => {
+        this.map.resize()
+      }, 220)
     }
   },
+  mounted() {
+    this.handleDataVisualization()
+  },
   methods: {
+    handleDataVisualization() {
+      if (!this.data || !this.isVisible) return
+
+      this.tableData = Object.keys(this.data)
+        .map(key => {
+          if (this.acceptedKeys.includes(key) && key.includes('Date')) {
+            return {
+              property: key,
+              value: this.data[key] ? formatDate(this.data[key]) : 'no data'
+            }
+          } else {
+            return this.acceptedKeys.includes(key)
+              ? {
+                  property: key,
+                  value: this.data[key] ? this.data[key] : 'no data'
+                }
+              : false
+          }
+        })
+        .filter(d => d)
+
+      if (!this.map) this.map = this.createMap()
+      this.addIssueDraw()
+      return this.toggleTheme(this.dark)
+    },
     createMap() {
       mapboxgl.accessToken = mapConfig.mapToken
 
@@ -135,8 +158,13 @@ export default {
       })
 
       this.draw = draw
+      let vm = this
       map.addControl(scaleCtrl, 'bottom-left')
       map.addControl(draw, 'bottom-left')
+      // eslint-disable-next-line
+      map.on('draw.selectionchange', function(e) {
+        return vm.draw.changeMode('simple_select', {})
+      })
       return map
     },
     addIssueDraw() {
