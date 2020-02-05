@@ -1,8 +1,7 @@
 <template>
   <el-dialog
     :visible="visible"
-    :width="dialogWidth"
-    :custom-class="dark ? 'dark' : ''"
+    :custom-class="dark ? 'custom-dialog dark' : 'custom-dialog'"
     :before-close="handleBeforeClose"
     :close-on-click-modal="false"
   >
@@ -211,9 +210,6 @@ export default {
   computed: {
     uploadLogoHeaders() {
       return { user_id: this.$auth.user.sub }
-    },
-    dialogWidth() {
-      return window.innerWidth < 620 ? '80%' : '30%'
     },
     title() {
       return this.mode === 'create' ? 'Create' : 'Edit'

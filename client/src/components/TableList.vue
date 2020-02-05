@@ -25,13 +25,13 @@
           :key="i"
         >
           <template slot-scope="scope">
-            <div
+            <template
               v-if="
                 Array.isArray(scope.row[col.value]) &&
                   scope.row[col.value].length
               "
             >
-              <p v-for="(item, i) in scope.row[col.value]" :key="i">
+              <div v-for="(item, i) in scope.row[col.value]" :key="i">
                 <template v-if="item.city"> City: {{ item.city }} </template>
                 <br />
                 <template v-if="item.street">
@@ -45,13 +45,13 @@
                       col.value === 'cls'
                   "
                 >
-                  {{ item }}
+                  {{ item.name ? item.name : item }}
                 </el-tag>
                 <template v-else>
                   {{ item }}
                 </template>
-              </p>
-            </div>
+              </div>
+            </template>
             <el-image
               v-if="col.value === 'logo'"
               fit="cover"

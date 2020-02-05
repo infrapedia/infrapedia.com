@@ -1,8 +1,7 @@
 <template>
   <el-dialog
     :visible="visible"
-    :width="dialogWidth"
-    :custom-class="dark ? 'dark' : ''"
+    :custom-class="dark ? 'custom-dialog dark' : 'custom-dialog'"
     :before-close="handleBeforeClose"
     :close-on-click-modal="false"
   >
@@ -262,9 +261,6 @@ export default {
   computed: {
     title() {
       return this.mode === 'create' ? 'Create' : 'Edit'
-    },
-    dialogWidth() {
-      return window.innerWidth < 620 ? '80%' : '30%'
     },
     dark() {
       return this.$store.state.isDark

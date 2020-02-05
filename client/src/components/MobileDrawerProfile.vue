@@ -14,7 +14,7 @@
       :before-close="toggleVisibility"
       :custom-class="drawerClass"
     >
-      <div class="dialog-profile-wrapper">
+      <div>
         <header
           class="h14 pr4 pl4 pb2 flex justify-content-space-between align-items-center"
           :class="{ dark, light: !dark }"

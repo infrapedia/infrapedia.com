@@ -27,7 +27,7 @@
         </div>
         <div class="el-dialog__body">
           <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :xs="24" :lg="12">
               <el-table :data="tableData" stripe>
                 <el-table-column label="Property">
                   <template slot-scope="scope">
@@ -58,7 +58,7 @@
                 </el-table-column>
               </el-table>
             </el-col>
-            <el-col :span="12">
+            <el-col :xs="24" :lg="12">
               <div id="map" class="w-fit-full" />
             </el-col>
           </el-row>

@@ -20,6 +20,9 @@
 
 #map {
   height: 20rem;
+  @media screen and (max-width: $break-sm) {
+    margin-top: 2rem;
+  }
 }
 
 .map-elm {

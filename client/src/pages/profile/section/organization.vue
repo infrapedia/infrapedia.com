@@ -77,6 +77,7 @@ export default {
       })
       if (res && res.data && res.data.r) {
         this.form = res.data.r
+        this.form.link = res.data.r.url
       }
       this.mode = 'edit'
       this.toggleDialog()

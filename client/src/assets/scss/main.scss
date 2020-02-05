@@ -162,6 +162,12 @@ h1 {
 
 .custom-dialog {
   color: inherit;
+  @media screen and (max-width: $break-lg) {
+    width: 30% !important;
+  }
+  @media screen and (max-width: $break-sm) {
+    width: 80% !important;
+  }
   .el-dialog__header {
     padding: 1.2rem 1rem;
   }
@@ -336,7 +342,7 @@ input.issues-dialog {
 .application.dark {
   color: $white-partial;
   .light-yellow-bg {
-    background-color: darken($light-yellow, 14%) !important;
+    background-color: darken($light-yellow, 12%) !important;
   }
   .el-upload__tip {
     color: $white-partial;
