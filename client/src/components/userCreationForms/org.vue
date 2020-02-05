@@ -20,7 +20,7 @@
       <el-form-item label="Url">
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.link" />
       </el-form-item>
-      <el-form-item label="Notes">
+      <!-- <el-form-item label="Notes">
         <el-input
           :class="{ dark }"
           type="textarea"
@@ -28,7 +28,7 @@
           v-model="form.notes"
           :rows="4"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-upload
         accept="image/*.jpg"
         :action="uploadURL"
