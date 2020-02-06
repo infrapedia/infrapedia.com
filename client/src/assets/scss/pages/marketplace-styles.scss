@@ -2,12 +2,11 @@
 
 .hero-section {
   display: grid;
-  height: 80vh;
+  height: 84vh;
   grid-template-rows: repeat(4, 1fr);
   grid-template-columns: repeat(4, 1fr);
 
   .hero-img {
-    filter: blur(1px) contrast(105%) brightness(32%);
     grid-column: 1/5;
     grid-row: 1/5;
     img {
@@ -19,13 +18,16 @@
   .title-wrapper {
     grid-column: 2/4;
     grid-row: 2/4;
+    text-shadow: rgb(70, 68, 68) 1px 0 10px;
+    color: $white-partial;
     .title {
       font-size: 3rem;
-      color: $dark-charcoal;
+      // color: $white-partial;
     }
     .title + p {
       font-size: 1.25rem;
-      color: $dark-charcoal;
+      // color: $white-partial;s
+      // color: $dark-charcoal;
     }
   }
 }
@@ -55,5 +57,9 @@
 }
 
 .search-section {
-  height: 80vh;
+  width: 100vw;
+  min-height: 40vh;
+  .el-row {
+    width: 94rem;
+  }
 }

@@ -4,8 +4,8 @@
       <div class="hero-img w-fit-full">
         <!-- <img
           alt="hero image"
-          src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60"
-          srcset="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60"
+          src="https://images.unsplash.com/photo-1579122549707-440e9edc4a6d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9"
+          srcset="https://images.unsplash.com/photo-1579122549707-440e9edc4a6d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9"
         /> -->
       </div>
       <div class="title-wrapper h24 p8 z-index1">
@@ -27,21 +27,35 @@
         <fa :icon="['fas', 'angle-down']" class="animate-icon" />
       </el-button>
     </div>
-    <div class="search-section flex justify-content-center row wrap mt24 mb30">
-      <div class="left w80 text-center">
-        Left section
-      </div>
-      <el-divider direction="vertical" />
-      <div class="right w80 text-center">
-        right section
-      </div>
+    <div class="search-section flex justify-content-center row no-wrap pt8 pb8">
+      <el-row :gutter="30">
+        <el-col :lg="6">
+          <search-table />
+        </el-col>
+        <el-col :lg="12">
+          <card-view
+            v-for="(data, i) in listingsData"
+            :key="i"
+            :card-data="data"
+          />
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
 
 <script>
+import listingsMokedData from '../mokedData/marketplaceListings'
+
 export default {
-  name: 'MarketPlace'
+  name: 'MarketPlace',
+  components: {
+    cardView: () => import('../components/marketplace/CardView'),
+    searchTable: () => import('../components/marketplace/SearchTable')
+  },
+  data: () => ({
+    listingsData: [...listingsMokedData]
+  })
 }
 </script>
 

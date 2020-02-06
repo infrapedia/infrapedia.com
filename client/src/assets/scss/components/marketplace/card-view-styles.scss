@@ -1,0 +1,42 @@
+@import '../../base/variables';
+
+.el-card {
+  min-width: 28rem;
+  color: $light-charcoal;
+}
+
+.el-card.popular {
+  border-left: 8px solid $blue;
+}
+
+.card-inner-wrapper header {
+  position: relative;
+  width: 100%;
+}
+
+.popular-tag {
+  color: $blue;
+  height: 0.8rem;
+  width: fit-content;
+  border-radius: 12px;
+  border: 1px solid $blue;
+}
+
+.el-card h2 {
+  font-size: 1rem;
+  word-break: break-word;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.light-tag {
+  color: #909399;
+  font-size: 12px;
+}
+
+.icon {
+  color: #909399;
+}
+
+// .right {
+//   right: 1rem;
+// }

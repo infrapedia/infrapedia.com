@@ -27,7 +27,7 @@ export const getUserData = async id => {
   }
   const token = await getAccessToken()
   if (token && token.access_token) {
-    const res = $axios.get(`${url}users/${id}`, {
+    const res = await $axios.get(`${url}users/${id}`, {
       headers: {
         Authorization: 'Bearer ' + token.access_token
       }
