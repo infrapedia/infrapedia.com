@@ -101,7 +101,16 @@
               type="danger"
               class="p2 fs-regular"
               size="small"
-              @click="$emit('delete-item', scope.row._id)"
+              @click="
+                $emit(
+                  'delete-item',
+                  scope.row.idReport
+                    ? scope.row.idReport
+                    : scope.row.idMessage
+                    ? scope.row.idMessage
+                    : scope.row._id
+                )
+              "
             >
               <fa :icon="deleteIcon" />
             </el-button>
