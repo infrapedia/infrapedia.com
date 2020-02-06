@@ -11,6 +11,7 @@ export const createOrganization = async ({
   link,
   address,
   url,
+  information,
   user_id
 }) => {
   url = `${apiConfig.url}/auth/organization/add`
@@ -19,6 +20,7 @@ export const createOrganization = async ({
   form.append('name', name)
   form.append('url', link)
   form.append('notes', notes)
+  form.append('information', information)
   form.append('logo', logo)
   if (address.length) {
     address.forEach((a, i) => {
@@ -45,6 +47,7 @@ export const editOrganization = async ({
   notes,
   link,
   address,
+  information,
   user_id
 }) => {
   url = `${apiConfig.url}/auth/organization/edit`
@@ -54,6 +57,7 @@ export const editOrganization = async ({
   form.append('url', link)
   form.append('notes', notes)
   form.append('logo', logo)
+  form.append('information', information)
   if (address.length) {
     address.forEach((a, i) => {
       form.append(`address[${i}]`, JSON.stringify(a))
