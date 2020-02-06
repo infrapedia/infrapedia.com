@@ -48,7 +48,8 @@ export default {
       name: '',
       logo: '',
       notes: '',
-      address: []
+      address: [],
+      information: ''
     },
     isDialog: false,
     tableConfig: {
@@ -83,7 +84,7 @@ export default {
       this.toggleDialog()
     },
     deleteOrg(_id) {
-      this.$confirm(
+      return this.$confirm(
         'Are you sure you want to delete this organization. This action is irreversible',
         'Please confirm to continue'
       )
@@ -103,7 +104,8 @@ export default {
           name: '',
           logo: '',
           notes: '',
-          address: []
+          address: [],
+          information: ''
         }
       }
     },

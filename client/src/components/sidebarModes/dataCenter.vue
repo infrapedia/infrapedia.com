@@ -4,16 +4,16 @@
       <!---- COLLAPSE SECTION STARTS---->
       <template
         v-if="
-          col.label.includes('org') ||
-            col.label.includes('networks') ||
-            col.label.includes('cables') ||
-            col.label.includes('cls') ||
-            col.label.includes('address')
+          col.label.toLowerCase().includes('org') ||
+            col.label.toLowerCase().includes('networks') ||
+            col.label.toLowerCase().includes('cables') ||
+            col.label.toLowerCase().includes('cls') ||
+            col.label.toLowerCase().includes('address')
         "
       >
         <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
           <el-col :span="24">
-            <el-collapse v-model="cableCollapse">
+            <el-collapse v-model="collapse">
               <el-collapse-item :title="col.label" :name="i">
                 <div
                   v-for="(item, index) in info[col.value]"
@@ -241,6 +241,7 @@ export default {
     REPORT_ISSUE,
     CREATE_ALERT,
     convertToYear,
+    collapse: [],
     buyOptions: ['Transit', 'Backbone', 'Datacenter', 'Other'],
     isMenuOpen: false
   }),

@@ -4,10 +4,10 @@
       <!---- COLLAPSE SECTION STARTS---->
       <template
         v-if="
-          col.label.includes('org') ||
-            col.label.includes('cls') ||
-            col.label.includes('networks') ||
-            col.label.includes('fac')
+          col.label.toLowerCase().includes('org') ||
+            col.label.toLowerCase().includes('cls') ||
+            col.label.toLowerCase().includes('networks') ||
+            col.label.toLowerCase().includes('fac')
         "
       >
         <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
@@ -58,7 +58,11 @@
               <a
                 class="underline truncate fs-regular mr2"
                 v-for="(url, i) in info[col.value]"
-                :href="url"
+                :href="
+                  url.includes('http://') || url.includes('https://')
+                    ? url
+                    : `http://${url}`
+                "
                 target="_blank"
                 :key="i"
               >

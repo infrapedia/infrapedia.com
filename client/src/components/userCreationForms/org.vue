@@ -20,21 +20,22 @@
       <el-form-item label="Url">
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.link" />
       </el-form-item>
-      <!-- <el-form-item label="Notes">
+      <el-form-item label="Information">
         <el-input
           :class="{ dark }"
           type="textarea"
           class="w-fit-full"
-          v-model="form.notes"
+          v-model="form.information"
           :rows="4"
         />
-      </el-form-item> -->
+      </el-form-item>
       <el-upload
         accept="image/*.jpg"
         :action="uploadURL"
         :file-list="fileList"
         :headers="uploadLogoHeaders"
         :on-success="handleLogoUpload"
+        :before-upload="handleUploadProgress"
       >
         <el-button size="small" type="primary">Click to upload</el-button>
         <div slot="tip" class="el-upload__tip mt2 ml1" :class="{ dark }">
@@ -152,24 +153,27 @@
         </el-collapse-transition>
       </el-form-item>
       <el-form-item class="mt12">
-        <el-button
-          :class="{ dark }"
-          type="primary"
-          plain
-          class="mr8 mb2"
-          round
-          @click="sendData"
-        >
-          {{ title }} organization
-        </el-button>
-        <el-button
-          class="w42"
-          :class="{ dark }"
-          round
-          @click="handleBeforeClose"
-        >
-          Cancel
-        </el-button>
+        <div class="w-fit-full flex row wrap">
+          <el-button
+            :class="{ dark }"
+            type="primary"
+            plain
+            :disabled="isUploadingImage"
+            round
+            @click="sendData"
+          >
+            {{ title }} organization
+          </el-button>
+          <el-button
+            :class="{ dark }"
+            plain
+            round
+            class="transparent"
+            @click="handleBeforeClose"
+          >
+            Cancel
+          </el-button>
+        </div>
       </el-form-item>
     </el-form>
   </el-dialog>
@@ -191,7 +195,8 @@ export default {
       zipcode: ''
     },
     tagOnEdit: null,
-    inputVisible: false
+    inputVisible: false,
+    isUploadingImage: false
   }),
   props: {
     visible: {
@@ -222,9 +227,13 @@ export default {
     }
   },
   methods: {
+    handleUploadProgress() {
+      this.isUploadingImage = true
+    },
     handleLogoUpload(res) {
       if (!res.data && res.data.r.length) return
       this.form.logo = res.data.r[0]
+      this.isUploadingImage = false
     },
     sendData() {
       return this.$emit('send-data')
