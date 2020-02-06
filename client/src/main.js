@@ -10,9 +10,13 @@ import VueAxios from './plugins/axios'
 import * as vueTelInput from './plugins/vue-tel-input'
 import { domain, clientId } from './auth/config.json'
 import { Auth0Plugin } from './auth'
+import Vue2TouchEvents from 'vue2-touch-events'
 
 Vue.config.productionTip = false
 Vue.config.errorHandler = (err, vm, info) => appErrorHandler(err, vm, info)
+
+// Install vue2-touch-events
+Vue.use(Vue2TouchEvents)
 
 // Install the authentication plugin here
 Vue.use(Auth0Plugin, {
@@ -27,6 +31,7 @@ Vue.use(Auth0Plugin, {
   }
 })
 
+// Install axios
 Vue.use(VueAxios, {
   baseURL: process.env.VUE_APP_BASE_API,
   timeout: 1000

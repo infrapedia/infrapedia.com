@@ -11,6 +11,7 @@
       <el-card shadow="hover" v-loading="isSidebarLoad">
         <header
           class="header pt10 pr8 pl8 pb10 h12 relative"
+          v-touch="toggleActiveClassOnMobile"
           @click.stop="toggleActiveClassOnMobile"
         >
           <span
@@ -27,6 +28,7 @@
             <h1
               class="inline-block cursor-pointer title font-bold m0 p1 round truncate fs-large underline"
               @click="copyToClip"
+              v-touch="toggleActiveClassOnMobile"
             >
               {{ currentSelection.name }}
             </h1>
@@ -66,6 +68,7 @@ import {
   REPORT_ISSUE,
   CREATE_ALERT
 } from '../events/sidebar'
+import { shareLink } from '../services/api/shortener'
 
 export default {
   name: 'ISidebar',
@@ -173,7 +176,14 @@ export default {
         url = `${window.location.origin}?name=${name}&type=${type}&id=${id}`
       }
 
-      copyToClipboard(encodeURI(`${url}&hasToEase=true`))
+      const res = await shareLink({
+        url,
+        user_id: this.$auth.user.sub
+      })
+      if (res && res.data && res.data.r) {
+        return copyToClipboard(res.data.r)
+      }
+
       setTimeout(() => (this.isBadge = false), 820)
     },
     closeSidebar() {
