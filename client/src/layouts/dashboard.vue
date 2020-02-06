@@ -1,9 +1,9 @@
 <template>
-  <el-container class="vph-full w-fit-full overflow-y-auto">
+  <el-container class="vph-full w-fit-full overflow-y-auto no-overflow-x">
     <el-header
       class="w-fit-full flex justify-content-space-between bottom-shadow"
     >
-      <h1 class="inline-block logo-title hidden-md-and-down">
+      <h1 class="inline-block logo-title">
         <router-link to="/">
           <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
         </router-link>

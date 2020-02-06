@@ -1,0 +1,25 @@
+@import '../../base/variables';
+
+p.blue {
+  color: $blue;
+  font-size: 1rem;
+}
+
+.mk-text {
+  font-size: 0.9rem;
+  &:hover {
+    color: rgb(126, 126, 126);
+  }
+}
+
+.el-input.search {
+  @media screen and (max-width: $break-md) {
+    margin-top: 4rem;
+  }
+  @media screen and (max-width: $break-sm) {
+    width: 88vw;
+  }
+  @media screen and (max-width: $break-xs) {
+    width: 88vw;
+  }
+}

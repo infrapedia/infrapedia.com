@@ -1,7 +1,7 @@
 @import '../../base/variables';
 
 .el-card {
-  min-width: 28rem;
+  width: 60rem;
   color: $light-charcoal;
 }
 
@@ -37,6 +37,31 @@
   color: #909399;
 }
 
-// .right {
-//   right: 1rem;
-// }
+.el-card {
+  .info-wrapper {
+    width: 88%;
+  }
+
+  @media screen and (max-width: 1290px) {
+    width: 44rem;
+    .align-self-end {
+      margin-top: 1rem;
+    }
+  }
+
+  @media screen and (max-width: $break-sm) {
+    min-width: auto;
+    width: 88vw;
+    .align-self-end {
+      margin-top: 1rem;
+    }
+  }
+
+  @media screen and (max-width: $break-xs) {
+    min-width: auto;
+    width: 88vw;
+    .align-self-end {
+      margin-top: 1rem;
+    }
+  }
+}

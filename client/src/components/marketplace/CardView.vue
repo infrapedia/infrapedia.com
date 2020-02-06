@@ -3,26 +3,25 @@
     class="el-card is-hover-shadow cursor-pointer mb4"
     :class="cardData.popular ? 'popular' : ''"
   >
-    <div class="card-inner-wrapper relative p4">
-      <div class="flo-right text-right">
+    <div class="card-inner-wrapper flex row wrap p4">
+      <h2 class="m0 inline-block text-bold truncate info-wrapper">
+        <span
+          v-if="cardData.popular"
+          class="text-bold mr2 popular-tag p1 vertical-align fs-small"
+          :class="{ dark }"
+        >
+          Popular
+        </span>
+        {{ cardData.name }}
+      </h2>
+      <div class="align-self-end">
         <p class="m0 mb2 light-tag">Expires in {{ cardData.expireTime }}</p>
         <p class="light-tag">
-          Views {{ cardData.views > 10 ? cardData.views : 'less than 10' }}
+          <fa :icon="['fas', 'eye']" />
+          {{ cardData.views > 10 ? cardData.views : 'less than 10' }}
         </p>
       </div>
-      <div class="relative">
-        <h2 class="m0 inline-block text-bold truncate vertical-align">
-          <span
-            v-if="cardData.popular"
-            class="text-bold mr2 popular-tag p1 vertical-align fs-small"
-            :class="{ dark }"
-          >
-            Popular
-          </span>
-          {{ cardData.name }}
-        </h2>
-      </div>
-      <div class="mt2">
+      <div class="mt2 info-wrapper">
         <strong class="mr2">
           <fa :icon="['fas', 'map-marker-alt']" class="icon" />
           <p class="inline-block ml1 m0 light-tag">
@@ -36,7 +35,7 @@
           +1 more ...
         </span>
       </div>
-      <div class="mt2">
+      <div class="mt2 info-wrapper">
         <strong class="mr2 ml-1">
           <fa :icon="['fas', 'wrench']" class="icon" />
           <p class="inline-block ml1 m0 light-tag">
@@ -46,6 +45,9 @@
         <el-tag type="info" v-for="(tag, i) in services" :key="i" class="mr2">
           {{ tag }}
         </el-tag>
+        <span type="info" v-if="cardData.services.length > 1" class="light-tag">
+          +1 more ...
+        </span>
       </div>
     </div>
   </div>
@@ -68,7 +70,8 @@ export default {
       return d.splice(0, 2)
     },
     services() {
-      return this.cardData.services
+      const d = [...Array.from(this.cardData.services)]
+      return d.splice(0, 2)
     }
   }
 }

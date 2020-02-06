@@ -2,7 +2,7 @@
 
 .hero-section {
   display: grid;
-  height: 84vh;
+  height: 54vh;
   grid-template-rows: repeat(4, 1fr);
   grid-template-columns: repeat(4, 1fr);
 
@@ -12,7 +12,7 @@
     img {
       width: 100%;
       height: 100%;
-      object-fit: fill;
+      object-fit: cover;
     }
   }
   .title-wrapper {
@@ -37,6 +37,7 @@
   grid-row: 4/5;
   justify-self: center;
   font-size: 22px;
+  color: $white-partial;
   background-color: transparent !important;
   border-color: transparent;
   .animate-icon {
@@ -58,8 +59,36 @@
 
 .search-section {
   width: 100vw;
+  padding: 2rem;
   min-height: 40vh;
-  .el-row {
-    width: 94rem;
+  background-color: rgb(252, 252, 252);
+
+  display: grid;
+  gap: 1.2rem;
+  padding-top: 12rem;
+  justify-content: center;
+  grid-template-columns: repeat(4, 1fr);
+
+  .search-wrapper {
+    grid-column: 2/3;
+  }
+  .card-view-wrapper {
+    grid-column: 3/4;
+  }
+
+  .pagination-wrapper {
+    grid-row: 2/4;
+    grid-column: 3/4;
+    align-self: center;
+  }
+
+  @media screen and (max-width: $break-md) {
+    .card-view-wrapper {
+      grid-column: 2/3;
+      grid-row: 2;
+    }
+  }
+  @media screen and (max-width: 1290px) {
+    padding: 0.4rem;
   }
 }
