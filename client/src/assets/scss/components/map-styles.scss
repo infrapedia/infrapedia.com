@@ -27,14 +27,14 @@
   }
 }
 
-ul[role='group'] {
+ul[role='group']:not(#gooeyList) {
   transition: all $regular-transition;
   height: 2.5rem;
   right: 3rem;
   top: 0;
 
   &.active {
-    width: 18.2rem;
+    width: 6.2rem;
   }
 
   #toggleTheme {
@@ -43,6 +43,20 @@ ul[role='group'] {
     bottom: unset;
     left: unset;
     right: unset;
+  }
+}
+
+.gooey-wrapper {
+  opacity: 0;
+  bottom: 8.8rem;
+  right: 4.6rem;
+  height: fit-content;
+  #gooeyList {
+    height: fit-content;
+    width: fit-content;
+  }
+  &.active {
+    opacity: 1;
   }
 }
 

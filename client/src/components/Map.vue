@@ -47,18 +47,52 @@
         <li role="listitem">
           <i-theme-toggler @click="toggleDarkMode" id="toggleTheme" />
         </li>
-        <li role="listitem" v-for="(btn, i) in shareLinkButtons" :key="i">
+        <li role="listitem">
+          <el-button
+            type="primary"
+            class="w11 h11"
+            circle
+            @click="$refs.gooey.click()"
+          >
+            <fa :icon="['fas', 'share-alt']" />
+          </el-button>
+        </li>
+      </ul>
+    </el-button>
+    <div
+      class="gooey-wrapper z-index1 absolute regular-transition"
+      ref="gooey"
+      @click.stop="activeGooeyMenu"
+      :class="{ active: isActiveGooeyMenu }"
+    >
+      <ul role="group" class="relative regular-transition" id="gooeyList">
+        <li
+          role="listitem"
+          class="mb1"
+          v-for="(btn, i) in shareLinkButtons"
+          :key="i"
+        >
           <el-button
             circle
-            class="color-inherit"
+            class="color-inherit w11 h11"
             @click="() => shareLinkButtonsCallers[btn.func]()"
             :class="{ dark }"
           >
             <fa :icon="btn.icon" class="sm-icon" />
           </el-button>
         </li>
+        <li role="listitem" class="mb1">
+          <el-button
+            circle
+            class="color-inherit w11 h11"
+            @click.stop="activeGooeyMenu"
+            :class="{ dark }"
+          >
+            <fa :icon="['fas', 'times']" class="sm-icon" />
+          </el-button>
+        </li>
       </ul>
-    </el-button>
+    </div>
   </div>
 </template>
 
@@ -125,6 +159,7 @@ export default {
     mapTooltip: {},
     map: undefined,
     shareLinkButtons,
+    isActiveGooeyMenu: false,
     shareLinkButtonsCallers: {
       shareViaSkype: null,
       shareViewLink: null,
@@ -178,6 +213,12 @@ export default {
       changeSidebarMode: 'changeSidebarMode',
       getCurrentSelectionData: 'map/getCurrentSelectionData'
     }),
+    activeGooeyMenu() {
+      this.isActiveGooeyMenu = !this.isActiveGooeyMenu
+      if (this.isActiveGooeyMenu && this.isMenuOpen) {
+        this.isMenuOpen = false
+      }
+    },
     createMap() {
       mapboxgl.accessToken = mapConfig.mapToken
 
@@ -738,6 +779,9 @@ export default {
     },
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen
+      if (this.isMenuOpen && this.isActiveGooeyMenu) {
+        this.isActiveGooeyMenu = false
+      }
     },
     toggleFullScreen() {
       const el = document.querySelector('.application')

@@ -1,7 +1,7 @@
 <template>
   <el-button
     circle
-    class=" absolute w10 h10 flex align-items-center justify-content-center"
+    class=" absolute w11 h11 flex align-items-center justify-content-center"
     id="toggleTheme"
     @click="$emit('click')"
   >
