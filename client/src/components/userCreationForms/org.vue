@@ -73,6 +73,26 @@
               />
             </div>
             <div>
+              <label class="el-input__label" for="country">
+                Country
+              </label>
+              <el-select
+                name="country"
+                v-model="tag.country"
+                class="w-fit-full"
+                :class="{ dark }"
+                placeholder
+                filterable
+              >
+                <el-option
+                  v-for="(opt, i) in countriesList"
+                  :key="i"
+                  :label="opt.name"
+                  :value="opt.name"
+                />
+              </el-select>
+            </div>
+            <div>
               <label class="el-input__label" for="street">
                 Street
               </label>
@@ -181,13 +201,16 @@
 
 <script>
 import apiConfig from '../../config/apiConfig'
+import countriesList from '../../config/countriesList'
 
 export default {
   name: 'OrgForm',
   data: () => ({
     fileList: [],
+    countriesList,
     tag: {
       reference: '',
+      country: '',
       street: '',
       apt: '',
       city: '',
@@ -251,6 +274,7 @@ export default {
       this.tagOnEdit = null
       this.tag = {
         reference: '',
+        country: '',
         street: '',
         apt: '',
         city: '',
