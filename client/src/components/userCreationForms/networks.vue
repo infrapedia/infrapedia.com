@@ -86,7 +86,7 @@
             :label="opt.name"
             :value="opt._id"
           >
-            <div>
+            <div class="truncate" :title="opt.name">
               <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
               {{ opt.name }}
             </div>
@@ -113,7 +113,7 @@
             :label="opt.name"
             :value="opt._id"
           >
-            <div>
+            <div class="truncate" :title="opt.name">
               <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
               {{ opt.name }}
             </div>
@@ -140,7 +140,7 @@
             :label="opt.name"
             :value="opt._id"
           >
-            <div>
+            <div class="truncate" :title="opt.name">
               <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
               {{ opt.name }}
             </div>
@@ -164,7 +164,7 @@
             :label="opt.name"
             :value="opt._id"
           >
-            <div>
+            <div class="truncate" :title="opt.name">
               <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
               {{ opt.name }}
             </div>
@@ -191,7 +191,7 @@
             :label="opt.name"
             :value="opt._id"
           >
-            <div>
+            <div class="truncate" :title="opt.name">
               <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
               {{ opt.name }}
             </div>
