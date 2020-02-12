@@ -100,6 +100,9 @@
           :class="{ dark }"
           collapse-tags
           filterable
+          remote
+          :remote-method="loadFacSearch"
+          :loading="isLoadingFacs"
           class="w-fit-full"
           v-model="form.facilities"
           placeholder
@@ -220,13 +223,11 @@
 </template>
 
 <script>
-import {
-  getOrganizations,
-  searchOrganization
-} from '../../services/api/organizations'
-import { getCables, searchCables } from '../../services/api/cables'
+import { searchOrganization } from '../../services/api/organizations'
+import { searchFacilities } from '../../services/api/facs'
+import { searchCables } from '../../services/api/cables'
 import validateUrl from '../../helpers/validateUrl'
-import { getClss } from '../../services/api/cls'
+import { searchCls } from '../../services/api/cls'
 
 export default {
   name: 'NetworkForm',
@@ -241,8 +242,9 @@ export default {
     isURLValid: null,
     inputVisible: false,
     isLoadingOrg: false,
-    isLoadingCables: false,
-    isLoadingCls: false
+    isLoadingCls: false,
+    isLoadingFacs: false,
+    isLoadingCables: false
   }),
   props: {
     visible: {
@@ -268,7 +270,7 @@ export default {
   },
   watch: {
     visible(bool) {
-      return bool ? this.loadAll() : this.clearAll()
+      return bool ? null : this.clearAll()
     }
   },
   methods: {
@@ -278,11 +280,6 @@ export default {
       this.ixps = []
       this.facs = []
       this.cables = []
-    },
-    async loadAll() {
-      this.loading = true
-      await Promise.all([this.loadOrgs(), this.loadCables(), this.loadCls()])
-      this.loading = false
     },
     sendData() {
       return this.$emit('send-data')
@@ -308,29 +305,20 @@ export default {
     async loadClsSearch(s) {
       if (s === '') return
       this.isLoadingCls = true
-      const res = await searchCables({ user_id: this.$auth.user.sub, s })
+      const res = await searchCls({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
         this.cls = res.data
       }
       this.isLoadingCls = false
     },
-    async loadOrgs() {
-      const res = await getOrganizations({ user_id: this.$auth.user.sub })
-      if (res && res.data && res.data.r) {
-        this.orgs = res.data.r
+    async loadFacSearch(s) {
+      if (s === '') return
+      this.isLoadingCls = true
+      const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.facs = res.data
       }
-    },
-    async loadCls() {
-      const res = await getClss({ user_id: this.$auth.user.sub })
-      if (res && res.data && res.data.r) {
-        this.cls = res.data.r
-      }
-    },
-    async loadCables() {
-      const res = await getCables({ user_id: this.$auth.user.sub })
-      if (res && res.data && res.data.r) {
-        this.cables = res.data.r
-      }
+      this.isLoadingCls = false
     },
     handleBeforeClose() {
       return this.$emit('close')
