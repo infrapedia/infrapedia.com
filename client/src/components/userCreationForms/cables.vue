@@ -152,6 +152,7 @@ import Dragger from '../../components/Dragger'
 import { getClss } from '../../services/api/cls'
 import cableStates from '../../config/cableStates'
 import validateUrl from '../../helpers/validateUrl'
+import { searchFacilities } from '../../services/api/facs'
 
 export default {
   name: 'CableForm',
@@ -210,12 +211,12 @@ export default {
     },
     async loadFacsSearch(s) {
       if (s === '') return
-      this.isLoadingFacs = true
-      // const res = await searchCables({ user_id: this.$auth.user.sub, s })
-      // if (res && res.data) {
-      //   this.cables = res.data
-      // }
-      this.isLoadingFacs = false
+      this.isLoadingCls = true
+      const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.facsList = res.data
+      }
+      this.isLoadingCls = false
     },
     validateURL(url) {
       this.isURLValid = validateUrl(url)

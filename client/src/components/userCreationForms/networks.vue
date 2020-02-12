@@ -147,7 +147,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="Ixps">
+      <!-- <el-form-item label="Ixps">
         <el-select
           multiple
           clearable
@@ -170,7 +170,7 @@
             </div>
           </el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="CLS">
         <el-select
           multiple
@@ -235,7 +235,7 @@ export default {
     tag: '',
     cls: [],
     orgs: [],
-    ixps: [],
+    // ixps: [],
     facs: [],
     cables: [],
     loading: false,
