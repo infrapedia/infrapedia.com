@@ -25,3 +25,13 @@ export const getSearchByOrg = async s => {
   const res = await $axios.get(`${apiConfig.url}/search/field/orgs?s=${s}`)
   return res
 }
+
+export const getSearchByFacility = async s => {
+  const res = await $axios.get(`${apiConfig.url}/facilities/search?s=${s}`)
+  return res
+}
+
+export const getSearchByIxps = async s => {
+  const res = await $axios.get(`${apiConfig.url}/ixps/search?s=${s}`)
+  return res
+}

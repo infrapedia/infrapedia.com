@@ -16,7 +16,9 @@ import {
   getSearchByNet,
   getSearchByCables,
   getSearchByCls,
-  getSearchByOrg
+  getSearchByOrg,
+  getSearchByFacility,
+  getSearchByIxps
 } from '../services/api/search'
 import * as types from './actionTypes'
 import { MAP_BOUNDS, MAP_POINTS } from './actionTypes/map'
@@ -189,6 +191,12 @@ export const dataActions = {
         break
       case 'orgs':
         service = getSearchByOrg
+        break
+      case 'facilities':
+        service = getSearchByFacility
+        break
+      case 'ixps':
+        service = getSearchByIxps
         break
       default:
         service = getSearch

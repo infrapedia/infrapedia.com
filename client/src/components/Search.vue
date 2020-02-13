@@ -106,12 +106,13 @@ import { bus } from '../helpers/eventBus'
 import debounce from '../helpers/debounce'
 import { MAP_BOUNDS } from '../store/actionTypes/map'
 import { FOCUS_ON, SEARCH_SELECTION } from '../events'
+import searchCategories from '../config/searchCategories'
 
 export default {
   data: () => ({
     search: '',
     categories: {
-      list: ['All', 'Cables', 'CLS', 'Networks', 'Orgs'],
+      list: [...searchCategories],
       selected: 'All'
     },
     isFocused: false,

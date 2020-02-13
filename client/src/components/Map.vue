@@ -144,6 +144,7 @@ import { viewNetwork } from '../services/api/networks'
 import { viewOrganization } from '../services/api/organizations'
 import { shareLink } from '../services/api/shortener'
 import { shareLinkButtons } from '../config/shareLinkButtons'
+import { mapStatistics } from '../services/api/map'
 
 const GEOLOCATION_POINT = 'geolocation-point'
 
@@ -386,6 +387,7 @@ export default {
       map.on('draw.update', this.handleDraw)
 
       map.on('render', this.handleBoundsChange)
+      map.on('zoom', this.handleZoomLevelChange)
 
       return map
     },
@@ -507,6 +509,9 @@ export default {
       if (!this.map || !popup) return
       this.map.getCanvas().style.cursor = ''
       popup.remove()
+    },
+    async handleZoomLevelChange() {
+      return await mapStatistics(this.$route.fullPath.split('?')[1])
     },
     async handleBoundsChange() {
       if (!this.map) return
