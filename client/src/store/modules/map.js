@@ -1,5 +1,6 @@
 import { viewCable } from '../../services/api/cables'
 import { viewCls } from '../../services/api/cls'
+import { viewFacility } from '../../services/api/facs'
 
 const state = {
   bounds: [],
@@ -43,6 +44,13 @@ const actions = {
     }
   },
   async getFacilityData({ commit }, data) {
+    const res = await viewFacility(data)
+    if (res && res.data && res.data.r.length) {
+      commit('CURRENT_SELECTION', res.data.r[0])
+    }
+    return res
+  },
+  async getClsData({ commit }, data) {
     const res = await viewCls(data)
     if (res && res.data && res.data.r.length) {
       commit('CURRENT_SELECTION', res.data.r[0])

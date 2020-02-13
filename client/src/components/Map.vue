@@ -211,6 +211,7 @@ export default {
   methods: {
     ...mapActions({
       getFacilityData: 'map/getFacilityData',
+      getClsData: 'map/getClsData',
       changeSidebarMode: 'changeSidebarMode',
       getCurrentSelectionData: 'map/getCurrentSelectionData'
     }),
@@ -751,6 +752,25 @@ export default {
       // Removing cables highlight if any
       this.disableCableHighlight(false)
     },
+    async handleClsSelection({ id, type }) {
+      const data = await this.getClsData({
+        user_id: this.$auth.user.sub,
+        _id: id
+      })
+      this.$store.commit(`${MAP_FOCUS_ON}`, {
+        id,
+        name: data.name,
+        type
+      })
+
+      // Changing the sidebar mode to data_center mode
+      this.changeSidebarMode(1)
+      // this.$store.commit(`${CURRENT_SELECTION}`, data)
+      // Opening the sidebar
+      this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
+      // Removing cables highlight if any
+      this.disableCableHighlight(false)
+    },
     toggleDarkMode() {
       this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
       const style = this.dark ? mapConfig.darkBasemap : mapConfig.default
@@ -1039,11 +1059,11 @@ export default {
         case 'cable':
           await this.handleCableFocus(id)
           break
-        case 'fac':
+        case 'facility':
           await this.handleFacilityFocus({ id, type })
           break
         case 'cls':
-          await this.handleFacilityFocus({ id, type })
+          await this.handleClsFocus({ id, type })
           break
         case 'ixps':
           await this.handleIxpsFocus()
@@ -1098,11 +1118,10 @@ export default {
      * @param id { String } - Building/DataCenter/Dot ID
      */
     async handleFacilityFocus({ id, type }) {
-      const { map, focus, bounds, hasToEase } = this
+      const { map, focus, bounds } = this
 
       await this.handleFacilitySelection({ id, type })
-      if (hasToEase) await this.handleFocusOnEasePoints()
-      else if (focus && bounds && bounds.length) {
+      if (focus && bounds && bounds.length) {
         map.fitBounds(bounds, {
           pan: { duration: 25 },
           animate: true,
@@ -1112,6 +1131,22 @@ export default {
           pitch: 45
         })
       }
+    },
+    async handleClsFocus({ id, type }) {
+      // const { map, focus, bounds, hasToEase } = this
+
+      await this.handleClsSelection({ id, type })
+      await this.handleFocusOnEasePoints()
+      // else if (focus && bounds && bounds.length) {
+      //   map.fitBounds(bounds, {
+      //     pan: { duration: 25 },
+      //     animate: true,
+      //     padding: 20,
+      //     speed: 1.1,
+      //     zoom: 12,
+      //     pitch: 45
+      //   })
+      // }
     },
     async handleIxpsFocus() {
       const { points, map, focus, isMobile, hasToEase } = this

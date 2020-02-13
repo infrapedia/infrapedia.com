@@ -31,7 +31,8 @@ export default {
       getPremiumSelectedFeaturesData: 'getPremiumSelectedFeaturesData',
       getSubseaCableBoundsData: 'getSubseaCableBoundsData',
       getFacilityBoundsData: 'getFacilityBoundsData',
-      getFacilityPointsData: 'getFacilityPointsData'
+      getFacilityPointsData: 'getFacilityPointsData',
+      getClsBoundsData: 'getClsBoundsData'
       // --- Services for retrieving navbar item selection - end ---
     }),
     clearSubsea() {
@@ -137,44 +138,23 @@ export default {
       }
     },
     async handleItemListSelection({ option, id }) {
-      // console.log(option, id)
+      console.log(option, id)
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       switch (option.toLowerCase()) {
         case 'partners':
           await this.handlePremiumPartnerItemSelected(id)
           break
-        case 'submarine':
-          await this.handleSubmarineCableItemSelected(id)
-          break
         case 'ixps':
           await this.handleFacilityItemSelected({ id, type: 'ix' })
           break
-        case 'datacenters':
-          await this.handleDataCenterItemSelected({ id, type: option })
-          break
-        case 'data centers':
-          await this.handleDataCenterItemSelected({ id, type: option })
-          break
         case 'facility':
-          await this.handleDataCenterItemSelected({ id, type: option })
+          await this.handleFacilityItemSelected({ id, type: option })
           break
         case 'cls':
-          await this.handleDataCenterItemSelected({ id, type: option })
-          break
-        case 'fac':
-          await this.handleDataCenterItemSelected({ id, type: option })
-          break
-        case 'ixp':
-          await this.handleFacilityItemSelected({ id, type: 'ix' })
+          await this.handleClsItemSelection({ id, type: option })
           break
         case 'networks':
-          await this.handleNetworkItemSelected(id)
-          break
-        case 'network':
-          await this.handleNetworkItemSelected(id)
-          break
-        case 'net':
           await this.handleNetworkItemSelected(id)
           break
         case 'cable':
@@ -227,11 +207,22 @@ export default {
       })
       bus.$emit(`${FOCUS_ON}`, { id, type: 'cable' })
     },
-    async handleDataCenterItemSelected({ id, type }) {
+    async handleFacilityItemSelected({ id, type }) {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
       await this.getFacilityBoundsData({
+        user_id: this.$auth.user.sub,
+        _id: id
+      })
+
+      bus.$emit(`${FOCUS_ON}`, { id, type })
+    },
+    async handleClsItemSelection({ id, type }) {
+      if (!id) throw { message: 'MISSING ID PARAMETER' }
+
+      // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
+      await this.getClsBoundsData({
         user_id: this.$auth.user.sub,
         _id: id
       })
@@ -245,13 +236,6 @@ export default {
     handleOrgItemSelected(id) {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
       return bus.$emit(`${FOCUS_ON}`, { id, type: 'organizations' })
-    },
-    async handleFacilityItemSelected({ id, type }) {
-      if (!id) throw { message: 'MISSING ID PARAMETER' }
-
-      // RETRIEVING AND SAVING POINTS TO THE STORE
-      await this.getFacilityPointsData({ id, type })
-      bus.$emit(`${FOCUS_ON}`, { id, type })
     }
   }
 }

@@ -5,8 +5,8 @@ import apiConfig from '../../config/apiConfig'
 var url
 // var form
 
-export const searchFacilities = async ({ s, user_id }) => {
-  url = `${apiConfig.url}/auth/facilities/search?s=${s}`
+export const searchIxps = async ({ s, user_id }) => {
+  url = `${apiConfig.url}/auth/ixps/search?s=${s}`
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
@@ -19,8 +19,8 @@ export const searchFacilities = async ({ s, user_id }) => {
   return res
 }
 
-export const viewFacility = async ({ user_id, _id }) => {
-  url = `${apiConfig.url}/auth/facilities/view/${_id}`
+export const viewIxps = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/auth/ixps/view/${_id}`
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
@@ -33,7 +33,7 @@ export const viewFacility = async ({ user_id, _id }) => {
 }
 
 export const viewFacilityBBox = async ({ user_id, _id }) => {
-  url = `${apiConfig.url}/facilities/box/${_id}`
+  url = `${apiConfig.url}/ixps/box/${_id}`
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {

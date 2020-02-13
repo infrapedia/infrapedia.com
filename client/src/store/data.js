@@ -24,6 +24,7 @@ import * as types from './actionTypes'
 import { MAP_BOUNDS, MAP_POINTS } from './actionTypes/map'
 import { viewCableBBox } from '../services/api/cables'
 import { viewClsBBox } from '../services/api/cls'
+import { viewFacilityBBox } from '../services/api/facs'
 
 export const dataMutations = {
   [types.GET_PREMIUM_DATA](state, data) {
@@ -157,10 +158,17 @@ export const dataActions = {
   // ---------------- END ---------------------
 
   // --- NAVBAR DATA CENTERS ITEM SELECTION --- START
-  async getFacilityBoundsData({ commit }, data) {
+  async getClsBoundsData({ commit }, data) {
     const res = await viewClsBBox(data)
     if (res && res.data && res.data.r && res.data.r.length) {
-      // const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
+      const coords = res.data.r[0].coordinates
+      commit(`${MAP_BOUNDS}`, [coords, coords])
+    }
+  },
+
+  async getFacilityBoundsData({ commit }, data) {
+    const res = await viewFacilityBBox(data)
+    if (res && res.data && res.data.r && res.data.r.length) {
       const coords = res.data.r[0].coordinates
       commit(`${MAP_BOUNDS}`, [coords, coords])
     }

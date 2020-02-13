@@ -169,6 +169,7 @@ import {
   configProviders,
   activeEmailProvider
 } from '../../services/api/alerts.js'
+import { providers } from '../../config/emailProviders'
 
 export default {
   data() {
@@ -181,28 +182,7 @@ export default {
       },
       currentEmailProvider: 'None',
       emailProviders: {
-        providers: [
-          {
-            img:
-              'https://cdn.auth0.com/manhattan/versions/1.1118.0/assets/logos/mandrill/mandrill-logo.svg',
-            value: 'mandrill'
-          },
-          {
-            img:
-              'https://cdn.auth0.com/manhattan/versions/1.1118.0/assets/logos/mailgun/mailgun-logo.svg',
-            value: 'mailgun'
-          },
-          {
-            img:
-              'https://cdn.auth0.com/manhattan/versions/1.1118.0/assets/email-providers/smtp.svg',
-            value: 'smtp'
-          },
-          {
-            img:
-              'https://cdn.auth0.com/manhattan/versions/1.1118.0/assets/logos/sendgrid/sendgrid-logo.svg',
-            value: 'sendgrid'
-          }
-        ],
+        providers,
         selected: 'mandrill'
       },
       form: {
