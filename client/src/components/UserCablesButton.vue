@@ -13,6 +13,7 @@
         round
         @click="toggleListVisibility"
         type="primary"
+        id="reference-toggler"
       >
         <fa :icon="['fas', 'bezier-curve']" class="mr1" /> My cables
       </el-button>

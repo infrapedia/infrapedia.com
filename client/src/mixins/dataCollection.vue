@@ -138,6 +138,7 @@ export default {
     },
     async handleItemListSelection({ option, id }) {
       // console.log(option, id)
+      if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       switch (option.toLowerCase()) {
         case 'partners':
