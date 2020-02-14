@@ -25,6 +25,7 @@ import { MAP_BOUNDS, MAP_POINTS } from './actionTypes/map'
 import { viewCableBBox } from '../services/api/cables'
 import { viewClsBBox } from '../services/api/cls'
 import { viewFacilityBBox } from '../services/api/facs'
+import { viewIxpsBBox } from '../services/api/ixps'
 
 export const dataMutations = {
   [types.GET_PREMIUM_DATA](state, data) {
@@ -168,6 +169,14 @@ export const dataActions = {
 
   async getFacilityBoundsData({ commit }, data) {
     const res = await viewFacilityBBox(data)
+    if (res && res.data && res.data.r && res.data.r.length) {
+      const coords = res.data.r[0].coordinates
+      commit(`${MAP_BOUNDS}`, [coords, coords])
+    }
+  },
+
+  async getIxpsBoundsData({ commit }, data) {
+    const res = await viewIxpsBBox(data)
     if (res && res.data && res.data.r && res.data.r.length) {
       const coords = res.data.r[0].coordinates
       commit(`${MAP_BOUNDS}`, [coords, coords])

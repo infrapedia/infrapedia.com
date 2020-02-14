@@ -1,5 +1,6 @@
-import { viewCable } from '../../services/api/cables'
 import { viewCls } from '../../services/api/cls'
+import { viewIxps } from '../../services/api/ixps'
+import { viewCable } from '../../services/api/cables'
 import { viewFacility } from '../../services/api/facs'
 
 const state = {
@@ -37,7 +38,7 @@ const mutations = {
 }
 
 const actions = {
-  async getCurrentSelectionData({ commit }, data) {
+  async getCableData({ commit }, data) {
     const res = await viewCable(data)
     if (res && res.data.r && res.data.r.length) {
       commit('CURRENT_SELECTION', res.data.r[0])
@@ -52,6 +53,13 @@ const actions = {
   },
   async getClsData({ commit }, data) {
     const res = await viewCls(data)
+    if (res && res.data && res.data.r.length) {
+      commit('CURRENT_SELECTION', res.data.r[0])
+    }
+    return res
+  },
+  async getIxpsData({ commit }, data) {
+    const res = await viewIxps(data)
     if (res && res.data && res.data.r.length) {
       commit('CURRENT_SELECTION', res.data.r[0])
     }

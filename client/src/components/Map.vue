@@ -139,7 +139,6 @@ import { mapState, mapActions } from 'vuex'
 import turf from 'turf'
 import currentYear from '../helpers/currentYear'
 import debounce from '../helpers/debounce'
-import geojsonExtent from 'geojson-extent'
 import { viewNetwork } from '../services/api/networks'
 import { viewOrganization } from '../services/api/organizations'
 import { shareLink } from '../services/api/shortener'
@@ -212,8 +211,9 @@ export default {
     ...mapActions({
       getFacilityData: 'map/getFacilityData',
       getClsData: 'map/getClsData',
+      getIxpsData: 'map/getIxpsData',
       changeSidebarMode: 'changeSidebarMode',
-      getCurrentSelectionData: 'map/getCurrentSelectionData'
+      getCableData: 'map/getCableData'
     }),
     activeGooeyMenu() {
       this.isActiveGooeyMenu = !this.isActiveGooeyMenu
@@ -771,6 +771,25 @@ export default {
       // Removing cables highlight if any
       this.disableCableHighlight(false)
     },
+    async handleIxpsSelection({ id, type }) {
+      const data = await this.getIxpsData({
+        user_id: this.$auth.user.sub,
+        _id: id
+      })
+      this.$store.commit(`${MAP_FOCUS_ON}`, {
+        id,
+        name: data.name,
+        type
+      })
+
+      // Changing the sidebar mode to data_center mode
+      this.changeSidebarMode(1)
+      // this.$store.commit(`${CURRENT_SELECTION}`, data)
+      // Opening the sidebar
+      this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
+      // Removing cables highlight if any
+      this.disableCableHighlight(false)
+    },
     toggleDarkMode() {
       this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
       const style = this.dark ? mapConfig.darkBasemap : mapConfig.default
@@ -1053,9 +1072,6 @@ export default {
         case 'organizations':
           await this.handleOrganizationFocus(id)
           break
-        case 'orgs':
-          await this.handleOrganizationFocus(id)
-          break
         case 'cable':
           await this.handleCableFocus(id)
           break
@@ -1066,13 +1082,10 @@ export default {
           await this.handleClsFocus({ id, type })
           break
         case 'ixps':
-          await this.handleIxpsFocus()
+          await this.handleIxpsFocus({ id, type })
           break
         case 'city':
           await this.handleCityFocus()
-          break
-        case 'net':
-          await this.handleNetworkSelection(id)
           break
         case 'network':
           await this.handleNetworkSelection(id)
@@ -1133,60 +1146,32 @@ export default {
       }
     },
     async handleClsFocus({ id, type }) {
-      // const { map, focus, bounds, hasToEase } = this
+      const { map, focus, bounds } = this
 
       await this.handleClsSelection({ id, type })
-      await this.handleFocusOnEasePoints()
-      // else if (focus && bounds && bounds.length) {
-      //   map.fitBounds(bounds, {
-      //     pan: { duration: 25 },
-      //     animate: true,
-      //     padding: 20,
-      //     speed: 1.1,
-      //     zoom: 12,
-      //     pitch: 45
-      //   })
-      // }
-    },
-    async handleIxpsFocus() {
-      const { points, map, focus, isMobile, hasToEase } = this
-      const fc = { features: points, type: 'FeatureCollection' }
-      const bounds = await geojsonExtent(JSON.parse(JSON.stringify(fc)))
 
-      await this.$store.commit(`${MAP_BOUNDS}`, bounds)
-      // console.log(map.getSource(mapConfig.clusterPts))
-
-      if (points.length > 1) {
-        // console.info('HERE 1')
-        try {
-          await map.getSource(mapConfig.clusterPts).setData(fc)
-          await map.fitBounds(bounds, {
-            padding: isMobile ? 15 : 125,
-            animate: true,
-            maxZoom: 13.5,
-            pan: {
-              duration: 10
-            },
-            speed: 1.1,
-            pitch: 45
-          })
-        } catch (e) {
-          console.error(e)
-          // Ignore
-        }
-      } else if (hasToEase) {
-        // console.info('HERE 2')
-        await this.handleFocusOnEasePoints()
-      } else if (focus && bounds && bounds.length) {
-        // console.info('HERE 3')
-        await map.fitBounds(bounds, {
-          padding: isMobile ? 10 : 35,
+      if (focus && bounds && bounds.length) {
+        map.fitBounds(bounds, {
+          pan: { duration: 25 },
           animate: true,
-          maxZoom: 16.5,
-          pan: {
-            duration: 10
-          },
-          speed: 1.5,
+          padding: 20,
+          speed: 1.1,
+          zoom: 12,
+          pitch: 45
+        })
+      }
+    },
+    async handleIxpsFocus(data) {
+      const { map, focus, bounds } = this
+
+      await this.handleIxpsSelection(data)
+      if (focus && bounds && bounds.length) {
+        map.fitBounds(bounds, {
+          pan: { duration: 25 },
+          animate: true,
+          padding: 20,
+          speed: 1.1,
+          zoom: 12,
           pitch: 45
         })
       }

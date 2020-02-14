@@ -32,7 +32,7 @@ export const viewIxps = async ({ user_id, _id }) => {
   return res
 }
 
-export const viewFacilityBBox = async ({ user_id, _id }) => {
+export const viewIxpsBBox = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/ixps/box/${_id}`
   const res = await $axios.get(url, {
     withCredentials: true,

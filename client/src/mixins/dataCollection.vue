@@ -18,10 +18,10 @@ export default {
   }),
   methods: {
     ...mapActions({
-      getCurrentSelectionData: 'map/getCurrentSelectionData',
       getDataCentersData: 'getDataCentersData',
       getNetworksData: 'getNetworksData',
       getPremiumData: 'getPremiumData',
+      getCableData: 'map/getCableData',
       getSubseaData: 'getSubseaData',
       getIxpsData: 'getIxpsData',
       // --- Services for retrieving navbar item selection - start ---
@@ -31,6 +31,7 @@ export default {
       getPremiumSelectedFeaturesData: 'getPremiumSelectedFeaturesData',
       getSubseaCableBoundsData: 'getSubseaCableBoundsData',
       getFacilityBoundsData: 'getFacilityBoundsData',
+      getIxpsBoundsData: 'getIxpsBoundsData',
       getFacilityPointsData: 'getFacilityPointsData',
       getClsBoundsData: 'getClsBoundsData'
       // --- Services for retrieving navbar item selection - end ---
@@ -120,7 +121,7 @@ export default {
 
       await this.$store.commit(`${TOGGLE_LOADING}`, true)
       try {
-        await this.getCurrentSelectionData({
+        await this.getCableData({
           user_id: this.$auth.user.sub,
           _id: cable_id
         }).then(() => {
@@ -138,7 +139,7 @@ export default {
       }
     },
     async handleItemListSelection({ option, id }) {
-      console.log(option, id)
+      // console.log(option, id)
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       switch (option.toLowerCase()) {
@@ -146,13 +147,13 @@ export default {
           await this.handlePremiumPartnerItemSelected(id)
           break
         case 'ixps':
-          await this.handleFacilityItemSelected({ id, type: 'ix' })
+          await this.handleIxpsItemSelected({ id, type: option })
           break
         case 'facility':
           await this.handleFacilityItemSelected({ id, type: option })
           break
         case 'cls':
-          await this.handleClsItemSelection({ id, type: option })
+          await this.handleClsItemSelected({ id, type: option })
           break
         case 'networks':
           await this.handleNetworkItemSelected(id)
@@ -218,7 +219,18 @@ export default {
 
       bus.$emit(`${FOCUS_ON}`, { id, type })
     },
-    async handleClsItemSelection({ id, type }) {
+    async handleIxpsItemSelected({ id, type }) {
+      if (!id) throw { message: 'MISSING ID PARAMETER' }
+
+      // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
+      await this.getIxpsBoundsData({
+        user_id: this.$auth.user.sub,
+        _id: id
+      })
+
+      bus.$emit(`${FOCUS_ON}`, { id, type })
+    },
+    async handleClsItemSelected({ id, type }) {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN

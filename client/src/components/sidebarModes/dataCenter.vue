@@ -33,8 +33,8 @@
       </template>
       <!---- COLLAPSE SECTION END --->
 
-      <!---- VALUES SECTION STARTS---->
       <template v-else>
+        <!---- LABELS SECTION STARTS ---->
         <el-row :gutter="20">
           <template v-if="col.label.includes('url')">
             <el-col :span="24" class="p2">
@@ -45,9 +45,12 @@
               </small>
             </el-col>
           </template>
-          <el-col :span="10" class="p2" v-else>
+          <el-col :span="10" class="p2" v-else-if="info[col.value]">
             <p class="label capitalize">{{ col.label }}</p>
           </el-col>
+          <!---- LABELS SECTION ENDS ---->
+
+          <!---- VALUES SECTION STARTS---->
           <el-col :span="12" class="p2">
             <template v-if="col.label.toLowerCase().includes('url')">
               <template v-if="Array.isArray(info[col.value])">
@@ -106,6 +109,21 @@
             <template
               class="text-bold"
               v-else-if="
+                !isArrCol(info[col.value]) &&
+                  col.label.toLowerCase().includes('web')
+              "
+            >
+              <a
+                class="text-bold underline truncate mt3 inline-block"
+                :href="info[col.value]"
+                target="_blank"
+              >
+                {{ info[col.value] }}
+              </a>
+            </template>
+            <template
+              class="text-bold"
+              v-else-if="
                 isArrCol(info[col.value]) &&
                   hasLength(info[col.value]) &&
                   col.label.includes('address')
@@ -140,7 +158,10 @@
                 {{ url }}
               </a>
             </template>
-            <p class="text-bold" v-else-if="!isArrCol(info[col.value])">
+            <p
+              class="text-bold"
+              v-else-if="!isArrCol(info[col.value]) && info[col.value] !== ''"
+            >
               {{ info[col.value] }}
             </p>
           </el-col>

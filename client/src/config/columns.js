@@ -78,18 +78,109 @@ export const cablesColumns = [
 ]
 
 export const facsColumns = [
-  'name',
-  'point', // Bool
-  'address',
-  'websites' // (Array)
+  {
+    label: 'Name',
+    value: 'name',
+    showSidebar: true
+  },
+  {
+    label: 'Address',
+    value: 'address',
+    showSidebar: true
+  },
+  {
+    label: 'Websites',
+    value: 'websites',
+    showSidebar: true
+  },
+  {
+    label: 'Start date',
+    value: 'startDate',
+    showSidebar: true
+  },
+  {
+    label: 'Ixps',
+    value: 'ixps',
+    showSidebar: true
+  },
+  {
+    label: 'Type',
+    value: 'building',
+    showSidebar: true
+  },
+  {
+    label: 'Cables',
+    value: 'cables',
+    showSidebar: true
+  },
+  {
+    label: 'Networks',
+    value: 'networks',
+    showSidebar: true
+  },
+  {
+    label: 'Organizations',
+    value: 'organizations',
+    showSidebar: true
+  }
 ]
 
 export const ixpsColumns = [
-  'name',
-  'state', // Bool
-  'slug',
-  'geom',
-  'cables' // (Array)
+  {
+    label: 'Name',
+    value: 'name',
+    showSidebar: true
+  },
+  {
+    label: 'Address',
+    value: 'address',
+    showSidebar: true
+  },
+  {
+    label: 'Media',
+    value: 'media',
+    showSidebar: true
+  },
+  {
+    label: 'Websites',
+    value: 'website',
+    showSidebar: true
+  },
+  {
+    label: 'Policy email',
+    value: 'policyEmail',
+    showSidebar: true
+  },
+  {
+    label: 'Policy phone',
+    value: 'policyPhone',
+    showSidebar: true
+  },
+  {
+    label: 'Tech email',
+    value: 'techEmail',
+    showSidebar: true
+  },
+  {
+    label: 'Tech phone',
+    value: 'techPhone',
+    showSidebar: true
+  },
+  {
+    label: 'Networks',
+    value: 'networks',
+    showSidebar: true
+  },
+  {
+    label: 'Organizations',
+    value: 'organizations',
+    showSidebar: true
+  },
+  {
+    label: 'Facilities',
+    value: 'facilities',
+    showSidebar: true
+  }
 ]
 
 export const netColumns = [
