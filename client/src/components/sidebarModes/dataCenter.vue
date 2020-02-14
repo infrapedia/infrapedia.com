@@ -15,17 +15,30 @@
           <el-col :span="24">
             <el-collapse v-model="collapse">
               <el-collapse-item :title="col.label" :name="i">
-                <div
-                  v-for="(item, index) in info[col.value]"
-                  :key="index + item"
-                  @click="handleSelection(item._id, col.label)"
-                  class="fs-regular text-bold underline-hover cursor-pointer"
-                >
-                  {{ item.name }}
-                  <template v-if="index !== info[col.value].length - 1"
-                    >,</template
+                <template v-if="!col.label.toLowerCase().includes('address')">
+                  <div
+                    v-for="(item, index) in info[col.value]"
+                    :key="index + item"
+                    @click="handleSelection(item._id, col.label)"
+                    class="fs-regular text-bold underline-hover cursor-pointer"
                   >
-                </div>
+                    {{ item.name }}
+                    <template v-if="index !== info[col.value].length - 1"
+                      >,</template
+                    >
+                  </div>
+                </template>
+                <template v-else>
+                  <p
+                    v-for="(item, index) in info[col.value]"
+                    :key="index + item"
+                    class="text-bold"
+                  >
+                    {{ item.street }} {{ item.city ? item.city : '' }},
+                    {{ item.state ? item.state + ', ' : '' }}
+                    {{ item.country ? item.country : '' }}.
+                  </p>
+                </template>
               </el-collapse-item>
             </el-collapse>
           </el-col>
@@ -121,12 +134,12 @@
                 {{ info[col.value] }}
               </a>
             </template>
-            <template
+            <!-- <template
               class="text-bold"
               v-else-if="
                 isArrCol(info[col.value]) &&
                   hasLength(info[col.value]) &&
-                  col.label.includes('address')
+                  col.label.toLowerCase().includes('address')
               "
             >
               <p
@@ -137,7 +150,7 @@
               >
                 {{ item.street }} {{ item.city }}, {{ item.state }}.
               </p>
-            </template>
+            </template> -->
             <p
               class="text-bold status-text"
               :class="{ active: info[col.value] === 'true' }"
