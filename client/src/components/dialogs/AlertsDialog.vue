@@ -42,13 +42,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <template v-if="$route.name.includes('user')">
-      <editor-html />
-    </template>
     <footer class="footer flex wrap justify-content-end pr0 pl6">
-      <!-- <small class="inline-block mt2 mb4">
-        <span class="text-red">*</span> indicates required field
-      </small> -->
       <div>
         <el-button plain type="info" class="mr2" @click="closeDialog"
           >Cancel</el-button
@@ -75,9 +69,6 @@ import { TOGGLE_ALERT_DIALOG } from '../../store/actionTypes'
 import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
 
 export default {
-  components: {
-    'editor-html': () => import('../../components/HtmlEditor.vue')
-  },
   data: () => ({
     loading: false,
     form: {

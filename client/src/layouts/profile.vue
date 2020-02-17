@@ -18,7 +18,12 @@
         </template>
       </ul>
     </el-aside>
-    <transition name="fade" mode="out-in"><router-view /></transition>
+
+    <i-message-dialog />
+
+    <transition name="fade" mode="out-in">
+      <router-view />
+    </transition>
 
     <!-- <i-theme-toggler @click="toggleTheme" /> -->
     <i-footer
@@ -36,7 +41,8 @@ import profileLinks from '../config/profileLinks'
 export default {
   components: {
     INavbar: () => import('../components/Navbar'),
-    IFooter: () => import('../components/Footer')
+    IFooter: () => import('../components/Footer'),
+    IMessageDialog: () => import('../components/dialogs/MessageDialog')
     // IThemeToggler: () => import('../components/ThemeToggler')
   },
   data: () => ({

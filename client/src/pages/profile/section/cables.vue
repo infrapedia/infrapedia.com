@@ -10,6 +10,7 @@
       :table-data="tableData"
       @edit-item="handleEditCable"
       @delete-item="handleDeleteCable"
+      @alert-message="handleSendMessage"
     />
   </div>
 </template>
@@ -18,6 +19,8 @@
 import { cablesColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
 import { getCables, deleteCable } from '../../../services/api/cables'
+import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
+import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
 
 export default {
   name: 'CablesSection',
@@ -43,6 +46,14 @@ export default {
     await this.getCablesList()
   },
   methods: {
+    handleSendMessage(data) {
+      this.$store.commit(`${MAP_FOCUS_ON}`, {
+        id: data._id,
+        name: data.name,
+        type: 'cls'
+      })
+      return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
+    },
     async getCablesList() {
       this.loading = true
       const res = await getCables({ user_id: this.$auth.user.sub })

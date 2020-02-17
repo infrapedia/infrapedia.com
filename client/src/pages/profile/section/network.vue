@@ -11,6 +11,7 @@
       @btn-click="toggleDialog"
       @edit-item="viewNet"
       @delete-item="deleteNet"
+      @alert-message="handleSendMessage"
     />
     <network-form
       :form="form"
@@ -33,6 +34,8 @@ import {
   viewNetworkOwner
 } from '../../../services/api/networks'
 import { netColumns } from '../../../config/columns'
+import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
+import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
 
 export default {
   name: 'CablesSection',
@@ -73,6 +76,14 @@ export default {
     await this.getNetworksList()
   },
   methods: {
+    handleSendMessage(data) {
+      this.$store.commit(`${MAP_FOCUS_ON}`, {
+        id: data._id,
+        name: data.name,
+        type: 'cls'
+      })
+      return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
+    },
     async getNetworksList() {
       try {
         this.loading = true

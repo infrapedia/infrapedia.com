@@ -58,9 +58,18 @@
               :src="scope.row[col.value]"
               class="w12 h12 circle"
             />
-            <span v-else-if="col.value === 'alerts' && !scope.row[col.value]">
-              0
-            </span>
+            <template v-else-if="col.value === 'alerts'">
+              <span v-if="!scope.row[col.value]">
+                0
+              </span>
+              <span
+                v-else
+                @click="handleSendMessage(scope.row)"
+                class="cursor-pointer"
+              >
+                {{ `${scope.row[col.value]}` }}
+              </span>
+            </template>
             <span
               v-else-if="col.label.includes('date') && scope.row[col.value]"
             >
@@ -195,6 +204,9 @@ export default {
       return this.config.creation_link
         ? this.$router.push(this.config.creation_link)
         : this.$emit('btn-click')
+    },
+    handleSendMessage(data) {
+      return this.$emit('alert-message', { ...data })
     }
   }
 }

@@ -10,6 +10,7 @@
       :table-data="tableData"
       @edit-item="handleEditCLS"
       @delete-item="handleDeleteCLS"
+      @alert-message="handleSendMessage"
       :row-classes="['state', 'light-yellow-bg', 'false']"
     />
   </div>
@@ -19,6 +20,8 @@
 import { clsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
 import { getClss, deleteCls } from '../../../services/api/cls'
+import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
+import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
 
 export default {
   name: 'CablesSection',
@@ -44,6 +47,14 @@ export default {
     }
   },
   methods: {
+    handleSendMessage(data) {
+      this.$store.commit(`${MAP_FOCUS_ON}`, {
+        id: data._id,
+        name: data.name,
+        type: 'cls'
+      })
+      return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
+    },
     async getClssList() {
       this.loading = true
       const res = await getClss({ user_id: this.$auth.user.sub })

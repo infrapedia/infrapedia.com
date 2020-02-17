@@ -26,6 +26,7 @@ export default new Vuex.Store({
     isBuyDialog: false,
     isIssueDialog: false,
     isAlertDialog: false,
+    isMessageDialog: false,
     sidebarMode: modes.CABLE_MODE,
     ixps: [],
     premium: [],
@@ -68,6 +69,9 @@ export default new Vuex.Store({
     },
     [types.TOGGLE_ALERT_DIALOG](state, bool) {
       state.isAlertDialog = bool
+    },
+    [types.TOGGLE_MESSAGE_DIALOG](state, bool) {
+      state.isMessageDialog = bool
     },
     [types.BUY_TYPE](state, type) {
       state.buyType = type

@@ -121,3 +121,24 @@ export const getAlerts = async ({ user_id, page }) => {
 
   return res
 }
+
+export const sendEmail = async ({ user_id, id, message, subject }) => {
+  url = `${apiConfig.url}/auth/alerts/provider/send/email`
+
+  form = new FormData()
+
+  form.append('html', message)
+  form.append('idElement', id)
+  form.append('subject', subject)
+
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+
+  return res
+}

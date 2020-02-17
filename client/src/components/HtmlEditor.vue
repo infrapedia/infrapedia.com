@@ -1,6 +1,6 @@
 <template>
   <div class="mb4">
-    <vue-editor v-model="content"></vue-editor>
+    <vue-editor v-model="text" @text-change="handleMessageChange" />
   </div>
 </template>
 
@@ -12,8 +12,24 @@ export default {
     VueEditor
   },
   data: () => ({
-    content: ''
-  })
+    text: ''
+  }),
+  props: {
+    reset: {
+      type: Boolean,
+      required: true
+    }
+  },
+  watch: {
+    reset(bool) {
+      if (bool) this.text = ''
+    }
+  },
+  methods: {
+    handleMessageChange() {
+      return this.$emit('msg-change', this.text)
+    }
+  }
 }
 </script>
 

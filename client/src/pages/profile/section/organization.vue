@@ -11,6 +11,7 @@
       @btn-click="toggleDialog"
       @edit-item="viewOrg"
       @delete-item="deleteOrg"
+      @alert-message="handleSendMessage"
     />
     <org-form
       :form="form"
@@ -33,6 +34,8 @@ import {
   viewOrganizationOwner
 } from '../../../services/api/organizations'
 import { orgsColumns } from '../../../config/columns'
+import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
+import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
 
 export default {
   name: 'CablesSection',
@@ -71,6 +74,14 @@ export default {
     await this.getOrganizationsList()
   },
   methods: {
+    handleSendMessage(data) {
+      this.$store.commit(`${MAP_FOCUS_ON}`, {
+        id: data._id,
+        name: data.name,
+        type: 'cls'
+      })
+      return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
+    },
     async viewOrg(_id) {
       const res = await viewOrganizationOwner({
         user_id: this.$auth.user.sub,
