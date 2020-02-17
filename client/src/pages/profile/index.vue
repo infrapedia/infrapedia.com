@@ -42,6 +42,28 @@
               My activity
             </h2>
           </header>
+          <div class="mt2">
+            <el-row v-for="(data, i) in logsData" :key="i" class="mt2">
+              <el-col :span="12">
+                <strong
+                  ><p class="truncate">
+                    path:
+                  </p></strong
+                >
+                <span class="truncate">
+                  {{ data.path }}
+                </span>
+              </el-col>
+              <el-col :span="12">
+                <p>
+                  Register date:
+                </p>
+                <span class="truncate">
+                  {{ formatDate(data.rgDate) }}
+                </span>
+              </el-col>
+            </el-row>
+          </div>
         </el-card>
       </el-col>
       <el-col :md="24" :lg="14">
@@ -59,12 +81,16 @@
 
 <script>
 import { getUserData } from '../../services/api/auth'
+import { usersLogs } from '../../services/api/users'
+import { formatDate } from '../../helpers/formatDate'
 
 export default {
   name: 'user',
   data: () => ({
     userData: {},
-    loading: false
+    loading: false,
+    logsData: [],
+    formatDate
   }),
   computed: {
     dark() {
@@ -74,8 +100,9 @@ export default {
   async created() {
     await this.setUserData()
   },
-  mounted() {
+  async mounted() {
     if (Object.keys(this.$route.query).length) this.$router.replace('/user')
+    await this.loadLogs()
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
@@ -83,6 +110,12 @@ export default {
     })
   },
   methods: {
+    async loadLogs() {
+      const res = await usersLogs({ user_id: this.$auth.user.sub })
+      if (res && res.t !== 'err' && res.data && res.data.r) {
+        this.logsData = res.data.r
+      }
+    },
     async setUserData() {
       if (!this.$auth || !this.$auth.user) return
       this.loading = true
