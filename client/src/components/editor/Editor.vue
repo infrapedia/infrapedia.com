@@ -44,13 +44,9 @@ export default {
     }
   }),
   props: {
-    isCls: {
-      type: Boolean,
-      default: () => false
-    },
-    isMap: {
-      type: Boolean,
-      default: () => false
+    type: {
+      type: String,
+      default: () => ''
     }
   },
   computed: {
@@ -176,9 +172,8 @@ export default {
 
       this.controls = new EditorControls({
         draw: this.draw,
+        type: this.type,
         scene: this.scene,
-        isCLS: this.isCls,
-        isMap: this.isMap,
         $dispatch: this.$store.dispatch,
         handleEditFeatureProperties: feat => {
           this.dialog.mode = 'edit'

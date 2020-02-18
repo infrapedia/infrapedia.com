@@ -19,10 +19,7 @@
       />
     </div>
     <div class="right w-fit-full">
-      <editor-map
-        :is-cls="creationType === 'cls'"
-        :is-map="creationType === 'map'"
-      />
+      <editor-map :type="creationType" :key="mapKey" />
     </div>
   </div>
 </template>
@@ -52,6 +49,7 @@ export default {
   data() {
     return {
       form: {},
+      mapKey: 0,
       mode: 'create',
       loading: false,
       isSendingData: false,
@@ -63,6 +61,12 @@ export default {
     '$store.state.editor.scene.features.list'(fc) {
       if (this.form.geom && fc.length) {
         this.form.geom = JSON.parse(JSON.stringify(fc))
+      }
+    },
+    '$route.query'(q) {
+      if (q.id !== this.creationType) {
+        this.creationType = q.id
+        this.mapKey += 1
       }
     }
   },
@@ -81,7 +85,7 @@ export default {
           view = MapForm
           break
         default:
-          view = CLSForm
+          view = CableForm
           break
       }
       return view
@@ -91,6 +95,7 @@ export default {
     },
     checkType() {
       let method
+
       if (this.mode === 'edit') {
         switch (this.creationType) {
           case 'cls':

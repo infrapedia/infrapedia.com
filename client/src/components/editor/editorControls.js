@@ -3,17 +3,15 @@ import createControlButton from './createControlButton'
 class EditorControls {
   constructor({
     draw,
-    $dispatch,
+    type,
     scene,
-    isCLS,
-    isMap,
+    $dispatch,
     handleEditFeatureProperties,
     handleBeforeFeatureCreation
   }) {
+    this.type = type
     this.draw = draw
     this.scene = scene
-    this.isCLS = isCLS
-    this.isMap = isMap
     this.$dispatch = $dispatch
     this.resetScene = this.resetScene
     this.updateControls = this.updateControls
@@ -39,7 +37,7 @@ class EditorControls {
         container: this.controlGroup,
         className: 'editor-ctrl editor-line-string',
         title: 'Draw line',
-        visible: this.isCLS || !this.isMap ? false : true,
+        visible: this.type === 'map' || this.type === 'cables' ? true : false,
         eventListener: () => {
           this.$dispatch('editor/beginCreation')
           this.draw.changeMode(this.draw.modes.DRAW_LINE_STRING)
@@ -50,7 +48,7 @@ class EditorControls {
         container: this.controlGroup,
         className: 'editor-ctrl editor-point',
         title: 'Create point',
-        visible: !this.isCLS && !this.isMap ? false : true,
+        visible: this.type === 'map' || this.type === 'cls' ? true : false,
         eventListener: () => {
           this.$dispatch('editor/beginCreation')
           this.draw.changeMode(this.draw.modes.DRAW_POINT)
@@ -61,7 +59,7 @@ class EditorControls {
         container: this.controlGroup,
         className: 'editor-ctrl editor-polygon',
         title: 'Create polygon',
-        visible: !this.isMap ? false : true,
+        visible: this.type === 'map' ? true : false,
         eventListener: () => {
           this.$dispatch('editor/beginCreation')
           this.draw.changeMode(this.draw.modes.DRAW_POLYGON)
@@ -134,7 +132,11 @@ class EditorControls {
    * @param { Object } scene - Reference to the Vuex state of the scene
    */
   updateControls(scene = this.scene) {
-    if (scene.creation || scene.edition) {
+    const isCreation = scene.creation || scene.edition
+    const isEdition = !scene.creation || !scene.edition
+
+    if (isCreation) {
+      console.log('here 1')
       this.buttons.ok.style.setProperty('display', 'block')
       this.buttons.cancel.style.setProperty('display', 'block')
       this.buttons.trash.style.setProperty('display', 'block')
@@ -147,19 +149,20 @@ class EditorControls {
       } else {
         this.buttons.editProperties.style.setProperty('display', 'none')
       }
-    } else if (!scene.creation || !scene.edition) {
+    } else if (isEdition) {
+      console.log('here 2')
       this.buttons.ok.style.setProperty('display', 'none')
       this.buttons.cancel.style.setProperty('display', 'none')
       this.buttons.trash.style.setProperty('display', 'none')
       this.buttons.editProperties.style.setProperty('display', 'none')
 
-      if (this.isCLS || this.isMap) {
+      if (this.type !== 'cables') {
         this.buttons.point.style.setProperty('display', 'block')
       } else {
         this.buttons.point.style.setProperty('display', 'none')
       }
 
-      if (!this.isCLS || this.isMap) {
+      if (this.type !== 'cls') {
         this.buttons.line_string.style.setProperty('display', 'block')
       } else {
         this.buttons.line_string.style.setProperty('display', 'none')
