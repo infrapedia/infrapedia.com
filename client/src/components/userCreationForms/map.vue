@@ -34,6 +34,7 @@
           :loading="isLoadingFacs"
           class="w-fit-full"
           v-model="form.facilities"
+          @change="handleSelectionChange('fac', $event)"
           placeholder
         >
           <el-option
@@ -62,6 +63,7 @@
           class="w-fit-full"
           v-model="form.cables"
           placeholder
+          @change="handleSelectionChange('cable', $event)"
         >
           <el-option
             v-for="(opt, i) in cables"
@@ -89,6 +91,7 @@
           class="w-fit-full"
           v-model="form.cls"
           placeholder
+          @change="handleSelectionChange('cls', $event)"
         >
           <el-option
             v-for="(opt, i) in cls"
@@ -127,6 +130,14 @@
         </el-button>
       </el-form-item>
     </el-form>
+    <!------------------------->
+    <i-map-properties-dialog
+      :mode="dialogMode"
+      :feature="feature"
+      :feature-type="featureType"
+      :is-visible="isPropertiesDialog"
+      @close="handleDialogClose"
+    />
   </div>
 </template>
 
@@ -143,8 +154,15 @@ export default {
     cables: [],
     isLoadingCls: false,
     isLoadingFacs: false,
-    isLoadingCables: false
+    isLoadingCables: false,
+    isPropertiesDialog: false,
+    featureType: '',
+    dialogMode: 'create',
+    feature: {}
   }),
+  components: {
+    IMapPropertiesDialog: () => import('../dialogs/MapPropertiesDialog')
+  },
   props: {
     form: {
       type: Object,
@@ -200,6 +218,14 @@ export default {
     },
     sendData() {
       return this.$emit('send-data')
+    },
+    handleSelectionChange(t, selection) {
+      this.featureType = t
+      console.log(selection)
+      this.isPropertiesDialog = true
+    },
+    handleDialogClose(data) {
+      this.isPropertiesDialog = false
     }
   }
 }
