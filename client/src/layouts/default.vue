@@ -12,6 +12,7 @@
       <i-buy-dialog />
       <i-issues-dialog />
       <i-alerts-dialog />
+      <i-verification-dialog />
       <i-edit-dialog
         :is-dialog="openEditDialog"
         help-text="Upload kmz or geojson"
@@ -47,7 +48,9 @@ export default {
     UserCablesButton: () => import('../components/UserCablesButton'),
     IIssuesDialog: () => import('../components/dialogs/IssuesDialog'),
     IAlertsDialog: () => import('../components/dialogs/AlertsDialog'),
-    IEditDialog: () => import('../components/dialogs/EditDialog')
+    IEditDialog: () => import('../components/dialogs/EditDialog'),
+    IVerificationDialog: () =>
+      import('../components/dialogs/VerificationDialog')
   },
   data: () => ({
     BUY_CAPACITY,

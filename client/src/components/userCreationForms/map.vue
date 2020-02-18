@@ -1,0 +1,74 @@
+<template>
+  <div class="pb6 pt6 pr8 pl8">
+    <header slot="header" class="w-fit-full mb8">
+      <h1 class="title">{{ title }} map</h1>
+    </header>
+    <el-form ref="form" :model="form">
+      <el-form-item label="Name">
+        <el-input name="Name" v-model="form.name" />
+      </el-form-item>
+      <el-form-item label="Subdomain">
+        <el-input
+          :class="{ dark }"
+          class="w-fit-full"
+          v-model="form.subdomain"
+        />
+      </el-form-item>
+      <el-form-item label="Google Analytics ID">
+        <el-input
+          :class="{ dark }"
+          class="w-fit-full"
+          v-model="form.googleID"
+        />
+      </el-form-item>
+      <el-form-item class="mt12">
+        <el-button
+          type="primary"
+          class="w-fit-full"
+          round
+          :loading="isSendingData"
+          :disabled="checkGeomLength"
+          @click="sendData"
+        >
+          {{ title }} map
+        </el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'MapForm',
+  props: {
+    form: {
+      type: Object,
+      required: true
+    },
+    mode: {
+      type: String,
+      required: true
+    },
+    isSendingData: {
+      type: Boolean,
+      default: () => false
+    }
+  },
+  computed: {
+    title() {
+      return this.mode === 'create' ? 'Create' : 'Edit'
+    },
+    dark() {
+      return this.$store.state.isDark
+    },
+    checkGeomLength() {
+      return this.$store.state.editor.scene.features.list.length ? false : true
+    }
+  },
+  methods: {
+    sendData() {
+      return this.$emit('send-data')
+    }
+  }
+}
+</script>

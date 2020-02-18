@@ -33,6 +33,21 @@
               {{ currentSelection.name }}
             </h1>
           </el-tooltip>
+          <span
+            :class="{
+              'is-verified': !prohibitedIDs.includes(currentSelection.uuid)
+            }"
+            id="verified-i"
+            class="ml2 p1 mt-2 inline-block cursor-pointer"
+            :title="
+              !prohibitedIDs.includes(currentSelection.uuid)
+                ? 'Owner verified'
+                : 'Owner unverified'
+            "
+            @click="handleVerification"
+          >
+            <fa :icon="['fas', 'check-double']" />
+          </span>
           <p class="text-bold">{{ currentSelection.segment_name }}</p>
         </header>
         <!---------------------- SIDEBAR MODES ----------------------->
@@ -69,6 +84,7 @@ import {
   CREATE_ALERT
 } from '../events/sidebar'
 import { shareLink } from '../services/api/shortener'
+import { TOGGLE_VERIFICATION_DIALOG } from '../store/actionTypes'
 
 export default {
   name: 'ISidebar',
@@ -82,6 +98,7 @@ export default {
     EDIT_CABLE,
     REPORT_ISSUE,
     CREATE_ALERT,
+    prohibitedIDs: [],
     currentSelectionColumns: [],
     isSidebarActive: false,
     transitionsClasses: {
@@ -137,6 +154,11 @@ export default {
   beforeMount() {
     window.addEventListener('resize', this.resizeWatcher)
     this.resizeWatcher()
+    this.prohibitedIDs = [
+      process.env.VUE_APP_RESTRICTED_IDS
+        ? process.env.VUE_APP_RESTRICTED_IDS.split(',')
+        : []
+    ]
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.resizeWatcher)
@@ -185,6 +207,9 @@ export default {
       }
 
       setTimeout(() => (this.isBadge = false), 820)
+    },
+    handleVerification() {
+      return this.$store.commit(`${TOGGLE_VERIFICATION_DIALOG}`, true)
     },
     closeSidebar() {
       bus.$emit(`${CLEAR_SELECTION}`)

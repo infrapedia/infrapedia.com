@@ -47,6 +47,10 @@ export default {
     isCls: {
       type: Boolean,
       default: () => false
+    },
+    isMap: {
+      type: Boolean,
+      default: () => false
     }
   },
   computed: {
@@ -174,6 +178,7 @@ export default {
         draw: this.draw,
         scene: this.scene,
         isCLS: this.isCls,
+        isMap: this.isMap,
         $dispatch: this.$store.dispatch,
         handleEditFeatureProperties: feat => {
           this.dialog.mode = 'edit'
@@ -231,8 +236,7 @@ export default {
       return this.controls.resetScene()
     },
     toggleDarkMode(dark) {
-      const style = dark ? mapConfig.darkBasemap : mapConfig.default
-      this.map.setStyle(style)
+      return this.map.setStyle(dark ? mapConfig.darkBasemap : mapConfig.default)
     }
   }
 }

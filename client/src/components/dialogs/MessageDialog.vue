@@ -38,6 +38,7 @@
 <script>
 import { mapState } from 'vuex'
 import { sendEmail } from '../../services/api/alerts'
+import { MAP_FOCUS_ON } from '../../store/actionTypes/map'
 import { TOGGLE_MESSAGE_DIALOG } from '../../store/actionTypes'
 
 export default {
@@ -102,6 +103,7 @@ export default {
     },
     closeDialog() {
       this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, false)
+      this.$store.commit(`${MAP_FOCUS_ON}`, null)
       this.form = {
         subject: '',
         message: ''

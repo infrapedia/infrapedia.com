@@ -43,11 +43,12 @@ const profileLinks = [
     label: 'Cables',
     url: '/user/section/cables',
     icon: ['fas', 'bezier-curve']
+  },
+  {
+    label: 'Maps',
+    icon: ['fas', 'map-marked-alt'],
+    url: '/user/section/create?id=map'
   }
-  // {
-  //   label: 'Facilities',
-  //   url: '/user/section/facs'
-  // },
   // {
   //   label: 'Ixps',
   //   url: '/user/section/ixps'

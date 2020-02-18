@@ -5,7 +5,7 @@
   >
     <div class="left el-card p6" v-loading="loading">
       <header class="w-fit-full text-left mb8">
-        <router-link :to="routeGiver">
+        <router-link :to="routeGiver" v-if="creationType !== 'map'">
           <fa :icon="['fas', 'arrow-left']" />
         </router-link>
       </header>
@@ -19,7 +19,10 @@
       />
     </div>
     <div class="right w-fit-full">
-      <editor-map :is-cls="creationType === 'cls'" />
+      <editor-map
+        :is-cls="creationType === 'cls'"
+        :is-map="creationType === 'map'"
+      />
     </div>
   </div>
 </template>
@@ -37,6 +40,7 @@ import {
   viewCableOwner
 } from '../../../services/api/cables'
 import { EDITOR_LOAD_DRAW, EDITOR_FILE_CONVERTED } from '../../../events/editor'
+import MapForm from '../../../components/userCreationForms/map'
 
 export default {
   name: 'CreateSection',
@@ -67,21 +71,57 @@ export default {
       return this.$store.state.isDark
     },
     currentView() {
-      return this.creationType === 'cls' ? CLSForm : CableForm
+      let view
+
+      switch (this.creationType) {
+        case 'cls':
+          view = CLSForm
+          break
+        case 'map':
+          view = MapForm
+          break
+        default:
+          view = CLSForm
+          break
+      }
+      return view
     },
     featuresList() {
       return this.$store.state.editor.scene.features.list
     },
     checkType() {
+      let method
       if (this.mode === 'edit') {
-        return this.creationType === 'cls' ? this.editCLS : this.editCable
+        switch (this.creationType) {
+          case 'cls':
+            method = this.editCLS
+            break
+          case 'map':
+            method = this.editMap
+            break
+          default:
+            method = this.editCable
+            break
+        }
       } else {
-        return this.creationType === 'cls' ? this.createCLS : this.createCable
+        switch (this.creationType) {
+          case 'cls':
+            method = this.createCLS
+            break
+          case 'map':
+            method = this.createMap
+            break
+          default:
+            method = this.createCable
+            break
+        }
       }
+
+      return method
     },
     routeGiver() {
       const { creationType } = this
-      let route = '/user/section/cables'
+      let route
       switch (creationType) {
         case 'cls':
           route = '/user/section/cls'
@@ -112,6 +152,12 @@ export default {
     handleDialogVisibility(bool) {
       this.isPropertiesDialog = bool
     },
+    async createMap() {
+      return console.warn('not done yet 1')
+    },
+    async editMap() {
+      return console.warn('not done yet 2')
+    },
     async checkCreationType(type) {
       switch (type) {
         case 'cls':
@@ -123,7 +169,14 @@ export default {
             geom: this.featuresList
           }
           break
-        case 'cables':
+        case 'map':
+          this.form = {
+            name: '',
+            subdomain: '',
+            googleID: ''
+          }
+          break
+        default:
           this.form = {
             cls: [],
             urls: [],

@@ -49,7 +49,7 @@
       <template v-else>
         <!---- LABELS SECTION STARTS ---->
         <el-row :gutter="20">
-          <template v-if="col.label.includes('url')">
+          <template v-if="col.label.toLowerCase().includes('url')">
             <el-col :span="24" class="p2">
               <small>
                 <p class="m0 capitalize">

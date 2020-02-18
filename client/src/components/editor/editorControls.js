@@ -6,12 +6,14 @@ class EditorControls {
     $dispatch,
     scene,
     isCLS,
+    isMap,
     handleEditFeatureProperties,
     handleBeforeFeatureCreation
   }) {
     this.draw = draw
     this.scene = scene
     this.isCLS = isCLS
+    this.isMap = isMap
     this.$dispatch = $dispatch
     this.resetScene = this.resetScene
     this.updateControls = this.updateControls
@@ -37,7 +39,7 @@ class EditorControls {
         container: this.controlGroup,
         className: 'editor-ctrl editor-line-string',
         title: 'Draw line',
-        visible: this.isCLS ? false : true,
+        visible: this.isCLS || !this.isMap ? false : true,
         eventListener: () => {
           this.$dispatch('editor/beginCreation')
           this.draw.changeMode(this.draw.modes.DRAW_LINE_STRING)
@@ -48,10 +50,21 @@ class EditorControls {
         container: this.controlGroup,
         className: 'editor-ctrl editor-point',
         title: 'Create point',
-        visible: !this.isCLS ? false : true,
+        visible: !this.isCLS && !this.isMap ? false : true,
         eventListener: () => {
           this.$dispatch('editor/beginCreation')
           this.draw.changeMode(this.draw.modes.DRAW_POINT)
+        }
+      }),
+
+      polygon: createControlButton('polygon', {
+        container: this.controlGroup,
+        className: 'editor-ctrl editor-polygon',
+        title: 'Create polygon',
+        visible: !this.isMap ? false : true,
+        eventListener: () => {
+          this.$dispatch('editor/beginCreation')
+          this.draw.changeMode(this.draw.modes.DRAW_POLYGON)
         }
       }),
 
@@ -140,10 +153,13 @@ class EditorControls {
       this.buttons.trash.style.setProperty('display', 'none')
       this.buttons.editProperties.style.setProperty('display', 'none')
 
-      if (this.isCLS) this.buttons.point.style.setProperty('display', 'block')
-      else this.buttons.point.style.setProperty('display', 'none')
+      if (this.isCLS || this.isMap) {
+        this.buttons.point.style.setProperty('display', 'block')
+      } else {
+        this.buttons.point.style.setProperty('display', 'none')
+      }
 
-      if (!this.isCLS) {
+      if (!this.isCLS || this.isMap) {
         this.buttons.line_string.style.setProperty('display', 'block')
       } else {
         this.buttons.line_string.style.setProperty('display', 'none')

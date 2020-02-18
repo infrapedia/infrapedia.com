@@ -35,7 +35,7 @@
       <!---- VALUES SECTION STARTS---->
       <template v-else>
         <el-row :gutter="20">
-          <template v-if="col.label.includes('url')">
+          <template v-if="col.label.toLowerCase().includes('url')">
             <el-col :span="24" class="pt2 pb2">
               <small>
                 <p class="capitalize">

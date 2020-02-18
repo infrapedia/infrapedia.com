@@ -36,32 +36,38 @@
 
     <el-row :gutter="50" class="mt10">
       <el-col :md="24" :lg="10">
-        <el-card shadow="never" class="pr8 pl8 h100">
+        <el-card shadow="never" class="pr8 pl8 h100 overflow-y-scroll">
           <header class="header p4">
             <h2 class="title-user-variant m0 color-inherit">
               My activity
             </h2>
           </header>
-          <div class="mt2">
-            <el-row v-for="(data, i) in logsData" :key="i" class="mt2">
-              <el-col :span="12">
-                <strong
-                  ><p class="truncate">
-                    path:
-                  </p></strong
-                >
-                <span class="truncate">
-                  {{ data.path }}
-                </span>
-              </el-col>
-              <el-col :span="12">
-                <p>
-                  Register date:
-                </p>
-                <span class="truncate">
-                  {{ formatDate(data.rgDate) }}
-                </span>
-              </el-col>
+          <div class="w-fit-full mt2 pb8">
+            <el-row :gutter="20" class="pr4 pl6">
+              <div v-for="(data, i) in logsData" :key="i">
+                <el-col :span="16">
+                  <strong
+                    ><p class="fs-small truncate">
+                      path:
+                    </p></strong
+                  >
+                  <span class="truncate fs-small">
+                    {{ data.path }}
+                  </span>
+                </el-col>
+                <el-col :span="8">
+                  <small>
+                    <p>
+                      Register date:
+                    </p>
+                  </small>
+                  <small>
+                    <span class="truncate">
+                      {{ formatDate(data.rgDate) }}
+                    </span>
+                  </small>
+                </el-col>
+              </div>
             </el-row>
           </div>
         </el-card>
