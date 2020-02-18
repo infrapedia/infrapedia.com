@@ -34,7 +34,8 @@
           :loading="isLoadingFacs"
           class="w-fit-full"
           v-model="form.facilities"
-          @change="handleSelectionChange('fac', $event)"
+          ref="facilitiesSelect"
+          @change="handleSelectionChange('facilities', $event)"
           placeholder
         >
           <el-option
@@ -63,7 +64,8 @@
           class="w-fit-full"
           v-model="form.cables"
           placeholder
-          @change="handleSelectionChange('cable', $event)"
+          ref="cablesSelect"
+          @change="handleSelectionChange('cables', $event)"
         >
           <el-option
             v-for="(opt, i) in cables"
@@ -91,6 +93,7 @@
           class="w-fit-full"
           v-model="form.cls"
           placeholder
+          ref="clsSelect"
           @change="handleSelectionChange('cls', $event)"
         >
           <el-option
@@ -152,13 +155,19 @@ export default {
     cls: [],
     facs: [],
     cables: [],
+    feature: {},
+    featureType: '',
     isLoadingCls: false,
+    dialogMode: 'create',
     isLoadingFacs: false,
     isLoadingCables: false,
     isPropertiesDialog: false,
-    featureType: '',
-    dialogMode: 'create',
-    feature: {}
+    currentSelection: null,
+    mapCreationData: {
+      cls: [],
+      cables: [],
+      facilities: []
+    }
   }),
   components: {
     IMapPropertiesDialog: () => import('../dialogs/MapPropertiesDialog')
@@ -219,14 +228,41 @@ export default {
     sendData() {
       return this.$emit('send-data')
     },
-    handleSelectionChange(t, selection) {
+    handleSelectionChange(t, id) {
+      if (this.form[t].length < this.mapCreationData[t].length) {
+        // Removing from mapCreationData[] the one just removed from my selection
+        return this.form[t].forEach(id => {
+          let index = 0
+          for (let data of Array.from(this.mapCreationData, item => ({
+            ...item
+          }))) {
+            if (id === data.id) continue
+            else this.mapCreationData.splice(index, 1)
+            index += 1
+          }
+        })
+      }
+
       this.featureType = t
-      console.log(selection)
-      this.isPropertiesDialog = true
+      this.currentSelection = id[this.form[t].length - 1]
+      this.$refs[`${t}Select`].blur()
+      setTimeout(() => {
+        this.isPropertiesDialog = true
+      }, 320)
     },
     handleDialogClose(data) {
+      const ids = this.mapCreationData[this.featureType].map(d => d.id)
+      if (!ids.includes(this.currentSelection)) {
+        this.mapCreationData[this.featureType].push({
+          ...data,
+          id: this.currentSelection
+        })
+      }
       this.isPropertiesDialog = false
+      this.currentSelection = null
+      this.featureType = ''
     }
   }
 }
 </script>
+1

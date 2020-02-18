@@ -28,11 +28,21 @@
             v-model="form.status"
           />
         </el-form-item>
+        <el-form-item label="Height">
+          <el-input-number
+            class="w-fit-full"
+            controls-position="right"
+            v-model="form.height"
+          />
+        </el-form-item>
         <el-form-item label="Stroke color">
           <el-color-picker v-model="form.stroke" :predefine="predefineColors">
           </el-color-picker>
         </el-form-item>
-        <el-form-item label="Stroke width">
+        <el-form-item
+          label="Stroke width"
+          v-if="feature.geometry.type === 'LineString'"
+        >
           <el-input-number
             v-model="form['stroke-width']"
             class="w-fit-full"
@@ -40,7 +50,10 @@
             :min="0"
           />
         </el-form-item>
-        <el-form-item label="Stroke opacity">
+        <el-form-item
+          label="Stroke opacity"
+          v-if="feature.geometry.type === 'LineString'"
+        >
           <el-input-number
             v-model="form['stroke-opacity']"
             class="w-fit-full"
@@ -95,18 +108,29 @@ export default {
       if (this.mode !== 'create') {
         this.form = { ...this.feature.properties }
       } else {
-        if (type !== 'Point') {
-          this.form = {
-            name: '',
-            status: true,
-            stroke: '#cccccc',
-            'stroke-width': 0.4,
-            'stroke-opacity': 1
-          }
-        } else {
-          this.form = {
-            name: ''
-          }
+        switch (type.toLowerCase()) {
+          case 'point':
+            this.form = {
+              name: ''
+            }
+            break
+          case 'polygon':
+            this.form = {
+              name: '',
+              height: 0,
+              status: true,
+              stroke: '#cccccc'
+            }
+            break
+          default:
+            this.form = {
+              name: '',
+              status: true,
+              stroke: '#cccccc',
+              'stroke-width': 0.4,
+              'stroke-opacity': 1
+            }
+            break
         }
       }
     }
@@ -124,7 +148,7 @@ export default {
           title =
             this.feature.geometry.type === 'Point'
               ? 'Edit CLS properties'
-              : 'Edit cls properties'
+              : 'Edit segment properties'
         }
       }
       return title

@@ -36,7 +36,7 @@
 
     <el-row :gutter="50" class="mt10">
       <el-col :md="24" :lg="10">
-        <el-card shadow="never" class="pr8 pl8 h100 overflow-y-scroll">
+        <el-card shadow="never" class="pr8 pl8 h100 overflow-y-auto">
           <header class="header p4">
             <h2 class="title-user-variant m0 color-inherit">
               My activity

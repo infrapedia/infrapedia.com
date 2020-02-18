@@ -17,7 +17,7 @@
         <el-color-picker v-model="form.color" :predefine="predefineColors">
         </el-color-picker>
       </el-form-item>
-      <el-form-item label="Line style" v-if="featureType === 'cable'">
+      <el-form-item label="Line style" v-if="featureType === 'cables'">
         <el-radio-group v-model="form['line-style']">
           <el-radio-button label="dashed">
             Dashed

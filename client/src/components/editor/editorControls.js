@@ -136,7 +136,6 @@ class EditorControls {
     const isEdition = !scene.creation || !scene.edition
 
     if (isCreation) {
-      console.log('here 1')
       this.buttons.ok.style.setProperty('display', 'block')
       this.buttons.cancel.style.setProperty('display', 'block')
       this.buttons.trash.style.setProperty('display', 'block')
@@ -150,7 +149,6 @@ class EditorControls {
         this.buttons.editProperties.style.setProperty('display', 'none')
       }
     } else if (isEdition) {
-      console.log('here 2')
       this.buttons.ok.style.setProperty('display', 'none')
       this.buttons.cancel.style.setProperty('display', 'none')
       this.buttons.trash.style.setProperty('display', 'none')
