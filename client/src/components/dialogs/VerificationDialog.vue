@@ -15,6 +15,16 @@
       <el-form-item label="Email">
         <el-input type="email" v-model="email" :class="{ dark }" />
       </el-form-item>
+      <el-form-item>
+        <vue-recaptcha
+          ref="catpcha"
+          :sitekey="siteKey"
+          :loadRecaptchaScript="true"
+          @verify="handleCatchaVerification"
+          @error="() => (catchaVerified = false)"
+          @expired="() => (catchaVerified = false)"
+        />
+      </el-form-item>
     </el-form>
     <footer class="footer flex wrap justify-content-end pr0 pl6">
       <div>
@@ -48,12 +58,19 @@ import { verifyElement } from '../../services/api/users'
 import { MAP_FOCUS_ON } from '../../store/actionTypes/map'
 import { TOGGLE_VERIFICATION_DIALOG } from '../../store/actionTypes'
 import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
+import VueRecaptcha from 'vue-recaptcha'
+import siteKey from '../../config/siteKey'
 
 export default {
+  components: {
+    VueRecaptcha
+  },
   data: () => ({
+    siteKey,
+    email: '',
     loading: false,
     sendingData: false,
-    email: ''
+    catchaVerified: null
   }),
   computed: {
     ...mapState({
@@ -69,7 +86,7 @@ export default {
       }
     },
     isFormUncomplete() {
-      return this.email === ''
+      return this.email === '' || !this.catchaVerified ? true : false
     },
     customDialogClass() {
       return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
@@ -77,11 +94,15 @@ export default {
   },
   watch: {
     isVisible(bool) {
-      if (!bool) return
+      if (!bool) return this.$refs.catpcha.reset()
       this.setUserData()
     }
   },
   methods: {
+    handleCatchaVerification(v) {
+      if (!v) return
+      else this.catchaVerified = true
+    },
     async setUserData() {
       if (!this.$auth || !this.$auth.user) return
       this.loading = true
