@@ -157,11 +157,11 @@ export default {
     handleDialogVisibility(bool) {
       this.isPropertiesDialog = bool
     },
-    async createMap() {
-      return console.warn('not done yet 1')
+    async createMap(data) {
+      return console.log(data, 'not done yet 1')
     },
-    async editMap() {
-      return console.warn('not done yet 2')
+    async editMap(data) {
+      return console.log(data, 'not done yet 2')
     },
     async checkCreationType(type) {
       switch (type) {
@@ -178,7 +178,11 @@ export default {
           this.form = {
             name: '',
             subdomain: '',
-            googleID: ''
+            googleID: '',
+            facilities: [],
+            cls: [],
+            cables: [],
+            logos: []
           }
           break
         default:

@@ -4,15 +4,18 @@
       <h1 class="title">{{ title }} map</h1>
     </header>
     <el-form ref="form" :model="form">
-      <el-form-item label="Name">
-        <el-input name="Name" v-model="form.name" />
-      </el-form-item>
       <el-form-item label="Subdomain">
         <el-input
           :class="{ dark }"
           class="w-fit-full"
           v-model="form.subdomain"
-        />
+          placeholder="subdomain name"
+          @input="handleRestrictedNames"
+        >
+          <template slot="append">
+            .infrapedia.com
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="Google Analytics ID">
         <el-input
@@ -113,6 +116,7 @@
         <br />
         <div class="block w-fit-full">
           <el-upload
+            v-model="form.logos"
             action="https://jsonplaceholder.typicode.com/posts/"
             list-type="picture-card"
           >
@@ -194,10 +198,26 @@ export default {
       return this.$store.state.isDark
     },
     checkGeomLength() {
-      return this.$store.state.editor.scene.features.list.length ? false : true
+      let disabled
+
+      if (this.$route.query.id !== 'map') {
+        disabled = this.$store.state.editor.scene.features.list.length
+          ? false
+          : true
+      } else {
+        disabled = this.form.subdomain && this.form.googleID ? false : true
+      }
+      return disabled
     }
   },
   methods: {
+    async handleRestrictedNames(name) {
+      if (!name) return
+      this.form.subdomain = name
+        .replace(/[^a-zñ\d\s]+/gi, '')
+        .trim()
+        .toLowerCase()
+    },
     async loadCablesSearch(s) {
       if (s === '') return
       this.isLoadingCables = true
@@ -226,7 +246,18 @@ export default {
       this.isLoadingCls = false
     },
     sendData() {
-      return this.$emit('send-data')
+      const data = { ...this.form }
+      data.cls = this.mapCreationData.cls
+      data.cables = this.mapCreationData.cables
+      data.facilities = this.mapCreationData.facilities
+
+      return this.$emit('send-data', {
+        ...data,
+        draw: Array.from(
+          this.$store.state.editor.scene.features.list,
+          item => ({ ...item })
+        )
+      })
     },
     handleSelectionChange(t, id) {
       if (this.form[t].length < this.mapCreationData[t].length) {
