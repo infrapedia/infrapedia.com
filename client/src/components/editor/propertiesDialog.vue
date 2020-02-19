@@ -28,7 +28,7 @@
             v-model="form.status"
           />
         </el-form-item>
-        <el-form-item label="Height">
+        <el-form-item label="Height" v-if="feature.geometry.type === 'Polygon'">
           <el-input-number
             class="w-fit-full"
             controls-position="right"

@@ -42,7 +42,7 @@
           placeholder
         >
           <el-option
-            v-for="(opt, i) in facs"
+            v-for="(opt, i) in facilities"
             :key="i"
             :label="opt.name"
             :value="opt._id"
@@ -156,9 +156,9 @@ import { searchCls } from '../../services/api/cls'
 export default {
   name: 'MapForm',
   data: () => ({
-    cls: [],
-    facs: [],
+    facilities: [],
     cables: [],
+    cls: [],
     feature: {},
     featureType: '',
     isLoadingCls: false,
@@ -210,7 +210,48 @@ export default {
       return disabled
     }
   },
+  watch: {
+    mode(m) {
+      if (m === 'create') return
+      this.handleEditModeScenario()
+    }
+  },
   methods: {
+    handleEditModeScenario() {
+      const { cables, cls, facilities } = this.form
+
+      this.cables = cables.map(c => ({
+        yours: c.yours,
+        name: c.name,
+        _id: c._id
+      }))
+
+      this.cls = cls.map(c => ({
+        yours: c.yours,
+        name: c.name,
+        _id: c._id
+      }))
+
+      this.facilities = facilities.map(c => ({
+        name: c.name,
+        _id: c._id
+      }))
+
+      // This is being made because the select(s) value are ._id,
+      // not the entire data being passed when setting the edit mode
+      this.form.facilities = facilities.map(f => f._id)
+      this.form.cables = cables.map(c => c._id)
+      this.form.cls = cls.map(c => c._id)
+
+      this.mapCreationData = {
+        cls,
+        cables,
+        facilities
+      }
+    },
+    /**
+     * @param name { String } - subdomain name
+     */
     async handleRestrictedNames(name) {
       if (!name) return
       this.form.subdomain = name
@@ -218,6 +259,9 @@ export default {
         .trim()
         .toLowerCase()
     },
+    /**
+     * @param s { String } - search queried from cables select input
+     */
     async loadCablesSearch(s) {
       if (s === '') return
       this.isLoadingCables = true
@@ -227,6 +271,9 @@ export default {
       }
       this.isLoadingCables = false
     },
+    /**
+     * @param s { String } - search queried from cls select input
+     */
     async loadClsSearch(s) {
       if (s === '') return
       this.isLoadingCls = true
@@ -236,12 +283,15 @@ export default {
       }
       this.isLoadingCls = false
     },
+    /**
+     * @param s { String } - search queried from facilities select input
+     */
     async loadFacSearch(s) {
       if (s === '') return
       this.isLoadingCls = true
       const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.facs = res.data
+        this.facilities = res.data
       }
       this.isLoadingCls = false
     },
@@ -259,9 +309,13 @@ export default {
         )
       })
     },
+    /**
+     * @param t { String } - selection type { can be: facilities, cables, cls }
+     * @param id { String } - selection _id
+     */
     handleSelectionChange(t, id) {
       if (this.form[t].length < this.mapCreationData[t].length) {
-        // Removing from mapCreationData[] the one just removed from my selection
+        // Removing from mapCreationData[type] from my selections
         return this.form[t].forEach(id => {
           let index = 0
           for (let data of Array.from(this.mapCreationData, item => ({
@@ -275,18 +329,23 @@ export default {
       }
 
       this.featureType = t
-      this.currentSelection = id[this.form[t].length - 1]
+      this.currentSelection = this[t].filter(
+        item => item._id === id[this.form[t].length - 1]
+      )[0]
       this.$refs[`${t}Select`].blur()
       setTimeout(() => {
         this.isPropertiesDialog = true
       }, 320)
     },
+    /**
+     * @param data { Object } - Data collected from propertiesDialog form
+     */
     handleDialogClose(data) {
       const ids = this.mapCreationData[this.featureType].map(d => d.id)
       if (!ids.includes(this.currentSelection)) {
         this.mapCreationData[this.featureType].push({
           ...data,
-          id: this.currentSelection
+          ...this.currentSelection
         })
       }
       this.isPropertiesDialog = false

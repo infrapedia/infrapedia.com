@@ -105,7 +105,15 @@ export default {
       if (fc.features[0].geometry.type !== 'Point') {
         coords = [
           fc.features[0].geometry.coordinates[0],
-          fc.features[fc.features.length - 1].geometry.coordinates[0]
+          fc.features.length > 1
+            ? fc.features[fc.features.length - 1].geometry.coordinates[0]
+            : // In case there's only one feature,
+              // we can't take coordinates from position 0, cause both will be equal
+              // And it will only focus the beginning of the feature
+              fc.features[fc.features.length - 1].geometry.coordinates[
+                fc.features[fc.features.length - 1].geometry.coordinates
+                  .length - 1
+              ]
         ]
         bbox = coords.reduce(
           (bounds, coord) => bounds.extend(coord),

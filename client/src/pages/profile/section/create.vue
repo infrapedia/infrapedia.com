@@ -38,6 +38,7 @@ import {
 } from '../../../services/api/cables'
 import { EDITOR_LOAD_DRAW, EDITOR_FILE_CONVERTED } from '../../../events/editor'
 import MapForm from '../../../components/userCreationForms/map'
+import { getMyMap, setMyMap } from '../../../services/api/map'
 
 export default {
   name: 'CreateSection',
@@ -102,7 +103,7 @@ export default {
             method = this.editCLS
             break
           case 'map':
-            method = this.editMap
+            method = this.setMap
             break
           default:
             method = this.editCable
@@ -114,7 +115,7 @@ export default {
             method = this.createCLS
             break
           case 'map':
-            method = this.createMap
+            method = this.setMap
             break
           default:
             method = this.createCable
@@ -148,20 +149,58 @@ export default {
 
     if (this.$route.query.item) {
       this.getElementOnEdit(this.$route.query.item)
+    } else if (this.$route.query.id === 'map') {
+      await this.checkUserMapExistance()
     }
   },
   methods: {
+    async checkUserMapExistance() {
+      this.loading = true
+      const res = await getMyMap({ user_id: this.$auth.user.sub })
+      if (res && res.t !== 'error' && res.data && res.data.r) {
+        this.mode = 'edit'
+        const {
+          subdomain,
+          googleID,
+          cls,
+          facilities,
+          cables,
+          logos,
+          draw
+        } = res.data.r
+
+        this.form = {
+          subdomain,
+          googleID,
+          logos: Array.isArray(logos) ? logos : [],
+          cls: Array.isArray(cls) ? cls.map(c => JSON.parse(c)) : [],
+          cables: Array.isArray(cables) ? cables.map(c => JSON.parse(c)) : [],
+          facilities: Array.isArray(facilities)
+            ? facilities.map(f => JSON.parse(f))
+            : []
+        }
+
+        const fc = typeof draw === 'string' ? JSON.parse(draw) : draw
+        if (fc.features && fc.features.length) {
+          this.$store.dispatch('editor/setList', fc.features)
+          bus.$emit(`${EDITOR_LOAD_DRAW}`)
+        }
+      }
+      this.loading = false
+    },
     handleFileConverted(fc) {
       return bus.$emit(`${EDITOR_FILE_CONVERTED}`, fc)
     },
     handleDialogVisibility(bool) {
       this.isPropertiesDialog = bool
     },
-    async createMap(data) {
-      return console.log(data, 'not done yet 1')
-    },
-    async editMap(data) {
-      return console.log(data, 'not done yet 2')
+    async setMap(data) {
+      this.isSendingData = true
+      const res = await setMyMap({ ...data, user_id: this.$auth.user.sub })
+      if (res && res.t !== 'error') {
+        await this.checkUserMapExistance()
+      }
+      this.isSendingData = false
     },
     async checkCreationType(type) {
       switch (type) {
