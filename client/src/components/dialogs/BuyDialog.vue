@@ -25,12 +25,12 @@
             <el-input v-model="form.company" :class="{ dark }" />
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="24" :lg="8" :xl="8">
           <el-form-item label="Full Name" prop="fullname">
             <el-input v-model="form.fullname" :class="{ dark }" />
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="24" :lg="8" :xl="8">
           <el-form-item label="Phone number">
             <div class="el-input">
               <i-phone-input
@@ -54,13 +54,13 @@
         </el-col>
       </el-row>
       <el-row :gutter="30">
-        <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+        <el-col :xs="24" :sm="12" :md="24" :lg="12" :xl="12">
           <el-form-item label="Email" prop="email">
             <el-input type="email" v-model="form.email" :class="{ dark }" />
           </el-form-item>
         </el-col>
         <template v-if="dialogTitle !== 'Other'">
-          <el-col v-if="dialogTitle !== 'Datacenter'" :span="12">
+          <el-col v-if="dialogTitle !== 'Datacenter'" :md="24" :lg="12">
             <el-form-item label="Capacity" prop="capacity">
               <el-select
                 class="w-fit-full"
@@ -108,9 +108,19 @@
             />
           </el-form-item>
         </el-col>
+        <el-col :span="24">
+          <vue-recaptcha
+            ref="catpcha"
+            :sitekey="siteKey"
+            :loadRecaptchaScript="true"
+            @verify="handleCatchaVerification"
+            @error="() => (catchaVerified = false)"
+            @expired="() => (catchaVerified = false)"
+          />
+        </el-col>
       </el-row>
     </el-form>
-    <footer class="footer flex wrap justify-content-space-between pr0 pl6">
+    <footer class="footer flex wrap justify-content-space-between pr0 pl6 mt4">
       <small class="inline-block mt2 mb4">
         <span class="text-red">*</span> indicates required field
       </small>
@@ -138,11 +148,18 @@ import { getUserData } from '../../services/api/auth'
 import { sendMessage } from '../../services/api/messages'
 import { TOGGLE_BUY_DIALOG, BUY_TYPE } from '../../store/actionTypes'
 import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
+import VueRecaptcha from 'vue-recaptcha'
+import siteKey from '../../config/siteKey'
 
 export default {
+  components: {
+    VueRecaptcha
+  },
   data: () => ({
     capacities: ['1GB', '10GB', '100GB', 'Others'],
     loading: false,
+    siteKey,
+    catchaVerified: null,
     form: {
       company: '',
       email: '',
@@ -212,9 +229,10 @@ export default {
     isFormUncomplete() {
       // TODO: fix this form uncomplete checker for when using & !using: totalRack
       const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
-      return emptyFields.length &&
+      return (emptyFields.length &&
         this.dialogTitle === 'Datacenter' &&
-        emptyFields.includes('totalRack')
+        emptyFields.includes('totalRack')) ||
+        !this.catchaVerified
         ? true
         : false
     },
@@ -224,11 +242,15 @@ export default {
   },
   watch: {
     isVisible(bool) {
-      if (!bool) return
+      if (!bool) return this.$refs.catpcha.reset()
       return this.setUserData()
     }
   },
   methods: {
+    handleCatchaVerification(v) {
+      if (!v) return
+      else this.catchaVerified = true
+    },
     async setUserData() {
       if (!this.$auth || !this.$auth.user) return
       const userData = await getUserData(this.$auth.user.sub)

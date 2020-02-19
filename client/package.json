@@ -27,6 +27,7 @@
     "turf": "^3.0.14",
     "vue": "^2.6.10",
     "vue-cookieconsent-component": "^1.2.0",
+    "vue-recaptcha": "^1.3.0",
     "vue-router": "^3.0.6",
     "vue-tel-input": "^2.0.10",
     "vue2-editor": "^2.10.2",

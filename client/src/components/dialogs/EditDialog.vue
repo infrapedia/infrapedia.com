@@ -31,9 +31,19 @@
             <el-input type="textarea" rows="4" v-model="form.information" />
           </el-form-item>
         </el-col>
+        <el-col :span="24">
+          <vue-recaptcha
+            ref="catpcha"
+            :sitekey="siteKey"
+            :loadRecaptchaScript="true"
+            @verify="handleCatchaVerification"
+            @error="() => (catchaVerified = false)"
+            @expired="() => (catchaVerified = false)"
+          />
+        </el-col>
       </el-row>
     </el-form>
-    <footer class="footer flex wrap justify-content-end pr0 pl6">
+    <footer class="footer flex wrap justify-content-end pr0 pl6 mt4">
       <!-- <small class="inline-block mt2 mb4">
         <span class="text-red">*</span> indicates required field
       </small> -->
@@ -57,13 +67,18 @@
 
 <script>
 import { editElemnt } from '../../services/api/uploads'
+import VueRecaptcha from 'vue-recaptcha'
+import siteKey from '../../config/siteKey'
 
 export default {
   components: {
+    VueRecaptcha,
     Dragger: () => import('../../components/Dragger')
   },
   data: () => ({
+    siteKey,
     loading: false,
+    catchaVerified: null,
     fileSelected: false,
     form: {
       information: '',
@@ -74,6 +89,11 @@ export default {
     isDialog: {
       type: Boolean,
       required: true
+    }
+  },
+  watch: {
+    isVisible(bool) {
+      if (!bool) return this.$refs.catpcha.reset()
     }
   },
   computed: {
@@ -90,13 +110,17 @@ export default {
     },
     isFormUncomplete() {
       const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
-      return emptyFields.length ? true : false
+      return emptyFields.length || !this.catchaVerified ? true : false
     },
     customDialogClass() {
       return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
     }
   },
   methods: {
+    handleCatchaVerification(v) {
+      if (!v) return
+      else this.catchaVerified = true
+    },
     setFile(file) {
       this.fileSelected = false
       this.form.file = file

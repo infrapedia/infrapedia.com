@@ -50,9 +50,19 @@
             <el-input type="textarea" :class="{ dark }" v-model="form.issue" />
           </el-form-item>
         </el-col>
+        <el-col :span="24">
+          <vue-recaptcha
+            ref="catpcha"
+            :sitekey="siteKey"
+            :loadRecaptchaScript="true"
+            @verify="handleCatchaVerification"
+            @error="() => (catchaVerified = false)"
+            @expired="() => (catchaVerified = false)"
+          />
+        </el-col>
       </el-row>
     </el-form>
-    <footer class="footer flex justify-content-space-between pr0 pl6">
+    <footer class="footer flex justify-content-space-between pr0 pl6 mt4">
       <small class="inline-block mt2">
         <span class="text-red">*</span> indicates required field
       </small>
@@ -80,11 +90,18 @@ import { TOGGLE_ISSUES_DIALOG } from '@/store/actionTypes'
 import { createIssue } from '../../services/api/issues'
 import { getUserData } from '../../services/api/auth'
 import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
+import VueRecaptcha from 'vue-recaptcha'
+import siteKey from '../../config/siteKey'
 
 export default {
+  components: {
+    VueRecaptcha
+  },
   data: () => ({
+    siteKey,
     loading: false,
     isSendingData: false,
+    catchaVerified: null,
     form: {
       email: '',
       issue: '',
@@ -140,7 +157,7 @@ export default {
     },
     isFormUncomplete() {
       const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
-      return emptyFields.length ? true : false
+      return emptyFields.length || !this.catchaVerified ? true : false
     },
     customDialogClass() {
       return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
@@ -148,11 +165,15 @@ export default {
   },
   watch: {
     isVisible(bool) {
-      if (!bool) return
+      if (!bool) return this.$refs.catpcha.reset()
       this.setUserData()
     }
   },
   methods: {
+    handleCatchaVerification(v) {
+      if (!v) return
+      else this.catchaVerified = true
+    },
     async setUserData() {
       if (!this.$auth || !this.$auth.user) return
       this.loading = true

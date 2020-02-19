@@ -40,9 +40,19 @@
             </el-collapse-transition>
           </el-form-item>
         </el-col>
+        <el-col :span="24">
+          <vue-recaptcha
+            ref="catpcha"
+            :sitekey="siteKey"
+            :loadRecaptchaScript="true"
+            @verify="handleCatchaVerification"
+            @error="() => (catchaVerified = false)"
+            @expired="() => (catchaVerified = false)"
+          />
+        </el-col>
       </el-row>
     </el-form>
-    <footer class="footer flex wrap justify-content-end pr0 pl6">
+    <footer class="footer flex wrap justify-content-end pr0 pl6 mt4">
       <div>
         <el-button plain type="info" class="mr2" @click="closeDialog"
           >Cancel</el-button
@@ -67,10 +77,17 @@ import { getUserData } from '../../services/api/auth'
 import { createAlert } from '../../services/api/alerts'
 import { TOGGLE_ALERT_DIALOG } from '../../store/actionTypes'
 import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
+import VueRecaptcha from 'vue-recaptcha'
+import siteKey from '../../config/siteKey'
 
 export default {
+  components: {
+    VueRecaptcha
+  },
   data: () => ({
+    catchaVerified: null,
     loading: false,
+    siteKey,
     form: {
       email: '',
       phone: {
@@ -94,7 +111,7 @@ export default {
     },
     isFormUncomplete() {
       const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
-      return emptyFields.length ? true : false
+      return emptyFields.length || !this.catchaVerified ? true : false
     },
     customDialogClass() {
       return this.dark ? 'alerts-dialog dark' : 'alerts-dialog light'
@@ -102,11 +119,15 @@ export default {
   },
   watch: {
     isVisible(bool) {
-      if (!bool) return
+      if (!bool) return this.$refs.catpcha.reset()
       this.setUserData()
     }
   },
   methods: {
+    handleCatchaVerification(v) {
+      if (!v) return
+      else this.catchaVerified = true
+    },
     async setUserData() {
       if (!this.$auth || !this.$auth.user) return
       this.loading = true
