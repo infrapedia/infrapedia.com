@@ -460,7 +460,13 @@
                       @click="userRegistration"
                       @keyup.enter.space="userRegistration"
                     >
+                      <el-avatar
+                        v-if="userImage"
+                        size="small"
+                        :src="$auth.user.picture"
+                      />
                       <fa
+                        v-else
                         :icon="['fas', 'user-circle']"
                         class="md-icon user-icon"
                       />
@@ -622,7 +628,16 @@
                       @click="userRegistration"
                       @keyup.enter.space="userRegistration"
                     >
-                      <fa :icon="['fas', 'user-circle']" class="md-icon" />
+                      <el-avatar
+                        v-if="userImage"
+                        size="small"
+                        :src="$auth.user.picture"
+                      />
+                      <fa
+                        v-else
+                        :icon="['fas', 'user-circle']"
+                        class="md-icon user-icon"
+                      />
                     </div>
                   </el-popover>
                 </div>
@@ -680,6 +695,9 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    userImage() {
+      return this.$auth.user && this.$auth.user.picture
     },
     popoverClassGiver() {
       let c = 'popover'
