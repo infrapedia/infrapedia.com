@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.6.0",
+    "@bugsnag/js": "^6.5.2",
+    "@bugsnag/plugin-vue": "^6.5.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-brands-svg-icons": "^5.11.2",
     "@fortawesome/free-regular-svg-icons": "^5.12.0",
