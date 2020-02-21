@@ -198,6 +198,24 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="Tags" class="mt2">
+        <el-select
+          v-model="form.tags"
+          multiple
+          filterable
+          placeholder
+          allow-create
+          class="w-fit-full"
+          default-first-option
+        >
+          <el-option
+            v-for="item in form.tagsList"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item class="mt12">
         <el-button
           :class="{ dark }"
@@ -244,7 +262,8 @@ export default {
     isLoadingOrg: false,
     isLoadingCls: false,
     isLoadingFacs: false,
-    isLoadingCables: false
+    isLoadingCables: false,
+    tagsList: []
   }),
   props: {
     visible: {

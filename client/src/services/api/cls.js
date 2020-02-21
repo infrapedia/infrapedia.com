@@ -12,7 +12,8 @@ export const createCls = async ({
   geom,
   state,
   slug,
-  user_id
+  user_id,
+  tags
 }) => {
   url = `${apiConfig.url}/auth/cls/add`
   form = new FormData()
@@ -30,6 +31,12 @@ export const createCls = async ({
       form.append(`cables[${i}]`, a)
     })
   } else form.append('cables', [])
+
+  if (tags && tags.length) {
+    tags.forEach((t, i) => {
+      form.append(`tags[${i}]`, t)
+    })
+  } else form.append('tags', [])
 
   const res = await $axios.post(url, form, {
     withCredentials: true,
@@ -50,7 +57,8 @@ export const editCls = async ({
   state,
   slug,
   user_id,
-  _id
+  _id,
+  tags
 }) => {
   url = `${apiConfig.url}/auth/cls/edit`
   form = new FormData()
@@ -59,6 +67,12 @@ export const editCls = async ({
   form.append('name', name)
   form.append('state', state)
   form.append('slug', slug)
+
+  if (tags && tags.length) {
+    tags.forEach((t, i) => {
+      form.append(`tags[${i}]`, t)
+    })
+  } else form.append('tags', [])
 
   if (geom) {
     form.append('geom', JSON.stringify(fCollectionFormat(geom)))

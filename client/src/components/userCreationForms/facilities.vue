@@ -57,6 +57,24 @@
           Add url
         </el-button>
       </el-form-item>
+      <el-form-item label="Tags" class="mt2">
+        <el-select
+          v-model="form.tags"
+          multiple
+          filterable
+          placeholder
+          allow-create
+          class="w-fit-full"
+          default-first-option
+        >
+          <el-option
+            v-for="item in form.tagsList"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <dragger />
       </el-form-item>
@@ -81,7 +99,8 @@ export default {
   data: () => ({
     tag: '',
     isURLValid: null,
-    inputVisible: false
+    inputVisible: false,
+    tagsList: []
   }),
   props: {
     form: {

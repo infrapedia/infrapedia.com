@@ -208,6 +208,7 @@ export default {
           this.form = {
             name: '',
             slug: '',
+            tags: [],
             cables: [],
             state: null,
             geom: this.featuresList
@@ -228,6 +229,7 @@ export default {
           this.form = {
             cls: [],
             urls: [],
+            tags: [],
             name: '',
             notes: '',
             facilities: [],

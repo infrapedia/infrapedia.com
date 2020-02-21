@@ -12,7 +12,8 @@ export const createNetwork = async ({
   user_id,
   websites,
   facilities,
-  organizations
+  organizations,
+  tags
 }) => {
   url = `${apiConfig.url}/auth/network/add`
 
@@ -55,6 +56,12 @@ export const createNetwork = async ({
     })
   } else form.append('cables', [])
 
+  if (tags && tags.length) {
+    tags.forEach((t, i) => {
+      form.append(`tags[${i}]`, t)
+    })
+  } else form.append('tags', [])
+
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
@@ -76,7 +83,8 @@ export const editNetwork = async ({
   user_id,
   websites,
   facilities,
-  organizations
+  organizations,
+  tags
 }) => {
   url = `${apiConfig.url}/auth/network/edit`
   form = new FormData()
@@ -87,7 +95,7 @@ export const editNetwork = async ({
     websites.forEach((a, i) => {
       form.append(`websites[${i}]`, a)
     })
-  } else form.append('websites', JSON.stringify([]))
+  } else form.append('websites', [])
 
   if (organizations.length) {
     organizations.forEach((a, i) => {
@@ -118,6 +126,12 @@ export const editNetwork = async ({
       form.append(`cables[${i}]`, a)
     })
   } else form.append('cables', [])
+
+  if (tags && tags.length) {
+    tags.forEach((t, i) => {
+      form.append(`tags[${i}]`, t)
+    })
+  } else form.append('tags', [])
 
   const res = await $axios.put(url, form, {
     withCredentials: true,

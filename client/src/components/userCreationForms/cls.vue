@@ -51,6 +51,24 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="Tags" class="mt2">
+        <el-select
+          v-model="form.tags"
+          multiple
+          filterable
+          placeholder
+          class="w-fit-full"
+          allow-create
+          default-first-option
+        >
+          <el-option
+            v-for="item in form.tagsList"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <dragger
           creation-type="cls"
@@ -80,6 +98,7 @@ import { getCables, searchCables } from '../../services/api/cables'
 export default {
   name: 'CLSForm',
   data: () => ({
+    tagsList: [],
     cablesList: [],
     loading: false,
     isLoadingCables: false

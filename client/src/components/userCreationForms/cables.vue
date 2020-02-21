@@ -128,6 +128,24 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="Tags" class="mt2">
+        <el-select
+          v-model="form.tags"
+          multiple
+          class="w-fit-full"
+          filterable
+          placeholder
+          allow-create
+          default-first-option
+        >
+          <el-option
+            v-for="item in form.tagsList"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <dragger @handle-file-converted="handleFileConverted" />
       </el-form-item>
@@ -164,6 +182,7 @@ export default {
     cableStates,
     clsList: [],
     facsList: [],
+    tagsList: [],
     isURLValid: null,
     inputVisible: false,
     isLoadingFacs: false

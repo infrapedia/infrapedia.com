@@ -292,7 +292,7 @@ export default {
 
       if (tagOnEdit === null) this.form.address.push({ ...this.tag })
       else this.form.address[tagOnEdit] = { ...this.tag }
-      this.clearAddress()
+      return this.clearAddress()
     },
     showInput() {
       this.inputVisible = true
