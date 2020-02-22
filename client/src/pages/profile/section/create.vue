@@ -21,6 +21,18 @@
     <div class="right w-fit-full">
       <editor-map :type="creationType" :key="mapKey" />
     </div>
+    <el-dialog
+      :visible.sync="isLoadingDialog"
+      width="44%"
+      top="12vh"
+      title="Uploading file ..."
+      :show-close="false"
+      :custom-class="customDialogClass"
+      :close-on-click-modal="false"
+    >
+      Usually this takes a long time when uploading large files ...Please be
+      patient.
+    </el-dialog>
   </div>
 </template>
 
@@ -74,6 +86,13 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    customDialogClass() {
+      return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
+    },
+    isLoadingDialog() {
+      const type = this.creationType === 'cls' || this.creationType === 'cables'
+      return type && this.isSendingData
     },
     currentView() {
       let view
@@ -307,7 +326,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') {
+      if (res && res.t && res.t !== 'error') {
         return this.$router.push('/user/section/cables')
       }
     },
@@ -320,7 +339,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') {
+      if (res && res.t && res.t !== 'error') {
         return this.$router.push('/user/section/cables')
       }
     }

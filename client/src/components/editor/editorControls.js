@@ -134,6 +134,8 @@ class EditorControls {
   updateControls(scene = this.scene) {
     const isCreation = scene.creation || scene.edition
     const isEdition = !scene.creation || !scene.edition
+    // TODO: need to fix this controls shit on edit mode (cables creation)
+    // console.log(this.type, isCreation, isEdition)
 
     if (isCreation) {
       this.buttons.ok.style.setProperty('display', 'block')
@@ -154,7 +156,7 @@ class EditorControls {
       this.buttons.trash.style.setProperty('display', 'none')
       this.buttons.editProperties.style.setProperty('display', 'none')
 
-      if (this.type !== 'cables') {
+      if (!this.type.includes('cables')) {
         this.buttons.point.style.setProperty('display', 'block')
       } else {
         this.buttons.point.style.setProperty('display', 'none')

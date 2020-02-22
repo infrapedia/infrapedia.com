@@ -22,7 +22,7 @@ export const createCable = async ({
   tags
 }) => {
   url = `${apiConfig.url}/auth/cables/add`
-  form = new FormData()
+  form = new URLSearchParams()
 
   try {
     form.append('category', category)
@@ -70,6 +70,7 @@ export const createCable = async ({
     withCredentials: true,
     headers: {
       user_id,
+      'Content-Type': 'application/x-www-form-urlencoded',
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -96,7 +97,7 @@ export const editCable = async ({
   tags
 }) => {
   url = `${apiConfig.url}/auth/cables/edit`
-  form = new FormData()
+  form = new URLSearchParams()
 
   try {
     form.append('_id', _id)
@@ -145,6 +146,7 @@ export const editCable = async ({
     withCredentials: true,
     headers: {
       user_id,
+      'Content-Type': 'application/x-www-form-urlencoded',
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }

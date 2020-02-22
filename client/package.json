@@ -6,7 +6,7 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint --fix",
-    "dev": "vue-cli-service serve --port 8080 --open",
+    "dev": "vue-cli-service serve --port 8081 --open",
     "test": "yarn test:unit"
   },
   "dependencies": {

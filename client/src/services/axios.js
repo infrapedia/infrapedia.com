@@ -9,7 +9,7 @@ const $axios = create$Service({
   resHandleFunc: res => handleReqSuccess(res),
   resErrorFunc: err => handleReqErrors(err),
   baseURL: process.env.VUE_APP_BASE_API,
-  timeout: 120000
+  timeout: 3600000
 })
 
 export default $axios
