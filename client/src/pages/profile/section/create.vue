@@ -264,9 +264,9 @@ export default {
       }
     },
     async getElementOnEdit(_id) {
+      this.loading = true
       this.mode = 'edit'
       let currentElement = {}
-      this.loading = true
 
       switch (this.creationType) {
         case 'cls':
@@ -278,12 +278,32 @@ export default {
       }
 
       this.form = { ...currentElement }
+      await this.handleEditModeSettings(currentElement)
+      this.loading = false
+    },
+    async handleEditModeSettings(data) {
+      switch (this.creationType) {
+        case 'cls':
+          this.form.cablesList = data.cables.map(f => ({
+            name: f.label,
+            _id: f._id
+          }))
+          this.form.cables = data.cables.map(f => f._id)
+          break
+        case 'cables':
+          this.form.facsList = data.facilities.map(f => ({
+            name: f.label,
+            _id: f._id
+          }))
+          this.form.facilities = data.facilities.map(f => f._id)
+          break
+      }
+
       if (this.form.geom && this.form.geom.features) {
-        await this.$store.dispatch('editor/setList', this.form.geom.features)
+        await this.$store.dispatch('editor/setList', data.geom.features)
         await (this.form.geom = this.$store.state.editor.scene.features.list)
         await bus.$emit(`${EDITOR_LOAD_DRAW}`)
       }
-      this.loading = false
     },
     async viewCurrentCLS(_id) {
       const res = await viewClsOwner({ user_id: this.$auth.user.sub, _id })

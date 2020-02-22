@@ -2,7 +2,7 @@
   <el-container class="vph-full no-overflow">
     <i-navbar role="navigation" :is-user-navbar="true" />
 
-    <el-aside class="pt9 oveflow-y-auto no-overflow-x hidden-md-and-down">
+    <el-aside class="mt12 oveflow-y-auto no-overflow-x hidden-md-and-down">
       <ul role="group" class="pt10 h-fit-full">
         <template v-for="(link, i) in profileLinks">
           <li role="listitem" class="h18" :key="i">

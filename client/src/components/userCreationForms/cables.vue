@@ -216,6 +216,12 @@ export default {
   mounted() {
     this.getCLSList()
   },
+  watch: {
+    'form.facsList'(facs) {
+      this.facsList = [...facs]
+      delete this.form.facsList
+    }
+  },
   methods: {
     handleFileConverted(fc) {
       return this.$emit('handle-file-converted', fc)

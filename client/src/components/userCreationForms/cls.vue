@@ -94,7 +94,7 @@
 
 <script>
 import Dragger from '../../components/Dragger'
-import { getCables, searchCables } from '../../services/api/cables'
+import { searchCables } from '../../services/api/cables'
 
 export default {
   name: 'CLSForm',
@@ -132,18 +132,13 @@ export default {
       return this.$store.state.editor.scene.features.list.length ? false : true
     }
   },
-  async mounted() {
-    await this.getCablesList()
+  watch: {
+    'form.cablesList'(cables) {
+      this.cablesList = [...cables]
+      delete this.form.cablesList
+    }
   },
   methods: {
-    async getCablesList() {
-      this.loading = true
-      const res = await getCables({ user_id: this.$auth.user.sub })
-      if (res.t !== 'error' && res.data) {
-        this.cablesList = res.data.r
-      }
-      this.loading = false
-    },
     async loadCablesSearch(s) {
       if (s === '') return
       this.isLoadingCables = true
