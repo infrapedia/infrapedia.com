@@ -50,7 +50,7 @@ export default {
       this.$store.commit(`${MAP_FOCUS_ON}`, {
         id: data._id,
         name: data.name,
-        type: 'cls'
+        type: 'cables'
       })
       return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
     },
@@ -65,7 +65,7 @@ export default {
     handleEditCable(_id) {
       return this.$router.push({
         path: '/user/section/create',
-        query: { id: 'cable', item: _id }
+        query: { id: 'cables', item: _id }
       })
     },
     handleDeleteCable(_id) {

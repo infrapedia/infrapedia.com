@@ -134,6 +134,7 @@
           class="w24"
           plain
           @click="submitForm('form')"
+          :loading="isSendingData"
           @keyup.enter.space="submitForm('form')"
           >Buy</el-button
         >
@@ -159,6 +160,7 @@ export default {
     capacities: ['1GB', '10GB', '100GB', 'Others'],
     loading: false,
     siteKey,
+    isSendingData: false,
     catchaVerified: null,
     form: {
       company: '',
@@ -279,6 +281,7 @@ export default {
       }
     },
     async sendBuyRequest() {
+      this.isSendingData = true
       const data = {
         cable: this.$store.state.map.currentSelection.name,
         type: this.dialogTitle,
@@ -298,9 +301,10 @@ export default {
         t: getSelectionTypeNumber(this.focus.type)
       })
 
-      if (res && res.status !== 'error') {
+      if (res && res.status && res.status !== 'error') {
         this.closeDialog()
       }
+      this.isSendingData = false
     },
     validatePhoneNumber({ number, isValid }) {
       try {

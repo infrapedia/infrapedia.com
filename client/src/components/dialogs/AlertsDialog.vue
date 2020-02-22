@@ -63,6 +63,7 @@
           class="w28"
           plain
           @click="submitForm"
+          :loading="isSendingData"
           @keyup.enter.space="submitForm"
           >Create alert</el-button
         >
@@ -85,6 +86,7 @@ export default {
     VueRecaptcha
   },
   data: () => ({
+    isSendingData: false,
     catchaVerified: null,
     loading: false,
     siteKey,
@@ -159,13 +161,15 @@ export default {
       }
     },
     async submitForm() {
+      this.isSendingData = true
       const res = await createAlert({
         user_id: this.$auth.user.sub,
         elemnt: this.focus.id,
         t: getSelectionTypeNumber(this.focus.type),
         ...this.form
       })
-      if (res && res.t !== 'error') this.closeDialog()
+      if (res && res.t && res.t !== 'error') this.closeDialog()
+      this.isSendingData = false
     },
     closeDialog() {
       this.$store.commit(`${TOGGLE_ALERT_DIALOG}`, false)

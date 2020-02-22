@@ -57,6 +57,7 @@
           class="w28"
           plain
           @click="submitForm"
+          :loading="isSendingData"
           @keyup.enter.space="submitForm"
           >Send</el-button
         >
@@ -78,6 +79,7 @@ export default {
   data: () => ({
     siteKey,
     loading: false,
+    isSendingData: false,
     catchaVerified: null,
     fileSelected: false,
     form: {
@@ -127,11 +129,13 @@ export default {
       this.fileSelected = true
     },
     async submitForm() {
+      this.isSendingData = true
       const res = await editElemnt({
         user_id: this.$auth.user.sub,
         ...this.form
       })
-      if (res && res.t !== 'error') this.closeDialog()
+      if (res && res.t && res.t !== 'error') this.closeDialog()
+      this.isSendingData = false
     },
     closeDialog() {
       this.form = {

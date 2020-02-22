@@ -26,6 +26,7 @@
           :disabled="isFormUncomplete"
           type="primary"
           plain
+          :loading="isSendingData"
           @click="submitForm"
           @keyup.enter.space="submitForm"
           >Send message</el-button
@@ -46,6 +47,7 @@ export default {
     'editor-html': () => import('../../components/HtmlEditor.vue')
   },
   data: () => ({
+    isSendingData: false,
     loading: false,
     form: {
       subject: '',
@@ -78,6 +80,7 @@ export default {
       this.form.message = msg
     },
     async submitForm() {
+      this.isSendingData = true
       const res = await sendEmail({
         user_id: this.$auth.user.sub,
         id: this.focus.id,
@@ -100,6 +103,7 @@ export default {
         }
         this.closeDialog()
       }
+      this.isSendingData = false
     },
     closeDialog() {
       this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, false)
