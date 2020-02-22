@@ -24,7 +24,7 @@
           v-model="form.googleID"
         />
       </el-form-item>
-      <el-divider />
+      <el-divider :class="{ dark }" />
       <el-form-item label="Facilities">
         <el-select
           multiple

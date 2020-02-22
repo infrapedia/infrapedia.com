@@ -5,7 +5,7 @@
     id="toggleTheme"
     @click="$emit('click')"
   >
-    <div class="mt-2">
+    <div class="mt-1">
       <transition-group name="fade" mode="in-out" tag="div">
         <span
           :key="2"

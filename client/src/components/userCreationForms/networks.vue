@@ -205,6 +205,7 @@
           filterable
           placeholder
           allow-create
+          :class="{ dark }"
           class="w-fit-full"
           default-first-option
         >
@@ -217,24 +218,20 @@
         </el-select>
       </el-form-item>
       <el-form-item class="mt12">
-        <el-button
-          :class="{ dark }"
-          type="primary"
-          class="mr8 mb2"
-          round
-          plain
-          @click="sendData"
-        >
-          {{ title }} network
-        </el-button>
-        <el-button
-          class="w36"
-          :class="{ dark }"
-          round
-          @click="handleBeforeClose"
-        >
-          Cancel
-        </el-button>
+        <div class="w-fit-full flex row wrap">
+          <el-button
+            :class="{ dark }"
+            type="primary"
+            round
+            plain
+            @click="sendData"
+          >
+            {{ title }} network
+          </el-button>
+          <el-button :class="{ dark }" round @click="handleBeforeClose">
+            Cancel
+          </el-button>
+        </div>
       </el-form-item>
     </el-form>
   </el-dialog>

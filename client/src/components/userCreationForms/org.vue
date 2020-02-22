@@ -184,13 +184,7 @@
           >
             {{ title }} organization
           </el-button>
-          <el-button
-            :class="{ dark }"
-            plain
-            round
-            class="transparent"
-            @click="handleBeforeClose"
-          >
+          <el-button :class="{ dark }" round @click="handleBeforeClose">
             Cancel
           </el-button>
         </div>

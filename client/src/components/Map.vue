@@ -1048,7 +1048,8 @@ export default {
      * @param type { String }
      */
     async handleFocusOn({ id, type }) {
-      if (!id) {
+      if (!this.map) return
+      else if (!id) {
         throw {
           message: `Expected @param id to be [Number, String], but found ${typeof id}`
         }

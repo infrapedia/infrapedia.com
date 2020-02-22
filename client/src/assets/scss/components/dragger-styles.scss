@@ -38,10 +38,16 @@
 */
 
 .application.dark {
-  .inner-wrapper {
-    color: $white-full;
+  .dragger-wrapper {
+    border: 1px dashed rgb(126, 126, 126);
     &:hover {
-      color: $blue !important;
+      border-color: $blue !important;
+      .inner-wrapper:hover {
+        color: $blue !important;
+      }
+    }
+    .inner-wrapper {
+      color: $white-partial;
     }
   }
 }

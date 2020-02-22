@@ -135,6 +135,7 @@
           class="w-fit-full"
           filterable
           placeholder
+          :class="{ dark }"
           allow-create
           default-first-option
         >

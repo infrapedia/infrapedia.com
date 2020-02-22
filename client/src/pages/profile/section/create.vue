@@ -272,16 +272,16 @@ export default {
         case 'cls':
           currentElement = await this.viewCurrentCLS(_id)
           break
-        case 'cable':
+        case 'cables':
           currentElement = await this.viewCurrentCable(_id)
           break
       }
 
       this.form = { ...currentElement }
       if (this.form.geom && this.form.geom.features) {
-        this.$store.dispatch('editor/setList', this.form.geom.features)
-        this.form.geom = this.$store.state.editor.scene.features.list
-        bus.$emit(`${EDITOR_LOAD_DRAW}`)
+        await this.$store.dispatch('editor/setList', this.form.geom.features)
+        await (this.form.geom = this.$store.state.editor.scene.features.list)
+        await bus.$emit(`${EDITOR_LOAD_DRAW}`)
       }
       this.loading = false
     },

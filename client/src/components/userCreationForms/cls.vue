@@ -56,6 +56,7 @@
           v-model="form.tags"
           multiple
           filterable
+          :class="{ dark }"
           placeholder
           class="w-fit-full"
           allow-create

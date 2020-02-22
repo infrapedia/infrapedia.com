@@ -64,6 +64,7 @@
           filterable
           placeholder
           allow-create
+          :class="{ dark }"
           class="w-fit-full"
           default-first-option
         >
