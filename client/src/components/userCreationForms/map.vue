@@ -145,9 +145,13 @@
         <br />
         <div class="block w-fit-full">
           <el-upload
-            v-model="form.logos"
-            action="https://jsonplaceholder.typicode.com/posts/"
             list-type="picture-card"
+            accept="image/*.jpg"
+            :action="uploadURL"
+            :file-list.sync="form.logos"
+            :headers="uploadLogoHeaders"
+            :on-success="handleLogoUpload"
+            :before-upload="handleUploadProgress"
           >
             <i class="el-icon-plus" />
           </el-upload>
@@ -180,8 +184,9 @@
 <script>
 import { searchFacilities, getFacilityGeom } from '../../services/api/facs'
 import { searchCables, getCableGeom } from '../../services/api/cables'
-import { searchCls, getClsGeom } from '../../services/api/cls'
 import { searchIxps, getIxpsGeom } from '../../services/api/ixps'
+import { searchCls, getClsGeom } from '../../services/api/cls'
+import apiConfig from '../../config/apiConfig'
 
 export default {
   name: 'MapForm',
@@ -198,6 +203,7 @@ export default {
     isLoadingIxps: false,
     isLoadingCables: false,
     isPropertiesDialog: false,
+    isUploadingImage: false,
     currentSelection: null,
     mapCreationData: {
       cls: [],
@@ -227,6 +233,12 @@ export default {
     title() {
       return this.mode === 'create' ? 'Create' : 'Edit'
     },
+    uploadLogoHeaders() {
+      return { user_id: this.$auth.user.sub }
+    },
+    uploadURL() {
+      return `${apiConfig.url}/auth/upload/logo`
+    },
     dark() {
       return this.$store.state.isDark
     },
@@ -250,6 +262,14 @@ export default {
     }
   },
   methods: {
+    handleUploadProgress() {
+      this.isUploadingImage = true
+    },
+    handleLogoUpload(res) {
+      if (!res.data && res.data.r.length) return
+      this.form.logos.push(res.data.r[0])
+      this.isUploadingImage = false
+    },
     async handleEditModeScenario() {
       const { cables, cls, facilities, ixps } = this.form
 

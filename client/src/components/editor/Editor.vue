@@ -105,19 +105,22 @@ export default {
     }
   },
   methods: {
-    async handleSetMapSources() {
-      const { map } = this
-      await map.on('load', async function() {
+    handleSetMapSources() {
+      let vm = this
+      this.map.on('load', function() {
         for (let source of editorMapConfig.sources) {
-          await map.addSource(source, {
+          vm.map.addSource(source, {
             type: 'geojson',
             data: fCollectionFormat([])
           })
         }
-        for (let layer of editorMapConfig.layers) {
-          await map.addLayer(layer)
-        }
+        vm.addMapLayers(vm.map)
       })
+    },
+    addMapLayers(map) {
+      for (let layer of editorMapConfig.layers) {
+        map.addLayer(layer)
+      }
     },
     async handleFileConverted(fc) {
       if (!fc.features.length) return
@@ -127,15 +130,23 @@ export default {
       await this.handleZoomToFeature(fc)
       return await $store.dispatch('editor/setList', fc.features)
     },
-    async handleMapFormFeatureSelection({ t, fc }) {
-      const source = this.map.getSource(`${t}-source`)
-      const prFeats = source._data.features
-      console.log(source._data)
-      if (source && prFeats && prFeats.length) {
-        fc.features = [...fc.features, ...prFeats]
-      }
-      await this.map.getSource(`${t}-source`).setData(fc)
-      return await this.$emit('done-setting-selection-onto-map')
+    handleMapFormFeatureSelection({ t, fc }) {
+      if (!this.map) return
+
+      // TODO: remove from the source data the elements taken out from the mapForm select(s)
+
+      setTimeout(async () => {
+        const source = this.map.getSource(`${t}-source`)
+        const prFeats = source ? source._data.features : false
+
+        if (source) {
+          if (prFeats && prFeats.length) {
+            fc.features = [...fc.features, ...prFeats]
+          }
+          await source.setData(fc)
+        }
+        return await this.$emit('done-setting-selection-onto-map')
+      }, 10)
     },
     async handleZoomToFeature(fc) {
       let bbox = []
