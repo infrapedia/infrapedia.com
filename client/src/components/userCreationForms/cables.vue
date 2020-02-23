@@ -188,6 +188,7 @@ export default {
     inputVisible: false,
     isLoadingFacs: false
   }),
+  // TODO: mark activationDateTime field as required. Because it's affecting the query made by joja
   props: {
     form: {
       type: Object,
