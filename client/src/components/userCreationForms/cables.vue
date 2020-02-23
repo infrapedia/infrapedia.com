@@ -3,8 +3,8 @@
     <header slot="header" class="w-fit-full mb8">
       <h1 class="title">{{ title }} cable</h1>
     </header>
-    <el-form ref="form" :model="form">
-      <el-form-item label="Category">
+    <el-form ref="form" :model="form" :rules="formRules">
+      <el-form-item label="Category" prop="category">
         <el-select
           class="w-fit-full"
           filterable
@@ -20,10 +20,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="Name">
+      <el-form-item label="Name" prop="name" required>
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
-      <el-form-item label="System length">
+      <el-form-item label="System length" prop="systemLength">
         <el-input-number
           :min="0"
           :class="{ dark }"
@@ -32,14 +32,14 @@
           v-model="form.systemLength"
         />
       </el-form-item>
-      <el-form-item label="Activation date">
+      <el-form-item label="Activation date" prop="activationDateTime" required>
         <el-date-picker
           :class="{ dark }"
           class="w-fit-full-imp"
           v-model="form.activationDateTime"
         />
       </el-form-item>
-      <el-form-item label="URL(s)">
+      <el-form-item label="URL(s)" prop="urls">
         <el-tag
           :key="tag"
           v-for="tag in form.urls"
@@ -81,7 +81,7 @@
           Add url
         </el-button>
       </el-form-item>
-      <el-form-item label="Terrestrial">
+      <el-form-item label="Terrestrial" prop="terrestrial">
         <el-radio-group v-model="form.terrestrial">
           <el-radio :label="true">
             Yes
@@ -91,7 +91,7 @@
           </el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="Tbps capacity">
+      <el-form-item label="Tbps capacity" prop="tbpsCapacity">
         <el-input-number
           :min="0"
           :class="{ dark }"
@@ -100,14 +100,14 @@
           v-model="form.capacityTBPS"
         />
       </el-form-item>
-      <el-form-item label="Fiber pairs">
+      <el-form-item label="Fiber pairs" prop="fiberPairs">
         <el-input
           :class="{ dark }"
           class="w-fit-full"
           v-model="form.fiberPairs"
         />
       </el-form-item>
-      <el-form-item label="Facilities">
+      <el-form-item label="Facilities" prop="facilities">
         <el-select
           multiple
           :class="{ dark }"
@@ -128,7 +128,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="Tags" class="mt2">
+      <el-form-item label="Tags" class="mt2" prop="tags">
         <el-select
           v-model="form.tags"
           multiple
@@ -186,9 +186,34 @@ export default {
     tagsList: [],
     isURLValid: null,
     inputVisible: false,
-    isLoadingFacs: false
+    isLoadingFacs: false,
+    formRules: {
+      activationDateTime: [
+        {
+          type: 'date',
+          required: true,
+          message: 'Please pick a date',
+          trigger: 'change'
+        }
+      ],
+      name: [
+        {
+          required: true,
+          message: 'Please input cable name',
+          trigger: 'blur'
+        },
+        { min: 3, message: 'Length should be at least 3', trigger: 'blur' }
+      ],
+      tags: [],
+      urls: [],
+      category: [],
+      fiberPairs: [],
+      facilities: [],
+      terrestrial: [],
+      tbpsCapacity: [],
+      systemLength: []
+    }
   }),
-  // TODO: mark activationDateTime field as required. Because it's affecting the query made by joja
   props: {
     form: {
       type: Object,
@@ -234,7 +259,9 @@ export default {
       }
     },
     sendData() {
-      return this.$emit('send-data')
+      return this.$refs['form'].validate(isValid =>
+        isValid ? this.$emit('send-data') : false
+      )
     },
     async loadFacsSearch(s) {
       if (s === '') return
