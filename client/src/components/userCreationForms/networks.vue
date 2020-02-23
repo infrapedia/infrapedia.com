@@ -250,7 +250,6 @@ export default {
     tag: '',
     cls: [],
     orgs: [],
-    // ixps: [],
     facs: [],
     cables: [],
     loading: false,
@@ -287,6 +286,26 @@ export default {
   watch: {
     visible(bool) {
       return bool ? null : this.clearAll()
+    },
+    'form.facilitiesList'(facs) {
+      if (!facs) return
+      this.facs = [...facs]
+      delete this.form.facilitiesList
+    },
+    'form.organizationsList'(orgs) {
+      if (!orgs) return
+      this.orgs = [...orgs]
+      delete this.form.organizationsList
+    },
+    'form.cablesList'(cables) {
+      if (!cables) return
+      this.cables = [...cables]
+      delete this.form.cablesList
+    },
+    'form.clsList'(cls) {
+      if (!cls) return
+      this.cls = [...cls]
+      delete this.form.clsList
     }
   },
   methods: {

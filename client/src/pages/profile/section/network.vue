@@ -54,13 +54,12 @@ export default {
       btn_label: 'Create network'
     },
     form: {
+      cls: [],
       name: '',
-      websites: [],
-      organizations: [],
-      facilities: [],
       cables: [],
-      ixps: [],
-      cls: []
+      websites: [],
+      facilities: [],
+      organizations: []
     },
     columns: [...netColumns].filter(col => col.showTable)
   }),
@@ -98,12 +97,22 @@ export default {
       }
     },
     async viewNet(_id) {
+      this.loading = true
       const res = await viewNetworkOwner({ user_id: this.$auth.user.sub, _id })
       if (res && res.data && res.data.r) {
         this.form = res.data.r
+        const props = ['cables', 'facilities', 'cls', 'organizations']
+        for (let p of props) {
+          this.form[`${p}List`] = res.data.r[p].map(f => ({
+            name: f.label,
+            _id: f._id
+          }))
+          this.form[p] = res.data.r[p].map(f => f._id)
+        }
       }
       this.mode = 'edit'
       this.toggleDialog()
+      this.loading = false
     },
     toggleDialog(itClearsForm) {
       this.isDialog = !this.isDialog

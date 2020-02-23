@@ -1,0 +1,55 @@
+@import '../base/variables';
+
+.spinner-wrapper {
+  position: absolute;
+  top: 2rem;
+  left: unset;
+  right: unset;
+  width: 4rem;
+  height: 1rem;
+}
+
+.spinner {
+  margin: 10px auto 0;
+  width: 0px;
+  text-align: center;
+  transform: rotateZ(90deg);
+}
+
+.application.light {
+  .spinner > div {
+    background-color: $dark-blue;
+  }
+}
+
+.application.dark {
+  .spinner > div {
+    background-color: $grey-ligthen;
+  }
+}
+.spinner > div {
+  width: 12px;
+  height: 12px;
+  border-radius: 100%;
+  display: inline-block;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+  animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+  animation-delay: -0.16s;
+}
+
+@keyframes sk-bouncedelay {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}

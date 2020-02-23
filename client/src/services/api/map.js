@@ -35,6 +35,8 @@ export const setMyMap = async ({
   cables,
   logos,
   draw,
+  ixps,
+  config,
   user_id
 }) => {
   url = `${apiConfig.url}/auth/map/mymap`
@@ -42,24 +44,23 @@ export const setMyMap = async ({
 
   form.append('googleID', googleID)
   form.append('subdomain', subdomain)
+  form.append('config', JSON.stringify(config))
   form.append('draw', JSON.stringify(fCollectionFormat(draw)))
 
   if (facilities && facilities.length) {
-    facilities.forEach((fac, i) => {
-      form.append(`facilities[${i}]`, JSON.stringify(fac))
-    })
+    facilities.forEach((fac, i) => form.append(`facilities[${i}]`, fac))
   } else form.append('facilities', [])
 
+  if (ixps && ixps.length) {
+    ixps.forEach((ixp, i) => form.append(`ixps[${i}]`, ixp))
+  } else form.append('ixps', [])
+
   if (cls && cls.length) {
-    cls.forEach((cls, i) => {
-      form.append(`cls[${i}]`, JSON.stringify(cls))
-    })
+    cls.forEach((cls, i) => form.append(`cls[${i}]`, cls))
   } else form.append('cls', [])
 
   if (cables && cables.length) {
-    cables.forEach((cable, i) => {
-      form.append(`cables[${i}]`, JSON.stringify(cable))
-    })
+    cables.forEach((cable, i) => form.append(`cables[${i}]`, cable))
   } else form.append('cables', [])
 
   if (logos && logos.length) {

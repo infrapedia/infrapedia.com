@@ -44,3 +44,17 @@ export const viewIxpsBBox = async ({ user_id, _id }) => {
   })
   return res
 }
+
+export const getIxpsGeom = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/ixps/geom/${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+
+  return res
+}

@@ -6,6 +6,7 @@ export const clsColumns = [
   {
     label: 'Cables',
     value: 'cables',
+    showTable: true,
     showSidebar: true
   },
   {

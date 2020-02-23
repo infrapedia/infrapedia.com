@@ -112,6 +112,35 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="Ixps">
+        <el-select
+          multiple
+          clearable
+          :class="{ dark }"
+          collapse-tags
+          remote
+          :remote-method="loadIxpsSearch"
+          :loading="isLoadingIxps"
+          filterable
+          class="w-fit-full"
+          v-model="form.ixps"
+          placeholder
+          ref="ixpsSelect"
+          @change="handleSelectionChange('ixps', $event)"
+        >
+          <el-option
+            v-for="(opt, i) in ixps"
+            :key="i"
+            :label="opt.name"
+            :value="opt._id"
+          >
+            <div class="truncate" :title="opt.name">
+              <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
+              {{ opt.name }}
+            </div>
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="Logo(s)">
         <br />
         <div class="block w-fit-full">
@@ -149,9 +178,10 @@
 </template>
 
 <script>
-import { searchFacilities } from '../../services/api/facs'
-import { searchCables } from '../../services/api/cables'
-import { searchCls } from '../../services/api/cls'
+import { searchFacilities, getFacilityGeom } from '../../services/api/facs'
+import { searchCables, getCableGeom } from '../../services/api/cables'
+import { searchCls, getClsGeom } from '../../services/api/cls'
+import { searchIxps, getIxpsGeom } from '../../services/api/ixps'
 
 export default {
   name: 'MapForm',
@@ -159,16 +189,19 @@ export default {
     facilities: [],
     cables: [],
     cls: [],
+    ixps: [],
     feature: {},
     featureType: '',
     isLoadingCls: false,
     dialogMode: 'create',
     isLoadingFacs: false,
+    isLoadingIxps: false,
     isLoadingCables: false,
     isPropertiesDialog: false,
     currentSelection: null,
     mapCreationData: {
       cls: [],
+      ixps: [],
       cables: [],
       facilities: []
     }
@@ -211,43 +244,76 @@ export default {
     }
   },
   watch: {
-    mode(m) {
+    async mode(m) {
       if (m === 'create') return
-      this.handleEditModeScenario()
+      await this.handleEditModeScenario()
     }
   },
   methods: {
-    handleEditModeScenario() {
-      const { cables, cls, facilities } = this.form
+    async handleEditModeScenario() {
+      const { cables, cls, facilities, ixps } = this.form
 
-      this.cables = cables.map(c => ({
-        yours: c.yours,
-        name: c.name,
-        _id: c._id
-      }))
+      this.facilities = facilities.map(f => ({ name: f.label, _id: f._id }))
+      this.cables = cables.map(c => ({ name: c.label, _id: c._id }))
+      this.cls = cls.map(c => ({ name: c.label, _id: c._id }))
+      this.ixps = ixps.map(c => ({ name: c.label, _id: c._id }))
 
-      this.cls = cls.map(c => ({
-        yours: c.yours,
-        name: c.name,
-        _id: c._id
-      }))
-
-      this.facilities = facilities.map(c => ({
-        name: c.name,
-        _id: c._id
-      }))
-
-      // This is being made because the select(s) value are ._id,
-      // not the entire data being passed when setting the edit mode
       this.form.facilities = facilities.map(f => f._id)
-      this.form.cables = cables.map(c => c._id)
+      this.form.cables = await cables.map(c => c._id)
       this.form.cls = cls.map(c => c._id)
+      this.form.ixps = ixps.map(c => c._id)
 
-      this.mapCreationData = {
-        cls,
-        cables,
-        facilities
+      for (let type of ['facilities', 'cables', 'cls', 'ixps']) {
+        for (let id of this.form[type]) {
+          await this.handleSetFeatureOntoMap(type, id)
+        }
       }
+
+      this.mapCreationData = { ...this.form.config }
+      delete this.form.config
+    },
+    /**
+     * @param t { String } - selection type { can be: facilities, cables, cls, ixps }
+     * @param _id { String } - selection id
+     */
+    async handleSetFeatureOntoMap(t, _id) {
+      this.$emit('loading-selection-geom')
+
+      let fc = {}
+      switch (t) {
+        case 'cables':
+          fc = await this.handleGetCableGeom(_id)
+          break
+        case 'facilities':
+          fc = await this.handleGetFacsGeom(_id)
+          break
+        case 'cls':
+          fc = await this.handleGetClsGeom(_id)
+          break
+        case 'ixps':
+          fc = await this.handleGetIxpsGeom(_id)
+          break
+      }
+
+      return fc
+        ? this.$emit('set-selection-onto-map', { t, fc })
+        : this.$emit('cancel-geom-loading')
+    },
+    async handleGetCableGeom(_id) {
+      const res = await getCableGeom({ user_id: this.$auth.user.sub, _id })
+      return res && res.data && res.data.r ? res.data.r : {}
+    },
+    async handleGetFacsGeom(_id) {
+      const res = await getFacilityGeom({ user_id: this.$auth.user.sub, _id })
+      return res && res.data && res.data.r ? res.data.r : {}
+    },
+    async handleGetClsGeom(_id) {
+      const res = await getClsGeom({ user_id: this.$auth.user.sub, _id })
+      return res && res.data && res.data.r ? res.data.r : {}
+    },
+    async handleGetIxpsGeom(_id) {
+      const res = await getIxpsGeom({ user_id: this.$auth.user.sub, _id })
+      return res && res.data && res.data.r ? res.data.r : {}
     },
     /**
      * @param name { String } - subdomain name
@@ -267,6 +333,16 @@ export default {
       this.isLoadingCables = true
       const res = await searchCables({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
+        const indexList = this.cables
+          .map((id, i) => [id, i])
+          .filter(item => {
+            for (let id of this.form.cables) {
+              if (id === item[0]._id) return item
+            }
+          })
+        for (let index of indexList) {
+          res.data.splice(index[1], 0, index[0])
+        }
         this.cables = res.data
       }
       this.isLoadingCables = false
@@ -283,6 +359,15 @@ export default {
       }
       this.isLoadingCls = false
     },
+    async loadIxpsSearch(s) {
+      if (s === '') return
+      this.isLoadingIxps = true
+      const res = await searchIxps({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.ixps = res.data
+      }
+      this.isLoadingIxps = false
+    },
     /**
      * @param s { String } - search queried from facilities select input
      */
@@ -296,13 +381,9 @@ export default {
       this.isLoadingCls = false
     },
     sendData() {
-      const data = { ...this.form }
-      data.cls = this.mapCreationData.cls
-      data.cables = this.mapCreationData.cables
-      data.facilities = this.mapCreationData.facilities
-
       return this.$emit('send-data', {
-        ...data,
+        ...this.form,
+        config: this.mapCreationData,
         draw: Array.from(
           this.$store.state.editor.scene.features.list,
           item => ({ ...item })
@@ -310,31 +391,25 @@ export default {
       })
     },
     /**
-     * @param t { String } - selection type { can be: facilities, cables, cls }
-     * @param id { String } - selection _id
+     * @param t { String } - selection type { can be: facilities, cables, cls, ixps }
+     * @param _id { String } - selection id
      */
-    handleSelectionChange(t, id) {
+    async handleSelectionChange(t, _id) {
       if (this.form[t].length < this.mapCreationData[t].length) {
-        // Removing from mapCreationData[type] from my selections
-        return this.form[t].forEach(id => {
-          let index = 0
-          for (let data of Array.from(this.mapCreationData, item => ({
-            ...item
-          }))) {
-            if (id === data.id) continue
-            else this.mapCreationData.splice(index, 1)
-            index += 1
-          }
-        })
+        // Removing from mapCreationData[type] the one just removed from this.form[t]
+        if (this.form[t].length) {
+          return (this.mapCreationData[t] = this.mapCreationData[t].filter(d =>
+            this.form[t].includes(d._id)
+          ))
+        } else return (this.mapCreationData[t] = [])
       }
 
       this.featureType = t
-      this.currentSelection = this[t].filter(
-        item => item._id === id[this.form[t].length - 1]
-      )[0]
+      this.currentSelection = _id[this.form[t].length - 1]
       this.$refs[`${t}Select`].blur()
-      setTimeout(() => {
+      setTimeout(async () => {
         this.isPropertiesDialog = true
+        await this.handleSetFeatureOntoMap(t, this.currentSelection)
       }, 320)
     },
     /**
@@ -345,7 +420,7 @@ export default {
       if (!ids.includes(this.currentSelection)) {
         this.mapCreationData[this.featureType].push({
           ...data,
-          ...this.currentSelection
+          _id: this.currentSelection
         })
       }
       this.isPropertiesDialog = false

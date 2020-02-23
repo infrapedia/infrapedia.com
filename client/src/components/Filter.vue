@@ -168,7 +168,6 @@ export default {
      * @param selection { Boolean }
      */
     emitRadioSelection(selection) {
-      // console.log(selection)
       if (
         (selection === 'no-active' || selection === 'no-future') &&
         !this.filters.isSubseaOnly

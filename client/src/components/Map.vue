@@ -611,21 +611,20 @@ export default {
       // If is currently drawing don't do anything
       if (this.isDrawing) return
 
-      const { map } = this
       let selectionID = null
       const themeColor = this.dark ? 'Dark' : 'Light'
       const buildingPoint = `buildingPoint${themeColor}`
       const buildingFootprint = `buildingFootprint${themeColor}`
-      const cables = map.queryRenderedFeatures(e.point, {
+      const cables = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.cableLayer]
       })
-      const buildingFootprints = map.queryRenderedFeatures(e.point, {
+      const buildingFootprints = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig[buildingFootprint]]
       })
-      const buildingPoints = map.queryRenderedFeatures(e.point, {
+      const buildingPoints = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig[buildingPoint]]
       })
-      const clustersFeats = map.queryRenderedFeatures(e.point, {
+      const clustersFeats = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.clusterPts]
       })
 

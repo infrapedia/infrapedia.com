@@ -39,10 +39,12 @@
                 </template>
                 <el-tag
                   size="small"
+                  :title="item.name || item"
                   v-else-if="
                     col.value === 'websites' ||
                       col.value === 'cables' ||
-                      col.value === 'cls'
+                      col.value === 'cls' ||
+                      col.value === 'facilities'
                   "
                 >
                   {{ item.name ? item.name : item }}

@@ -175,3 +175,17 @@ export const searchCls = async ({ user_id, s }) => {
   })
   return res
 }
+
+export const getClsGeom = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/cls/geom/${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+
+  return res
+}

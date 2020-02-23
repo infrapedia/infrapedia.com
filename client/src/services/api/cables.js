@@ -248,3 +248,17 @@ export const searchCables = async ({ user_id, s }) => {
   })
   return res
 }
+
+export const getCableGeom = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/cables/geom/${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+
+  return res
+}

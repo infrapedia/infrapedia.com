@@ -16,10 +16,20 @@
         :is-sending-data="isSendingData"
         @send-data="checkType"
         @handle-file-converted="handleFileConverted"
+        @set-selection-onto-map="handleSetSelectionOntoMap"
+        @cancel-geom-loading="() => (isLoadingSelectionGeom = false)"
+        @loading-selection-geom="() => (isLoadingSelectionGeom = true)"
       />
     </div>
     <div class="right w-fit-full">
-      <editor-map :type="creationType" :key="mapKey" />
+      <editor-map
+        :key="mapKey"
+        :type="creationType"
+        :loading-geom="isLoadingSelectionGeom"
+        @done-setting-selection-onto-map="
+          () => (isLoadingSelectionGeom = false)
+        "
+      />
     </div>
     <el-dialog
       :visible.sync="isLoadingDialog"
@@ -48,7 +58,12 @@ import {
   editCable,
   viewCableOwner
 } from '../../../services/api/cables'
-import { EDITOR_LOAD_DRAW, EDITOR_FILE_CONVERTED } from '../../../events/editor'
+import {
+  EDITOR_LOAD_DRAW,
+  EDITOR_FILE_CONVERTED,
+  EDITOR_SET_FEATURES,
+  SET_MAP_SOURCES
+} from '../../../events/editor'
 import MapForm from '../../../components/userCreationForms/map'
 import { getMyMap, setMyMap } from '../../../services/api/map'
 
@@ -67,6 +82,7 @@ export default {
       loading: false,
       isSendingData: false,
       isPropertiesDialog: false,
+      isLoadingSelectionGeom: false,
       creationType: this.$route.query.id
     }
   },
@@ -169,10 +185,14 @@ export default {
     if (this.$route.query.item) {
       this.getElementOnEdit(this.$route.query.item)
     } else if (this.$route.query.id === 'map') {
+      bus.$emit(`${SET_MAP_SOURCES}`)
       await this.checkUserMapExistance()
     }
   },
   methods: {
+    async handleSetSelectionOntoMap(data) {
+      return await bus.$emit(`${EDITOR_SET_FEATURES}`, data)
+    },
     async checkUserMapExistance() {
       this.loading = true
       const res = await getMyMap({ user_id: this.$auth.user.sub })
@@ -185,18 +205,20 @@ export default {
           facilities,
           cables,
           logos,
-          draw
+          draw,
+          ixps,
+          config
         } = res.data.r
 
         this.form = {
-          subdomain,
           googleID,
+          subdomain,
+          ixps: Array.isArray(ixps) ? ixps : [],
+          cls: Array.isArray(cls) ? cls : [],
           logos: Array.isArray(logos) ? logos : [],
-          cls: Array.isArray(cls) ? cls.map(c => JSON.parse(c)) : [],
-          cables: Array.isArray(cables) ? cables.map(c => JSON.parse(c)) : [],
-          facilities: Array.isArray(facilities)
-            ? facilities.map(f => JSON.parse(f))
-            : []
+          cables: Array.isArray(cables) ? cables : [],
+          facilities: Array.isArray(facilities) ? facilities : [],
+          config: typeof config === 'string' ? JSON.parse(config) : config
         }
 
         const fc = typeof draw === 'string' ? JSON.parse(draw) : draw
@@ -217,6 +239,7 @@ export default {
       this.isSendingData = true
       const res = await setMyMap({ ...data, user_id: this.$auth.user.sub })
       if (res && res.t !== 'error') {
+        this.mode = 'create'
         await this.checkUserMapExistance()
       }
       this.isSendingData = false
@@ -235,13 +258,14 @@ export default {
           break
         case 'map':
           this.form = {
-            name: '',
             subdomain: '',
             googleID: '',
-            facilities: [],
+            name: '',
             cls: [],
+            ixps: [],
+            logos: [],
             cables: [],
-            logos: []
+            facilities: []
           }
           break
         default:

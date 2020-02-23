@@ -6,6 +6,7 @@
       <p class="m0 mt1"><strong>Lng:</strong> {{ infoBox.lng }}</p>
       <p class="m0 mt1"><strong>Zoom:</strong> {{ infoBox.zoom }}</p>
     </div>
+    <spinner v-if="loadingGeom" />
     <properties-dialog
       :mode="dialog.mode"
       :is-visible="dialog.visible"
@@ -22,11 +23,19 @@ import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import PropertiesDialog from './propertiesDialog'
 import { mapConfig } from '../../config/mapConfig'
-import { EDITOR_LOAD_DRAW, EDITOR_FILE_CONVERTED } from '../../events/editor'
+import {
+  EDITOR_LOAD_DRAW,
+  EDITOR_SET_FEATURES,
+  EDITOR_FILE_CONVERTED,
+  SET_MAP_SOURCES
+} from '../../events/editor'
+import { fCollectionFormat } from '../../helpers/featureCollection'
+import { editorMapConfig } from '../../config/editorMapConfig'
 
 export default {
   components: {
-    PropertiesDialog
+    PropertiesDialog,
+    Spinner: () => import('./spinner')
   },
   data: () => ({
     map: null,
@@ -47,6 +56,10 @@ export default {
     type: {
       type: String,
       default: () => ''
+    },
+    loadingGeom: {
+      type: Boolean,
+      required: () => false
     }
   },
   computed: {
@@ -80,8 +93,11 @@ export default {
     if (this.scene.features.list.length) {
       this.handleRecreateDraw()
     }
+
     bus.$on(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
+    bus.$on(`${SET_MAP_SOURCES}`, this.handleSetMapSources)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
+    bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
   },
   beforeDestroy() {
     if (this.scene.features.list.length) {
@@ -89,15 +105,39 @@ export default {
     }
   },
   methods: {
+    async handleSetMapSources() {
+      const { map } = this
+      await map.on('load', async function() {
+        for (let source of editorMapConfig.sources) {
+          await map.addSource(source, {
+            type: 'geojson',
+            data: fCollectionFormat([])
+          })
+        }
+        for (let layer of editorMapConfig.layers) {
+          await map.addLayer(layer)
+        }
+      })
+    },
     async handleFileConverted(fc) {
       if (!fc.features.length) return
 
       const { draw, $store } = this
       await draw.set(fc)
-      this.handleZoomToFeature(fc)
+      await this.handleZoomToFeature(fc)
       return await $store.dispatch('editor/setList', fc.features)
     },
-    handleZoomToFeature(fc) {
+    async handleMapFormFeatureSelection({ t, fc }) {
+      const source = this.map.getSource(`${t}-source`)
+      const prFeats = source._data.features
+      console.log(source._data)
+      if (source && prFeats && prFeats.length) {
+        fc.features = [...fc.features, ...prFeats]
+      }
+      await this.map.getSource(`${t}-source`).setData(fc)
+      return await this.$emit('done-setting-selection-onto-map')
+    },
+    async handleZoomToFeature(fc) {
       let bbox = []
       let coords = []
 
@@ -131,7 +171,7 @@ export default {
         )
       }
 
-      this.map.fitBounds(bbox, {
+      await this.map.fitBounds(bbox, {
         padding: 90,
         animate: true,
         speed: 1.75,
@@ -213,15 +253,12 @@ export default {
       })
       return map
     },
-    handleRecreateDraw() {
+    async handleRecreateDraw() {
       // Deleting everything in case there's something already drawn that could be repeted
-      this.draw.trash()
-      for (let feat of this.scene.features.list) {
-        this.draw.add(feat)
-      }
-      return this.handleZoomToFeature({
-        features: JSON.parse(JSON.stringify(this.scene.features.list))
-      })
+      await this.draw.trash()
+      const features = JSON.parse(JSON.stringify(this.scene.features.list))
+      this.draw.set(fCollectionFormat(features))
+      return await this.handleZoomToFeature({ features })
     },
     handleDrawSelectionChange(e) {
       if (!e.features.length) return
@@ -240,6 +277,7 @@ export default {
     },
     toggleDarkMode(dark) {
       return this.map.setStyle(dark ? mapConfig.darkBasemap : mapConfig.default)
+      // this.handleSetMapSources()
     }
   }
 }
