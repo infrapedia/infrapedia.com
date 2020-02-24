@@ -262,3 +262,25 @@ export const getCableGeom = async ({ user_id, _id }) => {
 
   return res
 }
+
+export const getCablesGeom = async ({ user_id, ids }) => {
+  url = `${apiConfig.url}/cables/geoms`
+  form = new FormData()
+
+  if (ids && ids.length) {
+    ids.forEach((id, i) => {
+      form.append(`ids[${i}]`, id)
+    })
+  } else form.append('ids', '')
+
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+
+  return res
+}

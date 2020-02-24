@@ -25,7 +25,6 @@ import { mapConfig } from '../../config/mapConfig'
 import {
   EDITOR_LOAD_DRAW,
   EDITOR_SET_FEATURES,
-  EDITOR_REMOVE_FEATURES,
   EDITOR_FILE_CONVERTED,
   SET_MAP_SOURCES
 } from '../../events/editor'
@@ -93,7 +92,6 @@ export default {
     bus.$on(`${SET_MAP_SOURCES}`, this.handleSetMapSources)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
-    bus.$on(`${EDITOR_REMOVE_FEATURES}`, this.handleMapFormFeatureRemoval)
   },
   beforeDestroy() {
     if (this.scene.features.list.length) {
@@ -137,9 +135,6 @@ export default {
           await this.$store.dispatch('editor/toggleMapFormLoading', false)
         }
       }, 10)
-    },
-    async handleMapFormFeatureRemoval({ t, _id }) {
-      return await console.log(t, _id)
     },
     async handleZoomToFeature(fc) {
       let bbox = []

@@ -182,12 +182,13 @@
 </template>
 
 <script>
-import { searchFacilities, getFacilityGeom } from '../../services/api/facs'
-import { searchCables, getCableGeom } from '../../services/api/cables'
-import { searchIxps, getIxpsGeom } from '../../services/api/ixps'
-import { searchCls, getClsGeom } from '../../services/api/cls'
+import { searchFacilities, getFacilitiesGeom } from '../../services/api/facs'
+import { searchCables, getCablesGeom } from '../../services/api/cables'
+import { searchIxps, getIxpsGeoms } from '../../services/api/ixps'
+import { searchCls, getClsGeoms } from '../../services/api/cls'
 import apiConfig from '../../config/apiConfig'
 import * as events from '../../events/mapForm'
+import { fCollectionFormat } from '../../helpers/featureCollection'
 
 export default {
   name: 'MapForm',
@@ -285,9 +286,7 @@ export default {
       this.form.ixps = ixps.map(c => c._id)
 
       for (let t of ['facilities', 'cables', 'cls', 'ixps']) {
-        for (let _id of this.form[t]) {
-          await this.handleSetFeatureOntoMap({ t, _id })
-        }
+        await this.handleSetFeatureOntoMap({ t })
       }
 
       await this.$store.dispatch('editor/toggleMapFormLoading', false)
@@ -298,26 +297,24 @@ export default {
      * @param t { String } - selection type { can be: facilities, cables, cls, ixps }
      * @param _id { String } - selection id
      */
-    async handleSetFeatureOntoMap({ t, _id, removeLoadState }) {
+    async handleSetFeatureOntoMap({ t, removeLoadState }) {
       this.$store.dispatch('editor/toggleMapFormLoading', true)
 
       let fc = {}
       switch (t) {
         case 'cables':
-          fc = await this.handleGetCableGeom(_id)
+          fc = await this.handleGetCablesGeom(this.form[t])
           break
         case 'facilities':
-          fc = await this.handleGetFacsGeom(_id)
+          fc = await this.handleGetFacsGeom(this.form[t])
           break
         case 'cls':
-          fc = await this.handleGetClsGeom(_id)
+          fc = await this.handleGetClsGeom(this.form[t])
           break
         case 'ixps':
-          fc = await this.handleGetIxpsGeom(_id)
+          fc = await this.handleGetIxpsGeom(this.form[t])
           break
       }
-
-      console.log(fc, t, _id, removeLoadState)
 
       return fc
         ? this.$emit(`${events.SET_SELECTION_ONTO_MAP}`, {
@@ -327,28 +324,21 @@ export default {
           })
         : this.$store.dispatch('editor/toggleMapFormLoading', false)
     },
-    /**
-     * @param t { String } - selection type { can be: facilities, cables, cls, ixps }
-     * @param _id { String } - selection id
-     */
-    handleRemoveFeatureOffMap(t, _id) {
-      return this.$emit(`${events.REMOVE_SELECTION_OFF_MAP}`, { t, _id })
+    async handleGetCablesGeom(ids) {
+      const res = await getCablesGeom({ user_id: this.$auth.user.sub, ids })
+      return res && res.data && res.data.r ? res.data.r : fCollectionFormat([])
     },
-    async handleGetCableGeom(_id) {
-      const res = await getCableGeom({ user_id: this.$auth.user.sub, _id })
-      return res && res.data && res.data.r ? res.data.r : {}
+    async handleGetFacsGeom(ids) {
+      const res = await getFacilitiesGeom({ user_id: this.$auth.user.sub, ids })
+      return res && res.data && res.data.r ? res.data.r : fCollectionFormat([])
     },
-    async handleGetFacsGeom(_id) {
-      const res = await getFacilityGeom({ user_id: this.$auth.user.sub, _id })
-      return res && res.data && res.data.r ? res.data.r : {}
+    async handleGetClsGeom(ids) {
+      const res = await getClsGeoms({ user_id: this.$auth.user.sub, ids })
+      return res && res.data && res.data.r ? res.data.r : fCollectionFormat([])
     },
-    async handleGetClsGeom(_id) {
-      const res = await getClsGeom({ user_id: this.$auth.user.sub, _id })
-      return res && res.data && res.data.r ? res.data.r : {}
-    },
-    async handleGetIxpsGeom(_id) {
-      const res = await getIxpsGeom({ user_id: this.$auth.user.sub, _id })
-      return res && res.data && res.data.r ? res.data.r : {}
+    async handleGetIxpsGeom(ids) {
+      const res = await getIxpsGeoms({ user_id: this.$auth.user.sub, ids })
+      return res && res.data && res.data.r ? res.data.r : fCollectionFormat([])
     },
     /**
      * @param name { String } - subdomain name
@@ -368,17 +358,17 @@ export default {
       this.isLoadingCables = true
       const res = await searchCables({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        const indexList = this.cables
-          .map((id, i) => [id, i])
-          .filter(item => {
-            for (let id of this.form.cables) {
-              if (id === item[0]._id) return item
-            }
-          })
-        for (let index of indexList) {
-          res.data.splice(index[1], 0, index[0])
-        }
-        this.cables = res.data
+        // const indexList = this.cables
+        //   .map((id, i) => [id, i])
+        //   .filter(item => {
+        //     for (let id of this.form.cables) {
+        //       if (id === item[0]._id) return item
+        //     }
+        //   })
+        // for (let index of indexList) {
+        //   res.data.splice(index[1], 0, index[0])
+        // }
+        this.cables = this.cables.concat(res.data)
       }
       this.isLoadingCables = false
     },
@@ -390,7 +380,7 @@ export default {
       this.isLoadingCls = true
       const res = await searchCls({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.cls = res.data
+        this.cls = this.cls.concat(res.data)
       }
       this.isLoadingCls = false
     },
@@ -399,7 +389,7 @@ export default {
       this.isLoadingIxps = true
       const res = await searchIxps({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.ixps = res.data
+        this.ixps = this.ixps.concat(res.data)
       }
       this.isLoadingIxps = false
     },
@@ -411,7 +401,7 @@ export default {
       this.isLoadingCls = true
       const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.facilities = res.data
+        this.facilities = this.facilities.concat(res.data)
       }
       this.isLoadingCls = false
     },
@@ -431,11 +421,15 @@ export default {
      */
     async handleSelectionChange(t, _id) {
       if (this.form[t].length < this.mapCreationData[t].length) {
-        const toRemove = this.mapCreationData[t][
-          this.mapCreationData[t].length - 1
-        ]._id
-        // Removing from editor's map the one just removed from this.form[t]
-        this.handleRemoveFeatureOffMap(t, toRemove)
+        // Loading again the featureCollections
+        this.$refs[`${t}Select`].blur()
+        setTimeout(async () => {
+          await this.handleSetFeatureOntoMap({
+            removeLoadState: true,
+            t: t
+          })
+        }, 320)
+
         // Removing from mapCreationData[type] the one just removed from this.form[t]
         if (this.form[t].length) {
           return (this.mapCreationData[t] = this.mapCreationData[t].filter(d =>
@@ -463,9 +457,8 @@ export default {
 
       setTimeout(async () => {
         await this.handleSetFeatureOntoMap({
-          _id: this.currentSelection,
-          removeLoadState: true,
-          t: this.featureType
+          t: this.featureType,
+          removeLoadState: true
         })
 
         this.currentSelection = null
