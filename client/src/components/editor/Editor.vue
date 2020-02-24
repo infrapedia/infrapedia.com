@@ -6,7 +6,6 @@
       <p class="m0 mt1"><strong>Lng:</strong> {{ infoBox.lng }}</p>
       <p class="m0 mt1"><strong>Zoom:</strong> {{ infoBox.zoom }}</p>
     </div>
-    <spinner v-if="loadingGeom" />
     <properties-dialog
       :mode="dialog.mode"
       :is-visible="dialog.visible"
@@ -26,6 +25,7 @@ import { mapConfig } from '../../config/mapConfig'
 import {
   EDITOR_LOAD_DRAW,
   EDITOR_SET_FEATURES,
+  EDITOR_REMOVE_FEATURES,
   EDITOR_FILE_CONVERTED,
   SET_MAP_SOURCES
 } from '../../events/editor'
@@ -34,8 +34,7 @@ import { editorMapConfig } from '../../config/editorMapConfig'
 
 export default {
   components: {
-    PropertiesDialog,
-    Spinner: () => import('./spinner')
+    PropertiesDialog
   },
   data: () => ({
     map: null,
@@ -56,10 +55,6 @@ export default {
     type: {
       type: String,
       default: () => ''
-    },
-    loadingGeom: {
-      type: Boolean,
-      required: () => false
     }
   },
   computed: {
@@ -98,6 +93,7 @@ export default {
     bus.$on(`${SET_MAP_SOURCES}`, this.handleSetMapSources)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
+    bus.$on(`${EDITOR_REMOVE_FEATURES}`, this.handleMapFormFeatureRemoval)
   },
   beforeDestroy() {
     if (this.scene.features.list.length) {
@@ -130,23 +126,20 @@ export default {
       await this.handleZoomToFeature(fc)
       return await $store.dispatch('editor/setList', fc.features)
     },
-    handleMapFormFeatureSelection({ t, fc }) {
+    async handleMapFormFeatureSelection({ t, fc, removeLoadState }) {
       if (!this.map) return
 
-      // TODO: remove from the source data the elements taken out from the mapForm select(s)
-
-      setTimeout(async () => {
+      await setTimeout(async () => {
         const source = this.map.getSource(`${t}-source`)
-        const prFeats = source ? source._data.features : false
+        if (source) await source.setData(fc)
 
-        if (source) {
-          if (prFeats && prFeats.length) {
-            fc.features = [...fc.features, ...prFeats]
-          }
-          await source.setData(fc)
+        if (removeLoadState) {
+          await this.$store.dispatch('editor/toggleMapFormLoading', false)
         }
-        return await this.$emit('done-setting-selection-onto-map')
       }, 10)
+    },
+    async handleMapFormFeatureRemoval({ t, _id }) {
+      return await console.log(t, _id)
     },
     async handleZoomToFeature(fc) {
       let bbox = []
@@ -288,7 +281,6 @@ export default {
     },
     toggleDarkMode(dark) {
       return this.map.setStyle(dark ? mapConfig.darkBasemap : mapConfig.default)
-      // this.handleSetMapSources()
     }
   }
 }

@@ -31,7 +31,6 @@
 </template>
 
 <script>
-// import sponsors from '../config/sponsors'
 import { bus } from '../helpers/eventBus'
 import { getTrustedBy } from '../services/api/organizations'
 
@@ -69,6 +68,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// @import '../assets/scss/components/bottom-sheet-styles.scss';
 @import '../assets/scss/components/premium-partners-styles.scss';
 </style>

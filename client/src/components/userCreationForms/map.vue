@@ -187,6 +187,7 @@ import { searchCables, getCableGeom } from '../../services/api/cables'
 import { searchIxps, getIxpsGeom } from '../../services/api/ixps'
 import { searchCls, getClsGeom } from '../../services/api/cls'
 import apiConfig from '../../config/apiConfig'
+import * as events from '../../events/mapForm'
 
 export default {
   name: 'MapForm',
@@ -283,12 +284,13 @@ export default {
       this.form.cls = cls.map(c => c._id)
       this.form.ixps = ixps.map(c => c._id)
 
-      for (let type of ['facilities', 'cables', 'cls', 'ixps']) {
-        for (let id of this.form[type]) {
-          await this.handleSetFeatureOntoMap(type, id)
+      for (let t of ['facilities', 'cables', 'cls', 'ixps']) {
+        for (let _id of this.form[t]) {
+          await this.handleSetFeatureOntoMap({ t, _id })
         }
       }
 
+      await this.$store.dispatch('editor/toggleMapFormLoading', false)
       this.mapCreationData = { ...this.form.config }
       delete this.form.config
     },
@@ -296,8 +298,8 @@ export default {
      * @param t { String } - selection type { can be: facilities, cables, cls, ixps }
      * @param _id { String } - selection id
      */
-    async handleSetFeatureOntoMap(t, _id) {
-      this.$emit('loading-selection-geom')
+    async handleSetFeatureOntoMap({ t, _id, removeLoadState }) {
+      this.$store.dispatch('editor/toggleMapFormLoading', true)
 
       let fc = {}
       switch (t) {
@@ -315,9 +317,22 @@ export default {
           break
       }
 
+      console.log(fc, t, _id, removeLoadState)
+
       return fc
-        ? this.$emit('set-selection-onto-map', { t, fc })
-        : this.$emit('cancel-geom-loading')
+        ? this.$emit(`${events.SET_SELECTION_ONTO_MAP}`, {
+            t,
+            fc,
+            removeLoadState
+          })
+        : this.$store.dispatch('editor/toggleMapFormLoading', false)
+    },
+    /**
+     * @param t { String } - selection type { can be: facilities, cables, cls, ixps }
+     * @param _id { String } - selection id
+     */
+    handleRemoveFeatureOffMap(t, _id) {
+      return this.$emit(`${events.REMOVE_SELECTION_OFF_MAP}`, { t, _id })
     },
     async handleGetCableGeom(_id) {
       const res = await getCableGeom({ user_id: this.$auth.user.sub, _id })
@@ -401,7 +416,7 @@ export default {
       this.isLoadingCls = false
     },
     sendData() {
-      return this.$emit('send-data', {
+      return this.$emit(`${events.SEND_DATA}`, {
         ...this.form,
         config: this.mapCreationData,
         draw: Array.from(
@@ -416,6 +431,11 @@ export default {
      */
     async handleSelectionChange(t, _id) {
       if (this.form[t].length < this.mapCreationData[t].length) {
+        const toRemove = this.mapCreationData[t][
+          this.mapCreationData[t].length - 1
+        ]._id
+        // Removing from editor's map the one just removed from this.form[t]
+        this.handleRemoveFeatureOffMap(t, toRemove)
         // Removing from mapCreationData[type] the one just removed from this.form[t]
         if (this.form[t].length) {
           return (this.mapCreationData[t] = this.mapCreationData[t].filter(d =>
@@ -427,10 +447,7 @@ export default {
       this.featureType = t
       this.currentSelection = _id[this.form[t].length - 1]
       this.$refs[`${t}Select`].blur()
-      setTimeout(async () => {
-        this.isPropertiesDialog = true
-        await this.handleSetFeatureOntoMap(t, this.currentSelection)
-      }, 320)
+      setTimeout(() => (this.isPropertiesDialog = true), 320)
     },
     /**
      * @param data { Object } - Data collected from propertiesDialog form
@@ -443,9 +460,19 @@ export default {
           _id: this.currentSelection
         })
       }
+
+      setTimeout(async () => {
+        await this.handleSetFeatureOntoMap({
+          _id: this.currentSelection,
+          removeLoadState: true,
+          t: this.featureType
+        })
+
+        this.currentSelection = null
+        this.featureType = ''
+      }, 320)
+
       this.isPropertiesDialog = false
-      this.currentSelection = null
-      this.featureType = ''
     }
   }
 }

@@ -8,7 +8,8 @@ const state = {
     },
     creation: null,
     edition: null
-  }
+  },
+  isMapFormLoading: false
 }
 
 const mutations = {
@@ -28,6 +29,9 @@ const mutations = {
   },
   [types.CANCEL](state) {
     return state
+  },
+  [types.TOGGLE_MAP_FORM_LOADING](state, bool) {
+    state.isMapFormLoading = bool
   },
   [types.EDIT_FEATURE](state, features) {
     state.scene.features.list.forEach((feat, i) => {
@@ -89,6 +93,9 @@ const actions = {
   },
   deleteFeature({ commit }, id) {
     return commit(`${types.DELETE_FEATURE}`, id)
+  },
+  toggleMapFormLoading({ commit }, bool) {
+    return commit(`${types.TOGGLE_MAP_FORM_LOADING}`, bool)
   }
 }
 const getters = {

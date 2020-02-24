@@ -1,5 +1,3 @@
 import { DateTime } from 'luxon'
 
-export const formatDate = date => {
-  return DateTime.fromISO(date).toLocaleString()
-}
+export const formatDate = date => DateTime.fromISO(date).toLocaleString()

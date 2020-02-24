@@ -17,30 +17,35 @@
         @send-data="checkType"
         @handle-file-converted="handleFileConverted"
         @set-selection-onto-map="handleSetSelectionOntoMap"
-        @cancel-geom-loading="() => (isLoadingSelectionGeom = false)"
-        @loading-selection-geom="() => (isLoadingSelectionGeom = true)"
+        @remove-selection-off-map="handleRemoveSelectionOffMap"
+        @cancel-geom-loading="toggleMapFormLoading(false)"
+        @loading-selection-geom="toggleMapFormLoading(true)"
       />
     </div>
     <div class="right w-fit-full">
-      <editor-map
-        :key="mapKey"
-        :type="creationType"
-        :loading-geom="isLoadingSelectionGeom"
-        @done-setting-selection-onto-map="
-          () => (isLoadingSelectionGeom = false)
-        "
-      />
+      <editor-map :key="mapKey" :type="creationType" />
     </div>
     <el-dialog
       :visible.sync="isLoadingDialog"
       width="44%"
       top="12vh"
-      title="Uploading file ..."
+      title="Uploading file..."
       :show-close="false"
       :custom-class="customDialogClass"
       :close-on-click-modal="false"
     >
-      Usually this takes a long time when uploading large files ...Please be
+      Usually, this takes time when uploading large files... Please be patient.
+    </el-dialog>
+    <el-dialog
+      :visible.sync="isMapFormLoading"
+      width="44%"
+      top="12vh"
+      title="Loading map..."
+      :show-close="false"
+      :custom-class="customDialogClass"
+      :close-on-click-modal="false"
+    >
+      Usually, this takes time when loading a map with lots of data... Please be
       patient.
     </el-dialog>
   </div>
@@ -62,7 +67,8 @@ import {
   EDITOR_LOAD_DRAW,
   EDITOR_FILE_CONVERTED,
   EDITOR_SET_FEATURES,
-  SET_MAP_SOURCES
+  SET_MAP_SOURCES,
+  EDITOR_REMOVE_FEATURES
 } from '../../../events/editor'
 import MapForm from '../../../components/userCreationForms/map'
 import { getMyMap, setMyMap } from '../../../services/api/map'
@@ -125,6 +131,14 @@ export default {
           break
       }
       return view
+    },
+    isMapFormLoading: {
+      get() {
+        return this.$store.state.editor.isMapFormLoading
+      },
+      set() {
+        return this.$store.dispatch('editor/toggleMapFormLoading', false)
+      }
     },
     featuresList() {
       return this.$store.state.editor.scene.features.list
@@ -190,8 +204,14 @@ export default {
     }
   },
   methods: {
+    toggleMapFormLoading(bool) {
+      return this.$store.dispatch('editor/toggleMapFormLoading', bool)
+    },
     async handleSetSelectionOntoMap(data) {
       return await bus.$emit(`${EDITOR_SET_FEATURES}`, data)
+    },
+    async handleRemoveSelectionOffMap(data) {
+      return await bus.$emit(`${EDITOR_REMOVE_FEATURES}`, data)
     },
     async checkUserMapExistance() {
       this.loading = true
