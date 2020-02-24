@@ -187,6 +187,7 @@ export default {
   },
   mounted() {
     this.map = this.addMapEvents(this.initMapLayers(this.createMap()))
+    // this.map = this.createMap()
     bus.$on(CLEAR_SELECTION, this.disableCableHighlight)
     bus.$on(TOGGLE_THEME, this.toggleDarkMode)
     bus.$on(FOCUS_ON, this.handleFocusOn)
@@ -274,68 +275,65 @@ export default {
      * @param map { Object } map instance
      */
     addMapSources(map) {
-      const data = mapConfig.data
-      const style = this.dark ? 'Dark' : 'Light'
-      const buildingPoint = `buildingPoint${style}`
-      const buildingLabel = `buildingLabel${style}`
-      const buildingFootprint = `buildingFootprint${style}`
+      // const data = mapConfig.data
+      // const style = this.dark ? 'Dark' : 'Light'
+      // const buildingPoint = `buildingPoint${style}`
+      // const buildingLabel = `buildingLabel${style}`
+      // const buildingFootprint = `buildingFootprint${style}`
 
-      map.addSource(mapConfig[buildingPoint], {
-        type: 'geojson',
-        data: data.buildingPointUrl
-      })
+      // map.addSource(mapConfig[buildingPoint], {
+      //   type: 'geojson',
+      //   data: data.buildingPointUrl
+      // })
 
-      map.addSource(mapConfig[buildingFootprint], {
-        type: 'geojson',
-        data: data.buildingPolyUrl
-      })
+      // map.addSource(mapConfig[buildingFootprint], {
+      //   type: 'geojson',
+      //   data: data.buildingPolyUrl
+      // })
 
-      map.addSource(mapConfig[buildingLabel], {
-        type: 'geojson',
-        data: data.buildingLabelsUrl
-      })
+      // map.addSource(mapConfig[buildingLabel], {
+      //   type: 'geojson',
+      //   data: data.buildingLabelsUrl
+      // })
 
-      map.addSource(data.source, {
+      // map.addSource(data.source, {
+      //   type: 'vector',
+      //   url: data.url
+      // })
+
+      // map.addSource(data.highlightSource, {
+      //   type: 'vector',
+      //   url: data.url
+      // })
+
+      // map.addSource(mapConfig.clusterPts, {
+      //   type: 'geojson',
+      //   data: {
+      //     type: 'FeatureCollection',
+      //     features: []
+      //   },
+      //   cluster: true,
+      //   clusterMaxZoom: 15,
+      //   clusterRadius: 50
+      // })
+
+      // const tmm = Date.now()
+
+      map.addSource(mapConfig.cableTerrestrial, {
         type: 'vector',
-        url: data.url
-      })
-
-      map.addSource(data.highlightSource, {
-        type: 'vector',
-        url: data.url
-      })
-
-      map.addSource(mapConfig.clusterPts, {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: []
-        },
-        cluster: true,
-        clusterMaxZoom: 15,
-        clusterRadius: 50
-      })
-
-      const tmm = Date.now()
-
-      map.addSource('cableTMS', {
-        type: 'vector',
-        scheme: 'tms',
         tiles: [
-          `https://map.infrapedia.com/geoserver/gwc/service/tms/1.0.0/infrapedia:cables@EPSG:900913@pbf/{z}/{x}/{y}.pbf?t=${tmm}`
-        ],
-        minzoom: 0,
-        maxzoom: 22
+          'https://storage.googleapis.com/infrapediacom/map/terrestrial/{z}/{x}/{y}.pbf'
+        ]
       })
 
-      map.addSource('pointTMS', {
-        type: 'vector',
-        scheme: 'tms',
-        tiles: [
-          `https://map.infrapedia.com/geoserver/gwc/service/tms/1.0.0/infrapedia%3Aall_point@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf?t=${tmm}`
-        ],
-        minzoom: 4
-      })
+      // map.addSource('pointTMS', {
+      //   type: 'vector',
+      //   scheme: 'tms',
+      //   tiles: [
+      //     `https://map.infrapedia.com/geoserver/gwc/service/tms/1.0.0/infrapedia%3Aall_point@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf?t=${tmm}`
+      //   ],
+      //   minzoom: 4
+      // })
 
       this.addMapLayers()
     },
@@ -356,7 +354,7 @@ export default {
         } else map.addLayer(layer)
       }
 
-      this.map.setFilter(mapConfig.cableLayer, ['all'])
+      this.map.setFilter(mapConfig.cableTerrestrial, ['all'])
       this.$store.commit(`${CURRENT_MAP_FILTER}`, ['all'])
     },
     /**
@@ -565,7 +563,7 @@ export default {
         : 'rgba(23,23,23, 0.06)'
 
       this.map.setPaintProperty(
-        mapConfig.cableLayer,
+        mapConfig.cableTerrestrial,
         'line-color',
         highlightColor
       )
@@ -574,9 +572,9 @@ export default {
         ['get', 'cable_id'],
         Number(cable.cable_id)
       ])
-      this.map.setFilter(mapConfig.highlightLayer, [
+      this.map.setFilter(mapConfig.cableTerrestrial, [
         '==',
-        ['get', 'cable_id'],
+        ['get', '_id'],
         Number(cable.cable_id)
       ])
       this.$store.commit(`${MAP_FOCUS_ON}`, {
@@ -594,7 +592,7 @@ export default {
       if (closesSidebar) this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, ['in', 'cable_id', false])
       try {
-        map.setFilter(mapConfig.highlightLayer, this.currentMapFilter)
+        map.setFilter(mapConfig.cableTerrestrial, this.currentMapFilter)
         map.setPaintProperty(
           mapConfig.cableLayer,
           'line-color',
@@ -1063,10 +1061,10 @@ export default {
         type: type === 'orgs' ? 'organizations' : type
       })
       // Cleaning source
-      await this.map.getSource(mapConfig.clusterPts).setData({
-        type: 'FeatureCollection',
-        features: []
-      })
+      // await this.map.getSource(mapConfig.clusterPts).setData({
+      //   type: 'FeatureCollection',
+      //   features: []
+      // })
 
       switch (type.toLowerCase()) {
         case 'organizations':
