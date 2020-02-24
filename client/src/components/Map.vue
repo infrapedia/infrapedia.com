@@ -506,7 +506,10 @@ export default {
       popup.remove()
     },
     async handleZoomLevelChange() {
-      return await mapStatistics(this.$route.fullPath.split('?')[1])
+      const zoomLevel = this.map.getZoom()
+      if (zoomLevel >= 6.4) {
+        return await mapStatistics(this.$route.fullPath.split('?')[1])
+      }
     },
     async handleBoundsChange() {
       if (!this.map) return
