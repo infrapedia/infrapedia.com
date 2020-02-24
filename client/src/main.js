@@ -10,7 +10,7 @@ import VueAxios from './plugins/axios'
 import * as vueTelInput from './plugins/vue-tel-input'
 import { domain, clientId } from './auth/config.json'
 import { Auth0Plugin } from './auth'
-import * as bugsnag from './plugins/bugsnag'
+// import * as bugsnag from './plugins/bugsnag'
 import Vue2TouchEvents from 'vue2-touch-events'
 
 Vue.config.productionTip = false
@@ -42,7 +42,7 @@ new Vue({
   router,
   store,
   icons,
-  bugsnag,
+  // bugsnag,
   element,
   vueTelInput,
   cockieconsent,

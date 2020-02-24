@@ -1,53 +1,23 @@
 const token = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN
 
 const cableTerrestrial = 'cables_terrestrial'
-const cableLabelLayer = 'cable-label'
-const highlightLayer = 'cables2'
-const pointsLayer = 'pointTMS'
-const source = 'network-atlas'
-const highlightSource = `${source}-highlight`
-const sourceLayer = 'fullnetworkV30'
-const buildingFootprints = 'buildingFootprints'
-const buildingLabels = 'buildingLabels'
-const buildingPoints = 'buildingPoints'
-const buildingFootprintLight = `light${buildingFootprints}`
-const buildingPointLight = `light${buildingPoints}`
-const buildingLabelLight = `light${buildingLabels}`
-const buildingFootprintDark = `dark${buildingFootprints}`
-const buildingPointDark = `dark${buildingPoints}`
-const buildingLabelDark = `dark${buildingLabels}`
-const clusterPts = 'facPoints'
+const cableTerrestrialLabel = 'cables_terrestrial_label'
+const cableTerrestrialHighlight = 'cables_terrestrial_highlight'
 const currentEpoch = Math.round(new Date().getTime() / 1000)
 
 export const mapConfig = {
   mapToken: token,
   default: 'mapbox://styles/networkatlas/cjt4y5k77443z1fmfu2pfbcuu',
-  // default: 'mapbox://styles/mapbox/light-v10',
   darkBasemap: 'mapbox://styles/mapbox/dark-v10',
   zoom: 1.75,
   dark: false,
   maptiks_id: 'Infrapedia',
   center: [-34.292, 27.57],
   cableTerrestrial,
-  pointsLayer,
-  cableLabelLayer,
-  highlightLayer,
-  buildingFootprintLight,
-  buildingPointLight,
-  buildingLabelLight,
-  buildingFootprintDark,
-  buildingPointDark,
-  buildingLabelDark,
-  clusterPts,
+  cableTerrestrialLabel,
+  cableTerrestrialHighlight,
   data: {
-    source,
-    // source2: 'cableTMS',
-    highlightSource,
-    sourceLayer,
     url: 'mapbox://networkatlas.ay1i6jsf',
-    buildingPointUrl: `${process.env.VUE_APP_BASE_API}/facility/geojson/points`,
-    buildingPolyUrl: `${process.env.VUE_APP_BASE_API}/facility/geojson/polygons`,
-    buildingLabelsUrl: `${process.env.VUE_APP_BASE_API}/facility/geojson/labels`,
     layers: [
       {
         id: cableTerrestrial,
@@ -55,7 +25,7 @@ export const mapConfig = {
         'source-layer': cableTerrestrial,
         type: 'line',
         paint: {
-          'line-width': 1.5,
+          'line-width': 1.2,
           'line-color': '#7288b0'
           //  [
           // 'case',
@@ -72,37 +42,36 @@ export const mapConfig = {
           //  '#7288b0'
           //  ]
         }
+      },
+      {
+        id: cableTerrestrialLabel,
+        source: cableTerrestrial,
+        'source-layer': cableTerrestrial,
+        type: 'symbol',
+        layout: {
+          'text-field': '{name}',
+          'symbol-placement': 'line',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 10,
+          'text-justify': 'right',
+          'text-anchor': 'bottom',
+          'text-offset': [0, -0.1]
+        },
+        paint: {
+          'text-color': '#485E69'
+        }
+      },
+      {
+        id: cableTerrestrialHighlight,
+        type: 'line',
+        source: cableTerrestrialHighlight,
+        'source-layer': cableTerrestrial,
+        paint: {
+          'line-width': 2.6,
+          'line-color': '#F7D079'
+        },
+        filter: ['==', ['get', '_id'], false]
       }
-      // {
-      //   id: cableTerrestrialLayer,
-      //   source: 'cableTMS',
-      //   'source-layer': 'cables',
-      //   type: 'symbol',
-      //   layout: {
-      //     'text-field': '{name}',
-      //     'symbol-placement': 'line',
-      //     'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-      //     'text-size': 10,
-      //     'text-justify': 'right',
-      //     'text-anchor': 'bottom',
-      //     'text-offset': [0, -0.1]
-      //   },
-      //   paint: {
-      //     'text-color': '#485E69'
-      //   }
-      // },
-      // {
-      //   id: highlightLayer,
-      //   type: 'line',
-      //   source: 'cableTMS',
-      //   'source-layer': 'cables',
-      //   layout: {},
-      //   paint: {
-      //     'line-width': 3,
-      //     'line-color': '#F7D079'
-      //   },
-      //   filter: ['==', ['get', 'cable_id'], false]
-      // },
       // {
       //   id: clusterPts,
       //   source: clusterPts,
@@ -279,7 +248,7 @@ export const mapConfig = {
       ['!=', 'isinactive', 'true']
     ],
     active: ['!=', ['get', 'isinactive'], 'true'],
-    all: ['has', 'cable_id'],
+    all: ['has', '_id'],
     future: ['>', ['get', 'activation'], currentEpoch],
     timemachine: ['>=', ['get', 'eosepoch'], 0] // We change the 0 value when using the filter component inside the navbar for the sub-sea time machine
   }

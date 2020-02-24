@@ -116,19 +116,20 @@ export default {
           break
       }
     },
-    async handleCableSelected({ cable_id, name }) {
-      if (!cable_id) return
+    async handleCableSelected({ _id, name }) {
+      if (!_id) return
+      // console.log(_id, name)
 
       await this.$store.commit(`${TOGGLE_LOADING}`, true)
       try {
         await this.getCableData({
           user_id: this.$auth.user.sub,
-          _id: cable_id
+          _id
         }).then(() => {
           this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
           this.$store.commit(`${MAP_FOCUS_ON}`, {
             name,
-            id: cable_id,
+            id: _id,
             type: 'cable'
           })
         })
@@ -139,7 +140,7 @@ export default {
       }
     },
     async handleItemListSelection({ option, id }) {
-      // console.log(option, id)
+      console.log(option, id)
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       switch (option.toLowerCase()) {
