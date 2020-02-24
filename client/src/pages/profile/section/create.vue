@@ -17,7 +17,6 @@
         @send-data="checkType"
         @handle-file-converted="handleFileConverted"
         @set-selection-onto-map="handleSetSelectionOntoMap"
-        @remove-selection-off-map="handleRemoveSelectionOffMap"
         @cancel-geom-loading="toggleMapFormLoading(false)"
         @loading-selection-geom="toggleMapFormLoading(true)"
       />
@@ -67,8 +66,7 @@ import {
   EDITOR_LOAD_DRAW,
   EDITOR_FILE_CONVERTED,
   EDITOR_SET_FEATURES,
-  SET_MAP_SOURCES,
-  EDITOR_REMOVE_FEATURES
+  SET_MAP_SOURCES
 } from '../../../events/editor'
 import MapForm from '../../../components/userCreationForms/map'
 import { getMyMap, setMyMap } from '../../../services/api/map'
@@ -209,9 +207,6 @@ export default {
     },
     async handleSetSelectionOntoMap(data) {
       return await bus.$emit(`${EDITOR_SET_FEATURES}`, data)
-    },
-    async handleRemoveSelectionOffMap(data) {
-      return await bus.$emit(`${EDITOR_REMOVE_FEATURES}`, data)
     },
     async checkUserMapExistance() {
       this.loading = true
