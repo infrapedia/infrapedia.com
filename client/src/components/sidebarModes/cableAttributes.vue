@@ -31,8 +31,7 @@
         </el-row>
       </template>
       <!---- COLLAPSE SECTION END --->
-
-      <!---- VALUES SECTION STARTS---->
+      <!---- LABELS SECTION STARTS---->
       <template v-else>
         <el-row :gutter="20">
           <template v-if="col.label.toLowerCase().includes('url')">
@@ -44,11 +43,20 @@
               </small>
             </el-col>
           </template>
-          <el-col :span="10" class="p2" v-else>
+          <el-col
+            :span="10"
+            class="p2"
+            v-else-if="col.label === 'Latency' && !info.terrestrial"
+          >
             <p class="label capitalize">{{ col.label }}</p>
           </el-col>
-          <!--- Values ---->
-          <el-col :span="12" class="p2">
+          <el-col :span="10" class="p2" v-else-if="info[col.value]">
+            <p class="label capitalize">{{ col.label }}</p>
+          </el-col>
+          <!---- LABELS SECTION END ---->
+
+          <!---- VALUES SECTION START ---->
+          <el-col :span="12" class="p2" v-if="info[col.value]">
             <template
               v-if="
                 col.label.toLowerCase().includes('url') ||
@@ -77,7 +85,11 @@
             </p>
             <p
               class="text-bold"
-              v-else-if="!isArrCol(info[col.value]) && col.label === 'Latency'"
+              v-else-if="
+                !isArrCol(info[col.value]) &&
+                  col.label === 'Latency' &&
+                  !info.terrestrial
+              "
             >
               {{ getCableLatency(info[col.value]) }} ms
             </p>
@@ -85,7 +97,6 @@
               {{ info[col.value] }}
             </p>
           </el-col>
-          <!--- Values END ---->
           <div v-if="info.notes" v-html="info.notes" />
         </el-row>
       </template>
@@ -154,7 +165,9 @@
             <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
               <fa :icon="['fas', 'pen']" class="sm-icon mt-1" />
             </el-button>
-            <span class="fs-regular label">Edit this cable</span>
+            <span class="fs-regular label">{{
+              info.terrestrial ? 'Edit Terrestrial Network' : 'Edit this cable'
+            }}</span>
           </div>
         </el-col>
         <el-col :xs="24" :sm="12" :md="24" :lg="12">

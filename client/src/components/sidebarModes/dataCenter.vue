@@ -64,7 +64,7 @@
           <!---- LABELS SECTION ENDS ---->
 
           <!---- VALUES SECTION STARTS---->
-          <el-col :span="12" class="p2">
+          <el-col :span="12" class="p2" v-if="info[col.value]">
             <template v-if="col.label.toLowerCase().includes('url')">
               <template v-if="Array.isArray(info[col.value])">
                 <a

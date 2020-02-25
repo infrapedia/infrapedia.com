@@ -32,7 +32,11 @@
           v-model="form.systemLength"
         />
       </el-form-item>
-      <el-form-item label="Activation date" prop="activationDateTime" required>
+      <el-form-item
+        label="RFS (Ready for Service)"
+        prop="activationDateTime"
+        required
+      >
         <el-date-picker
           :class="{ dark }"
           class="w-fit-full-imp"
@@ -91,7 +95,7 @@
           </el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="Tbps capacity" prop="tbpsCapacity">
+      <el-form-item label="Capacity (Tbps)" prop="tbpsCapacity">
         <el-input-number
           :min="0"
           :class="{ dark }"
@@ -100,10 +104,12 @@
           v-model="form.capacityTBPS"
         />
       </el-form-item>
-      <el-form-item label="Fiber pairs" prop="fiberPairs">
-        <el-input
+      <el-form-item label="Fiber Pairs" prop="fiberPairs">
+        <el-input-number
+          :min="0"
           :class="{ dark }"
           class="w-fit-full"
+          controls-position="right"
           v-model="form.fiberPairs"
         />
       </el-form-item>

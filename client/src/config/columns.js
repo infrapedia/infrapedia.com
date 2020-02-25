@@ -35,7 +35,7 @@ export const cablesColumns = [
     showSidebar: true
   },
   {
-    label: 'Activation date',
+    label: 'RFS (Ready for Service)',
     value: 'activationDateTime',
     showSidebar: true,
     showTable: true

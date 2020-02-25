@@ -136,7 +136,7 @@
           @click="submitForm('form')"
           :loading="isSendingData"
           @keyup.enter.space="submitForm('form')"
-          >Buy</el-button
+          >Submit Request</el-button
         >
       </div>
     </footer>
