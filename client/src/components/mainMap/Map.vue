@@ -511,6 +511,9 @@ export default {
       const ixps = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.ixps]
       })
+      const cls = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.cls]
+      })
 
       // If in the region selected there is a point or a building
       // Call the api to retrieve that facility data and open the sidebar
@@ -526,6 +529,11 @@ export default {
           id: facilities[0].properties._id,
           type: 'ixps'
         })
+      } else if (cls.length) {
+        await this.handleClsSelection({
+          id: cls[0].properties._id,
+          type: 'ixps'
+        })
       }
 
       if (cablesTerrestrial.length) {
@@ -535,7 +543,7 @@ export default {
         )
       } else if (cablesSubsea.length) {
         await this.handleCablesSelection(!!cablesSubsea.length, cablesSubsea)
-      } else if (!facilities.length && !ixps.length) {
+      } else if (!facilities.length && !ixps.length && !cls.length) {
         this.disableCableHighlight(true)
       }
     },
@@ -1094,8 +1102,9 @@ export default {
     async handleSubseaToggle({ bool, isActive }) {
       let filter
       const { map } = this
-      console.log(isActive, bool)
       const epoch = new Date(`${currentYear()}-02-02`).getTime() / 1000
+
+      console.log(bool, isActive)
 
       if (bool && isActive) {
         filter = mapConfig.filter.activeSubsea
@@ -1122,7 +1131,7 @@ export default {
 
       switch (selection) {
         case -1:
-          filter = ['all']
+          filter = filters.all
           break
         case 0:
           filter = filters.active
@@ -1138,14 +1147,12 @@ export default {
           break
       }
 
-      console.log(selection, filter)
+      console.log(filter)
 
       if (filter === 3) {
-        console.warn('here')
         return this.handleUpdateTimeMachine({
           year: currentYear(),
-          isActive: false,
-          isSubseaOnly: true
+          isActive: false
         })
       }
 
@@ -1164,30 +1171,37 @@ export default {
      * @param year { Number } - The year parameter is for toggling if showing only the subsea cables or show them all
      * @param isActive { Bool } - Indicates if the isActive filter is currently active or not
      */
-    async handleUpdateTimeMachine({ year, isActive, isSubseaOnly }) {
+    async handleUpdateTimeMachine({ year, target, isActive }) {
       const { map } = this
-      const isYearEqual = year === currentYear()
       // The epoch is the time arbitrarily selected as a point of reference for the specification of celestial coordinates. In this case, is used for denoting the existence of future cables
       const epoch = new Date(`${year}-02-02`).getTime() / 1000
       let filter = mapConfig.filter.timemachine
 
-      // If the year is the current year or is equal to 0
-      // We suppose the user is either deactivating the subsea switch of the filter
-      // Or is toggling off/on the checkbox for the subseatime machine slider
-      if (!isYearEqual || isSubseaOnly) {
-        filter[2] = epoch
-      } else if ((year === currentYear() || year === 0) && !isActive) {
-        filter = ['all']
-      } else if ((year === currentYear() || year === 0) && isActive) {
-        if (year === 0) {
-          filter = mapConfig.filter.active
-        } else {
-          filter = mapConfig.filter.activeSubsea
-        }
-      } else await this.disableCableHighlight()
+      console.log(year, target, isActive)
 
-      await map.setFilter(mapConfig.cableSubsea, filter)
-      await map.setFilter(mapConfig.cableSubseaLabel, filter)
+      if (target === 'checkbox') {
+        if (isActive) {
+          await map.setFilter(
+            mapConfig.cableTerrestrial,
+            mapConfig.filter.timemachineTerrestrial
+          )
+          await map.setFilter(
+            mapConfig.cableTerrestrialLabel,
+            mapConfig.filter.timemachineTerrestrial
+          )
+        } else {
+          filter = mapConfig.filter.all
+          await map.setFilter(mapConfig.cableSubsea, filter)
+          await map.setFilter(mapConfig.cableSubseaLabel, filter)
+          await map.setFilter(mapConfig.cableTerrestrial, filter)
+          await map.setFilter(mapConfig.cableTerrestrialLabel, filter)
+        }
+      } else if (target === 'slider') {
+        filter[2] = epoch
+        await map.setFilter(mapConfig.cableSubsea, filter)
+        await map.setFilter(mapConfig.cableSubseaLabel, filter)
+      }
+
       await this.$store.commit(`${CURRENT_MAP_FILTER}`, filter)
     },
     handlePreviouslySelected: debounce(function() {

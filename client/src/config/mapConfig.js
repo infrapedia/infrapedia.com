@@ -7,6 +7,7 @@ const cableTerrestrial = 'cables_terrestrial'
 const cableTerrestrialLabel = 'cables_terrestrial_label'
 const cableTerrestrialHighlight = 'cables_terrestrial_highlight'
 
+const cls = 'cls'
 const ixps = 'ixps'
 const facilities = 'facilities'
 const facilitiesLabel = 'facilities_label'
@@ -20,6 +21,7 @@ export const mapConfig = {
   dark: false,
   maptiks_id: 'Infrapedia',
   center: [-34.292, 27.57],
+  cls,
   ixps,
   facilities,
   facilitiesLabel,
@@ -71,6 +73,13 @@ export const mapConfig = {
         opts: {
           type: 'geojson',
           data: `${process.env.VUE_APP_TILES_FACILITIES}`
+        }
+      },
+      {
+        name: cls,
+        opts: {
+          type: 'geojson',
+          data: `${process.env.VUE_APP_TILES_CLS}`
         }
       }
     ],
@@ -243,6 +252,18 @@ export const mapConfig = {
           'circle-stroke-width': 1,
           'circle-stroke-color': '#333333'
         }
+      },
+      {
+        id: cls,
+        type: 'circle',
+        source: cls,
+        // minzoom: 12,
+        paint: {
+          'circle-radius': 8,
+          'circle-color': '#b10f0f',
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#333333'
+        }
       }
     ]
   },
@@ -256,6 +277,7 @@ export const mapConfig = {
     active: ['==', ['get', 'category'], 'online'],
     all: ['has', '_id'],
     future: ['>', ['get', 'activation'], currentEpoch],
-    timemachine: ['>=', ['get', 'eosepoch'], 0] // We change the 0 value when using the filter component inside the navbar for the sub-sea time machine
+    timemachine: ['>=', ['get', 'activation'], 0], // We change the 0 value when using the filter component inside the navbar for the sub-sea time machine
+    timemachineTerrestrial: ['>=', ['get', 'eosepoch'], 0] // We change the 0 value when using the filter component inside the navbar for the sub-sea time machine
   }
 }

@@ -201,18 +201,16 @@ export default {
         this.filters.isSubseaOnly = false
       }
 
-      return bus.$emit(
-        `${UPDATE_TIME_MACHINE}`,
-        isTimeMachineActive
-          ? { year: this.filters.year, isActive: false }
-          : { year: 0, isActive: this.filters.radio === 0 }
-      )
+      return bus.$emit(`${UPDATE_TIME_MACHINE}`, {
+        isActive: isTimeMachineActive,
+        target: 'checkbox'
+      })
     },
     /**
      * @param year { Number } Year selected with the slider
      */
     emitTimeMachineYear(year) {
-      return bus.$emit(`${UPDATE_TIME_MACHINE}`, { year, isActive: false })
+      return bus.$emit(`${UPDATE_TIME_MACHINE}`, { year, target: 'slider' })
     }
   }
 }
