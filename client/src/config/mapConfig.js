@@ -248,7 +248,7 @@ export const mapConfig = {
         minzoom: 12,
         paint: {
           'circle-radius': 4,
-          'circle-color': '#FFFFFF',
+          'circle-color': '#b10f0f',
           'circle-stroke-width': 1,
           'circle-stroke-color': '#333333'
         }
@@ -257,10 +257,10 @@ export const mapConfig = {
         id: cls,
         type: 'circle',
         source: cls,
-        // minzoom: 12,
+        minzoom: 3.4,
         paint: {
-          'circle-radius': 8,
-          'circle-color': '#b10f0f',
+          'circle-radius': 3,
+          'circle-color': '#ffffff',
           'circle-stroke-width': 1,
           'circle-stroke-color': '#333333'
         }
