@@ -98,26 +98,24 @@
 
 <script>
 import {
-  DRAWING,
-  TITLE_BY_SELECTION,
   TOGGLE_THEME,
   CABLE_SELECTED,
   CLEAR_SELECTION,
   FOCUS_ON,
   FOCUS_ON_CITY,
   REMOVE_QUERY_ROUTE_REPLACE
-} from '../events'
+} from '../../events'
 import {
   TOGGLE_FILTER_SELECTION,
   UPDATE_TIME_MACHINE,
   SUBSEA_FILTER
-} from '../events/filter'
+} from '../../events/filter'
 import {
   // TOGGLE_LOADING,
   TOGGLE_DARK,
   LOCATE_USER,
   TOGGLE_SIDEBAR
-} from '../store/actionTypes'
+} from '../../store/actionTypes'
 import {
   CURRENT_MAP_FILTER,
   CURRENT_SELECTION,
@@ -126,24 +124,25 @@ import {
   MAP_POINTS,
   HAS_TO_EASE_TO,
   EASE_POINT
-} from '../store/actionTypes/map'
-import ILocationButton from '../components/LocationButton'
-import copyToClipboard from '../helpers/copyToClipboard'
-import IThemeToggler from '../components/ThemeToggler'
+} from '../../store/actionTypes/map'
+import ILocationButton from '../../components/LocationButton'
+import copyToClipboard from '../../helpers/copyToClipboard'
+import IThemeToggler from '../../components/ThemeToggler'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
-import { mapConfig } from '../config/mapConfig'
+import { mapConfig } from '../../config/mapConfig'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
-import { bus } from '../helpers/eventBus'
+import { bus } from '../../helpers/eventBus'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapState, mapActions } from 'vuex'
-import turf from 'turf'
-import currentYear from '../helpers/currentYear'
-import debounce from '../helpers/debounce'
-import { viewNetwork } from '../services/api/networks'
-import { viewOrganization } from '../services/api/organizations'
-import { shareLink } from '../services/api/shortener'
-import { shareLinkButtons } from '../config/shareLinkButtons'
-import { mapStatistics } from '../services/api/map'
+import currentYear from '../../helpers/currentYear'
+import debounce from '../../helpers/debounce'
+import { viewNetwork } from '../../services/api/networks'
+import { viewOrganization } from '../../services/api/organizations'
+import { shareLink } from '../../services/api/shortener'
+import { shareLinkButtons } from '../../config/shareLinkButtons'
+import { mapStatistics } from '../../services/api/map'
+import handleDraw from './draw'
+import boundsChange from './boundsChange'
 
 const GEOLOCATION_POINT = 'geolocation-point'
 
@@ -275,80 +274,15 @@ export default {
      * @param map { Object } map instance
      */
     addMapSources(map) {
-      // const data = mapConfig.data
-      // const style = this.dark ? 'Dark' : 'Light'
-      // const buildingPoint = `buildingPoint${style}`
-      // const buildingLabel = `buildingLabel${style}`
-      // const buildingFootprint = `buildingFootprint${style}`
-
-      // map.addSource(mapConfig[buildingPoint], {
-      //   type: 'geojson',
-      //   data: data.buildingPointUrl
-      // })
-
-      // map.addSource(mapConfig[buildingFootprint], {
-      //   type: 'geojson',
-      //   data: data.buildingPolyUrl
-      // })
-
-      // map.addSource(mapConfig[buildingLabel], {
-      //   type: 'geojson',
-      //   data: data.buildingLabelsUrl
-      // })
-
-      // map.addSource(data.source, {
-      //   type: 'vector',
-      //   url: data.url
-      // })
-
-      map.addSource(mapConfig.cableTerrestrial, {
-        type: 'vector',
-        tiles: [
-          'https://storage.googleapis.com/infrapediacom/map/terrestrial/{z}/{x}/{y}.pbf'
-        ]
-      })
-
-      map.addSource(mapConfig.cableTerrestrialHighlight, {
-        type: 'vector',
-        // url:
-        //   'https://storage.googleapis.com/infrapediacom/map/terrestrial/{z}/{x}/{y}.pbf'
-        tiles: [
-          'https://storage.googleapis.com/infrapediacom/map/terrestrial/{z}/{x}/{y}.pbf'
-        ]
-      })
-
-      // map.addSource(mapConfig.clusterPts, {
-      //   type: 'geojson',
-      //   data: {
-      //     type: 'FeatureCollection',
-      //     features: []
-      //   },
-      //   cluster: true,
-      //   clusterMaxZoom: 15,
-      //   clusterRadius: 50
-      // })
-
-      // const tmm = Date.now()
-
-      // map.addSource('pointTMS', {
-      //   type: 'vector',
-      //   scheme: 'tms',
-      //   tiles: [
-      //     `https://map.infrapedia.com/geoserver/gwc/service/tms/1.0.0/infrapedia%3Aall_point@EPSG%3A900913@pbf/{z}/{x}/{y}.pbf?t=${tmm}`
-      //   ],
-      //   minzoom: 4
-      // })
-
+      for (let source of mapConfig.data.sources) {
+        map.addSource(source.name, { ...source.opts })
+      }
       this.addMapLayers()
     },
     addMapLayers() {
       const map = this.map
-      const data = mapConfig.data
-      // const theme = this.dark ? 'dark' : 'light'
-      // const currentMapFilter = this.currentMapFilter
 
-      for (let layer of data.layers) {
-        // layer.filter = currentMapFilter
+      for (let layer of mapConfig.data.layers) {
         map.addLayer(layer)
       }
 
@@ -369,7 +303,10 @@ export default {
       map.on('mouseenter', mapConfig.cableTerrestrial, function(e) {
         vm.handlePopupVisibilityOn(e, popup, false)
       })
-      map.on('mouseenter', mapConfig.pointsLayer, function(e) {
+      map.on('mouseenter', mapConfig.cableSubsea, function(e) {
+        vm.handlePopupVisibilityOn(e, popup, false)
+      })
+      map.on('mouseenter', mapConfig.ixps, function(e) {
         vm.handlePopupVisibilityOn(e, popup, true)
       })
       map.on('mouseleave', mapConfig.cableTerrestrial, function() {
@@ -379,68 +316,19 @@ export default {
       map.on('click', this.handleMapClick)
       map.on('touchend', this.handleMapClick)
 
-      map.on('draw.create', this.handleDraw)
-      map.on('draw.delete', this.handleDraw)
-      map.on('draw.update', this.handleDraw)
+      map.on('draw.create', this.handleDrawEvents)
+      map.on('draw.delete', this.handleDrawEvents)
+      map.on('draw.update', this.handleDrawEvents)
 
       map.on('render', this.handleBoundsChange)
       map.on('zoom', this.handleZoomLevelChange)
 
       return map
     },
-    handleDraw() {
+    handleDrawEvents() {
       const data = window.draw.getAll()
       const wrapper = document.getElementById('calculated-area')
-
-      if (data.features.length) {
-        this.$emit(`${DRAWING}`, true)
-        let calculated
-
-        if (window.draw.getMode() === 'direct_select') {
-          const selected = window.draw.getSelected()
-          if (selected.features.length) {
-            let featureData = selected.features[0]
-            if (featureData.geometry.type.toLowerCase() === 'polygon') {
-              this.$emit(`${TITLE_BY_SELECTION}`, 'Area')
-              calculated = turf.area(data)
-              wrapper.innerHTML =
-                '<p><strong>' +
-                Math.round(calculated) / 1000 +
-                '</strong></p><p>hectares</p>'
-            } else if (
-              featureData.geometry.type.toLowerCase() === 'linestring'
-            ) {
-              this.$emit(`${TITLE_BY_SELECTION}`, 'Distance')
-              calculated = turf.distance(
-                featureData.geometry.coordinates[0],
-                featureData.geometry.coordinates[1]
-              )
-              wrapper.innerHTML =
-                '<p><strong>' + calculated + '</strong></p><p>Kms</p>'
-            }
-          }
-          return
-        }
-
-        for (let feature of data.features) {
-          if (feature.geometry.type.toLowerCase() === 'linestring') {
-            this.$emit(`${TITLE_BY_SELECTION}`, 'Distance')
-            calculated = turf.distance(
-              feature.geometry.coordinates[0],
-              feature.geometry.coordinates[1]
-            )
-            wrapper.innerHTML =
-              '<p><strong>' + calculated + '</strong></p><p>Kms</p>'
-          } else {
-            this.$emit(`${TITLE_BY_SELECTION}`, 'Area')
-            calculated = turf.area(data)
-            wrapper.innerHTML =
-              '<p><strong>' +
-              Math.round(calculated) / 1000 +
-              '</strong></p><p>hectares</p>'
-          }
-        }
-      } else this.$emit(`${DRAWING}`, false)
+      return handleDraw({ ctx: this, data, elemnt: wrapper })
     },
     /**
      * @param e { Object } Map's hover Event
@@ -514,42 +402,14 @@ export default {
     async handleBoundsChange() {
       if (!this.map) return
 
-      const { map } = this
-      const pitch = map.getPitch()
-      const bounds = map.getBounds()
-      const bearing = map.getBearing()
-      const center = map.cameraForBounds(bounds, {
-        padding: { top: 10, bottom: 25, left: 15, right: 5 }
-      })
-
-      if (!bounds && !center) return
       try {
-        if (!this.focus) {
-          await this.$router.replace(
-            `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
-              bounds._sw.lng
-            }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
-              0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
-              center.center.lat
-            }`
-          )
-        } else {
-          const { id, type, name } = this.focus
-
-          if (id && type) {
-            await this.$router.replace(
-              `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
-                bounds._sw.lng
-              }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
-                center.bearing ||
-                0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
-                center.center.lat
-              }&name=${name}&type=${type}&id=${id}`
-            )
-          }
-        }
-      } catch {
-        // Ignore
+        return await boundsChange({ ctx: this, map: this.map })
+      } catch (err) {
+        this.$notify({
+          type: 'error',
+          message: err.message,
+          title: 'Missing a parameter'
+        })
       }
     },
     /**
@@ -557,15 +417,30 @@ export default {
      */
     highlightCable(cable) {
       if (!this.map || !cable) return
-      // Changing terrestrial cables color
+
+      const unselectedColor = this.dark
+        ? 'rgba(250, 250, 250, 0.6)'
+        : 'rgba(23,23,23, 0.2)'
+
+      // Changing cables line colors
       this.map.setPaintProperty(
         mapConfig.cableTerrestrial,
         'line-color',
-        this.dark ? 'rgba(250, 250, 250, 0.6)' : 'rgba(23,23,23, 0.2)'
+        unselectedColor
+      )
+      this.map.setPaintProperty(
+        mapConfig.cableSubsea,
+        'line-color',
+        unselectedColor
       )
 
       // Showing only the selected cable on the highlight layer
       this.map.setFilter(mapConfig.cableTerrestrialHighlight, [
+        '==',
+        ['get', '_id'],
+        cable._id
+      ])
+      this.map.setFilter(mapConfig.cableSubseaHighlight, [
         '==',
         ['get', '_id'],
         cable._id
@@ -589,19 +464,30 @@ export default {
     disableCableHighlight(closesSidebar = true) {
       const { map } = this
 
-      if (closesSidebar) this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
-      this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
       try {
+        if (closesSidebar) {
+          this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
+          this.$store.commit(`${MAP_FOCUS_ON}`, null)
+          this.handleBoundsChange()
+        }
+
+        this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
+
         // Removing highlight layer filter
+        map.setFilter(mapConfig.cableSubseaHighlight, ['in', '_id', false])
         map.setFilter(mapConfig.cableTerrestrialHighlight, ['in', '_id', false])
-        // Changing cables terrestrial color layer back to normal
+
+        // Changing cables colors back to normal
         map.setPaintProperty(
           mapConfig.cableTerrestrial,
           'line-color',
           mapConfig.data.layers[0].paint['line-color']
         )
-        this.$store.commit(`${MAP_FOCUS_ON}`, null)
-        this.handleBoundsChange()
+        map.setPaintProperty(
+          mapConfig.cableSubsea,
+          'line-color',
+          mapConfig.data.layers[3].paint['line-color']
+        )
       } catch {
         // Ignore
       }
@@ -613,44 +499,45 @@ export default {
       // If is currently drawing don't do anything
       if (this.isDrawing) return
 
-      // let selectionID = null
-      // const themeColor = this.dark ? 'Dark' : 'Light'
-      // const buildingPoint = `buildingPoint${themeColor}`
-      // const buildingFootprint = `buildingFootprint${themeColor}`
-      const cables = this.map.queryRenderedFeatures(e.point, {
+      const cablesTerrestrial = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.cableTerrestrial]
       })
-      // const buildingFootprints = this.map.queryRenderedFeatures(e.point, {
-      //   layers: [mapConfig[buildingFootprint]]
-      // })
-      // const buildingPoints = this.map.queryRenderedFeatures(e.point, {
-      //   layers: [mapConfig[buildingPoint]]
-      // })
-      // const clustersFeats = this.map.queryRenderedFeatures(e.point, {
-      //   layers: [mapConfig.clusterPts]
-      // })
-
-      // if (buildingFootprints.length) {
-      //   selectionID = buildingFootprints[0].properties.fac_id
-      // } else if (buildingPoints.length) {
-      //   selectionID = buildingPoints[0].properties.fac_id
-      // }
-
-      // Display or hide the clusters
-      // await this.handleClustersSelection(clustersFeats)
+      const cablesSubsea = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.cableSubsea]
+      })
+      const facilities = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.facilities]
+      })
+      const ixps = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.ixps]
+      })
 
       // If in the region selected there is a point or a building
       // Call the api to retrieve that facility data and open the sidebar
-      // if (selectionID) {
-      //   await this.handleFacilitySelection({ id: selectionID, type: 'fac' })
-      // }
+      console.log(facilities, ixps, cablesTerrestrial, cablesSubsea)
 
-      // If there is no clusters or didn't select a building/point
-      // in the map region clicked then I can say ...
-      // That is safe to call the cables selection handler
-      // if (!clustersFeats.length && !selectionID) {
-      await this.handleCablesSelection(!!cables.length, cables)
-      // }
+      if (facilities.length) {
+        await this.handleFacilitySelection({
+          id: facilities[0].properties._id,
+          type: 'facilities'
+        })
+      } else if (ixps.length) {
+        await this.handleIxpsSelection({
+          id: facilities[0].properties._id,
+          type: 'ixps'
+        })
+      }
+
+      if (cablesTerrestrial.length) {
+        await this.handleCablesSelection(
+          !!cablesTerrestrial.length,
+          cablesTerrestrial
+        )
+      } else if (cablesSubsea.length) {
+        await this.handleCablesSelection(!!cablesSubsea.length, cablesSubsea)
+      } else if (!facilities.length && !ixps.length) {
+        this.disableCableHighlight(true)
+      }
     },
     async handleOrganizationFocus(_id) {
       const res = await viewOrganization({ user_id: this.$auth.user.sub, _id })
@@ -1130,7 +1017,7 @@ export default {
         })
       }
 
-      await this.handleCablesSelection(true, [{ properties: { cable_id: id } }])
+      await this.handleCablesSelection(true, [{ properties: { _id: id } }])
     },
     /**
      * @param id { String } - Building/DataCenter/Dot ID
@@ -1207,6 +1094,7 @@ export default {
     async handleSubseaToggle({ bool, isActive }) {
       let filter
       const { map } = this
+      console.log(isActive, bool)
       const epoch = new Date(`${currentYear()}-02-02`).getTime() / 1000
 
       if (bool && isActive) {
@@ -1250,7 +1138,10 @@ export default {
           break
       }
 
+      console.log(selection, filter)
+
       if (filter === 3) {
+        console.warn('here')
         return this.handleUpdateTimeMachine({
           year: currentYear(),
           isActive: false,
@@ -1259,8 +1150,15 @@ export default {
       }
 
       await this.disableCableHighlight()
-      await map.setFilter(mapConfig.cableTerrestrial, filter)
-      await map.setFilter(mapConfig.cableTerrestrialLabel, filter)
+      if (selection === 2) {
+        await map.setFilter(mapConfig.cableSubsea, filter)
+        await map.setFilter(mapConfig.cableSubseaLabel, filter)
+      } else {
+        await map.setFilter(mapConfig.cableSubsea, filter)
+        await map.setFilter(mapConfig.cableSubseaLabel, filter)
+        await map.setFilter(mapConfig.cableTerrestrial, filter)
+        await map.setFilter(mapConfig.cableTerrestrialLabel, filter)
+      }
     },
     /**
      * @param year { Number } - The year parameter is for toggling if showing only the subsea cables or show them all
@@ -1288,8 +1186,8 @@ export default {
         }
       } else await this.disableCableHighlight()
 
-      await map.setFilter(mapConfig.cableLayer, filter)
-      await map.setFilter(mapConfig.cableLabelLayer, filter)
+      await map.setFilter(mapConfig.cableSubsea, filter)
+      await map.setFilter(mapConfig.cableSubseaLabel, filter)
       await this.$store.commit(`${CURRENT_MAP_FILTER}`, filter)
     },
     handlePreviouslySelected: debounce(function() {
@@ -1300,9 +1198,9 @@ export default {
 
       if (map.loaded()) {
         if (type === 'cable') {
-          this.handleCablesSelection(true, [{ properties: { cable_id: id } }])
+          this.handleCablesSelection(true, [{ properties: { _id: id } }])
         } else if (type) {
-          this.handleFacilitySelection({ id, type: 'fac' })
+          this.handleFacilitySelection({ id, type: 'facilities' })
         }
       }
     }, 1200),
@@ -1314,5 +1212,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/scss/components/map-styles.scss';
+@import '../../assets/scss/components/map-styles.scss';
 </style>

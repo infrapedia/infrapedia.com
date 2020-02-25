@@ -1,8 +1,15 @@
 const token = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN
 
+const cableSubsea = 'cables_subsea'
+const cableSubseaLabel = 'cables_subsea_label'
+const cableSubseaHighlight = 'cables_subsea_highlight'
 const cableTerrestrial = 'cables_terrestrial'
 const cableTerrestrialLabel = 'cables_terrestrial_label'
 const cableTerrestrialHighlight = 'cables_terrestrial_highlight'
+
+const ixps = 'ixps'
+const facilities = 'facilities'
+const facilitiesLabel = 'facilities_label'
 const currentEpoch = Math.round(new Date().getTime() / 1000)
 
 export const mapConfig = {
@@ -13,11 +20,60 @@ export const mapConfig = {
   dark: false,
   maptiks_id: 'Infrapedia',
   center: [-34.292, 27.57],
+  ixps,
+  facilities,
+  facilitiesLabel,
   cableTerrestrial,
+  cableSubsea,
+  cableSubseaLabel,
+  cableSubseaHighlight,
   cableTerrestrialLabel,
   cableTerrestrialHighlight,
   data: {
-    url: 'mapbox://networkatlas.ay1i6jsf',
+    sources: [
+      {
+        name: cableTerrestrial,
+        opts: {
+          type: 'vector',
+          tiles: [`${process.env.VUE_APP_TILES_TERRESTRIAL_CABLES}`]
+        }
+      },
+      {
+        name: cableTerrestrialHighlight,
+        opts: {
+          type: 'vector',
+          tiles: [`${process.env.VUE_APP_TILES_TERRESTRIAL_CABLES}`]
+        }
+      },
+      {
+        name: cableSubsea,
+        opts: {
+          type: 'vector',
+          tiles: [`${process.env.VUE_APP_TILES_SUBSEA_CABLES}`]
+        }
+      },
+      {
+        name: cableSubseaHighlight,
+        opts: {
+          type: 'vector',
+          tiles: [`${process.env.VUE_APP_TILES_SUBSEA_CABLES}`]
+        }
+      },
+      {
+        name: ixps,
+        opts: {
+          type: 'geojson',
+          data: `${process.env.VUE_APP_TILES_IXPS}`
+        }
+      },
+      {
+        name: facilities,
+        opts: {
+          type: 'geojson',
+          data: `${process.env.VUE_APP_TILES_FACILITIES}`
+        }
+      }
+    ],
     layers: [
       {
         id: cableTerrestrial,
@@ -25,22 +81,21 @@ export const mapConfig = {
         'source-layer': cableTerrestrial,
         type: 'line',
         paint: {
-          'line-width': 1.2,
-          'line-color': '#7288b0'
-          //  [
-          // 'case',
-          // ['==', ['get', 'status'], 0],
-          // '#FF0000',
-          // ['>', ['get', 'activation'], 1558130779],
-          // '#af6ec7',
-          // ['==', ['get', 'hasoutage'], 'true'],
-          // '#7288b0',
-          // ['==', ['get', 'haspartial'], 'true'],
-          // '#CC591F',
-          // ['==', ['get', 'isterrestr'], 'true'],
-          // '#7288b0',
-          //  '#7288b0'
-          //  ]
+          'line-width': 1.62,
+          'line-color': [
+            'case',
+            ['==', ['get', 'category'], 'offline'],
+            '#FF0000',
+            ['>', ['get', 'activation'], 1558130779],
+            '#af6ec7',
+            ['==', ['get', 'category'], 'online'],
+            '#7288b0',
+            // ['==', ['get', 'haspartial'], 'true'],
+            // '#CC591F',
+            ['==', ['get', 'terrestrial'], 'true'],
+            '#7288b0',
+            '#7288b0'
+          ]
         }
       },
       {
@@ -71,183 +126,134 @@ export const mapConfig = {
           'line-color': '#F7D079'
         },
         filter: ['==', ['get', '_id'], false]
+      },
+      {
+        id: cableSubsea,
+        type: 'line',
+        source: cableSubsea,
+        'source-layer': cableSubsea,
+        paint: {
+          'line-width': 1.62,
+          'line-color': [
+            'case',
+            ['==', ['get', 'status'], 'offline'],
+            '#FF0000',
+            ['>', ['get', 'activation'], 1558130779],
+            '#af6ec7',
+            ['==', ['get', 'hasoutage'], 'true'],
+            '#7288b0',
+            ['==', ['get', 'haspartial'], 'true'],
+            '#CC591F',
+            ['==', ['get', 'terrestrial'], 'true'],
+            '#7288b0',
+            '#7288b0'
+          ]
+        }
+      },
+      {
+        id: cableSubseaLabel,
+        source: cableSubsea,
+        'source-layer': cableSubsea,
+        type: 'symbol',
+        layout: {
+          'text-field': '{name}',
+          'symbol-placement': 'line',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 10,
+          'text-justify': 'right',
+          'text-anchor': 'bottom',
+          'text-offset': [0, -0.1]
+        },
+        paint: {
+          'text-color': '#485E69'
+        }
+      },
+      {
+        id: cableSubseaHighlight,
+        type: 'line',
+        source: cableSubseaHighlight,
+        'source-layer': cableSubsea,
+        paint: {
+          'line-width': 2.6,
+          'line-color': '#F7D079'
+        },
+        filter: ['==', ['get', '_id'], false]
+      },
+      {
+        id: facilities,
+        type: 'fill-extrusion',
+        source: facilities,
+        minzoom: 14,
+        paint: {
+          'fill-extrusion-color': [
+            'case',
+            ['==', ['get', 'premium'], true],
+            '#ff9800',
+            ['==', ['get', 'premium'], false],
+            '#666666',
+            '#666666'
+          ],
+          'fill-extrusion-height': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            15,
+            0,
+            15.05,
+            ['get', 'height']
+          ],
+          'fill-extrusion-base': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            15,
+            0,
+            15.05,
+            ['get', 'min_height']
+          ],
+          'fill-extrusion-opacity': 1
+        }
+      },
+      {
+        id: facilitiesLabel,
+        type: 'symbol',
+        source: facilities,
+        minzoom: 12,
+        layout: {
+          'text-field': ['to-string', ['get', 'address']],
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Regular'],
+          'text-size': 13,
+          'text-anchor': 'bottom',
+          'text-offset': [0, -1]
+        },
+        paint: {
+          'text-color': '#666666',
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 0.75
+        }
+      },
+      {
+        id: ixps,
+        type: 'circle',
+        source: ixps,
+        minzoom: 12,
+        paint: {
+          'circle-radius': 4,
+          'circle-color': '#FFFFFF',
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#333333'
+        }
       }
-      // {
-      //   id: clusterPts,
-      //   source: clusterPts,
-      //   type: 'circle',
-      //   filter: ['has', 'point_count'],
-      //   paint: {
-      //     'circle-color': '#FF3860',
-      //     'circle-radius': ['step', ['get', 'point_count'], 15, 2, 22, 4, 30]
-      //   }
-      // },
-      // {
-      //   id: 'cluster-count',
-      //   type: 'symbol',
-      //   source: clusterPts,
-      //   filter: ['has', 'point_count'],
-      //   layout: {
-      //     'text-field': '{point_count_abbreviated}',
-      //     'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-      //     'text-size': 12
-      //   }
-      // },
-      // {
-      //   id: 'unclustered-point',
-      //   type: 'circle',
-      //   source: clusterPts,
-      //   maxzoom: 15,
-      //   filter: ['!', ['has', 'point_count']],
-      //   paint: {
-      //     'circle-color': '#FF3860',
-      //     'circle-radius': 10
-      //   }
-      // },
-      // {
-      //   id: 'pointTMS',
-      //   type: 'circle',
-      //   source: 'pointTMS',
-      //   'source-layer': 'all_point',
-      //   paint: {
-      //     'circle-radius': 3,
-      //     'circle-color': '#FFFFFF',
-      //     'circle-stroke-width': 1,
-      //     'circle-stroke-color': '#333333'
-      //   }
-      // },
-      // {
-      //   id: 'pointTMS-label',
-      //   type: 'symbol',
-      //   source: 'pointTMS',
-      //   'source-layer': 'all_point',
-      //   layout: {
-      //     'text-field': '{name}',
-      //     'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-      //     'text-size': 11,
-      //     'text-anchor': 'bottom',
-      //     'text-offset': [0, -0.3]
-      //   },
-      //   paint: {
-      //     'text-color': '#485E69'
-      //   }
-      // },
-      // {
-      //   id: 'buildingLayers',
-      //   light: [
-      //     {
-      //       id: buildingPointLight,
-      //       type: 'circle',
-      //       source: buildingPointLight,
-      //       minzoom: 12,
-      //       layout: {},
-      //       paint: {
-      //         'circle-color': '#666666',
-      //         'circle-radius': [
-      //           'interpolate',
-      //           ['linear'],
-      //           ['zoom'],
-      //           0,
-      //           1.75,
-      //           5,
-      //           6
-      //         ],
-      //         'circle-stroke-color': '#ffffff'
-      //       }
-      //     },
-      //     {
-      //       id: buildingFootprintLight,
-      //       type: 'fill-extrusion',
-      //       source: buildingFootprintLight,
-      //       minzoom: 14,
-      //       layout: {},
-      //       paint: {
-      //         'fill-extrusion-color': '#666666',
-      //         'fill-extrusion-height': ['/', ['get', 'height'], 1.25]
-      //       }
-      //     },
-      //     {
-      //       id: buildingLabelLight,
-      //       type: 'symbol',
-      //       source: buildingLabelLight,
-      //       minzoom: 12,
-      //       layout: {
-      //         'text-field': ['to-string', ['get', 'address']],
-      //         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Regular'],
-      //         'text-size': 13,
-      //         'text-anchor': 'bottom',
-      //         'text-offset': [0, -1]
-      //       },
-      //       paint: {
-      //         'text-color': '#666666',
-      //         'text-halo-color': '#ffffff',
-      //         'text-halo-width': 0.75
-      //       }
-      //     }
-      //   ],
-      //   dark: [
-      //     {
-      //       id: buildingPointDark,
-      //       type: 'circle',
-      //       source: buildingPointDark,
-      //       minzoom: 12,
-      //       layout: {},
-      //       paint: {
-      //         'circle-color': '#bfbfbf',
-      //         'circle-radius': [
-      //           'interpolate',
-      //           ['linear'],
-      //           ['zoom'],
-      //           0,
-      //           1.75,
-      //           5,
-      //           6
-      //         ],
-      //         'circle-stroke-color': '#ffffff'
-      //       }
-      //     },
-      //     {
-      //       id: buildingFootprintDark,
-      //       type: 'fill-extrusion',
-      //       source: buildingFootprintDark,
-      //       minzoom: 14,
-      //       layout: {},
-      //       paint: {
-      //         'fill-extrusion-height': ['/', ['get', 'height'], 1.25],
-      //         'fill-extrusion-color': '#6989af'
-      //       }
-      //     },
-      //     {
-      //       id: buildingLabelDark,
-      //       type: 'symbol',
-      //       source: buildingLabelDark,
-      //       minzoom: 12,
-      //       layout: {
-      //         'text-field': ['to-string', ['get', 'address']],
-      //         'text-size': 13,
-      //         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Regular'],
-      //         'text-anchor': 'bottom',
-      //         'text-offset': [0, -1]
-      //       },
-      //       paint: {
-      //         'text-color': '#fff',
-      //         'text-halo-color': '#545e66',
-      //         'text-halo-width': 0.75,
-      //         'text-translate': [0, 0]
-      //       }
-      //     }
-      //   ]
-      // }
     ]
   },
   filter: {
-    subsea: ['!=', ['get', 'isterrestrial'], 'true'],
+    subsea: ['!=', ['get', 'terrestrial'], 'true'],
     activeSubsea: [
       'all',
-      ['!=', 'isterrestrial', 'true'],
+      ['!=', 'terrestrial', 'true'],
       ['!=', 'isinactive', 'true']
     ],
-    active: ['!=', ['get', 'isinactive'], 'true'],
+    active: ['==', ['get', 'category'], 'online'],
     all: ['has', '_id'],
     future: ['>', ['get', 'activation'], currentEpoch],
     timemachine: ['>=', ['get', 'eosepoch'], 0] // We change the 0 value when using the filter component inside the navbar for the sub-sea time machine

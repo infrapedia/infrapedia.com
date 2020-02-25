@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import Map from '../components/Map.vue'
+import Map from '../components/mainMap/Map.vue'
 import { bus } from '../helpers/eventBus'
 import debounce from '../helpers/debounce'
 import dataCollection from '../mixins/dataCollection.vue'

@@ -168,7 +168,6 @@
 
 <script>
 import Dragger from '../../components/Dragger'
-import { getClss } from '../../services/api/cls'
 import cableStates from '../../config/cableStates'
 import validateUrl from '../../helpers/validateUrl'
 import { searchFacilities } from '../../services/api/facs'
@@ -182,7 +181,6 @@ export default {
   data: () => ({
     tag: '',
     cableStates,
-    clsList: [],
     facsList: [],
     tagsList: [],
     isURLValid: null,
@@ -241,7 +239,9 @@ export default {
     }
   },
   mounted() {
-    this.getCLSList()
+    if (this.mode === 'create') {
+      setTimeout(() => this.$refs.form.clearValidate(), 50)
+    }
   },
   watch: {
     'form.facsList'(facs) {
@@ -261,12 +261,6 @@ export default {
     },
     handleFileConverted(fc) {
       return this.$emit('handle-file-converted', fc)
-    },
-    async getCLSList() {
-      const res = await getClss({ user_id: this.$auth.user.sub })
-      if (res && res.data && res.data.r) {
-        this.clsList = res.data.r
-      }
     },
     sendData() {
       return this.$refs['form'].validate(isValid =>

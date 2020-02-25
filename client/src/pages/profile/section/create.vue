@@ -335,6 +335,7 @@ export default {
             _id: f._id
           }))
           this.form.facilities = data.facilities.map(f => f._id)
+          this.form.activationDateTime = new Date(this.form.activationDateTime)
           break
       }
 
