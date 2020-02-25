@@ -210,8 +210,8 @@
           default-first-option
         >
           <el-option
-            v-for="item in form.tagsList"
-            :key="item"
+            v-for="(item, i) in form.tagsList"
+            :key="i"
             :label="item"
             :value="item"
           />
@@ -243,6 +243,7 @@ import { searchFacilities } from '../../services/api/facs'
 import { searchCables } from '../../services/api/cables'
 import validateUrl from '../../helpers/validateUrl'
 import { searchCls } from '../../services/api/cls'
+import { getTags } from '../../services/api/tags'
 
 export default {
   name: 'NetworkForm',
@@ -258,8 +259,7 @@ export default {
     isLoadingOrg: false,
     isLoadingCls: false,
     isLoadingFacs: false,
-    isLoadingCables: false,
-    tagsList: []
+    isLoadingCables: false
   }),
   props: {
     visible: {
@@ -286,6 +286,10 @@ export default {
   watch: {
     visible(bool) {
       return bool ? null : this.clearAll()
+    },
+    'form.tags'(tag) {
+      if (!this.visible) return
+      this.getTagsList(tag)
     },
     'form.facilitiesList'(facs) {
       if (!facs) return
@@ -354,6 +358,12 @@ export default {
         this.facs = res.data
       }
       this.isLoadingCls = false
+    },
+    async getTagsList(s) {
+      const res = await getTags({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.form.tagsList = res.data
+      }
     },
     handleBeforeClose() {
       return this.$emit('close')

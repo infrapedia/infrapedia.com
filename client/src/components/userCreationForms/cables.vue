@@ -140,8 +140,8 @@
           default-first-option
         >
           <el-option
-            v-for="item in form.tagsList"
-            :key="item"
+            v-for="(item, i) in form.tagsList"
+            :key="i"
             :label="item"
             :value="item"
           />
@@ -172,6 +172,7 @@ import { getClss } from '../../services/api/cls'
 import cableStates from '../../config/cableStates'
 import validateUrl from '../../helpers/validateUrl'
 import { searchFacilities } from '../../services/api/facs'
+import { getTags } from '../../services/api/tags'
 
 export default {
   name: 'CableForm',
@@ -200,9 +201,9 @@ export default {
         {
           required: true,
           message: 'Please input cable name',
-          trigger: 'blur'
+          trigger: 'change'
         },
-        { min: 3, message: 'Length should be at least 3', trigger: 'blur' }
+        { min: 3, message: 'Length should be at least 3', trigger: 'change' }
       ],
       tags: [],
       urls: [],
@@ -246,9 +247,18 @@ export default {
     'form.facsList'(facs) {
       this.facsList = [...facs]
       delete this.form.facsList
+    },
+    'form.tags'(tag) {
+      this.getTagsList(tag)
     }
   },
   methods: {
+    async getTagsList(s) {
+      const res = await getTags({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.form.tagsList = res.data
+      }
+    },
     handleFileConverted(fc) {
       return this.$emit('handle-file-converted', fc)
     },

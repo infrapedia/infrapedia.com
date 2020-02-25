@@ -63,8 +63,8 @@
           default-first-option
         >
           <el-option
-            v-for="item in form.tagsList"
-            :key="item"
+            v-for="(item, i) in form.tagsList"
+            :key="i"
             :label="item"
             :value="item"
           />
@@ -95,6 +95,7 @@
 <script>
 import Dragger from '../../components/Dragger'
 import { searchCables } from '../../services/api/cables'
+import { getTags } from '../../services/api/tags'
 
 export default {
   name: 'CLSForm',
@@ -136,9 +137,18 @@ export default {
     'form.cablesList'(cables) {
       this.cablesList = [...cables]
       delete this.form.cablesList
+    },
+    'form.tags'(tag) {
+      this.getTagsList(tag)
     }
   },
   methods: {
+    async getTagsList(s) {
+      const res = await getTags({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.form.tagsList = res.data
+      }
+    },
     async loadCablesSearch(s) {
       if (s === '') return
       this.isLoadingCables = true
