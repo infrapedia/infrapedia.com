@@ -11,7 +11,7 @@ export const uploadOrgLogo = async ({ logo, user_id }) => {
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -26,7 +26,7 @@ export const uploadKmz = async ({ file, user_id }) => {
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       'Content-Type': 'multipart/form-data',
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
@@ -42,7 +42,7 @@ export const kmzLinesToJSON = async ({ link, user_id }) => {
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -57,7 +57,7 @@ export const kmzPointsToJSON = async ({ link, user_id }) => {
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -75,7 +75,7 @@ export const editElemnt = async ({ file, information, user_id }) => {
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }

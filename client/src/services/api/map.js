@@ -19,7 +19,7 @@ export const getMyMap = async ({ user_id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -72,7 +72,7 @@ export const setMyMap = async ({
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }

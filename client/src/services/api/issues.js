@@ -25,7 +25,7 @@ export const createIssue = async ({
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -40,7 +40,7 @@ export const getIssues = async ({ page, user_id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -55,7 +55,7 @@ export const getMyIssues = async ({ page, user_id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -70,7 +70,7 @@ export const viewIssue = async ({ elemnt, id, user_id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -85,7 +85,7 @@ export const deleteIssue = async ({ id, user_id }) => {
   const res = await $axios.delete(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }

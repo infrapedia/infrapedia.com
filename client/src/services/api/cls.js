@@ -41,7 +41,7 @@ export const createCls = async ({
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -87,7 +87,7 @@ export const editCls = async ({
   const res = await $axios.put(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -101,7 +101,7 @@ export const getClss = async ({ user_id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -115,7 +115,7 @@ export const deleteCls = async ({ user_id, _id }) => {
   const res = await $axios.delete(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -129,7 +129,7 @@ export const viewClsOwner = async ({ user_id, _id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -142,7 +142,7 @@ export const viewCls = async ({ user_id, _id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -155,7 +155,7 @@ export const viewClsBBox = async ({ user_id, _id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -168,7 +168,7 @@ export const searchCls = async ({ user_id, s }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -181,7 +181,7 @@ export const getClsGeom = async ({ user_id, _id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -203,7 +203,7 @@ export const getClsGeoms = async ({ user_id, ids }) => {
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }

@@ -8,7 +8,7 @@ export const shareLink = async ({ user_id, url }) => {
   const res = await $axios.post(`${apiConfig.url}/auth/shortener/url`, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }

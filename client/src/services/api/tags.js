@@ -9,7 +9,7 @@ export const getTags = async ({ user_id, s }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }

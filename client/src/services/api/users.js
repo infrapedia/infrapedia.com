@@ -10,7 +10,7 @@ export const usersLogs = async ({ user_id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -30,7 +30,7 @@ export const verifyElement = async ({ user_id, type, elemnt, email }) => {
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }

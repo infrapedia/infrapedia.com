@@ -69,7 +69,7 @@ export const createCable = async ({
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
@@ -145,7 +145,7 @@ export const editCable = async ({
   const res = await $axios.put(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
@@ -160,7 +160,7 @@ export const getCables = async ({ user_id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -174,7 +174,7 @@ export const getCablesShortList = async ({ user_id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -188,7 +188,7 @@ export const deleteCable = async ({ user_id, _id }) => {
   const res = await $axios.delete(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -202,7 +202,7 @@ export const viewCableOwner = async ({ user_id, _id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -215,7 +215,7 @@ export const viewCable = async ({ user_id, _id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -228,7 +228,7 @@ export const viewCableBBox = async ({ user_id, _id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -241,7 +241,7 @@ export const searchCables = async ({ user_id, s }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -254,7 +254,7 @@ export const getCableGeom = async ({ user_id, _id }) => {
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -276,7 +276,7 @@ export const getCablesGeom = async ({ user_id, ids }) => {
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
