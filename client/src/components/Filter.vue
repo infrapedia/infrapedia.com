@@ -159,10 +159,7 @@ export default {
         this.filters.isTimeMachineActive = false
       }
 
-      return bus.$emit(`${SUBSEA_FILTER}`, {
-        bool: isSubseaOnly,
-        isActive: this.filters.radio === 0
-      })
+      return bus.$emit(`${SUBSEA_FILTER}`, isSubseaOnly)
     },
     /**
      * @param selection { Boolean }
@@ -203,6 +200,7 @@ export default {
 
       return bus.$emit(`${UPDATE_TIME_MACHINE}`, {
         isActive: isTimeMachineActive,
+        year: this.filters.year,
         target: 'checkbox'
       })
     },

@@ -79,7 +79,7 @@
             </template>
             <p
               class="text-bold"
-              v-else-if="col.label.toLowerCase().includes('date')"
+              v-else-if="col.label.toLowerCase().includes('ready for service')"
             >
               {{ convertToYear(info[col.value]) }}
             </p>
