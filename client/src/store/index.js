@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import map from './modules/map'
-import auth from './modules/auth'
 import editor from './modules/editor'
 import * as types from './actionTypes'
 import * as modes from '../config/sidebarModes'
@@ -99,7 +98,6 @@ export default new Vuex.Store({
   },
   modules: {
     map,
-    auth,
     editor
   }
 })

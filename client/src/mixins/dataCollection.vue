@@ -1,16 +1,9 @@
 <script>
 import { mapActions } from 'vuex'
 import { bus } from '../helpers/eventBus'
-import {
-  TOGGLE_SIDEBAR,
-  TOGGLE_LOADING,
-  GET_SUBMARINE,
-  GET_DATA_CENTERS,
-  GET_IX_FACILITIES,
-  GET_NETWORKS
-} from '../store/actionTypes'
+import { TOGGLE_SIDEBAR, TOGGLE_LOADING } from '../store/actionTypes'
 import { FOCUS_ON } from '../events'
-import { MAP_FOCUS_ON, MAP_POINTS } from '../store/actionTypes/map'
+import { MAP_FOCUS_ON } from '../store/actionTypes/map'
 
 export default {
   data: () => ({
@@ -18,107 +11,21 @@ export default {
   }),
   methods: {
     ...mapActions({
-      getDataCentersData: 'getDataCentersData',
-      getNetworksData: 'getNetworksData',
       getPremiumData: 'getPremiumData',
       getCableData: 'map/getCableData',
-      getSubseaData: 'getSubseaData',
       getIxpsData: 'getIxpsData',
-      // --- Services for retrieving navbar item selection - start ---
-      getPremiumSelectedData: 'getPremiumSelectedData',
-      getOrganizationID: 'getOrganizationID',
-      getPremiumSelectedBoundsData: 'getPremiumSelectedBoundsData',
-      getPremiumSelectedFeaturesData: 'getPremiumSelectedFeaturesData',
       getSubseaCableBoundsData: 'getSubseaCableBoundsData',
       getFacilityBoundsData: 'getFacilityBoundsData',
       getIxpsBoundsData: 'getIxpsBoundsData',
-      getFacilityPointsData: 'getFacilityPointsData',
-      getClsBoundsData: 'getClsBoundsData'
-      // --- Services for retrieving navbar item selection - end ---
+      getClsBoundsData: 'getClsBoundsData',
+      getClustersPointsOrgsData: 'getClustersPointsOrgsData',
+      getClustersPointsNetworksData: 'getClustersPointsNetworksData'
     }),
-    clearSubsea() {
-      this.$store.commit(`${GET_SUBMARINE}`, [])
-    },
-    clearDataCenters() {
-      this.$store.commit(`${GET_DATA_CENTERS}`, [])
-    },
-    clearIxps() {
-      this.$store.commit(`${GET_IX_FACILITIES}`, [])
-    },
-    clearNetworks() {
-      this.$store.commit(`${GET_NETWORKS}`, [])
-    },
     async loadPremiumPartners() {
       return await this.getPremiumData()
     },
-    async handleSubmarineSelection(opensMenu = true) {
-      if (opensMenu) {
-        await this.$store.commit(`${TOGGLE_LOADING}`, true)
-        // I'm assuming that's opening the menu for the first time
-        // Resetting quantity of items to load
-        this.quantity = 20
-        await this.toggleMenu('submarine')
-      }
-      await this.getSubseaData(this.quantity).then(() => {
-        this.$store.commit(`${TOGGLE_LOADING}`, false)
-      })
-    },
-    async handleDataCenterSelection(opensMenu = true) {
-      if (opensMenu) {
-        await this.$store.commit(`${TOGGLE_LOADING}`, true)
-        // I'm assuming that's opening the menu for the first time
-        // Resetting quantity of items to load
-        this.quantity = 20
-        await this.toggleMenu('dataCenters')
-      }
-      await this.getDataCentersData(this.quantity).then(() => {
-        this.$store.commit(`${TOGGLE_LOADING}`, false)
-      })
-    },
-    async handleIxpsSelection(opensMenu = true) {
-      if (opensMenu) {
-        await this.$store.commit(`${TOGGLE_LOADING}`, true)
-        // I'm assuming that's opening the menu for the first time
-        // Resetting quantity of items to load
-        this.quantity = 20
-        await this.toggleMenu('ixps')
-      }
-      await this.getIxpsData(this.quantity).then(() => {
-        this.$store.commit(`${TOGGLE_LOADING}`, false)
-      })
-    },
-    async handleNetworksSelection(opensMenu = true) {
-      if (opensMenu) {
-        await this.$store.commit(`${TOGGLE_LOADING}`, true)
-        // I'm assuming that's opening the menu for the first time
-        // Resetting quantity of items to load
-        this.quantity = 20
-        await this.toggleMenu('networks')
-      }
-      await this.getNetworksData(this.quantity).then(() => {
-        this.$store.commit(`${TOGGLE_LOADING}`, false)
-      })
-    },
-    async handleLoadMoreItems(option) {
-      this.quantity += 50
-      switch (option.toLowerCase()) {
-        case 'submarine':
-          await this.handleSubmarineSelection(false)
-          break
-        case 'datacenters':
-          await this.handleDataCenterSelection(false)
-          break
-        case 'ixps':
-          await this.handleIxpsSelection(false)
-          break
-        default:
-          this.handleNetworksSelection(false)
-          break
-      }
-    },
     async handleCableSelected({ _id, name }) {
       if (!_id) return
-      // console.log(_id, name)
 
       await this.$store.commit(`${TOGGLE_LOADING}`, true)
       try {
@@ -144,9 +51,6 @@ export default {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       switch (option.toLowerCase()) {
-        case 'partners':
-          await this.handlePremiumPartnerItemSelected(id)
-          break
         case 'ixps':
           await this.handleIxpsItemSelected({ id, type: option })
           break
@@ -157,7 +61,7 @@ export default {
           await this.handleClsItemSelected({ id, type: option })
           break
         case 'networks':
-          await this.handleNetworkItemSelected(id)
+          await this.handleNetworkItemSelected({ id, type: option })
           break
         case 'cable':
           await this.handleSubmarineCableItemSelected(id)
@@ -166,34 +70,12 @@ export default {
           await this.handleSubmarineCableItemSelected(id)
           break
         case 'organizations':
-          await this.handleOrgItemSelected(id)
+          await this.handleOrgItemSelected({ id, type: option })
           break
-        case 'orgs':
-          await this.handleOrgItemSelected(id)
+        case 'partners':
+          await this.handleOrgItemSelected({ id, type: option })
           break
       }
-    },
-    async handlePremiumPartnerItemSelected(id) {
-      if (!id) throw { message: 'MISSING ID PARAMETER' }
-
-      // SAVING BOUNDS FOR MAP ZOOM IN
-      await this.getPremiumSelectedBoundsData(id)
-      // RETRIEVING FEATURES
-      const points = await this.getPremiumSelectedFeaturesData(id)
-      if (!points) return
-      // SETTING POINTS
-      await this.$store.commit(`${MAP_POINTS}`, points.features)
-
-      // IF THE LENGTH IS EXACTLY 1.
-      // I NEED TO GET THE ORG INFORMATION FOR OPENING THE SIDEBAR
-      if (points.features && points.features.length === 1) {
-        await this.getPremiumSelectedData(points.features[0].properties.fac_id)
-      }
-
-      // GETTING ORGANIZATION ID
-      const orgID = await this.getOrganizationID(id)
-      if (!orgID) return
-      else bus.$emit(`${FOCUS_ON}`, { id: orgID, type: 'org' })
     },
     async handleSubmarineCableItemSelected(id) {
       if (!id)
@@ -242,13 +124,31 @@ export default {
 
       bus.$emit(`${FOCUS_ON}`, { id, type })
     },
-    handleNetworkItemSelected(id) {
+    async handleNetworkItemSelected({ id, type }) {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
-      return bus.$emit(`${FOCUS_ON}`, { id, type: 'network' })
+
+      const res = await this.getClustersPointsNetworksData({
+        user_id: this.$auth.user.sub,
+        _id: id
+      })
+      return bus.$emit(`${FOCUS_ON}`, {
+        id,
+        type,
+        fc: res.data.r ? res.data.r : false
+      })
     },
-    handleOrgItemSelected(id) {
+    async handleOrgItemSelected({ id, type }) {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
-      return bus.$emit(`${FOCUS_ON}`, { id, type: 'organizations' })
+
+      const res = await this.getClustersPointsOrgsData({
+        user_id: this.$auth.user.sub,
+        _id: id
+      })
+      return bus.$emit(`${FOCUS_ON}`, {
+        id,
+        type,
+        fc: res.data.r ? res.data.r : false
+      })
     }
   }
 }

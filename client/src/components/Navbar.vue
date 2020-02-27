@@ -16,15 +16,6 @@
           <i-mobile-drawer
             v-if="!isUserNavbar"
             class="hidden-md-and-up"
-            @clear-subsea="clearSubsea"
-            @clear-data-centers="clearDataCenters"
-            @clear-networks="clearNetworks"
-            @clear-ixps="clearIxps"
-            @click-submarine="handleSubmarineSelection(false)"
-            @click-data-center="handleDataCenterSelection(false)"
-            @click-ixps="handleIxpsSelection(false)"
-            @click-networks="handleNetworksSelection(false)"
-            @load-more="handleLoadMoreItems"
             @click-list-item="handleBeforeLoadItem"
           />
           <i-mobile-drawer-profile class="hidden-lg-and-up" v-else />
@@ -43,43 +34,6 @@
               :key="1"
               v-if="!isUserNavbar"
             >
-              <!-- <li class="inline-block relative" data-no-outline="true">
-                <router-link class="list-item pl3 pr3" to="/blog">
-                  Blog
-                </router-link>
-              </li> -->
-
-              <!-- <el-divider direction="vertical" class="m0 hidden-sm-and-down" /> -->
-
-              <!-- <li
-                class="inline-block no-selectable relative hidden-sm-and-down"
-                role="listitem"
-              >
-                <el-popover
-                  trigger="manual"
-                  v-model="isPartnersMenuOpen"
-                  :visible-arrow="false"
-                >
-                  <i-list
-                    option="partners"
-                    @click="handleBeforeLoadItem"
-                    @load-more="handleLoadMoreItems('partners')"
-                  />
-                  <div
-                    slot="reference"
-                    aria-haspopup="true"
-                    class="list-item pr4 pl4 no-selectable"
-                    @click.stop="handlePremiumSelection"
-                    @keyup.enter.space="handlePremiumSelection"
-                  >
-                    Our Partners
-                    <i
-                      aria-hidden="true"
-                      class="el-icon-arrow-down icon sm-icon ml1"
-                    />
-                  </div>
-                </el-popover>
-              </li> -->
               <li
                 class="inline-block no-selectable relative hidden-sm-and-down"
                 role="listitem"
@@ -105,150 +59,6 @@
                   />
                 </div>
               </li>
-
-              <!-- <el-divider direction="vertical" class="m0 hidden-sm-and-down" /> -->
-
-              <!-- <li
-                class="inline-block relative hidden-sm-and-down"
-                data-no-outline="true"
-              >
-                <div class="list-item pr4 pl4 no-selectable">
-                  <a
-                    href="mailto:admin@infrapedia.com"
-                    target="_blank"
-                    class="no-underline inherit color-inherit"
-                  >
-                    Contact us
-                  </a>
-                </div>
-              </li> -->
-
-              <!-- <li
-                class="inline-block no-selectable relative hidden-sm-and-down"
-                role="listitem"
-              >
-                <el-popover
-                  trigger="manual"
-                  :visible-arrow="false"
-                  v-model="isSubmarineMenuOpen"
-                  @after-leave="clearSubsea"
-                >
-                  <i-list
-                    option="submarine"
-                    @click="handleBeforeLoadItem"
-                    @load-more="handleLoadMoreItems('submarine')"
-                  />
-                  <div
-                    slot="reference"
-                    aria-haspopup="true"
-                    class="list-item pr4 pl4 no-selectable"
-                    @click.stop="handleSubmarineSelection"
-                    @keyup.enter.space="handleSubmarineSelection"
-                  >
-                    Submarine Cables
-                    <i
-                      aria-hidden="true"
-                      class="el-icon-arrow-down icon sm-icon ml1"
-                    />
-                  </div>
-                </el-popover>
-              </li>
-              <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
-
-              <li
-                class="inline-block no-selectable relative hidden-sm-and-down"
-                role="listitem"
-              >
-                <el-popover
-                  trigger="manual"
-                  :visible-arrow="false"
-                  v-model="isDataCentersMenuOpen"
-                  @after-leave="clearDataCenters"
-                >
-                  <i-list
-                    option="dataCenters"
-                    @click="handleBeforeLoadItem"
-                    @load-more="handleLoadMoreItems('dataCenters')"
-                  />
-                  <div
-                    slot="reference"
-                    aria-haspopup="true"
-                    class="list-item pr4 pl4 no-selectable"
-                    @click.stop="handleDataCenterSelection"
-                    @keyup.enter.space="handleDataCenterSelection"
-                  >
-                    Data Centers
-                    <i
-                      aria-hidden="true"
-                      class="el-icon-arrow-down icon sm-icon ml1"
-                    />
-                  </div>
-                </el-popover>
-              </li>
-
-              <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
-              <li
-                class="inline-block no-selectable relative hidden-sm-and-down"
-                role="listitem"
-              >
-                <el-popover
-                  trigger="manual"
-                  :visible-arrow="false"
-                  v-model="isIxpsMenuOpen"
-                  @after-leave="clearIxps"
-                >
-                  <i-list
-                    option="ixps"
-                    @click="handleBeforeLoadItem"
-                    @load-more="handleLoadMoreItems('ixps')"
-                  />
-                  <div
-                    slot="reference"
-                    aria-haspopup="true"
-                    class="list-item pr6 pl6 no-selectable"
-                    @click.stop="handleIxpsSelection"
-                    @keyup.enter.space="handleIxpsSelection"
-                  >
-                    IXPs
-                    <i
-                      aria-hidden="true"
-                      class="el-icon-arrow-down icon sm-icon ml1"
-                    />
-                  </div>
-                </el-popover>
-              </li>
-
-              <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
-              <li
-                class="inline-block no-selectable relative hidden-sm-and-down"
-                role="listitem"
-              >
-                <el-popover
-                  trigger="manual"
-                  :visible-arrow="false"
-                  v-model="isNetworsMenuOpen"
-                  @after-leave="clearNetworks"
-                >
-                  <i-list
-                    option="networks"
-                    @click="handleBeforeLoadItem"
-                    @load-more="handleLoadMoreItems('networks')"
-                  />
-                  <div
-                    slot="reference"
-                    class="list-item pr4 pl4 no-selectable"
-                    aria-haspopup="true"
-                    @click.stop="handleNetworksSelection"
-                    @keyup.enter.space="handleNetworksSelection"
-                  >
-                    Networks
-                    <i
-                      aria-hidden="true"
-                      class="el-icon-arrow-down icon sm-icon ml1"
-                    />
-                  </div>
-                </el-popover>
-              </li> -->
 
               <li
                 class="inline-block relative hidden-sm-and-down"
@@ -320,83 +130,6 @@
                 </div>
               </li>
 
-              <!-- <el-divider direction="vertical" class="m0" /> -->
-
-              <!-- <li
-                class="inline-block hidden-sm-and-down relative"
-                data-no-outline="true"
-                role="listitem"
-              >
-                <div class="list-item" data-no-hover-bg="true">
-                  <a href="https://aptelecom.com/" target="_blank">
-                    <el-image
-                      lazy
-                      src="https://cdn.infrapedia.com/sponsors/aptelecom_logo.png"
-                      fit="center"
-                      class="w28 h12 image-sponsor"
-                      alt="aptelecom logo"
-                      referrer-policy="strict-origin-when-cross-origin"
-                    />
-                  </a>
-                </div>
-              </li> -->
-              <!-- <li class="inline-block relative" role="listitem">
-                <div class="list-item sponsors-menu" aria-haspopup="true">
-                  <el-popover
-                    placement="bottom-end"
-                    width="320"
-                    :popper-class="popoverClassGiver"
-                    transition="el-zoom-in-top"
-                    trigger="manual"
-                    v-model="isSponsorsMenuOpen"
-                  >
-                    <div
-                      class="p2 sponsors-wrapper"
-                      :class="{ dark, light: !dark }"
-                    >
-                      <header class="flex justify-content-end">
-                        <span
-                          class="inline-block mr2 cursor-pointer"
-                          @click.stop="() => (isSponsorsMenuOpen = false)"
-                          @keyup.enter.space="
-                            () => (isSponsorsMenuOpen = false)
-                          "
-                        >
-                          <fa :icon="['fas', 'times']" class="sm-icon" />
-                        </span>
-                      </header>
-                      <div class="flex justify-content-space-around no-border">
-                        <a
-                          v-for="(sponsor, i) in sponsors"
-                          :key="i"
-                          target="_blank"
-                          :href="sponsor.url"
-                        >
-                          <el-image
-                            :src="sponsor.src"
-                            fit="contain"
-                            class="w24 h24"
-                            :alt="sponsor.alt"
-                            referrer-policy="strict-origin-when-cross-origin"
-                          />
-                        </a>
-                      </div>
-                    </div>
-                    <el-button
-                      id="sponsorsBtn"
-                      slot="reference"
-                      class="m0 w-fit-full h-fit-full no-border vertical-align p4"
-                      @click.stop="toggleSponsorsMenuVisibility"
-                    >
-                      <fa :icon="['fas', 'star']" class="sm-icon" />
-                      <font size="2" class="link hidden-md-and-down ml3"
-                        >Sponsors</font
-                      >
-                    </el-button>
-                  </el-popover>
-                </div>
-              </li> -->
-
               <li class="inline-block relative" data-no-outline="true">
                 <div
                   class="list-item user-icon pr1 pl3"
@@ -457,8 +190,8 @@
                       slot="reference"
                       class="no-outline circle icon-wrapper"
                       tabindex="0"
-                      @click="userRegistration"
-                      @keyup.enter.space="userRegistration"
+                      @click="handleUserButtonDynamics"
+                      @keyup.enter.space="handleUserButtonDynamics"
                     >
                       <el-avatar
                         v-if="userImage"
@@ -625,8 +358,8 @@
                       slot="reference"
                       class="no-outline circle icon-wrapper"
                       tabindex="0"
-                      @click="userRegistration"
-                      @keyup.enter.space="userRegistration"
+                      @click="handleUserButtonDynamics"
+                      @keyup.enter.space="handleUserButtonDynamics"
                     >
                       <el-avatar
                         v-if="userImage"
@@ -722,16 +455,7 @@ export default {
     }
   },
   async mounted() {
-    // Loading premium partners
     await this.loadPremiumPartners()
-    // Sponsors need to be open at first load
-    await setTimeout(() => (this.isSponsorsMenuOpen = true), 100)
-    // And close after 10 seconds
-    await setTimeout(() => (this.isSponsorsMenuOpen = false), 10000)
-    document.addEventListener('click', this.closeUnwantedOpenMenus)
-  },
-  beforeDestroy() {
-    document.removeEventListener('click', this.closeUnwantedOpenMenus)
   },
   methods: {
     toggleDarkMode() {
@@ -741,66 +465,25 @@ export default {
       this.isDrawerOpen = !this.isDrawerOpen
     },
     async handleBeforeLoadItem(item) {
-      this.closeUnwantedOpenMenus()
       await this.handleItemListSelection(item)
     },
-    closeUnwantedOpenMenus(e) {
-      const menus = [
-        'isIxpsMenuOpen',
-        'isNetworsMenuOpen',
-        'isSponsorsMenuOpen',
-        'isPartnersMenuOpen',
-        'isSubmarineMenuOpen',
-        'isDataCentersMenuOpen'
-      ]
-
-      for (let menu of menus) {
-        if (this[menu]) this[menu] = false
-      }
-      if (e || this.isInfoMenuOpen) this.isInfoMenuOpen = false
-    },
-    toggleMenu(name) {
-      if (!name) return
-      let menuName = name.toLowerCase()
-      this.closeUnwantedOpenMenus()
-      switch (menuName) {
-        case 'partners':
-          this.isPartnersMenuOpen = !this.isPartnersMenuOpen
-          break
-        case 'datacenters':
-          this.isDataCentersMenuOpen = !this.isDataCentersMenuOpen
-          break
-        case 'submarine':
-          this.isSubmarineMenuOpen = !this.isSubmarineMenuOpen
-          break
-        case 'ixps':
-          this.isIxpsMenuOpen = !this.isIxpsMenuOpen
-          break
-        case 'networks':
-          this.isNetworsMenuOpen = !this.isNetworsMenuOpen
-          break
-      }
-    },
-    toggleSponsorsMenuVisibility() {
-      this.closeUnwantedOpenMenus()
-      this.isSponsorsMenuOpen = !this.isSponsorsMenuOpen
+    closeUnwantedOpenMenus() {
+      if (this.isInfoMenuOpen) this.isInfoMenuOpen = false
     },
     toggleInfoMenuVisibility() {
-      this.closeUnwantedOpenMenus()
       this.isInfoMenuOpen = !this.isInfoMenuOpen
     },
     toggleUserMenuVisibility() {
-      this.closeUnwantedOpenMenus()
       this.isUserMenuOpen = !this.isUserMenuOpen
     },
     logOutUser() {
       window.localStorage.removeItem('auth.token-session')
       return this.$auth.logout()
     },
-    userRegistration() {
+    handleUserButtonDynamics() {
       const { isAuthenticated } = this.$auth
 
-      if (!isAuthenticated) {
+      if (this.$auth && !window.localStorage.getItem('auth.token-session')) {
         this.$router.push('/login')
       } else if (this.$route.name.includes('user')) {
         this.toggleUserMenuVisibility()

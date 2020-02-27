@@ -120,8 +120,6 @@ import {
   CURRENT_MAP_FILTER,
   CURRENT_SELECTION,
   MAP_FOCUS_ON,
-  MAP_BOUNDS,
-  MAP_POINTS,
   HAS_TO_EASE_TO,
   EASE_POINT
 } from '../../store/actionTypes/map'
@@ -408,7 +406,7 @@ export default {
         this.$notify({
           type: 'error',
           message: err.message,
-          title: 'Missing a parameter'
+          title: 'Something has gone wrong...'
         })
       }
     },
@@ -514,6 +512,9 @@ export default {
       const cls = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.cls]
       })
+      const clusters = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.clusters]
+      })
 
       // If in the region selected there is a point or a building
       // Call the api to retrieve that facility data and open the sidebar
@@ -543,11 +544,23 @@ export default {
         )
       } else if (cablesSubsea.length) {
         await this.handleCablesSelection(!!cablesSubsea.length, cablesSubsea)
-      } else if (!facilities.length && !ixps.length && !cls.length) {
+      } else if (clusters.length) {
+        await this.handleClustersSelection(clusters)
+      } else if (
+        !facilities.length &&
+        !ixps.length &&
+        !cls.length &&
+        !clusters.length
+      ) {
+        // Clearing clusters source in case there was something previously selected
+        this.map
+          .getSource(mapConfig.clusters)
+          .setData({ type: 'FeatureCollection', features: [] })
+
         this.disableCableHighlight(true)
       }
     },
-    async handleOrganizationFocus(_id) {
+    async handleOrganizationFocus(_id, fc) {
       const res = await viewOrganization({ user_id: this.$auth.user.sub, _id })
       if (res && res.data && res.data.r && res.data.r.length) {
         // Change sidebar mode to data_centers mode
@@ -555,12 +568,15 @@ export default {
         // In case there was a cable selected before
         await this.disableCableHighlight(false)
         await this.$store.commit(`${CURRENT_SELECTION}`, res.data.r[0])
-        // Updating focus for if the user wants to send alerts
 
         if (!this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
       }
+
+      if (fc) this.map.getSource(mapConfig.clusters).setData(fc)
     },
-    async handleNetworkSelection(_id) {
+    async handleNetworkFocus(_id, fc) {
+      const { focus, bounds, map } = this
+
       const res = await viewNetwork({ user_id: this.$auth.user.sub, _id })
       if (res && res.data && res.data.r && res.data.r.length) {
         // Change sidebar mode to data_centers mode
@@ -570,6 +586,19 @@ export default {
         await this.$store.commit(`${CURRENT_SELECTION}`, res.data.r[0])
 
         if (!this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
+      }
+
+      if (fc) map.getSource(mapConfig.clusters).setData(fc)
+
+      if (focus && bounds && bounds.length) {
+        map.fitBounds(bounds, {
+          pan: { duration: 25 },
+          animate: true,
+          padding: 20,
+          speed: 1.1,
+          zoom: 18.2,
+          pitch: 45
+        })
       }
     },
     /**
@@ -597,34 +626,21 @@ export default {
      * @param clusters { Array }
      */
     async handleClustersSelection(clusters) {
-      const { map } = this
-      if (clusters.length) {
-        // Zoom into the cluster
-        await map
-          .getSource(mapConfig.clusterPts)
-          .getClusterExpansionZoom(clusters[0].properties.cluster_id, function(
-            err,
+      const vm = this
+      console.log(clusters)
+      await this.map
+        .getSource(mapConfig.clusters)
+        .getClusterExpansionZoom(clusters[0].properties.cluster_id, function(
+          err,
+          zoom
+        ) {
+          if (err) return
+
+          vm.map.easeTo({
+            center: clusters[0].geometry.coordinates,
             zoom
-          ) {
-            if (err) return
-
-            map.easeTo({
-              center: clusters[0].geometry.coordinates,
-              zoom
-            })
           })
-      } else {
-        // Remove the clusters source data
-        await this.map.getSource(mapConfig.clusterPts).setData({
-          type: 'FeatureCollection',
-          features: []
         })
-
-        // CLEARING CLUSTERS DATA SAVED IN STORE
-        this.$store.commit(`${MAP_BOUNDS}`, [])
-        this.$store.commit(`${MAP_POINTS}`, [])
-        this.$store.commit(`${MAP_FOCUS_ON}`, null)
-      }
     },
     /**
      * @param id { String } - ID of the facility (data centers)
@@ -946,7 +962,7 @@ export default {
      * @param id { [Number, String] }
      * @param type { String }
      */
-    async handleFocusOn({ id, type }) {
+    async handleFocusOn({ id, type, fc }) {
       if (!this.map) return
       else if (!id) {
         throw {
@@ -962,15 +978,18 @@ export default {
         id,
         type: type === 'orgs' ? 'organizations' : type
       })
-      // Cleaning source
-      // await this.map.getSource(mapConfig.clusterPts).setData({
-      //   type: 'FeatureCollection',
-      //   features: []
-      // })
+
+      // Clearing clusters source in case there was something previously selected
+      this.map
+        .getSource(mapConfig.clusters)
+        .setData({ type: 'FeatureCollection', features: [] })
 
       switch (type.toLowerCase()) {
         case 'organizations':
-          await this.handleOrganizationFocus(id)
+          await this.handleOrganizationFocus(id, fc)
+          break
+        case 'partners':
+          await this.handleOrganizationFocus(id, fc)
           break
         case 'cable':
           await this.handleCableFocus(id)
@@ -987,8 +1006,8 @@ export default {
         case 'city':
           await this.handleCityFocus()
           break
-        case 'network':
-          await this.handleNetworkSelection(id)
+        case 'networks':
+          await this.handleNetworkFocus(id, fc)
           break
       }
     },

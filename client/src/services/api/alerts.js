@@ -18,7 +18,7 @@ export const createAlert = async ({ t, elemnt, email, phone, user_id }) => {
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }
@@ -37,7 +37,7 @@ export const disableAlert = async ({ t, elemnt, user_id }) => {
   const res = await $axios.patch(url, form, {
     withCredentials: true,
     headers: {
-      user_id,
+      userid: user_id,
       Authorization:
         'Bearer ' + window.localStorage.getItem('auth.token-session')
     }

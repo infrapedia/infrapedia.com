@@ -9,6 +9,7 @@ const cableTerrestrialHighlight = 'cables_terrestrial_highlight'
 
 const cls = 'cls'
 const ixps = 'ixps'
+const clusters = 'clusters'
 const facilities = 'facilities'
 const facilitiesLabel = 'facilities_label'
 const currentEpoch = Math.round(new Date().getTime() / 1000)
@@ -23,6 +24,7 @@ export const mapConfig = {
   center: [-34.292, 27.57],
   cls,
   ixps,
+  clusters,
   facilities,
   facilitiesLabel,
   cableTerrestrial,
@@ -80,6 +82,16 @@ export const mapConfig = {
         opts: {
           type: 'geojson',
           data: `${process.env.VUE_APP_TILES_CLS}`
+        }
+      },
+      {
+        name: clusters,
+        opts: {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: []
+          }
         }
       }
     ],
@@ -263,6 +275,38 @@ export const mapConfig = {
           'circle-color': '#ffffff',
           'circle-stroke-width': 1,
           'circle-stroke-color': '#333333'
+        }
+      },
+      {
+        id: clusters,
+        source: clusters,
+        type: 'circle',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': '#FF3860',
+          'circle-radius': ['step', ['get', 'point_count'], 15, 2, 22, 4, 30]
+        }
+      },
+      {
+        id: 'cluster-count',
+        type: 'symbol',
+        source: clusters,
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12
+        }
+      },
+      {
+        id: 'clusters-single-points',
+        type: 'circle',
+        source: clusters,
+        maxzoom: 15,
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': '#FF3860',
+          'circle-radius': 10
         }
       }
     ]

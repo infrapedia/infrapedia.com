@@ -30,7 +30,6 @@
       <el-collapse
         accordion
         v-model="collapseActive"
-        @change="handleCollapseChange"
         :class="{ dark, light: !dark }"
       >
         <el-collapse-item name="partners" class="pr4 pl4">
@@ -132,18 +131,7 @@
 </template>
 
 <script>
-import { LOAD_MORE } from '../events/listview'
-import {
-  CLICK_LIST_ITEM,
-  CLICK_DATACENTERS,
-  CLICK_IXPS,
-  CLICK_NETWORKS,
-  CLICK_SUBMARINE,
-  CLEAR_SUBMARINE,
-  CLEAR_DATACENTERS,
-  CLEAR_IXPS,
-  CLEAR_NETWORKS
-} from '../events/mobiledrawer'
+import { CLICK_LIST_ITEM } from '../events/mobiledrawer'
 
 export default {
   components: {
@@ -173,33 +161,8 @@ export default {
       this.toggleVisibility()
       this.clear()
     },
-    emitLoadMore(opt) {
-      return this.$emit(LOAD_MORE, opt)
-    },
     clear() {
-      this.$emit(CLEAR_SUBMARINE)
-      this.$emit(CLEAR_DATACENTERS)
-      this.$emit(CLEAR_IXPS)
-      this.$emit(CLEAR_NETWORKS)
       this.collapseActive = ''
-    },
-    handleCollapseChange(tab) {
-      if (!tab) this.clear()
-      else
-        switch (tab.toLowerCase()) {
-          case 'submarine':
-            this.$emit(CLICK_SUBMARINE, tab)
-            break
-          case 'datacenters':
-            this.$emit(CLICK_DATACENTERS, tab)
-            break
-          case 'ixps':
-            this.$emit(CLICK_IXPS, tab)
-            break
-          case 'networks':
-            this.$emit(CLICK_NETWORKS, tab)
-            break
-        }
     },
     toggleVisibility() {
       this.isDrawer = !this.isDrawer

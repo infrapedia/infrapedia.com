@@ -129,13 +129,8 @@ export default {
   },
   methods: {
     emitSelected(selection) {
-      this.$emit('click', {
-        id:
-          selection.cable_id ||
-          selection.org_id ||
-          selection.fac_id ||
-          selection.ix_id ||
-          selection.net_id,
+      return this.$emit('click', {
+        id: selection._id,
         option: this.option
       })
     },
