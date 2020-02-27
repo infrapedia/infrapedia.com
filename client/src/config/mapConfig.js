@@ -91,7 +91,10 @@ export const mapConfig = {
           data: {
             type: 'FeatureCollection',
             features: []
-          }
+          },
+          cluster: true,
+          clusterRadius: 60,
+          clusterMaxZoom: 20
         }
       }
     ],
@@ -281,9 +284,8 @@ export const mapConfig = {
         id: clusters,
         source: clusters,
         type: 'circle',
-        filter: ['has', 'point_count'],
         paint: {
-          'circle-color': '#FF3860',
+          'circle-color': '#2196f3',
           'circle-radius': ['step', ['get', 'point_count'], 15, 2, 22, 4, 30]
         }
       },
@@ -305,7 +307,7 @@ export const mapConfig = {
         maxzoom: 15,
         filter: ['!', ['has', 'point_count']],
         paint: {
-          'circle-color': '#FF3860',
+          'circle-color': '#2196f3',
           'circle-radius': 10
         }
       }
