@@ -1,9 +1,9 @@
 <template>
   <div
-    class="main-wrapper w-fit-full vph-full pt20 pb24 pr7 pl7"
+    class="main-wrapper w-fit-full mt12 pt8 vph-full colummn pl4 pr4 flex wrap align-items-start"
     :class="{ dark, light: !dark }"
   >
-    <div>
+    <div class="w-fit-full flex row wrap align-items-start">
       <header
         class="flex w-fit-full p2 row nowrap justify-content-space-between"
       >
@@ -12,7 +12,7 @@
         </h1>
       </header>
       <el-divider />
-      <el-card shadow="never">
+      <el-card shadow="never" class="w-fit-full">
         <el-table
           :data="tableData"
           max-height="700"
@@ -54,7 +54,7 @@
       </el-card>
     </div>
 
-    <div class="flex w-fit-full align-items-center justify-content-center mt12">
+    <div class="flex w-fit-full justify-content-center">
       <el-pagination
         @current-change="getALertsList"
         :current-page.sync="currentPage"

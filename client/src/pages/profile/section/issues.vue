@@ -1,6 +1,6 @@
 <template>
   <div
-    class="main-wrapper w-fit-full vph-full pt20 pb24 pr7 pl7"
+    class="main-wrapper w-fit-full mt12 pt8 vph-full pl4 pr4 flex row wrap align-items-start"
     :class="{ dark, light: !dark }"
   >
     <table-list
@@ -15,7 +15,7 @@
       :row-classes="['viewed', 'light-yellow-bg', 'true']"
     />
 
-    <div class="flex w-fit-full align-items-center justify-content-center mt12">
+    <div class="flex w-fit-full align-items-center justify-content-center">
       <el-pagination
         @current-change="getIssuesList"
         :current-page.sync="currentPage"

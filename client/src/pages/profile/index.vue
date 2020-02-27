@@ -1,87 +1,90 @@
 <template>
   <div
-    class="main-wrapper w-fit-full vph-full pt20 pb24 pr7 pl7"
+    class="main-wrapper w-fit-full mt12 pt8 vph-full pl4 pr4 flex row wrap align-items-start"
     :class="{ dark, light: !dark }"
   >
-    <header class="mb8">
-      <h1 class="title-user color-inherit">
-        Account
-      </h1>
-    </header>
-    <el-card shadow="never" class="p8" v-loading="loading">
-      <div class="flex justify-content-space-between">
-        <div>
-          <p class="m0 fs-large">
-            <strong>
-              {{
-                userData.user_metadata && userData.user_metadata.name
-                  ? user_metadata.namename
-                  : userData.name
-              }}
-            </strong>
-          </p>
-          <p class="mt6 fs-small">
-            {{ userData.company ? userData.company : 'Company: Unknown' }}
-          </p>
-        </div>
-        <router-link
-          id="profileBtn"
-          to="/user/profile"
-          class="inline-block w28 h7 mr1 color-inherit p1 vertical-align round fs-regular"
-        >
-          See my profile
-        </router-link>
-      </div>
-    </el-card>
-
-    <el-row :gutter="50" class="mt10">
-      <el-col :md="24" :lg="10">
-        <el-card shadow="never" class="pr8 pl8 h100 overflow-y-auto">
-          <header class="header p4">
-            <h2 class="title-user-variant m0 color-inherit">
-              My activity
-            </h2>
-          </header>
-          <div class="w-fit-full mt2 pb8">
-            <el-row :gutter="20" class="pr4 pl6">
-              <div v-for="(data, i) in logsData" :key="i">
-                <el-col :span="16">
-                  <strong
-                    ><p class="fs-small truncate">
-                      path:
-                    </p></strong
-                  >
-                  <span class="truncate fs-small">
-                    {{ data.path }}
-                  </span>
-                </el-col>
-                <el-col :span="8">
-                  <small>
-                    <p>
-                      Register date:
-                    </p>
-                  </small>
-                  <small>
-                    <span class="truncate">
-                      {{ formatDate(data.rgDate) }}
-                    </span>
-                  </small>
-                </el-col>
-              </div>
-            </el-row>
+    <div class="flex row wrap w-fit-full">
+      <header class="mb8">
+        <h1 class="title-user color-inherit">
+          Account
+        </h1>
+      </header>
+      <el-card shadow="never" class="w-fit-full p8" v-loading="loading">
+        <div class="flex justify-content-space-between">
+          <div>
+            <p class="m0 fs-large">
+              <strong>
+                {{
+                  userData.user_metadata && userData.user_metadata.name
+                    ? user_metadata.namename
+                    : userData.name
+                }}
+              </strong>
+            </p>
+            <p class="mt6 fs-small">
+              {{ userData.company ? userData.company : 'Company: Unknown' }}
+            </p>
           </div>
-        </el-card>
-      </el-col>
-      <el-col :md="24" :lg="14">
-        <el-card shadow="never" class="pr8 pl8 h100">
-          <header class="header p4">
-            <h2 class="title-user-variant m0 color-inherit">
-              Map
-            </h2>
-          </header>
-        </el-card>
-      </el-col>
-    </el-row>
+          <router-link
+            id="profileBtn"
+            to="/user/profile"
+            class="inline-block w28 h7 mr1 color-inherit p1 vertical-align round fs-regular"
+          >
+            See my profile
+          </router-link>
+        </div>
+      </el-card>
+      <div class="w-fit-full mt10">
+        <el-row :gutter="50">
+          <el-col :md="24" :lg="10">
+            <el-card shadow="never" class="pr8 pl8 h100 overflow-y-auto">
+              <header class="header p4">
+                <h2 class="title-user-variant m0 color-inherit">
+                  My activity
+                </h2>
+              </header>
+              <div class="w-fit-full mt2 pb8">
+                <el-row :gutter="20" class="pr4 pl6">
+                  <div v-for="(data, i) in logsData" :key="i">
+                    <el-col :span="16">
+                      <strong
+                        ><p class="fs-small truncate">
+                          path:
+                        </p></strong
+                      >
+                      <span class="truncate fs-small">
+                        {{ data.path }}
+                      </span>
+                    </el-col>
+                    <el-col :span="8">
+                      <small>
+                        <p>
+                          Register date:
+                        </p>
+                      </small>
+                      <small>
+                        <span class="truncate">
+                          {{ formatDate(data.rgDate) }}
+                        </span>
+                      </small>
+                    </el-col>
+                  </div>
+                </el-row>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col :md="24" :lg="14">
+            <el-card shadow="never" class="pr8 pl8 h100">
+              <header class="header p4">
+                <h2 class="title-user-variant m0 color-inherit">
+                  Map
+                </h2>
+              </header>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
+    </div>
   </div>
 </template>
 

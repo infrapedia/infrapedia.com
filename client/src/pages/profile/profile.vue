@@ -1,9 +1,11 @@
 <template>
   <div
-    class="main-wrapper w-fit-full vph-full pt20 pb24 pr7 pl7"
+    class="main-wrapper w-fit-full mt12 pt8 vph-full pl4 pr4 flex column wrap align-items-start"
     :class="{ dark, light: !dark }"
   >
-    <header class="mb8 flex row nowrap justify-content-space-between">
+    <header
+      class="mb8 flex row nowrap w-fit-full justify-content-space-between"
+    >
       <h1 class="title-user color-inherit">
         Profile
       </h1>
@@ -11,80 +13,85 @@
         Email providers
       </el-button>
     </header>
-    <el-card shadow="never" class="pt2 pr5 pl5 pb4 mt8" v-loading="loading">
-      <el-form :model="form" :rules="rules" ref="form">
-        <el-row :gutter="20">
-          <el-col :sm="24" :md="24" :lg="12">
-            <el-form-item prop="name" label="First name">
-              <el-input v-model="form.name" :class="{ dark }" />
-            </el-form-item>
-          </el-col>
-          <el-col :sm="24" :md="24" :lg="12">
-            <el-form-item prop="user_metadata.lastname" label="Last name">
-              <el-input
-                v-model="form.user_metadata.lastname"
-                :class="{ dark }"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :sm="24" :md="24" :lg="12">
-            <el-form-item prop="email" label="Email address">
-              <el-input v-model="form.email" :class="{ dark }" />
-            </el-form-item>
-          </el-col>
-          <el-col :sm="24" :md="24" :lg="12">
-            <el-form-item label="Phone number">
-              <div class="el-input">
-                <i-phone-input
-                  inputClasses="el-input__inner"
-                  v-model="form.user_metadata.phonenumber.num"
-                  @onInput="validatePhoneNumber"
-                  class="m0 p0 el-input__inner"
+    <div class="flex w-fit-full row">
+      <el-card shadow="never" class="p5 w-fit-full" v-loading="loading">
+        <el-form :model="form" :rules="rules" ref="form">
+          <el-row :gutter="20">
+            <el-col :sm="24" :md="24" :lg="12">
+              <el-form-item prop="name" label="First name">
+                <el-input v-model="form.name" :class="{ dark }" />
+              </el-form-item>
+            </el-col>
+            <el-col :sm="24" :md="24" :lg="12">
+              <el-form-item prop="user_metadata.lastname" label="Last name">
+                <el-input
+                  v-model="form.user_metadata.lastname"
+                  :class="{ dark }"
                 />
-              </div>
-              <el-collapse-transition>
-                <el-alert
-                  type="error"
-                  class="mt2 h8"
-                  show-icon
-                  title="This phone number is not valid"
-                  :closable="false"
-                  v-if="
-                    form.user_metadata.phonenumber.num &&
-                      !form.user_metadata.phonenumber.valid
-                  "
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :sm="24" :md="24" :lg="12">
+              <el-form-item prop="email" label="Email address">
+                <el-input v-model="form.email" :class="{ dark }" />
+              </el-form-item>
+            </el-col>
+            <el-col :sm="24" :md="24" :lg="12">
+              <el-form-item label="Phone number">
+                <div class="el-input">
+                  <i-phone-input
+                    inputClasses="el-input__inner"
+                    v-model="form.user_metadata.phonenumber.num"
+                    @onInput="validatePhoneNumber"
+                    class="m0 p0 el-input__inner"
+                  />
+                </div>
+                <el-collapse-transition>
+                  <el-alert
+                    type="error"
+                    class="mt2 h8"
+                    show-icon
+                    title="This phone number is not valid"
+                    :closable="false"
+                    v-if="
+                      form.user_metadata.phonenumber.num &&
+                        !form.user_metadata.phonenumber.valid
+                    "
+                  />
+                </el-collapse-transition>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :sm="24" :md="24" :lg="12">
+              <el-form-item
+                prop="user_metadata.companyname"
+                label="Company name"
+              >
+                <el-input
+                  v-model="form.user_metadata.companyname"
+                  :class="{ dark }"
                 />
-              </el-collapse-transition>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <footer class="flex justify-content-end">
+            <el-form-item class="m0 p0">
+              <el-button
+                round
+                type="warning"
+                class="w22"
+                size="medium"
+                @click="validateForm"
+              >
+                Save
+              </el-button>
             </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :sm="24" :md="24" :lg="12">
-            <el-form-item prop="user_metadata.companyname" label="Company name">
-              <el-input
-                v-model="form.user_metadata.companyname"
-                :class="{ dark }"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <footer class="flex justify-content-end">
-          <el-form-item class="m0 p0">
-            <el-button
-              round
-              type="warning"
-              class="w22"
-              size="medium"
-              @click="validateForm"
-            >
-              Save
-            </el-button>
-          </el-form-item>
-        </footer>
-      </el-form>
-    </el-card>
+          </footer>
+        </el-form>
+      </el-card>
+    </div>
     <footer class="mt10 p0">
       <router-link
         exact

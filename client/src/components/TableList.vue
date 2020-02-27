@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-fit-full flex row wrap justify-self-center">
     <header class="flex w-fit-full p2 row nowrap justify-content-space-between">
       <h1 class="title-user color-inherit">
         <router-link v-if="returnLink.visible" :to="returnLink.url">
@@ -12,7 +12,7 @@
       </el-button>
     </header>
     <el-divider />
-    <el-card shadow="never">
+    <el-card shadow="never" class="w-fit-full">
       <el-table
         :data="tableData"
         max-height="700"
