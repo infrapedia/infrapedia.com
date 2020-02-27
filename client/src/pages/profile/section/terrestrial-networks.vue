@@ -18,7 +18,10 @@
 <script>
 import { cablesColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { getCables, deleteCable } from '../../../services/api/cables'
+import {
+  getTerrestrialNetworks,
+  deleteCable
+} from '../../../services/api/cables'
 import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
 import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
 
@@ -31,9 +34,9 @@ export default {
     tableData: [],
     loading: false,
     tableConfig: {
-      title: 'Cables',
-      creation_link: '/user/section/create?id=cables',
-      btn_label: 'Create cable'
+      title: 'Terrestrial Networks',
+      creation_link: '/user/section/create?id=terrestrial-network',
+      btn_label: 'Create network'
     },
     columns: [...cablesColumns].filter(col => col.showTable)
   }),
@@ -56,7 +59,7 @@ export default {
     },
     async getCablesList() {
       this.loading = true
-      const res = await getCables({ user_id: this.$auth.user.sub })
+      const res = await getTerrestrialNetworks({ user_id: this.$auth.user.sub })
       if (res.t !== 'error' && res.data) {
         this.tableData = res.data.r
       }
@@ -65,7 +68,7 @@ export default {
     handleEditCable(_id) {
       return this.$router.push({
         path: '/user/section/create',
-        query: { id: 'cables', item: _id }
+        query: { id: 'terrestrial-network', item: _id }
       })
     },
     handleDeleteCable(_id) {

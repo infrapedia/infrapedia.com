@@ -7,11 +7,12 @@ import Profile from '../pages/profile/profile.vue'
 import CLS from '../pages/profile/section/cls.vue'
 import IxpsSection from '../pages/profile/section/ixps.vue'
 import CreateSection from '../pages/profile/section/create.vue'
-import CablesSection from '../pages/profile/section/cables.vue'
+import TerrestrialNetworksSection from '../pages/profile/section/terrestrial-networks.vue'
+import SubseaCablesSection from '../pages/profile/section/subsea-cables.vue'
 import IssuesSection from '../pages/profile/section/issues.vue'
 import AlertsSection from '../pages/profile/section/alerts.vue'
 import ChangePassword from '../pages/profile/recover-password.vue'
-import NetworksSection from '../pages/profile/section/network.vue'
+import ConnectionsSection from '../pages/profile/section/connections.vue'
 import OrgsSection from '../pages/profile/section/organization.vue'
 import MyIssuesSection from '../pages/profile/section/myissues.vue'
 import FacilitiesSection from '../pages/profile/section/facilities.vue'
@@ -63,9 +64,14 @@ const routes = [
     component: ChangePassword
   },
   {
-    path: '/user/section/cables',
-    name: 'user/cables-section',
-    component: CablesSection
+    path: '/user/section/terrestrial-networks',
+    name: 'user/terrestrial-cables-section',
+    component: TerrestrialNetworksSection
+  },
+  {
+    path: '/user/section/subsea-cables',
+    name: 'user/subsea-cables-section',
+    component: SubseaCablesSection
   },
   {
     path: '/user/section/orgs',
@@ -88,9 +94,9 @@ const routes = [
     component: IxpsSection
   },
   {
-    path: '/user/section/networks',
+    path: '/user/section/connections',
     name: 'user/networks-section',
-    component: NetworksSection
+    component: ConnectionsSection
   },
   {
     path: '/user/section/issues',

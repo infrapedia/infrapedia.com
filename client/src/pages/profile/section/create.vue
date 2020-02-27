@@ -111,7 +111,10 @@ export default {
       return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
     },
     isLoadingDialog() {
-      const type = this.creationType === 'cls' || this.creationType === 'cables'
+      const type =
+        this.creationType === 'cls' ||
+        this.creationType === 'subsea' ||
+        this.creationType === 'terrestrial-network'
       return type && this.isSendingData
     },
     currentView() {
@@ -179,8 +182,11 @@ export default {
         case 'cls':
           route = '/user/section/cls'
           break
+        case 'subsea':
+          route = '/user/section/subsea-cables'
+          break
         default:
-          route = '/user/section/cables'
+          route = '/user/section/terrestrial-networks'
           break
       }
       return route
@@ -294,7 +300,7 @@ export default {
             fiberPairs: '',
             systemLength: 0,
             capacityTBPS: 0,
-            terrestrial: false,
+            terrestrial: this.creationType === 'subsea' ? false : true,
             category: cableStates[0],
             activationDateTime: '',
             geom: this.featuresList
@@ -311,7 +317,7 @@ export default {
         case 'cls':
           currentElement = await this.viewCurrentCLS(_id)
           break
-        case 'cables':
+        default:
           currentElement = await this.viewCurrentCable(_id)
           break
       }
@@ -329,7 +335,7 @@ export default {
           }))
           this.form.cables = data.cables.map(f => f._id)
           break
-        case 'cables':
+        default:
           this.form.facsList = data.facilities.map(f => ({
             name: f.label,
             _id: f._id
@@ -353,6 +359,11 @@ export default {
       const res = await viewCableOwner({ user_id: this.$auth.user.sub, _id })
       return res && res.data && res.data.r ? res.data.r : {}
     },
+    handleReturningRoute(type) {
+      return type === 'subsea'
+        ? this.$router.push('/user/section/subsea-cables')
+        : this.$router.push('/user/section/terrestrial-networks')
+    },
     async createCLS() {
       this.isSendingData = true
       const res = await createCls({
@@ -361,9 +372,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') {
-        return this.$router.push('/user/section/cls')
-      }
+      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
     },
     async editCLS() {
       this.isSendingData = true
@@ -374,9 +383,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') {
-        return this.$router.push('/user/section/cls')
-      }
+      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
     },
     async createCable() {
       this.isSendingData = true
@@ -386,9 +393,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res && res.t && res.t !== 'error') {
-        return this.$router.push('/user/section/cables')
-      }
+      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
     },
     async editCable() {
       this.isSendingData = true
@@ -399,9 +404,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res && res.t && res.t !== 'error') {
-        return this.$router.push('/user/section/cables')
-      }
+      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
     }
   }
 }

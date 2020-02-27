@@ -284,3 +284,31 @@ export const getCablesGeom = async ({ user_id, ids }) => {
 
   return res
 }
+
+export const getTerrestrialNetworks = async ({ user_id }) => {
+  url = `${apiConfig.url}/auth/cables/terrestrial/all`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+
+  return res
+}
+
+export const getSubseaCables = async ({ user_id }) => {
+  url = `${apiConfig.url}/auth/cables/subsea/all`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+
+  return res
+}

@@ -1,7 +1,7 @@
 <template>
   <div class="pb6 pt6 pr8 pl8">
     <header slot="header" class="w-fit-full mb8">
-      <h1 class="title">{{ title }} cable</h1>
+      <h1 class="title">{{ title }}</h1>
     </header>
     <el-form ref="form" :model="form" :rules="formRules">
       <el-form-item label="Category" prop="category">
@@ -33,6 +33,7 @@
         />
       </el-form-item>
       <el-form-item
+        v-if="creationID === 'subsea'"
         label="RFS (Ready for Service)"
         prop="activationDateTime"
         required
@@ -84,16 +85,6 @@
         >
           Add url
         </el-button>
-      </el-form-item>
-      <el-form-item label="Terrestrial" prop="terrestrial">
-        <el-radio-group v-model="form.terrestrial">
-          <el-radio :label="true">
-            Yes
-          </el-radio>
-          <el-radio :label="false">
-            No
-          </el-radio>
-        </el-radio-group>
       </el-form-item>
       <el-form-item label="Capacity (Tbps)" prop="tbpsCapacity">
         <el-input-number
@@ -193,14 +184,7 @@ export default {
     inputVisible: false,
     isLoadingFacs: false,
     formRules: {
-      activationDateTime: [
-        {
-          type: 'date',
-          required: true,
-          message: 'Please pick a date',
-          trigger: 'change'
-        }
-      ],
+      activationDateTime: [],
       name: [
         {
           required: true,
@@ -214,7 +198,6 @@ export default {
       category: [],
       fiberPairs: [],
       facilities: [],
-      terrestrial: [],
       tbpsCapacity: [],
       systemLength: []
     }
@@ -234,8 +217,14 @@ export default {
     }
   },
   computed: {
+    creationID() {
+      return this.$route.query.id
+    },
     title() {
-      return this.mode === 'create' ? 'Create' : 'Edit'
+      let t = `${
+        this.creationID === 'subsea' ? 'subsea cable' : 'terrestrial network'
+      }`
+      return this.mode === 'create' ? `Create ${t}` : `Edit ${t}`
     },
     dark() {
       return this.$store.state.isDark
@@ -247,6 +236,16 @@ export default {
   mounted() {
     if (this.mode === 'create') {
       setTimeout(() => this.$refs.form.clearValidate(), 50)
+    }
+    if (this.creationID === 'subsea') {
+      this.formRules.activationDateTime = [
+        {
+          type: 'date',
+          required: true,
+          message: 'Please pick a date',
+          trigger: 'change'
+        }
+      ]
     }
   },
   watch: {

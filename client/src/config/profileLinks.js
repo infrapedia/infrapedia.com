@@ -30,8 +30,8 @@ const profileLinks = [
     icon: ['fas', 'sitemap']
   },
   {
-    label: 'Networks',
-    url: '/user/section/networks',
+    label: 'Connections',
+    url: '/user/section/connections',
     icon: ['fas', 'project-diagram']
   },
   {
@@ -40,8 +40,13 @@ const profileLinks = [
     icon: ['fas', 'braille']
   },
   {
-    label: 'Cables',
-    url: '/user/section/cables',
+    label: 'Subsea Cables',
+    url: '/user/section/subsea-cables',
+    icon: ['fas', 'water']
+  },
+  {
+    label: 'Terrestrial Networks',
+    url: '/user/section/terrestrial-networks',
     icon: ['fas', 'bezier-curve']
   },
   {

@@ -25,7 +25,7 @@
           v-model="form.slug"
         />
       </el-form-item>
-      <el-form-item label="Cables">
+      <el-form-item label="Subsea cables">
         <el-select
           class="w-fit-full"
           v-model="form.cables"

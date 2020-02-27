@@ -49,9 +49,9 @@ export default {
     isDialog: false,
     mode: 'create',
     tableConfig: {
-      title: 'Networks',
+      title: 'Connections',
       creation_link: false,
-      btn_label: 'Create network'
+      btn_label: 'Create connection'
     },
     form: {
       cls: [],

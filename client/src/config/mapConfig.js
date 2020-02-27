@@ -19,8 +19,6 @@ export const mapConfig = {
   default: 'mapbox://styles/networkatlas/cjt4y5k77443z1fmfu2pfbcuu',
   darkBasemap: 'mapbox://styles/mapbox/dark-v10',
   zoom: 1.75,
-  dark: false,
-  maptiks_id: 'Infrapedia',
   center: [-34.292, 27.57],
   cls,
   ixps,
