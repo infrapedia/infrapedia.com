@@ -86,7 +86,11 @@
           Add url
         </el-button>
       </el-form-item>
-      <el-form-item label="Capacity (Tbps)" prop="tbpsCapacity">
+      <el-form-item
+        label="Capacity (Tbps)"
+        prop="tbpsCapacity"
+        v-if="creationID === 'subsea'"
+      >
         <el-input-number
           :min="0"
           :class="{ dark }"
