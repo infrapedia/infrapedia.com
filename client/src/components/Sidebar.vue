@@ -160,6 +160,11 @@ export default {
         : []
     ]
   },
+  mounted() {
+    if (this.focus) {
+      this.currentSelectionColumns = getSelectionCols(this.focus.type)
+    }
+  },
   beforeDestroy() {
     window.removeEventListener('resize', this.resizeWatcher)
   },

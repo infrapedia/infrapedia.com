@@ -38,12 +38,13 @@ import {
   TOGGLE_ISSUES_DIALOG
 } from '../store/actionTypes'
 import { disableAlert } from '../services/api/alerts'
+import Sidebar from '../components/Sidebar.vue'
 
 export default {
   components: {
     IFooter,
     INavbar,
-    ISidebar: () => import('../components/Sidebar'),
+    ISidebar: Sidebar,
     IBuyDialog: () => import('../components/dialogs/BuyDialog'),
     UserCablesButton: () => import('../components/UserCablesButton'),
     IIssuesDialog: () => import('../components/dialogs/IssuesDialog'),

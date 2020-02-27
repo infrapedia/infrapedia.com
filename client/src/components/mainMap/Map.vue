@@ -19,10 +19,10 @@
     >
       <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
     </el-button>
-    <i-location-button
+    <!-- <i-location-button
       @click="geolocateUser(true)"
       @enter="geolocateUser(true)"
-    />
+    /> -->
     <el-button
       id="menuOpener"
       circle
@@ -110,12 +110,7 @@ import {
   UPDATE_TIME_MACHINE,
   SUBSEA_FILTER
 } from '../../events/filter'
-import {
-  // TOGGLE_LOADING,
-  TOGGLE_DARK,
-  LOCATE_USER,
-  TOGGLE_SIDEBAR
-} from '../../store/actionTypes'
+import { TOGGLE_DARK, TOGGLE_SIDEBAR } from '../../store/actionTypes'
 import {
   CURRENT_MAP_FILTER,
   CURRENT_SELECTION,
@@ -123,8 +118,6 @@ import {
   HAS_TO_EASE_TO,
   EASE_POINT
 } from '../../store/actionTypes/map'
-import ILocationButton from '../../components/LocationButton'
-import copyToClipboard from '../../helpers/copyToClipboard'
 import IThemeToggler from '../../components/ThemeToggler'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../../config/mapConfig'
@@ -136,19 +129,24 @@ import currentYear from '../../helpers/currentYear'
 import debounce from '../../helpers/debounce'
 import { viewNetwork } from '../../services/api/networks'
 import { viewOrganization } from '../../services/api/organizations'
-import { shareLink } from '../../services/api/shortener'
 import { shareLinkButtons } from '../../config/shareLinkButtons'
 import { mapStatistics } from '../../services/api/map'
 import handleDraw from './draw'
 import boundsChange from './boundsChange'
-
-const GEOLOCATION_POINT = 'geolocation-point'
+import highlightCurrentCable from './highlightCable'
+import disableCurrentHighlight from './disableHighlight'
+import {
+  shareViaFacebook,
+  shareViewLink,
+  shareViaWhatsApp,
+  shareViaTelegram,
+  shareViaSkype
+} from './shareLinks'
 
 export default {
   name: 'Map',
   components: {
-    IThemeToggler,
-    ILocationButton
+    IThemeToggler
   },
   data: () => ({
     is3D: false,
@@ -197,12 +195,13 @@ export default {
     if (this.dark) this.map.setStyle(mapConfig.darkBasemap)
     this.handlePreviouslySelected()
 
+    const user_id = this.$auth.user.sub
     this.shareLinkButtonsCallers = {
-      shareViaSkype: this.shareViaSkype,
-      shareViewLink: this.shareViewLink,
-      shareViaTelegram: this.shareViaTelegram,
-      shareViaWhatsApp: this.shareViaWhatsApp,
-      shareViaFacebook: this.shareViaFacebook
+      shareViaSkype: () => shareViaSkype(user_id),
+      shareViewLink: () => shareViewLink(user_id),
+      shareViaTelegram: () => shareViaTelegram(user_id),
+      shareViaWhatsApp: () => shareViaWhatsApp(user_id),
+      shareViaFacebook: () => shareViaFacebook(user_id)
     }
   },
   methods: {
@@ -245,12 +244,19 @@ export default {
       map.addControl(draw, 'top-right')
       map.addControl(scaleCtrl, 'bottom-left')
       map.addControl(new mapboxgl.NavigationControl(), 'top-right')
+      map.addControl(
+        new mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true
+        })
+      )
 
       const mbCtrl = document.querySelector('.mapboxgl-ctrl-group')
       mbCtrl.classList.add('mapbox-controllers')
       mbCtrl.appendChild(document.getElementById('ThreeD'))
       mbCtrl.appendChild(document.getElementById('FScreen'))
-      mbCtrl.appendChild(document.getElementById('Geolocation'))
 
       window.mapboxgl = mapboxgl
       window.draw = draw
@@ -273,18 +279,15 @@ export default {
      */
     addMapSources(map) {
       for (let source of mapConfig.data.sources) {
-        map.addSource(source.name, { ...source.opts })
+        map.addSource(source.name, source.opts)
       }
-      this.addMapLayers()
+      this.addMapLayers(map)
     },
-    addMapLayers() {
-      const map = this.map
-
+    addMapLayers(map) {
       for (let layer of mapConfig.data.layers) {
         map.addLayer(layer)
       }
-
-      this.map.setFilter(mapConfig.cableTerrestrial, mapConfig.filter.all)
+      map.setFilter(mapConfig.cableTerrestrial, mapConfig.filter.all)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
     },
     /**
@@ -325,8 +328,8 @@ export default {
     },
     handleDrawEvents() {
       const data = window.draw.getAll()
-      const wrapper = document.getElementById('calculated-area')
-      return handleDraw({ ctx: this, data, elemnt: wrapper })
+      const elemnt = document.getElementById('calculated-area')
+      return handleDraw({ ctx: this, data, elemnt })
     },
     /**
      * @param e { Object } Map's hover Event
@@ -339,13 +342,8 @@ export default {
 
       this.mapTooltip = {
         name: prop.name,
-        status: !!(
-          prop.IsInactive === undefined ||
-          prop.IsInactive === 'false' ||
-          prop.IsInactive === ''
-        ),
-        segment:
-          prop.segment_id === undefined ? null : parseInt(prop.segment_id)
+        status: prop.category,
+        segment: prop.segment
       }
 
       let str = `<div class="cable-name dark-color"><b>${this.mapTooltip.name}</b></div>`
@@ -373,12 +371,11 @@ export default {
     handlePopupVisibilityOn(e, popup, isPoint) {
       if (!this.map) return
       const map = this.map
-      // const clusterPts = map.queryRenderedFeatures(e.point, {
-      //   layers: [mapConfig.clusterPts]
-      // })
+      const clusters = map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.clusters]
+      })
 
-      // if (e.features.length && !clusterPts.length) {
-      if (e.features.length && !this.isMobile) {
+      if (!clusters.length && e.features.length && !this.isMobile) {
         map.getCanvas().style.cursor = 'pointer'
         this.showPopup(e, map, popup, isPoint)
       }
@@ -399,15 +396,10 @@ export default {
     },
     async handleBoundsChange() {
       if (!this.map) return
-
       try {
         return await boundsChange({ ctx: this, map: this.map })
       } catch (err) {
-        this.$notify({
-          type: 'error',
-          message: err.message,
-          title: 'Something has gone wrong...'
-        })
+        console.error(err)
       }
     },
     /**
@@ -415,86 +407,38 @@ export default {
      */
     highlightCable(cable) {
       if (!this.map || !cable) return
-
-      const unselectedColor = this.dark
-        ? 'rgba(250, 250, 250, 0.6)'
-        : 'rgba(23,23,23, 0.2)'
-
-      // Changing cables line colors
-      this.map.setPaintProperty(
-        mapConfig.cableTerrestrial,
-        'line-color',
-        unselectedColor
-      )
-      this.map.setPaintProperty(
-        mapConfig.cableSubsea,
-        'line-color',
-        unselectedColor
-      )
-
-      // Showing only the selected cable on the highlight layer
-      this.map.setFilter(mapConfig.cableTerrestrialHighlight, [
-        '==',
-        ['get', '_id'],
-        cable._id
-      ])
-      this.map.setFilter(mapConfig.cableSubseaHighlight, [
-        '==',
-        ['get', '_id'],
-        cable._id
-      ])
-
-      // Keeping record of the selection and map current filter
-      this.$store.commit(`${CURRENT_MAP_FILTER}`, [
-        '==',
-        ['get', '_id'],
-        cable._id
-      ])
-      this.$store.commit(`${MAP_FOCUS_ON}`, {
-        type: 'cable',
-        id: cable._id,
-        name: cable.name
-      })
+      try {
+        return highlightCurrentCable({
+          cable,
+          map: this.map,
+          dark: this.dark,
+          commit: this.$store.commit
+        })
+      } catch (err) {
+        console.error(err)
+      }
     },
     /**
      * @param closesSidebar { Boolean } - If besides removing cables highlight it also closes the sidebar
      */
     disableCableHighlight(closesSidebar = true) {
-      const { map } = this
-
+      if (!this.map) return
       try {
-        if (closesSidebar) {
-          this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
-          this.$store.commit(`${MAP_FOCUS_ON}`, null)
-          this.handleBoundsChange()
-        }
-
-        this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
-
-        // Removing highlight layer filter
-        map.setFilter(mapConfig.cableSubseaHighlight, ['in', '_id', false])
-        map.setFilter(mapConfig.cableTerrestrialHighlight, ['in', '_id', false])
-
-        // Changing cables colors back to normal
-        map.setPaintProperty(
-          mapConfig.cableTerrestrial,
-          'line-color',
-          mapConfig.data.layers[0].paint['line-color']
-        )
-        map.setPaintProperty(
-          mapConfig.cableSubsea,
-          'line-color',
-          mapConfig.data.layers[3].paint['line-color']
-        )
-      } catch {
-        // Ignore
+        return disableCurrentHighlight({
+          closesSidebar,
+          map: this.map,
+          commit: this.$store.commit,
+          handleBoundsChange: this.handleBoundsChange
+        })
+      } catch (err) {
+        console.error(err)
       }
     },
     /**
      * @param e { Object } Map's any clicking event
      */
     async handleMapClick(e) {
-      // If is currently drawing don't do anything
+      // If is currently drawing shouldn't do anything
       if (this.isDrawing) return
 
       const cablesTerrestrial = this.map.queryRenderedFeatures(e.point, {
@@ -545,7 +489,7 @@ export default {
       } else if (cablesSubsea.length) {
         await this.handleCablesSelection(!!cablesSubsea.length, cablesSubsea)
       } else if (clusters.length) {
-        await this.handleClustersSelection(clusters)
+        await this.handleClustersSelection(clusters, this.map)
       } else if (
         !facilities.length &&
         !ixps.length &&
@@ -624,11 +568,11 @@ export default {
     },
     /**
      * @param clusters { Array }
+     * @param map { Object } Mapbox map - Object reference (ie: this.map)
      */
-    async handleClustersSelection(clusters) {
-      const vm = this
-      console.log(clusters)
-      await this.map
+    async handleClustersSelection(clusters, map) {
+      if (!map) return
+      await map
         .getSource(mapConfig.clusters)
         .getClusterExpansionZoom(clusters[0].properties.cluster_id, function(
           err,
@@ -636,7 +580,7 @@ export default {
         ) {
           if (err) return
 
-          vm.map.easeTo({
+          map.easeTo({
             center: clusters[0].geometry.coordinates,
             zoom
           })
@@ -714,10 +658,10 @@ export default {
         if (!map.loaded()) return
 
         this.addMapSources(map)
-        if (this.$store.state.isLocating) {
-          this.isLocationZoomIn = false
-          this.geolocateUser()
-        }
+        // if (this.$store.state.isLocating) {
+        //   this.isLocationZoomIn = false
+        //   this.geolocateUser()
+        // }
         if (this.focus && this.focus.type.toLowerCase() === 'cable') {
           this.handleCablesSelection(true, [
             { properties: { _id: this.focus.id } }
@@ -754,209 +698,6 @@ export default {
       this.$nextTick(() => {
         this.map.easeTo({ pitch: this.is3D ? 45 : 0, duration: 850 })
       })
-    },
-    async shareViewLink() {
-      const res = await shareLink({
-        url: encodeURI(
-          `${window.location.origin}${this.$route.fullPath}&hasToEase=true`
-        ),
-        user_id: this.$auth.user.sub
-      })
-
-      if (res && res.data && res.data.r) copyToClipboard(res.data.r)
-    },
-    async shareViaWhatsApp() {
-      const res = await shareLink({
-        url: encodeURI(
-          `${window.location.origin}${this.$route.fullPath}&hasToEase=true`
-        ),
-        user_id: this.$auth.user.sub
-      })
-      if (res && res.data && res.data.r) {
-        return copyToClipboard(`https://wa.me/?text=${res.data.r}`)
-      }
-    },
-    async shareViaTelegram() {
-      const res = await shareLink({
-        url: encodeURI(
-          `${window.location.origin}${this.$route.fullPath}&hasToEase=true`
-        ),
-        user_id: this.$auth.user.sub
-      })
-      if (res && res.data && res.data.r) {
-        return copyToClipboard(
-          `https://telegram.me/share/url?url=${res.data.r}`
-        )
-      }
-    },
-    async shareViaSkype() {
-      const res = await shareLink({
-        url: encodeURI(
-          `${window.location.origin}${this.$route.fullPath}&hasToEase=true`
-        ),
-        user_id: this.$auth.user.sub
-      })
-      if (res && res.data && res.data.r) {
-        return copyToClipboard(`https://web.skype.com/share?url=${res.data.r}`)
-      }
-    },
-    async shareViaFacebook() {
-      const res = await shareLink({
-        url: encodeURI(
-          `${window.location.origin}${this.$route.fullPath}&hasToEase=true`
-        ),
-        user_id: this.$auth.user.sub
-      })
-      if (res && res.data && res.data.r) {
-        return copyToClipboard(
-          `https://www.facebook.com/dialog/send?app_id=654189014992874&link=${res.data.r}`
-        )
-      }
-    },
-    clearLocation() {
-      if (this.trackID) {
-        this.geolocation.clearWatch(this.trackID)
-      }
-
-      if (this.map.getLayer(GEOLOCATION_POINT)) {
-        this.map.removeLayer(GEOLOCATION_POINT)
-      }
-
-      this.$store.commit(`${LOCATE_USER}`, false)
-    },
-    /**
-     * @param isLocationZoomIn { Boolean } - For if the map has to ZoomIn when locating the user
-     */
-    geolocateUser(isLocationZoomIn) {
-      if (isLocationZoomIn) {
-        this.isLocationZoomIn = true
-      }
-
-      this.trackID = navigator.geolocation.watchPosition(
-        this.showLocation,
-        this.handleGeolocationErrors,
-        { maximumAge: 75000, enableHighAccuracy: true, timeout: 60000 }
-      )
-    },
-    /**
-     * @param location { Object } - Contains current location coordinates
-     */
-    showLocation(location) {
-      if (!location || !this.map) return
-
-      const map = this.map
-      const imageID = 'pulsing-dot'
-      const coordinates = location.coords
-      const GEOLOCATION_SOURCE_DATA = 'geolocation-point-data'
-      const sourceData = map.getSource(GEOLOCATION_SOURCE_DATA)
-      const size = 200
-      const pulsingDot = {
-        width: size,
-        height: size,
-        data: new Uint8Array(size * size * 4),
-        onAdd() {
-          const canvas = document.createElement('canvas')
-          canvas.width = this.width
-          canvas.height = this.height
-          this.context = canvas.getContext('2d')
-        },
-        render() {
-          const duration = 1320
-          const t = (performance.now() % duration) / duration
-          const radius = (size / 2) * 0.3
-          const outerRadius = (size / 2) * 0.7 * t + radius
-          const context = this.context
-          context.clearRect(0, 0, this.width, this.height)
-          context.beginPath()
-          context.arc(
-            this.width / 2,
-            this.height / 2,
-            outerRadius,
-            0,
-            Math.PI * 2
-          )
-          context.fillStyle = 'rgba(29, 161, 242,' + (1 - t) + ')'
-          context.fill()
-          context.beginPath()
-          context.arc(this.width / 2, this.height / 2, radius, 0, Math.PI * 2)
-          context.fillStyle = 'rgba(29, 161, 242, 1)'
-          context.strokeStyle = 'white'
-          context.lineWidth = 2 + 4 * (1 - t)
-          context.fill()
-          context.stroke()
-          this.data = context.getImageData(0, 0, this.width, this.height).data
-          map.triggerRepaint()
-          return true
-        }
-      }
-
-      if (!map.getLayer(GEOLOCATION_POINT)) {
-        if (!sourceData) {
-          map.addSource(GEOLOCATION_SOURCE_DATA, {
-            type: 'geojson',
-            data: {
-              type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: [coordinates.longitude, coordinates.latitude]
-              }
-            }
-          })
-        } else {
-          sourceData.setData({
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [coordinates.longitude, coordinates.latitude]
-            }
-          })
-        }
-
-        // If the image doesn't exit add it
-        if (!map.hasImage(imageID)) {
-          map.addImage(imageID, pulsingDot, { pixelRatio: 4 })
-          // Else update it with the new position
-        } else map.updateImage(imageID, pulsingDot)
-
-        map.addLayer({
-          id: GEOLOCATION_POINT,
-          type: 'symbol',
-          layout: {
-            'icon-image': imageID
-          },
-          source: GEOLOCATION_SOURCE_DATA
-        })
-      }
-
-      if (this.isLocationZoomIn) {
-        map.flyTo({
-          center: [coordinates.longitude, coordinates.latitude],
-          zoom: 20
-        })
-
-        this.isLocationZoomIn = false
-      }
-
-      this.$store.commit(`${LOCATE_USER}`, true)
-    },
-    /**
-     * @param err { Object } - The error emitted by the HTML5 location service
-     */
-    handleGeolocationErrors(err) {
-      switch (err) {
-        case 'UNKNOWN_ERROR':
-          console.error(err)
-          break
-        case 'PERMISSION_DENIED':
-          console.error(err)
-          break
-        case 'POSITION_UNAVAILABLE':
-          console.error(err)
-          break
-        default:
-          console.error(err)
-          break
-      }
     },
     /**
      * @param id { [Number, String] }
