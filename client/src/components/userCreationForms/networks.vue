@@ -10,7 +10,7 @@
         class="title-user-variant w-fit-full fs-xlarge text-center"
         :class="{ dark }"
       >
-        {{ title }} network
+        {{ title }} connection
       </h1>
     </header>
     <el-form
