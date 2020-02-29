@@ -78,7 +78,13 @@ export const dataActions = {
   async getClustersPointsOrgsData({ commit }, data) {
     const res = await getClustersPointsOrgs(data)
 
-    if (res && res.data && res.data.r && res.data.r.features) {
+    if (
+      res &&
+      res.data &&
+      res.data.r &&
+      res.data.r.features &&
+      res.data.r.features.length
+    ) {
       const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
       const coords = res.data.r.features[0].geometry.coordinates
       const bbox = coords.reduce(
@@ -92,7 +98,13 @@ export const dataActions = {
   async getClustersPointsNetworksData({ commit }, data) {
     const res = await getClustersPointsNetworks(data)
 
-    if (res && res.data && res.data.r && res.data.r.features) {
+    if (
+      res &&
+      res.data &&
+      res.data.r &&
+      res.data.r.features &&
+      res.data.r.features.length
+    ) {
       const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
       const coords = res.data.r.features[0].geometry.coordinates
       const bbox = coords.reduce(

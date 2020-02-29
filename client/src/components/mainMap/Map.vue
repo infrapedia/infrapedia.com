@@ -519,6 +519,15 @@ export default {
       }
 
       if (fc) this.map.getSource(mapConfig.clusters).setData(fc)
+      else {
+        this.map.flyTo({
+          center: mapConfig.center,
+          zoom: mapConfig.zoom,
+          easing: t => t,
+          speed: 1.8,
+          curve: 1
+        })
+      }
     },
     async handleNetworkFocus(_id, fc) {
       const { focus, bounds, map } = this

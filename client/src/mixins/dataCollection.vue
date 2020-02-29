@@ -134,7 +134,10 @@ export default {
       return bus.$emit(`${FOCUS_ON}`, {
         id,
         type,
-        fc: res.data.r ? res.data.r : false
+        fc:
+          res.data.r && res.data.r.features && res.data.r.features.length
+            ? res.data.r
+            : false
       })
     },
     async handleOrgItemSelected({ id, type }) {
@@ -147,7 +150,10 @@ export default {
       return bus.$emit(`${FOCUS_ON}`, {
         id,
         type,
-        fc: res.data.r ? res.data.r : false
+        fc:
+          res.data.r && res.data.r.features && res.data.r.features.length
+            ? res.data.r
+            : false
       })
     }
   }
