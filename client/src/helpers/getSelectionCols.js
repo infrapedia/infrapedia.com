@@ -11,18 +11,19 @@ export const getSelectionCols = type => {
   if (!type) return []
 
   let col = []
+  let t = type.toLowerCase()
 
-  if (type === 'cls' || type === 'fac') {
+  if (t === 'cls') {
     col = [...clsColumns]
-  } else if (type.includes('fac')) {
+  } else if (t.includes('fac')) {
     col = [...facsColumns]
-  } else if (type.includes('cable')) {
+  } else if (t.includes('cable')) {
     col = [...cablesColumns]
-  } else if (type.includes('ixp')) {
+  } else if (t.includes('ixp')) {
     col = [...ixpsColumns]
-  } else if (type.includes('org')) {
+  } else if (t.includes('organization')) {
     col = [...orgsColumns]
-  } else if (type.includes('net')) {
+  } else if (t.includes('networks')) {
     col = [...netColumns]
   }
   return col

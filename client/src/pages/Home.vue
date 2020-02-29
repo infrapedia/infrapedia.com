@@ -60,8 +60,7 @@ export default {
     }
     await this.loadDataIfQueryParamsExist()
     setTimeout(() => {
-      if (this.$auth && window.localStorage.getItem('auth.token-session'))
-        return
+      if (this.$auth && this.$auth.isAuthenticated) return
       else this.$router.push('/login')
     }, 1200)
   },

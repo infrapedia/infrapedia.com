@@ -50,7 +50,11 @@
           >
             <p class="label capitalize">{{ col.label }}</p>
           </el-col>
-          <el-col :span="10" class="p2" v-else-if="info[col.value]">
+          <el-col
+            :span="10"
+            class="p2"
+            v-else-if="info[col.value] && col.label !== 'Latency'"
+          >
             <p class="label capitalize">{{ col.label }}</p>
           </el-col>
           <!---- LABELS SECTION END ---->
@@ -93,7 +97,10 @@
             >
               {{ getCableLatency(info[col.value]) }} ms
             </p>
-            <p class="text-bold" v-else-if="!isArrCol(info[col.value])">
+            <p
+              class="text-bold"
+              v-else-if="!isArrCol(info[col.value]) && col.label !== 'Latency'"
+            >
               {{ info[col.value] }}
             </p>
           </el-col>
