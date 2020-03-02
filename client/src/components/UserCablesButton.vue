@@ -13,9 +13,10 @@
         round
         @click="toggleListVisibility"
         type="primary"
+        title="My terrestrial networks and subsea cables"
         id="reference-toggler"
       >
-        <fa :icon="['fas', 'bezier-curve']" class="mr1" /> My cables
+        <fa :icon="['fas', 'bezier-curve']" class="mr1" />
       </el-button>
       <div
         :class="{ dark, light: !dark }"
@@ -47,10 +48,11 @@
               <div>
                 <strong>
                   <p class="m0 p0 mb1">
+                    <fa :icon="getIcon(cable.terrestrial)" />
                     {{ cable.name }}
                   </p>
                 </strong>
-                <small> Cable ID: {{ cable._id }} </small>
+                <small> ID: {{ cable._id }} </small>
               </div>
               <p
                 class="m0 p0 status-text"
@@ -61,14 +63,26 @@
             </div>
           </li>
         </ul>
-        <el-button
-          class="mt2 mb2 w-fit-full h10"
-          round
-          plain
-          @click="headToCreationRoute"
+        <div
+          class="mt2 mb2 w-fit-full flex column nowrap justify-content-center align-items-center"
         >
-          <fa :icon="['fas', 'plus']" class="mr1" /> Create new cable
-        </el-button>
+          <el-button
+            class="mb4 h10"
+            round
+            plain
+            @click="headToCreationRoute('subsea')"
+          >
+            <fa :icon="['fas', 'plus']" class="mr1" /> Create new subsea
+          </el-button>
+          <el-button
+            class="h10"
+            round
+            plain
+            @click="headToCreationRoute('terrestrial')"
+          >
+            <fa :icon="['fas', 'plus']" class="mr1" /> Create new network
+          </el-button>
+        </div>
       </div>
     </el-popover>
   </div>
@@ -89,6 +103,10 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    getIcon() {
+      return isTerrestrial =>
+        isTerrestrial ? ['fas', 'bezier-curve'] : ['fas', 'water']
     }
   },
   watch: {
@@ -113,8 +131,10 @@ export default {
       this.toggleListVisibility()
       return this.handleItemListSelection({ option: 'cable', id })
     },
-    headToCreationRoute() {
-      return this.$router.push('/user/section/create?id=cables')
+    headToCreationRoute(r) {
+      return r === 'subsea'
+        ? this.$router.push('/user/section/create?id=subsea')
+        : this.$router.push('/user/section/create?id=terrestrial-network')
     }
   }
 }

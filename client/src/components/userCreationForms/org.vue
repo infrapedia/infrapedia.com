@@ -172,24 +172,23 @@
           </el-button>
         </el-collapse-transition>
       </el-form-item>
-      <el-form-item class="mt12">
-        <div class="w-fit-full flex row wrap">
-          <el-button
-            :class="{ dark }"
-            type="primary"
-            plain
-            :disabled="isUploadingImage"
-            round
-            @click="sendData"
-          >
-            {{ title }} organization
-          </el-button>
-          <el-button :class="{ dark }" round @click="handleBeforeClose">
-            Cancel
-          </el-button>
-        </div>
-      </el-form-item>
     </el-form>
+    <div slot="footer" class="dialog-footer-mobile">
+      <el-button
+        class="h10"
+        :class="{ dark }"
+        type="primary"
+        plain
+        :disabled="isUploadingImage"
+        round
+        @click="sendData"
+      >
+        {{ title }} organization
+      </el-button>
+      <el-button class="h10" :class="{ dark }" round @click="handleBeforeClose">
+        Cancel
+      </el-button>
+    </div>
   </el-dialog>
 </template>
 

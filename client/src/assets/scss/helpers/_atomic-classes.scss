@@ -352,6 +352,23 @@
   border-radius: 0 !important;
 }
 
+.dialog-footer-mobile {
+  width: 17.2rem;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  @media screen and (max-width: $break-xs) {
+    width: 100%;
+    align-items: center;
+    flex-flow: column wrap;
+    justify-content: center;
+    .el-button {
+      width: 100%;
+      margin-bottom: 0.8rem;
+    }
+  }
+}
+
 @for $i from 1 through 120 {
   $base: 0.25rem;
   $val: $base * $i;

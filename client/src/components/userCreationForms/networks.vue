@@ -217,23 +217,22 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item class="mt12">
-        <div class="w-fit-full flex row wrap">
-          <el-button
-            :class="{ dark }"
-            type="primary"
-            round
-            plain
-            @click="sendData"
-          >
-            {{ title }} network
-          </el-button>
-          <el-button :class="{ dark }" round @click="handleBeforeClose">
-            Cancel
-          </el-button>
-        </div>
-      </el-form-item>
     </el-form>
+    <div slot="footer" class="dialog-footer-mobile">
+      <el-button
+        class="h10"
+        :class="{ dark }"
+        type="primary"
+        round
+        plain
+        @click="sendData"
+      >
+        {{ title }} network
+      </el-button>
+      <el-button class="h10" :class="{ dark }" round @click="handleBeforeClose">
+        Cancel
+      </el-button>
+    </div>
   </el-dialog>
 </template>
 
