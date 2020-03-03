@@ -79,9 +79,10 @@
           class="w-fit-full"
           v-model="form.organizations"
           placeholder
+          @change="createTableFromSelection($event, 'orgs')"
         >
           <el-option
-            v-for="(opt, i) in orgs"
+            v-for="(opt, i) in selectsData.orgs"
             :key="i"
             :label="opt.name"
             :value="opt._id"
@@ -106,9 +107,10 @@
           class="w-fit-full"
           v-model="form.facilities"
           placeholder
+          @change="createTableFromSelection($event, 'facs')"
         >
           <el-option
-            v-for="(opt, i) in facs"
+            v-for="(opt, i) in selectsData.facs"
             :key="i"
             :label="opt.name"
             :value="opt._id"
@@ -133,9 +135,10 @@
           class="w-fit-full"
           v-model="form.cables"
           placeholder
+          @change="createTableFromSelection($event, 'cables')"
         >
           <el-option
-            v-for="(opt, i) in cables"
+            v-for="(opt, i) in selectsData.cables"
             :key="i"
             :label="opt.name"
             :value="opt._id"
@@ -147,30 +150,6 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="Ixps">
-        <el-select
-          multiple
-          clearable
-          :class="{ dark }"
-          collapse-tags
-          filterable
-          class="w-fit-full"
-          v-model="form.ixps"
-          placeholder
-        >
-          <el-option
-            v-for="(opt, i) in ixps"
-            :key="i"
-            :label="opt.name"
-            :value="opt._id"
-          >
-            <div class="truncate" :title="opt.name">
-              <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
-              {{ opt.name }}
-            </div>
-          </el-option>
-        </el-select>
-      </el-form-item> -->
       <el-form-item label="CLS">
         <el-select
           multiple
@@ -184,9 +163,10 @@
           class="w-fit-full"
           v-model="form.cls"
           placeholder
+          @change="createTableFromSelection($event, 'cls')"
         >
           <el-option
-            v-for="(opt, i) in cls"
+            v-for="(opt, i) in selectsData.cls"
             :key="i"
             :label="opt.name"
             :value="opt._id"
@@ -217,6 +197,11 @@
           />
         </el-select>
       </el-form-item>
+      <el-table :data="form.references" v-if="form.references.length">
+        <el-table-column slot-scope="scope">
+          {{ scope.row }}
+        </el-table-column>
+      </el-table>
     </el-form>
     <div slot="footer" class="dialog-footer-mobile">
       <el-button
@@ -245,13 +230,16 @@ import { searchCls } from '../../services/api/cls'
 import { getTags } from '../../services/api/tags'
 
 export default {
-  name: 'NetworkForm',
+  name: 'ConnectionForm',
   data: () => ({
     tag: '',
-    cls: [],
-    orgs: [],
-    facs: [],
-    cables: [],
+    selectsData: {
+      cls: [],
+      orgs: [],
+      facs: [],
+      cables: []
+    },
+    tableData: [],
     loading: false,
     isURLValid: null,
     inputVisible: false,
@@ -286,9 +274,9 @@ export default {
     visible(bool) {
       return bool ? null : this.clearAll()
     },
-    'form.tags'(tag) {
+    async 'form.tags'(tag) {
       if (!this.visible) return
-      this.getTagsList(tag)
+      await this.getTagsList(tag)
     },
     'form.facilitiesList'(facs) {
       if (!facs) return
@@ -312,12 +300,16 @@ export default {
     }
   },
   methods: {
+    createTableFromSelection(ids, type) {
+      return console.log(ids, type)
+    },
     clearAll() {
-      this.cls = []
-      this.orgs = []
-      this.ixps = []
-      this.facs = []
-      this.cables = []
+      this.selectsData = {
+        cls: [],
+        orgs: [],
+        facs: [],
+        cables: []
+      }
     },
     sendData() {
       return this.$emit('send-data')
@@ -327,7 +319,7 @@ export default {
       this.isLoadingOrg = true
       const res = await searchOrganization({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.orgs = res.data
+        this.selectsData.orgs = this.selectsData.orgs.concat(res.data)
       }
       this.isLoadingOrg = false
     },
@@ -336,7 +328,7 @@ export default {
       this.isLoadingCables = true
       const res = await searchCables({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.cables = res.data
+        this.selectsData.cables = this.selectsData.cables.concat(res.data)
       }
       this.isLoadingCables = false
     },
@@ -345,7 +337,7 @@ export default {
       this.isLoadingCls = true
       const res = await searchCls({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.cls = res.data
+        this.selectsData.cls = this.selectsData.cls.concat(res.data)
       }
       this.isLoadingCls = false
     },
@@ -354,7 +346,7 @@ export default {
       this.isLoadingCls = true
       const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.facs = res.data
+        this.selectsData.facs = this.selectsData.facs.concat(res.data)
       }
       this.isLoadingCls = false
     },
@@ -384,11 +376,10 @@ export default {
       }
     },
     confirmTag() {
-      let tag = this.tag
-      const isTagAlreadyCreated = this.form.websites.includes(tag)
+      const isTagAlreadyCreated = this.form.websites.includes(this.tag)
       if (isTagAlreadyCreated || !this.isURLValid) return
 
-      if (tag) this.form.websites.push(tag)
+      if (this.tag) this.form.websites.push(this.tag)
       this.inputVisible = false
       this.isURLValid = null
       this.tag = ''

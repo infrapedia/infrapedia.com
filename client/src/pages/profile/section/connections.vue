@@ -13,7 +13,7 @@
       @delete-item="deleteNet"
       @alert-message="handleSendMessage"
     />
-    <network-form
+    <connection-form
       :form="form"
       @send-data="checkMode"
       :visible="isDialog"
@@ -25,7 +25,7 @@
 
 <script>
 import TableList from '../../../components/TableList.vue'
-import NetworkForm from '../../../components/userCreationForms/networks'
+import ConnectionForm from '../../../components/userCreationForms/connection'
 import {
   createNetwork,
   getNetworks,
@@ -41,7 +41,7 @@ export default {
   name: 'CablesSection',
   components: {
     TableList,
-    NetworkForm
+    ConnectionForm
   },
   data: () => ({
     tableData: [],
@@ -59,7 +59,8 @@ export default {
       cables: [],
       websites: [],
       facilities: [],
-      organizations: []
+      organizations: [],
+      references: []
     },
     columns: [...netColumns].filter(col => col.showTable)
   }),
@@ -109,6 +110,7 @@ export default {
           }))
           this.form[p] = res.data.r[p].map(f => f._id)
         }
+        if (!this.form.references) this.form.references = []
       }
       this.mode = 'edit'
       this.toggleDialog()
@@ -125,7 +127,8 @@ export default {
           facilities: [],
           cables: [],
           ixps: [],
-          cls: []
+          cls: [],
+          references: []
         }
       }
     },
