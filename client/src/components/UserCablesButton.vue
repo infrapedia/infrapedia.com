@@ -2,7 +2,7 @@
   <div class="absolute mainw">
     <el-popover
       :visible-arrow="false"
-      placement="bottom-end"
+      placement="bottom-start"
       width="320"
       trigger="manual"
       transition="el-zoom-in-top"
@@ -47,12 +47,12 @@
             >
               <div>
                 <strong>
-                  <p class="m0 p0 mb1">
+                  <p class="name m0 p0 mb1">
                     <fa :icon="getIcon(cable.terrestrial)" />
                     {{ cable.name }}
                   </p>
                 </strong>
-                <small> ID: {{ cable._id }} </small>
+                <small class="hidden-sm-and-down"> ID: {{ cable._id }} </small>
               </div>
               <p
                 class="m0 p0 status-text"
@@ -64,20 +64,20 @@
           </li>
         </ul>
         <div
-          class="mt2 mb2 w-fit-full flex column nowrap justify-content-center align-items-center"
+          class="mt2 mb2 w-fit-full flex row wrap justify-content-space-between  align-items-center"
         >
           <el-button
-            class="mb4 h10"
-            round
+            class="create-btn p2 h10"
             plain
+            type="text"
             @click="headToCreationRoute('subsea')"
           >
             <fa :icon="['fas', 'plus']" class="mr1" /> Create new subsea
           </el-button>
           <el-button
-            class="h10"
-            round
+            class="create-btn p2 h10"
             plain
+            type="text"
             @click="headToCreationRoute('terrestrial')"
           >
             <fa :icon="['fas', 'plus']" class="mr1" /> Create new network

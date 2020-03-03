@@ -53,3 +53,21 @@
     }
   }
 }
+
+.list-wrapper {
+  @media screen and (max-width: $break-sm) {
+    width: 80vw;
+    .name {
+      font-size: 12px;
+    }
+    .create-btn {
+      width: 100%;
+    }
+  }
+}
+
+.mainw {
+  @media screen and (max-width: $break-sm) {
+    right: 1.2rem;
+  }
+}
