@@ -10,12 +10,12 @@ export const clsColumns = [
     showSidebar: true
   },
   {
-    label: 'Networks',
+    label: 'Connections',
     value: 'networks',
     showSidebar: true
   },
   {
-    label: 'Organizations',
+    label: 'Owners',
     value: 'organizations',
     showSidebar: true
   },
@@ -59,12 +59,12 @@ export const cablesColumns = [
     showTable: true
   },
   {
-    label: 'Networks',
+    label: 'Connections',
     value: 'networks',
     showSidebar: true
   },
   {
-    label: 'Organizations',
+    label: 'Owners',
     value: 'organizations',
     showSidebar: true
   },
@@ -114,12 +114,12 @@ export const facsColumns = [
     showSidebar: true
   },
   {
-    label: 'Networks',
+    label: 'Connections',
     value: 'networks',
     showSidebar: true
   },
   {
-    label: 'Organizations',
+    label: 'Owners',
     value: 'organizations',
     showSidebar: true
   }
@@ -167,12 +167,12 @@ export const ixpsColumns = [
     showSidebar: true
   },
   {
-    label: 'Networks',
+    label: 'Connections',
     value: 'networks',
     showSidebar: true
   },
   {
-    label: 'Organizations',
+    label: 'Owners',
     value: 'organizations',
     showSidebar: true
   },
@@ -213,7 +213,7 @@ export const netColumns = [
     showTable: true
   },
   {
-    label: 'Organizations',
+    label: 'Owners',
     value: 'orgs',
     showSidebar: true,
     showTable: true
@@ -249,7 +249,7 @@ export const orgsColumns = [
     showSidebar: true
   },
   {
-    label: 'Networks',
+    label: 'Connections',
     value: 'networks',
     showSidebar: true
   },
