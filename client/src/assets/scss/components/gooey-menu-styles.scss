@@ -1,0 +1,13 @@
+.gooey-wrapper {
+  opacity: 0;
+  bottom: 8.8rem;
+  right: 4.6rem;
+  height: fit-content;
+  #gooeyList {
+    height: fit-content;
+    width: fit-content;
+  }
+  &.active {
+    opacity: 1;
+  }
+}

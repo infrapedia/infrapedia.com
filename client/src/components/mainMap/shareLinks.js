@@ -7,7 +7,7 @@ export async function shareViewLink(user_id) {
     user_id
   })
 
-  if (res && res.data && res.data.r) copyToClipboard(res.data.r)
+  if (res && res.data && res.data.r) return copyToClipboard(res.data.r)
 }
 
 export async function shareViaWhatsApp(user_id) {

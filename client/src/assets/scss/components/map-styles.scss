@@ -21,13 +21,10 @@
   &:hover {
     color: inherit;
     background-color: darken($white-full, 20%);
-    // .icon {
-    //   transform: rotateZ(60deg);
-    // }
   }
 }
 
-ul[role='group']:not(#gooeyList) {
+ul[role='group'] {
   transition: all $regular-transition;
   height: 2.5rem;
   right: 3rem;
@@ -43,20 +40,6 @@ ul[role='group']:not(#gooeyList) {
     bottom: unset;
     left: unset;
     right: unset;
-  }
-}
-
-.gooey-wrapper {
-  opacity: 0;
-  bottom: 8.8rem;
-  right: 4.6rem;
-  height: fit-content;
-  #gooeyList {
-    height: fit-content;
-    width: fit-content;
-  }
-  &.active {
-    opacity: 1;
   }
 }
 

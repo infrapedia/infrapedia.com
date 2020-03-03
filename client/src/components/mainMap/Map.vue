@@ -1,8 +1,9 @@
 <template>
   <div id="map">
     <el-button
-      id="FScreen"
+      id="ThreeD"
       type="text"
+      title="3D view"
       @click="toggleThreeD"
       size="small"
       class="m0 p0"
@@ -10,7 +11,8 @@
       >3D</el-button
     >
     <el-button
-      id="ThreeD"
+      id="FScreen"
+      title="Full screen"
       type="text"
       size="small"
       class="m0 p0"
@@ -19,14 +21,11 @@
     >
       <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
     </el-button>
-    <!-- <i-location-button
-      @click="geolocateUser(true)"
-      @enter="geolocateUser(true)"
-    /> -->
     <el-button
       id="menuOpener"
       circle
       size="small"
+      title="Share menu and toggle dark mode button"
       class="absolute z-index1 w11 h11"
       @click.stop="toggleMenu"
       tabindex="0"
@@ -45,10 +44,15 @@
         :class="{ active: isMenuOpen }"
       >
         <li role="listitem">
-          <i-theme-toggler @click="toggleDarkMode" id="toggleTheme" />
+          <i-theme-toggler
+            id="toggleTheme"
+            title="Toggle dark mode"
+            @click="toggleDarkMode"
+          />
         </li>
         <li role="listitem">
           <el-button
+            title="Share menu"
             type="primary"
             class="w11 h11"
             circle
@@ -59,40 +63,7 @@
         </li>
       </ul>
     </el-button>
-    <div
-      class="gooey-wrapper z-index1 absolute regular-transition"
-      ref="gooey"
-      @click.stop="activeGooeyMenu"
-      :class="{ active: isActiveGooeyMenu }"
-    >
-      <ul role="group" class="relative regular-transition" id="gooeyList">
-        <li
-          role="listitem"
-          class="mb1"
-          v-for="(btn, i) in shareLinkButtons"
-          :key="i"
-        >
-          <el-button
-            circle
-            class="color-inherit w11 h11"
-            @click="() => shareLinkButtonsCallers[btn.func]()"
-            :class="{ dark }"
-          >
-            <fa :icon="btn.icon" class="sm-icon" />
-          </el-button>
-        </li>
-        <li role="listitem" class="mb1">
-          <el-button
-            circle
-            class="color-inherit w11 h11"
-            @click.stop="activeGooeyMenu"
-            :class="{ dark }"
-          >
-            <fa :icon="['fas', 'times']" class="sm-icon" />
-          </el-button>
-        </li>
-      </ul>
-    </div>
+    <gooey-menu ref="gooey" @active="() => (isMenuOpen = false)" />
   </div>
 </template>
 
@@ -129,39 +100,24 @@ import currentYear from '../../helpers/currentYear'
 import debounce from '../../helpers/debounce'
 import { viewNetwork } from '../../services/api/networks'
 import { viewOrganization } from '../../services/api/organizations'
-import { shareLinkButtons } from '../../config/shareLinkButtons'
 import { mapStatistics } from '../../services/api/map'
 import handleDraw from './draw'
 import boundsChange from './boundsChange'
 import highlightCurrentCable from './highlightCable'
 import disableCurrentHighlight from './disableHighlight'
-import {
-  shareViaFacebook,
-  shareViewLink,
-  shareViaWhatsApp,
-  shareViaTelegram,
-  shareViaSkype
-} from './shareLinks'
+import GooeyMenu from './GooeyMenu'
 
 export default {
   name: 'Map',
   components: {
-    IThemeToggler
+    IThemeToggler,
+    GooeyMenu
   },
   data: () => ({
     is3D: false,
     trackID: null,
     mapTooltip: {},
     map: undefined,
-    shareLinkButtons,
-    isActiveGooeyMenu: false,
-    shareLinkButtonsCallers: {
-      shareViaSkype: null,
-      shareViewLink: null,
-      shareViaTelegram: null,
-      shareViaWhatsApp: null,
-      shareViaFacebook: null
-    },
     isMenuOpen: false,
     isLocationZoomIn: true
   }),
@@ -194,15 +150,6 @@ export default {
 
     if (this.dark) this.map.setStyle(mapConfig.darkBasemap)
     this.handlePreviouslySelected()
-
-    const user_id = this.$auth.user.sub
-    this.shareLinkButtonsCallers = {
-      shareViaSkype: () => shareViaSkype(user_id),
-      shareViewLink: () => shareViewLink(user_id),
-      shareViaTelegram: () => shareViaTelegram(user_id),
-      shareViaWhatsApp: () => shareViaWhatsApp(user_id),
-      shareViaFacebook: () => shareViaFacebook(user_id)
-    }
   },
   methods: {
     ...mapActions({
@@ -212,12 +159,6 @@ export default {
       changeSidebarMode: 'changeSidebarMode',
       getCableData: 'map/getCableData'
     }),
-    activeGooeyMenu() {
-      this.isActiveGooeyMenu = !this.isActiveGooeyMenu
-      if (this.isActiveGooeyMenu && this.isMenuOpen) {
-        this.isMenuOpen = false
-      }
-    },
     createMap() {
       mapboxgl.accessToken = mapConfig.mapToken
 
@@ -963,15 +904,8 @@ export default {
     handlePreviouslySelected: debounce(function() {
       if (!this.currentSelection || !this.focus) return
 
-      const { type, id } = this.focus
-      const { map } = this
-
-      if (map.loaded()) {
-        if (type === 'cable') {
-          this.handleCablesSelection(true, [{ properties: { _id: id } }])
-        } else if (type) {
-          this.handleFacilitySelection({ id, type: 'facilities' })
-        }
+      if (this.map.loaded()) {
+        return this.handleFocusOn({ id: this.focus.id, type: this.focus.type })
       }
     }, 1200),
     handleRemoveQueryRouteReplacer() {
