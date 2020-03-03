@@ -690,6 +690,9 @@ export default {
         case 'facility':
           await this.handleFacilityFocus({ id, type })
           break
+        case 'facilities':
+          await this.handleFacilityFocus({ id, type })
+          break
         case 'cls':
           await this.handleClsFocus({ id, type })
           break
@@ -752,7 +755,7 @@ export default {
           animate: true,
           padding: 20,
           speed: 1.1,
-          zoom: 12,
+          zoom: 18,
           pitch: 45
         })
       }
@@ -783,7 +786,7 @@ export default {
           animate: true,
           padding: 20,
           speed: 1.1,
-          zoom: 12,
+          zoom: 18,
           pitch: 45
         })
       }
