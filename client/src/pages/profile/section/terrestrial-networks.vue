@@ -38,7 +38,9 @@ export default {
       creation_link: '/user/section/create?id=terrestrial-network',
       btn_label: 'Create network'
     },
-    columns: [...cablesColumns].filter(col => col.showTable)
+    columns: [...cablesColumns].filter(
+      col => col.showTable && col.value !== 'activationDateTime'
+    )
   }),
   computed: {
     dark() {

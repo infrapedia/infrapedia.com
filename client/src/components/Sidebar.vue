@@ -136,19 +136,15 @@ export default {
     isSidebar(bool) {
       if (!bool || !this.focus) return
 
-      this.currentSelectionColumns = getSelectionCols(this.focus.type)
+      this.handleColSelectionChange()
     },
     // eslint-disable-next-line
     currentSelection(selection) {
-      if (this.focus) {
-        this.currentSelectionColumns = getSelectionCols(this.focus.type)
-      }
+      this.handleColSelectionChange()
     },
     // eslint-disable-next-line
     sidebarMode(mode) {
-      if (this.focus) {
-        this.currentSelectionColumns = getSelectionCols(this.focus.type)
-      }
+      this.handleColSelectionChange()
     }
   },
   beforeMount() {
@@ -161,14 +157,22 @@ export default {
     ]
   },
   mounted() {
-    if (this.focus) {
-      this.currentSelectionColumns = getSelectionCols(this.focus.type)
-    }
+    this.handleColSelectionChange()
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.resizeWatcher)
   },
   methods: {
+    handleColSelectionChange() {
+      if (!this.focus) return
+
+      this.currentSelectionColumns = getSelectionCols(this.focus.type)
+      if (this.currentSelection.terrestrial) {
+        this.currentSelectionColumns = this.currentSelectionColumns.filter(
+          col => col.value !== 'activationDateTime'
+        )
+      }
+    },
     toggleActiveClassOnMobile() {
       this.isSidebarActive = !this.isSidebarActive
     },
