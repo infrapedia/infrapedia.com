@@ -296,6 +296,7 @@ export default {
             tags: [],
             name: '',
             notes: '',
+            owners: [],
             facilities: [],
             fiberPairs: '',
             systemLength: 0,

@@ -129,6 +129,27 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="Owners" prop="owners">
+        <el-select
+          :multiple="isCableTypeTerrestrial"
+          :class="{ dark }"
+          filterable
+          collapse-tags
+          remote
+          :remote-method="loadOrgsSearch"
+          :loading="isLoadingOrgs"
+          class="w-fit-full"
+          v-model="form.owners"
+          placeholder
+        >
+          <el-option
+            v-for="(opt, i) in orgsList"
+            :key="i"
+            :label="opt.name"
+            :value="opt._id"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="Tags" class="mt2" prop="tags">
         <el-select
           v-model="form.tags"
@@ -169,10 +190,11 @@
 
 <script>
 import Dragger from '../../components/Dragger'
+import { getTags } from '../../services/api/tags'
 import cableStates from '../../config/cableStates'
 import validateUrl from '../../helpers/validateUrl'
 import { searchFacilities } from '../../services/api/facs'
-import { getTags } from '../../services/api/tags'
+import { searchOrganization } from '../../services/api/organizations'
 
 export default {
   name: 'CableForm',
@@ -184,9 +206,11 @@ export default {
     cableStates,
     facsList: [],
     tagsList: [],
+    orgsList: [],
     isURLValid: null,
     inputVisible: false,
     isLoadingFacs: false,
+    isLoadingOrgs: false,
     formRules: {
       activationDateTime: [],
       name: [
@@ -197,8 +221,9 @@ export default {
         },
         { min: 3, message: 'Length should be at least 3', trigger: 'change' }
       ],
-      tags: [],
       urls: [],
+      tags: [],
+      owners: [],
       category: [],
       fiberPairs: [],
       facilities: [],
@@ -223,6 +248,9 @@ export default {
   computed: {
     creationID() {
       return this.$route.query.id
+    },
+    isCableTypeTerrestrial() {
+      return this.creationID === 'subsea'
     },
     title() {
       let t = `${
@@ -281,9 +309,30 @@ export default {
       this.isLoadingCls = true
       const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.facsList = res.data
+        this.facsList = this.facsList.concat(res.data)
+
+        if (this.form.facilities.length > 1) {
+          this.facsList = this.facsList.filter(item => {
+            return this.facsList.indexOf(item) === item
+          })
+        }
       }
       this.isLoadingCls = false
+    },
+    async loadOrgsSearch(s) {
+      if (s === '') return
+      this.isLoadingOrgs = true
+      const res = await searchOrganization({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.orgsList = this.orgsList.concat(res.data)
+
+        if (this.form.facilities.length > 1) {
+          this.orgsList = this.orgsList.filter(item => {
+            return this.orgsList.indexOf(item) === item
+          })
+        }
+      }
+      this.isLoadingOrgs = false
     },
     validateURL(url) {
       this.isURLValid = validateUrl(url)
