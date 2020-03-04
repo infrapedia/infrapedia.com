@@ -10,7 +10,7 @@
         class="title-user-variant w-fit-full fs-xlarge text-center"
         :class="{ dark }"
       >
-        {{ title }} connection
+        {{ title }} group
       </h1>
     </header>
     <el-form
@@ -212,7 +212,7 @@
         plain
         @click="sendData"
       >
-        {{ title }} network
+        {{ title }} group
       </el-button>
       <el-button class="h10" :class="{ dark }" round @click="handleBeforeClose">
         Cancel

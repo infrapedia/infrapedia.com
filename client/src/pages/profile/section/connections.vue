@@ -49,9 +49,9 @@ export default {
     isDialog: false,
     mode: 'create',
     tableConfig: {
-      title: 'Connections',
+      title: 'Groups',
       creation_link: false,
-      btn_label: 'Create connection'
+      btn_label: 'Create group'
     },
     form: {
       cls: [],

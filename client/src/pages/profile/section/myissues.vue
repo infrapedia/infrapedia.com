@@ -1,6 +1,6 @@
 <template>
   <div
-    class="main-wrapper w-fit-full mt12 pt8 vph-full pl4 pr4 flex align-items-start"
+    class="main-wrapper w-fit-full mt12 pt8 vph-full pl4 pr4 flex row wrap align-items-start"
     :class="{ dark, light: !dark }"
   >
     <table-list

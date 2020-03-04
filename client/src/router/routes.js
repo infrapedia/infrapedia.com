@@ -94,7 +94,7 @@ const routes = [
     component: IxpsSection
   },
   {
-    path: '/user/section/connections',
+    path: '/user/section/groups',
     name: 'user/networks-section',
     component: ConnectionsSection
   },

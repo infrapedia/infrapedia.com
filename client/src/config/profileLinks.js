@@ -30,8 +30,8 @@ const profileLinks = [
     icon: ['fas', 'sitemap']
   },
   {
-    label: 'Connections',
-    url: '/user/section/connections',
+    label: 'Groups',
+    url: '/user/section/groups',
     icon: ['fas', 'project-diagram']
   },
   {

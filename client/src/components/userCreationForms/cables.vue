@@ -45,46 +45,61 @@
         />
       </el-form-item>
       <el-form-item label="URL(s)" prop="urls">
-        <el-tag
-          :key="tag"
-          v-for="tag in form.urls"
-          closable
-          :disable-transitions="false"
-          @close="handleClose(tag)"
-        >
-          {{ tag }}
-        </el-tag>
-        <template v-if="inputVisible">
-          <el-input
-            :class="{ dark }"
-            v-model="tag"
-            ref="saveTagInput"
-            size="mini"
-            @input="validateURL"
-            @keyup.enter.native="confirmTag"
-            @blur="confirmTag"
-          />
-          <el-collapse-transition>
-            <el-alert
-              v-if="isURLValid !== null && !isURLValid"
-              title="This url is not valid"
-              show-icon
-              type="warning"
-              effect="dark"
-              class="h6"
-              :closable="false"
+        <div class="w-fit-full relative inline-block">
+          <div class="flex row wrap">
+            <el-tag
+              :key="tag"
+              v-for="tag in form.urls"
+              closable
+              :disable-transitions="false"
+              @close="handleClose(tag)"
+            >
+              {{ tag }}
+            </el-tag>
+          </div>
+          <template v-if="inputVisible">
+            <el-input
+              :class="{ dark }"
+              v-model="tag"
+              ref="saveTagInput"
+              size="mini"
+              @input="validateURL"
+              @keyup.enter.native="confirmTag"
+              @blur="confirmTag"
             />
-          </el-collapse-transition>
-        </template>
-        <el-button
-          v-else
-          :class="{ dark }"
-          class="w42 text-center"
-          size="small"
-          @click="showInput"
-        >
-          Add url
-        </el-button>
+            <el-collapse-transition>
+              <el-alert
+                v-if="isURLValid !== null && !isURLValid"
+                title="This url is not valid"
+                show-icon
+                type="warning"
+                effect="dark"
+                class="h6"
+                :closable="false"
+              />
+            </el-collapse-transition>
+            <el-collapse-transition>
+              <el-alert
+                v-if="warnTagDuplicate"
+                title="This url is duplicated"
+                show-icon
+                type="info"
+                effect="dark"
+                class="h6"
+                :closable="false"
+              />
+            </el-collapse-transition>
+          </template>
+          <el-button
+            v-else
+            :class="{ dark }"
+            class="w42 text-center"
+            size="small"
+            @click="showInput"
+          >
+            Add url
+          </el-button>
+        </div>
       </el-form-item>
       <el-form-item
         label="Capacity (Tbps)"
@@ -202,6 +217,7 @@ export default {
     inputVisible: false,
     isLoadingFacs: false,
     isLoadingOrgs: false,
+    warnTagDuplicate: false,
     formRules: {
       activationDateTime: [],
       name: [
@@ -326,6 +342,9 @@ export default {
     },
     validateURL(url) {
       this.isURLValid = validateUrl(url)
+      this.form.urls.includes(url)
+        ? (this.warnTagDuplicate = true)
+        : (this.warnTagDuplicate = false)
     },
     handleClose(tag) {
       this.form.urls.splice(this.form.urls.indexOf(tag), 1)
@@ -342,10 +361,9 @@ export default {
     },
     confirmTag() {
       let tag = this.tag
-      const isTagAlreadyCreated = this.form.urls.includes(tag)
-      if (isTagAlreadyCreated || !this.isURLValid) return
-
-      if (tag) this.form.urls.push(tag)
+      if (tag && !this.warnTagDuplicate && this.isURLValid) {
+        this.form.urls.push(tag)
+      }
       this.inputVisible = false
       this.tag = ''
     }

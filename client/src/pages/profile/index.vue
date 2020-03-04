@@ -80,6 +80,11 @@
                   Map
                 </h2>
               </header>
+              <div
+                id="map"
+                style="height: 32vh;"
+                class="mt3 relative w-fit-full"
+              />
             </el-card>
           </el-col>
         </el-row>
@@ -92,6 +97,9 @@
 import { getUserData } from '../../services/api/auth'
 import { usersLogs } from '../../services/api/users'
 import { formatDate } from '../../helpers/formatDate'
+import mapboxgl from 'mapbox-gl'
+import MapboxDraw from '@mapbox/mapbox-gl-draw'
+import { mapConfig } from '../../config/mapConfig'
 
 export default {
   name: 'user',
@@ -112,6 +120,7 @@ export default {
   async mounted() {
     if (Object.keys(this.$route.query).length) this.$router.replace('/user')
     await this.loadLogs()
+    this.createMap()
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
@@ -137,6 +146,35 @@ export default {
         }
       }
       this.loading = false
+    },
+    createMap() {
+      mapboxgl.accessToken = mapConfig.mapToken
+
+      const map = new mapboxgl.Map({
+        container: 'map',
+        zoom: mapConfig.zoom,
+        center: mapConfig.center,
+        style: mapConfig.default
+      })
+
+      const draw = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: false
+      })
+      const scaleCtrl = new mapboxgl.ScaleControl({
+        maxWidth: 80,
+        unit: 'metric'
+      })
+
+      this.draw = draw
+      let vm = this
+      map.addControl(scaleCtrl, 'bottom-left')
+      map.addControl(draw, 'bottom-left')
+      // eslint-disable-next-line
+      map.on('draw.selectionchange', function(e) {
+        return vm.draw.changeMode('simple_select', {})
+      })
+      return map
     }
   }
 }
