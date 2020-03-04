@@ -20,17 +20,17 @@
       v-loading="loading"
     >
       <el-row :gutter="15">
-        <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="8">
           <el-form-item label="Company name" prop="company">
             <el-input v-model="form.company" :class="{ dark }" />
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="24" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="24" :lg="12" :xl="8">
           <el-form-item label="Full Name" prop="fullname">
             <el-input v-model="form.fullname" :class="{ dark }" />
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="24" :lg="8" :xl="8">
+        <el-col :xs="24" :sm="12" :md="24" :lg="12" :xl="8">
           <el-form-item label="Phone number">
             <div class="el-input">
               <i-phone-input
@@ -131,7 +131,7 @@
         <el-button
           :disabled="isFormUncomplete"
           type="primary"
-          class="w24"
+          class="w-fit-content"
           plain
           @click="submitForm('form')"
           :loading="isSendingData"

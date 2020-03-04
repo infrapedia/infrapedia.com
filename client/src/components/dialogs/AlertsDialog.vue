@@ -65,8 +65,9 @@
           @click="submitForm"
           :loading="isSendingData"
           @keyup.enter.space="submitForm"
-          >Create alert</el-button
         >
+          Sign in
+        </el-button>
       </div>
     </footer>
   </el-dialog>

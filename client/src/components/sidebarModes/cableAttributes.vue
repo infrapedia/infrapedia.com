@@ -21,7 +21,8 @@
                   class="fs-regular text-bold underline-hover cursor-pointer"
                 >
                   {{ item.name }}
-                  <template v-if="index !== info[col.value].length - 1"
+                  <template
+                    v-if="index !== info[col.value].length - 1 && index !== 0"
                     >,</template
                   >
                 </div>
@@ -34,7 +35,9 @@
       <!---- LABELS SECTION STARTS---->
       <template v-else>
         <el-row :gutter="20">
-          <template v-if="col.label.toLowerCase().includes('url')">
+          <template
+            v-if="col.label.toLowerCase().includes('url') && info[col.value]"
+          >
             <el-col :span="24" class="pt2 pb2">
               <small>
                 <p class="capitalize">

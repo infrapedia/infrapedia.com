@@ -129,7 +129,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="Owners" prop="owners">
+      <el-form-item label="Groups" prop="owners">
         <v-multi-select
           :mode="mode"
           :options="orgsList"

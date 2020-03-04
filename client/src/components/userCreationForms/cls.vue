@@ -17,14 +17,14 @@
           </el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="Slug" prop="slug">
+      <!-- <el-form-item label="Slug" prop="slug">
         <el-input
           class="w-fit-full"
           :class="{ dark }"
           controls-position="right"
           v-model="form.slug"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="Subsea cables" prop="cables">
         <el-select
           class="w-fit-full"

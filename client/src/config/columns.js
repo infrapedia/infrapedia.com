@@ -1,7 +1,7 @@
 export const clsColumns = [
   { label: 'Name', value: 'name', showSidebar: true, showTable: true },
   { label: 'State', value: 'state', showSidebar: true },
-  { label: 'Slug', value: 'slug', showSidebar: true, showTable: true },
+  { label: 'Slug', value: 'slug', showSidebar: true },
   { label: 'Geom', value: 'geom' },
   {
     label: 'Cables',
@@ -10,7 +10,7 @@ export const clsColumns = [
     showSidebar: true
   },
   {
-    label: 'Connections',
+    label: 'Groups',
     value: 'networks',
     showSidebar: true
   },
@@ -59,7 +59,7 @@ export const cablesColumns = [
     showTable: true
   },
   {
-    label: 'Connections',
+    label: 'Groups',
     value: 'networks',
     showSidebar: true
   },
@@ -114,7 +114,7 @@ export const facsColumns = [
     showSidebar: true
   },
   {
-    label: 'Connections',
+    label: 'Groups',
     value: 'networks',
     showSidebar: true
   },
@@ -167,7 +167,7 @@ export const ixpsColumns = [
     showSidebar: true
   },
   {
-    label: 'Connections',
+    label: 'Groups',
     value: 'networks',
     showSidebar: true
   },
@@ -249,7 +249,7 @@ export const orgsColumns = [
     showSidebar: true
   },
   {
-    label: 'Connections',
+    label: 'Groups',
     value: 'networks',
     showSidebar: true
   },

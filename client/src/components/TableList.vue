@@ -73,7 +73,9 @@
               </span>
             </template>
             <span
-              v-else-if="col.label.includes('date') && scope.row[col.value]"
+              v-else-if="
+                col.value.includes('activationDateTime') && scope.row[col.value]
+              "
             >
               {{ formatDate(scope.row[col.value]) }}
             </span>
