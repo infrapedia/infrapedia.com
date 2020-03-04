@@ -130,25 +130,14 @@
         </el-select>
       </el-form-item>
       <el-form-item label="Owners" prop="owners">
-        <el-select
-          :multiple="isCableTypeTerrestrial"
-          :class="{ dark }"
-          filterable
-          collapse-tags
-          remote
-          :remote-method="loadOrgsSearch"
+        <v-multi-select
+          :mode="mode"
+          :options="orgsList"
+          @input="loadOrgsSearch"
           :loading="isLoadingOrgs"
-          class="w-fit-full"
-          v-model="form.owners"
-          placeholder
-        >
-          <el-option
-            v-for="(opt, i) in orgsList"
-            :key="i"
-            :label="opt.name"
-            :value="opt._id"
-          />
-        </el-select>
+          @values-change="form.owners = $event"
+          :value="mode === 'create' ? [] : form.owners"
+        />
       </el-form-item>
       <el-form-item label="Tags" class="mt2" prop="tags">
         <el-select
@@ -195,11 +184,13 @@ import cableStates from '../../config/cableStates'
 import validateUrl from '../../helpers/validateUrl'
 import { searchFacilities } from '../../services/api/facs'
 import { searchOrganization } from '../../services/api/organizations'
+import VMultiSelect from '../../components/MultiSelect'
 
 export default {
   name: 'CableForm',
   components: {
-    Dragger
+    Dragger,
+    VMultiSelect
   },
   data: () => ({
     tag: '',
@@ -307,31 +298,29 @@ export default {
     },
     async loadFacsSearch(s) {
       if (s === '') return
-      this.isLoadingCls = true
+      this.isLoadingFacs = true
       const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.facsList = this.facsList.concat(res.data)
-
-        if (this.form.facilities.length > 1) {
-          this.facsList = this.facsList.filter(item => {
-            return this.facsList.indexOf(item) === item
-          })
-        }
+        this.facsList = res.data.reduce(
+          (acc = Array.from(this.facsList), item) => {
+            return acc.map(i => i._id).includes(item._id) ? acc : [...acc, item]
+          },
+          []
+        )
       }
-      this.isLoadingCls = false
+      this.isLoadingFacs = false
     },
     async loadOrgsSearch(s) {
       if (s === '') return
       this.isLoadingOrgs = true
       const res = await searchOrganization({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.orgsList = this.orgsList.concat(res.data)
-
-        if (this.form.facilities.length > 1) {
-          this.orgsList = this.orgsList.filter(item => {
-            return this.orgsList.indexOf(item) === item
-          })
-        }
+        this.orgsList = res.data.reduce(
+          (acc = Array.from(this.orgsList), item) => {
+            return acc.map(i => i._id).includes(item._id) ? acc : [...acc, item]
+          },
+          []
+        )
       }
       this.isLoadingOrgs = false
     },

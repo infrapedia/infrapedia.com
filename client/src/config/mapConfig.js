@@ -102,6 +102,7 @@ export const mapConfig = {
         source: cableTerrestrial,
         'source-layer': cableTerrestrial,
         type: 'line',
+        minzoom: 4,
         paint: {
           'line-width': 1.62,
           'line-color': [
