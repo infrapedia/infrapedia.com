@@ -3,11 +3,11 @@
     <header slot="header" class="w-fit-full mb8">
       <h1 class="title">{{ title }} CLS</h1>
     </header>
-    <el-form ref="form" :model="form">
-      <el-form-item label="Name of group">
+    <el-form ref="form" :model="form" :rules="formRules">
+      <el-form-item label="Name of group" required prop="name">
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
-      <el-form-item label="State">
+      <el-form-item label="State" prop="state">
         <el-radio-group :class="{ dark }" v-model="form.state">
           <el-radio :label="true">
             Yes
@@ -17,7 +17,7 @@
           </el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="Slug">
+      <el-form-item label="Slug" prop="slug">
         <el-input
           class="w-fit-full"
           :class="{ dark }"
@@ -25,7 +25,7 @@
           v-model="form.slug"
         />
       </el-form-item>
-      <el-form-item label="Subsea cables">
+      <el-form-item label="Subsea cables" prop="cables">
         <el-select
           class="w-fit-full"
           v-model="form.cables"
@@ -103,7 +103,20 @@ export default {
     tagsList: [],
     cablesList: [],
     loading: false,
-    isLoadingCables: false
+    isLoadingCables: false,
+    formRules: {
+      name: [
+        {
+          required: true,
+          message: 'Please input a name',
+          trigger: 'change'
+        },
+        { min: 3, message: 'Length should be at least 3', trigger: 'change' }
+      ],
+      cables: [],
+      slug: [],
+      state: []
+    }
   }),
   components: {
     Dragger
@@ -162,7 +175,9 @@ export default {
       return this.$emit('handle-file-converted', fc)
     },
     sendData() {
-      return this.$emit('send-data')
+      return this.$refs['form'].validate(isValid =>
+        isValid ? this.$emit('send-data') : false
+      )
     }
   }
 }

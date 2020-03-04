@@ -361,9 +361,19 @@ export default {
       return res && res.data && res.data.r ? res.data.r : {}
     },
     handleReturningRoute(type) {
-      return type === 'subsea'
-        ? this.$router.push('/user/section/subsea-cables')
-        : this.$router.push('/user/section/terrestrial-networks')
+      let route = ''
+      switch (type) {
+        case 'cls':
+          route = '/user/section/cls'
+          break
+        case 'subsea':
+          route = '/user/section/subsea-cables'
+          break
+        default:
+          route = '/user/section/terrestrial-networks'
+          break
+      }
+      return this.$router.push(route)
     },
     async createCLS() {
       this.isSendingData = true
