@@ -37,7 +37,12 @@ class EditorControls {
         container: this.controlGroup,
         className: 'editor-ctrl editor-line-string',
         title: 'Draw line',
-        visible: this.type === 'map' || this.type === 'cables' ? true : false,
+        visible:
+          this.type === 'map' ||
+          this.type === 'subsea' ||
+          this.type === 'terrestrial-network'
+            ? true
+            : false,
         eventListener: () => {
           this.$dispatch('editor/beginCreation')
           this.draw.changeMode(this.draw.modes.DRAW_LINE_STRING)
@@ -154,7 +159,10 @@ class EditorControls {
       this.buttons.trash.style.setProperty('display', 'none')
       this.buttons.editProperties.style.setProperty('display', 'none')
 
-      if (!this.type.includes('cables')) {
+      if (
+        !this.type.includes('subsea') &&
+        !this.type.includes('terrestrial-network')
+      ) {
         this.buttons.point.style.setProperty('display', 'block')
       } else {
         this.buttons.point.style.setProperty('display', 'none')

@@ -155,6 +155,11 @@ export default {
       this.getTagsList(tag)
     }
   },
+  mounted() {
+    if (this.mode === 'create') {
+      setTimeout(() => this.$refs.form.clearValidate(), 50)
+    }
+  },
   methods: {
     async getTagsList(s) {
       const res = await getTags({ user_id: this.$auth.user.sub, s })
