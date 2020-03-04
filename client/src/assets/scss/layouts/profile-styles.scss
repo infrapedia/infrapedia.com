@@ -5,7 +5,6 @@
   ul[role='group'] {
     li[role='listitem'] {
       font-size: 14px;
-      background-color: $blue-user-interface;
     }
   }
 }
@@ -21,6 +20,7 @@
       background-color: $blue-user-interface;
 
       li {
+        background-color: $blue-user-interface;
         a {
           &:hover:not(.router-link-exact-active),
           &:focus:not(.router-link-exact-active),
@@ -44,6 +44,7 @@
 
       li[role='listitem'] {
         font-weight: bold;
+        background-color: $light-charcoal;
         a {
           &:hover:not(.router-link-exact-active),
           &:focus:not(.router-link-exact-active),
