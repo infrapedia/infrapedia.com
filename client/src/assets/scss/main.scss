@@ -251,6 +251,7 @@ input.issues-dialog {
 .v-multiselect {
   outline: none;
   display: flex;
+
   .multiselect__tags {
     padding: 0 20px 0 20px;
     height: 40px;
@@ -258,6 +259,7 @@ input.issues-dialog {
       cursor: text;
     }
   }
+
   .multiselect__tags-wrap {
     width: 100%;
     max-width: 219.156px;
@@ -272,9 +274,7 @@ input.issues-dialog {
     align-items: center;
     transform: translateY(-50%);
   }
-  // .multiselect__tags-wrap {
-  //   width: 100%;
-  // }
+
   input {
     height: 28px;
     border: none;
@@ -290,6 +290,42 @@ input.issues-dialog {
     padding: 2px;
     line-height: 40px;
     background-color: transparent;
+  }
+
+  .multiselect__content-wrapper {
+    top: 2.8rem;
+    border-top: 1px solid #e8e8e8;
+  }
+
+  // .multiselect__option {
+  //   padding: 0.4rem;
+  //   min-height: 20px;
+  // }
+
+  &.no-options {
+    .multiselect__content-wrapper {
+      height: 3.2rem !important;
+      overflow: hidden;
+    }
+  }
+  &.has-more-than-one-option {
+    span.el-tag {
+      &:nth-child(1) {
+        display: none;
+      }
+      &:first-child {
+        display: block;
+      }
+      &::after {
+        content: attr(data-selected-length);
+      }
+    }
+  }
+
+  .multiselect__option
+    .multiselect__option--highlight
+    .multiselect__option--selected {
+    padding: 0.8rem;
   }
 }
 

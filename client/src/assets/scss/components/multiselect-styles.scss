@@ -1,10 +1,7 @@
 .caret {
-  &.active {
-    transform: rotateZ(-180deg);
+  transition: transform 0.3s;
+  transform: rotateZ(180deg);
+  &.is-reverse {
+    transform: rotateZ(0deg);
   }
-}
-
-.multiselect__tags {
-  height: 40px;
-  padding: 0 20px 0 20px;
 }

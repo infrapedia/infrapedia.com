@@ -12,8 +12,14 @@
     :internal-search="false"
     :close-on-select="false"
     :options-limit="3000"
+    :option-height="20"
     :max-height="600"
     class="v-multiselect el-select"
+    :class="{
+      'no-options': !options.length,
+      'has-more-than-one-option': options.length
+    }"
+    :data-selected-length="options.length"
     style="top: -.2rem; height: 40px;"
     @search-change="$emit('input', $event)"
     @open="() => (isDropdownOpen = true)"
@@ -29,9 +35,9 @@
       <span class="el-input__suffix">
         <span class="el-input__suffix-inner" @click="toggle">
           <i
-            class="el-select__caret el-input__icon el-icon-arrow-down transition-all caret"
+            class="el-select__caret el-input__icon el-icon-arrow-up caret"
             :class="{
-              active: isDropdownOpen
+              'is-reverse': isDropdownOpen
             }"
           />
         </span>
