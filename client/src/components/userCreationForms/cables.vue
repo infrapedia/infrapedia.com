@@ -286,7 +286,7 @@ export default {
       return this.$store.state.editor.scene.features.list.length ? false : true
     }
   },
-  async mounted() {
+  mounted() {
     if (this.mode === 'create') {
       setTimeout(() => this.$refs.form.clearValidate(), 50)
     }
@@ -302,9 +302,11 @@ export default {
       ]
     }
 
-    if (this.mode !== 'create' && this.creationID === 'subsea') {
-      await this.getClsListConnectedToCable()
-    }
+    setTimeout(async () => {
+      if (this.mode !== 'create' && this.creationID === 'subsea') {
+        await this.getClsListConnectedToCable()
+      }
+    }, 320)
   },
   watch: {
     'form.facsList'(facs) {

@@ -40,6 +40,12 @@
         </div>
       </div>
     </div>
+    <footer class="footer flex wrap justify-content-start p0 mt4">
+      <small>
+        <strong> Remark: </strong>these changes are independent whether you save
+        the subsea cable or not, the selected cls will stay put.
+      </small>
+    </footer>
   </el-dialog>
 </template>
 
@@ -96,13 +102,7 @@ export default {
         _id: data._id
       })
 
-      if (
-        res &&
-        res.data &&
-        res.t !== 'error' &&
-        res.data.r &&
-        res.data.r.length
-      ) {
+      if (res && res.data && res.t !== 'error') {
         this.selectionList.push(data)
         this.$emit(`${SELECTION_CHANGE}`, [...this.selectionList])
       }
@@ -114,13 +114,7 @@ export default {
         _id: data._id
       })
 
-      if (
-        res &&
-        res.data &&
-        res.t !== 'error' &&
-        res.data.r &&
-        res.data.r.length
-      ) {
+      if (res && res.data && res.t !== 'error') {
         this.selectionList = this.selectionList.filter(c => c._id !== data._id)
         this.$emit(`${SELECTION_CHANGE}`, [...this.selectionList])
       }
