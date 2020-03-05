@@ -211,3 +211,53 @@ export const getClsGeoms = async ({ user_id, ids }) => {
 
   return res
 }
+
+export const clsUpdateCable = async ({ user_id, _id, cable_id }) => {
+  url = `${apiConfig.url}/cls/update/cable`
+  form = new FormData()
+
+  form.append('cls', _id)
+  form.append('cable', cable_id)
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+
+  return res
+}
+
+export const clsRemoveCable = async ({ user_id, _id, cable_id }) => {
+  url = `${apiConfig.url}/cls/remove/cable`
+  form = new FormData()
+
+  form.append('cls', _id)
+  form.append('cable', cable_id)
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+
+  return res
+}
+
+export const clsListConnectedToCable = async ({ user_id, cable_id }) => {
+  url = `${apiConfig.url}/cls/list/connected/${cable_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization:
+        'Bearer ' + window.localStorage.getItem('auth.token-session')
+    }
+  })
+
+  return res
+}

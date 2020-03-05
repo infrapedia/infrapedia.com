@@ -404,7 +404,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (res.t !== 'error') this.mode = 'edit'
     },
     async editCable() {
       this.isSendingData = true

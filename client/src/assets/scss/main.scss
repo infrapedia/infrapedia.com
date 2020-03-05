@@ -252,6 +252,15 @@ input.issues-dialog {
   outline: none;
   display: flex;
 
+  // &.v-multiselect_single {
+  //   padding: 0.6rem;
+  //   background: transparent;
+  //   display: inline-block;
+  //   margin-left: -0.8rem;
+  //   font-size: 14px;
+  //   color: #5f5b5b;
+  // }
+
   .multiselect__tags {
     padding: 0 20px 0 20px;
     height: 40px;

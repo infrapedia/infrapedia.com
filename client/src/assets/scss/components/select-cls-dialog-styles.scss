@@ -1,0 +1,19 @@
+@import '../base/variables';
+
+.box {
+  height: 2rem;
+  border: 1px solid #ccc;
+  background-color: transparent;
+  &.selected {
+    color: $white-full;
+    background-color: $dark-blue;
+    border: 1.4px solid $dark-blue;
+    &:hover {
+      border-color: $berry;
+      background-color: $berry;
+    }
+  }
+  &:hover {
+    border-color: $dark-blue;
+  }
+}

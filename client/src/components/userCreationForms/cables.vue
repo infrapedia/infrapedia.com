@@ -124,32 +124,22 @@
         />
       </el-form-item>
       <el-form-item label="Facilities" prop="facilities">
-        <el-select
-          multiple
-          :class="{ dark }"
-          filterable
-          collapse-tags
-          remote
-          :remote-method="loadFacsSearch"
+        <v-multi-select
+          :mode="mode"
+          :options="facsList"
+          @input="loadFacsSearch"
           :loading="isLoadingFacs"
-          class="w-fit-full"
-          v-model="form.facilities"
-          placeholder
-        >
-          <el-option
-            v-for="(opt, i) in facsList"
-            :key="i"
-            :label="opt.name"
-            :value="opt._id"
-          />
-        </el-select>
+          @values-change="form.facilities = $event"
+          :value="mode === 'create' ? [] : form.facilities"
+        />
       </el-form-item>
-      <el-form-item label="Groups" prop="owners">
+      <el-form-item label="Owners" prop="owners">
         <v-multi-select
           :mode="mode"
           :options="orgsList"
           @input="loadOrgsSearch"
           :loading="isLoadingOrgs"
+          :is-multiple="isCableTypeTerrestrial"
           @values-change="form.owners = $event"
           :value="mode === 'create' ? [] : form.owners"
         />
@@ -174,6 +164,16 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="CLS" prop="cls" v-if="mode !== 'create'">
+        <el-button
+          class="inline-block w-fit-full"
+          type="info"
+          :plain="clsSelectedList.length ? false : true"
+          @click="() => (isClsSelectionDialogVisible = true)"
+        >
+          {{ clsSelectedList.length ? 'Edit selected' : 'Select' }} CLS
+        </el-button>
+      </el-form-item>
       <el-form-item>
         <dragger @handle-file-converted="handleFileConverted" />
       </el-form-item>
@@ -186,10 +186,17 @@
           :disabled="checkGeomLength"
           @click="sendData"
         >
-          {{ title }} cable
+          {{ title }}
         </el-button>
       </el-form-item>
     </el-form>
+
+    <select-cls-dialog
+      :is-visible="isClsSelectionDialogVisible"
+      :selected-data="clsSelectedList"
+      @close="() => (isClsSelectionDialogVisible = false)"
+      @selection-change="handleCLSSelectionChange"
+    />
   </div>
 </template>
 
@@ -201,14 +208,18 @@ import validateUrl from '../../helpers/validateUrl'
 import { searchFacilities } from '../../services/api/facs'
 import { searchOrganization } from '../../services/api/organizations'
 import VMultiSelect from '../../components/MultiSelect'
+import SelectClsDialog from '../../components/dialogs/SelectCls'
+import { clsListConnectedToCable } from '../../services/api/cls'
 
 export default {
   name: 'CableForm',
   components: {
     Dragger,
-    VMultiSelect
+    VMultiSelect,
+    SelectClsDialog
   },
   data: () => ({
+    clsSelectedList: [],
     tag: '',
     cableStates,
     facsList: [],
@@ -219,6 +230,7 @@ export default {
     isLoadingFacs: false,
     isLoadingOrgs: false,
     warnTagDuplicate: false,
+    isClsSelectionDialogVisible: false,
     formRules: {
       activationDateTime: [],
       name: [
@@ -231,6 +243,7 @@ export default {
       ],
       urls: [],
       tags: [],
+      cls: [],
       owners: [],
       category: [],
       fiberPairs: [],
@@ -273,7 +286,7 @@ export default {
       return this.$store.state.editor.scene.features.list.length ? false : true
     }
   },
-  mounted() {
+  async mounted() {
     if (this.mode === 'create') {
       setTimeout(() => this.$refs.form.clearValidate(), 50)
     }
@@ -288,6 +301,11 @@ export default {
         }
       ]
     }
+
+    if (this.mode !== 'create' && this.creationID === 'subsea') {
+      console.warn('here 1')
+      await this.getClsListConnectedToCable()
+    }
   },
   watch: {
     'form.facsList'(facs) {
@@ -299,6 +317,19 @@ export default {
     }
   },
   methods: {
+    handleCLSSelectionChange(data) {
+      console.log(data)
+      this.clsSelectedList = data
+    },
+    async getClsListConnectedToCable() {
+      const res = await clsListConnectedToCable({
+        user_id: this.$auth.user.sub,
+        cable_id: this.$route.query.item
+      })
+      if (res && res.data && res.data.r) {
+        this.clsSelectedList = res.data.r
+      }
+    },
     async getTagsList(s) {
       const res = await getTags({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {

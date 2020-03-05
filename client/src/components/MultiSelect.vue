@@ -6,9 +6,9 @@
     placeholder
     open-direction="bottom"
     :options="options"
-    :multiple="true"
     :searchable="true"
     :loading="loading"
+    :multiple="isMultiple"
     :internal-search="false"
     :close-on-select="false"
     :options-limit="3000"
@@ -17,8 +17,8 @@
     class="v-multiselect el-select"
     :class="{
       'no-options': !options.length,
-      'has-one-option-selected': selections.length === 1,
-      'has-more-than-one-option': options.length && selections.length > 1
+      'has-one-option-selected': isMultiple && selections.length === 1,
+      'has-more-than-one-option': isMultiple && selections.length > 1
     }"
     style="top: -.2rem; height: 40px;"
     @search-change="$emit('input', $event)"
@@ -30,7 +30,9 @@
         class="el-tag el-tag--info el-tag--small el-tag--light relative"
         :data-selected-length="selections.length - 1"
       >
-        <span class="el-select__tags-text">{{ option.name }}</span>
+        <span class="el-select__tags-text" :title="option.name">
+          {{ option.name }}
+        </span>
         <i class="el-tag__close el-icon-close" @click="remove(option)" />
       </div>
     </template>
@@ -72,6 +74,10 @@ export default {
     loading: {
       type: Boolean,
       required: true
+    },
+    isMultiple: {
+      type: Boolean,
+      default: () => true
     },
     mode: {
       type: String,
