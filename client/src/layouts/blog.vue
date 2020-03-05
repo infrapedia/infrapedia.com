@@ -30,7 +30,6 @@ export default {
   methods: {
     toggleTheme() {
       this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
-      console.warn('TOGGLING THEME FROM BLOG LAYOUT!!')
     }
   }
 }

@@ -303,7 +303,6 @@ export default {
     }
 
     if (this.mode !== 'create' && this.creationID === 'subsea') {
-      console.warn('here 1')
       await this.getClsListConnectedToCable()
     }
   },
@@ -318,7 +317,6 @@ export default {
   },
   methods: {
     handleCLSSelectionChange(data) {
-      console.log(data)
       this.clsSelectedList = data
     },
     async getClsListConnectedToCable() {
