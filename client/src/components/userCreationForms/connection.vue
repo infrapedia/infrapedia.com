@@ -67,116 +67,44 @@
         </el-button>
       </el-form-item>
       <el-form-item label="Organizations">
-        <el-select
-          multiple
-          clearable
-          remote
-          :remote-method="loadOrgSearch"
+        <v-multi-select
+          :mode="mode"
+          :options="selectsData.orgs"
+          @input="loadOrgSearch"
           :loading="isLoadingOrg"
-          :class="{ dark }"
-          collapse-tags
-          filterable
-          class="w-fit-full"
-          v-model="form.organizations"
-          placeholder
-          @change="createTableFromSelection($event, 'orgs')"
-        >
-          <el-option
-            v-for="(opt, i) in selectsData.orgs"
-            :key="i"
-            :label="opt.name"
-            :value="opt._id"
-          >
-            <div class="truncate" :title="opt.name">
-              <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
-              {{ opt.name }}
-            </div>
-          </el-option>
-        </el-select>
+          @values-change="form.organizations = $event"
+          :value="mode === 'create' ? [] : form.organizations"
+        />
       </el-form-item>
       <el-form-item label="Facilities">
-        <el-select
-          multiple
-          clearable
-          :class="{ dark }"
-          collapse-tags
-          filterable
-          remote
-          :remote-method="loadFacSearch"
+        <v-multi-select
+          :mode="mode"
+          :options="selectsData.facs"
+          @input="loadFacSearch"
           :loading="isLoadingFacs"
-          class="w-fit-full"
-          v-model="form.facilities"
-          placeholder
-          @change="createTableFromSelection($event, 'facs')"
-        >
-          <el-option
-            v-for="(opt, i) in selectsData.facs"
-            :key="i"
-            :label="opt.name"
-            :value="opt._id"
-          >
-            <div class="truncate" :title="opt.name">
-              <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
-              {{ opt.name }}
-            </div>
-          </el-option>
-        </el-select>
+          @values-change="form.facilities = $event"
+          :value="mode === 'create' ? [] : form.facilities"
+        />
       </el-form-item>
       <el-form-item label="Cables">
-        <el-select
-          multiple
-          clearable
-          collapse-tags
-          :class="{ dark }"
-          filterable
-          remote
-          :remote-method="loadCablesSearch"
+        <v-multi-select
+          :mode="mode"
+          :options="selectsData.cables"
+          @input="loadCablesSearch"
           :loading="isLoadingCables"
-          class="w-fit-full"
-          v-model="form.cables"
-          placeholder
-          @change="createTableFromSelection($event, 'cables')"
-        >
-          <el-option
-            v-for="(opt, i) in selectsData.cables"
-            :key="i"
-            :label="opt.name"
-            :value="opt._id"
-          >
-            <div class="truncate" :title="opt.name">
-              <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
-              {{ opt.name }}
-            </div>
-          </el-option>
-        </el-select>
+          @values-change="form.cables = $event"
+          :value="mode === 'create' ? [] : form.cables"
+        />
       </el-form-item>
       <el-form-item label="CLS">
-        <el-select
-          multiple
-          clearable
-          :class="{ dark }"
-          collapse-tags
-          remote
-          :remote-method="loadClsSearch"
+        <v-multi-select
+          :mode="mode"
+          :options="selectsData.cls"
+          @input="loadClsSearch"
           :loading="isLoadingCls"
-          filterable
-          class="w-fit-full"
-          v-model="form.cls"
-          placeholder
-          @change="createTableFromSelection($event, 'cls')"
-        >
-          <el-option
-            v-for="(opt, i) in selectsData.cls"
-            :key="i"
-            :label="opt.name"
-            :value="opt._id"
-          >
-            <div class="truncate" :title="opt.name">
-              <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
-              {{ opt.name }}
-            </div>
-          </el-option>
-        </el-select>
+          @values-change="form.cls = $event"
+          :value="mode === 'create' ? [] : form.cls"
+        />
       </el-form-item>
       <el-form-item label="Tags" class="mt2">
         <el-select
@@ -228,6 +156,7 @@ import { searchCables } from '../../services/api/cables'
 import validateUrl from '../../helpers/validateUrl'
 import { searchCls } from '../../services/api/cls'
 import { getTags } from '../../services/api/tags'
+import VMultiSelect from '../../components/MultiSelect'
 
 export default {
   name: 'ConnectionForm',
@@ -248,6 +177,9 @@ export default {
     isLoadingFacs: false,
     isLoadingCables: false
   }),
+  components: {
+    VMultiSelect
+  },
   props: {
     visible: {
       type: Boolean,
@@ -343,12 +275,12 @@ export default {
     },
     async loadFacSearch(s) {
       if (s === '') return
-      this.isLoadingCls = true
+      this.isLoadingFacs = true
       const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
         this.selectsData.facs = this.selectsData.facs.concat(res.data)
       }
-      this.isLoadingCls = false
+      this.isLoadingFacs = false
     },
     async getTagsList(s) {
       const res = await getTags({ user_id: this.$auth.user.sub, s })

@@ -26,30 +26,14 @@
         />
       </el-form-item> -->
       <el-form-item label="Subsea cables" prop="cables">
-        <el-select
-          class="w-fit-full"
-          v-model="form.cables"
-          :class="{ dark }"
-          multiple
-          filterable
-          remote
-          :remote-method="loadCablesSearch"
+        <v-multi-select
+          :mode="mode"
+          :options="cablesList"
+          @input="loadCablesSearch"
           :loading="isLoadingCables"
-          collapse-tags
-          placeholder
-        >
-          <el-option
-            v-for="(opt, i) in cablesList"
-            :key="i"
-            :label="opt.name"
-            :value="opt._id"
-          >
-            <div>
-              <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
-              {{ opt.name }}
-            </div>
-          </el-option>
-        </el-select>
+          @values-change="form.cables = $event"
+          :value="mode === 'create' ? [] : form.cables"
+        />
       </el-form-item>
       <el-form-item label="Tags" class="mt2">
         <el-select
@@ -96,6 +80,7 @@
 import Dragger from '../../components/Dragger'
 import { searchCables } from '../../services/api/cables'
 import { getTags } from '../../services/api/tags'
+import VMultiSelect from '../../components/MultiSelect'
 
 export default {
   name: 'CLSForm',
@@ -119,7 +104,8 @@ export default {
     }
   }),
   components: {
-    Dragger
+    Dragger,
+    VMultiSelect
   },
   props: {
     form: {

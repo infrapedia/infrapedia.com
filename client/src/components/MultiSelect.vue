@@ -10,12 +10,13 @@
     :loading="loading"
     :multiple="isMultiple"
     :internal-search="false"
-    :close-on-select="false"
+    :close-on-select="isMultiple ? false : true"
     :options-limit="3000"
     :option-height="20"
     :max-height="600"
     class="v-multiselect el-select"
     :class="{
+      'is-single': !isMultiple ? true : false,
       'no-options': !options.length,
       'has-one-option-selected': isMultiple && selections.length === 1,
       'has-more-than-one-option': isMultiple && selections.length > 1
@@ -27,13 +28,17 @@
   >
     <template slot="tag" slot-scope="{ option, remove }">
       <div
-        class="el-tag el-tag--info el-tag--small el-tag--light relative"
+        class="counter relative"
         :data-selected-length="selections.length - 1"
       >
-        <span class="el-select__tags-text" :title="option.name">
-          {{ option.name }}
-        </span>
-        <i class="el-tag__close el-icon-close" @click="remove(option)" />
+        <div
+          class="el-tag el-tag--info el-tag--small el-tag--light relative truncate"
+        >
+          <span class="el-select__tags-text" :title="option.name">
+            {{ option.name }}
+          </span>
+          <i class="el-tag__close el-icon-close" @click="remove(option)" />
+        </div>
       </div>
     </template>
     <template slot="caret" slot-scope="{ toggle }">

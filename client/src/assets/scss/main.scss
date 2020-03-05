@@ -252,15 +252,16 @@ input.issues-dialog {
   outline: none;
   display: flex;
 
-  // &.v-multiselect_single {
-  //   padding: 0.6rem;
-  //   background: transparent;
-  //   display: inline-block;
-  //   margin-left: -0.8rem;
-  //   font-size: 14px;
-  //   color: #5f5b5b;
-  // }
-
+  &.is-single {
+    .multiselect__single {
+      padding: 0.6rem;
+      background: transparent;
+      display: inline-block;
+      margin-left: -0.8rem;
+      font-size: 14px;
+      color: #5f5b5b;
+    }
+  }
   .multiselect__tags {
     padding: 0 20px 0 20px;
     height: 40px;
@@ -292,7 +293,6 @@ input.issues-dialog {
     outline: none;
     font-size: 14px;
     appearance: none;
-    width: 100%;
     left: 0;
     margin-top: 4px;
     margin-left: -0.5rem;
@@ -313,40 +313,53 @@ input.issues-dialog {
     }
   }
 
-  &.has-more-than-one-option,
   &.has-one-option-selected {
     .multiselect__input {
+      width: 62% !important;
       max-width: 219.156px;
-      float: right;
-      margin-top: 6.7px;
+      margin-top: 6px;
       height: 24px;
-      text-align: right;
+      margin-left: 4.4rem;
     }
   }
 
   &.has-more-than-one-option {
-    .el-tag {
+    .counter {
       $length: attr(data-selected-length);
-      $data-length: attr(title);
-
+      &::after {
+        content: '+' $length;
+        width: 2rem;
+        background: #f4f4f5;
+        position: absolute;
+        border-radius: 4px;
+        color: #909399;
+        top: 2.4px;
+        right: -38px;
+        height: 22.1px;
+        border: 1px solid #e9e9eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
       &:nth-child(n + 1) {
         display: none;
       }
       &:first-child {
         display: block;
       }
-      &::after {
-        content: '+' $length;
-        width: 2rem;
-        background: #f4f4f5;
-        text-align: center;
-        position: absolute;
-        border-radius: 4px;
-        color: #909399;
-        top: -1px;
-        margin-left: 0.8rem;
-        border: 1px solid #e9e9eb;
+    }
+    .el-tag {
+      $data-length: attr(title);
+      &:nth-child(n + 1) {
+        display: none;
       }
+      &:first-child {
+        display: block;
+      }
+    }
+    .multiselect__input {
+      margin-left: 7rem;
+      width: 48% !important;
     }
   }
 
