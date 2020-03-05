@@ -17,23 +17,26 @@
     class="v-multiselect el-select"
     :class="{
       'no-options': !options.length,
-      'has-more-than-one-option': options.length
+      'has-one-option-selected': selections.length === 1,
+      'has-more-than-one-option': options.length && selections.length > 1
     }"
-    :data-selected-length="options.length"
     style="top: -.2rem; height: 40px;"
     @search-change="$emit('input', $event)"
     @open="() => (isDropdownOpen = true)"
     @close="handleClose"
   >
     <template slot="tag" slot-scope="{ option, remove }">
-      <span class="el-tag el-tag--info el-tag--small el-tag--light">
+      <div
+        class="el-tag el-tag--info el-tag--small el-tag--light relative"
+        :data-selected-length="selections.length - 1"
+      >
         <span class="el-select__tags-text">{{ option.name }}</span>
         <i class="el-tag__close el-icon-close" @click="remove(option)" />
-      </span>
+      </div>
     </template>
     <template slot="caret" slot-scope="{ toggle }">
       <span class="el-input__suffix">
-        <span class="el-input__suffix-inner" @click="toggle">
+        <span class="el-input__suffix-inner" @click="toggle" @focus="toggle">
           <i
             class="el-select__caret el-input__icon el-icon-arrow-up caret"
             :class="{

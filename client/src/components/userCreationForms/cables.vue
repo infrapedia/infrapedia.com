@@ -163,6 +163,7 @@
           placeholder
           :class="{ dark }"
           allow-create
+          collapse-tags
           default-first-option
         >
           <el-option

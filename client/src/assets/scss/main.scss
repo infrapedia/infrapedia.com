@@ -297,27 +297,46 @@ input.issues-dialog {
     border-top: 1px solid #e8e8e8;
   }
 
-  // .multiselect__option {
-  //   padding: 0.4rem;
-  //   min-height: 20px;
-  // }
-
   &.no-options {
     .multiselect__content-wrapper {
       height: 3.2rem !important;
       overflow: hidden;
     }
   }
+
+  &.has-more-than-one-option,
+  &.has-one-option-selected {
+    .multiselect__input {
+      max-width: 219.156px;
+      float: right;
+      margin-top: 6.7px;
+      height: 24px;
+      text-align: right;
+    }
+  }
+
   &.has-more-than-one-option {
-    span.el-tag {
-      &:nth-child(1) {
+    .el-tag {
+      $length: attr(data-selected-length);
+      $data-length: attr(title);
+
+      &:nth-child(n + 1) {
         display: none;
       }
       &:first-child {
         display: block;
       }
       &::after {
-        content: attr(data-selected-length);
+        content: '+' $length;
+        width: 2rem;
+        background: #f4f4f5;
+        text-align: center;
+        position: absolute;
+        border-radius: 4px;
+        color: #909399;
+        top: -1px;
+        margin-left: 0.8rem;
+        border: 1px solid #e9e9eb;
       }
     }
   }
