@@ -1,10 +1,10 @@
 <template>
   <div class="pb6 pt6 pr8 pl8" v-loading="loading">
     <header slot="header" class="w-fit-full mb8">
-      <h1 class="title">{{ title }} CLS</h1>
+      <h1 class="title capitalize">{{ title }} CLS</h1>
     </header>
     <el-form ref="form" :model="form" :rules="formRules">
-      <el-form-item label="Name of group" required prop="name">
+      <el-form-item label="Name" required prop="name">
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
       <el-form-item label="State" prop="state">
@@ -63,7 +63,7 @@
       <el-form-item class="mt24">
         <el-button
           type="primary"
-          class="w-fit-full"
+          class="w-fit-full capitalize"
           round
           :loading="isSendingData"
           :disabled="checkGeomLength"

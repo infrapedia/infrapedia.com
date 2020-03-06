@@ -7,7 +7,7 @@
   >
     <header slot="title" class="w-fit-full">
       <h1
-        class="title-user-variant w-fit-full fs-xlarge text-center"
+        class="title-user-variant w-fit-full fs-xlarge text-center capitalize"
         :class="{ dark }"
       >
         {{ title }} organization
@@ -143,7 +143,6 @@
               <el-input
                 :class="{ dark }"
                 size="mini"
-                type="number"
                 v-model="tag.zipcode"
                 placeholder
               />
@@ -185,7 +184,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer-mobile">
       <el-button
-        class="h10"
+        class="h10 capitalize"
         :class="{ dark }"
         type="primary"
         plain

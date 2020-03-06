@@ -1,7 +1,7 @@
 <template>
   <div class="pb6 pt6 pr8 pl8">
     <header slot="header" class="w-fit-full mb8">
-      <h1 class="title">
+      <h1 class="title capitalize">
         Create facility
       </h1>
     </header>
@@ -80,7 +80,12 @@
         <dragger />
       </el-form-item>
       <el-form-item class="mt12">
-        <el-button type="primary" class="w-fit-full" round @click="sendData">
+        <el-button
+          type="primary"
+          class="w-fit-full capitalize"
+          round
+          @click="sendData"
+        >
           Create and start drawing
         </el-button>
       </el-form-item>

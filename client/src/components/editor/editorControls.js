@@ -228,7 +228,12 @@ class EditorControls {
     const { features } = this.scene
 
     if (features && features.selected.length) {
-      return await this.handleBeforeFeatureCreation({ ...features.selected[0] })
+      if (this.type === 'cls' && this.scene.features.list.length) return
+      else {
+        return await this.handleBeforeFeatureCreation({
+          ...features.selected[0]
+        })
+      }
     } else return
   }
   /**

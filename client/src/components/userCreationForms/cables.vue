@@ -1,7 +1,7 @@
 <template>
   <div class="pb6 pt6 pr8 pl8">
     <header slot="header" class="w-fit-full mb8">
-      <h1 class="title">{{ title }}</h1>
+      <h1 class="title capitalize">{{ title }}</h1>
     </header>
     <el-form ref="form" :model="form" :rules="formRules">
       <el-form-item label="Category" prop="category">
@@ -123,7 +123,7 @@
           v-model="form.fiberPairs"
         />
       </el-form-item>
-      <el-form-item label="Facilities" prop="facilities">
+      <el-form-item :label="facilitiesLabel" prop="facilities">
         <v-multi-select
           :mode="mode"
           :options="facsList"
@@ -180,7 +180,7 @@
       <el-form-item class="mt12">
         <el-button
           type="primary"
-          class="w-fit-full"
+          class="w-fit-full capitalize"
           round
           :loading="isSendingData"
           :disabled="checkGeomLength"
@@ -269,6 +269,11 @@ export default {
   computed: {
     creationID() {
       return this.$route.query.id
+    },
+    facilitiesLabel() {
+      return this.creationID === 'subsea'
+        ? 'Facilities (POPs)'
+        : 'Facilities (On-net & Off-Net)'
     },
     isCableTypeTerrestrial() {
       return this.creationID === 'subsea'

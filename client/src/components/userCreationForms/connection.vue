@@ -1,14 +1,15 @@
 <template>
   <el-dialog
     :visible="visible"
-    :custom-class="dark ? 'custom-dialog dark' : 'custom-dialog'"
+    width="80%"
+    :custom-class="dark ? 'dark' : ''"
     :before-close="handleBeforeClose"
     :close-on-click-modal="false"
     :destroy-on-close="true"
   >
     <header slot="title" class="w-fit-full">
       <h1
-        class="title-user-variant w-fit-full fs-xlarge text-center"
+        class="title-user-variant w-fit-full fs-xlarge text-center capitalize"
         :class="{ dark }"
       >
         {{ title }} group
@@ -21,171 +22,197 @@
       v-loading="loading"
       :class="{ dark }"
     >
-      <el-form-item label="Name">
-        <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
-      </el-form-item>
-      <el-form-item label="Websites">
-        <div class="w-fit-full relative inline-block">
-          <div class="flex row wrap">
-            <el-tag
-              :key="tag"
-              v-for="tag in form.websites"
-              closable
+      <el-row :gutter="20">
+        <el-col :span="24">
+          <el-form-item label="Name">
+            <el-input
               :class="{ dark }"
-              :disable-transitions="false"
-              @close="handleClose(tag)"
-            >
-              {{ tag }}
-            </el-tag>
-            <template v-if="inputVisible">
-              <el-input
-                :class="{ dark }"
-                v-model="tag"
-                ref="saveTagInput"
-                size="mini"
-                @input="validateURL"
-                @keyup.enter.native="confirmTag"
-                @blur="confirmTag"
-              />
-              <el-collapse-transition>
-                <el-alert
-                  v-if="isURLValid !== null && !isURLValid"
-                  title="This url is not valid"
-                  show-icon
-                  type="warning"
-                  effect="dark"
-                  class="h6"
-                  :closable="false"
-                />
-              </el-collapse-transition>
-              <el-collapse-transition>
-                <el-alert
-                  v-if="warnTagDuplicate"
-                  title="This url is duplicated"
-                  show-icon
-                  type="info"
-                  effect="dark"
-                  class="h6"
-                  :closable="false"
-                />
-              </el-collapse-transition>
-            </template>
-            <el-button
-              v-else
-              :class="{ dark }"
-              class="w42 text-center"
-              size="small"
-              @click="showInput"
-            >
-              Add
-            </el-button>
-          </div>
-        </div>
-      </el-form-item>
-      <el-form-item label="Organizations">
-        <v-multi-select
-          :mode="mode"
-          :options="selectsData.organizations"
-          @input="loadOrgSearch"
-          :loading="isLoadingOrg"
-          @values-change="createTableFromSelection($event, 'organizations')"
-          :value="mode === 'create' ? [] : [...form.organizations]"
-          @remove="handleRemoveTableDataItem($event, 'organizations')"
-        />
-      </el-form-item>
-      <el-form-item label="Facilities">
-        <v-multi-select
-          :mode="mode"
-          :options="selectsData.facilities"
-          @input="loadFacSearch"
-          :loading="isLoadingFacs"
-          @values-change="createTableFromSelection($event, 'facilities')"
-          :value="mode === 'create' ? [] : [...form.facilities]"
-          @remove="handleRemoveTableDataItem"
-        />
-      </el-form-item>
-      <el-form-item label="Cables">
-        <v-multi-select
-          :mode="mode"
-          :options="selectsData.cables"
-          @input="loadCablesSearch"
-          :loading="isLoadingCables"
-          @values-change="createTableFromSelection($event, 'cables')"
-          :value="mode === 'create' ? [] : [...form.cables]"
-          @remove="handleRemoveTableDataItem"
-        />
-      </el-form-item>
-      <el-form-item label="CLS">
-        <v-multi-select
-          :mode="mode"
-          :options="selectsData.cls"
-          @input="loadClsSearch"
-          :loading="isLoadingCls"
-          @values-change="createTableFromSelection($event, 'cls')"
-          :value="mode === 'create' ? [] : [...form.cls]"
-          @remove="handleRemoveTableDataItem"
-        />
-      </el-form-item>
-      <el-form-item label="Tags" class="mt2">
-        <el-select
-          v-model="form.tags"
-          multiple
-          filterable
-          placeholder
-          allow-create
-          :class="{ dark }"
-          class="w-fit-full"
-          default-first-option
-        >
-          <el-option
-            v-for="(item, i) in form.tagsList"
-            :key="i"
-            :label="item"
-            :value="item"
-          />
-        </el-select>
-      </el-form-item>
-      <el-table :data="tableData" v-if="tableDataHasLength">
-        <el-table-column prop="name" label="Name" width="200" />
-        <el-table-column
-          label="Reference"
-          v-if="form.references.length"
-          width="800"
-        >
-          <template slot-scope="scope">
-            <div class="flex row nowrap w-fit-full">
-              <div
-                v-for="(item, i) in form.references[0].orgs"
-                :key="i"
-                class="ml2"
-              >
-                <el-form-item :label="item.name">
-                  <el-select
-                    v-model="scope.row.reference[i]"
-                    class="w-fit-full"
-                    placeholder
-                    :id="scope.row._id + '-' + item._id"
-                    @change="
-                      handleReferenceSelectionChange($event, scope.row, item)
-                    "
-                  >
-                    <el-option
-                      v-for="(type, i) in referencesTypes"
-                      :key="i"
-                      :value="type"
-                      :label="type"
+              class="w-fit-full"
+              v-model="form.name"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="Websites">
+            <div class="w-fit-full relative inline-block">
+              <div class="flex row wrap">
+                <el-tag
+                  :key="tag"
+                  v-for="tag in form.websites"
+                  closable
+                  :class="{ dark }"
+                  :disable-transitions="false"
+                  @close="handleClose(tag)"
+                >
+                  {{ tag }}
+                </el-tag>
+                <template v-if="inputVisible">
+                  <el-input
+                    :class="{ dark }"
+                    v-model="tag"
+                    ref="saveTagInput"
+                    size="mini"
+                    @input="validateURL"
+                    @keyup.enter.native="confirmTag"
+                    @blur="confirmTag"
+                  />
+                  <el-collapse-transition>
+                    <el-alert
+                      v-if="isURLValid !== null && !isURLValid"
+                      title="This url is not valid"
+                      show-icon
+                      type="warning"
+                      effect="dark"
+                      class="h6"
+                      :closable="false"
                     />
-                  </el-select>
-                </el-form-item>
+                  </el-collapse-transition>
+                  <el-collapse-transition>
+                    <el-alert
+                      v-if="warnTagDuplicate"
+                      title="This url is duplicated"
+                      show-icon
+                      type="info"
+                      effect="dark"
+                      class="h6"
+                      :closable="false"
+                    />
+                  </el-collapse-transition>
+                </template>
+                <el-button
+                  v-else
+                  :class="{ dark }"
+                  class="w42 text-center"
+                  size="small"
+                  @click="showInput"
+                >
+                  Add
+                </el-button>
               </div>
             </div>
-          </template>
-        </el-table-column>
-      </el-table>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="Organizations">
+            <v-multi-select
+              :mode="mode"
+              :options="selectsData.organizations"
+              @input="loadOrgSearch"
+              :loading="isLoadingOrg"
+              @values-change="createTableFromSelection($event, 'organizations')"
+              :value="mode === 'create' ? [] : [...form.organizations]"
+              @remove="handleRemoveTableDataItem($event, 'organizations')"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="Facilities">
+            <v-multi-select
+              :mode="mode"
+              :options="selectsData.facilities"
+              @input="loadFacSearch"
+              :loading="isLoadingFacs"
+              @values-change="createTableFromSelection($event, 'facilities')"
+              :value="mode === 'create' ? [] : [...form.facilities]"
+              @remove="handleRemoveTableDataItem"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="Cables">
+            <v-multi-select
+              :mode="mode"
+              :options="selectsData.cables"
+              @input="loadCablesSearch"
+              :loading="isLoadingCables"
+              @values-change="createTableFromSelection($event, 'cables')"
+              :value="mode === 'create' ? [] : [...form.cables]"
+              @remove="handleRemoveTableDataItem"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="CLS">
+            <v-multi-select
+              :mode="mode"
+              :options="selectsData.cls"
+              @input="loadClsSearch"
+              :loading="isLoadingCls"
+              @values-change="createTableFromSelection($event, 'cls')"
+              :value="mode === 'create' ? [] : [...form.cls]"
+              @remove="handleRemoveTableDataItem"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="Tags" class="mt2">
+            <el-select
+              v-model="form.tags"
+              multiple
+              filterable
+              placeholder
+              allow-create
+              :class="{ dark }"
+              class="w-fit-full"
+              default-first-option
+            >
+              <el-option
+                v-for="(item, i) in form.tagsList"
+                :key="i"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-table :data="tableData" v-if="tableDataHasLength">
+            <el-table-column prop="name" label="Name" width="200" />
+            <el-table-column
+              label="Reference"
+              v-if="form.references.length"
+              width="800"
+            >
+              <template slot-scope="scope">
+                <div class="flex row nowrap w-fit-full">
+                  <div
+                    v-for="(item, i) in form.references[0].orgs"
+                    :key="i"
+                    class="ml2"
+                  >
+                    <el-form-item :label="item.name">
+                      <el-select
+                        v-model="scope.row.reference[i]"
+                        class="w-fit-full"
+                        placeholder
+                        :id="scope.row._id + '-' + item._id"
+                        @change="
+                          handleReferenceSelectionChange(
+                            $event,
+                            scope.row,
+                            item
+                          )
+                        "
+                      >
+                        <el-option
+                          v-for="(type, i) in referencesTypes"
+                          :key="i"
+                          :value="type"
+                          :label="type"
+                        />
+                      </el-select>
+                    </el-form-item>
+                  </div>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer-mobile">
       <el-button
-        class="h10"
+        class="h10 capitalize"
         :class="{ dark }"
         type="primary"
         round
