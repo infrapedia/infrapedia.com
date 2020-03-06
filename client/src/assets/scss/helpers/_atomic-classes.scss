@@ -368,6 +368,10 @@
     }
   }
 }
+.required-asterik {
+  color: #b10f0f;
+  margin-right: 4px;
+}
 
 @for $i from 1 through 120 {
   $base: 0.25rem;

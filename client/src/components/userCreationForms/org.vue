@@ -62,7 +62,7 @@
           <el-card v-if="inputVisible" class="p4 w-auto mt4" shadow="never">
             <div class="w-fit-full">
               <label class="el-input__label" for="tagname">
-                Reference
+                <small class="required-asterik">*</small> Reference
               </label>
               <el-input
                 name="street"
@@ -72,6 +72,16 @@
                 size="mini"
               />
             </div>
+            <el-collapse-transition>
+              <el-alert
+                v-if="isTagReferenceMissing"
+                class="pr4 pl4 pt1 pb1"
+                title="Reference name is required"
+                type="error"
+                show-icon
+                :closable="false"
+              />
+            </el-collapse-transition>
             <div>
               <label class="el-input__label" for="country">
                 Country
@@ -212,7 +222,8 @@ export default {
     },
     tagOnEdit: null,
     inputVisible: false,
-    isUploadingImage: false
+    isUploadingImage: false,
+    isTagReferenceMissing: false
   }),
   props: {
     visible: {
@@ -257,12 +268,14 @@ export default {
     handleBeforeClose() {
       this.fileList = []
       this.tagOnEdit = null
+      this.isTagReferenceMissing = false
       return this.$emit('close')
     },
     handleClose(tag) {
       return this.form.address.splice(this.form.address.indexOf(tag), 1)
     },
     clearAddress() {
+      this.isTagReferenceMissing = false
       this.inputVisible = false
       this.tagOnEdit = null
       this.tag = {
@@ -282,6 +295,11 @@ export default {
     },
     handleSaveAddress() {
       const { tagOnEdit } = this
+
+      if ((tagOnEdit !== null && !tagOnEdit.reference) || !this.tag.reference) {
+        this.isTagReferenceMissing = true
+        return
+      }
 
       if (tagOnEdit === null) this.form.address.push({ ...this.tag })
       else this.form.address[tagOnEdit] = { ...this.tag }
