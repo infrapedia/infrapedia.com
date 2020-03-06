@@ -392,11 +392,12 @@ export default {
       }
     },
     confirmTag() {
-      let tag = this.tag
-      if (tag && !this.warnTagDuplicate && this.isURLValid) {
-        this.form.urls.push(tag)
-      }
+      const isTagAlreadyCreated = this.form.urls.includes(this.tag)
+      if (isTagAlreadyCreated || !this.isURLValid) return
+
+      if (this.tag) this.form.urls.push(this.tag)
       this.inputVisible = false
+      this.isURLValid = null
       this.tag = ''
     }
   }

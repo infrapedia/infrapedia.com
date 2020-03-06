@@ -4,6 +4,7 @@
     :custom-class="dark ? 'custom-dialog dark' : 'custom-dialog'"
     :before-close="handleBeforeClose"
     :close-on-click-modal="false"
+    :destroy-on-close="true"
   >
     <header slot="title" class="w-fit-full">
       <h1
@@ -24,66 +25,83 @@
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
       <el-form-item label="Websites">
-        <el-tag
-          :key="tag"
-          v-for="tag in form.websites"
-          closable
-          :class="{ dark }"
-          :disable-transitions="false"
-          @close="handleClose(tag)"
-        >
-          {{ tag }}
-        </el-tag>
-        <template v-if="inputVisible">
-          <el-input
-            :class="{ dark }"
-            v-model="tag"
-            ref="saveTagInput"
-            size="mini"
-            @input="validateURL"
-            @keyup.enter.native="confirmTag"
-            @blur="confirmTag"
-          />
-          <el-collapse-transition>
-            <el-alert
-              v-if="isURLValid !== null && !isURLValid"
-              title="This url is not valid"
-              show-icon
-              type="warning"
-              effect="dark"
-              class="h6"
-              :closable="false"
-            />
-          </el-collapse-transition>
-        </template>
-        <el-button
-          v-else
-          :class="{ dark }"
-          class="w42 text-center"
-          size="small"
-          @click="showInput"
-        >
-          Add
-        </el-button>
+        <div class="w-fit-full relative inline-block">
+          <div class="flex row wrap">
+            <el-tag
+              :key="tag"
+              v-for="tag in form.websites"
+              closable
+              :class="{ dark }"
+              :disable-transitions="false"
+              @close="handleClose(tag)"
+            >
+              {{ tag }}
+            </el-tag>
+            <template v-if="inputVisible">
+              <el-input
+                :class="{ dark }"
+                v-model="tag"
+                ref="saveTagInput"
+                size="mini"
+                @input="validateURL"
+                @keyup.enter.native="confirmTag"
+                @blur="confirmTag"
+              />
+              <el-collapse-transition>
+                <el-alert
+                  v-if="isURLValid !== null && !isURLValid"
+                  title="This url is not valid"
+                  show-icon
+                  type="warning"
+                  effect="dark"
+                  class="h6"
+                  :closable="false"
+                />
+              </el-collapse-transition>
+              <el-collapse-transition>
+                <el-alert
+                  v-if="warnTagDuplicate"
+                  title="This url is duplicated"
+                  show-icon
+                  type="info"
+                  effect="dark"
+                  class="h6"
+                  :closable="false"
+                />
+              </el-collapse-transition>
+            </template>
+            <el-button
+              v-else
+              :class="{ dark }"
+              class="w42 text-center"
+              size="small"
+              @click="showInput"
+            >
+              Add
+            </el-button>
+          </div>
+        </div>
       </el-form-item>
       <el-form-item label="Organizations">
         <v-multi-select
           :mode="mode"
-          :options="selectsData.orgs"
+          :options="selectsData.organizations"
           @input="loadOrgSearch"
           :loading="isLoadingOrg"
-          @values-change="form.organizations = $event"
-          :value="mode === 'create' ? [] : form.organizations"
+          @values-change="createTableFromSelection($event, 'organizations')"
+          :value="mode === 'create' ? [] : [...form.organizations]"
+          @remove="handleRemoveTableDataItem($event, 'organizations')"
         />
       </el-form-item>
       <el-form-item label="Facilities">
         <v-multi-select
           :mode="mode"
-          :options="selectsData.facs"
+          :options="selectsData.facilities"
           @input="loadFacSearch"
           :loading="isLoadingFacs"
-          @values-change="form.facilities = $event"
-          :value="mode === 'create' ? [] : form.facilities"
+          @values-change="createTableFromSelection($event, 'facilities')"
+          :value="mode === 'create' ? [] : [...form.facilities]"
+          @remove="handleRemoveTableDataItem"
         />
       </el-form-item>
       <el-form-item label="Cables">
@@ -92,8 +110,9 @@
           :options="selectsData.cables"
           @input="loadCablesSearch"
           :loading="isLoadingCables"
-          @values-change="form.cables = $event"
-          :value="mode === 'create' ? [] : form.cables"
+          @values-change="createTableFromSelection($event, 'cables')"
+          :value="mode === 'create' ? [] : [...form.cables]"
+          @remove="handleRemoveTableDataItem"
         />
       </el-form-item>
       <el-form-item label="CLS">
@@ -102,8 +121,9 @@
           :options="selectsData.cls"
           @input="loadClsSearch"
           :loading="isLoadingCls"
-          @values-change="form.cls = $event"
-          :value="mode === 'create' ? [] : form.cls"
+          @values-change="createTableFromSelection($event, 'cls')"
+          :value="mode === 'create' ? [] : [...form.cls]"
+          @remove="handleRemoveTableDataItem"
         />
       </el-form-item>
       <el-form-item label="Tags" class="mt2">
@@ -125,9 +145,41 @@
           />
         </el-select>
       </el-form-item>
-      <el-table :data="form.references" v-if="form.references.length">
-        <el-table-column slot-scope="scope">
-          {{ scope.row }}
+      <el-table :data="tableData" v-if="tableDataHasLength">
+        <el-table-column prop="name" label="Name" width="200" />
+        <el-table-column
+          label="Reference"
+          v-if="form.references.length"
+          width="800"
+        >
+          <template slot-scope="scope">
+            <div class="flex row nowrap w-fit-full">
+              <div
+                v-for="(item, i) in form.references[0].orgs"
+                :key="i"
+                class="ml2"
+              >
+                <el-form-item :label="item.name">
+                  <el-select
+                    v-model="scope.row.reference[i]"
+                    class="w-fit-full"
+                    placeholder
+                    :id="scope.row._id + '-' + item._id"
+                    @change="
+                      handleReferenceSelectionChange($event, scope.row, item)
+                    "
+                  >
+                    <el-option
+                      v-for="(type, i) in referencesTypes"
+                      :key="i"
+                      :value="type"
+                      :label="type"
+                    />
+                  </el-select>
+                </el-form-item>
+              </div>
+            </div>
+          </template>
         </el-table-column>
       </el-table>
     </el-form>
@@ -164,18 +216,19 @@ export default {
     tag: '',
     selectsData: {
       cls: [],
-      orgs: [],
-      facs: [],
+      organizations: [],
+      facilities: [],
       cables: []
     },
-    tableData: [],
+    referencesTypes: ['Owner', 'Partner', 'User', 'None'],
     loading: false,
     isURLValid: null,
     inputVisible: false,
     isLoadingOrg: false,
     isLoadingCls: false,
     isLoadingFacs: false,
-    isLoadingCables: false
+    isLoadingCables: false,
+    warnTagDuplicate: false
   }),
   components: {
     VMultiSelect
@@ -200,11 +253,26 @@ export default {
     },
     dark() {
       return this.$store.state.isDark
+    },
+    tableData() {
+      return this.form.references && this.form.references.length
+        ? this.form.references[0].options
+        : []
+    },
+    tableDataHasLength() {
+      return (
+        this.tableData.length &&
+        this.form.references.length &&
+        this.form.references[0].orgs.length
+      )
     }
   },
   watch: {
     visible(bool) {
-      return bool ? null : this.clearAll()
+      if (!bool) return this.clearAll()
+      else if (this.mode !== 'create') {
+        this.handleEditModeScenario()
+      }
     },
     async 'form.tags'(tag) {
       if (!this.visible) return
@@ -212,34 +280,139 @@ export default {
     },
     'form.facilitiesList'(facs) {
       if (!facs) return
-      this.facs = [...facs]
+      this.selectsData.facilities = [...facs]
       delete this.form.facilitiesList
     },
     'form.organizationsList'(orgs) {
       if (!orgs) return
-      this.orgs = [...orgs]
+      this.selectsData.organizations = [...orgs]
       delete this.form.organizationsList
     },
     'form.cablesList'(cables) {
       if (!cables) return
-      this.cables = [...cables]
+      this.selectsData.cables = [...cables]
       delete this.form.cablesList
     },
     'form.clsList'(cls) {
       if (!cls) return
-      this.cls = [...cls]
+      this.selectsData.cls = [...cls]
       delete this.form.clsList
     }
   },
   methods: {
+    handleEditModeScenario() {
+      const references = JSON.parse(JSON.stringify(this.form.references))
+      const keys = Object.keys(references)
+      let facID = null
+      const props = ['cables', 'facilities', 'cls', 'organizations']
+      for (let prop of props) {
+        this.createTableFromSelection(Array.from(this.form[prop]), prop)
+      }
+
+      for (let orgID of keys) {
+        for (let opt of this.form.references[0].options) {
+          facID = Object.keys(references[orgID])
+          if (facID[0] === opt._id) {
+            opt.reference.push(references[orgID][facID[0]])
+            this.handleReferenceSelectionChange(
+              references[orgID][facID[0]],
+              opt,
+              { _id: orgID }
+            )
+          }
+        }
+      }
+    },
+    handleReferenceSelectionChange(selection, row, org) {
+      let obj = {}
+
+      if (row.relation !== null) {
+        obj = { ...row.relation }
+      }
+      obj[org._id] = {}
+      obj[org._id][row._id] = selection
+      row.relation = obj
+    },
     createTableFromSelection(ids, type) {
-      return console.log(ids, type)
+      if (!ids.length) return
+
+      const data = {
+        orgs: this.form.references.length ? this.form.references[0].orgs : [],
+        options: this.form.references.length
+          ? this.form.references[0].options
+          : []
+      }
+      const orgsID = data.orgs.map(o => o._id)
+      const optionsID = data.options.map(o => o._id)
+      this.form[type] = ids
+
+      for (let selection of ids) {
+        if (this.selectsData[type].length) {
+          for (let item of this.selectsData[type]) {
+            if (item._id === selection._id) {
+              if (type === 'organizations') {
+                if (data.orgs.length) {
+                  if (!orgsID.includes(item._id)) {
+                    data.orgs.push({
+                      type,
+                      ...item
+                    })
+                  }
+                } else {
+                  data.orgs.push({
+                    type,
+                    ...item
+                  })
+                }
+              } else {
+                if (data.options.length) {
+                  if (!optionsID.includes(item._id)) {
+                    console.log(item, 'here 1.1.0')
+                    data.options.push({
+                      type,
+                      ...item,
+                      reference: [],
+                      relation: null
+                    })
+                  }
+                } else {
+                  console.log(item, 'here 1.2')
+                  data.options.push({
+                    ...item,
+                    type,
+                    reference: [],
+                    relation: null
+                  })
+                }
+              }
+            }
+          }
+        } else {
+          // console.log('here 1.3')
+          type === 'organizations'
+            ? data.orgs.push(selection)
+            : data.options.push({ ...selection, reference: [], relation: null })
+        }
+      }
+
+      this.form.references = [data]
+    },
+    handleRemoveTableDataItem(id, type) {
+      if (type && type === 'organizations') {
+        this.form.references[0].orgs = this.form.references[0].orgs.filter(
+          item => item._id !== id
+        )
+      } else {
+        this.form.references[0].options = this.form.references[0].options.filter(
+          item => item._id !== id
+        )
+      }
     },
     clearAll() {
       this.selectsData = {
         cls: [],
-        orgs: [],
-        facs: [],
+        organizations: [],
+        facilities: [],
         cables: []
       }
     },
@@ -251,7 +424,7 @@ export default {
       this.isLoadingOrg = true
       const res = await searchOrganization({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.selectsData.orgs = this.selectsData.orgs.concat(res.data)
+        this.selectsData.organizations = res.data
       }
       this.isLoadingOrg = false
     },
@@ -260,7 +433,7 @@ export default {
       this.isLoadingCables = true
       const res = await searchCables({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.selectsData.cables = this.selectsData.cables.concat(res.data)
+        this.selectsData.cables = res.data
       }
       this.isLoadingCables = false
     },
@@ -269,7 +442,7 @@ export default {
       this.isLoadingCls = true
       const res = await searchCls({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.selectsData.cls = this.selectsData.cls.concat(res.data)
+        this.selectsData.cls = res.data
       }
       this.isLoadingCls = false
     },
@@ -278,7 +451,7 @@ export default {
       this.isLoadingFacs = true
       const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
-        this.selectsData.facs = this.selectsData.facs.concat(res.data)
+        this.selectsData.facilities = res.data
       }
       this.isLoadingFacs = false
     },
@@ -293,6 +466,9 @@ export default {
     },
     validateURL(url) {
       this.isURLValid = validateUrl(url)
+      this.form.websites.includes(url)
+        ? (this.warnTagDuplicate = true)
+        : (this.warnTagDuplicate = false)
     },
     handleClose(tag) {
       return this.form.websites.splice(this.form.websites.indexOf(tag), 1)

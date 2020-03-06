@@ -59,8 +59,8 @@ export default {
       cables: [],
       websites: [],
       facilities: [],
-      organizations: [],
-      references: []
+      references: [],
+      organizations: []
     },
     columns: [...netColumns].filter(col => col.showTable)
   }),
@@ -101,19 +101,21 @@ export default {
       this.loading = true
       const res = await viewNetworkOwner({ user_id: this.$auth.user.sub, _id })
       if (res && res.data && res.data.r) {
-        this.form = res.data.r
+        this.form = { ...res.data.r }
         const props = ['cables', 'facilities', 'cls', 'organizations']
         for (let p of props) {
-          this.form[`${p}List`] = res.data.r[p].map(f => ({
+          const data = res.data.r[p].map(f => ({
             name: f.label,
             _id: f._id
           }))
-          this.form[p] = res.data.r[p].map(f => f._id)
+          this.form[p] = data
+          this.form[`${p}List`] = data
         }
         if (!this.form.references) this.form.references = []
       }
+
       this.mode = 'edit'
-      this.toggleDialog()
+      this.toggleDialog(false)
       this.loading = false
     },
     toggleDialog(itClearsForm) {

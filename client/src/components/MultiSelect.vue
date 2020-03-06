@@ -25,7 +25,9 @@
     @search-change="$emit('input', $event)"
     @open="() => (isDropdownOpen = true)"
     @close="handleClose"
+    @remove="handleRemovedItem"
   >
+    <!-- @select="handleSelectItem" -->
     <template slot="tag" slot-scope="{ option, remove }">
       <div
         class="counter relative"
@@ -34,10 +36,19 @@
         <div
           class="el-tag el-tag--info el-tag--small el-tag--light relative truncate"
         >
-          <span class="el-select__tags-text" :title="option.name">
+          <span
+            class="el-select__tags-text inline-block"
+            style="max-width: 4.2rem;"
+            :title="option.name"
+          >
             {{ option.name }}
           </span>
-          <i class="el-tag__close el-icon-close" @click="remove(option)" />
+          <i
+            class="el-tag__close el-icon-close"
+            style="top: 5px; right: 0; position: absolute;"
+            :title="`remove ${option.name}`"
+            @click="remove(option)"
+          />
         </div>
       </div>
     </template>
@@ -102,6 +113,9 @@ export default {
     handleClose() {
       this.isDropdownOpen = false
       return this.$emit('values-change', this.selections)
+    },
+    handleRemovedItem(removed) {
+      return this.$emit('remove', removed._id)
     }
   }
 }

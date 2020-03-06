@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 import $axios from '../axios'
 import apiConfig from '../../config/apiConfig'
 // eslint-disable-next-line
@@ -7,13 +8,14 @@ var form
 export const createNetwork = async ({
   cls,
   name,
-  ixps,
+  // ixps,
   cables,
   user_id,
   websites,
   facilities,
   organizations,
-  tags
+  tags,
+  references
 }) => {
   url = `${apiConfig.url}/auth/network/add`
 
@@ -27,32 +29,32 @@ export const createNetwork = async ({
   } else form.append('websites', [])
 
   if (organizations.length) {
-    organizations.forEach((a, i) => {
-      form.append(`organizations[${i}]`, a)
+    organizations.forEach((o, i) => {
+      form.append(`organizations[${i}]`, o._id)
     })
   } else form.append('organizations', [])
 
   if (facilities.length) {
-    facilities.forEach((a, i) => {
-      form.append(`facilities[${i}]`, a)
+    facilities.forEach((f, i) => {
+      form.append(`facilities[${i}]`, f._id)
     })
   } else form.append('facilities', [])
 
-  if (ixps.length) {
-    ixps.forEach((a, i) => {
-      form.append(`ixps[${i}]`, a)
-    })
-  } else form.append('ixps', [])
+  // if (ixps.length) {
+  //   ixps.forEach((a, i) => {
+  //     form.append(`ixps[${i}]`, a)
+  //   })
+  // } else form.append('ixps', [])
 
   if (cls.length) {
-    cls.forEach((a, i) => {
-      form.append(`cls[${i}]`, a)
+    cls.forEach((c, i) => {
+      form.append(`cls[${i}]`, c._id)
     })
   } else form.append('cls', [])
 
   if (cables.length) {
-    cables.forEach((a, i) => {
-      form.append(`cables[${i}]`, a)
+    cables.forEach((c, i) => {
+      form.append(`cables[${i}]`, c._id)
     })
   } else form.append('cables', [])
 
@@ -61,6 +63,27 @@ export const createNetwork = async ({
       form.append(`tags[${i}]`, t)
     })
   } else form.append('tags', [])
+
+  if (references && references.length) {
+    const relations = references[0].options
+      .map(opt => opt.relation)
+      .filter(opt => opt)
+    let obj = {}
+    let keys = []
+
+    for (let rel of relations) {
+      keys = Object.keys(rel)
+      keys.forEach((key, index) => {
+        if (!obj[keys[index]]) {
+          obj[keys[index]] = rel[key]
+        } else {
+          obj[`${keys[index]}+${index}`] = rel[key]
+        }
+      })
+    }
+
+    form.append('references', obj ? JSON.stringify(obj) : '')
+  }
 
   const res = await $axios.post(url, form, {
     withCredentials: true,
@@ -78,13 +101,14 @@ export const editNetwork = async ({
   name,
   _id,
   cls,
-  ixps,
+  // ixps,
   cables,
   user_id,
   websites,
   facilities,
   organizations,
-  tags
+  tags,
+  references
 }) => {
   url = `${apiConfig.url}/auth/network/edit`
   form = new FormData()
@@ -98,32 +122,32 @@ export const editNetwork = async ({
   } else form.append('websites', [])
 
   if (organizations.length) {
-    organizations.forEach((a, i) => {
-      form.append(`organizations[${i}]`, a)
+    organizations.forEach((o, i) => {
+      form.append(`organizations[${i}]`, o._id)
     })
   } else form.append('organizations', [])
 
   if (facilities.length) {
-    facilities.forEach((a, i) => {
-      form.append(`facilities[${i}]`, a)
+    facilities.forEach((f, i) => {
+      form.append(`facilities[${i}]`, f._id)
     })
   } else form.append('facilities', [])
 
-  if (ixps.length) {
-    ixps.forEach((a, i) => {
-      form.append(`ixps[${i}]`, a)
-    })
-  } else form.append('ixps', [])
+  // if (ixps.length) {
+  //   ixps.forEach((a, i) => {
+  //     form.append(`ixps[${i}]`, a)
+  //   })
+  // } else form.append('ixps', [])
 
   if (cls.length) {
-    cls.forEach((a, i) => {
-      form.append(`cls[${i}]`, a)
+    cls.forEach((c, i) => {
+      form.append(`cls[${i}]`, c._id)
     })
   } else form.append('cls', [])
 
   if (cables.length) {
-    cables.forEach((a, i) => {
-      form.append(`cables[${i}]`, a)
+    cables.forEach((c, i) => {
+      form.append(`cables[${i}]`, c._id)
     })
   } else form.append('cables', [])
 
@@ -132,6 +156,27 @@ export const editNetwork = async ({
       form.append(`tags[${i}]`, t)
     })
   } else form.append('tags', [])
+
+  if (references && references.length) {
+    const relations = references[0].options
+      .map(opt => opt.relation)
+      .filter(opt => opt)
+    let obj = {}
+    let keys = []
+
+    for (let rel of relations) {
+      keys = Object.keys(rel)
+      keys.forEach((key, index) => {
+        if (!obj[keys[index]]) {
+          obj[keys[index]] = rel[key]
+        } else {
+          obj[`${keys[index]}+${index}`] = rel[key]
+        }
+      })
+    }
+
+    form.append('references', obj ? JSON.stringify(obj) : '')
+  }
 
   const res = await $axios.put(url, form, {
     withCredentials: true,
