@@ -1,86 +1,70 @@
 <template>
-  <multiselect
-    v-model="selections"
-    label="name"
-    track-by="_id"
-    placeholder
-    open-direction="bottom"
-    :options="options"
-    :searchable="true"
-    :loading="loading"
-    :multiple="isMultiple"
-    :internal-search="false"
-    :close-on-select="isMultiple ? false : true"
-    :options-limit="3000"
-    :option-height="20"
-    :max-height="600"
-    class="v-multiselect el-select"
-    :class="{
-      'is-single': !isMultiple ? true : false,
-      'no-options': !options.length,
-      'has-one-option-selected': isMultiple && selections.length === 1,
-      'has-more-than-one-option': isMultiple && selections.length > 1
-    }"
-    style="top: -.2rem; height: 40px;"
-    @search-change="$emit('input', $event)"
-    @open="() => (isDropdownOpen = true)"
-    @close="handleClose"
-    @remove="handleRemovedItem"
-  >
-    <!-- @select="handleSelectItem" -->
-    <template slot="tag" slot-scope="{ option, remove }">
-      <div
-        class="counter relative"
-        :data-selected-length="selections.length - 1"
+  <div class="inline-block w-fit-full multi-select">
+    <div class="flex row wrap">
+      <el-tag
+        v-for="(tag, i) in selections"
+        :key="i"
+        closable
+        class="mr1 mb4"
+        :title="tag.name"
+        :disable-transitions="true"
+        @close="handleRemovedItem(tag)"
       >
-        <div
-          class="el-tag el-tag--info el-tag--small el-tag--light relative truncate"
+        {{ tag.name }}
+      </el-tag>
+      <el-select
+        v-if="isInputVisible"
+        v-model="selected"
+        ref="tagInput"
+        filterable
+        size="medium"
+        :class="{ dark }"
+        remote
+        :remote-method="handleInputChange"
+        placeholder
+        :loading="loading"
+        @focus="() => (isTagRepeated = false)"
+        @change="handleInputConfirm"
+        @visible-change="handleInputVisibility"
+      >
+        <el-option
+          v-for="(opt, i) in options"
+          :key="i"
+          :value="opt"
+          :label="opt.name"
         >
-          <span
-            class="el-select__tags-text inline-block"
-            style="max-width: 4.2rem;"
-            :title="option.name"
-          >
-            {{ option.name }}
-          </span>
-          <i
-            class="el-tag__close el-icon-close"
-            style="top: 5px; right: 0; position: absolute;"
-            :title="`remove ${option.name}`"
-            @click="remove(option)"
-          />
-        </div>
-      </div>
-    </template>
-    <template slot="caret" slot-scope="{ toggle }">
-      <span class="el-input__suffix">
-        <span class="el-input__suffix-inner" @click="toggle" @focus="toggle">
-          <i
-            class="el-select__caret el-input__icon el-icon-arrow-up caret"
-            :class="{
-              'is-reverse': isDropdownOpen
-            }"
-          />
-        </span>
-      </span>
-    </template>
-    <p class="el-select-dropdown__empty" slot="noResult">No data</p>
-    <p class="el-select-dropdown__empty" slot="noOptions">No data</p>
-  </multiselect>
+          <div>
+            <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
+            {{ opt.name }}
+          </div>
+        </el-option>
+      </el-select>
+      <el-button
+        v-else
+        round
+        plain
+        class="h8"
+        size="small"
+        @click.stop="toggleInput(true)"
+      >
+        Add
+      </el-button>
+    </div>
+    <el-alert
+      v-if="isTagRepeated"
+      title="This selection is already included on the list"
+      class="h12 pr2 pl2 pt2 pb2 mb4"
+      :closable="false"
+    />
+  </div>
 </template>
 
 <script>
-import Multiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.min.css'
-
 export default {
   name: 'VMultiselect',
-  components: {
-    Multiselect
-  },
   props: {
     value: {
-      type: [Array, String],
+      type: Array,
       default: () => []
     },
     options: {
@@ -101,26 +85,61 @@ export default {
     }
   },
   data: () => ({
-    isDropdownOpen: false,
-    selections: []
+    selected: null,
+    selections: [],
+    isTagRepeated: false,
+    isInputVisible: false
   }),
+  computed: {
+    dark() {
+      return this.$store.state.isDark
+    }
+  },
   mounted() {
     if (this.mode !== 'create') {
       this.selections = this.value
     }
   },
   methods: {
-    handleClose() {
-      this.isDropdownOpen = false
-      return this.$emit('values-change', this.selections)
+    handleInputChange(s) {
+      return this.$emit('input', s)
     },
-    handleRemovedItem(removed) {
-      return this.$emit('remove', removed._id)
+    handleRemovedItem(tag) {
+      this.selections.splice(
+        this.selections.map(opt => opt._id).indexOf(tag._id),
+        1
+      )
+      return this.$emit('remove', tag._id)
+    },
+    toggleInput(bool) {
+      this.isInputVisible = bool
+      if (bool) {
+        this.$nextTick(() => {
+          this.$refs.tagInput.$refs.reference.$refs.input.focus()
+        })
+      }
+    },
+    handleInputVisibility(visible) {
+      if (!visible) {
+        this.toggleInput(false)
+        this.selected = null
+      }
+    },
+    handleInputConfirm() {
+      const inputValue = this.selected
+      const selectedIDs = this.selections.map(opt => opt._id)
+
+      if (inputValue) {
+        const isTagRepeated = selectedIDs.includes(inputValue._id)
+        if (!isTagRepeated) {
+          this.isTagRepeated = false
+          this.selections.push(inputValue)
+        } else {
+          this.isTagRepeated = true
+        }
+      }
+      return this.$emit('values-change', this.selections)
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-@import '../assets/scss/components/multiselect-styles.scss';
-</style>
