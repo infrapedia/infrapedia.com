@@ -84,6 +84,7 @@ export default {
   mounted() {
     this.map = this.addMapEvents(this.createMap())
     this.toggleDarkMode(this.dark)
+    this.controls.resetScene(false)
     if (this.scene.features.list.length) {
       this.handleRecreateDraw()
     }
