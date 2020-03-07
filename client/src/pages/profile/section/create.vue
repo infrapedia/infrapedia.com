@@ -192,11 +192,10 @@ export default {
       return route
     }
   },
+  beforeCreate() {
+    if (!this.$route.query.id) return this.$router.push('/user')
+  },
   async mounted() {
-    if (!this.$route.query.id) {
-      return this.$router.push('/')
-    }
-
     this.creationType = this.$route.query.id
     this.checkCreationType(this.creationType)
 

@@ -190,8 +190,8 @@
                       slot="reference"
                       class="no-outline circle icon-wrapper"
                       tabindex="0"
-                      @click="handleUserButtonDynamics"
-                      @keyup.enter.space="handleUserButtonDynamics"
+                      @click.stop="handleUserButtonDynamics"
+                      @keyup.enter.space.stop="handleUserButtonDynamics"
                     >
                       <el-avatar
                         v-if="userImage"
@@ -358,8 +358,8 @@
                       slot="reference"
                       class="no-outline circle icon-wrapper"
                       tabindex="0"
-                      @click="handleUserButtonDynamics"
-                      @keyup.enter.space="handleUserButtonDynamics"
+                      @click.stop="handleUserButtonDynamics"
+                      @keyup.enter.space.stop="handleUserButtonDynamics"
                     >
                       <el-avatar
                         v-if="userImage"
@@ -481,15 +481,11 @@ export default {
       return this.$auth.logout()
     },
     handleUserButtonDynamics() {
-      const { isAuthenticated } = this.$auth
-
-      if (this.$auth && !window.localStorage.getItem('auth.token-session')) {
-        this.$router.push('/login')
+      if (!this.$auth.isAuthenticated) {
+        this.$auth.loginWithRedirect()
       } else if (this.$route.name.includes('user')) {
         this.toggleUserMenuVisibility()
-      } else if (isAuthenticated) {
-        this.$router.push('/user')
-      }
+      } else if (this.$auth.isAuthenticated) this.$router.push('/user')
     }
   }
 }

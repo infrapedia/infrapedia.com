@@ -143,7 +143,11 @@ export default {
   },
   mounted() {
     if (this.mode === 'create') {
-      setTimeout(() => this.$refs.form.clearValidate(), 50)
+      setTimeout(() => {
+        if (this.$refs.form) {
+          this.$refs.form.clearValidate()
+        }
+      }, 50)
     }
   },
   methods: {

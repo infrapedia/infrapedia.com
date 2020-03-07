@@ -105,7 +105,7 @@ export default {
   name: 'user',
   data: () => ({
     userData: {},
-    loading: false,
+    loading: true,
     logsData: [],
     formatDate
   }),
@@ -114,13 +114,11 @@ export default {
       return this.$store.state.isDark
     }
   },
-  async created() {
-    await this.setUserData()
-  },
   async mounted() {
     if (Object.keys(this.$route.query).length) this.$router.replace('/user')
     await this.loadLogs()
     this.createMap()
+    await this.setUserData()
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
@@ -137,13 +135,20 @@ export default {
     async setUserData() {
       if (!this.$auth || !this.$auth.user) return
       this.loading = true
-      const userData = await getUserData(this.$auth.user.sub)
-      if (userData) {
-        const { user_metadata } = userData
-        this.userData = {
-          name: user_metadata.name ? user_metadata.name : userData.name,
-          company: user_metadata.companyname ? user_metadata.companyname : ''
+      const userID = this.$auth.user.sub
+      if (userID) {
+        const userData = await getUserData(userID)
+        if (userData) {
+          const { user_metadata } = userData
+          this.userData = {
+            name: user_metadata.name ? user_metadata.name : userData.name,
+            company: user_metadata.companyname ? user_metadata.companyname : ''
+          }
         }
+      } else {
+        setTimeout(() => {
+          this.setUserData()
+        }, 320)
       }
       this.loading = false
     },

@@ -51,13 +51,6 @@ export default {
       return this.$store.state.isDark
     }
   },
-  mounted() {
-    setTimeout(() => {
-      if (this.$auth && window.localStorage.getItem('auth.token-session'))
-        return
-      else this.$router.push('/login')
-    }, 1200)
-  },
   methods: {
     checkURL(link) {
       let obj = {}
@@ -84,10 +77,6 @@ export default {
         }
       }
       return obj
-    },
-    async setToken() {
-      const token = await this.$auth.getIdTokenClaims()
-      window.localStorage.setItem('auth.token-session', token.__raw)
     },
     toggleTheme() {
       return this.$store.commit(`${TOGGLE_DARK}`, !this.dark)

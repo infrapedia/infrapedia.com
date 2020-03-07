@@ -22,9 +22,8 @@ export const getAccessToken = async () => {
 }
 
 export const getUserData = async id => {
-  if (!id) {
-    throw { message: 'There is no ID parameter being passed' }
-  }
+  if (!id) return
+
   const token = await getAccessToken()
   if (token && token.access_token) {
     const res = await $axios.get(`${url}users/${id}`, {
