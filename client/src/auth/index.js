@@ -1,25 +1,13 @@
 import Vue from 'vue'
 import createAuth0Client from '@auth0/auth0-spa-js'
 
-/** Define a default action to perform after authentication */
-const DEFAULT_REDIRECT_CALLBACK = () =>
-  window.history.replaceState({}, document.title, window.location.pathname)
-
-let instance
-
-/** Returns the current instance of the SDK */
-export const getInstance = () => instance
-
-/** Creates an instance of the Auth0 SDK. If one has already been created, it returns that instance */
 export const useAuth0 = ({
-  onRedirectCallback = DEFAULT_REDIRECT_CALLBACK,
+  onRedirectCallback = () =>
+    window.history.replaceState({}, document.title, window.location.pathname),
   redirectUri = window.location.origin,
   ...options
 }) => {
-  if (instance) return instance
-
-  // The 'instance' is simply a Vue object
-  instance = new Vue({
+  const instance = new Vue({
     data: () => ({
       loading: true,
       isAuthenticated: false,
@@ -80,7 +68,6 @@ export const useAuth0 = ({
         return this.auth0Client.logout(o)
       }
     },
-    /** Use this lifecycle method to instantiate the SDK client */
     async created() {
       // Create a new instance of the SDK client using members of the given options object
       this.auth0Client = await createAuth0Client({
@@ -117,7 +104,6 @@ export const useAuth0 = ({
   return instance
 }
 
-// Create a simple Vue plugin to expose the wrapper object throughout the application
 export const Auth0Plugin = {
   install(Vue, options) {
     Vue.prototype.$auth = useAuth0(options)

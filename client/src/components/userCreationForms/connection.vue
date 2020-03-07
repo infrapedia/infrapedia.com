@@ -185,6 +185,7 @@
                         v-model="scope.row.reference[i]"
                         class="w-fit-full"
                         placeholder
+                        :class="{ dark }"
                         :id="scope.row._id + '-' + item._id"
                         @change="
                           handleReferenceSelectionChange(

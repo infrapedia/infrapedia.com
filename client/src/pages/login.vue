@@ -20,16 +20,20 @@ export default {
   data: () => ({
     isUserBlock: false
   }),
-  async mounted() {
+  mounted() {
     try {
-      await setTimeout(() => {
-        return this.$auth && this.$auth.isAuthenticated
-          ? this.$router.push('/')
-          : this.$auth.loginWithRedirect()
-      }, 1000)
+      console.log(this.$auth)
+      if (this.$auth.loading) {
+        setTimeout(() => {
+          return this.$auth && this.$auth.isAuthenticated
+            ? this.$router.push('/')
+            : this.$auth.loginWithRedirect()
+        }, 1280)
+      } else {
+        this.$auth.loginWithRedirect()
+      }
     } catch (err) {
       console.error(err)
-      // console.warn(this.$auth)
     }
   },
   created() {

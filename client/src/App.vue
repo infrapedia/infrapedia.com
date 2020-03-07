@@ -67,11 +67,6 @@ export default {
     isProfileRoute() {
       return this.$route.name.includes('user')
     }
-  },
-  created() {
-    if (window.localStorage.getItem('vuex')) {
-      window.localStorage.removeItem('vuex')
-    }
   }
 }
 </script>

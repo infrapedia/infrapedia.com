@@ -267,6 +267,7 @@ export default {
     handleBeforeClose() {
       this.fileList = []
       this.tagOnEdit = null
+      this.inputVisible = false
       this.isTagReferenceMissing = false
       return this.$emit('close')
     },
