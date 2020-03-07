@@ -59,10 +59,6 @@ export default {
       this.$store.dispatch('editor/setList', [])
     }
     await this.loadDataIfQueryParamsExist()
-    setTimeout(() => {
-      if (this.$auth && this.$auth.isAuthenticated) return
-      else this.$router.push('/login')
-    }, 1200)
   },
   methods: {
     /**

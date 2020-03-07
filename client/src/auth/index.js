@@ -16,6 +16,39 @@ export const useAuth0 = ({
       popupOpen: false,
       error: null
     }),
+    async created() {
+      // Create a new instance of the SDK client using members of the given options object
+      this.auth0Client = await createAuth0Client({
+        domain: options.domain,
+        client_id: options.clientId,
+        audience: options.audience,
+        redirect_uri: redirectUri
+      })
+
+      try {
+        // If the user is returning to the app after authentication..
+        if (
+          window.location.search.includes('code=') &&
+          window.location.search.includes('state=')
+        ) {
+          // handle the redirect and retrieve tokens
+          const { appState } = await this.auth0Client.handleRedirectCallback()
+
+          // Notify subscribers that the redirect callback has happened, passing the appState
+          // (useful for retrieving any pre-authentication state)
+          onRedirectCallback(appState)
+        }
+      } catch (e) {
+        this.error = e
+      } finally {
+        // Initialize our internal authentication state
+        this.isAuthenticated = await this.auth0Client.isAuthenticated()
+        this.user = await this.auth0Client.getUser()
+        this.loading = false
+
+        if (!this.isAuthenticated) this.loginWithRedirect()
+      }
+    },
     methods: {
       /** Authenticates the user using a popup window */
       async loginWithPopup(o) {
@@ -66,37 +99,6 @@ export const useAuth0 = ({
       /** Logs the user out and removes their session on the authorization server */
       logout(o) {
         return this.auth0Client.logout(o)
-      }
-    },
-    async created() {
-      // Create a new instance of the SDK client using members of the given options object
-      this.auth0Client = await createAuth0Client({
-        domain: options.domain,
-        client_id: options.clientId,
-        audience: options.audience,
-        redirect_uri: redirectUri
-      })
-
-      try {
-        // If the user is returning to the app after authentication..
-        if (
-          window.location.search.includes('code=') &&
-          window.location.search.includes('state=')
-        ) {
-          // handle the redirect and retrieve tokens
-          const { appState } = await this.auth0Client.handleRedirectCallback()
-
-          // Notify subscribers that the redirect callback has happened, passing the appState
-          // (useful for retrieving any pre-authentication state)
-          onRedirectCallback(appState)
-        }
-      } catch (e) {
-        this.error = e
-      } finally {
-        // Initialize our internal authentication state
-        this.isAuthenticated = await this.auth0Client.isAuthenticated()
-        this.user = await this.auth0Client.getUser()
-        this.loading = false
       }
     }
   })
