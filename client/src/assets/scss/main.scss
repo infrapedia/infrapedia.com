@@ -248,6 +248,10 @@ input.issues-dialog {
   }
 }
 
+#html-wrapper .pac-container {
+  z-index: 2000000000000 !important;
+}
+
 /*
 *  THEME VARIANT'S
 */

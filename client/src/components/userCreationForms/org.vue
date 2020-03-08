@@ -84,67 +84,12 @@
             </el-collapse-transition>
             <div>
               <label class="el-input__label" for="country">
-                Country
+                Address
               </label>
-              <el-select
-                name="country"
-                v-model="tag.country"
-                class="w-fit-full"
-                :class="{ dark }"
-                placeholder
-                filterable
-              >
-                <el-option
-                  v-for="(opt, i) in countriesList"
-                  :key="i"
-                  :label="opt.name"
-                  :value="opt.name"
-                />
-              </el-select>
-            </div>
-            <div>
-              <label class="el-input__label" for="street">
-                Street
-              </label>
-              <el-input
-                name="street"
-                :class="{ dark }"
-                v-model="tag.street"
-                size="mini"
-                placeholder="Street and number, P.O. box, c/o."
-              />
-              <el-input
-                :class="{ dark }"
-                size="mini"
-                v-model="tag.apt"
-                placeholder="Apartment, suite, unit, building, floor, etc"
-              />
-            </div>
-            <div>
-              <label class="el-input__label" for="city">
-                City
-              </label>
-              <el-input
-                name="street"
-                :class="{ dark }"
-                v-model="tag.city"
-                size="mini"
-                placeholder
-              />
-            </div>
-            <div>
-              <label for="state">State / Province / Region</label>
-              <el-input :class="{ dark }" size="mini" v-model="tag.state" />
-            </div>
-            <div>
-              <label for="state">
-                Zip Code
-              </label>
-              <el-input
-                :class="{ dark }"
-                size="mini"
-                v-model="tag.zipcode"
-                placeholder
+              <autocomplete-google
+                :mode="tagMode"
+                @place-changed="handleAddressChange"
+                :value="autocompleteAddress"
               />
             </div>
             <div
@@ -204,13 +149,18 @@
 <script>
 import apiConfig from '../../config/apiConfig'
 import countriesList from '../../config/countriesList'
+import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 
 export default {
   name: 'OrgForm',
+  components: {
+    AutocompleteGoogle
+  },
   data: () => ({
     fileList: [],
     countriesList,
     tag: {
+      fullAddress: '',
       reference: '',
       country: '',
       street: '',
@@ -250,6 +200,12 @@ export default {
     },
     uploadURL() {
       return `${apiConfig.url}/auth/upload/logo`
+    },
+    autocompleteAddress() {
+      return this.tag ? this.tag.fullAddress : ''
+    },
+    tagMode() {
+      return this.tagOnEdit !== null && this.tag ? 'edit' : 'create'
     }
   },
   methods: {
@@ -279,6 +235,7 @@ export default {
       this.inputVisible = false
       this.tagOnEdit = null
       this.tag = {
+        fullAddress: '',
         reference: '',
         country: '',
         street: '',
@@ -292,6 +249,42 @@ export default {
       this.tag = { ...tag }
       this.tagOnEdit = i
       this.inputVisible = true
+    },
+    handleAddressChange(data) {
+      const tagData = {
+        street_number: 'short_name',
+        route: 'long_name',
+        locality: 'long_name',
+        country: 'long_name',
+        postal_code: 'short_name'
+      }
+
+      let addressType
+      this.tag.fullAddress = data.fullAddress
+
+      for (let i = 0; i < data.address_components.length; i++) {
+        addressType = data.address_components[i].types[0]
+        if (tagData[addressType]) {
+          const val = data.address_components[i][tagData[addressType]]
+          switch (addressType) {
+            case 'country':
+              this.tag.country = val
+              break
+            case 'postal_code':
+              this.tag.zipcode = val
+              break
+            case 'locality':
+              this.tag.city = val
+              break
+            case 'route':
+              this.tag.street = val
+              break
+            case 'administrative_area_level_1':
+              this.tag.state = val
+              break
+          }
+        }
+      }
     },
     handleSaveAddress() {
       const { tagOnEdit } = this
@@ -322,7 +315,16 @@ export default {
 
       if (tag) this.form.address.push(tag)
       this.inputVisible = false
-      this.tag = ''
+      this.tag = {
+        fullAddress: '',
+        reference: '',
+        country: '',
+        street: '',
+        apt: '',
+        city: '',
+        state: '',
+        zipcode: ''
+      }
     }
   }
 }
