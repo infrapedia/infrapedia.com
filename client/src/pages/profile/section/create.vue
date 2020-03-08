@@ -376,6 +376,11 @@ export default {
     },
     async createCLS() {
       this.isSendingData = true
+
+      this.featuresList[0].properties.name === ''
+        ? (this.form.geom[0].properties.name = this.form.name)
+        : (this.form.geom[0].properties.name = this.featuresList[0].properties.name)
+
       const res = await createCls({
         ...this.form,
         user_id: this.$auth.user.sub
@@ -386,6 +391,11 @@ export default {
     },
     async editCLS() {
       this.isSendingData = true
+
+      this.featuresList[0].properties.name === ''
+        ? (this.form.geom[0].properties.name = this.form.name)
+        : (this.form.geom[0].properties.name = this.featuresList[0].properties.name)
+
       const res = await editCls({
         ...this.form,
         user_id: this.$auth.user.sub,

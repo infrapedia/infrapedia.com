@@ -184,10 +184,14 @@ export default {
       this.dialog.visible = false
       const feature = { ...this.dialog.selectedFeature }
 
+      console.log(data, feature.properties)
+
       feature.properties = {
         ...feature.properties,
         ...data
       }
+
+      console.log(feature.properties)
 
       this.dialog.mode === 'create'
         ? this.handleCreateFeature(feature)
@@ -229,8 +233,10 @@ export default {
           this.dialog.selectedFeature = feat
         },
         handleBeforeFeatureCreation: feat => {
-          this.dialog.visible = true
           this.dialog.selectedFeature = feat
+          feat.geometry.type !== 'Point'
+            ? (this.dialog.visible = true)
+            : this.handleDialogData({ name: '' })
         }
       })
 

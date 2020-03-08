@@ -27,8 +27,8 @@ export const createCls = async ({
   } else form.append('geom', '')
 
   if (cables.length) {
-    cables.forEach((a, i) => {
-      form.append(`cables[${i}]`, a)
+    cables.forEach((c, i) => {
+      form.append(`cables[${i}]`, c._id)
     })
   } else form.append('cables', [])
 
@@ -79,8 +79,8 @@ export const editCls = async ({
   } else form.append('geom', '')
 
   if (cables.length) {
-    cables.forEach((a, i) => {
-      form.append(`cables[${i}]`, a)
+    cables.forEach((c, i) => {
+      form.append(`cables[${i}]`, c._id)
     })
   } else form.append('cables', [])
 

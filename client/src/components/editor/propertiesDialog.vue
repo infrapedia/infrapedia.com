@@ -4,7 +4,7 @@
     width="20%"
     top="20vh"
     append-to-body
-    :show-close="false"
+    :show-close="feature.geometry && feature.geometry.type === 'Point'"
     :close-on-press-escape="false"
     :close-on-click-modal="false"
     :before-close="handleClose"
