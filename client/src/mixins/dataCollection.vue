@@ -66,6 +66,9 @@ export default {
         case 'networks':
           await this.handleNetworkItemSelected({ id, type: option })
           break
+        case 'groups':
+          await this.handleNetworkItemSelected({ id, type: 'networks' })
+          break
         case 'cable':
           await this.handleSubmarineCableItemSelected(id)
           break
