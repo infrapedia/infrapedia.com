@@ -250,6 +250,14 @@ input.issues-dialog {
 
 #html-wrapper .pac-container {
   z-index: 2000000000000 !important;
+  .pac-item {
+    .pac-item-query {
+      color: $dark-charcoal;
+    }
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
 
 /*
@@ -429,6 +437,7 @@ input.issues-dialog {
 }
 
 #html-wrapper.dark {
+  .pac-container,
   .el-pagination button,
   div[role='tooltip'],
   .el-input-group__prepend,
@@ -449,6 +458,17 @@ input.issues-dialog {
       &.hover {
         background-color: $light-charcoal;
       }
+    }
+  }
+  .pac-container {
+    .pac-item {
+      border-top-color: $light-charcoal;
+      &:hover {
+        background-color: $light-charcoal;
+      }
+    }
+    .pac-item-query {
+      color: whitesmoke;
     }
   }
 }

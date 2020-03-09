@@ -1,5 +1,5 @@
 <template>
-  <div class="el-input el-input--mini">
+  <div class="el-input el-input--mini" :class="{ dark }">
     <input
       type="text"
       id="autocompleteGoogle"
@@ -24,6 +24,11 @@ export default {
     mode: {
       type: String,
       default: () => 'create'
+    }
+  },
+  computed: {
+    dark() {
+      return this.$store.state.isDark
     }
   },
   mounted() {
