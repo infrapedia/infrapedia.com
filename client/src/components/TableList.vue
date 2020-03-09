@@ -7,7 +7,13 @@
         </router-link>
         {{ config.title }}
       </h1>
-      <el-button type="warning" round @click="handleRoute" v-if="canCreate">
+      <el-button
+        type="warning"
+        class="capitalize"
+        round
+        @click="handleRoute"
+        v-if="canCreate"
+      >
         {{ config.btn_label }}
       </el-button>
     </header>
