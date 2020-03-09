@@ -8,7 +8,8 @@
             col.value.toLowerCase().includes('networks') ||
             col.value.toLowerCase().includes('cables') ||
             col.value.toLowerCase().includes('cls') ||
-            col.value.toLowerCase().includes('address')
+            col.value.toLowerCase().includes('address') ||
+            col.value.toLowerCase().includes('facilities')
         "
       >
         <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
