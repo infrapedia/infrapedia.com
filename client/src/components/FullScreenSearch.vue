@@ -144,7 +144,7 @@ export default {
       this.searchResults.places = places.features
     }, 820),
     handlePlaceSelection(selection) {
-      console.log(selection)
+      // console.log(selection)
       // If the selection has geometry it mind it's a city
       if (selection.geometry) {
         let bounds = []

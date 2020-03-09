@@ -76,7 +76,7 @@
               :class="{ dark }"
               class="w42 h8 text-center"
               size="small"
-              @click="showInput"
+              @click.stop="showInput"
             >
               Add
             </el-button>
@@ -150,13 +150,14 @@
           />
         </el-select>
       </el-form-item>
-      <el-table :data="tableData" v-if="tableDataHasLength">
-        <el-table-column prop="name" label="Name" width="200" />
-        <el-table-column
-          label="Reference"
-          v-if="form.references.length"
-          width="800"
-        >
+      <el-table
+        :data="tableData"
+        class="w-fit-full"
+        v-if="tableDataHasLength"
+        max-height="580"
+      >
+        <el-table-column fixed prop="name" label="Element" width="200" />
+        <el-table-column label="Organization" v-if="form.references.length">
           <template slot-scope="scope">
             <div class="flex row nowrap w-fit-full">
               <div
@@ -261,14 +262,18 @@ export default {
       return this.$store.state.isDark
     },
     tableData() {
-      return this.form.references && this.form.references.length
+      return this.form.references &&
+        Array.isArray(this.form.references) &&
+        this.form.references.length
         ? this.form.references[0].options
         : []
     },
     tableDataHasLength() {
       return (
         this.tableData.length &&
+        Array.isArray(this.form.references) &&
         this.form.references.length &&
+        this.form.references[0].orgs &&
         this.form.references[0].orgs.length
       )
     }
@@ -307,46 +312,60 @@ export default {
   },
   methods: {
     handleEditModeScenario() {
-      const references = JSON.parse(JSON.stringify(this.form.references))
-      const keys = Object.keys(references)
-      let facID = null
+      const references = JSON.parse(this.form.references).flatMap(x => x)
+      let refData = undefined
       const props = ['cables', 'facilities', 'cls', 'organizations']
       for (let prop of props) {
         this.createTableFromSelection(Array.from(this.form[prop]), prop)
       }
 
-      for (let orgID of keys) {
+      for (let ref of references) {
+        refData = ref.split(';')
         for (let opt of this.form.references[0].options) {
-          facID = Object.keys(references[orgID])
-          if (facID[0] === opt._id) {
-            opt.reference.push(references[orgID][facID[0]])
-            this.handleReferenceSelectionChange(
-              references[orgID][facID[0]],
-              opt,
-              { _id: orgID }
-            )
+          if (opt._id === refData[1]) {
+            opt.reference.push(refData[2])
+            this.handleReferenceSelectionChange(refData[2], opt, {
+              _id: refData[0]
+            })
           }
         }
       }
     },
     handleReferenceSelectionChange(selection, row, org) {
-      let obj = {}
+      const rel = `${org._id};${row._id};${selection}`
 
       if (row.relation !== null) {
-        obj = { ...row.relation }
-      }
-      obj[org._id] = {}
-      obj[org._id][row._id] = selection
-      row.relation = obj
+        const oldData = Array.from(row.relation)
+        row.relation = oldData.map(item => {
+          const data = item.split(';')
+
+          if (data[1] === row._id) {
+            if (data[0] === org._id) {
+              item = rel
+            }
+            return item
+          }
+        })
+
+        if (!row.relation.includes(rel)) row.relation.push(rel)
+      } else row.relation = [rel]
     },
     createTableFromSelection(ids, type) {
       if (!ids.length) return
 
       const data = {
-        orgs: this.form.references.length ? this.form.references[0].orgs : [],
-        options: this.form.references.length
-          ? this.form.references[0].options
-          : []
+        orgs:
+          Array.isArray(this.form.references) &&
+          this.form.references.length &&
+          this.form.references[0].orgs
+            ? this.form.references[0].orgs
+            : [],
+        options:
+          Array.isArray(this.form.references) &&
+          this.form.references.length &&
+          this.form.references[0].options
+            ? this.form.references[0].options
+            : []
       }
       const orgsID = data.orgs.map(o => o._id)
       const optionsID = data.options.map(o => o._id)
@@ -394,7 +413,7 @@ export default {
             }
           }
         } else {
-          // console.log('here 1.3')
+          console.log('here 1.3')
           type === 'organizations'
             ? data.orgs.push(selection)
             : data.options.push({ ...selection, reference: [], relation: null })

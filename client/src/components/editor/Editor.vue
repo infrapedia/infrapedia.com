@@ -184,14 +184,10 @@ export default {
       this.dialog.visible = false
       const feature = { ...this.dialog.selectedFeature }
 
-      console.log(data, feature.properties)
-
       feature.properties = {
         ...feature.properties,
         ...data
       }
-
-      console.log(feature.properties)
 
       this.dialog.mode === 'create'
         ? this.handleCreateFeature(feature)

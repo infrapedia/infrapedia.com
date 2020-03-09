@@ -65,24 +65,8 @@ export const createNetwork = async ({
   } else form.append('tags', [])
 
   if (references && references.length) {
-    const relations = references[0].options
-      .map(opt => opt.relation)
-      .filter(opt => opt)
-    let obj = {}
-    let keys = []
-
-    for (let rel of relations) {
-      keys = Object.keys(rel)
-      keys.forEach((key, index) => {
-        if (!obj[keys[index]]) {
-          obj[keys[index]] = rel[key]
-        } else {
-          obj[`${keys[index]}+${index}`] = rel[key]
-        }
-      })
-    }
-
-    form.append('references', obj ? JSON.stringify(obj) : '')
+    const rels = references[0].options.map(opt => opt.relation)
+    form.append('references', rels ? JSON.stringify(rels) : '')
   }
 
   const res = await $axios.post(url, form, {
@@ -158,24 +142,8 @@ export const editNetwork = async ({
   } else form.append('tags', [])
 
   if (references && references.length) {
-    const relations = references[0].options
-      .map(opt => opt.relation)
-      .filter(opt => opt)
-    let obj = {}
-    let keys = []
-
-    for (let rel of relations) {
-      keys = Object.keys(rel)
-      keys.forEach((key, index) => {
-        if (!obj[keys[index]]) {
-          obj[keys[index]] = rel[key]
-        } else {
-          obj[`${keys[index]}+${index}`] = rel[key]
-        }
-      })
-    }
-
-    form.append('references', obj ? JSON.stringify(obj) : '')
+    const rels = references[0].options.map(opt => opt.relation)
+    form.append('references', rels ? JSON.stringify(rels) : '')
   }
 
   const res = await $axios.put(url, form, {
