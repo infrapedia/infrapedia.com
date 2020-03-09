@@ -4,11 +4,11 @@
       <!---- COLLAPSE SECTION STARTS---->
       <template
         v-if="
-          col.label.toLowerCase().includes('org') ||
-            col.label.toLowerCase().includes('networks') ||
-            col.label.toLowerCase().includes('cables') ||
-            col.label.toLowerCase().includes('cls') ||
-            col.label.toLowerCase().includes('address')
+          col.value.toLowerCase().includes('org') ||
+            col.value.toLowerCase().includes('networks') ||
+            col.value.toLowerCase().includes('cables') ||
+            col.value.toLowerCase().includes('cls') ||
+            col.value.toLowerCase().includes('address')
         "
       >
         <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">

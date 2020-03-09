@@ -167,7 +167,7 @@ export default {
       if (!this.focus) return
 
       this.currentSelectionColumns = getSelectionCols(this.focus.type)
-      if (this.currentSelection.terrestrial) {
+      if (this.currentSelection && this.currentSelection.terrestrial) {
         this.currentSelectionColumns = this.currentSelectionColumns.filter(
           col => col.value !== 'activationDateTime'
         )

@@ -405,7 +405,7 @@ export default {
 
       // If in the region selected there is a point or a building
       // Call the api to retrieve that facility data and open the sidebar
-      console.log(facilities, ixps, cablesTerrestrial, cablesSubsea)
+      // console.log(facilities, ixps, cablesTerrestrial, cablesSubsea)
 
       if (facilities.length) {
         await this.handleFacilitySelection({
