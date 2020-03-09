@@ -112,7 +112,7 @@ export default {
   data: () => ({
     search: '',
     categories: {
-      list: [...searchCategories],
+      list: searchCategories,
       selected: 'All'
     },
     isFocused: false,
@@ -194,7 +194,11 @@ export default {
         // Otherwise if must be an org/facility/datacenter, etc...
         this.$emit(SEARCH_SELECTION, {
           id: selection.id ? selection.id : selection._id,
-          option: selection.type ? selection.type : selection.t
+          option: selection.type
+            ? selection.type
+            : selection.t && selection.t === 'groups'
+            ? 'networks'
+            : selection.t
         })
       }
 

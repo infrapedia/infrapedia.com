@@ -123,6 +123,9 @@ export const dataActions = {
       case 'networks':
         service = getSearchByNet
         break
+      case 'groups':
+        service = getSearchByNet
+        break
       case 'cables':
         service = getSearchByCables
         break

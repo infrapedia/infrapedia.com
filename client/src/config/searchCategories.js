@@ -4,7 +4,7 @@ const searchCategories = [
   'CLS',
   'Facilities',
   'Ixps',
-  'Networks',
+  'Connections',
   'Orgs'
 ]
 export default searchCategories
