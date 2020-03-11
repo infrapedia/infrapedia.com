@@ -12,6 +12,7 @@ import { domain, clientId } from './auth/config.json'
 import { Auth0Plugin } from './auth'
 // import * as bugsnag from './plugins/bugsnag'
 import Vue2TouchEvents from 'vue2-touch-events'
+import * as vueTour from './plugins/vue-tour'
 
 Vue.config.productionTip = false
 Vue.config.errorHandler = (err, vm, info) => appErrorHandler(err, vm, info)
@@ -44,6 +45,7 @@ new Vue({
   icons,
   // bugsnag,
   element,
+  vueTour,
   vueTelInput,
   cockieconsent,
   render: h => h(App)

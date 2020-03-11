@@ -9,6 +9,13 @@
             <router-link
               exact
               :to="link.url"
+              style="width: 90%"
+              :id="
+                `${link.label
+                  .trim()
+                  .toLowerCase()
+                  .replace(' ', '-')}-link`
+              "
               :class="checkURL(link)"
               class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
             >
@@ -30,12 +37,21 @@
       id="footer-profile"
       class="mb1 ml80 hidden-md-and-down"
     />
+    <v-tour
+      name="profile-tour"
+      :steps="profileTourSteps"
+      :callbacks="tourCallbacks"
+      :options="{ highlight: true }"
+    />
   </el-container>
 </template>
 
 <script>
 import { TOGGLE_DARK } from '../store/actionTypes'
 import profileLinks from '../config/profileLinks'
+import profileTourSteps from '../config/profileTourSteps'
+
+const TOUR_DONE_KEY = '__is-profile-tour-done'
 
 export default {
   components: {
@@ -43,15 +59,33 @@ export default {
     IFooter: () => import('../components/Footer'),
     IMessageDialog: () => import('../components/dialogs/MessageDialog')
   },
-  data: () => ({
-    profileLinks
-  }),
+  data() {
+    return {
+      profileLinks,
+      profileTourSteps,
+      tourCallbacks: {
+        onStop: this.handleOnTourStop
+      }
+    }
+  },
   computed: {
     dark() {
       return this.$store.state.isDark
     }
   },
+  mounted() {
+    const isTourDoneAlready = window.localStorage.getItem(TOUR_DONE_KEY)
+    if (
+      !isTourDoneAlready ||
+      (isTourDoneAlready && isTourDoneAlready !== 'true')
+    ) {
+      this.$tours['profile-tour'].start()
+    }
+  },
   methods: {
+    handleOnTourStop() {
+      // return window.localStorage.setItem(TOUR_DONE_KEY, true)
+    },
     checkURL(link) {
       let obj = {}
 
