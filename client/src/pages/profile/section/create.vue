@@ -345,6 +345,7 @@ export default {
           }))
           this.form.facsList = facsData
           this.form.facilities = facsData
+          if (!this.form.litCapacity) this.form.litCapacity = []
           this.form.activationDateTime = new Date(this.form.activationDateTime)
           break
       }
