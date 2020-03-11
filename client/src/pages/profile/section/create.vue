@@ -324,6 +324,10 @@ export default {
           break
       }
 
+      if (this.creationType === 'subsea' && !currentElement.litCapacity) {
+        currentElement.litCapacity = []
+      }
+
       this.form = { ...currentElement }
       await this.handleEditModeSettings(currentElement)
       this.loading = false
@@ -345,7 +349,6 @@ export default {
           }))
           this.form.facsList = facsData
           this.form.facilities = facsData
-          if (!this.form.litCapacity) this.form.litCapacity = []
           this.form.activationDateTime = new Date(this.form.activationDateTime)
           break
       }
