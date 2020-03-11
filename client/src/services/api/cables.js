@@ -20,7 +20,8 @@ export const createCable = async ({
   user_id,
   geom,
   litCapacity,
-  tags
+  tags,
+  cc
 }) => {
   url = `${apiConfig.url}/auth/cables/add`
   form = new URLSearchParams()
@@ -35,6 +36,7 @@ export const createCable = async ({
     form.append('terrestrial', terrestrial) // Bool
     form.append('fiberPairs', fiberPairs)
     form.append('notes', notes)
+    form.append('cc', cc)
 
     if (tags && tags.length) {
       tags.forEach((t, i) => {
@@ -102,6 +104,7 @@ export const editCable = async ({
   user_id,
   geom,
   tags,
+  cc,
   litCapacity
 }) => {
   url = `${apiConfig.url}/auth/cables/edit`
@@ -118,6 +121,7 @@ export const editCable = async ({
     form.append('terrestrial', terrestrial) // Bool
     form.append('fiberPairs', fiberPairs)
     form.append('notes', notes)
+    form.append('cc', cc)
 
     if (tags && tags.length) {
       tags.forEach((t, i) => {

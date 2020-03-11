@@ -188,6 +188,9 @@
           :value="mode === 'create' ? [] : form.owners"
         />
       </el-form-item>
+      <el-form-item label="CC Email" prop="cc">
+        <el-input v-model="form.cc" />
+      </el-form-item>
       <el-form-item label="Tags" class="mt2" prop="tags">
         <el-select
           v-model="form.tags"
@@ -286,6 +289,13 @@ export default {
           trigger: 'change'
         },
         { min: 3, message: 'Length should be at least 3', trigger: 'change' }
+      ],
+      cc: [
+        {
+          type: 'email',
+          message: 'Please input correct email address',
+          trigger: ['blur', 'change']
+        }
       ],
       urls: [],
       tags: [],

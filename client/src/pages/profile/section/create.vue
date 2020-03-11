@@ -295,6 +295,7 @@ export default {
             tags: [],
             name: '',
             notes: '',
+            cc: '',
             facilities: [],
             fiberPairs: '',
             systemLength: 0,
