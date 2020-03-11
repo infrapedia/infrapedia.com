@@ -50,6 +50,11 @@ export const cablesColumns = [
     value: 'fiberPairs',
     showSidebar: true
   },
+  {
+    label: 'Lit Capacity',
+    value: 'litCapacity',
+    showSidebar: true
+  },
   { label: 'Notes', value: 'notes' },
   { label: 'Cls', value: 'cls', showSidebar: true },
   {

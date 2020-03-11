@@ -28,6 +28,27 @@
           </el-col>
         </el-row>
       </template>
+      <template v-else-if="col.value.toLowerCase().includes('litcapacity')">
+        <el-row
+          :gutter="20"
+          v-if="info[col.value] && col.showSidebar && !info.terrestrial"
+        >
+          <el-col :span="24">
+            <el-collapse v-model="collapse">
+              <el-collapse-item :title="col.label" :name="i">
+                <el-table :data="info[col.value]">
+                  <el-table-column
+                    label="Year"
+                    prop="year"
+                    :formatter="getYear"
+                  />
+                  <el-table-column label="Capacity in Tbps" prop="cap" />
+                </el-table>
+              </el-collapse-item>
+            </el-collapse>
+          </el-col>
+        </el-row>
+      </template>
       <!---- COLLAPSE SECTION END --->
       <!---- LABELS SECTION STARTS---->
       <template v-else>
@@ -265,7 +286,8 @@ export default {
       else if (url3) urls.push(url3)
 
       return urls
-    }
+    },
+    getYear: () => row => new Date(row.year).getFullYear()
   },
   methods: {
     isArrCol(item) {
