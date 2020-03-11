@@ -153,33 +153,37 @@ export default {
       this.loading = false
     },
     createMap() {
-      mapboxgl.accessToken = mapConfig.mapToken
+      try {
+        mapboxgl.accessToken = mapConfig.mapToken
 
-      const map = new mapboxgl.Map({
-        container: 'map',
-        zoom: mapConfig.zoom,
-        center: mapConfig.center,
-        style: mapConfig.default
-      })
+        const map = new mapboxgl.Map({
+          container: 'map',
+          zoom: mapConfig.zoom,
+          center: mapConfig.center,
+          style: mapConfig.default
+        })
 
-      const draw = new MapboxDraw({
-        displayControlsDefault: false,
-        controls: false
-      })
-      const scaleCtrl = new mapboxgl.ScaleControl({
-        maxWidth: 80,
-        unit: 'metric'
-      })
+        const draw = new MapboxDraw({
+          displayControlsDefault: false,
+          controls: false
+        })
+        const scaleCtrl = new mapboxgl.ScaleControl({
+          maxWidth: 80,
+          unit: 'metric'
+        })
 
-      this.draw = draw
-      let vm = this
-      map.addControl(scaleCtrl, 'bottom-left')
-      map.addControl(draw, 'bottom-left')
-      // eslint-disable-next-line
-      map.on('draw.selectionchange', function(e) {
-        return vm.draw.changeMode('simple_select', {})
-      })
-      return map
+        this.draw = draw
+        let vm = this
+        map.addControl(scaleCtrl, 'bottom-left')
+        map.addControl(draw, 'bottom-left')
+        // eslint-disable-next-line
+        map.on('draw.selectionchange', function(e) {
+          return vm.draw.changeMode('simple_select', {})
+        })
+        return map
+      } catch (err) {
+        console.error(err)
+      }
     }
   }
 }

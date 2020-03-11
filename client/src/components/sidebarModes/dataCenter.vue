@@ -21,10 +21,14 @@
                     v-for="(item, index) in info[col.value]"
                     :key="index + item"
                     @click="handleSelection(item._id, col.label)"
-                    class="fs-regular text-bold underline-hover cursor-pointer"
+                    class="fs-regular inline-block text-bold underline-hover cursor-pointer"
                   >
                     {{ item.name }}
-                    <template v-if="index !== info[col.value].length - 1"
+                    <template
+                      v-if="
+                        info[col.value].length > 1 &&
+                          index !== info[col.value].length - 1
+                      "
                       >,</template
                     >
                   </div>

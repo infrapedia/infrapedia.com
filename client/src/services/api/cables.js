@@ -19,6 +19,7 @@ export const createCable = async ({
   category,
   user_id,
   geom,
+  litCapacity,
   tags
 }) => {
   url = `${apiConfig.url}/auth/cables/add`
@@ -41,6 +42,12 @@ export const createCable = async ({
       })
     } else form.append('tags', [])
 
+    if (litCapacity && litCapacity.length) {
+      litCapacity.forEach((cap, i) => {
+        form.append(`litCapacity[${i}]`, JSON.stringify(cap))
+      })
+    } else form.append('litCapacity', [])
+
     // if (cls.length) {
     //   cls.forEach((c, i) => {
     //     form.append(`cls[${i}]`, c)
@@ -55,7 +62,7 @@ export const createCable = async ({
 
     if (facilities.length) {
       facilities.forEach((fac, i) => {
-        form.append(`facilities[${i}]`, fac)
+        form.append(`facilities[${i}]`, fac._id)
       })
     } else form.append('facilities', [])
 
@@ -94,7 +101,8 @@ export const editCable = async ({
   category,
   user_id,
   geom,
-  tags
+  tags,
+  litCapacity
 }) => {
   url = `${apiConfig.url}/auth/cables/edit`
   form = new URLSearchParams()
@@ -117,6 +125,12 @@ export const editCable = async ({
       })
     } else form.append('tags', [])
 
+    if (litCapacity && litCapacity.length) {
+      litCapacity.forEach((cap, i) => {
+        form.append(`litCapacity[${i}]`, JSON.stringify(cap))
+      })
+    } else form.append('litCapacity', [])
+
     // if (cls.length) {
     //   cls.forEach((c, i) => {
     //     form.append(`cls[${i}]`, c)
@@ -131,7 +145,7 @@ export const editCable = async ({
 
     if (facilities.length) {
       facilities.forEach((fac, i) => {
-        form.append(`facilities[${i}]`, fac)
+        form.append(`facilities[${i}]`, fac._id ? fac._id : fac)
       })
     } else form.append('facilities', [])
 

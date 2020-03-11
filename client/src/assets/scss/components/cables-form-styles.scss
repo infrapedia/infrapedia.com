@@ -1,0 +1,16 @@
+@import '../helpers/atomic-classes';
+@import '../base/variables';
+
+.capacity-field {
+  .date-picker {
+    max-width: 8rem;
+  }
+}
+.remove {
+  top: -1.8rem;
+  right: 0;
+  @extend .cursor-pointer;
+  &:hover {
+    color: $berry;
+  }
+}

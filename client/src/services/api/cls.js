@@ -28,7 +28,7 @@ export const createCls = async ({
 
   if (cables.length) {
     cables.forEach((c, i) => {
-      form.append(`cables[${i}]`, c._id)
+      form.append(`cables[${i}]`, c._id ? c._id : c)
     })
   } else form.append('cables', [])
 
@@ -80,7 +80,7 @@ export const editCls = async ({
 
   if (cables.length) {
     cables.forEach((c, i) => {
-      form.append(`cables[${i}]`, c._id)
+      form.append(`cables[${i}]`, c._id ? c._id : c)
     })
   } else form.append('cables', [])
 

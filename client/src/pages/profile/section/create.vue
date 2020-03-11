@@ -299,6 +299,7 @@ export default {
             fiberPairs: '',
             systemLength: 0,
             capacityTBPS: 0,
+            litCapacity: [],
             owners: this.creationType === 'subsea' ? [] : '',
             terrestrial: this.creationType === 'subsea' ? false : true,
             category: cableStates[0],
@@ -327,6 +328,7 @@ export default {
       this.loading = false
     },
     async handleEditModeSettings(data) {
+      let facsData
       switch (this.creationType) {
         case 'cls':
           this.form.cablesList = data.cables.map(f => ({
@@ -336,11 +338,12 @@ export default {
           this.form.cables = data.cables.map(f => f._id)
           break
         default:
-          this.form.facsList = data.facilities.map(f => ({
+          facsData = data.facilities.map(f => ({
             name: f.label,
             _id: f._id
           }))
-          this.form.facilities = data.facilities.map(f => f._id)
+          this.form.facsList = facsData
+          this.form.facilities = facsData
           this.form.activationDateTime = new Date(this.form.activationDateTime)
           break
       }

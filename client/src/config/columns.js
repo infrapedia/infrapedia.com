@@ -42,7 +42,7 @@ export const cablesColumns = [
   },
   // 'terrestrial', // (Bool)
   {
-    label: 'Capacity tbps',
+    label: 'Design Capacity (Maximum Tbps of the system)',
     value: 'capacityTBPS'
   },
   {

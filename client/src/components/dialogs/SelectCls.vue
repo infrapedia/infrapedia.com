@@ -6,6 +6,7 @@
     :custom-class="customDialogClass"
     :close-on-click-modal="false"
     :before-close="handleClose"
+    :show-close="false"
   >
     <header slot="title" class="header p0 no-selectable">
       <h1 class="inline-block font-semibold fs-xlarge">
@@ -29,7 +30,7 @@
         <div
           v-for="(cls, i) in clsList"
           :key="i"
-          class="box p2 w32 ml2 text-center h-fit-full cursor-pointer transition-all"
+          class="box p2 w32 ml2 mb2 text-center h-fit-full cursor-pointer transition-all"
           :class="{ selected: selectionList.map(c => c._id).includes(cls._id) }"
           @click="handleSelectionChange(cls)"
         >
@@ -46,6 +47,11 @@
         the subsea cable or not, the selected cls will stay put.
       </small>
     </footer>
+    <div class="flex row flex-end">
+      <el-button plain @click="handleClose">
+        Close
+      </el-button>
+    </div>
   </el-dialog>
 </template>
 

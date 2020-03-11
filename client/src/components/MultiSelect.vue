@@ -95,6 +95,18 @@ export default {
       return this.$store.state.isDark
     }
   },
+  watch: {
+    mode(mode) {
+      if (mode !== 'create' && this.value.length) {
+        this.selections = this.value
+      }
+    },
+    value(arr) {
+      if (this.mode !== 'create' && arr.length) {
+        this.selections = arr
+      }
+    }
+  },
   mounted() {
     if (this.mode !== 'create') {
       this.selections = this.value

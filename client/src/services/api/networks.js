@@ -113,7 +113,7 @@ export const editNetwork = async ({
 
   if (facilities.length) {
     facilities.forEach((f, i) => {
-      form.append(`facilities[${i}]`, f._id)
+      form.append(`facilities[${i}]`, f._id ? f._id : f)
     })
   } else form.append('facilities', [])
 
@@ -125,13 +125,13 @@ export const editNetwork = async ({
 
   if (cls.length) {
     cls.forEach((c, i) => {
-      form.append(`cls[${i}]`, c._id)
+      form.append(`cls[${i}]`, c._id ? c._id : c)
     })
   } else form.append('cls', [])
 
   if (cables.length) {
     cables.forEach((c, i) => {
-      form.append(`cables[${i}]`, c._id)
+      form.append(`cables[${i}]`, c._id ? c._id : c)
     })
   } else form.append('cables', [])
 

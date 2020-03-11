@@ -101,19 +101,63 @@
           </el-button>
         </div>
       </el-form-item>
-      <el-form-item
-        label="Capacity (Tbps)"
-        prop="tbpsCapacity"
-        v-if="creationID === 'subsea'"
-      >
-        <el-input-number
-          :min="0"
-          :class="{ dark }"
-          class="w-fit-full"
-          controls-position="right"
-          v-model="form.capacityTBPS"
-        />
-      </el-form-item>
+      <template v-if="creationID === 'subsea'">
+        <el-form-item label="Capacity (Tbps)" prop="tbpsCapacity">
+          <el-input-number
+            :min="0"
+            :class="{ dark }"
+            class="w-fit-full"
+            controls-position="right"
+            v-model="form.capacityTBPS"
+          />
+        </el-form-item>
+        <el-form-item label="Lit Capacity" prop="litCapacity">
+          <div class="inline-block">
+            <div
+              v-for="(field, i) in form.litCapacity"
+              :key="i"
+              class="relative mt4"
+            >
+              <div class="capacity-field p4 el-card shadow--never">
+                <el-date-picker
+                  size="small"
+                  class="date-picker mr1"
+                  v-model="field.year"
+                  type="year"
+                  placeholder
+                />
+                <el-input-number
+                  size="small"
+                  :min="0"
+                  controls-position="right"
+                  v-model="field.cap"
+                />
+              </div>
+              <span
+                class="absolute z-index2 circle remove transition-all vertical-align"
+              >
+                <small
+                  class="underline-hover"
+                  @click="removeLitCapacityField(i)"
+                >
+                  Remove
+                </small>
+                <!-- <fa
+                  :icon="['fas', 'times']"
+                  @click="removeLitCapacityField(i)"
+                /> -->
+              </span>
+            </div>
+            <el-button
+              class="inline-block"
+              size="small"
+              @click="addLitCapacityField"
+            >
+              Add lit capacity
+            </el-button>
+          </div>
+        </el-form-item>
+      </template>
       <el-form-item label="Fiber Pairs" prop="fiberPairs">
         <el-input-number
           :min="0"
@@ -221,6 +265,7 @@ export default {
   data: () => ({
     clsSelectedList: [],
     tag: '',
+    currentYear: new Date(),
     cableStates,
     facsList: [],
     tagsList: [],
@@ -233,6 +278,7 @@ export default {
     isClsSelectionDialogVisible: false,
     formRules: {
       activationDateTime: [],
+      litCapacity: [],
       name: [
         {
           required: true,
@@ -250,7 +296,8 @@ export default {
       facilities: [],
       tbpsCapacity: [],
       systemLength: []
-    }
+    },
+    litCapacityFields: []
   }),
   props: {
     form: {
@@ -327,6 +374,15 @@ export default {
     }
   },
   methods: {
+    removeLitCapacityField(i) {
+      return this.form.litCapacity.splice(i, 1)
+    },
+    addLitCapacityField() {
+      return this.form.litCapacity.push({
+        year: this.currentYear,
+        cap: 0
+      })
+    },
     handleCLSSelectionChange(data) {
       this.clsSelectedList = data
     },
@@ -412,3 +468,6 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+@import '../../assets/scss/components/cables-form-styles.scss';
+</style>
