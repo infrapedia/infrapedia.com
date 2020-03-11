@@ -50,7 +50,7 @@ export default {
       console.log(option, id)
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
-      switch (option.toLowerCase()) {
+      switch (option.toLowerCase().trim()) {
         case 'ixps':
           await this.handleIxpsItemSelected({ id, type: option })
           break
@@ -76,6 +76,12 @@ export default {
           await this.handleSubmarineCableItemSelected(id)
           break
         case 'organizations':
+          await this.handleOrgItemSelected({ id, type: option })
+          break
+        case 'org':
+          await this.handleOrgItemSelected({ id, type: option })
+          break
+        case 'owners':
           await this.handleOrgItemSelected({ id, type: option })
           break
         case 'partners':

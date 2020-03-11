@@ -185,20 +185,29 @@ export default {
         if (userData) {
           const { user_metadata } = userData
           this.form = {
-            name: user_metadata.name ? user_metadata.name : userData.name,
-            email: user_metadata.email ? user_metadata.email : userData.email,
+            name:
+              user_metadata && user_metadata.name
+                ? user_metadata.name
+                : userData.name,
+            email:
+              user_metadata && user_metadata.email
+                ? user_metadata.email
+                : userData.email,
             user_metadata: {
-              lastname: user_metadata.lastname
-                ? user_metadata.lastname
-                : name.split(' ')[1]
-                ? name.split(' ')[1]
-                : '',
-              phonenumber: user_metadata.phonenumber
-                ? user_metadata.phonenumber
-                : { num: '', valid: null },
-              companyname: user_metadata.companyname
-                ? user_metadata.companyname
-                : ''
+              lastname:
+                user_metadata && user_metadata.lastname
+                  ? user_metadata.lastname
+                  : name.split(' ')[1]
+                  ? name.split(' ')[1]
+                  : '',
+              phonenumber:
+                user_metadata && user_metadata.phonenumber
+                  ? user_metadata.phonenumber
+                  : { num: '', valid: null },
+              companyname:
+                user_metadata && user_metadata.companyname
+                  ? user_metadata.companyname
+                  : ''
             }
           }
         }

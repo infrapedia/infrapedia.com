@@ -677,8 +677,14 @@ export default {
         .getSource(mapConfig.clusters)
         .setData({ type: 'FeatureCollection', features: [] })
 
-      switch (type.toLowerCase()) {
+      switch (type.toLowerCase().trim()) {
         case 'organizations':
+          await this.handleOrganizationFocus(id, fc)
+          break
+        case 'org':
+          await this.handleOrganizationFocus(id, fc)
+          break
+        case 'owners':
           await this.handleOrganizationFocus(id, fc)
           break
         case 'partners':

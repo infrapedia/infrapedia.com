@@ -21,7 +21,7 @@ export const getSelectionCols = type => {
     col = [...cablesColumns]
   } else if (t.includes('ixp')) {
     col = [...ixpsColumns]
-  } else if (t.includes('organization')) {
+  } else if (t.includes('org') || t.includes('owners')) {
     col = [...orgsColumns]
   } else if (t.includes('networks')) {
     col = [...netColumns]

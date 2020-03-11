@@ -17,21 +17,15 @@
             <el-collapse v-model="collapse">
               <el-collapse-item :title="col.label" :name="i">
                 <template v-if="!col.label.toLowerCase().includes('address')">
-                  <div
+                  <el-tag
                     v-for="(item, index) in info[col.value]"
-                    :key="index + item"
+                    :key="index + item.name"
                     @click="handleSelection(item._id, col.label)"
-                    class="fs-regular inline-block text-bold underline-hover cursor-pointer"
+                    class="mr2 cursor-pointer"
+                    size="mini"
                   >
                     {{ item.name }}
-                    <template
-                      v-if="
-                        info[col.value].length > 1 &&
-                          index !== info[col.value].length - 1
-                      "
-                      >,</template
-                    >
-                  </div>
+                  </el-tag>
                 </template>
                 <template v-else>
                   <p
@@ -54,7 +48,13 @@
       <template v-else>
         <!---- LABELS SECTION STARTS ---->
         <el-row :gutter="20">
-          <template v-if="col.label.toLowerCase().includes('url')">
+          <template
+            v-if="
+              col.label.toLowerCase().includes('url') &&
+                info[col.value] &&
+                info[col.value].length
+            "
+          >
             <el-col :span="24" class="p2">
               <small>
                 <p class="m0 capitalize">

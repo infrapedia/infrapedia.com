@@ -141,8 +141,14 @@ export default {
         if (userData) {
           const { user_metadata } = userData
           this.userData = {
-            name: user_metadata.name ? user_metadata.name : userData.name,
-            company: user_metadata.companyname ? user_metadata.companyname : ''
+            name:
+              user_metadata && user_metadata.name
+                ? user_metadata.name
+                : userData.name,
+            company:
+              user_metadata && user_metadata.companyname
+                ? user_metadata.companyname
+                : ''
           }
         }
       } else {

@@ -14,22 +14,15 @@
           <el-col :span="24">
             <el-collapse v-model="collapse">
               <el-collapse-item :title="col.label" :name="i">
-                <div
+                <el-tag
                   v-for="(item, index) in info[col.value]"
-                  :key="index + item"
+                  :key="index + item.name"
                   @click="handleSelection(item._id, col.label)"
-                  class="fs-regular inline-block text-bold underline-hover cursor-pointer"
+                  class="mr2 cursor-pointer"
+                  size="mini"
                 >
                   {{ item.name }}
-                  <template
-                    v-if="
-                      info[col.value].length > 1 &&
-                        index !== info[col.value].length - 1 &&
-                        index !== 0
-                    "
-                    >,</template
-                  >
-                </div>
+                </el-tag>
               </el-collapse-item>
             </el-collapse>
           </el-col>
