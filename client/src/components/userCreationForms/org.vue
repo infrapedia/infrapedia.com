@@ -78,31 +78,6 @@
                 />
               </el-form-item>
             </el-form>
-            <!-- <div class="w-fit-full">
-              <label class="el-input__label" for="tagname">
-                <small class="required-asterik">*</small> Reference
-              </label>
-            </div> -->
-            <!-- <el-collapse-transition>
-              <el-alert
-                v-if="isTagReferenceMissing"
-                class="pr4 pl4 pt1 pb1"
-                title="Reference name is required"
-                type="error"
-                show-icon
-                :closable="false"
-              />
-            </el-collapse-transition> -->
-            <!-- <div>
-              <label class="el-input__label" for="country">
-                Address
-              </label>
-              <autocomplete-google
-                :mode="tagMode"
-                @place-changed="handleAddressChange"
-                :value="autocompleteAddress"
-              />
-            </div> -->
             <el-form-item>
               <div
                 class="flex row wrap justify-content-end justify-center-sm pt3"

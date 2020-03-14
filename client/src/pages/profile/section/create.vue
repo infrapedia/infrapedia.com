@@ -367,7 +367,6 @@ export default {
 
       this.form.owners = ownersData
       this.form.ownersList = ownersData
-
       this.form.activationDateTime = new Date(this.form.activationDateTime)
     },
     async viewCurrentCLS(_id) {
