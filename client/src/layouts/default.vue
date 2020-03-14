@@ -94,10 +94,13 @@ export default {
     openAlertsDialog() {
       return this.$store.commit(`${TOGGLE_ALERT_DIALOG}`, true)
     },
-    async handleEditCable({ _id, owner }) {
+    async handleEditCable({ _id, owner, terrestrial }) {
       if (this.$auth && this.$auth.isAuthenticated) {
+        let queryType = terrestrial ? 'terrestrial-network' : 'subsea'
         return owner === this.$auth.user.sub
-          ? this.$router.push(`/user/section/create?id=cable&item=${_id}`)
+          ? this.$router.push(
+              `/user/section/create?id=${queryType}&item=${_id}`
+            )
           : (this.openEditDialog = true)
       } else return this.$auth.loginWithRedirect()
     }

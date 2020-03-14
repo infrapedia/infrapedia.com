@@ -17,8 +17,8 @@
       <el-form-item label="Name">
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
-      <el-form-item label="Url">
-        <el-input :class="{ dark }" class="w-fit-full" v-model="form.link" />
+      <el-form-item label="URL">
+        <el-input :class="{ dark }" class="w-fit-full" v-model="form.url" />
       </el-form-item>
       <el-form-item label="Information">
         <el-input
@@ -137,7 +137,7 @@
         round
         @click="sendData"
       >
-        {{ title }} organization
+        {{ saveBtn }}
       </el-button>
       <el-button class="h10" :class="{ dark }" round @click="handleBeforeClose">
         Cancel
@@ -194,6 +194,9 @@ export default {
     },
     title() {
       return this.mode === 'create' ? 'Create' : 'Edit'
+    },
+    saveBtn() {
+      return this.mode === 'create' ? 'Create organization' : 'Save changes'
     },
     dark() {
       return this.$store.state.isDark

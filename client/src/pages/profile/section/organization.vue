@@ -51,6 +51,7 @@ export default {
       name: '',
       logo: '',
       notes: '',
+      url: '',
       address: [],
       information: ''
     },
@@ -88,8 +89,7 @@ export default {
         _id
       })
       if (res && res.data && res.data.r) {
-        this.form = res.data.r
-        this.form.link = res.data.r.url
+        this.form = { ...res.data.r }
       }
       this.mode = 'edit'
       this.toggleDialog()
@@ -115,6 +115,7 @@ export default {
           name: '',
           logo: '',
           notes: '',
+          url: '',
           address: [],
           information: ''
         }

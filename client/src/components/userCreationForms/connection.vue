@@ -199,7 +199,7 @@
         plain
         @click="sendData"
       >
-        {{ title }} group
+        {{ saveBtn }}
       </el-button>
       <el-button class="h10" :class="{ dark }" round @click="handleBeforeClose">
         Cancel
@@ -257,6 +257,9 @@ export default {
   computed: {
     title() {
       return this.mode === 'create' ? 'Create' : 'Edit'
+    },
+    saveBtn() {
+      return this.mode === 'create' ? 'Create group' : 'Save changes'
     },
     dark() {
       return this.$store.state.isDark

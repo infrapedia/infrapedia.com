@@ -1,2 +1,2 @@
-const cableStates = ['online', 'offline', 'fault', 'project']
+const cableStates = ['project', 'active', 'fault', 'decommissioned', 'unknown']
 export default cableStates

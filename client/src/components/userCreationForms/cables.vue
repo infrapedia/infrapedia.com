@@ -4,7 +4,10 @@
       <h1 class="title capitalize">{{ title }}</h1>
     </header>
     <el-form ref="form" :model="form" :rules="formRules">
-      <el-form-item label="Category" prop="category">
+      <el-form-item label="Name" prop="name" required>
+        <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
+      </el-form-item>
+      <el-form-item label="Status" prop="category">
         <el-select
           class="w-fit-full"
           filterable
@@ -19,9 +22,6 @@
             :value="opt"
           />
         </el-select>
-      </el-form-item>
-      <el-form-item label="Name" prop="name" required>
-        <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
       <el-form-item label="System length" prop="systemLength">
         <el-input-number
@@ -102,7 +102,7 @@
         </div>
       </el-form-item>
       <template v-if="creationID === 'subsea'">
-        <el-form-item label="Capacity (Tbps)" prop="tbpsCapacity">
+        <el-form-item label="Design Capacity (Tbps)" prop="tbpsCapacity">
           <el-input-number
             :min="0"
             :class="{ dark }"
@@ -233,7 +233,7 @@
           :disabled="checkGeomLength"
           @click="sendData"
         >
-          {{ title }}
+          {{ saveBtn }}
         </el-button>
       </el-form-item>
     </el-form>
@@ -340,6 +340,12 @@ export default {
         this.creationID === 'subsea' ? 'subsea cable' : 'terrestrial network'
       }`
       return this.mode === 'create' ? `Create ${t}` : `Edit ${t}`
+    },
+    saveBtn() {
+      let t = `${
+        this.creationID === 'subsea' ? 'subsea cable' : 'terrestrial network'
+      }`
+      return this.mode === 'create' ? `Create ${t}` : `Save changes`
     },
     dark() {
       return this.$store.state.isDark

@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     handleOnTourStop() {
-      // return window.localStorage.setItem(TOUR_DONE_KEY, true)
+      return window.localStorage.setItem(TOUR_DONE_KEY, true)
     },
     checkURL(link) {
       let obj = {}

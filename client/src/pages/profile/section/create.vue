@@ -349,6 +349,7 @@ export default {
           }))
           this.form.facsList = facsData
           this.form.facilities = facsData
+          if (!this.form.cc || this.form.cc === 'undefined') this.form.cc = ''
           this.form.activationDateTime = new Date(this.form.activationDateTime)
           break
       }

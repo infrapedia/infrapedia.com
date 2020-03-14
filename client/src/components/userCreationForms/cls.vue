@@ -7,13 +7,13 @@
       <el-form-item label="Name" required prop="name">
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
-      <el-form-item label="State" prop="state">
+      <el-form-item label="Status" prop="state">
         <el-radio-group :class="{ dark }" v-model="form.state">
-          <el-radio :label="true">
-            Yes
+          <el-radio label="operational">
+            Operational
           </el-radio>
-          <el-radio :label="false">
-            No
+          <el-radio label="unknown">
+            Unknown
           </el-radio>
         </el-radio-group>
       </el-form-item>
@@ -69,7 +69,7 @@
           :disabled="checkGeomLength"
           @click="sendData"
         >
-          {{ this.title }} CLS
+          {{ saveBtn }}
         </el-button>
       </el-form-item>
     </el-form>
@@ -127,6 +127,9 @@ export default {
     },
     title() {
       return this.mode === 'create' ? 'Create' : 'Edit'
+    },
+    saveBtn() {
+      return this.mode === 'create' ? 'Create CLS' : 'Save changes'
     },
     checkGeomLength() {
       return this.$store.state.editor.scene.features.list.length ? false : true

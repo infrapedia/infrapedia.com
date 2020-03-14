@@ -166,7 +166,7 @@
           :disabled="checkGeomLength"
           @click="sendData"
         >
-          {{ title }} map
+          {{ saveBtn }}
         </el-button>
       </el-form-item>
     </el-form>
@@ -234,6 +234,9 @@ export default {
   computed: {
     title() {
       return this.mode === 'create' ? 'Create' : 'Edit'
+    },
+    saveBtn() {
+      return this.mode === 'create' ? 'Create map' : 'Save changes'
     },
     uploadLogoHeaders() {
       return { user_id: this.$auth.user.sub }
