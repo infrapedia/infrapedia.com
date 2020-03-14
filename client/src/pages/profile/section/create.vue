@@ -295,7 +295,7 @@ export default {
             tags: [],
             name: '',
             notes: '',
-            cc: '',
+            // cc: '',
             facilities: [],
             fiberPairs: '',
             systemLength: 0,
@@ -333,7 +333,6 @@ export default {
       this.loading = false
     },
     async handleEditModeSettings(data) {
-      let facsData
       switch (this.creationType) {
         case 'cls':
           this.form.cablesList = data.cables.map(f => ({
@@ -343,14 +342,7 @@ export default {
           this.form.cables = data.cables.map(f => f._id)
           break
         default:
-          facsData = data.facilities.map(f => ({
-            name: f.label,
-            _id: f._id
-          }))
-          this.form.facsList = facsData
-          this.form.facilities = facsData
-          if (!this.form.cc || this.form.cc === 'undefined') this.form.cc = ''
-          this.form.activationDateTime = new Date(this.form.activationDateTime)
+          this.handleCablesEditMode(data)
           break
       }
 
@@ -359,6 +351,25 @@ export default {
         await (this.form.geom = this.$store.state.editor.scene.features.list)
         await bus.$emit(`${EDITOR_LOAD_DRAW}`)
       }
+    },
+    handleCablesEditMode(data) {
+      const facsData = data.facilities.map(f => ({
+        name: f.label,
+        _id: f._id
+      }))
+      // const ownersData = data.owners.map(f => ({
+      //   name: f.label,
+      //   _id: f._id
+      // }))
+
+      this.form.facsList = facsData
+      this.form.facilities = facsData
+
+      // this.form.owners = ownersData
+      // this.form.ownersList = ownersData
+
+      // if (!this.form.cc || this.form.cc === 'undefined') this.form.cc = ''
+      this.form.activationDateTime = new Date(this.form.activationDateTime)
     },
     async viewCurrentCLS(_id) {
       const res = await viewClsOwner({ user_id: this.$auth.user.sub, _id })

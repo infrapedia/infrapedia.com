@@ -188,9 +188,9 @@
           :value="mode === 'create' ? [] : form.owners"
         />
       </el-form-item>
-      <el-form-item label="CC Email" prop="cc">
+      <!-- <el-form-item label="CC Email" prop="cc">
         <el-input v-model="form.cc" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="Tags" class="mt2" prop="tags">
         <el-select
           v-model="form.tags"

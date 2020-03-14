@@ -15,7 +15,7 @@ export const createCable = async ({
   fiberPairs,
   facilities,
   notes,
-  // cls,
+  owners,
   category,
   user_id,
   geom,
@@ -50,11 +50,11 @@ export const createCable = async ({
       })
     } else form.append('litCapacity', [])
 
-    // if (cls.length) {
-    //   cls.forEach((c, i) => {
-    //     form.append(`cls[${i}]`, c)
-    //   })
-    // } else form.append('cls', [])
+    if (owners.length) {
+      owners.forEach((c, i) => {
+        form.append(`owners[${i}]`, c._id ? c._id : c)
+      })
+    } else form.append('owners', [])
 
     if (urls.length) {
       urls.forEach((url, i) => {
@@ -99,7 +99,7 @@ export const editCable = async ({
   fiberPairs,
   facilities,
   notes,
-  // cls,
+  owners,
   category,
   user_id,
   geom,
@@ -135,11 +135,11 @@ export const editCable = async ({
       })
     } else form.append('litCapacity', [])
 
-    // if (cls.length) {
-    //   cls.forEach((c, i) => {
-    //     form.append(`cls[${i}]`, c)
-    //   })
-    // } else form.append('cls', [])
+    if (owners.length) {
+      owners.forEach((c, i) => {
+        form.append(`owners[${i}]`, c._id ? c._id : c)
+      })
+    } else form.append('owners', [])
 
     if (urls.length) {
       urls.forEach((url, i) => {
