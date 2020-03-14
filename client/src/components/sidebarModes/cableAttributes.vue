@@ -120,6 +120,12 @@
             </p>
             <p
               class="text-bold"
+              v-else-if="col.label.includes('EOL') && info.status !== 'project'"
+            >
+              {{ convertToYear(calculateEOL(info[col.value])) }}
+            </p>
+            <p
+              class="text-bold"
               v-else-if="!isArrCol(info[col.value]) && col.label !== 'Latency'"
             >
               {{ info[col.value] }}
@@ -223,6 +229,7 @@
 
 <script>
 import convertToYear from '../../helpers/converToYear'
+import calculateEOL from '../../helpers/calculateEOL'
 import {
   BUY_CAPACITY,
   EDIT_CABLE,
@@ -247,8 +254,9 @@ export default {
     BUY_CAPACITY,
     REPORT_ISSUE,
     CREATE_ALERT,
-    convertToYear,
+    calculateEOL,
     collapse: [],
+    convertToYear,
     isMenuOpen: false
   }),
   computed: {

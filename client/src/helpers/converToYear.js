@@ -1,5 +1,7 @@
-const convertToYear = date => {
-  return new Date(parseInt(date) * 1000).getUTCFullYear() || ''
+import { DateTime } from 'luxon'
+
+function convertToYear(date) {
+  return DateTime.fromISO(date).toLocaleString({ year: 'numeric' })
 }
 
 export default convertToYear

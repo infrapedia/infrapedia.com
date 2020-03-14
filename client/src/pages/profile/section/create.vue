@@ -357,18 +357,17 @@ export default {
         name: f.label,
         _id: f._id
       }))
-      // const ownersData = data.owners.map(f => ({
-      //   name: f.label,
-      //   _id: f._id
-      // }))
+      const ownersData = data.owners.map(f => ({
+        name: f.label,
+        _id: f._id
+      }))
 
       this.form.facsList = facsData
       this.form.facilities = facsData
 
-      // this.form.owners = ownersData
-      // this.form.ownersList = ownersData
+      this.form.owners = ownersData
+      this.form.ownersList = ownersData
 
-      // if (!this.form.cc || this.form.cc === 'undefined') this.form.cc = ''
       this.form.activationDateTime = new Date(this.form.activationDateTime)
     },
     async viewCurrentCLS(_id) {

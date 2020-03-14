@@ -60,19 +60,30 @@
         <br />
         <el-collapse-transition>
           <el-card v-if="inputVisible" class="p4 w-auto mt4" shadow="never">
-            <div class="w-fit-full">
+            <el-form ref="tagForm" :model="tag" :rules="tagRules">
+              <el-form-item label="Reference" prop="reference" required>
+                <el-input
+                  name="street"
+                  :class="{ dark }"
+                  v-model="tag.reference"
+                  ref="saveTagInput"
+                  size="mini"
+                />
+              </el-form-item>
+              <el-form-item prop="address" label="Address">
+                <autocomplete-google
+                  :mode="tagMode"
+                  @place-changed="handleAddressChange"
+                  :value="autocompleteAddress"
+                />
+              </el-form-item>
+            </el-form>
+            <!-- <div class="w-fit-full">
               <label class="el-input__label" for="tagname">
                 <small class="required-asterik">*</small> Reference
               </label>
-              <el-input
-                name="street"
-                :class="{ dark }"
-                v-model="tag.reference"
-                ref="saveTagInput"
-                size="mini"
-              />
-            </div>
-            <el-collapse-transition>
+            </div> -->
+            <!-- <el-collapse-transition>
               <el-alert
                 v-if="isTagReferenceMissing"
                 class="pr4 pl4 pt1 pb1"
@@ -81,8 +92,8 @@
                 show-icon
                 :closable="false"
               />
-            </el-collapse-transition>
-            <div>
+            </el-collapse-transition> -->
+            <!-- <div>
               <label class="el-input__label" for="country">
                 Address
               </label>
@@ -91,29 +102,31 @@
                 @place-changed="handleAddressChange"
                 :value="autocompleteAddress"
               />
-            </div>
-            <div
-              class="flex row wrap justify-content-end justify-center-sm pt3"
-            >
-              <el-button
-                plain
-                :class="{ dark }"
-                type="success"
-                size="mini"
-                class="w25 h8 mb4"
-                @click="handleSaveAddress"
+            </div> -->
+            <el-form-item>
+              <div
+                class="flex row wrap justify-content-end justify-center-sm pt3"
               >
-                Save address
-              </el-button>
-              <el-button
-                class="w25 h8"
-                :class="{ dark }"
-                size="mini"
-                @click="clearAddress"
-              >
-                Cancel
-              </el-button>
-            </div>
+                <el-button
+                  plain
+                  :class="{ dark }"
+                  type="success"
+                  size="mini"
+                  class="w25 h8 mb4 mr2"
+                  @click="handleSaveAddress"
+                >
+                  Save address
+                </el-button>
+                <el-button
+                  class="w25 h8"
+                  :class="{ dark }"
+                  size="mini"
+                  @click="clearAddress"
+                >
+                  Cancel
+                </el-button>
+              </div>
+            </el-form-item>
           </el-card>
           <el-button
             v-else
@@ -168,6 +181,22 @@ export default {
       city: '',
       state: '',
       zipcode: ''
+    },
+    tagRules: {
+      reference: [
+        {
+          required: true,
+          message: 'Please input a reference name',
+          trigger: ['blur', 'change']
+        },
+        {
+          min: 2,
+          max: 5,
+          message: 'Length should be 2 to 5',
+          trigger: ['blur', 'change']
+        }
+      ],
+      address: []
     },
     tagOnEdit: null,
     inputVisible: false,
@@ -290,16 +319,13 @@ export default {
       }
     },
     handleSaveAddress() {
-      const { tagOnEdit } = this
-
-      if ((tagOnEdit !== null && !tagOnEdit.reference) || !this.tag.reference) {
-        this.isTagReferenceMissing = true
-        return
-      }
-
-      if (tagOnEdit === null) this.form.address.push({ ...this.tag })
-      else this.form.address[tagOnEdit] = { ...this.tag }
-      return this.clearAddress()
+      return this.$refs['tagForm'].validate(isValid => {
+        if (isValid) {
+          if (this.tagOnEdit === null) this.form.address.push({ ...this.tag })
+          else this.form.address[this.tagOnEdit] = { ...this.tag }
+          this.clearAddress()
+        } else false
+      })
     },
     showInput() {
       this.inputVisible = true

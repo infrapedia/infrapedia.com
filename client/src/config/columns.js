@@ -40,6 +40,11 @@ export const cablesColumns = [
     showSidebar: true,
     showTable: true
   },
+  {
+    label: 'EOL (End of Life)',
+    value: 'activationDateTime',
+    showSidebar: true
+  },
   // 'terrestrial', // (Bool)
   {
     label: 'Design Capacity (Maximum Tbps of the system)',

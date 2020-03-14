@@ -385,6 +385,10 @@ export default {
       this.facsList = [...facs]
       delete this.form.facsList
     },
+    'form.ownersList'(owners) {
+      this.orgsList = [...owners]
+      delete this.form.ownersList
+    },
     'form.tags'(tag) {
       this.getTagsList(tag)
     }
