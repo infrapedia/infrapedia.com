@@ -110,6 +110,24 @@ export default {
           }))
           this.form[p] = data
           this.form[`${p}List`] = data
+
+          if (p === 'cables') {
+            this.form.subsea = res.data.r[p]
+              .filter(c => !c.terrestrial)
+              .map(f => ({
+                name: f.label,
+                _id: f._id,
+                terrestrial: f.terrestrial
+              }))
+
+            this.form.terrestrials = res.data.r[p]
+              .filter(c => c.terrestrial)
+              .map(f => ({
+                name: f.label,
+                _id: f._id,
+                terrestrial: f.terrestrial
+              }))
+          }
         }
         if (!this.form.references) this.form.references = []
       }

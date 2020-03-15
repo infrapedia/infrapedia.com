@@ -107,15 +107,27 @@
           @remove="handleRemoveTableDataItem"
         />
       </el-form-item>
-      <el-form-item label="Cables">
+      <el-form-item label="Terrestrial Networks">
         <v-multi-select
           v-if="visible"
           :mode="mode"
-          :options="selectsData.cables"
+          :options="terrestrialNetworksOptions"
           @input="loadCablesSearch"
           :loading="isLoadingCables"
           @values-change="createTableFromSelection($event, 'cables')"
-          :value="mode === 'create' ? [] : [...form.cables]"
+          :value="mode === 'create' ? [] : [...form.terrestrials]"
+          @remove="handleRemoveTableDataItem"
+        />
+      </el-form-item>
+      <el-form-item label="Subsea Cables">
+        <v-multi-select
+          v-if="visible"
+          :mode="mode"
+          :options="subseaCablesOptions"
+          @input="loadCablesSearch"
+          :loading="isLoadingCables"
+          @values-change="createTableFromSelection($event, 'cables')"
+          :value="mode === 'create' ? [] : [...form.subsea]"
           @remove="handleRemoveTableDataItem"
         />
       </el-form-item>
@@ -171,9 +183,13 @@
                     class="w-fit-full"
                     placeholder
                     :class="{ dark }"
-                    :id="scope.row._id + '-' + item._id"
+                    :ref="`${item._id}_${scope.row._id}`"
                     @change="
-                      handleReferenceSelectionChange($event, scope.row, item)
+                      handleReferenceSelectionChange(
+                        $event,
+                        scope.row,
+                        item._id
+                      )
                     "
                   >
                     <el-option
@@ -279,6 +295,12 @@ export default {
         this.form.references[0].orgs &&
         this.form.references[0].orgs.length
       )
+    },
+    terrestrialNetworksOptions() {
+      return this.selectsData.cables.filter(c => c.terrestrial)
+    },
+    subseaCablesOptions() {
+      return this.selectsData.cables.filter(c => !c.terrestrial)
     }
   },
   watch: {
@@ -316,40 +338,41 @@ export default {
   methods: {
     handleEditModeScenario() {
       const references = JSON.parse(this.form.references).flatMap(x => x)
-      let refData = undefined
       const props = ['cables', 'facilities', 'cls', 'organizations']
+      let refData = undefined
+
+      // I need to create the whole table first
+      // before assigning the values to the selects
       for (let prop of props) {
         this.createTableFromSelection(Array.from(this.form[prop]), prop)
       }
 
-      for (let ref of references) {
-        refData = ref.split(';')
-        for (let opt of this.form.references[0].options) {
-          if (opt._id === refData[1]) {
-            opt.reference.push(refData[2])
-            this.handleReferenceSelectionChange(refData[2], opt, {
-              _id: refData[0]
-            })
-          }
+      // If I don't wait for the nextTick the $refs won't be there yet
+      this.$nextTick(() => {
+        for (let ref of references) {
+          refData = ref.split(';')
+          this.$refs[`${refData[0]}_${refData[1]}`][1].handleOptionSelect({
+            value: refData[2]
+          })
+          this.$refs[`${refData[0]}_${refData[1]}`][1].blur()
         }
-      }
+      })
     },
-    handleReferenceSelectionChange(selection, row, org) {
-      const rel = `${org._id};${row._id};${selection}`
+    handleReferenceSelectionChange(ref, row, orgID) {
+      let data = null
+      let oldData = null
+      const rel = `${orgID};${row._id};${ref}`
 
       if (row.relation !== null) {
-        const oldData = Array.from(row.relation)
+        oldData = Array.from(row.relation)
         row.relation = oldData.map(item => {
-          const data = item.split(';')
+          data = item.split(';')
 
-          if (data[1] === row._id) {
-            if (data[0] === org._id) {
-              item = rel
-            }
-            return item
+          if (data[1] === row._id && data[0] === orgID) {
+            item = rel
           }
+          return item
         })
-
         if (!row.relation.includes(rel)) row.relation.push(rel)
       } else row.relation = [rel]
     },
@@ -372,7 +395,21 @@ export default {
       }
       const orgsID = data.orgs.map(o => o._id)
       const optionsID = data.options.map(o => o._id)
-      this.form[type] = ids
+
+      if (type === 'cables') {
+        this.form.cables = [
+          ...new Set([...Array.from(this.form.cables), ...ids])
+        ]
+
+        if (this.mode !== 'create') {
+          const isTerrestrial = ids[0].terrestrial
+          isTerrestrial
+            ? (this.form.terrestrials = ids)
+            : (this.form.subsea = ids)
+        }
+      } else {
+        this.form[type] = ids
+      }
 
       for (let selection of ids) {
         if (this.selectsData[type].length) {
@@ -395,7 +432,6 @@ export default {
               } else {
                 if (data.options.length) {
                   if (!optionsID.includes(item._id)) {
-                    console.log(item, 'here 1.1.0')
                     data.options.push({
                       type,
                       ...item,
@@ -404,7 +440,6 @@ export default {
                     })
                   }
                 } else {
-                  console.log(item, 'here 1.2')
                   data.options.push({
                     ...item,
                     type,
@@ -416,7 +451,7 @@ export default {
             }
           }
         } else {
-          console.log('here 1.3')
+          // This part it's only use for when setting the data on edit mode
           type === 'organizations'
             ? data.orgs.push(selection)
             : data.options.push({ ...selection, reference: [], relation: null })
