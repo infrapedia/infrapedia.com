@@ -5,6 +5,7 @@
     top="12vh"
     :custom-class="customDialogClass"
     :close-on-click-modal="false"
+    :before-close="closeDialog"
   >
     <header slot="title" class="header p0 no-selectable">
       <h1 class="inline-block font-semibold fs-xlarge">
