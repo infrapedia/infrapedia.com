@@ -15,16 +15,17 @@
       </h1>
     </header>
     <el-form
-      ref="form"
+      ref="netForm"
       :model="form"
       class="p2"
+      :rules="formRules"
       v-loading="loading"
       :class="{ dark }"
     >
-      <el-form-item label="Name">
+      <el-form-item label="Name" prop="name" required>
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
-      <el-form-item label="Websites">
+      <el-form-item label="Websites" prop="websites">
         <div class="w-fit-full relative inline-block">
           <div class="flex row wrap">
             <el-tag
@@ -83,7 +84,7 @@
           </div>
         </div>
       </el-form-item>
-      <el-form-item label="Organizations">
+      <el-form-item label="Organizations" prop="orgs">
         <v-multi-select
           v-if="visible"
           :mode="mode"
@@ -95,7 +96,7 @@
           @remove="handleRemoveTableDataItem($event, 'organizations')"
         />
       </el-form-item>
-      <el-form-item label="Facilities">
+      <el-form-item label="Facilities" prop="facs">
         <v-multi-select
           v-if="visible"
           :mode="mode"
@@ -107,7 +108,7 @@
           @remove="handleRemoveTableDataItem"
         />
       </el-form-item>
-      <el-form-item label="Terrestrial Networks">
+      <el-form-item label="Terrestrial Networks" prop="tNets">
         <v-multi-select
           v-if="visible"
           :mode="mode"
@@ -119,7 +120,7 @@
           @remove="handleRemoveTableDataItem"
         />
       </el-form-item>
-      <el-form-item label="Subsea Cables">
+      <el-form-item label="Subsea Cables" prop="sCables">
         <v-multi-select
           v-if="visible"
           :mode="mode"
@@ -131,7 +132,7 @@
           @remove="handleRemoveTableDataItem"
         />
       </el-form-item>
-      <el-form-item label="CLS">
+      <el-form-item label="CLS" prop="cls">
         <v-multi-select
           v-if="visible"
           :mode="mode"
@@ -143,7 +144,7 @@
           @remove="handleRemoveTableDataItem"
         />
       </el-form-item>
-      <el-form-item label="Tags" class="mt2">
+      <el-form-item label="Tags" class="mt2" prop="tags">
         <el-select
           v-model="form.tags"
           multiple
@@ -242,6 +243,27 @@ export default {
       organizations: [],
       facilities: [],
       cables: []
+    },
+    formRules: {
+      name: [
+        {
+          required: true,
+          message: 'Please input a name for this connection',
+          trigger: ['blur', 'change']
+        },
+        {
+          min: 2,
+          message: 'Length should be at least 2',
+          trigger: ['blur', 'change']
+        }
+      ],
+      websites: [],
+      orgs: [],
+      facs: [],
+      tNets: [],
+      sCables: [],
+      cls: [],
+      tags: []
     },
     referencesTypes: ['Owner', 'Partner', 'User', 'None'],
     loading: false,
@@ -480,7 +502,9 @@ export default {
       }
     },
     sendData() {
-      return this.$emit('send-data')
+      return this.$refs['netForm'].validate(isValid =>
+        isValid ? this.$emit('send-data') : false
+      )
     },
     async loadOrgSearch(s) {
       if (s === '') return
@@ -525,6 +549,7 @@ export default {
       }
     },
     handleBeforeClose() {
+      this.$refs['netForm'].clearValidate()
       return this.$emit('close')
     },
     validateURL(url) {

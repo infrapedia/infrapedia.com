@@ -13,14 +13,14 @@
         {{ title }} organization
       </h1>
     </header>
-    <el-form ref="form" :model="form" class="p2">
-      <el-form-item label="Name">
+    <el-form ref="orgForm" :model="form" :rules="formRules" class="p2">
+      <el-form-item label="Name" prop="name" required>
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
-      <el-form-item label="URL">
+      <el-form-item label="URL" prop="url">
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.url" />
       </el-form-item>
-      <el-form-item label="Information">
+      <el-form-item label="Information" prop="inf">
         <el-input
           :class="{ dark }"
           type="textarea"
@@ -157,6 +157,22 @@ export default {
       state: '',
       zipcode: ''
     },
+    formRules: {
+      name: [
+        {
+          required: true,
+          message: 'Please input a name for this organization',
+          trigger: ['blur', 'change']
+        },
+        {
+          min: 2,
+          message: 'Length should be at least 2',
+          trigger: ['blur', 'change']
+        }
+      ],
+      url: [],
+      inf: []
+    },
     tagRules: {
       reference: [
         {
@@ -225,13 +241,16 @@ export default {
       this.isUploadingImage = false
     },
     sendData() {
-      return this.$emit('send-data')
+      return this.$refs['orgForm'].validate(isValid =>
+        isValid ? this.$emit('send-data') : false
+      )
     },
     handleBeforeClose() {
       this.fileList = []
       this.tagOnEdit = null
       this.inputVisible = false
       this.isTagReferenceMissing = false
+      this.$refs['orgForm'].clearValidate()
       return this.$emit('close')
     },
     handleClose(tag) {
