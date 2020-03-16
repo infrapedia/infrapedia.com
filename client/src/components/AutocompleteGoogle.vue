@@ -1,9 +1,10 @@
 <template>
-  <div class="el-input el-input--mini" :class="{ dark }">
+  <div class="el-input" :class="{ dark }">
     <input
       type="text"
-      id="autocompleteGoogle"
+      :id="id"
       v-model="search"
+      :class="{ 'el-input--mini': size === 'mini' }"
       class="el-input__inner "
       @focus="geolocate"
     />
@@ -24,6 +25,14 @@ export default {
     mode: {
       type: String,
       default: () => 'create'
+    },
+    id: {
+      type: String,
+      default: () => 'autocompleteGoogle'
+    },
+    size: {
+      type: String,
+      default: () => 'mini'
     }
   },
   computed: {
@@ -41,7 +50,7 @@ export default {
     initAutocomplete() {
       // eslint-disable-next-line
       const autocomplete = new google.maps.places.Autocomplete(
-        document.getElementById('autocompleteGoogle'),
+        document.getElementById(this.id),
         { types: ['geocode'] }
       )
 
@@ -59,7 +68,7 @@ export default {
         // Get the place details from the autocomplete object.
         return this.$emit('place-changed', {
           ...this.autocomplete.getPlace(),
-          fullAddress: document.getElementById('autocompleteGoogle').value
+          fullAddress: document.getElementById(this.id).value
         })
       }
     },

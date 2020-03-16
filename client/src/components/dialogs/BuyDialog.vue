@@ -108,6 +108,26 @@
             />
           </el-form-item>
         </el-col>
+        <template v-if="isEitherSubseaOrTerrestrialNetwork">
+          <el-col :span="12">
+            <el-form-item label="From (A-end)" prop="fromA">
+              <autocomplete-google
+                @place-changed="handleAddressChanged($event, 'a')"
+                size="regular"
+                id="pointA"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="To (B-end)" prop="toB">
+              <autocomplete-google
+                @place-changed="handleAddressChanged($event, 'b')"
+                size="regular"
+                id="pointB"
+              />
+            </el-form-item>
+          </el-col>
+        </template>
         <el-col :span="24">
           <vue-recaptcha
             ref="catpcha"
@@ -151,10 +171,12 @@ import { TOGGLE_BUY_DIALOG, BUY_TYPE } from '../../store/actionTypes'
 import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
 import VueRecaptcha from 'vue-recaptcha'
 import siteKey from '../../config/siteKey'
+import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 
 export default {
   components: {
-    VueRecaptcha
+    VueRecaptcha,
+    AutocompleteGoogle
   },
   data: () => ({
     capacities: ['1GB', '10GB', '100GB', 'Others'],
@@ -177,6 +199,8 @@ export default {
     formRules: {
       phonenumber: [],
       message: [],
+      fromA: [],
+      toB: [],
       fullname: [
         {
           required: true,
@@ -217,6 +241,9 @@ export default {
       dark: state => state.isDark,
       focus: state => state.map.focus
     }),
+    isEitherSubseaOrTerrestrialNetwork() {
+      return this.focus && this.focus.type.toLowerCase() === 'cable'
+    },
     isVisible: {
       get() {
         return this.$store.state.isBuyDialog
@@ -278,6 +305,16 @@ export default {
             }
 
         this.loading = false
+      }
+    },
+    handleAddressChanged(place, inputTarget) {
+      switch (inputTarget) {
+        case 'b':
+          console.log(place, inputTarget)
+          break
+        default:
+          console.log(place, inputTarget)
+          break
       }
     },
     async sendBuyRequest() {
