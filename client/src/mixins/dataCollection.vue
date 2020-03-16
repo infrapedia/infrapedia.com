@@ -6,9 +6,6 @@ import { FOCUS_ON } from '../events'
 import { MAP_FOCUS_ON } from '../store/actionTypes/map'
 
 export default {
-  data: () => ({
-    quantity: 20
-  }),
   methods: {
     ...mapActions({
       getPremiumData: 'getPremiumData',
@@ -47,7 +44,7 @@ export default {
       }
     },
     async handleItemListSelection({ option, id }) {
-      console.log(option, id)
+      console.log(option.toLowerCase(), id)
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       switch (option.toLowerCase().trim()) {
@@ -73,6 +70,12 @@ export default {
           await this.handleSubmarineCableItemSelected(id)
           break
         case 'cables':
+          await this.handleSubmarineCableItemSelected(id)
+          break
+        case 'subsea cables':
+          await this.handleSubmarineCableItemSelected(id)
+          break
+        case 'terrestrial networks':
           await this.handleSubmarineCableItemSelected(id)
           break
         case 'organizations':

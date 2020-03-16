@@ -15,19 +15,40 @@
         <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
           <el-col :span="24">
             <el-collapse v-model="collapse">
-              <el-collapse-item :title="col.label" :name="i">
-                <template v-if="!col.label.toLowerCase().includes('address')">
-                  <el-tag
-                    v-for="(item, index) in info[col.value]"
-                    :key="index + item.name"
-                    @click="handleSelection(item._id, col.label)"
-                    class="mr2 cursor-pointer"
-                    size="mini"
-                  >
-                    {{ item.name }}
-                  </el-tag>
+              <template v-if="!col.label.toLowerCase().includes('address')">
+                <template
+                  v-if="
+                    col.value === 'cables' && col.filter(info[col.value]).length
+                  "
+                >
+                  <el-collapse-item :title="col.label" :name="i">
+                    <el-tag
+                      v-for="(item, index) in col.filter(info[col.value])"
+                      :key="index + item.name"
+                      @click="handleSelection(item._id, col.label)"
+                      class="mr2 cursor-pointer"
+                      size="mini"
+                    >
+                      {{ item.name }}
+                    </el-tag>
+                  </el-collapse-item>
                 </template>
-                <template v-else>
+                <template v-else-if="col.value !== 'cables'">
+                  <el-collapse-item :title="col.label" :name="i">
+                    <el-tag
+                      v-for="(item, index) in info[col.value]"
+                      :key="index + item.name"
+                      @click="handleSelection(item._id, col.label)"
+                      class="mr2 cursor-pointer"
+                      size="mini"
+                    >
+                      {{ item.name }}
+                    </el-tag>
+                  </el-collapse-item>
+                </template>
+              </template>
+              <template v-else>
+                <el-collapse-item :title="col.label" :name="i">
                   <p
                     v-for="(item, index) in info[col.value]"
                     :key="index + item"
@@ -37,8 +58,8 @@
                     {{ item.state ? item.state + ', ' : '' }}
                     {{ item.country ? item.country : '' }}.
                   </p>
-                </template>
-              </el-collapse-item>
+                </el-collapse-item>
+              </template>
             </el-collapse>
           </el-col>
         </el-row>

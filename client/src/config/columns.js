@@ -7,7 +7,8 @@ export const clsColumns = [
     label: 'Cables',
     value: 'cables',
     showTable: true,
-    showSidebar: true
+    showSidebar: true,
+    filter: arr => arr
   },
   {
     label: 'Groups',
@@ -121,7 +122,8 @@ export const facsColumns = [
   {
     label: 'Cables',
     value: 'cables',
-    showSidebar: true
+    showSidebar: true,
+    filter: arr => arr
   },
   {
     label: 'Groups',
@@ -211,10 +213,16 @@ export const netColumns = [
     showSidebar: true
   },
   {
-    label: 'Cables',
+    label: 'Terrestrial Networks',
     value: 'cables',
     showSidebar: true,
-    showTable: true
+    filter: arr => arr.filter(c => c.terrestrial)
+  },
+  {
+    label: 'Subsea Cables',
+    value: 'cables',
+    showSidebar: true,
+    filter: arr => arr.filter(c => !c.terrestrial)
   },
   {
     label: 'Cls',

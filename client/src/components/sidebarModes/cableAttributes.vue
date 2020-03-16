@@ -16,7 +16,7 @@
               <el-collapse-item :title="col.label" :name="i">
                 <el-tag
                   v-for="(item, index) in info[col.value]"
-                  :key="index + item.name"
+                  :key="`${index}_${item.name}`"
                   @click="handleSelection(item._id, col.label)"
                   class="mr2 cursor-pointer"
                   size="mini"
