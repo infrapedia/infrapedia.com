@@ -55,9 +55,9 @@
                 >
                   {{ item.name ? item.name : item }}
                 </el-tag>
-                <template v-else>
-                  {{ item }}
-                </template>
+                <el-tag v-else size="small" :title="item.fullAddress">
+                  {{ item.fullAddress ? item.fullAddress : item }}
+                </el-tag>
               </div>
             </template>
             <el-image
