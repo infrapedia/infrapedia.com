@@ -194,6 +194,10 @@ export default {
       phonenumber: {
         num: '',
         valid: null
+      },
+      address: {
+        pointA: null,
+        pointB: null
       }
     },
     formRules: {
@@ -310,10 +314,10 @@ export default {
     handleAddressChanged(place, inputTarget) {
       switch (inputTarget) {
         case 'b':
-          console.log(place, inputTarget)
+          this.form.address.pointB = { ...place }
           break
         default:
-          console.log(place, inputTarget)
+          this.form.address.pointA = { ...place }
           break
       }
     },
@@ -325,14 +329,51 @@ export default {
         ...this.form
       }
 
-      const res = await sendMessage({
-        email: data.email,
-        phone: data.phonenumber,
-        message:
+      let message
+
+      if (!this.focus.type.includes('cable')) {
+        message =
           data.message !== ''
             ? data.message
             : `Hi, ${data.fullname} (${data.email})
-          , you asked to buy an amount of ${data.capacity} for ${data.cable}(${data.type})`,
+          , you asked to buy an amount of ${data.capacity} for ${data.cable}(${data.type})`
+      } else if (data.address.pointA && data.address.pointB) {
+        let zipcodeA = ''
+        let zipcodeB = ''
+
+        for (let t of data.address.pointA.address_components) {
+          if (t.types.includes('postal_code')) {
+            zipcodeA = t.short_name
+          }
+        }
+
+        for (let t of data.address.pointB.address_components) {
+          if (t.types.includes('postal_code')) {
+            zipcodeB = t.short_name
+          }
+        }
+
+        message =
+          data.message !== ''
+            ? `${data.message} from pointA ${data.address.pointA.fullAddress}${
+                zipcodeA && zipcodeA !== '' ? '(' + zipcodeA + ')' : ''
+              } to pointB ${data.address.pointB.fullAddress}${
+                zipcodeB && zipcodeB !== '' ? '(' + zipcodeB + ')' : ''
+              }`
+            : `Hi, ${data.fullname} (${data.email})
+          , you asked to buy an amount of ${data.capacity} for ${data.cable}(${
+                data.type
+              }) from pointA ${data.address.pointA.fullAddress}${
+                zipcodeA && zipcodeA !== '' ? '(' + zipcodeA + ')' : ''
+              } to pointB ${data.address.pointB.fullAddress}${
+                zipcodeB && zipcodeB !== '' ? '(' + zipcodeB + ')' : ''
+              }`
+      }
+
+      const res = await sendMessage({
+        email: data.email,
+        phone: data.phonenumber,
+        message,
         elemnt: this.focus.id,
         user_id: this.$auth.user.sub,
         t: getSelectionTypeNumber(this.focus.type)
@@ -372,6 +413,10 @@ export default {
         phonenumber: {
           num: '',
           valid: null
+        },
+        address: {
+          pointA: null,
+          pointB: null
         }
       }
       this.$store.commit(`${BUY_TYPE}`, null)
