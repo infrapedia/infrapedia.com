@@ -100,7 +100,6 @@ import currentYear from '../../helpers/currentYear'
 import debounce from '../../helpers/debounce'
 import { viewNetwork } from '../../services/api/networks'
 import { viewOrganization } from '../../services/api/organizations'
-import { mapStatistics } from '../../services/api/map'
 import handleDraw from './draw'
 import boundsChange from './boundsChange'
 import highlightCurrentCable from './highlightCable'
@@ -334,7 +333,10 @@ export default {
     async handleZoomLevelChange() {
       const zoomLevel = this.map.getZoom()
       if (zoomLevel >= 6.4) {
-        return await mapStatistics(this.$route.fullPath.split('?')[1])
+        return await this.$store.dispatch(
+          'saveStatisticsData',
+          this.$route.fullPath.split('?')[1]
+        )
       }
     },
     async handleBoundsChange() {

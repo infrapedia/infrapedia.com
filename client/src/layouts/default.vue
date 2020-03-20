@@ -64,6 +64,14 @@ export default {
         'https://networkatlas.com/wp-content/uploads/2019/03/privacy-policy.pdf'
     }
   }),
+  watch: {
+    async '$store.state.statisticsData'(arr) {
+      if (arr.length >= 5) {
+        await this.$store.dispatch('sendStatisticsData')
+        this.$store.dispatch('saveStatisticsData', { reset: true })
+      }
+    }
+  },
   async mounted() {
     if (this.$auth && this.$auth.isAuthenticated) {
       await this.setToken()
