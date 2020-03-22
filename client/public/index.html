@@ -1687,6 +1687,25 @@
       src="https://maps.googleapis.com/maps/api/js?key=<%= VUE_APP_GOOGLE_API_KEY %>&libraries=places"
       defer
     ></script>
+    <script>
+      window.fwSettings = {
+        widget_id: 60000002577
+      }
+      !(function() {
+        if ('function' != typeof window.FreshworksWidget) {
+          var n = function() {
+            n.q.push(arguments)
+          }
+          ;(n.q = []), (window.FreshworksWidget = n)
+        }
+      })()
+    </script>
+    <script
+      type="text/javascript"
+      src="https://widget.freshworks.com/widgets/60000002577.js"
+      async
+      defer
+    ></script>
     <!-- <script src="https://code.tidio.co/tchfjjobkis3e5ab7oebf9meup2rh3oy.js" defer></script> -->
     <!-- built files will be auto injected -->
   </body>
