@@ -17,6 +17,13 @@
   }
 }
 
+.main-wrapper {
+  @media screen and (max-width: $break-md) {
+    overflow-y: auto;
+    margin-bottom: 12vh;
+  }
+}
+
 /*
 *  THEME VARIANT'S
 */

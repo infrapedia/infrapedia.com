@@ -43,34 +43,14 @@
                   My activity
                 </h2>
               </header>
-              <div class="w-fit-full mt2 pb8">
-                <el-row :gutter="20" class="pr4 pl6">
-                  <div v-for="(data, i) in logsData" :key="i">
-                    <el-col :span="16">
-                      <strong
-                        ><p class="fs-small truncate">
-                          path:
-                        </p></strong
-                      >
-                      <span class="truncate fs-small">
-                        {{ data.path }}
-                      </span>
-                    </el-col>
-                    <el-col :span="8">
-                      <small>
-                        <p>
-                          Register date:
-                        </p>
-                      </small>
-                      <small>
-                        <span class="truncate">
-                          {{ formatDate(data.rgDate) }}
-                        </span>
-                      </small>
-                    </el-col>
-                  </div>
-                </el-row>
-              </div>
+              <el-table :data="logsData" class="mt2">
+                <el-table-column prop="path" label="Path" />
+                <el-table-column
+                  prop="rgDate"
+                  label="Register date"
+                  :formatter="row => formatDate(row.rgDate)"
+                />
+              </el-table>
             </el-card>
           </el-col>
           <el-col :md="24" :lg="14">

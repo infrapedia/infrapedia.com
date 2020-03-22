@@ -27,6 +27,10 @@
     </el-aside>
 
     <i-message-dialog />
+    <i-mobile-profile-drawer
+      :visibility.sync="isMobileProfileDrawer"
+      @close="handleToggleMobileProfileDrawer"
+    />
 
     <transition name="fade" mode="out-in">
       <router-view />
@@ -50,6 +54,8 @@
 import { TOGGLE_DARK } from '../store/actionTypes'
 import profileLinks from '../config/profileLinks'
 import profileTourSteps from '../config/profileTourSteps'
+import * as navbarEvents from '../events/navbar'
+import { bus } from '../helpers/eventBus'
 
 const TOUR_DONE_KEY = '__is-profile-tour-done'
 
@@ -57,12 +63,14 @@ export default {
   components: {
     INavbar: () => import('../components/Navbar'),
     IFooter: () => import('../components/Footer'),
-    IMessageDialog: () => import('../components/dialogs/MessageDialog')
+    IMessageDialog: () => import('../components/dialogs/MessageDialog'),
+    IMobileProfileDrawer: () => import('../components/MobileDrawerProfile')
   },
   data() {
     return {
       profileLinks,
       profileTourSteps,
+      isMobileProfileDrawer: false,
       tourCallbacks: {
         onStop: this.handleOnTourStop
       }
@@ -81,8 +89,16 @@ export default {
     ) {
       this.$tours['profile-tour'].start()
     }
+
+    bus.$on(
+      `${navbarEvents.TOGGLE_MOBILE_DRAWER_PROFILE}`,
+      this.handleToggleMobileProfileDrawer
+    )
   },
   methods: {
+    handleToggleMobileProfileDrawer() {
+      this.isMobileProfileDrawer = !this.isMobileProfileDrawer
+    },
     handleOnTourStop() {
       return window.localStorage.setItem(TOUR_DONE_KEY, true)
     },

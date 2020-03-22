@@ -1,14 +1,14 @@
 <template>
   <div class="drawer-wrapper" :class="{ dark, light: !dark }">
-    <el-button
+    <!-- <el-button
       circle
       icon="el-icon-menu"
       class="no-border color-inherit w8 vertical-align mt1"
       @click="toggleVisibility"
-    />
+    /> -->
     <el-drawer
       size="100%"
-      :visible.sync="isDrawer"
+      :visible.sync="visibility"
       direction="ltr"
       :before-close="toggleVisibility"
       :custom-class="drawerClass"
@@ -142,9 +142,14 @@ export default {
     IList
   },
   data: () => ({
-    isDrawer: false,
     collapseActive: ''
   }),
+  props: {
+    visibility: {
+      type: Boolean,
+      required: true
+    }
+  },
   computed: {
     dark() {
       return this.$store.state.isDark
@@ -162,13 +167,10 @@ export default {
     async emitSelected(selected) {
       this.$emit(CLICK_LIST_ITEM, selected)
       this.toggleVisibility()
-      this.clear()
-    },
-    clear() {
       this.collapseActive = ''
     },
     toggleVisibility() {
-      this.isDrawer = !this.isDrawer
+      return this.$emit('close')
     }
   }
 }

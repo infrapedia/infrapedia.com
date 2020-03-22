@@ -14,6 +14,11 @@
       <h4 class="mt2 mb2 font-medium">{{ title }}</h4>
       <div id="calculated-area" class="font-medium fs-regular" />
     </div>
+    <i-mobile-drawer
+      :visibility.sync="isMobileDrawer"
+      @close="handleToggleDrawerVisibility"
+      @click-list-item="handleItemListSelection"
+    />
   </div>
 </template>
 
@@ -25,15 +30,19 @@ import dataCollection from '../mixins/dataCollection.vue'
 import { IS_DRAWING, TOGGLE_SIDEBAR } from '../store/actionTypes'
 import { FOCUS_ON_CITY, REMOVE_QUERY_ROUTE_REPLACE } from '../events'
 import { HAS_TO_EASE_TO, EASE_POINT } from '../store/actionTypes/map'
+import MobileDrawer from '../components/MobileDrawer.vue'
+import * as navbarEvents from '../events/navbar'
 
 export default {
   name: 'home',
   mixins: [dataCollection],
   components: {
-    'i-map': Map
+    'i-map': Map,
+    IMobileDrawer: MobileDrawer
   },
   data: () => ({
-    title: ''
+    title: '',
+    isMobileDrawer: false
   }),
   computed: {
     isDrawing() {
@@ -59,8 +68,16 @@ export default {
       this.$store.dispatch('editor/setList', [])
     }
     await this.loadDataIfQueryParamsExist()
+    bus.$on(
+      `${navbarEvents.TOGGLE_MOBILE_DRAWER}`,
+      this.handleToggleDrawerVisibility
+    )
   },
   methods: {
+    handleToggleDrawerVisibility() {
+      console.warn('here 1')
+      this.isMobileDrawer = !this.isMobileDrawer
+    },
     /**
      * @param bool { Boolean } - The current state of the drawing plugin (activated - deactivated)
      */

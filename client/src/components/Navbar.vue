@@ -6,19 +6,16 @@
       <div
         class="flex no-padding navbar-wrapper w-full justify-content-space-between pr1 pl1"
       >
-        <h1 class="logo-title hidden-md-and-down">
-          <router-link to="/">
+        <h1 class="logo-title">
+          <router-link to="/" class="hidden-md-and-down">
             <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
           </router-link>
-        </h1>
-
-        <h1>
-          <i-mobile-drawer
-            v-if="!isUserNavbar"
-            class="hidden-md-and-up"
-            @click-list-item="handleBeforeLoadItem"
+          <el-button
+            circle
+            icon="el-icon-menu"
+            class="no-border hidden-md-and-up color-inherit mt1"
+            @click="toggleMobileDrawer"
           />
-          <i-mobile-drawer-profile class="hidden-lg-and-up" v-else />
         </h1>
 
         <div aria-labelledby="rightnavheading" class="links-wrapper">
@@ -39,7 +36,7 @@
                 role="listitem"
               >
                 <premium-partners-button
-                  @item-selected="handleBeforeLoadItem"
+                  @item-selected="handleItemListSelection"
                 />
               </li>
 
@@ -55,7 +52,7 @@
                   <bottom-sheet
                     :visibility="isDrawerOpen"
                     @close="toggleDrawerVisibility"
-                    @item-selected="handleBeforeLoadItem"
+                    @item-selected="handleItemListSelection"
                   />
                 </div>
               </li>
@@ -70,11 +67,13 @@
                   aria-haspopup="true"
                   data-no-hover-bg="true"
                 >
-                  <i-search @search-selection="handleBeforeLoadItem" />
+                  <i-search @search-selection="handleItemListSelection" />
                 </div>
               </li>
 
-              <i-full-screen-search @search-selection="handleBeforeLoadItem" />
+              <i-full-screen-search
+                @search-selection="handleItemListSelection"
+              />
 
               <li
                 class="inline-block relative"
@@ -387,10 +386,10 @@
 import sponsors from '../config/navbarSponsors'
 import infoMenuLinks from '../config/infoMenuLinks'
 import dataCollection from '../mixins/dataCollection'
-import MobileDrawer from './MobileDrawer.vue'
 import FullScreenSearch from './FullScreenSearch.vue'
-import MobileDrawerProfile from './MobileDrawerProfile.vue'
 import { TOGGLE_DARK } from '../store/actionTypes'
+import * as events from '../events/navbar'
+import { bus } from '../helpers/eventBus'
 
 export default {
   name: 'INavbar',
@@ -399,9 +398,7 @@ export default {
     ISearch: () => import('./Search'),
     BottomSheet: () => import('./BottomSheet'),
     PremiumPartnersButton: () => import('./PremiumPartners'),
-    IMobileDrawer: MobileDrawer,
-    IFullScreenSearch: FullScreenSearch,
-    IMobileDrawerProfile: MobileDrawerProfile
+    IFullScreenSearch: FullScreenSearch
   },
   mixins: [dataCollection],
   props: {
@@ -464,9 +461,6 @@ export default {
     toggleDrawerVisibility() {
       this.isDrawerOpen = !this.isDrawerOpen
     },
-    async handleBeforeLoadItem(item) {
-      await this.handleItemListSelection(item)
-    },
     closeUnwantedOpenMenus() {
       if (this.isInfoMenuOpen) this.isInfoMenuOpen = false
     },
@@ -486,6 +480,13 @@ export default {
       } else if (this.$route.name.includes('user')) {
         this.toggleUserMenuVisibility()
       } else if (this.$auth.isAuthenticated) this.$router.push('/user')
+    },
+    toggleMobileDrawer() {
+      return bus.$emit(
+        this.isUserNavbar
+          ? `${events.TOGGLE_MOBILE_DRAWER_PROFILE}`
+          : `${events.TOGGLE_MOBILE_DRAWER}`
+      )
     }
   }
 }

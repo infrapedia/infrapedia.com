@@ -1,15 +1,15 @@
 <template>
   <div class="drawer-wrapper" :class="{ dark, light: !dark }">
-    <el-button
+    <!-- <el-button
       circle
       icon="el-icon-menu"
       class="no-border color-inherit w8 vertical-align mt1"
       @click="toggleVisibility"
       :class="{ dark, light: !dark }"
-    />
+    /> -->
     <el-drawer
       size="100%"
-      :visible.sync="isDrawer"
+      :visible.sync="visibility"
       direction="ltr"
       :before-close="toggleVisibility"
       :custom-class="drawerClass"
@@ -63,9 +63,14 @@ export default {
     IFooter: () => import('./Footer')
   },
   data: () => ({
-    isDrawer: false,
     profileLinks
   }),
+  props: {
+    visibility: {
+      type: Boolean,
+      required: true
+    }
+  },
   computed: {
     dark() {
       return this.$store.state.isDark
@@ -80,14 +85,14 @@ export default {
     }
   },
   methods: {
-    toggleVisibility() {
-      this.isDrawer = !this.isDrawer
-    },
     goToRoute(link) {
       this.toggleVisibility()
       if (this.$route.path !== link) {
         return this.$router.push(link)
       }
+    },
+    toggleVisibility() {
+      return this.$emit('close')
     }
   }
 }

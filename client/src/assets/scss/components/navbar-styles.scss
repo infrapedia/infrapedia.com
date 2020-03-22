@@ -10,6 +10,13 @@ $header-color: rgb(37, 95, 185);
   background-color: $white-full;
 }
 
+.el-button.no-border {
+  color: $dark-charcoal;
+  .el-icon-menu {
+    margin-left: -0.18rem;
+  }
+}
+
 .navbar-wrapper {
   .logo-title {
     margin-top: -0.05rem;
@@ -140,7 +147,7 @@ $header-color: rgb(37, 95, 185);
 
 .header.light {
   & + ul.light {
-    background: $white-full
+    background: $white-full;
   }
 }
 
@@ -151,6 +158,10 @@ $header-color: rgb(37, 95, 185);
     background-color: #212121;
   }
 
+  .el-button.no-border {
+    color: $white-partial;
+    background-color: inherit;
+  }
 
   .icon-wrapper {
     &:focus,
@@ -176,7 +187,7 @@ $header-color: rgb(37, 95, 185);
   }
 
   .el-divider {
-    background-color: $light-charcoal
+    background-color: $light-charcoal;
   }
 
   li:not([data-no-outline='true']) {
@@ -197,7 +208,7 @@ ul.dark {
     color: inherit;
     &.link-info.social {
       &:hover {
-        background-color: darken($white-hsl, 52%)
+        background-color: darken($white-hsl, 52%);
       }
     }
   }
