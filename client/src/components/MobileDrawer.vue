@@ -12,6 +12,7 @@
       direction="ltr"
       :before-close="toggleVisibility"
       :custom-class="drawerClass"
+      :append-to-body="true"
     >
       <header
         class="h14 pr4 pl4 pb2 flex justify-content-space-between align-items-center"
@@ -132,11 +133,13 @@
 
 <script>
 import { CLICK_LIST_ITEM } from '../events/mobiledrawer'
+import IFooter from './Footer'
+import IList from './List'
 
 export default {
   components: {
-    IFooter: () => import('./Footer'),
-    IList: () => import('./List')
+    IFooter,
+    IList
   },
   data: () => ({
     isDrawer: false,

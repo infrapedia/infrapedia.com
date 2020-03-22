@@ -13,6 +13,7 @@
       direction="ltr"
       :before-close="toggleVisibility"
       :custom-class="drawerClass"
+      :append-to-body="true"
     >
       <div>
         <header
