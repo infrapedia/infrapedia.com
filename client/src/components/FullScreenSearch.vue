@@ -166,7 +166,10 @@ export default {
       }
 
       this.toggleVisibility()
-      this.searchResults = []
+      this.searchResults = {
+        r: [],
+        places: []
+      }
       this.search = ''
     },
     handleClose(e) {

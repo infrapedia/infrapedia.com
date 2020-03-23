@@ -89,7 +89,7 @@
               "
             >
               <a
-                class="underline truncate fs-regular mr2"
+                class="underline truncate fs-regular mr2 inline-block"
                 v-for="(url, i) in info[col.value]"
                 :href="
                   url.includes('http://') || url.includes('https://')
@@ -98,9 +98,8 @@
                 "
                 target="_blank"
                 :key="i"
-              >
-                {{ url }}
-              </a>
+                v-text="url"
+              />
             </template>
             <p
               class="text-bold"

@@ -103,9 +103,8 @@
                   "
                   target="_blank"
                   :key="i"
-                >
-                  {{ url }}
-                </a>
+                  v-text="url"
+                />
               </template>
               <a
                 v-else

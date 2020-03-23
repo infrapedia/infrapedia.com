@@ -11,7 +11,6 @@
       <el-card shadow="hover" v-loading="isSidebarLoad">
         <header
           class="header pt10 pr8 pl8 pb10 h12 relative"
-          v-touch="toggleActiveClassOnMobile"
           @click.stop="toggleActiveClassOnMobile"
         >
           <span
@@ -27,8 +26,7 @@
           >
             <h1
               class="inline-block cursor-pointer title font-bold m0 p1 round truncate fs-large underline"
-              @click="copyToClip"
-              v-touch="toggleActiveClassOnMobile"
+              @click.stop="copyToClip"
             >
               {{ currentSelection.name }}
             </h1>
@@ -44,7 +42,7 @@
                 ? 'Owner verified'
                 : 'Owner unverified'
             "
-            @click="handleVerification"
+            @click.stop="handleVerification"
           >
             <fa :icon="['fas', 'check-double']" />
           </span>
@@ -174,7 +172,9 @@ export default {
       }
     },
     toggleActiveClassOnMobile() {
+      console.log(this.isSidebarActive)
       this.isSidebarActive = !this.isSidebarActive
+      console.log(this.isSidebarActive)
     },
     resizeWatcher() {
       const mobileWidth = 425
