@@ -108,16 +108,16 @@ export const mapConfig = {
           'line-color': [
             'case',
             ['==', ['get', 'category'], 'offline'],
-            '#FF0000',
+            `${process.env.VUE_APP_COLORS_OFFLINE}`,
             ['>', ['get', 'activation'], 1558130779],
-            '#af6ec7',
+            `${process.env.VUE_APP_COLORS_ACTIVATION}`,
             ['==', ['get', 'category'], 'online'],
-            '#7288b0',
+            `${process.env.VUE_APP_COLORS_ONLINE}`,
             ['==', ['get', 'haspartial'], 'true'],
-            '#CC591F',
+            `${process.env.VUE_APP_COLORS_HASPARTIAL}`,
             ['==', ['get', 'terrestrial'], 'true'],
-            '#7288b0',
-            '#7288b0'
+            `${process.env.VUE_APP_COLORS_TERRESTRIAL}`,
+            `${process.env.VUE_APP_COLORS_DEFAULT}`
           ]
         }
       },
@@ -160,16 +160,16 @@ export const mapConfig = {
           'line-color': [
             'case',
             ['==', ['get', 'category'], 'offline'],
-            '#FF0000',
+            `${process.env.VUE_APP_COLORS_OFFLINE}`,
             ['>', ['get', 'activation'], 1558130779],
-            '#af6ec7',
+            `${process.env.VUE_APP_COLORS_ACTIVATION}`,
             ['==', ['get', 'category'], 'online'],
-            '#7288b0',
+            `${process.env.VUE_APP_COLORS_ONLINE}`,
             ['==', ['get', 'haspartial'], 'true'],
-            '#CC591F',
+            `${process.env.VUE_APP_COLORS_HASPARTIAL}`,
             ['==', ['get', 'terrestrial'], 'true'],
-            '#7288b0',
-            '#7288b0'
+            `${process.env.VUE_APP_COLORS_TERRESTRIAL}`,
+            `${process.env.VUE_APP_COLORS_DEFAULT}`
           ]
         }
       },
