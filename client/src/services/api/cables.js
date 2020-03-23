@@ -173,8 +173,8 @@ export const editCable = async ({
   return res
 }
 
-export const getCables = async ({ user_id }) => {
-  url = `${apiConfig.url}/auth/cables/all`
+export const getCables = async ({ user_id, page }) => {
+  url = `${apiConfig.url}/auth/cables/all?p=${page}`
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
@@ -303,8 +303,8 @@ export const getCablesGeom = async ({ user_id, ids }) => {
   return res
 }
 
-export const getTerrestrialNetworks = async ({ user_id }) => {
-  url = `${apiConfig.url}/auth/cables/terrestrial/all`
+export const getTerrestrialNetworks = async ({ user_id, page }) => {
+  url = `${apiConfig.url}/auth/cables/terrestrial/all?p=${page}`
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
@@ -317,8 +317,8 @@ export const getTerrestrialNetworks = async ({ user_id }) => {
   return res
 }
 
-export const getSubseaCables = async ({ user_id }) => {
-  url = `${apiConfig.url}/auth/cables/subsea/all`
+export const getSubseaCables = async ({ user_id, page }) => {
+  url = `${apiConfig.url}/auth/cables/subsea/all?p=${page}`
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {

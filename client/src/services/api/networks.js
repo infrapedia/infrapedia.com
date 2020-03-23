@@ -158,8 +158,8 @@ export const editNetwork = async ({
   return res
 }
 
-export const getNetworks = async ({ user_id }) => {
-  url = `${apiConfig.url}/auth/network/all`
+export const getNetworks = async ({ user_id, page }) => {
+  url = `${apiConfig.url}/auth/network/all?p=${page}`
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {

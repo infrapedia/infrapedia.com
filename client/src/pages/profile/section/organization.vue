@@ -12,6 +12,8 @@
       @edit-item="viewOrg"
       @delete-item="deleteOrg"
       @alert-message="handleSendMessage"
+      :pagination="true"
+      @page-change="getOrganizationsList"
     />
     <org-form
       :form="form"
@@ -121,9 +123,12 @@ export default {
         }
       }
     },
-    async getOrganizationsList() {
+    async getOrganizationsList(page = 1) {
       this.loading = true
-      const res = await getOrganizations({ user_id: this.$auth.user.sub })
+      const res = await getOrganizations({
+        user_id: this.$auth.user.sub,
+        page
+      })
       if (res && res.data && res.t !== 'error') {
         this.tableData = res.data.r
       }

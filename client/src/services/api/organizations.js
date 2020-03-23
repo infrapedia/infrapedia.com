@@ -76,8 +76,8 @@ export const editOrganization = async ({
   return res
 }
 
-export const getOrganizations = async ({ user_id }) => {
-  url = `${apiConfig.url}/auth/organization/all`
+export const getOrganizations = async ({ user_id, page }) => {
+  url = `${apiConfig.url}/auth/organization/all?p=${page}`
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {

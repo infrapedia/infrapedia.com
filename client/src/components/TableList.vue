@@ -140,6 +140,13 @@
         </el-table-column>
       </el-table>
     </el-card>
+    <div v-if="pagination" class="w-fit-full flex justify-content-center mt8">
+      <el-pagination
+        layout="prev, next"
+        :current-page.sync="paginationPage"
+        @current-change="$emit('page-change', $event)"
+      />
+    </div>
   </div>
 </template>
 
@@ -164,6 +171,10 @@ export default {
     admittedKeys: {
       type: Array,
       default: () => []
+    },
+    pagination: {
+      type: Boolean,
+      default: () => false
     },
     canEdit: {
       type: Boolean,
@@ -198,7 +209,8 @@ export default {
     }
   },
   data: () => ({
-    formatDate
+    formatDate,
+    paginationPage: 0
   }),
   methods: {
     getKeys(arr) {

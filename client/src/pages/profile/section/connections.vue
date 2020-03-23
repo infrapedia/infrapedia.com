@@ -12,6 +12,8 @@
       @edit-item="viewNet"
       @delete-item="deleteNet"
       @alert-message="handleSendMessage"
+      :pagination="true"
+      @page-change="getNetworksList"
     />
     <connection-form
       :form="form"
@@ -84,10 +86,10 @@ export default {
       })
       return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
     },
-    async getNetworksList() {
+    async getNetworksList(page = 1) {
       try {
         this.loading = true
-        const res = await getNetworks({ user_id: this.$auth.user.sub })
+        const res = await getNetworks({ user_id: this.$auth.user.sub, page })
         if (res && res.data && res.t !== 'error') {
           this.tableData = res.data.r
         }

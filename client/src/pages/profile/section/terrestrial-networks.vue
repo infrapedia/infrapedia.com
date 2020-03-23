@@ -11,6 +11,8 @@
       @edit-item="handleEditCable"
       @delete-item="handleDeleteCable"
       @alert-message="handleSendMessage"
+      :pagination="true"
+      @page-change="getCablesList"
     />
   </div>
 </template>
@@ -59,9 +61,12 @@ export default {
       })
       return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
     },
-    async getCablesList() {
+    async getCablesList(page = 1) {
       this.loading = true
-      const res = await getTerrestrialNetworks({ user_id: this.$auth.user.sub })
+      const res = await getTerrestrialNetworks({
+        user_id: this.$auth.user.sub,
+        page
+      })
       if (res.t !== 'error' && res.data) {
         this.tableData = res.data.r
       }
