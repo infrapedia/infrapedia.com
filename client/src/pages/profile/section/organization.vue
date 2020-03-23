@@ -123,7 +123,7 @@ export default {
         }
       }
     },
-    async getOrganizationsList(page = 1) {
+    async getOrganizationsList(page = 0) {
       this.loading = true
       const res = await getOrganizations({
         user_id: this.$auth.user.sub,

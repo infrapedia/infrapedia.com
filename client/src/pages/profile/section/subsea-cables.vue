@@ -56,7 +56,7 @@ export default {
       })
       return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
     },
-    async getCablesList(page = 1) {
+    async getCablesList(page = 0) {
       this.loading = true
       const res = await getSubseaCables({ user_id: this.$auth.user.sub, page })
       if (res.t !== 'error' && res.data) {

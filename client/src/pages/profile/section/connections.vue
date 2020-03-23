@@ -86,7 +86,7 @@ export default {
       })
       return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
     },
-    async getNetworksList(page = 1) {
+    async getNetworksList(page = 0) {
       try {
         this.loading = true
         const res = await getNetworks({ user_id: this.$auth.user.sub, page })

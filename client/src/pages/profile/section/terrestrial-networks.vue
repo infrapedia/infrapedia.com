@@ -61,7 +61,7 @@ export default {
       })
       return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
     },
-    async getCablesList(page = 1) {
+    async getCablesList(page = 0) {
       this.loading = true
       const res = await getTerrestrialNetworks({
         user_id: this.$auth.user.sub,
