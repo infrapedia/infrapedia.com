@@ -1,18 +1,16 @@
 <template>
-  <div class="drawer-wrapper" :class="{ dark, light: !dark }">
-    <!-- <el-button
-      circle
-      icon="el-icon-menu"
-      class="no-border color-inherit w8 vertical-align mt1"
-      @click="toggleVisibility"
-    /> -->
-    <el-drawer
-      size="100%"
-      :visible.sync="visibility"
-      direction="ltr"
-      :before-close="toggleVisibility"
-      :custom-class="drawerClass"
-      :append-to-body="true"
+  <transition
+    tag="div"
+    mode="out-in"
+    name="animated faster"
+    enter-active-class="slideInLeft"
+    leave-active-class="slideOutLeft"
+  >
+    <el-card
+      v-if="visibility"
+      shadow="hover"
+      :class="{ dark, light: !dark }"
+      class="drawer-wrapper"
     >
       <header
         class="h14 pr4 pl4 pb2 flex justify-content-space-between align-items-center"
@@ -108,27 +106,27 @@
             </div>
           </li>
           <!-- <li
-            class="inline-block relative mt8"
-            data-no-outline="true"
-            role="listitem"
-          >
-            <div class="list-item" data-no-hover-bg="true">
-              <a href="https://aptelecom.com/" target="_blank">
-                <el-image
-                  src="https://cdn.infrapedia.com/sponsors/aptelecom_logo.png"
-                  fit="center"
-                  class="w46 h18 image-sponsor"
-                  alt="aptelecom logo"
-                  referrer-policy="strict-origin-when-cross-origin"
-                />
-              </a>
-            </div>
-          </li> -->
+              class="inline-block relative mt8"
+              data-no-outline="true"
+              role="listitem"
+            >
+              <div class="list-item" data-no-hover-bg="true">
+                <a href="https://aptelecom.com/" target="_blank">
+                  <el-image
+                    src="https://cdn.infrapedia.com/sponsors/aptelecom_logo.png"
+                    fit="center"
+                    class="w46 h18 image-sponsor"
+                    alt="aptelecom logo"
+                    referrer-policy="strict-origin-when-cross-origin"
+                  />
+                </a>
+              </div>
+            </li> -->
         </ul>
       </div>
-      <i-footer class="footer relative m0 mt54 ml-5 p4" />
-    </el-drawer>
-  </div>
+      <i-footer class="footer relative m0-imp p0-imp" />
+    </el-card>
+  </transition>
 </template>
 
 <script>

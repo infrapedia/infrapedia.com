@@ -1,15 +1,27 @@
 @import '../helpers/atomic-classes';
 @import '../base/variables';
 
-.el-button.no-border {
-  &.light {
-    color: $dark-charcoal;
-  }
-  &.dark {
-    color: $white-partial;
-    background-color: #212121;
-    &:hover {
-      background-color: $light-charcoal;
+.drawer-wrapper {
+  background: $white-full;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2000 !important;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  display: flex;
+  flex-flow: column nowrap;
+  border-color: transparent;
+  transition: all $regular-transition;
+
+  header {
+    width: 84vw;
+    @media screen and (max-width: $break-sm) {
+      width: 86vw;
+    }
+    @media screen and (max-width: $break-md) {
+      width: 94vw;
     }
   }
 }
