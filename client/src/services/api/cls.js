@@ -96,8 +96,8 @@ export const editCls = async ({
   return res
 }
 
-export const getClss = async ({ user_id }) => {
-  url = `${apiConfig.url}/auth/cls/all`
+export const getClss = async ({ user_id, page }) => {
+  url = `${apiConfig.url}/auth/cls/all?p=${page}`
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {

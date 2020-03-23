@@ -11,6 +11,8 @@
       @edit-item="handleEditCLS"
       @delete-item="handleDeleteCLS"
       @alert-message="handleSendMessage"
+      :pagination="true"
+      @page-change="getClssList"
       :row-classes="['state', 'light-yellow-bg', 'false']"
     />
   </div>
@@ -55,9 +57,9 @@ export default {
       })
       return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
     },
-    async getClssList() {
+    async getClssList(page = 0) {
       this.loading = true
-      const res = await getClss({ user_id: this.$auth.user.sub })
+      const res = await getClss({ user_id: this.$auth.user.sub, page })
       if (res.t !== 'error' && res.data) {
         this.tableData = res.data.r
       }
