@@ -21,7 +21,7 @@
     <el-card shadow="never" class="w-fit-full">
       <el-table
         :data="tableData"
-        max-height="700"
+        max-height="500"
         v-loading="isLoading"
         :row-class-name="tableRowClassName"
       >
