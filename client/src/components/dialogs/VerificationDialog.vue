@@ -109,9 +109,10 @@ export default {
       const userData = await getUserData(this.$auth.user.sub)
 
       if (userData) {
-        this.email = userData.user_metadata.email
-          ? userData.user_metadata.email
-          : userData.email
+        this.email =
+          userData.user_metadata && userData.user_metadata.email
+            ? userData.user_metadata.email
+            : userData.email
       }
       this.loading = false
     },

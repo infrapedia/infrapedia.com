@@ -292,21 +292,25 @@ export default {
         this.loading = true
         const { user_metadata } = userData
 
-        this.form.fullname = user_metadata.name
-          ? user_metadata.name
-          : userData.name
-        this.form.email = user_metadata.email
-          ? user_metadata.email
-          : userData.email
-        this.form.company = user_metadata.companyname
-          ? user_metadata.companyname
-          : ''
-        this.form.phonenumber = user_metadata.phonenumber
-          ? user_metadata.phonenumber
-          : {
-              num: '',
-              valid: null
-            }
+        this.form.fullname =
+          user_metadata && user_metadata.name
+            ? user_metadata.name
+            : userData.name
+        this.form.email =
+          user_metadata && user_metadata.email
+            ? user_metadata.email
+            : userData.email
+        this.form.company =
+          user_metadata && user_metadata.companyname
+            ? user_metadata.companyname
+            : ''
+        this.form.phonenumber =
+          user_metadata && user_metadata.phonenumber
+            ? user_metadata.phonenumber
+            : {
+                num: '',
+                valid: null
+              }
 
         this.loading = false
       }

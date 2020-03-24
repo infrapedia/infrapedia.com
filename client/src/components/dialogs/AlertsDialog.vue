@@ -139,15 +139,17 @@ export default {
       if (userData) {
         const { user_metadata } = userData
 
-        this.form.email = user_metadata.email
-          ? user_metadata.email
-          : userData.email
-        this.form.phone = user_metadata.phonenumber
-          ? user_metadata.phonenumber
-          : {
-              num: '',
-              valid: null
-            }
+        this.form.email =
+          user_metadata && user_metadata.email
+            ? user_metadata.email
+            : userData.email
+        this.form.phone =
+          user_metadata && user_metadata.phonenumber
+            ? user_metadata.phonenumber
+            : {
+                num: '',
+                valid: null
+              }
       }
       this.loading = false
     },
