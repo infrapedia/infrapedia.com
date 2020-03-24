@@ -1,0 +1,24 @@
+@import '../base/variables';
+
+.banner-wrapper {
+  top: 0;
+  left: 0;
+  z-index: 20000000000;
+  p {
+    max-width: 40rem;
+  }
+}
+
+.application.light {
+  .banner-wrapper {
+    color: $light-charcoal;
+    background-color: $white-partial;
+  }
+}
+
+.application.dark {
+  .banner-wrapper {
+    color: $white-partial;
+    background-color: $dark-charcoal;
+  }
+}

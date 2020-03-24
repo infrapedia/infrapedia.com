@@ -5,6 +5,7 @@
     role="main"
     :style="getDarkStyles"
   >
+    <versions-banner />
     <transition mode="out-in" name="fade">
       <component :is="layout" />
     </transition>
@@ -17,9 +18,13 @@ import ProfileLayout from './layouts/profile'
 import DefaultLayout from './layouts/default'
 import BlogLayout from './layouts/blog'
 import NoNav from './layouts/nothing'
+import VersionsBanner from './components/VersionsBanner'
 
 export default {
   name: 'App',
+  components: {
+    VersionsBanner
+  },
   computed: {
     layout() {
       let layout
