@@ -81,12 +81,13 @@
           <!---- LABELS SECTION END ---->
 
           <!---- VALUES SECTION START ---->
-          <el-col :span="12" class="p2" v-if="info[col.value]">
-            <template
+          <template v-if="info[col.value]">
+            <div
               v-if="
                 col.label.toLowerCase().includes('url') ||
                   col.label.toLowerCase().includes('web')
               "
+              class="flex row wrap"
             >
               <a
                 class="underline truncate fs-regular mr2 inline-block"
@@ -100,36 +101,43 @@
                 :key="i"
                 v-text="url"
               />
-            </template>
-            <p
-              class="text-bold"
+            </div>
+            <el-col
+              :span="12"
+              class="p2"
               v-else-if="col.label.toLowerCase().includes('ready for service')"
             >
-              {{ convertToYear(info[col.value]) }}
-            </p>
-            <p
-              class="text-bold"
+              <p class="text-bold">
+                {{ convertToYear(info[col.value]) }}
+              </p>
+            </el-col>
+            <el-col
+              :span="12"
               v-else-if="
                 !isArrCol(info[col.value]) &&
                   col.label === 'Latency' &&
                   !info.terrestrial
               "
             >
-              {{ getCableLatency(info[col.value]) }} ms
-            </p>
-            <p
-              class="text-bold"
+              <p class="text-bold">{{ getCableLatency(info[col.value]) }} ms</p>
+            </el-col>
+            <el-col
+              :span="12"
               v-else-if="col.label.includes('EOL') && info.status !== 'project'"
             >
-              {{ convertToYear(calculateEOL(info[col.value])) }}
-            </p>
-            <p
-              class="text-bold"
+              <p class="text-bold">
+                {{ convertToYear(calculateEOL(info[col.value])) }}
+              </p>
+            </el-col>
+            <el-col
+              :span="12"
               v-else-if="!isArrCol(info[col.value]) && col.label !== 'Latency'"
             >
-              {{ info[col.value] }}
-            </p>
-          </el-col>
+              <p class="text-bold">
+                {{ info[col.value] }}
+              </p>
+            </el-col>
+          </template>
           <div v-if="info.notes" v-html="info.notes" />
         </el-row>
       </template>
