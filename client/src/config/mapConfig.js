@@ -109,13 +109,13 @@ export const mapConfig = {
             'case',
             ['==', ['get', 'status'], 0],
             '#FF0000',
-            ['>', ['get', 'activation'], 1558130779],
+            ['>', ['get', 'activationDateTime'], 1558130779],
             '#af6ec7',
             ['==', ['get', 'hasoutage'], 'true'],
             '#7288b0',
             ['==', ['get', 'haspartial'], 'true'],
             '#CC591F',
-            ['==', ['get', 'isterrestr'], 'true'],
+            ['==', ['get', 'terrestrial'], 'true'],
             '#7288b0',
             '#7288b0'
           ]
@@ -161,13 +161,13 @@ export const mapConfig = {
             'case',
             ['==', ['get', 'status'], 0],
             '#FF0000',
-            ['>', ['get', 'activation'], 1558130779],
+            ['>', ['get', 'activationDateTime'], 1558130779],
             '#af6ec7',
             ['==', ['get', 'hasoutage'], 'true'],
             '#7288b0',
             ['==', ['get', 'haspartial'], 'true'],
             '#CC591F',
-            ['==', ['get', 'isterrestr'], 'true'],
+            ['==', ['get', 'terrestrial'], 'true'],
             '#7288b0',
             '#7288b0'
           ]
