@@ -33,7 +33,10 @@
 </template>
 
 <script>
-import { setCookie, checkCookie } from '../helpers/cookies'
+import {
+  setCookie
+  // checkCookie
+} from '../helpers/cookies'
 
 const c_name = '_v-app_inf'
 
@@ -48,11 +51,11 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => {
-      checkCookie(c_name)
-        ? window.location.assign(this.versionTwoLink)
-        : this.toggleVisibility()
-    }, 820)
+    // setTimeout(() => {
+    //   checkCookie(c_name)
+    //     ? window.location.assign(this.versionTwoLink)
+    //     : this.toggleVisibility()
+    // }, 820)
   },
   methods: {
     toggleVisibility() {

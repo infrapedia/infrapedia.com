@@ -13,7 +13,7 @@ function highlightCurrentCable({ dark, cable, map, commit }) {
   }
 
   const unselectedColor = dark
-    ? 'rgba(250, 250, 250, 0.6)'
+    ? 'rgba(219, 219, 219, 0.36)'
     : 'rgba(23,23,23, 0.2)'
 
   // Changing cables line colors

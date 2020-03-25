@@ -107,17 +107,17 @@ export const mapConfig = {
           'line-width': 1.62,
           'line-color': [
             'case',
-            ['==', ['get', 'category'], 'offline'],
-            `${process.env.VUE_APP_COLORS_OFFLINE}`,
+            ['==', ['get', 'status'], 0],
+            '#FF0000',
             ['>', ['get', 'activation'], 1558130779],
-            `${process.env.VUE_APP_COLORS_ACTIVATION}`,
-            ['==', ['get', 'category'], 'online'],
-            `${process.env.VUE_APP_COLORS_ONLINE}`,
+            '#af6ec7',
+            ['==', ['get', 'hasoutage'], 'true'],
+            '#7288b0',
             ['==', ['get', 'haspartial'], 'true'],
-            `${process.env.VUE_APP_COLORS_HASPARTIAL}`,
-            ['==', ['get', 'terrestrial'], 'true'],
-            `${process.env.VUE_APP_COLORS_TERRESTRIAL}`,
-            `${process.env.VUE_APP_COLORS_DEFAULT}`
+            '#CC591F',
+            ['==', ['get', 'isterrestr'], 'true'],
+            '#7288b0',
+            '#7288b0'
           ]
         }
       },
@@ -159,17 +159,17 @@ export const mapConfig = {
           'line-width': 1.62,
           'line-color': [
             'case',
-            ['==', ['get', 'category'], 'offline'],
-            `${process.env.VUE_APP_COLORS_OFFLINE}`,
+            ['==', ['get', 'status'], 0],
+            '#FF0000',
             ['>', ['get', 'activation'], 1558130779],
-            `${process.env.VUE_APP_COLORS_ACTIVATION}`,
-            ['==', ['get', 'category'], 'online'],
-            `${process.env.VUE_APP_COLORS_ONLINE}`,
+            '#af6ec7',
+            ['==', ['get', 'hasoutage'], 'true'],
+            '#7288b0',
             ['==', ['get', 'haspartial'], 'true'],
-            `${process.env.VUE_APP_COLORS_HASPARTIAL}`,
-            ['==', ['get', 'terrestrial'], 'true'],
-            `${process.env.VUE_APP_COLORS_TERRESTRIAL}`,
-            `${process.env.VUE_APP_COLORS_DEFAULT}`
+            '#CC591F',
+            ['==', ['get', 'isterrestr'], 'true'],
+            '#7288b0',
+            '#7288b0'
           ]
         }
       },
