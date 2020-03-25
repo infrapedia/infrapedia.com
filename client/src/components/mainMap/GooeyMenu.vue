@@ -2,7 +2,7 @@
   <div
     class="gooey-wrapper z-index1 absolute regular-transition"
     @click.stop="activeGooeyMenu"
-    :class="{ active: isActiveGooeyMenu }"
+    :class="{ active: isActive }"
   >
     <ul role="group" class="relative regular-transition" id="gooeyList">
       <li
@@ -24,7 +24,7 @@
         <el-button
           circle
           class="color-inherit w11 h11"
-          @click.stop="activeGooeyMenu"
+          @click.stop="$emit('close')"
           :class="{ dark }"
         >
           <fa :icon="['fas', 'times']" class="sm-icon" />
@@ -40,9 +40,14 @@ import { shareLinkButtons } from '../../config/shareLinkButtons'
 
 export default {
   data: () => ({
-    shareLinkButtons,
-    isActiveGooeyMenu: false
+    shareLinkButtons
   }),
+  props: {
+    isActive: {
+      type: Boolean,
+      required: true
+    }
+  },
   computed: {
     userID() {
       return this.$auth.user.sub || ''
@@ -52,10 +57,6 @@ export default {
     }
   },
   methods: {
-    activeGooeyMenu() {
-      this.isActiveGooeyMenu = !this.isActiveGooeyMenu
-      if (this.isActiveGooeyMenu) return this.$emit('active')
-    },
     async handleShareLink(funcName) {
       return await share[funcName](this.userID)
     }

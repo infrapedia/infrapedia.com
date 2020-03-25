@@ -56,14 +56,14 @@
             type="primary"
             class="w11 h11"
             circle
-            @click="$refs.gooey.click()"
+            @click="toggleGooeyMenu"
           >
             <fa :icon="['fas', 'share-alt']" />
           </el-button>
         </li>
       </ul>
     </el-button>
-    <gooey-menu ref="gooey" @active="() => (isMenuOpen = false)" />
+    <gooey-menu :is-active="isGooeyMenu" @close="toggleGooeyMenu" />
   </div>
 </template>
 
@@ -118,6 +118,7 @@ export default {
     mapTooltip: {},
     map: undefined,
     isMenuOpen: false,
+    isGooeyMenu: false,
     isLocationZoomIn: true
   }),
   computed: {
@@ -284,7 +285,7 @@ export default {
 
       this.mapTooltip = {
         name: prop.name,
-        status: prop.category,
+        status: prop.status,
         segment: prop.segment
       }
 
@@ -636,8 +637,14 @@ export default {
     },
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen
-      if (this.isMenuOpen && this.isActiveGooeyMenu) {
-        this.isActiveGooeyMenu = false
+      if (this.isMenuOpen && this.isGooeyMenu) {
+        this.isGooeyMenu = false
+      }
+    },
+    toggleGooeyMenu() {
+      this.isGooeyMenu = !this.isGooeyMenu
+      if (this.isMenuOpen && this.isGooeyMenu) {
+        this.isMenuOpen = false
       }
     },
     toggleFullScreen() {
