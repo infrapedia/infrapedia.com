@@ -15,9 +15,10 @@
         commodi odio. Nisi aliquid esse, iste laborum id dolores!.
         <br />
         <br />
-        Go to version 1.0:
-        <a
-          class="underline-hover"
+        Go to version 1.0 and set as preferred:
+        <span
+          @click="setPreferenceCookie"
+          class="cursor-pointer underline-hover"
           :href="versionTwoLink"
           v-text="versionTwoLink"
         />
@@ -48,21 +49,23 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      if (!checkCookie(c_name)) {
-        this.toggleVisibility()
-      }
+      checkCookie(c_name)
+        ? window.location.assign(this.versionTwoLink)
+        : this.toggleVisibility()
     }, 820)
   },
   methods: {
     toggleVisibility() {
       this.visible = !this.visible
-      if (!this.visible) {
-        setCookie(
-          c_name,
-          'app version.preference',
-          process.env.VUE_APP_EXP_DAYS_VERSION_DAYS_NOTICE
-        )
-      }
+    },
+    setPreferenceCookie() {
+      setCookie(
+        c_name,
+        `Prefers: ${this.versionTwoLink}`,
+        process.env.VUE_APP_EXP_DAYS_VERSION_DAYS_NOTICE
+      )
+
+      window.location.assign(this.versionTwoLink)
     }
   }
 }
