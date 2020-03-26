@@ -76,6 +76,11 @@ export const cablesColumns = [
   },
   {
     label: 'Owners',
+    value: 'owners',
+    showSidebar: true
+  },
+  {
+    label: 'Organizations',
     value: 'organizations',
     showSidebar: true
   },

@@ -7,7 +7,8 @@
           col.value.toLowerCase().includes('org') ||
             col.value.toLowerCase().includes('cls') ||
             col.value.toLowerCase().includes('networks') ||
-            col.value.toLowerCase().includes('fac')
+            col.value.toLowerCase().includes('fac') ||
+            col.value.toLowerCase().includes('owners')
         "
       >
         <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
