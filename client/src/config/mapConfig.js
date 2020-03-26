@@ -321,15 +321,15 @@ export const mapConfig = {
     ]
   },
   filter: {
-    subsea: ['!=', ['get', 'terrestrial'], true],
+    subsea: ['!=', ['get', 'terrestrial'], 'true'],
     activeSubsea: [
       'all',
       ['!=', 'terrestrial', 'true'],
       ['!=', 'isinactive', 'true']
     ],
-    active: ['==', ['get', 'category'], 'online'],
+    active: ['==', ['get', 'status'], 1],
     all: ['has', '_id'],
-    future: ['>', ['get', 'activationDateTime'], currentEpoch],
+    future: ['>', ['get', 'activationDateTime'], currentEpoch * 1000],
     timemachine: ['>=', ['get', 'activationDateTime'], 0] // We change the 0 value when using the filter component inside the navbar for the sub-sea time machine
   }
 }
