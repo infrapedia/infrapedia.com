@@ -1,9 +1,9 @@
 const token = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN
 
-const cableSubsea = 'cables_subsea'
+const cableSubsea = 'subsea'
 const cableSubseaLabel = 'cables_subsea_label'
 const cableSubseaHighlight = 'cables_subsea_highlight'
-const cableTerrestrial = 'cables_terrestrial'
+const cableTerrestrial = 'terrestrial'
 const cableTerrestrialLabel = 'cables_terrestrial_label'
 const cableTerrestrialHighlight = 'cables_terrestrial_highlight'
 
