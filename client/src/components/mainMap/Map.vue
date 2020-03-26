@@ -265,7 +265,7 @@ export default {
       map.on('draw.update', this.handleDrawEvents)
 
       map.on('render', this.handleBoundsChange)
-      map.on('zoom', this.handleZoomLevelChange)
+      // map.on('zoom', this.handleZoomLevelChange)
 
       return map
     },
@@ -331,15 +331,15 @@ export default {
       this.map.getCanvas().style.cursor = ''
       popup.remove()
     },
-    async handleZoomLevelChange() {
-      const zoomLevel = this.map.getZoom()
-      if (zoomLevel >= 6.4) {
-        return await this.$store.dispatch(
-          'saveStatisticsData',
-          this.$route.fullPath.split('?')[1]
-        )
-      }
-    },
+    // async handleZoomLevelChange() {
+    // const zoomLevel = this.map.getZoom()
+    // if (zoomLevel >= 6.4) {
+    //   return await this.$store.dispatch(
+    //     'saveStatisticsData',
+    //     this.$route.fullPath.split('?')[1]
+    //   )
+    // }
+    // },
     async handleBoundsChange() {
       if (!this.map) return
       try {
