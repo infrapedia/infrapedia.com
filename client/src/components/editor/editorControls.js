@@ -98,7 +98,7 @@ class EditorControls {
               ? this.handleFeatureCreation()
               : this.handleFeatureEdition()
           } catch (err) {
-            console.warn(err)
+            console.error(err)
           }
         }
       }),

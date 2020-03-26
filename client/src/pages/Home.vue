@@ -75,7 +75,6 @@ export default {
   },
   methods: {
     handleToggleDrawerVisibility() {
-      console.warn('here 1')
       this.isMobileDrawer = !this.isMobileDrawer
     },
     /**
