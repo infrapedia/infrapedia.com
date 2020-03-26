@@ -10,7 +10,10 @@
     <div
       v-if="isSidebar"
       class="sidebar-wrapper"
-      :class="{ active: this.isSidebarActive }"
+      :class="{
+        active: this.isSidebarActive,
+        'full-active': this.isSidebarFullActive
+      }"
     >
       <el-card shadow="hover" v-loading="isSidebarLoad">
         <header
@@ -103,6 +106,7 @@ export default {
     prohibitedIDs: [],
     currentSelectionColumns: [],
     isSidebarActive: false,
+    isSidebarFullActive: false,
     transitionsClasses: {
       name: 'animated faster',
       active: 'slideInLeft',
@@ -135,16 +139,19 @@ export default {
     isSidebar(bool) {
       if (!bool || !this.focus) return
       this.isSidebarActive = false
+      this.isSidebarFullActive = false
       this.handleColSelectionChange()
     },
     // eslint-disable-next-line
     currentSelection(selection) {
       this.isSidebarActive = false
+      this.isSidebarFullActive = false
       this.handleColSelectionChange()
     },
     // eslint-disable-next-line
     sidebarMode(mode) {
       this.isSidebarActive = false
+      this.isSidebarFullActive = false
       this.handleColSelectionChange()
     }
   },
@@ -176,6 +183,13 @@ export default {
     },
     toggleActiveClassOnMobile() {
       this.isSidebarActive = !this.isSidebarActive
+      if (this.isSidebarActive) {
+        setTimeout(() => {
+          this.isSidebarFullActive = true
+        }, 325)
+      } else {
+        this.isSidebarFullActive = false
+      }
     },
     resizeWatcher() {
       const mobileWidth = 425

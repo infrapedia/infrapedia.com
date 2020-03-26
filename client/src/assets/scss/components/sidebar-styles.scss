@@ -68,6 +68,10 @@
       .el-card {
         overflow-y: auto;
       }
+      &.full-active {
+        top: 0;
+        bottom: unset;
+      }
     }
   }
 }
