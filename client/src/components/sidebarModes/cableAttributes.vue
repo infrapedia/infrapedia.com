@@ -213,7 +213,7 @@
               <fa :icon="['fas', 'pen']" class="sm-icon mt-1" />
             </el-button>
             <span class="fs-regular label">{{
-              info.terrestrial ? 'Edit Terrestrial Network' : 'Edit this cable'
+              info.terrestrial ? 'Edit Network' : 'Edit this cable'
             }}</span>
           </div>
         </el-col>

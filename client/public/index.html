@@ -1688,17 +1688,19 @@
       defer
     ></script>
     <script>
-      window.fwSettings = {
-        widget_id: 60000002577
-      }
-      !(function() {
-        if ('function' != typeof window.FreshworksWidget) {
-          var n = function() {
-            n.q.push(arguments)
-          }
-          ;(n.q = []), (window.FreshworksWidget = n)
+      if (!window.matchMedia('(max-width: 959px)').matches) {
+        window.fwSettings = {
+          widget_id: 60000002577
         }
-      })()
+        !(function() {
+          if ('function' != typeof window.FreshworksWidget) {
+            var n = function() {
+              n.q.push(arguments)
+            }
+            ;(n.q = []), (window.FreshworksWidget = n)
+          }
+        })()
+      }
     </script>
     <script
       type="text/javascript"

@@ -7,7 +7,11 @@
     :enter-active-class="transitionsClasses.active"
     :leave-active-class="transitionsClasses.leave"
   >
-    <div v-if="isSidebar" class="sidebar-wrapper" :class="classGiver">
+    <div
+      v-if="isSidebar"
+      class="sidebar-wrapper"
+      :class="{ active: this.isSidebarActive }"
+    >
       <el-card shadow="hover" v-loading="isSidebarLoad">
         <header
           class="header pt10 pr8 pl8 pb10 h12 relative"
@@ -114,9 +118,6 @@ export default {
       sidebarMode: state => state.sidebarMode,
       currentSelection: state => state.map.currentSelection
     }),
-    classGiver() {
-      return this.isSidebarActive ? { active: 'active' } : {}
-    },
     defaultMode() {
       return modes.CABLE_MODE
     },
@@ -133,15 +134,17 @@ export default {
   watch: {
     isSidebar(bool) {
       if (!bool || !this.focus) return
-
+      this.isSidebarActive = false
       this.handleColSelectionChange()
     },
     // eslint-disable-next-line
     currentSelection(selection) {
+      this.isSidebarActive = false
       this.handleColSelectionChange()
     },
     // eslint-disable-next-line
     sidebarMode(mode) {
+      this.isSidebarActive = false
       this.handleColSelectionChange()
     }
   },
@@ -172,9 +175,7 @@ export default {
       }
     },
     toggleActiveClassOnMobile() {
-      console.log(this.isSidebarActive)
       this.isSidebarActive = !this.isSidebarActive
-      console.log(this.isSidebarActive)
     },
     resizeWatcher() {
       const mobileWidth = 425

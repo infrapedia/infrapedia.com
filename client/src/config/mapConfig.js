@@ -109,7 +109,11 @@ export const mapConfig = {
             'case',
             ['==', ['get', 'status'], 0],
             '#FF0000',
-            ['>', ['get', 'activation'], (new Date().getTime() / 1000) * 1000],
+            [
+              '>',
+              ['get', 'activationDateTime'],
+              (new Date().getTime() / 1000) * 1000
+            ],
             '#af6ec7',
             ['==', ['get', 'hasoutage'], 'true'],
             '#7288b0',
@@ -161,7 +165,11 @@ export const mapConfig = {
             'case',
             ['==', ['get', 'status'], 0],
             '#FF0000',
-            ['>', ['get', 'activation'], (new Date().getTime() / 1000) * 1000],
+            [
+              '>',
+              ['get', 'activationDateTime'],
+              (new Date().getTime() / 1000) * 1000
+            ],
             '#af6ec7',
             ['==', ['get', 'hasoutage'], 'true'],
             '#7288b0',
