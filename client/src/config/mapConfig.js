@@ -327,7 +327,7 @@ export const mapConfig = {
       ['!=', 'terrestrial', 'true'],
       ['!=', 'isinactive', 'true']
     ],
-    active: ['==', ['get', 'status'], 1],
+    active: ['<', ['get', 'activationDateTime'], currentEpoch * 1000],
     all: ['has', '_id'],
     future: ['>', ['get', 'activationDateTime'], currentEpoch * 1000],
     timemachine: ['>=', ['get', 'activationDateTime'], 0] // We change the 0 value when using the filter component inside the navbar for the sub-sea time machine
