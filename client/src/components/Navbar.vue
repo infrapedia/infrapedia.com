@@ -285,9 +285,13 @@
 
             <ul class="p0 pr4 m0 h-fit-full" role="group" :key="2" v-else>
               <li class="inline-block relative" data-no-outline="true">
-                <router-link class="list-item pl3 pr3" to="/blog">
+                <a
+                  href="https://www.infrapedia.com/blog"
+                  class="list-item pl3 pr3"
+                  target="_blank"
+                >
                   Blog
-                </router-link>
+                </a>
               </li>
               <li class="inline-block relative" data-no-outline="true">
                 <div

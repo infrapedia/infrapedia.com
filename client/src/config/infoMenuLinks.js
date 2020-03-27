@@ -7,7 +7,7 @@ const infoMenuLinks = {
       openTab: !0
     },
     { label: 'FAQ', url: 'https://www.infrapedia.com/faq', openTab: !0 },
-    { label: 'Blog', url: '/blog', openTab: false, router: true },
+    { label: 'Blog', url: 'https://www.infrapedia.com/blog', openTab: true },
     {
       label: 'Contact us',
       url: 'mailto:admin@infrapedia.com',
