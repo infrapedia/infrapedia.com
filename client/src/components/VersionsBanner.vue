@@ -10,9 +10,11 @@
       class="banner-wrapper flex row wrap align-items-center justify-content-center w-fit-full p8 absolute seamless-shadow text-center"
     >
       <p class="p0 m0 font-medium fs-medium">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
-        ipsum dicta, iusto ab facilis hic tempora fugit, eligendi maxime cum est
-        commodi odio. Nisi aliquid esse, iste laborum id dolores!.
+        In case this is your first time here, we have a 1.0 version that you can
+        check out
+        <a target="_blank" :href="versionTwoLink"> {{ versionTwoLink }} </a> so
+        you can decide which one you prefer. You can set v1.0 as preferred with
+        the link below.
         <br />
         <br />
         Go to version 1.0 and set as preferred:
@@ -33,10 +35,7 @@
 </template>
 
 <script>
-import {
-  setCookie
-  // checkCookie
-} from '../helpers/cookies'
+import { setCookie, checkCookie } from '../helpers/cookies'
 
 const c_name = '_v-app_inf'
 
@@ -51,11 +50,11 @@ export default {
     }
   },
   mounted() {
-    // setTimeout(() => {
-    //   checkCookie(c_name)
-    //     ? window.location.assign(this.versionTwoLink)
-    //     : this.toggleVisibility()
-    // }, 820)
+    setTimeout(() => {
+      checkCookie(c_name)
+        ? window.location.assign(this.versionTwoLink)
+        : this.toggleVisibility()
+    }, 820)
   },
   methods: {
     toggleVisibility() {
