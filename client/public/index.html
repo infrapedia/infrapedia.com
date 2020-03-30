@@ -1721,6 +1721,13 @@
       async
       defer
     ></script>
+    <script>
+      if (location.protocol !== 'https:') {
+        location.replace(
+          `https:${location.href.substring(location.protocol.length)}`
+        )
+      }
+    </script>
     <!-- <script src="https://code.tidio.co/tchfjjobkis3e5ab7oebf9meup2rh3oy.js" defer></script> -->
     <!-- built files will be auto injected -->
   </body>
