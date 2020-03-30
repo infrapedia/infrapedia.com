@@ -51,11 +51,9 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      checkCookie(c_name) && getCookie(c_name) === this.versionOneLink
-        ? window.location.assign(this.versionOneLink)
-        : checkCookie(c_name)
-        ? null
-        : this.toggleVisibility()
+      if (checkCookie(c_name) && getCookie(c_name) === this.versionOneLink) {
+        window.location.assign(this.versionOneLink)
+      }
     }, 820)
   },
   methods: {

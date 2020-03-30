@@ -46,7 +46,8 @@ import {
   faCheckDouble,
   faMapMarkerAlt,
   faMapMarkedAlt,
-  faWater
+  faWater,
+  faWindowMaximize
 } from '@fortawesome/free-solid-svg-icons'
 import { faHandPointUp } from '@fortawesome/free-regular-svg-icons'
 import {
@@ -61,6 +62,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
+  faWindowMaximize,
   faWater,
   faMapMarkedAlt,
   faCheckDouble,

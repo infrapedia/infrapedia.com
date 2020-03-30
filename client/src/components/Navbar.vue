@@ -347,6 +347,19 @@
                           Toggle {{ dark ? 'light' : 'dark' }} mode
                         </el-button>
                       </li>
+                      <li class="w-fit-full h10">
+                        <el-button
+                          type="text"
+                          class="inline-block color-inherit"
+                          @click="goToVersionOne"
+                        >
+                          <fa
+                            :icon="['fas', 'window-maximize']"
+                            class="mr4 ml4"
+                          />
+                          Version 1.0
+                        </el-button>
+                      </li>
                       <li class="w-fit-full h10" @click="logOutUser">
                         <el-button
                           type="text"
@@ -394,6 +407,9 @@ import FullScreenSearch from './FullScreenSearch.vue'
 import { TOGGLE_DARK } from '../store/actionTypes'
 import * as events from '../events/navbar'
 import { bus } from '../helpers/eventBus'
+import { setCookie } from '../helpers/cookies'
+
+const c_name = '_v-app_inf'
 
 export default {
   name: 'INavbar',
@@ -453,6 +469,9 @@ export default {
     },
     userName() {
       return this.$auth.user.name
+    },
+    versionOneLink() {
+      return process.env.VUE_APP_VERSION_APP_LINK
     }
   },
   async mounted() {
@@ -493,6 +512,15 @@ export default {
           ? `${events.TOGGLE_MOBILE_DRAWER_PROFILE}`
           : `${events.TOGGLE_MOBILE_DRAWER}`
       )
+    },
+    goToVersionOne() {
+      setCookie(
+        c_name,
+        this.versionOneLink,
+        process.env.VUE_APP_EXP_DAYS_VERSION_DAYS_NOTICE
+      )
+
+      window.location.replace(this.versionOneLink)
     }
   }
 }
