@@ -110,7 +110,11 @@ export default {
               `/user/section/create?id=${queryType}&item=${_id}`
             )
           : (this.openEditDialog = true)
-      } else return this.$auth.loginWithRedirect()
+      } else {
+        this.$store.state.isSafariNavigator
+          ? this.loginWithPopup()
+          : this.loginWithRedirect()
+      }
     }
   }
 }

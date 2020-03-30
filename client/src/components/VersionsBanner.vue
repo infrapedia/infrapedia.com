@@ -12,7 +12,7 @@
       <p class="p0 m0 font-medium fs-medium">
         In case this is your first time here, we have a 1.0 version that you can
         check out
-        <a target="_blank" :href="versionTwoLink"> {{ versionTwoLink }} </a> so
+        <a target="_blank" :href="versionOneLink"> {{ versionOneLink }} </a> so
         you can decide which one you prefer. You can set v1.0 as preferred with
         the link below.
         <br />
@@ -21,8 +21,8 @@
         <span
           @click="setPreferenceCookie"
           class="cursor-pointer underline-hover"
-          :href="versionTwoLink"
-          v-text="versionTwoLink"
+          :href="versionOneLink"
+          v-text="versionOneLink"
         />
       </p>
       <el-button
@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { setCookie, checkCookie } from '../helpers/cookies'
+import { setCookie, checkCookie, getCookie } from '../helpers/cookies'
 
 const c_name = '_v-app_inf'
 
@@ -45,29 +45,38 @@ export default {
     visible: false
   }),
   computed: {
-    versionTwoLink() {
+    versionOneLink() {
       return process.env.VUE_APP_VERSION_APP_LINK
     }
   },
   mounted() {
     setTimeout(() => {
-      checkCookie(c_name)
-        ? window.location.assign(this.versionTwoLink)
+      checkCookie(c_name) && getCookie(c_name) === this.versionOneLink
+        ? window.location.assign(this.versionOneLink)
+        : checkCookie(c_name)
+        ? null
         : this.toggleVisibility()
     }, 820)
   },
   methods: {
     toggleVisibility() {
       this.visible = !this.visible
+      if (!this.visible) {
+        setCookie(
+          c_name,
+          window.location.origin,
+          process.env.VUE_APP_EXP_DAYS_VERSION_DAYS_NOTICE
+        )
+      }
     },
     setPreferenceCookie() {
       setCookie(
         c_name,
-        `Prefers: ${this.versionTwoLink}`,
+        this.versionOneLink,
         process.env.VUE_APP_EXP_DAYS_VERSION_DAYS_NOTICE
       )
 
-      window.location.assign(this.versionTwoLink)
+      window.location.assign(this.versionOneLink)
     }
   }
 }

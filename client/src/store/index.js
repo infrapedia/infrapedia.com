@@ -38,7 +38,8 @@ export default new Vuex.Store({
     networks: [],
     submarine: [],
     dataCenters: [],
-    statisticsData: []
+    statisticsData: [],
+    isSafariNavigator: false
   },
   mutations: {
     ...dataMutations,
@@ -94,6 +95,9 @@ export default new Vuex.Store({
         return
       }
       state.statisticsData.push(data)
+    },
+    [types.IS_SAFARI_NAVIGATOR](state, bool) {
+      state.isSafariNavigator = bool
     }
   },
   actions: {

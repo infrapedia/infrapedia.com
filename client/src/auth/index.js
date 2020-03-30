@@ -46,7 +46,11 @@ export const useAuth0 = ({
         this.user = await this.auth0Client.getUser()
         this.loading = false
 
-        if (!this.isAuthenticated) this.loginWithRedirect()
+        if (!this.isAuthenticated) {
+          this.$store.state.isSafariNavigator
+            ? this.loginWithPopup()
+            : this.loginWithRedirect()
+        }
       }
     },
     methods: {

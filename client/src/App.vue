@@ -19,6 +19,7 @@ import DefaultLayout from './layouts/default'
 import BlogLayout from './layouts/blog'
 import NoNav from './layouts/nothing'
 import VersionsBanner from './components/VersionsBanner'
+import { IS_SAFARI_NAVIGATOR } from './store/actionTypes'
 
 export default {
   name: 'App',
@@ -26,13 +27,23 @@ export default {
     VersionsBanner
   },
   created() {
-    if (window.location.protocol !== 'https:') {
-      window.location.replace(
-        `https:${window.location.href.substring(
-          window.location.protocol.length
-        )}`
+    // if (window.location.protocol !== 'https:') {
+    //   window.location.replace(
+    //     `https:${window.location.href.substring(
+    //       window.location.protocol.length
+    //     )}`
+    //   )
+    // }
+    const isSafari =
+      /constructor/i.test(window.HTMLElement) ||
+      (function(p) {
+        return p.toString() === '[object SafariRemoteNotification]'
+      })(
+        !window['safari'] ||
+          // eslint-disable-next-line
+          (typeof safari !== 'undefined' && safari.pushNotification)
       )
-    }
+    this.$store.commit(`${IS_SAFARI_NAVIGATOR}`, isSafari)
   },
   computed: {
     layout() {
