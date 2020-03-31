@@ -47,7 +47,7 @@ export const useAuth0 = ({
         this.loading = false
 
         if (!this.isAuthenticated) {
-          this.$store.state.isSafariNavigator
+          window.localStorage.getItem('navigator_is_safari') === 'true'
             ? this.loginWithPopup()
             : this.loginWithRedirect()
         }

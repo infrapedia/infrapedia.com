@@ -44,6 +44,7 @@ export default {
           (typeof safari !== 'undefined' && safari.pushNotification)
       )
     this.$store.commit(`${IS_SAFARI_NAVIGATOR}`, isSafari)
+    window.localStorage.setItem('navigator_is_safari', isSafari)
   },
   computed: {
     layout() {
