@@ -4,8 +4,8 @@
     width="20%"
     top="20vh"
     append-to-body
-    :show-close="feature.geometry && feature.geometry.type === 'Point'"
-    :close-on-press-escape="false"
+    :show-close="true"
+    :close-on-press-escape="true"
     :close-on-click-modal="false"
     :before-close="handleClose"
   >
@@ -162,6 +162,9 @@ export default {
   },
   methods: {
     handleClose() {
+      if (this.form.name === '') {
+        this.form.name = 'default_' + this.feature.id
+      }
       return this.$emit('close', this.form)
     }
   }
