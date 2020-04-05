@@ -97,48 +97,57 @@ export const facsColumns = [
   {
     label: 'Name',
     value: 'name',
-    showSidebar: true
+    showSidebar: true,
+    showTable: true
   },
   {
     label: 'Address',
     value: 'address',
-    showSidebar: true
+    showSidebar: true,
+    showTable: true
   },
   {
     label: 'Websites',
     value: 'websites',
-    showSidebar: true
+    showSidebar: true,
+    showTable: true
   },
   {
     label: 'Start date',
     value: 'startDate',
-    showSidebar: true
+    showSidebar: true,
+    showTable: true
   },
   {
     label: 'Ixps',
     value: 'ixps',
-    showSidebar: true
+    showSidebar: true,
+    showTable: true
   },
   {
     label: 'Type',
     value: 'building',
-    showSidebar: true
+    showSidebar: true,
+    showTable: true
   },
   {
     label: 'Cables',
     value: 'cables',
     showSidebar: true,
-    filter: arr => arr
+    filter: arr => arr,
+    showTable: true
   },
   {
     label: 'Groups',
     value: 'networks',
-    showSidebar: true
+    showSidebar: true,
+    showTable: true
   },
   {
     label: 'Owners',
     value: 'organizations',
-    showSidebar: true
+    showSidebar: true,
+    showTable: true
   }
 ]
 
@@ -146,12 +155,14 @@ export const ixpsColumns = [
   {
     label: 'Name',
     value: 'name',
-    showSidebar: true
+    showSidebar: true,
+    showTable: true
   },
   {
     label: 'Address',
     value: 'address',
-    showSidebar: true
+    showSidebar: true,
+    showTable: true
   },
   {
     label: 'Media',
@@ -161,7 +172,8 @@ export const ixpsColumns = [
   {
     label: 'Websites',
     value: 'website',
-    showSidebar: true
+    showSidebar: true,
+    showTable: true
   },
   {
     label: 'Policy email',
@@ -186,17 +198,20 @@ export const ixpsColumns = [
   {
     label: 'Groups',
     value: 'networks',
-    showSidebar: true
+    showSidebar: true,
+    showTable: true
   },
   {
     label: 'Owners',
     value: 'organizations',
-    showSidebar: true
+    showSidebar: true,
+    showTable: true
   },
   {
     label: 'Facilities',
     value: 'facilities',
-    showSidebar: true
+    showSidebar: true,
+    showTable: true
   }
 ]
 

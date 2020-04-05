@@ -8,6 +8,10 @@
       :columns="columns"
       :config="tableConfig"
       :table-data="tableData"
+      :pagination="true"
+      @page-change="getIxpsList"
+      @edit-item="handleEditIxp"
+      @delete-item="handleDeleteIxp"
     />
   </div>
 </template>
@@ -26,15 +30,20 @@ export default {
     loading: false,
     tableConfig: {
       title: 'Ixps',
-      creation_link: '/user/section/create?id=ixps',
+      creation_link: '/user/section/create?id=ixp',
       btn_label: 'Create Ixps'
     },
-    columns: [...ixpsColumns]
+    columns: [...ixpsColumns].filter(col => col.showTable)
   }),
   computed: {
     dark() {
       return this.$store.state.isDark
     }
+  },
+  methods: {
+    getIxpsList() {},
+    handleEditIxp() {},
+    handleDeleteIxp() {}
   }
 }
 </script>

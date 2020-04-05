@@ -8,6 +8,9 @@
       :columns="columns"
       :config="tableConfig"
       :table-data="tableData"
+      :pagination="true"
+      @edit-item="handleEditFac"
+      @delete-item="handleDeleteFac"
     />
   </div>
 </template>
@@ -26,15 +29,19 @@ export default {
     loading: false,
     tableConfig: {
       title: 'Facilities',
-      creation_link: '/user/section/create?id=facs',
+      creation_link: '/user/section/create?id=facility',
       btn_label: 'Create facility'
     },
-    columns: [...facsColumns]
+    columns: [...facsColumns].filter(col => col.showTable)
   }),
   computed: {
     dark() {
       return this.$store.state.isDark
     }
+  },
+  methods: {
+    handleEditFac() {},
+    handleDeleteFac() {}
   }
 }
 </script>
