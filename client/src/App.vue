@@ -27,13 +27,16 @@ export default {
     VersionsBanner
   },
   created() {
-    // if (window.location.protocol !== 'https:') {
-    //   window.location.replace(
-    //     `https:${window.location.href.substring(
-    //       window.location.protocol.length
-    //     )}`
-    //   )
-    // }
+    if (
+      process.env.NODE_ENV === 'production' &&
+      window.location.protocol !== 'https:'
+    ) {
+      window.location.replace(
+        `https:${window.location.href.substring(
+          window.location.protocol.length
+        )}`
+      )
+    }
     const isSafari =
       /constructor/i.test(window.HTMLElement) ||
       (function(p) {
