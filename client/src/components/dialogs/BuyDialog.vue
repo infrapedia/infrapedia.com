@@ -208,14 +208,14 @@ export default {
       fullname: [
         {
           required: true,
-          message: 'Please input your fullname',
+          message: 'Please input your full name',
           trigger: 'blur'
         },
         {
           min: 3,
           max: 10,
           message: 'Length should be 3 to 10',
-          trigger: 'blur'
+          trigger: ['change', 'blur']
         }
       ],
       company: [
@@ -246,7 +246,7 @@ export default {
       focus: state => state.map.focus
     }),
     isEitherSubseaOrTerrestrialNetwork() {
-      return this.focus && this.focus.type.toLowerCase() === 'cable'
+      return this.focus && this.dialogTitle.toLowerCase() === 'backbone'
     },
     isVisible: {
       get() {
@@ -335,13 +335,17 @@ export default {
 
       let message
 
-      if (!this.focus.type.includes('cable')) {
+      if (this.dialogTitle.toLowerCase() !== 'backbone') {
         message =
           data.message !== ''
             ? data.message
             : `Hi, ${data.fullname} (${data.email})
           , you asked to buy an amount of ${data.capacity} for ${data.cable}(${data.type})`
-      } else if (data.address.pointA && data.address.pointB) {
+      } else if (
+        data.address.pointA &&
+        data.address.pointB &&
+        this.dialogTitle.toLowerCase() === 'backbone'
+      ) {
         let zipcodeA = ''
         let zipcodeB = ''
 

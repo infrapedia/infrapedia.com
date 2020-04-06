@@ -94,7 +94,7 @@
             <template v-if="col.label.toLowerCase().includes('url')">
               <template v-if="Array.isArray(info[col.value])">
                 <a
-                  class="text-bold underline truncate mt3 inline-block"
+                  class="text-bold underline dont-break-out mt3 inline-block"
                   v-for="(url, i) in info[col.value]"
                   :href="
                     url.includes('http://') || url.includes('https://')
@@ -108,7 +108,7 @@
               </template>
               <a
                 v-else
-                class="text-bold underline truncate mt3 inline-block"
+                class="text-bold underline dont-break-out mt3 inline-block"
                 :href="
                   info[col.value].includes('http://') ||
                   info[col.value].includes('https://')
@@ -152,30 +152,13 @@
               "
             >
               <a
-                class="text-bold underline truncate mt3 inline-block"
+                class="text-bold underline dont-break-out mt3 inline-block"
                 :href="info[col.value]"
                 target="_blank"
               >
                 {{ info[col.value] }}
               </a>
             </template>
-            <!-- <template
-              class="text-bold"
-              v-else-if="
-                isArrCol(info[col.value]) &&
-                  hasLength(info[col.value]) &&
-                  col.label.toLowerCase().includes('address')
-              "
-            >
-              <p
-                v-for="(item, index) in info[col.value]"
-                :key="index + item"
-                class="text-bold"
-                @click="handleSelection(item._id, col.label)"
-              >
-                {{ item.street }} {{ item.city }}, {{ item.state }}.
-              </p>
-            </template> -->
             <p
               class="text-bold status-text"
               :class="{ active: info[col.value] === 'true' }"
@@ -187,7 +170,7 @@
               v-else-if="isArrCol(info[col.value]) && col.label.includes('web')"
             >
               <a
-                class="text-bold underline truncate mt3 inline-block"
+                class="text-bold underline dont-break-out mt3 inline-block"
                 v-for="(url, i) in info[col.value]"
                 :href="url"
                 target="_blank"

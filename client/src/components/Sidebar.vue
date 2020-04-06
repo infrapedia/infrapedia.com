@@ -17,7 +17,7 @@
     >
       <el-card shadow="hover" v-loading="isSidebarLoad">
         <header
-          class="header pt10 pr8 pl8 pb10 h12 relative"
+          class="header pt10 pr8 pl8 h-fit-content pb10 relative"
           @click.stop="toggleActiveClassOnMobile"
         >
           <span
@@ -32,7 +32,7 @@
             placement="bottom"
           >
             <h1
-              class="inline-block cursor-pointer title font-bold m0 p1 round truncate fs-large underline"
+              class="inline-block cursor-pointer title font-bold m0 p1 round dont-break-out fs-large underline"
               @click.stop="copyToClip"
             >
               {{ currentSelection.name }}

@@ -64,10 +64,6 @@
 .font-bold {
   font-weight: bold;
 }
-.text-bold {
-  @extend .font-bold;
-  @extend .truncate;
-}
 .capitalize {
   text-transform: capitalize;
 }
@@ -371,6 +367,18 @@
 .required-asterik {
   color: #b10f0f;
   margin-right: 4px;
+}
+
+.dont-break-out {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.text-bold {
+  @extend .font-bold;
+  @extend .dont-break-out;
 }
 
 @for $i from 1 through 120 {

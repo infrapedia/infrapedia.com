@@ -83,15 +83,16 @@
 
           <!---- VALUES SECTION START ---->
           <template v-if="info[col.value]">
-            <div
+            <el-col
               v-if="
-                col.label.toLowerCase().includes('url') ||
-                  col.label.toLowerCase().includes('web')
+                col.value.toLowerCase().includes('url') ||
+                  col.value.toLowerCase().includes('web')
               "
-              class="flex row wrap"
+              class="p2"
+              :span="12"
             >
               <a
-                class="underline truncate fs-regular mr2 inline-block"
+                class="underline dont-break-out fs-regular mr2 inline-block"
                 v-for="(url, i) in info[col.value]"
                 :href="
                   url.includes('http://') || url.includes('https://')
@@ -102,11 +103,11 @@
                 :key="i"
                 v-text="url"
               />
-            </div>
+            </el-col>
             <el-col
               :span="12"
               class="p2"
-              v-else-if="col.label.toLowerCase().includes('ready for service')"
+              v-else-if="col.value.includes('activationDateTime')"
             >
               <p class="text-bold">
                 {{ convertToYear(info[col.value]) }}
@@ -298,16 +299,6 @@ export default {
     },
     currentCableStatus() {
       return this.info.has_outage || this.isFutureState
-    },
-    currentCableUrls() {
-      const { url1, url2, url3 } = this.info
-      const urls = []
-
-      if (url1) urls.push(url1)
-      else if (url2) urls.push(url2)
-      else if (url3) urls.push(url3)
-
-      return urls
     },
     getYear: () => row => new Date(row.year).getFullYear()
   },
