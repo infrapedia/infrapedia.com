@@ -1,3 +1,53 @@
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn;
+}
+
+@-webkit-keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.fadeOut {
+  -webkit-animation-name: fadeOut;
+  animation-name: fadeOut;
+}
+
 @-webkit-keyframes slideOutDown {
   from {
     -webkit-transform: translate3d(0, 0, 0);
@@ -341,6 +391,17 @@
 .animated.faster {
   -webkit-animation-duration: 500ms;
   animation-duration: 500ms;
+}
+
+.animated.faster2x {
+  -webkit-animation-duration: 320ms;
+  animation-duration: 320ms;
+  transition-duration: 320ms;
+}
+.animated.faster3x {
+  -webkit-animation-duration: 120ms;
+  animation-duration: 120ms;
+  transition-duration: 120ms;
 }
 
 .animated.slow {

@@ -16,7 +16,7 @@
                   .toLowerCase()
                   .replace(' ', '-')}-link`
               "
-              :class="checkURL(link)"
+              :class="checkURL(link) || isCurrentStep"
               class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
             >
               <fa :icon="link.icon" class="mr2" /> {{ link.label }}
@@ -46,7 +46,44 @@
       :steps="profileTourSteps"
       :callbacks="tourCallbacks"
       :options="{ highlight: true }"
-    />
+    >
+      <template slot-scope="tour">
+        <transition
+          name="animated faster3x"
+          enter-active-class="fadeIn"
+          leave-active-class="fadeOut"
+        >
+          <template v-for="(step, index) of tour.steps">
+            <v-step
+              v-if="tour.currentStep === index"
+              :key="index"
+              :step="step"
+              :previous-step="tour.previousStep"
+              :next-step="tour.nextStep"
+              :stop="tour.stop"
+              :is-first="tour.isFirst"
+              :is-last="tour.isLast"
+              :labels="tour.labels"
+              :highlight="true"
+            >
+              <template v-if="tour.currentStep === profileTourSteps.length - 1">
+                <div slot="actions">
+                  <button @click="tour.previousStep" class="v-step__button">
+                    Previous step
+                  </button>
+                  <button @click="restartVTour" class="v-step__button">
+                    Restart tour
+                  </button>
+                  <button @click="tour.stop" class="v-step__button">
+                    Finish
+                  </button>
+                </div>
+              </template>
+            </v-step>
+          </template>
+        </transition>
+      </template>
+    </v-tour>
   </el-container>
 </template>
 
@@ -89,6 +126,7 @@ export default {
     ) {
       this.$tours['profile-tour'].start()
     }
+    console.log(this.$tours['profile-tour'])
 
     bus.$on(
       `${navbarEvents.TOGGLE_MOBILE_DRAWER_PROFILE}`,
@@ -98,6 +136,10 @@ export default {
   methods: {
     handleToggleMobileProfileDrawer() {
       this.isMobileProfileDrawer = !this.isMobileProfileDrawer
+    },
+    restartVTour() {
+      this.$tours['profile-tour'].finish()
+      this.$tours['profile-tour'].start()
     },
     handleOnTourStop() {
       return window.localStorage.setItem(TOUR_DONE_KEY, true)
