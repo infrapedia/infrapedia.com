@@ -7,6 +7,21 @@
       @title-by-selection="title = $event"
       @cable-selected="handleCableSelected"
     />
+    <blog-overlay
+      :is-visible="isBlogOverlay"
+      @close="() => (isBlogOverlay = false)"
+    >
+      <el-button
+        size="mini"
+        plain
+        round
+        title="Open blog overlay"
+        slot="toggler"
+        @click.stop="() => (isBlogOverlay = !isBlogOverlay)"
+      >
+        <fa :icon="caretPosition" class="sm-icon" />
+      </el-button>
+    </blog-overlay>
     <div
       v-show="isDrawing"
       class="absolute calculation-box truncate w44 h22 p1 text-center"
@@ -32,16 +47,19 @@ import { FOCUS_ON_CITY, REMOVE_QUERY_ROUTE_REPLACE } from '../events'
 import { HAS_TO_EASE_TO, EASE_POINT } from '../store/actionTypes/map'
 import MobileDrawer from '../components/MobileDrawer.vue'
 import * as navbarEvents from '../events/navbar'
+import BlogOverlay from '../components/BlogOverlay'
 
 export default {
   name: 'home',
   mixins: [dataCollection],
   components: {
+    BlogOverlay,
     'i-map': Map,
     IMobileDrawer: MobileDrawer
   },
   data: () => ({
     title: '',
+    isBlogOverlay: false,
     isMobileDrawer: false
   }),
   computed: {
@@ -50,6 +68,9 @@ export default {
     },
     isSidebar() {
       return this.$store.state.isSidebar
+    },
+    caretPosition() {
+      return this.isBlogOverlay ? ['fas', 'caret-down'] : ['fas', 'caret-up']
     }
   },
   beforeCreate() {
