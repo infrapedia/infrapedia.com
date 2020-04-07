@@ -14,7 +14,8 @@ export const useAuth0 = ({
       user: {},
       auth0Client: null,
       popupOpen: false,
-      error: null
+      error: null,
+      times: 0
     }),
     async created() {
       // Create a new instance of the SDK client using members of the given options object
@@ -85,6 +86,8 @@ export const useAuth0 = ({
       },
       /** Authenticates the user using the redirect method */
       loginWithRedirect(o) {
+        this.times += 1
+        window.localStorage.setItem('times_login_call', this.times)
         return this.auth0Client.loginWithRedirect(o)
       },
       /** Returns all the claims present in the ID token */
