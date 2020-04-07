@@ -499,9 +499,9 @@ export default {
     },
     handleUserButtonDynamics() {
       if (!this.$auth.isAuthenticated) {
-        this.$store.state.isSafariNavigator
-          ? this.loginWithPopup()
-          : this.loginWithRedirect()
+        // this.$store.state.isSafariNavigator
+        //   ? this.$auth.loginWithPopup()
+        this.$auth.loginWithRedirect()
       } else if (this.$route.name.includes('user')) {
         this.toggleUserMenuVisibility()
       } else if (this.$auth.isAuthenticated) this.$router.push('/user')

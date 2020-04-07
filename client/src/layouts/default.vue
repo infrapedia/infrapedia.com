@@ -39,6 +39,7 @@ import {
 } from '../store/actionTypes'
 import { disableAlert } from '../services/api/alerts'
 import Sidebar from '../components/Sidebar.vue'
+import { checkCookie } from '../helpers/cookies'
 
 export default {
   components: {
@@ -73,14 +74,20 @@ export default {
     }
   },
   async mounted() {
-    if (this.$auth && this.$auth.isAuthenticated) {
+    if (
+      this.$auth &&
+      this.$auth.isAuthenticated &&
+      checkCookie('auth0.is.authenticated')
+    ) {
       await this.setToken()
     }
   },
   methods: {
     async setToken() {
       const token = await this.$auth.getIdTokenClaims()
-      return window.localStorage.setItem('auth.token-session', token.__raw)
+      if (token) {
+        window.localStorage.setItem('auth.token-session', token.__raw)
+      }
     },
     openBuyDialog(option) {
       this.$store.commit(`${BUY_TYPE}`, { title: option })
@@ -111,9 +118,11 @@ export default {
             )
           : (this.openEditDialog = true)
       } else {
-        this.$store.state.isSafariNavigator
-          ? this.loginWithPopup()
-          : this.loginWithRedirect()
+        // this.$store.state.isSafariNavigator
+        // ?
+        // this.$auth.loginWithPopup()
+        // :
+        this.$auth.loginWithRedirect()
       }
     }
   }
