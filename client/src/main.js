@@ -13,6 +13,7 @@ import { Auth0Plugin } from './auth'
 // import * as bugsnag from './plugins/bugsnag'
 import Vue2TouchEvents from 'vue2-touch-events'
 import * as vueTour from './plugins/vue-tour'
+import initiateCall from './plugins/freshchat'
 
 Vue.config.productionTip = false
 Vue.config.errorHandler = (err, vm, info) => appErrorHandler(err, vm, info)
@@ -71,5 +72,24 @@ new Vue({
   vueTour,
   vueTelInput,
   cockieconsent,
-  render: h => h(App)
+  render: h => h(App),
+  async created() {
+    window.addEventListener
+      ? await window.addEventListener('load', initiateCall, !1)
+      : await window.attachEvent('load', initiateCall, !1)
+
+    setTimeout(() => {
+      try {
+        window.fcWidget.setExternalId(this.$auth.user.sub)
+        window.fcWidget.user.setFirstName(this.$auth.user.name)
+        window.fcWidget.user.setEmail(this.$auth.user.email)
+        // window.fcWidget.user.setProperties({
+        //   plan: 'Estate', // meta property 1
+        //   status: 'Active' // meta property 2
+        // })
+      } catch (err) {
+        console.error(err)
+      }
+    }, 11000)
+  }
 }).$mount('#app')

@@ -1700,37 +1700,6 @@
       src="https://maps.googleapis.com/maps/api/js?key=<%= VUE_APP_GOOGLE_API_KEY %>&libraries=places"
       defer
     ></script>
-    <script>
-      function initFreshChat() {
-        window.fcWidget.init({
-          token: '<%= VUE_APP_FRESHCHAT_TOKEN &>',
-          host: 'https://wchat.freshchat.com'
-        })
-      }
-      function initialize(i, t) {
-        var e
-        i.getElementById(t)
-          ? initFreshChat()
-          : (((e = i.createElement('script')).id = t),
-            (e.async = !0),
-            (e.src = 'https://wchat.freshchat.com/js/widget.js'),
-            (e.onload = initFreshChat),
-            i.head.appendChild(e))
-      }
-      function initiateCall() {
-        initialize(document, 'freshchat-js-sdk')
-      }
-      window.addEventListener
-        ? window.addEventListener('load', initiateCall, !1)
-        : window.attachEvent('load', initiateCall, !1)
-    </script>
-    <script
-      type="text/javascript"
-      src="https://widget.freshworks.com/widgets/60000002577.js"
-      async
-      defer
-    ></script>
-    <!-- <script src="https://code.tidio.co/tchfjjobkis3e5ab7oebf9meup2rh3oy.js" defer></script> -->
     <!-- built files will be auto injected -->
   </body>
 </html>
