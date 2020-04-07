@@ -4,7 +4,7 @@ import createAuth0Client from '@auth0/auth0-spa-js'
 export const useAuth0 = ({
   onRedirectCallback = () =>
     window.history.replaceState({}, document.title, window.location.pathname),
-  redirectUri = window.location.origin + '/',
+  redirectUri = window.location.origin,
   ...options
 }) => {
   const instance = new Vue({
