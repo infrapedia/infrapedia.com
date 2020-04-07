@@ -37,6 +37,7 @@ export const mapConfig = {
         name: cableTerrestrial,
         opts: {
           type: 'vector',
+          minzoom: 4,
           tiles: [`${process.env.VUE_APP_TILES_TERRESTRIAL_CABLES}`]
         }
       },
@@ -44,6 +45,7 @@ export const mapConfig = {
         name: cableTerrestrialHighlight,
         opts: {
           type: 'vector',
+          minzoom: 4,
           tiles: [`${process.env.VUE_APP_TILES_TERRESTRIAL_CABLES}`]
         }
       },

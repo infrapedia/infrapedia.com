@@ -98,17 +98,7 @@
             </div>
           </el-col>
         </template>
-        <el-col :span="24">
-          <el-form-item label="Message" prop="message">
-            <el-input
-              type="textarea"
-              rows="4"
-              v-model="form.message"
-              :class="{ dark }"
-            />
-          </el-form-item>
-        </el-col>
-        <template v-if="isEitherSubseaOrTerrestrialNetwork">
+        <template v-if="isBackboneSelection">
           <el-col :span="12">
             <el-form-item label="From (A-end)" prop="fromA">
               <autocomplete-google
@@ -128,6 +118,16 @@
             </el-form-item>
           </el-col>
         </template>
+        <el-col :span="24">
+          <el-form-item label="Message" prop="message">
+            <el-input
+              type="textarea"
+              rows="4"
+              v-model="form.message"
+              :class="{ dark }"
+            />
+          </el-form-item>
+        </el-col>
         <el-col :span="24">
           <vue-recaptcha
             ref="catpcha"
@@ -245,7 +245,7 @@ export default {
       dark: state => state.isDark,
       focus: state => state.map.focus
     }),
-    isEitherSubseaOrTerrestrialNetwork() {
+    isBackboneSelection() {
       return this.focus && this.dialogTitle.toLowerCase() === 'backbone'
     },
     isVisible: {
