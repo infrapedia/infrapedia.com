@@ -1,29 +1,49 @@
 <template>
   <div class="overlay-wrapper">
-    <slot name="toggler" />
+    <div class="toggler-wrapper">
+      <slot name="toggler" />
+    </div>
     <transition
       name="animated faster2x"
-      enter-active-class="heightIn"
-      leave-active-class="heightOut"
+      enter-active-class="slideInLeft"
+      leave-active-class="slideOutLeft"
     >
       <el-card
-        shadow="hover"
-        class="overlay text-center overflow-y-auto relative p4 transition-all"
         v-if="isVisible"
+        shadow="hover"
+        class="overlay relative text-center overflow-y-auto transition-all"
       >
-        <h1 class="font-semibold capitalize fs-xlarge mb4">
-          Infrapedia's recent news
+        <h1 class="font-semibold capitalize fs-xlarge pt4">
+          Infrapedia's blog
         </h1>
-        <div>
-          <el-card
-            v-for="i in 20"
+        <span
+          class="h8 w8 vertical-align cursor-pointer gray-hover close-btn transparent"
+          @click="$emit('close')"
+        >
+          <fa :icon="['fas', 'times']" class="sm-icon" />
+        </span>
+        <el-divider inset />
+        <div class="p4 ml5 mt4 mb4" v-loading="loading">
+          <a
+            v-for="(post, i) in posts"
             :key="i"
-            size="mini"
-            shadow="never"
-            class="box p2 mb1 cursor-pointer h20"
+            :href="post.link"
+            target="_blank"
+            class="cursor-pointer inline-block m2"
           >
-            {{ i }}
-          </el-card>
+            <el-card
+              size="mini"
+              shadow="hover"
+              class="box p2 cursor-pointer h42"
+            >
+              <header slot="header" class="p2">
+                {{ post.title.rendered }}
+              </header>
+              <div class="flex row nowrap justify-content-space-between">
+                <div v-html="post.excerpt.rendered" />
+              </div>
+            </el-card>
+          </a>
         </div>
       </el-card>
     </transition>
@@ -31,9 +51,12 @@
 </template>
 
 <script>
+import getBlogPosts from '../services/api/blog'
+
 export default {
   data: () => ({
-    posts: []
+    posts: [],
+    loading: false
   }),
   props: {
     isVisible: {
@@ -59,8 +82,11 @@ export default {
       e.stopPropagation()
       this.$emit('close')
     },
-    loadBlogPosts() {
-      return console.warn('not done yet')
+    async loadBlogPosts() {
+      this.loading = true
+      const res = await getBlogPosts()
+      if (res) this.posts = res
+      this.loading = false
     }
   }
 }

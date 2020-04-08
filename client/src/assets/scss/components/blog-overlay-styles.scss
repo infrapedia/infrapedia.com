@@ -1,49 +1,49 @@
+@import '../base/variables';
+
+.toggler-wrapper {
+  position: absolute;
+  top: 3.6rem;
+  left: 2.6rem;
+}
+
 .overlay-wrapper {
   position: absolute;
-  top: 4.4rem;
-  left: 1.6rem;
+  top: 4.32rem;
+  left: 0;
+  width: 32rem;
+  height: 100vh;
+  z-index: 1000000;
+  transform: translateY(-4rem) translateX(-2rem);
 }
 
 .overlay {
   width: 32rem;
+  height: 100vh;
   min-width: 21rem;
-  max-height: 60vh;
-  height: fit-content;
-  background-color: rgba(255, 255, 255, 0.6);
-  transform: translateY(1rem) translateX(1rem);
+  background-color: $white-full;
+  z-index: 2000;
+  border-top-color: transparent;
+
+  .close-btn {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+    border-color: transparent;
+  }
+
+  .overlay-inner-wrapper {
+    max-height: 60vh;
+    height: fit-content;
+  }
 }
 
-.heightIn {
-  opacity: 1;
-  height: fit-content;
+.sm-icon {
+  &:hover {
+    color: $gray;
+  }
 }
 
 .box {
   width: 98%;
   min-width: 12rem;
-}
-
-@keyframes height-out {
-  0% {
-    opacity: 1;
-    height: fit-content;
-  }
-  30% {
-    opacity: 0.6;
-    height: 6rem;
-  }
-  100% {
-    height: 0;
-    opacity: 0;
-  }
-}
-
-.heightOut {
-  animation-name: height-out;
-  animation-delay: 200ms;
-  animation-duration: 320ms;
-  transition-duration: 320ms;
-  animation-timing-function: ease-in-out;
-  animation-fill-mode: both;
-  animation-direction: normal;
 }
