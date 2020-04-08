@@ -14,6 +14,8 @@ import { Auth0Plugin } from './auth'
 import Vue2TouchEvents from 'vue2-touch-events'
 import * as vueTour from './plugins/vue-tour'
 import initiateCall from './plugins/freshchat'
+import { bus } from './helpers/eventBus'
+import { AUTH_USER } from './events/auth'
 
 Vue.config.productionTip = false
 Vue.config.errorHandler = (err, vm, info) => appErrorHandler(err, vm, info)
@@ -77,19 +79,17 @@ new Vue({
     window.addEventListener
       ? await window.addEventListener('load', initiateCall, !1)
       : await window.attachEvent('load', initiateCall, !1)
-
-    setTimeout(() => {
-      try {
+  },
+  mounted() {
+    bus.$on(`${AUTH_USER}`, this.handleSetUserData)
+  },
+  methods: {
+    handleSetUserData() {
+      if (window.fcWidget) {
         window.fcWidget.setExternalId(this.$auth.user.sub)
-        window.fcWidget.user.setFirstName(this.$auth.user.name)
         window.fcWidget.user.setEmail(this.$auth.user.email)
-        // window.fcWidget.user.setProperties({
-        //   plan: 'Estate', // meta property 1
-        //   status: 'Active' // meta property 2
-        // })
-      } catch (err) {
-        console.error(err)
+        window.fcWidget.user.setFirstName(this.$auth.user.name)
       }
-    }, 11000)
+    }
   }
 }).$mount('#app')

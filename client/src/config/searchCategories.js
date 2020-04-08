@@ -1,10 +1,11 @@
 const searchCategories = [
   'All',
-  'Cables',
   'CLS',
+  'IXPs',
+  'Cables',
+  'Terrestrial',
   'Facilities',
-  'Ixps',
   'Connections',
-  'Orgs'
+  'Organizations'
 ]
 export default searchCategories

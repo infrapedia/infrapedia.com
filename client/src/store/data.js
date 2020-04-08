@@ -129,10 +129,13 @@ export const dataActions = {
       case 'cables':
         service = getSearchByCables
         break
+      case 'terrestrial':
+        service = getSearchByCables
+        break
       case 'cls':
         service = getSearchByCls
         break
-      case 'orgs':
+      case 'organizations':
         service = getSearchByOrg
         break
       case 'facilities':

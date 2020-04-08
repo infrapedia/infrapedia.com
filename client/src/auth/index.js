@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import createAuth0Client from '@auth0/auth0-spa-js'
+import { bus } from '../helpers/eventBus'
+import { AUTH_USER } from '../events/auth'
 
 export const useAuth0 = ({
   onRedirectCallback = () =>
@@ -46,12 +48,6 @@ export const useAuth0 = ({
         this.isAuthenticated = await this.auth0Client.isAuthenticated()
         this.user = await this.auth0Client.getUser()
         this.loading = false
-
-        if (!this.isAuthenticated) {
-          // window.localStorage.getItem('navigator_is_safari') === 'true'
-          // ? this.loginWithPopup()
-          this.loginWithRedirect()
-        }
       }
     },
     methods: {
@@ -78,6 +74,7 @@ export const useAuth0 = ({
           await this.auth0Client.handleRedirectCallback()
           this.user = await this.auth0Client.getUser()
           this.isAuthenticated = true
+          bus.$emit(`${AUTH_USER}`)
         } catch (e) {
           this.error = e
         } finally {

@@ -387,68 +387,74 @@ export default {
       // If is currently drawing shouldn't do anything
       if (this.isDrawing) return
 
-      const cablesTerrestrial = this.map.queryRenderedFeatures(e.point, {
-        layers: [mapConfig.cableTerrestrial]
-      })
-      const cablesSubsea = this.map.queryRenderedFeatures(e.point, {
-        layers: [mapConfig.cableSubsea]
-      })
-      const facilities = this.map.queryRenderedFeatures(e.point, {
-        layers: [mapConfig.facilities]
-      })
-      const ixps = this.map.queryRenderedFeatures(e.point, {
-        layers: [mapConfig.ixps]
-      })
-      const cls = this.map.queryRenderedFeatures(e.point, {
-        layers: [mapConfig.cls]
-      })
-      const clusters = this.map.queryRenderedFeatures(e.point, {
-        layers: [mapConfig.clusters]
-      })
-
-      // If in the region selected there is a point or a building
-      // Call the api to retrieve that facility data and open the sidebar
-      // console.log(facilities, ixps, cablesTerrestrial, cablesSubsea)
-
-      if (facilities.length) {
-        await this.handleFacilitySelection({
-          id: facilities[0].properties._id,
-          type: 'facilities'
-        })
-      } else if (ixps.length) {
-        await this.handleIxpsSelection({
-          id: facilities[0].properties._id,
-          type: 'ixps'
-        })
-      } else if (cls.length) {
-        await this.handleClsSelection({
-          id: cls[0].properties._id,
-          type: 'ixps'
-        })
-      }
-
-      if (cablesTerrestrial.length) {
-        await this.handleCablesSelection(
-          !!cablesTerrestrial.length,
-          cablesTerrestrial
-        )
-      } else if (cablesSubsea.length) {
-        await this.handleCablesSelection(!!cablesSubsea.length, cablesSubsea)
-      } else if (clusters.length) {
-        await this.handleClustersSelection(clusters, this.map)
-      } else if (
-        !facilities.length &&
-        !ixps.length &&
-        !cls.length &&
-        !clusters.length
+      if (
+        this.$auth &&
+        this.$auth.user &&
+        window.localStorage.getItem('auth.token-session')
       ) {
-        // Clearing clusters source in case there was something previously selected
-        this.map
-          .getSource(mapConfig.clusters)
-          .setData({ type: 'FeatureCollection', features: [] })
+        const cablesTerrestrial = this.map.queryRenderedFeatures(e.point, {
+          layers: [mapConfig.cableTerrestrial]
+        })
+        const cablesSubsea = this.map.queryRenderedFeatures(e.point, {
+          layers: [mapConfig.cableSubsea]
+        })
+        const facilities = this.map.queryRenderedFeatures(e.point, {
+          layers: [mapConfig.facilities]
+        })
+        const ixps = this.map.queryRenderedFeatures(e.point, {
+          layers: [mapConfig.ixps]
+        })
+        const cls = this.map.queryRenderedFeatures(e.point, {
+          layers: [mapConfig.cls]
+        })
+        const clusters = this.map.queryRenderedFeatures(e.point, {
+          layers: [mapConfig.clusters]
+        })
 
-        this.disableCableHighlight(true)
-      }
+        // If in the region selected there is a point or a building
+        // Call the api to retrieve that facility data and open the sidebar
+        // console.log(facilities, ixps, cablesTerrestrial, cablesSubsea)
+
+        if (facilities.length) {
+          await this.handleFacilitySelection({
+            id: facilities[0].properties._id,
+            type: 'facilities'
+          })
+        } else if (ixps.length) {
+          await this.handleIxpsSelection({
+            id: facilities[0].properties._id,
+            type: 'ixps'
+          })
+        } else if (cls.length) {
+          await this.handleClsSelection({
+            id: cls[0].properties._id,
+            type: 'ixps'
+          })
+        }
+
+        if (cablesTerrestrial.length) {
+          await this.handleCablesSelection(
+            !!cablesTerrestrial.length,
+            cablesTerrestrial
+          )
+        } else if (cablesSubsea.length) {
+          await this.handleCablesSelection(!!cablesSubsea.length, cablesSubsea)
+        } else if (clusters.length) {
+          await this.handleClustersSelection(clusters, this.map)
+        } else if (
+          !facilities.length &&
+          !ixps.length &&
+          !cls.length &&
+          !clusters.length
+        ) {
+          // Clearing clusters source in case there was something previously selected
+          this.map
+            .getSource(mapConfig.clusters)
+            .setData({ type: 'FeatureCollection', features: [] })
+
+          this.disableCableHighlight(true)
+        }
+      } else this.$auth.loginWithRedirect()
     },
     async handleOrganizationFocus(_id, fc) {
       const res = await viewOrganization({ user_id: this.$auth.user.sub, _id })

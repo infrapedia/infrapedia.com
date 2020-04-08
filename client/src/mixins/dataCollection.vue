@@ -44,53 +44,61 @@ export default {
       }
     },
     async handleItemListSelection({ option, id }) {
-      console.log(option.toLowerCase(), id)
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
-      switch (option.toLowerCase().trim()) {
-        case 'ixps':
-          await this.handleIxpsItemSelected({ id, type: option })
-          break
-        case 'facility':
-          await this.handleFacilityItemSelected({ id, type: option })
-          break
-        case 'facilities':
-          await this.handleFacilityItemSelected({ id, type: option })
-          break
-        case 'cls':
-          await this.handleClsItemSelected({ id, type: option })
-          break
-        case 'networks':
-          await this.handleNetworkItemSelected({ id, type: option })
-          break
-        case 'groups':
-          await this.handleNetworkItemSelected({ id, type: 'networks' })
-          break
-        case 'cable':
-          await this.handleSubmarineCableItemSelected(id)
-          break
-        case 'cables':
-          await this.handleSubmarineCableItemSelected(id)
-          break
-        case 'subsea cables':
-          await this.handleSubmarineCableItemSelected(id)
-          break
-        case 'terrestrial networks':
-          await this.handleSubmarineCableItemSelected(id)
-          break
-        case 'organizations':
-          await this.handleOrgItemSelected({ id, type: option })
-          break
-        case 'org':
-          await this.handleOrgItemSelected({ id, type: option })
-          break
-        case 'owners':
-          await this.handleOrgItemSelected({ id, type: option })
-          break
-        case 'partners':
-          await this.handleOrgItemSelected({ id, type: option })
-          break
-      }
+      if (
+        this.$auth &&
+        this.$auth.user &&
+        window.localStorage.getItem('auth.token-session')
+      ) {
+        switch (option.toLowerCase().trim()) {
+          case 'ixps':
+            await this.handleIxpsItemSelected({ id, type: option })
+            break
+          case 'facility':
+            await this.handleFacilityItemSelected({ id, type: option })
+            break
+          case 'facilities':
+            await this.handleFacilityItemSelected({ id, type: option })
+            break
+          case 'cls':
+            await this.handleClsItemSelected({ id, type: option })
+            break
+          case 'networks':
+            await this.handleNetworkItemSelected({ id, type: option })
+            break
+          case 'groups':
+            await this.handleNetworkItemSelected({ id, type: 'networks' })
+            break
+          case 'cable':
+            await this.handleSubmarineCableItemSelected(id)
+            break
+          case 'cables':
+            await this.handleSubmarineCableItemSelected(id)
+            break
+          case 'subsea cables':
+            await this.handleSubmarineCableItemSelected(id)
+            break
+          case 'terrestrial networks':
+            await this.handleSubmarineCableItemSelected(id)
+            break
+          case 'terrestrial':
+            await this.handleSubmarineCableItemSelected(id)
+            break
+          case 'organizations':
+            await this.handleOrgItemSelected({ id, type: option })
+            break
+          case 'org':
+            await this.handleOrgItemSelected({ id, type: option })
+            break
+          case 'owners':
+            await this.handleOrgItemSelected({ id, type: option })
+            break
+          case 'partners':
+            await this.handleOrgItemSelected({ id, type: option })
+            break
+        }
+      } else this.$auth.loginWithRedirect()
     },
     async handleSubmarineCableItemSelected(id) {
       if (!id)
