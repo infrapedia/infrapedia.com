@@ -1,7 +1,7 @@
 <template>
   <div
     class="gooey-wrapper z-index1 absolute regular-transition"
-    @click.stop="activeGooeyMenu"
+    @click.stop="$emit('close')"
     :class="{ active: isActive }"
   >
     <ul role="group" class="relative regular-transition" id="gooeyList">
