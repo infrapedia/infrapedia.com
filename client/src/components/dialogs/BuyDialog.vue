@@ -172,6 +172,7 @@ import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
 import VueRecaptcha from 'vue-recaptcha'
 import siteKey from '../../config/siteKey'
 import AutocompleteGoogle from '../../components/AutocompleteGoogle'
+import validateEmail from '../../helpers/validateEmail'
 
 export default {
   components: {
@@ -295,6 +296,8 @@ export default {
         this.form.fullname =
           user_metadata && user_metadata.name
             ? user_metadata.name
+            : validateEmail(userData.name)
+            ? ''
             : userData.name
         this.form.email =
           user_metadata && user_metadata.email

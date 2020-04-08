@@ -255,7 +255,7 @@ export default {
           ? false
           : true
       } else {
-        disabled = this.form.subdomain && this.form.googleID ? false : true
+        disabled = this.form.subdomain ? false : true
       }
       return disabled
     }

@@ -387,11 +387,7 @@ export default {
       // If is currently drawing shouldn't do anything
       if (this.isDrawing) return
 
-      if (
-        this.$auth &&
-        this.$auth.user &&
-        window.localStorage.getItem('auth.token-session')
-      ) {
+      if (this.$auth.isAuthenticated) {
         const cablesTerrestrial = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.cableTerrestrial]
         })

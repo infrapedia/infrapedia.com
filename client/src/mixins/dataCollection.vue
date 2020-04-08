@@ -46,11 +46,7 @@ export default {
     async handleItemListSelection({ option, id }) {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
-      if (
-        this.$auth &&
-        this.$auth.user &&
-        window.localStorage.getItem('auth.token-session')
-      ) {
+      if (this.$auth.isAuthenticated) {
         switch (option.toLowerCase().trim()) {
           case 'ixps':
             await this.handleIxpsItemSelected({ id, type: option })
