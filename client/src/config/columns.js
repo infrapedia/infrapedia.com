@@ -6,7 +6,6 @@ export const clsColumns = [
   {
     label: 'Cables',
     value: 'cables',
-    showTable: true,
     showSidebar: true,
     filter: arr => arr
   },
@@ -66,8 +65,7 @@ export const cablesColumns = [
   {
     label: 'Facilities',
     value: 'facilities',
-    showSidebar: true,
-    showTable: true
+    showSidebar: true
   },
   {
     label: 'Groups',
@@ -121,8 +119,7 @@ export const facsColumns = [
   {
     label: 'Ixps',
     value: 'ixps',
-    showSidebar: true,
-    showTable: true
+    showSidebar: true
   },
   {
     label: 'Type',
@@ -134,20 +131,17 @@ export const facsColumns = [
     label: 'Cables',
     value: 'cables',
     showSidebar: true,
-    filter: arr => arr,
-    showTable: true
+    filter: arr => arr
   },
   {
     label: 'Groups',
     value: 'networks',
-    showSidebar: true,
-    showTable: true
+    showSidebar: true
   },
   {
     label: 'Owners',
     value: 'organizations',
-    showSidebar: true,
-    showTable: true
+    showSidebar: true
   }
 ]
 
@@ -198,20 +192,17 @@ export const ixpsColumns = [
   {
     label: 'Groups',
     value: 'networks',
-    showSidebar: true,
-    showTable: true
+    showSidebar: true
   },
   {
     label: 'Owners',
     value: 'organizations',
-    showSidebar: true,
-    showTable: true
+    showSidebar: true
   },
   {
     label: 'Facilities',
     value: 'facilities',
-    showSidebar: true,
-    showTable: true
+    showSidebar: true
   }
 ]
 
@@ -247,14 +238,12 @@ export const netColumns = [
   {
     label: 'Cls',
     value: 'cls',
-    showSidebar: true,
-    showTable: true
+    showSidebar: true
   },
   {
     label: 'Owners',
     value: 'orgs',
-    showSidebar: true,
-    showTable: true
+    showSidebar: true
   },
   {
     label: 'Configured alerts',

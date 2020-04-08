@@ -126,7 +126,6 @@ export default {
     ) {
       this.$tours['profile-tour'].start()
     }
-    console.log(this.$tours['profile-tour'])
 
     bus.$on(
       `${navbarEvents.TOGGLE_MOBILE_DRAWER_PROFILE}`,
