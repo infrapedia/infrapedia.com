@@ -30,6 +30,14 @@
     right: 0.4rem;
     border-color: transparent;
   }
+  header {
+    span {
+      color: $grey-ligthen-2;
+    }
+    h2 {
+      color: #466ca7;
+    }
+  }
 
   .overlay-inner-wrapper {
     max-height: 60vh;

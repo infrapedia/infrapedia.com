@@ -11,9 +11,9 @@
       <el-card
         v-if="isVisible"
         shadow="hover"
-        class="overlay relative text-center overflow-y-auto transition-all"
+        class="overlay relative overflow-y-auto transition-all"
       >
-        <h1 class="font-semibold capitalize fs-xlarge pt4">
+        <h1 class="font-semibold text-center capitalize fs-xlarge pt4">
           Infrapedia's blog
         </h1>
         <span
@@ -36,8 +36,13 @@
               shadow="hover"
               class="box p2 cursor-pointer h42"
             >
-              <header slot="header" class="p2">
-                {{ post.title.rendered }}
+              <header class="p2">
+                <span class="fs-small inline-block mb4">
+                  {{ formatDate(post.modified) }}
+                </span>
+                <h2 class="m0 fs-medium font-bold">
+                  {{ post.title.rendered }}
+                </h2>
               </header>
               <div class="flex row nowrap justify-content-space-between">
                 <div v-html="post.excerpt.rendered" />
@@ -52,10 +57,12 @@
 
 <script>
 import getBlogPosts from '../services/api/blog'
+import { formatDate } from '../helpers/formatDate'
 
 export default {
   data: () => ({
     posts: [],
+    formatDate,
     loading: false
   }),
   props: {
