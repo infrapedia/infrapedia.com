@@ -28,7 +28,7 @@ export default {
   },
   async created() {
     this.checkIfIsNotSecure()
-    await this.handleSharedView()
+    this.handleSharedView()
     await this.checkIfSafariNavigator()
   },
   computed: {
@@ -106,7 +106,8 @@ export default {
       await this.$store.commit(`${IS_SAFARI_NAVIGATOR}`, isSafari)
       await window.localStorage.setItem('navigator_is_safari', isSafari)
     },
-    async handleSharedView() {
+    handleSharedView() {
+      console.log(this.$route.query)
       if (this.$route.query) {
         window.localStorage.setItem(
           '__easePointData',
