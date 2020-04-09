@@ -9,7 +9,7 @@ export const useAuth0 = ({
   redirectUri = window.location.origin,
   ...options
 }) => {
-  const instance = new Vue({
+  return new Vue({
     data: () => ({
       loading: true,
       isAuthenticated: false,
@@ -83,9 +83,11 @@ export const useAuth0 = ({
       },
       /** Authenticates the user using the redirect method */
       loginWithRedirect(o) {
-        this.times += 1
-        window.localStorage.setItem('times_login_call', this.times)
-        return this.auth0Client.loginWithRedirect(o)
+        if (this.loading) {
+          setTimeout(() => this.loginWithRedirect(o), 1000)
+        } else {
+          return this.auth0Client.loginWithRedirect(o)
+        }
       },
       /** Returns all the claims present in the ID token */
       getIdTokenClaims(o) {
@@ -106,8 +108,6 @@ export const useAuth0 = ({
       }
     }
   })
-
-  return instance
 }
 
 export const Auth0Plugin = {

@@ -3,11 +3,10 @@
  * @param { ctx } Object - Reference to the vue this context
  * @param { map } Object - Map Reference
  */
-async function boundsChange({ ctx, map }) {
-  if (!ctx || !map) {
+async function boundsChange({ map }) {
+  if (!map) {
     throw {
       message: `boundsChange.js module line 9. \n
-        expected 'ctx' to be an Object reference to vue .this instance, found:${typeof ctx};\n
         expected 'map' to be an Object reference to Mapbox map instance, found: ${typeof map}.`
     }
   }
@@ -21,28 +20,30 @@ async function boundsChange({ ctx, map }) {
 
   if (!bounds && !center) return
   try {
-    if (!ctx.focus) {
-      await ctx.$router.replace(
-        `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
-          bounds._sw.lng
-        }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
-          0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
-          center.center.lat
-        }`
-      )
-    } else {
-      const { id, type, name } = ctx.focus
-
-      if (id && type) {
-        await ctx.$router.replace(
+    if (!window.localStorage.getItem('__easePointData')) {
+      if (!this.focus) {
+        await this.$router.replace(
           `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
             bounds._sw.lng
           }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
-            center.bearing ||
             0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
             center.center.lat
-          }&name=${name}&type=${type}&id=${id}`
+          }`
         )
+      } else {
+        const { id, type, name } = this.focus
+
+        if (id && type) {
+          await this.$router.replace(
+            `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
+              bounds._sw.lng
+            }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
+              center.bearing ||
+              0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
+              center.center.lat
+            }&name=${name}&type=${type}&id=${id}`
+          )
+        }
       }
     }
   } catch {

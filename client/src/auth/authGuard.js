@@ -1,6 +1,6 @@
 import { getInstance } from './index'
 
-export const authGuard = (to, from, next) => {
+export default function authGuard(to, from, next) {
   const authService = getInstance()
 
   const fn = () => {

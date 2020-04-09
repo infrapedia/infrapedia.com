@@ -180,6 +180,10 @@ export default {
           col => col.value !== 'activationDateTime'
         )
       }
+
+      if (window.localStorage.getItem('__easePointData')) {
+        window.localStorage.removeItem('__easePointData')
+      }
     },
     toggleActiveClassOnMobile() {
       this.isSidebarActive = !this.isSidebarActive

@@ -95,54 +95,59 @@ export default {
     handleIsDrawing(bool) {
       return this.$store.commit(`${IS_DRAWING}`, bool)
     },
-    loadDataIfQueryParamsExist: debounce(async function() {
-      const {
-        id,
-        type,
-        zoom,
-        swLng,
-        swLat,
-        neLat,
-        neLng,
-        pitch,
-        bearing,
-        centerLat,
-        centerLng,
-        hasToEase
-      } = this.$route.query
+    loadDataIfQueryParamsExist: debounce(function() {
+      setTimeout(() => {
+        if (window.localStorage.getItem('__easePointData')) {
+          const {
+            id,
+            type,
+            zoom,
+            swLng,
+            swLat,
+            neLat,
+            neLng,
+            pitch,
+            bearing,
+            centerLat,
+            centerLng,
+            hasToEase
+          } = JSON.parse(window.localStorage.getItem('__easePointData'))
 
-      // If all this query params exist we can assume it's a view sharing
-      // So we need to save the easePoint on the store
-      if (
-        swLat &&
-        neLat &&
-        neLng &&
-        swLng &&
-        zoom &&
-        bearing &&
-        pitch &&
-        centerLat &&
-        centerLng &&
-        hasToEase === 'true'
-      ) {
-        this.$store.commit(`${EASE_POINT}`, {
-          center: [
-            [neLng, neLat],
-            [swLng, swLat]
-          ],
-          cameraCenter: [centerLng, centerLat],
-          hasToEase: true,
-          bearing,
-          pitch,
-          zoom
-        })
-      }
+          // If all this query params exist we can assume it's a view sharing
+          // So we need to save the easePoint on the store
+          if (
+            swLat &&
+            neLat &&
+            neLng &&
+            swLng &&
+            zoom &&
+            bearing &&
+            pitch &&
+            centerLat &&
+            centerLng &&
+            hasToEase === 'true'
+          ) {
+            this.$store.commit(`${EASE_POINT}`, {
+              center: [
+                [neLng, neLat],
+                [swLng, swLat]
+              ],
+              cameraCenter: [centerLng, centerLat],
+              hasToEase: true,
+              bearing,
+              pitch,
+              zoom
+            })
+          }
 
-      // If there is there is no id or nor type only ease to the coordinates point
-      // Otherwise if only cable and type exist we open the sidebar and not ease
-      return !id || !type
-        ? bus.$emit(`${FOCUS_ON_CITY}`)
-        : await this.handleItemListSelection({ option: type, id })
+          // If there is there is no id or nor type only ease to the coordinates point
+          // Otherwise if only cable and type exist we open the sidebar and not ease
+          console.log(id, type)
+          !id || !type
+            ? bus.$emit(`${FOCUS_ON_CITY}`)
+            : this.handleItemListSelection({ option: type, id })
+        }
+      }, 1000)
     }, 2200)
   }
 }
