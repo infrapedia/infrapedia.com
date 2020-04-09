@@ -272,7 +272,7 @@ export default {
     handleDrawEvents() {
       const data = window.draw.getAll()
       const elemnt = document.getElementById('calculated-area')
-      return handleDraw({ ctx: this, data, elemnt })
+      return handleDraw.call(this, { data, elemnt })
     },
     /**
      * @param e { Object } Map's hover Event
@@ -331,19 +331,10 @@ export default {
       this.map.getCanvas().style.cursor = ''
       popup.remove()
     },
-    // async handleZoomLevelChange() {
-    // const zoomLevel = this.map.getZoom()
-    // if (zoomLevel >= 6.4) {
-    //   return await this.$store.dispatch(
-    //     'saveStatisticsData',
-    //     this.$route.fullPath.split('?')[1]
-    //   )
-    // }
-    // },
     async handleBoundsChange() {
       if (!this.map) return
       try {
-        return await boundsChange({ ctx: this, map: this.map })
+        return await boundsChange.call(this, { map: this.map })
       } catch (err) {
         console.error(err)
       }
