@@ -48,7 +48,7 @@
       patient.
     </el-dialog>
     <el-dialog
-      :visible.sync="isSendingData && creationType === 'map'"
+      :visible.sync="isMapFormSendingData"
       width="44%"
       top="12vh"
       title="Uploading map and creating map archives..."
@@ -125,6 +125,9 @@ export default {
     },
     customDialogClass() {
       return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
+    },
+    isMapFormSendingData() {
+      return this.isSendingData && this.creationType === 'map'
     },
     isLoadingDialog() {
       const type =
