@@ -69,7 +69,11 @@ import {
   SET_MAP_SOURCES
 } from '../../../events/editor'
 import MapForm from '../../../components/userCreationForms/map'
-import { getMyMap, setMyMap } from '../../../services/api/map'
+import {
+  getMyMap,
+  setMyMap,
+  setupMyMapArchives
+} from '../../../services/api/map'
 
 export default {
   name: 'CreateSection',
@@ -260,6 +264,7 @@ export default {
       const res = await setMyMap({ ...data, user_id: this.$auth.user.sub })
       if (res && res.t !== 'error') {
         this.mode = 'create'
+        await setupMyMapArchives(data.subdomain)
         await this.checkUserMapExistance()
       }
       this.isSendingData = false

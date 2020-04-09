@@ -79,3 +79,45 @@ export const setMyMap = async ({
   })
   return res
 }
+
+export async function setupMyMapIxps(sub) {
+  url = `${apiConfig.url}/map/ixps/${sub}`
+  const res = await $axios.get(url)
+  return res
+}
+
+export async function setupMyMapFacs(sub) {
+  url = `${apiConfig.url}/map/facilities/${sub}`
+  const res = await $axios.get(url)
+  return res
+}
+
+export async function setupMyMapCLS(sub) {
+  url = `${apiConfig.url}/map/cls/${sub}`
+  const res = await $axios.get(url)
+  return res
+}
+
+export async function setupMyMapDraw(sub) {
+  url = `${apiConfig.url}/map/draw/${sub}`
+  const res = await $axios.get(url)
+  return res
+}
+
+export async function setupMyMapCables(sub) {
+  url = `${apiConfig.url}/map/cables/${sub}`
+  const res = await $axios.get(url)
+  return res
+}
+
+export const setupMyMapArchives = async subdomain => {
+  url = `${apiConfig.url}/map/ixps/${subdomain}`
+  const res = await Promise.all([
+    setupMyMapIxps(subdomain),
+    setupMyMapCLS(subdomain),
+    setupMyMapCables(subdomain),
+    setupMyMapFacs(subdomain),
+    setupMyMapDraw(subdomain)
+  ])
+  return res
+}
