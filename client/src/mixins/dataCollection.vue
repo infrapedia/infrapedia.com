@@ -44,8 +44,6 @@ export default {
       }
     },
     async handleItemListSelection({ option, id }) {
-      if (!id) throw { message: 'MISSING ID PARAMETER' }
-
       if (this.$auth.isAuthenticated) {
         switch (option.toLowerCase().trim()) {
           case 'ixps':
@@ -94,7 +92,7 @@ export default {
             await this.handleOrgItemSelected({ id, type: option })
             break
         }
-      } else this.$auth.loginWithRedirect()
+      } else await this.$auth.loginWithRedirect()
     },
     async handleSubmarineCableItemSelected(id) {
       if (!id)

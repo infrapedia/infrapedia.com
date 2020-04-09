@@ -443,13 +443,17 @@ export default {
           !clusters.length
         ) {
           // Clearing clusters source in case there was something previously selected
-          this.map
-            .getSource(mapConfig.clusters)
-            .setData({ type: 'FeatureCollection', features: [] })
-
-          this.disableCableHighlight(true)
+          try {
+            this.map
+              .getSource(mapConfig.clusters)
+              .setData({ type: 'FeatureCollection', features: [] })
+          } catch {
+            // Ignore
+          } finally {
+            this.disableCableHighlight(true)
+          }
         }
-      } else this.$auth.loginWithRedirect()
+      } else await this.$auth.loginWithRedirect()
     },
     async handleOrganizationFocus(_id, fc) {
       const res = await viewOrganization({ user_id: this.$auth.user.sub, _id })

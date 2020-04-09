@@ -26,28 +26,10 @@ export default {
   components: {
     VersionsBanner
   },
-  created() {
-    if (
-      process.env.NODE_ENV === 'production' &&
-      window.location.protocol !== 'https:'
-    ) {
-      window.location.replace(
-        `https:${window.location.href.substring(
-          window.location.protocol.length
-        )}`
-      )
-    }
-    const isSafari =
-      /constructor/i.test(window.HTMLElement) ||
-      (function(p) {
-        return p.toString() === '[object SafariRemoteNotification]'
-      })(
-        !window['safari'] ||
-          // eslint-disable-next-line
-          (typeof safari !== 'undefined' && safari.pushNotification)
-      )
-    this.$store.commit(`${IS_SAFARI_NAVIGATOR}`, isSafari)
-    window.localStorage.setItem('navigator_is_safari', isSafari)
+  async created() {
+    this.checkIfIsNotSecure()
+    await this.handleSharedView()
+    await this.checkIfSafariNavigator()
   },
   computed: {
     layout() {
@@ -95,6 +77,42 @@ export default {
     },
     isProfileRoute() {
       return this.$route.name.includes('user')
+    }
+  },
+  methods: {
+    checkIfIsNotSecure() {
+      if (
+        process.env.NODE_ENV === 'production' &&
+        window.location.protocol !== 'https:'
+      ) {
+        window.location.replace(
+          `https:${window.location.href.substring(
+            window.location.protocol.length
+          )}`
+        )
+      }
+    },
+    async checkIfSafariNavigator() {
+      const isSafari =
+        /constructor/i.test(window.HTMLElement) ||
+        (function(p) {
+          return p.toString() === '[object SafariRemoteNotification]'
+        })(
+          !window['safari'] ||
+            // eslint-disable-next-line
+            (typeof safari !== 'undefined' && safari.pushNotification)
+        )
+
+      await this.$store.commit(`${IS_SAFARI_NAVIGATOR}`, isSafari)
+      await window.localStorage.setItem('navigator_is_safari', isSafari)
+    },
+    async handleSharedView() {
+      if (this.$route.query) {
+        window.localStorage.setItem(
+          '__easePointData',
+          JSON.stringify(this.$route.query)
+        )
+      }
     }
   }
 }
