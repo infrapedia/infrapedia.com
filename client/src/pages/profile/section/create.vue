@@ -47,6 +47,18 @@
       Usually, this takes time when loading a map with lots of data... Please be
       patient.
     </el-dialog>
+    <el-dialog
+      :visible.sync="isSendingData && creationType === 'map'"
+      width="44%"
+      top="12vh"
+      title="Uploading map and creating map archives..."
+      :show-close="false"
+      :custom-class="customDialogClass"
+      :close-on-click-modal="false"
+    >
+      Usually, this takes time when uploading a map with lots of data... Please
+      be patient.
+    </el-dialog>
   </div>
 </template>
 
