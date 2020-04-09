@@ -96,58 +96,58 @@ export default {
       return this.$store.commit(`${IS_DRAWING}`, bool)
     },
     loadDataIfQueryParamsExist: debounce(function() {
-      if (window.localStorage.getItem('__easePointData')) {
-        const {
-          id,
-          type,
-          zoom,
-          swLng,
-          swLat,
-          neLat,
-          neLng,
-          pitch,
-          bearing,
-          centerLat,
-          centerLng,
-          hasToEase
-        } = JSON.parse(window.localStorage.getItem('__easePointData'))
-
-        // If all this query params exist we can assume it's a view sharing
-        // So we need to save the easePoint on the store
-        if (
-          swLat &&
-          neLat &&
-          neLng &&
-          swLng &&
-          zoom &&
-          bearing &&
-          pitch &&
-          centerLat &&
-          centerLng &&
-          hasToEase === 'true'
-        ) {
-          this.$store.commit(`${EASE_POINT}`, {
-            center: [
-              [neLng, neLat],
-              [swLng, swLat]
-            ],
-            cameraCenter: [centerLng, centerLat],
-            hasToEase: true,
-            bearing,
+      setTimeout(() => {
+        if (window.localStorage.getItem('__easePointData')) {
+          const {
+            id,
+            type,
+            zoom,
+            swLng,
+            swLat,
+            neLat,
+            neLng,
             pitch,
-            zoom
-          })
-        }
+            bearing,
+            centerLat,
+            centerLng,
+            hasToEase
+          } = JSON.parse(window.localStorage.getItem('__easePointData'))
 
-        // If there is there is no id or nor type only ease to the coordinates point
-        // Otherwise if only cable and type exist we open the sidebar and not ease
-        !id || !type
-          ? bus.$emit(`${FOCUS_ON_CITY}`)
-          : this.handleItemListSelection({ option: type, id })
-        if (this.$auth && this.$auth.isAuthenticated) {
-          window.localStorage.removeItem('__easePointData')
+          // If all this query params exist we can assume it's a view sharing
+          // So we need to save the easePoint on the store
+          if (
+            swLat &&
+            neLat &&
+            neLng &&
+            swLng &&
+            zoom &&
+            bearing &&
+            pitch &&
+            centerLat &&
+            centerLng &&
+            hasToEase === 'true'
+          ) {
+            this.$store.commit(`${EASE_POINT}`, {
+              center: [
+                [neLng, neLat],
+                [swLng, swLat]
+              ],
+              cameraCenter: [centerLng, centerLat],
+              hasToEase: true,
+              bearing,
+              pitch,
+              zoom
+            })
+          }
+
+          // If there is there is no id or nor type only ease to the coordinates point
+          // Otherwise if only cable and type exist we open the sidebar and not ease
+          console.log(id, type)
+          !id || !type
+            ? bus.$emit(`${FOCUS_ON_CITY}`)
+            : this.handleItemListSelection({ option: type, id })
         }
-      }
+      }, 1000)
     }, 2200)
   }
 }

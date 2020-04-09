@@ -1,5 +1,5 @@
 <template>
-  <div class="pr8 pl8 pt2 pb8">
+  <div class="pr8 pl8 pt2 pb8 no-overflow-x">
     <div v-for="(col, i) in cableColumns" :key="i">
       <!---- COLLAPSE SECTION STARTS---->
       <template

@@ -107,8 +107,10 @@ export default {
       await window.localStorage.setItem('navigator_is_safari', isSafari)
     },
     handleSharedView() {
-      console.log(this.$route)
-      if (this.$route.query) {
+      if (
+        this.$route.query &&
+        !window.localStorage.getItem('__easePointData')
+      ) {
         window.localStorage.setItem(
           '__easePointData',
           JSON.stringify(this.$route.query)

@@ -7,7 +7,6 @@ async function boundsChange({ map }) {
   if (!map) {
     throw {
       message: `boundsChange.js module line 9. \n
-        expected 'ctx' to be an Object reference to vue .this instance, found:${typeof ctx};\n
         expected 'map' to be an Object reference to Mapbox map instance, found: ${typeof map}.`
     }
   }
@@ -21,19 +20,19 @@ async function boundsChange({ map }) {
 
   if (!bounds && !center) return
   try {
-    if (!this.focus) {
-      await this.$router.replace(
-        `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
-          bounds._sw.lng
-        }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
-          0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
-          center.center.lat
-        }`
-      )
-    } else {
-      const { id, type, name } = this.focus
+    if (!window.localStorage.getItem('__easePointData')) {
+      if (!this.focus) {
+        await this.$router.replace(
+          `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
+            bounds._sw.lng
+          }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
+            0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
+            center.center.lat
+          }`
+        )
+      } else {
+        const { id, type, name } = this.focus
 
-      if (!this.$router.fullPath.contains('/api')) {
         if (id && type) {
           await this.$router.replace(
             `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
