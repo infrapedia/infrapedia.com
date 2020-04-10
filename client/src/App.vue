@@ -19,7 +19,6 @@ import DefaultLayout from './layouts/default'
 import BlogLayout from './layouts/blog'
 import NoNav from './layouts/nothing'
 import VersionsBanner from './components/VersionsBanner'
-import { IS_SAFARI_NAVIGATOR } from './store/actionTypes'
 import HomePageLayout from './layouts/homepage'
 
 export default {
@@ -30,13 +29,14 @@ export default {
   async created() {
     this.checkIfIsNotSecure()
     this.handleSharedView()
-    await this.checkIfSafariNavigator()
   },
   computed: {
     layout() {
       let layout
 
-      if (this.isProfileRoute) {
+      if (this.isHomePageRoute) {
+        layout = HomePageLayout
+      } else if (this.isProfileRoute) {
         layout = ProfileLayout
       } else if (this.isBlogLayout || this.isLoginRoute) {
         layout = BlogLayout
@@ -46,8 +46,6 @@ export default {
         layout = DashboardLayout
       } else if (this.$auth.isAuthenticated) {
         layout = DefaultLayout
-      } else if (this.isHomePageRoute) {
-        layout = HomePageLayout
       }
 
       return layout
@@ -104,20 +102,6 @@ export default {
           )}`
         )
       }
-    },
-    async checkIfSafariNavigator() {
-      const isSafari =
-        /constructor/i.test(window.HTMLElement) ||
-        (function(p) {
-          return p.toString() === '[object SafariRemoteNotification]'
-        })(
-          !window['safari'] ||
-            // eslint-disable-next-line
-            (typeof safari !== 'undefined' && safari.pushNotification)
-        )
-
-      await this.$store.commit(`${IS_SAFARI_NAVIGATOR}`, isSafari)
-      await window.localStorage.setItem('navigator_is_safari', isSafari)
     },
     handleSharedView() {
       if (

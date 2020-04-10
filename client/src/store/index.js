@@ -6,7 +6,6 @@ import * as types from './actionTypes'
 import * as modes from '../config/sidebarModes'
 import { dataActions, dataMutations } from './data'
 import createPersistedState from 'vuex-persistedstate'
-import { mapStatistics } from '../services/api/map'
 
 Vue.use(Vuex)
 
@@ -37,9 +36,7 @@ export default new Vuex.Store({
     premium: [],
     networks: [],
     submarine: [],
-    dataCenters: [],
-    statisticsData: [],
-    isSafariNavigator: false
+    dataCenters: []
   },
   mutations: {
     ...dataMutations,
@@ -95,9 +92,6 @@ export default new Vuex.Store({
         return
       }
       state.statisticsData.push(data)
-    },
-    [types.IS_SAFARI_NAVIGATOR](state, bool) {
-      state.isSafariNavigator = bool
     }
   },
   actions: {
@@ -106,14 +100,6 @@ export default new Vuex.Store({
         `${types.TOGGLE_SIDEBAR_MODE}`,
         num > 0 ? modes.DATA_CENTER_MODE : modes.CABLE_MODE
       )
-    },
-    saveStatisticsData({ commit }, str) {
-      return commit(`${types.STATISTICS_DATA}`, str)
-    },
-    async sendStatisticsData({ state }) {
-      for (let statistic of Array.from(state.statisticsData)) {
-        await mapStatistics(statistic)
-      }
     },
     ...dataActions
   },
