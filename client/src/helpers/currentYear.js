@@ -1,2 +1,3 @@
-const currentYear = () => new Date().getFullYear()
-export default currentYear
+export default function currentYear() {
+  return new Date().getFullYear()
+}

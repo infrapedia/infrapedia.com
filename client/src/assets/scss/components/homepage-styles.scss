@@ -1,0 +1,114 @@
+@import '../base/variables';
+@import '../helpers/atomic-classes';
+
+.hero-wrapper {
+  border-top: 1px solid $grey-ligthen-3;
+  &:hover {
+    .map-wrapper {
+      filter: blur(2px);
+    }
+    .overlay-inner {
+      opacity: 1;
+      cursor: pointer;
+      background-color: rgba($color: #0000, $alpha: 0.8);
+    }
+  }
+}
+
+.overlay-inner {
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.title {
+  line-height: 1.3;
+  font-weight: 500;
+  font-size: 40px;
+  color: rgb(15, 50, 86);
+  text-align: center;
+  &.md {
+    text-align: left;
+    color: $dark-charcoal;
+    font-size: 30px;
+    @extend .no-selectable;
+    text-transform: capitalize;
+    @media screen and (max-width: $break-xs) {
+      font-size: 24px;
+    }
+  }
+  &.white {
+    line-height: 1.2;
+    color: $white-full;
+  }
+  small {
+    font-size: 14px;
+    margin-top: 1rem;
+  }
+  @media screen and (max-width: $break-xs) {
+    font-size: 34px;
+  }
+}
+
+.information-section {
+  .inner-wrapper {
+    .text {
+      margin: 0;
+      padding: 1rem;
+      font-size: 2rem;
+      line-height: 1.6;
+      color: $light-charcoal;
+      @extend .dont-break-out;
+      &.font-bold {
+        max-width: 52.4rem;
+        min-width: 24rem;
+        @media screen and (max-width: $break-xs) {
+          max-width: unset;
+          min-width: unset;
+        }
+      }
+      &.sub {
+        max-width: 50rem;
+        margin-top: 1rem;
+      }
+    }
+    .centered-wrapper {
+      display: grid;
+      background-color: rgba(233, 246, 255, 1);
+    }
+    .with-icon {
+      width: 60%;
+      .inner-wrapper {
+        width: 24rem;
+        .text {
+          font-size: 18px;
+        }
+        .xl-icon {
+          color: $light-charcoal;
+          background-color: $white-full;
+        }
+      }
+      @media screen and (max-width: $break-md) {
+        width: 94%;
+        padding: 1rem;
+        justify-self: center;
+      }
+      @media screen and (max-width: 1056px) {
+        width: 87%;
+        justify-self: start;
+      }
+      @media screen and (max-width: 972px) {
+        width: 78%;
+        justify-self: start;
+      }
+      @media screen and (max-width: $break-sm) {
+        flex-wrap: wrap;
+        .inner-wrapper {
+          width: 100%;
+          padding: 1rem;
+        }
+      }
+    }
+  }
+}

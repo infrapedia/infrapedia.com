@@ -23,6 +23,7 @@ import MessagesSection from '../pages/profile/section/messages.vue'
 import MyMessagesSection from '../pages/profile/section/mymessages.vue'
 
 const routes = [
+  { path: '*', component: NotFound },
   {
     path: '/',
     name: 'home',
@@ -136,11 +137,6 @@ const routes = [
     path: '/blog',
     name: 'blog',
     component: Blog
-  },
-  {
-    path: '/404',
-    name: '404',
-    component: NotFound
   }
 ]
 

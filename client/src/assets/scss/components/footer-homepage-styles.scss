@@ -1,0 +1,31 @@
+@import '../base/variables';
+
+.footer {
+  background-color: $dark-blue;
+  color: $white-partial;
+
+  .logo-title {
+    margin-top: -0.8rem;
+  }
+
+  .logo-img {
+    height: 42px;
+    width: 120px;
+  }
+
+  .links-wrapper {
+    width: 21rem;
+    height: 12rem;
+    color: white;
+    .title-link {
+      margin-top: 5px;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.8;
+      color: #6ebfff;
+    }
+    .list-item {
+      font-size: 14px;
+    }
+  }
+}

@@ -1,7 +1,7 @@
 <template>
   <div
     class="application"
-    :class="{ dark, light: !dark }"
+    :class="{ dark, light: !dark, 'no-overflow': !isHomePageRoute }"
     role="main"
     :style="getDarkStyles"
   >
@@ -20,6 +20,7 @@ import BlogLayout from './layouts/blog'
 import NoNav from './layouts/nothing'
 import VersionsBanner from './components/VersionsBanner'
 import { IS_SAFARI_NAVIGATOR } from './store/actionTypes'
+import HomePageLayout from './layouts/homepage'
 
 export default {
   name: 'App',
@@ -43,14 +44,26 @@ export default {
         layout = NoNav
       } else if (this.isDashboard) {
         layout = DashboardLayout
-      } else {
+      } else if (this.$auth.isAuthenticated) {
         layout = DefaultLayout
+      } else if (this.isHomePageRoute) {
+        layout = HomePageLayout
       }
 
       return layout
     },
     dark() {
       return this.$store.state.isDark
+    },
+    isHomePageRoute() {
+      return (
+        !this.isProfileRoute &&
+        !this.$auth.isAuthenticated &&
+        !this.isRecoverPass &&
+        !this.isLoginRoute &&
+        !this.isDashboard &&
+        !this.isBlogLayout
+      )
     },
     getDarkStyles() {
       let theme = {}

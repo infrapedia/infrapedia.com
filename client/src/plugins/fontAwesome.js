@@ -47,7 +47,11 @@ import {
   faMapMarkerAlt,
   faMapMarkedAlt,
   faWater,
-  faWindowMaximize
+  faWindowMaximize,
+  faGlobeAmericas,
+  faHeadset,
+  faPeopleArrows,
+  faAngleDoubleRight
 } from '@fortawesome/free-solid-svg-icons'
 import { faHandPointUp } from '@fortawesome/free-regular-svg-icons'
 import {
@@ -62,6 +66,10 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
+  faAngleDoubleRight,
+  faPeopleArrows,
+  faGlobeAmericas,
+  faHeadset,
   faWindowMaximize,
   faWater,
   faMapMarkedAlt,

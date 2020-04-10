@@ -1,69 +1,71 @@
 <template>
   <div id="map">
-    <el-button
-      id="ThreeD"
-      type="text"
-      title="3D view"
-      @click="toggleThreeD"
-      size="small"
-      class="m0 p0"
-      :class="{ dark }"
-      >3D</el-button
-    >
-    <el-button
-      id="FScreen"
-      title="Full screen"
-      type="text"
-      size="small"
-      class="m0 p0"
-      :class="{ dark }"
-      @click="toggleFullScreen"
-    >
-      <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
-    </el-button>
-    <el-button
-      id="menuOpener"
-      circle
-      size="small"
-      title="Share menu and toggle dark mode button"
-      class="absolute z-index1 w11 h11"
-      @click.stop="toggleMenu"
-      tabindex="0"
-    >
-      <fa
-        :icon="['far', 'hand-point-up']"
-        class="icon fs-medium"
-        v-if="!isMenuOpen"
-      />
-      <fa :icon="['fas', 'times']" class="icon fs-medium" v-else />
-
-      <ul
-        v-if="isMenuOpen"
-        role="group"
-        class="absolute flex justify-content-space-around align-items-center"
-        :class="{ active: isMenuOpen }"
+    <template v-if="!disabled">
+      <el-button
+        id="ThreeD"
+        type="text"
+        title="3D view"
+        @click="toggleThreeD"
+        size="small"
+        class="m0 p0"
+        :class="{ dark }"
+        >3D</el-button
       >
-        <li role="listitem">
-          <i-theme-toggler
-            id="toggleTheme"
-            title="Toggle dark mode"
-            @click="toggleDarkMode"
-          />
-        </li>
-        <li role="listitem">
-          <el-button
-            title="Share menu"
-            type="primary"
-            class="w11 h11"
-            circle
-            @click="toggleGooeyMenu"
-          >
-            <fa :icon="['fas', 'share-alt']" />
-          </el-button>
-        </li>
-      </ul>
-    </el-button>
-    <gooey-menu :is-active="isGooeyMenu" @close="toggleGooeyMenu" />
+      <el-button
+        id="FScreen"
+        title="Full screen"
+        type="text"
+        size="small"
+        class="m0 p0"
+        :class="{ dark }"
+        @click="toggleFullScreen"
+      >
+        <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
+      </el-button>
+      <el-button
+        id="menuOpener"
+        circle
+        size="small"
+        title="Share menu and toggle dark mode button"
+        class="absolute z-index1 w11 h11"
+        @click.stop="toggleMenu"
+        tabindex="0"
+      >
+        <fa
+          :icon="['far', 'hand-point-up']"
+          class="icon fs-medium"
+          v-if="!isMenuOpen"
+        />
+        <fa :icon="['fas', 'times']" class="icon fs-medium" v-else />
+
+        <ul
+          v-if="isMenuOpen"
+          role="group"
+          class="absolute flex justify-content-space-around align-items-center"
+          :class="{ active: isMenuOpen }"
+        >
+          <li role="listitem">
+            <i-theme-toggler
+              id="toggleTheme"
+              title="Toggle dark mode"
+              @click="toggleDarkMode"
+            />
+          </li>
+          <li role="listitem">
+            <el-button
+              title="Share menu"
+              type="primary"
+              class="w11 h11"
+              circle
+              @click="toggleGooeyMenu"
+            >
+              <fa :icon="['fas', 'share-alt']" />
+            </el-button>
+          </li>
+        </ul>
+      </el-button>
+      <gooey-menu :is-active="isGooeyMenu" @close="toggleGooeyMenu" />
+    </template>
   </div>
 </template>
 
@@ -111,6 +113,12 @@ export default {
   components: {
     IThemeToggler,
     GooeyMenu
+  },
+  props: {
+    disabled: {
+      type: Boolean,
+      default: () => false
+    }
   },
   data: () => ({
     is3D: false,
@@ -171,38 +179,41 @@ export default {
         style: mapConfig.default
       })
 
-      const draw = new MapboxDraw({
-        displayControlsDefault: false,
-        controls: {
-          polygon: true,
-          trash: true,
-          line_string: true
-        }
-      })
-      const scaleCtrl = new mapboxgl.ScaleControl({
-        maxWidth: 80,
-        unit: 'metric'
-      })
-
-      map.addControl(draw, 'top-right')
-      map.addControl(scaleCtrl, 'bottom-left')
-      map.addControl(new mapboxgl.NavigationControl(), 'top-right')
-      map.addControl(
-        new mapboxgl.GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true
-          },
-          trackUserLocation: true
+      if (!this.disabled) {
+        const draw = new MapboxDraw({
+          displayControlsDefault: false,
+          controls: {
+            polygon: true,
+            trash: true,
+            line_string: true
+          }
         })
-      )
+        const scaleCtrl = new mapboxgl.ScaleControl({
+          maxWidth: 80,
+          unit: 'metric'
+        })
 
-      const mbCtrl = document.querySelector('.mapboxgl-ctrl-group')
-      mbCtrl.classList.add('mapbox-controllers')
-      mbCtrl.appendChild(document.getElementById('ThreeD'))
-      mbCtrl.appendChild(document.getElementById('FScreen'))
+        map.addControl(draw, 'top-right')
+        map.addControl(scaleCtrl, 'bottom-left')
+        map.addControl(new mapboxgl.NavigationControl(), 'top-right')
+        map.addControl(
+          new mapboxgl.GeolocateControl({
+            positionOptions: {
+              enableHighAccuracy: true
+            },
+            trackUserLocation: true
+          })
+        )
+
+        const mbCtrl = document.querySelector('.mapboxgl-ctrl-group')
+        mbCtrl.classList.add('mapbox-controllers')
+        mbCtrl.appendChild(document.getElementById('ThreeD'))
+        mbCtrl.appendChild(document.getElementById('FScreen'))
+
+        window.draw = draw
+      }
 
       window.mapboxgl = mapboxgl
-      window.draw = draw
 
       return map
     },
@@ -257,15 +268,20 @@ export default {
         vm.handlePopupVisibilityOff(popup)
       })
 
-      map.on('click', this.handleMapClick)
-      map.on('touchend', this.handleMapClick)
+      if (!this.disabled) {
+        map.on('click', this.handleMapClick)
+        map.on('touchend', this.handleMapClick)
+        map.on('render', this.handleBoundsChange)
+      } else {
+        const disabledClick = () => this.$emit('clicked-disabled-map')
+
+        map.on('click', disabledClick)
+        map.on('touchend', disabledClick)
+      }
 
       map.on('draw.create', this.handleDrawEvents)
       map.on('draw.delete', this.handleDrawEvents)
       map.on('draw.update', this.handleDrawEvents)
-
-      map.on('render', this.handleBoundsChange)
-      // map.on('zoom', this.handleZoomLevelChange)
 
       return map
     },

@@ -1,35 +1,45 @@
 const infoMenuLinks = {
   info: [
-    { label: 'About us', url: 'https://www.infrapedia.com/', openTab: !0 },
+    { label: 'About us', url: 'https://www.infrapedia.com/', openTab: true },
     {
       label: 'List your business',
       url: 'https://www.infrapedia.com/yourbusiness',
-      openTab: !0
+      openTab: true
     },
-    { label: 'FAQ', url: 'https://www.infrapedia.com/faq', openTab: !0 },
+    { label: 'FAQ', url: 'https://www.infrapedia.com/faq', openTab: true },
     { label: 'Blog', url: 'https://www.infrapedia.com/blog', openTab: true },
     {
       label: 'Contact us',
       url: 'mailto:admin@infrapedia.com',
-      openTab: !0
+      openTab: true
     },
     {
       label: 'Attributions',
       url: 'https://github.com/infrapedia/public/blob/master/attributions',
-      openTab: !0
+      openTab: true
     }
   ],
   social: [
     {
+      label: 'Facebook',
       icon: ['fab', 'facebook'],
       url: 'https://www.facebook.com/infrapediainc'
     },
-    { icon: ['fab', 'twitter'], url: 'https://www.twitter.com/infrapedia' },
     {
+      label: 'Twitter',
+      icon: ['fab', 'twitter'],
+      url: 'https://www.twitter.com/infrapedia'
+    },
+    {
+      label: 'Linkedin',
       icon: ['fab', 'linkedin'],
       url: 'https://www.linkedin.com/company/netatlas'
     },
-    { icon: ['fab', 'instagram'], url: 'https://www.instagram.com/infrapedia/' }
+    {
+      label: 'Instagram',
+      icon: ['fab', 'instagram'],
+      url: 'https://www.instagram.com/infrapedia/'
+    }
   ]
 }
 

@@ -70,6 +70,12 @@
 .capitalize {
   text-transform: capitalize;
 }
+.xl-icon {
+  font-size: 42px;
+}
+.lg-icon {
+  font-size: 34px;
+}
 .md-icon {
   font-size: 24px;
 }
@@ -246,6 +252,9 @@
 }
 .transition-all {
   transition: all $regular-transition;
+}
+.cubic-transition {
+  transition: all $cubic-bezier;
 }
 .font-thin {
   font-weight: 100;
