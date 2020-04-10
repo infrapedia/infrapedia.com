@@ -1,20 +1,17 @@
 <template>
-  <el-footer
-    height="50vh"
-    class="footer p8 pt20 flex wrap row justify-content-center"
-  >
-    <div class="align-self-start">
-      <h1 class="logo-title inline-block">
-        <router-link to="/">
-          <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
-        </router-link>
-      </h1>
-      <p class="fs-small mt12">
-        {{ year }} Copyright, All Rights Reserved by Infrapedia Inc.
-      </p>
-    </div>
-    <el-divider class="transparent w80"></el-divider>
-    <div class="flex row  justify-content-center">
+  <el-footer height="100%" class="footer p8 pt20">
+    <div class="inner-wrapper">
+      <div class="logo-wrapper">
+        <h1 class="logo-title inline-block">
+          <router-link to="/">
+            <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
+          </router-link>
+        </h1>
+        <p class="fs-small mt4">
+          {{ year }} Copyright, All Rights Reserved by Infrapedia Inc.
+        </p>
+      </div>
+      <!-- <el-divider class="transparent w80 hidden-md-and-down"></el-divider> -->
       <div class="links-wrapper">
         <h3 class="title-link m0 mb8">Explore</h3>
         <ul role="group">

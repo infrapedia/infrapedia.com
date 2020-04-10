@@ -3,6 +3,14 @@
 .footer {
   background-color: $dark-blue;
   color: $white-partial;
+  display: grid;
+  justify-content: center;
+  .inner-wrapper {
+    margin: 0 auto;
+    width: 80vw;
+    display: flex;
+    flex-flow: row wrap;
+  }
 
   .logo-title {
     margin-top: -0.8rem;
@@ -13,10 +21,24 @@
     width: 120px;
   }
 
+  .logo-wrapper {
+    @media screen and (max-width: $break-sm) {
+      margin-bottom: 1rem;
+    }
+  }
+
+  .links-wrapper,
+  .logo-wrapper {
+    max-width: 30%;
+    flex: 1 1 auto;
+    margin-right: 2rem;
+    @media screen and (max-width: $break-sm) {
+      width: 100%;
+      max-width: unset;
+    }
+  }
+
   .links-wrapper {
-    width: 21rem;
-    height: 12rem;
-    color: white;
     .title-link {
       margin-top: 5px;
       font-size: 16px;

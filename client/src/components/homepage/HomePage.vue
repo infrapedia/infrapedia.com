@@ -9,8 +9,8 @@
           <h2 class="title white mb12">
             Create your account today and begin to explore
             <small class="block">
-              We have a variety of features that make it for you to manage your
-              assets
+              We have a variety of features that make it easy for you to manage
+              your assets
             </small>
           </h2>
           <el-button
@@ -24,20 +24,20 @@
           </el-button>
         </div>
       </div>
-      <div class="map-wrapper transition-all">
+      <div class="map-wrapper cubic-transition">
         <i-map
-          style="height: 62vh;"
+          style="height: 64vh;"
           :disabled="true"
           @clicked-disabled-map="askToRegister"
         />
       </div>
     </div>
-    <div class="information-section mt20">
+    <div class="information-section mt20 mb20">
       <h1 class="text-center title">
         What is Infrapedia?
       </h1>
       <div
-        class="inner-wrapper mt20 flex justify-content-center column wrap align-items-center"
+        class="inner-wrapper mt24 flex justify-content-center column wrap align-items-center"
       >
         <p class="text font-bold">
           Infrapedia is more than just the world’s largest crowd-sourced
@@ -50,7 +50,7 @@
           connect and request information and quotes from providers all over the
           world easily.
         </p>
-        <div class="centered-wrapper relative w-fit-full mt20 pt2">
+        <div class="centered-wrapper relative w-fit-full mt24 pt2">
           <div class="flex row nowrap with-icon justify-self-center">
             <div
               class="inner-wrapper"
@@ -81,11 +81,88 @@
         </span>
       </router-link>
     </div>
+    <div class="carousel-section">
+      <div class="p4">
+        <h3 class="title">Our Sponsors</h3>
+        <el-carousel
+          :interval="5000"
+          height="40vh"
+          indicator-position="outside"
+        >
+          <el-carousel-item v-for="(img, i) in sponsors" :key="i">
+            <div class="flex row nowrap justify-content-center">
+              <el-image
+                :src="img.logo"
+                fit="scale-down"
+                class="img-sponsor w40 h80 no-selectable"
+              />
+            </div>
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+      <div class="p4">
+        <el-divider></el-divider>
+        <div class="mt20">
+          <h3 class="title">Our Partners</h3>
+          <el-carousel
+            :interval="5000"
+            height="40vh"
+            type="card"
+            indicator-position="outside"
+          >
+            <el-carousel-item v-for="(img, i) in premium" :key="i">
+              <div class="flex row nowrap justify-content-center">
+                <el-card shadow="never" class="no-border w40">
+                  <el-image
+                    :src="img.logo"
+                    fit="scale-down"
+                    class="img-sponsor w40 h80 no-selectable"
+                  />
+                </el-card>
+              </div>
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+      </div>
+      <div class="p4">
+        <el-divider></el-divider>
+        <div class="mt20">
+          <h3 class="title">Blog</h3>
+          <el-carousel
+            :interval="5000"
+            height="40vh"
+            type="card"
+            indicator-position="outside"
+          >
+            <el-carousel-item v-for="(post, i) in blogPosts" :key="i">
+              <div class="flex row nowrap justify-content-center">
+                <a :href="post.link" target="_blank">
+                  <el-card shadow="never" class="p4 w80">
+                    <div>
+                      <small>
+                        {{ formatDate(post.modified_gmt) }}
+                      </small>
+                      <h3>
+                        {{ post.title.rendered }}
+                      </h3>
+                      <p v-html="post.excerpt.rendered" />
+                    </div>
+                  </el-card>
+                </a>
+              </div>
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import Map from '../mainMap/Map'
+import getBlogPosts from '../../services/api/blog'
+import { getTrustedBy } from '../../services/api/organizations'
+import { formatDate } from '../../helpers/formatDate'
 
 export default {
   name: 'HomePage',
@@ -114,9 +191,34 @@ export default {
             'The technical details we provide will help your team build more resilient networks. Our team is a direct funnel to connect you with sales teams to acquire capacity without commissions.'
         }
       ]
-    }
+    },
+    formatDate,
+    sponsors: [],
+    blogPosts: []
   }),
+  computed: {
+    premium() {
+      return this.$store.state.premium
+    }
+  },
+  async mounted() {
+    await Promise.all([
+      this.loadTrustedBy(),
+      this.loadBlogPosts(),
+      this.$store.dispatch('getPremiumData')
+    ])
+  },
   methods: {
+    async loadTrustedBy() {
+      const res = await getTrustedBy()
+      if (res && res.data && res.data.r) {
+        this.sponsors = res.data.r
+      }
+    },
+    async loadBlogPosts() {
+      const res = await getBlogPosts()
+      if (res) this.blogPosts = res
+    },
     async askToRegister() {
       await this.$auth.loginWithRedirect()
     }
@@ -124,6 +226,6 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../../assets/scss/components/homepage-styles.scss';
 </style>

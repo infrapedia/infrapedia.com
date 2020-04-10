@@ -1,11 +1,11 @@
 const infoMenuLinks = {
   info: [
     { label: 'About us', url: 'https://www.infrapedia.com/', openTab: true },
-    {
-      label: 'List your business',
-      url: 'https://www.infrapedia.com/yourbusiness',
-      openTab: true
-    },
+    // {
+    //   label: 'List your business',
+    //   url: 'https://www.infrapedia.com/yourbusiness',
+    //   openTab: true
+    // },
     { label: 'FAQ', url: 'https://www.infrapedia.com/faq', openTab: true },
     { label: 'Blog', url: 'https://www.infrapedia.com/blog', openTab: true },
     {
