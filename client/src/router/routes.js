@@ -2,7 +2,6 @@ import Home from '../pages/Home.vue'
 import Login from '../pages/login.vue'
 import NotFound from '../layouts/404.vue'
 import User from '../pages/profile/index.vue'
-import Blog from '../pages/blog/index.vue'
 import Profile from '../pages/profile/profile.vue'
 import CLS from '../pages/profile/section/cls.vue'
 import IxpsSection from '../pages/profile/section/ixps.vue'
@@ -132,11 +131,6 @@ const routes = [
   {
     path: '/user/section',
     redirect: { name: 'user/orgs-section' }
-  },
-  {
-    path: '/blog',
-    name: 'blog',
-    component: Blog
   }
 ]
 

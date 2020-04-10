@@ -25,11 +25,7 @@
         </div>
       </div>
       <div class="map-wrapper cubic-transition">
-        <i-map
-          style="height: 64vh;"
-          :disabled="true"
-          @clicked-disabled-map="askToRegister"
-        />
+        <i-map :disabled="true" @clicked-disabled-map="askToRegister" />
       </div>
     </div>
     <div class="information-section mt20 mb20">
@@ -105,7 +101,7 @@
         <div class="mt20">
           <h3 class="title">Our Partners</h3>
           <el-carousel
-            :interval="5000"
+            :interval="6000"
             height="40vh"
             type="card"
             indicator-position="outside"
@@ -129,7 +125,7 @@
         <div class="mt20">
           <h3 class="title">Blog</h3>
           <el-carousel
-            :interval="5000"
+            :interval="7000"
             height="40vh"
             type="card"
             indicator-position="outside"
@@ -226,6 +222,6 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '../../assets/scss/components/homepage-styles.scss';
 </style>

@@ -3,8 +3,6 @@
 .footer {
   background-color: $dark-blue;
   color: $white-partial;
-  display: grid;
-  justify-content: center;
   .inner-wrapper {
     margin: 0 auto;
     width: 80vw;
@@ -49,5 +47,24 @@
     .list-item {
       font-size: 14px;
     }
+  }
+}
+
+.form-wrapper {
+  width: 100%;
+  display: grid;
+  justify-content: center;
+  .form {
+    background-color: white;
+    padding: 2rem;
+    margin-top: 6rem;
+  }
+
+  .inner-wrapper {
+    margin: 0 auto;
+    width: 80vw;
+    display: flex;
+    flex-flow: column nowrap;
+    color: $dark-charcoal;
   }
 }
