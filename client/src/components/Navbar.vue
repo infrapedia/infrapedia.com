@@ -7,7 +7,7 @@
         class="flex no-padding navbar-wrapper w-full justify-content-space-between pr1 pl1"
       >
         <h1 class="logo-title">
-          <router-link to="/" class="hidden-md-and-down">
+          <router-link :to="checkIfLoggedIn" class="hidden-md-and-down">
             <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
           </router-link>
           <el-button
@@ -159,47 +159,6 @@
                     trigger="manual"
                     v-model="isUserMenuOpen"
                   >
-                    <template v-if="isProfileRoute">
-                      <header
-                        class="header no-selectable h8 flex justify-content-space-between pr7 pl6 pt2 pb2 align-items-center"
-                        :class="{ dark, light: !dark }"
-                      >
-                        <strong class="fs-regular truncate">{{
-                          userName
-                        }}</strong>
-                        <span
-                          class="fs-regular cursor-pointer"
-                          @click="toggleUserMenuVisibility"
-                        >
-                          <fa :icon="['fas', 'times']" />
-                        </span>
-                      </header>
-                      <ul class="p1 h-fit">
-                        <li class="w-fit-full h10">
-                          <el-button
-                            type="text"
-                            class="inline-block color-inherit"
-                          >
-                            <fa :icon="['fas', 'map']" class="mr4 ml4" />
-                            <router-link to="/" class="color-inherit"
-                              >Back to map</router-link
-                            >
-                          </el-button>
-                        </li>
-                        <li class="w-fit-full h10">
-                          <el-button
-                            type="text"
-                            class="inline-block color-inherit"
-                          >
-                            <fa
-                              :icon="['fas', 'sign-out-alt']"
-                              class="mr5 ml4"
-                            />
-                            <strong>Sign out</strong>
-                          </el-button>
-                        </li>
-                      </ul>
-                    </template>
                     <div
                       slot="reference"
                       class="no-outline circle icon-wrapper"
@@ -343,7 +302,7 @@
                           class="inline-block color-inherit"
                         >
                           <router-link
-                            to="/"
+                            to="/app"
                             class="color-inherit"
                             @click="() => (isUserMenuOpen = false)"
                           >
@@ -460,6 +419,9 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    checkIfLoggedIn() {
+      return this.$auth.isAuthenticated ? '/app' : '/'
     },
     userImage() {
       return this.$auth.user && this.$auth.user.picture

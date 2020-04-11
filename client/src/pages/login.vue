@@ -3,12 +3,14 @@
     <el-card class="p8">
       <h3 class="subheading">
         <template v-if="isUserBlock">
-          Please contact
-          <a href="mailto:admin@infrapedia.com">admin@infrapedia.com</a> to
-          enable your access
+          <p>
+            Please contact
+            <a href="mailto:admin@infrapedia.com">admin@infrapedia.com</a> to
+            enable your access
+          </p>
         </template>
         <template v-else>
-          <span>Hold on. We're redirecting you</span>
+          <p class="font-medium fs-large">Hold on. We're redirecting you</p>
         </template>
       </h3>
     </el-card>
@@ -29,6 +31,36 @@ export default {
       this.$route.hash.includes('error_description=user%20is%20blocked')
     ) {
       this.isUserBlock = true
+    }
+
+    try {
+      setTimeout(() => {
+        if (this.$auth.isAuthenticated) {
+          this.$router
+            .replace('/app')
+            .then(() => {})
+            // eslint-disable-next-line
+            .catch(err => {
+              // Ignore
+            })
+        } else {
+          this.$router
+            .replace('/')
+            .then(() => {})
+            // eslint-disable-next-line
+            .catch(err => {
+              // Ignore
+            })
+          this.$notify({
+            title: 'Something wrong happened...',
+            message:
+              'There has been an error while trying to validate your current session... Please login.',
+            type: 'info'
+          })
+        }
+      }, 5000)
+    } catch {
+      // Ignore
     }
   }
 }

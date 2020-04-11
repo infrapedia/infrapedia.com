@@ -11,10 +11,24 @@ export default {
     HomePage
   },
   beforeCreate() {
-    if (checkCookie('auth0.is.authenticated')) {
-      return this.$router.replace('/')
-    }
     this.$emit('layout', 'landing-layout')
+  },
+  beforeRouteEnter(to, from, next) {
+    next(async vm => {
+      if (
+        checkCookie('auth0.is.authenticated') ||
+        (await this.$auth.checkAuthStatus()) === true ||
+        window.location.search.includes('code=')
+      ) {
+        vm.$router
+          .replace('/login')
+          .then(() => {})
+          // eslint-disable-next-line
+          .catch(err => {
+            // Ignore
+          })
+      }
+    })
   }
 }
 </script>

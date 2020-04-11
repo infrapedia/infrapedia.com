@@ -27,12 +27,12 @@ import Attributions from '../pages/Attributions.vue'
 const routes = [
   { path: '*', component: NotFound },
   {
-    path: '/',
+    path: '/app',
     name: 'map-app',
     component: MapHome
   },
   {
-    path: '/home',
+    path: '/',
     name: 'landing',
     component: Landing
   },

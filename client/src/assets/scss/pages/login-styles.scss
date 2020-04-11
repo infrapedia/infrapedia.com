@@ -1,9 +1,13 @@
 @import '../base/variables';
 
+p {
+  line-height: 1.2;
+}
+
 .application.dark {
   .el-card {
     background-color: $dark-charcoal;
     border-color: $light-charcoal;
-    color: $white-profile
+    color: $white-profile;
   }
 }

@@ -107,7 +107,7 @@ export default {
     exploreLinks: [
       {
         label: 'Home',
-        url: '/home'
+        url: '/'
       },
       {
         label: 'Blog',

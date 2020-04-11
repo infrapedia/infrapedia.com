@@ -3,21 +3,25 @@ import createAuth0Client from '@auth0/auth0-spa-js'
 import { bus } from '../helpers/eventBus'
 import { AUTH_USER } from '../events/auth'
 
+let instance
+
+export const getInstance = () => instance
+
 export const useAuth0 = ({
   onRedirectCallback = () =>
     window.history.replaceState({}, document.title, window.location.pathname),
   redirectUri = window.location.origin,
   ...options
 }) => {
-  return new Vue({
+  if (instance) return instance
+  instance = new Vue({
     data: () => ({
       loading: true,
       isAuthenticated: false,
       user: {},
       auth0Client: null,
       popupOpen: false,
-      error: null,
-      times: 0
+      error: null
     }),
     async created() {
       // Create a new instance of the SDK client using members of the given options object
@@ -51,6 +55,9 @@ export const useAuth0 = ({
       }
     },
     methods: {
+      async checkAuthStatus() {
+        return await this.auth0Client.isAuthenticated()
+      },
       /** Authenticates the user using a popup window */
       async loginWithPopup(o) {
         this.popupOpen = true
@@ -98,7 +105,6 @@ export const useAuth0 = ({
         return this.auth0Client.getTokenSilently(o)
       },
       /** Gets the access token using a popup window */
-
       getTokenWithPopup(o) {
         return this.auth0Client.getTokenWithPopup(o)
       },
@@ -108,6 +114,7 @@ export const useAuth0 = ({
       }
     }
   })
+  return instance
 }
 
 export const Auth0Plugin = {

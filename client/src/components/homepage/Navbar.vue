@@ -36,7 +36,7 @@ export default {
     links: [
       {
         label: 'Home',
-        url: '/home'
+        url: '/'
       },
       {
         label: 'Blog',
@@ -62,7 +62,7 @@ export default {
       return this.$store.state.isDark
     },
     checkIfLoggedIn() {
-      return this.$auth.isAuthenticated ? '/' : '/home'
+      return this.$auth.isAuthenticated ? '/app' : '/'
     },
     imageURL() {
       return this.dark
