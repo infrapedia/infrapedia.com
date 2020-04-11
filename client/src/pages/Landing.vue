@@ -17,7 +17,7 @@ export default {
     next(async vm => {
       if (
         checkCookie('auth0.is.authenticated') ||
-        (await this.$auth.checkAuthStatus()) === true ||
+        (await vm.$auth.checkAuthStatus()) === true ||
         window.location.search.includes('code=')
       ) {
         vm.$router
