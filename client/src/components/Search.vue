@@ -18,7 +18,12 @@
           @click="handlePlaceSelection(item)"
           @keyup.enter.space="handlePlaceSelection(item)"
         >
-          <div v-if="item.address" class="inline-block">
+          <div
+            v-if="
+              item.address && item.address.length && item.address[0].city !== ''
+            "
+            class="inline-block"
+          >
             {{ item.name }} in
             <small v-for="(a, index) in item.address" :key="a.state + index">
               {{ a.city }}, {{ a.state }};
@@ -28,7 +33,7 @@
             {{ item.name }}
           </span>
           -
-          <small class="capitalize">{{ item.t }}</small>
+          <small class="capitalize">{{ geResultType(item) }}</small>
           <span
             v-if="item.premium && item.premium === 'true'"
             class="w22 p1 h6 partner round flo-right vertical-align mt-2"
@@ -156,6 +161,11 @@ export default {
       this.searchResults.places = places.features
       this.isResultsVisible = true
     }, 820),
+    geResultType(item) {
+      if (item.t.toLowerCase() === 'cable') {
+        return item.terrestrial ? 'terrestrial network' : 'subsea cable'
+      } else return item.t
+    },
     close() {
       this.searchResults = {
         r: [],

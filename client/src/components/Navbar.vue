@@ -39,9 +39,10 @@
                   href="https://www.infrapedia.com/blog"
                   target="_blank"
                   class="list-item pr4 pl4"
-                  title="Infrapedia's Blog"
-                  v-text="`Infrapedia's Blog`"
-                />
+                  title="Blog"
+                >
+                  Blog
+                </a>
               </li>
 
               <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
