@@ -1,6 +1,6 @@
 <template>
   <el-container class="vph-full no-overflow">
-    <transition name="fade" mode="out-in"><router-view /></transition>
+    <slot />
   </el-container>
 </template>
 

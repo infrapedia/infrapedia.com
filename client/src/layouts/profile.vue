@@ -32,9 +32,7 @@
       @close="handleToggleMobileProfileDrawer"
     />
 
-    <transition name="fade" mode="out-in">
-      <router-view />
-    </transition>
+    <slot />
 
     <i-footer
       role="contentinfo"

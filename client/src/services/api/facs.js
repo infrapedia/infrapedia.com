@@ -11,8 +11,7 @@ export const searchFacilities = async ({ s, user_id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization:
-        'Bearer ' + window.localStorage.getItem('auth.token-session')
+      Authorization: apiConfig.bearer()
     }
   })
 
@@ -25,8 +24,7 @@ export const viewFacility = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization:
-        'Bearer ' + window.localStorage.getItem('auth.token-session')
+      Authorization: apiConfig.bearer()
     }
   })
   return res
@@ -38,8 +36,7 @@ export const viewFacilityBBox = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization:
-        'Bearer ' + window.localStorage.getItem('auth.token-session')
+      Authorization: apiConfig.bearer()
     }
   })
   return res
@@ -51,8 +48,7 @@ export const getFacilityGeom = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization:
-        'Bearer ' + window.localStorage.getItem('auth.token-session')
+      Authorization: apiConfig.bearer()
     }
   })
 
@@ -73,8 +69,7 @@ export const getFacilitiesGeom = async ({ user_id, ids }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization:
-        'Bearer ' + window.localStorage.getItem('auth.token-session')
+      Authorization: apiConfig.bearer()
     }
   })
 

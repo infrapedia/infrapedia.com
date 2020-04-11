@@ -20,8 +20,7 @@ export const getMyMap = async ({ user_id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization:
-        'Bearer ' + window.localStorage.getItem('auth.token-session')
+      Authorization: apiConfig.bearer()
     }
   })
   return res
@@ -73,8 +72,7 @@ export const setMyMap = async ({
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization:
-        'Bearer ' + window.localStorage.getItem('auth.token-session')
+      Authorization: apiConfig.bearer()
     }
   })
   return res

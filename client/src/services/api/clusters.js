@@ -6,8 +6,7 @@ export const getClustersPointsNetworks = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization:
-        'Bearer ' + window.localStorage.getItem('auth.token-session')
+      Authorization: apiConfig.bearer()
     }
   })
   return res
@@ -18,8 +17,7 @@ export const getClustersPointsOrgs = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization:
-        'Bearer ' + window.localStorage.getItem('auth.token-session')
+      Authorization: apiConfig.bearer()
     }
   })
   return res

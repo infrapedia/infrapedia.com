@@ -7,14 +7,6 @@
       @title-by-selection="title = $event"
       @cable-selected="handleCableSelected"
     />
-    <a
-      href="https://www.infrapedia.com/blog"
-      id="blog-link"
-      target="_blank"
-      class="el-button el-button--default el-button--mini is-plain is-round"
-      title="Infrapedia's Blog"
-      v-text="`Infrapedia's Blog`"
-    />
     <div
       v-show="isDrawing"
       class="absolute calculation-box truncate w44 h22 p1 text-center"
@@ -31,15 +23,15 @@
 </template>
 
 <script>
-import Map from '../components/mainMap/Map.vue'
-import { bus } from '../helpers/eventBus'
-import debounce from '../helpers/debounce'
-import dataCollection from '../mixins/dataCollection.vue'
-import { IS_DRAWING, TOGGLE_SIDEBAR } from '../store/actionTypes'
-import { FOCUS_ON_CITY, REMOVE_QUERY_ROUTE_REPLACE } from '../events'
-import { HAS_TO_EASE_TO, EASE_POINT } from '../store/actionTypes/map'
-import MobileDrawer from '../components/MobileDrawer.vue'
-import * as navbarEvents from '../events/navbar'
+import Map from './Map.vue'
+import { bus } from '../../helpers/eventBus'
+import debounce from '../../helpers/debounce'
+import dataCollection from '../../mixins/dataCollection.vue'
+import { IS_DRAWING, TOGGLE_SIDEBAR } from '../../store/actionTypes'
+import { FOCUS_ON_CITY, REMOVE_QUERY_ROUTE_REPLACE } from '../../events'
+import { HAS_TO_EASE_TO, EASE_POINT } from '../../store/actionTypes/map'
+import MobileDrawer from '../../components/MobileDrawer.vue'
+import * as navbarEvents from '../../events/navbar'
 
 export default {
   name: 'MapOverlay',
@@ -142,7 +134,7 @@ export default {
 
           // If there is there is no id or nor type only ease to the coordinates point
           // Otherwise if only cable and type exist we open the sidebar and not ease
-          console.log(id, type)
+          // console.log(id, type)
           !id || !type
             ? bus.$emit(`${FOCUS_ON_CITY}`)
             : this.handleItemListSelection({ option: type, id })
@@ -152,6 +144,3 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-@import '../assets/scss/pages/home-styles.scss';
-</style>

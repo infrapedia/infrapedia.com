@@ -1,41 +1,5 @@
 <template>
   <el-footer height="100%" class="footer p0 pt20 pb20">
-    <div class="form-wrapper">
-      <div class="inner-wrapper pt16 pb20 mt16">
-        <h1 class="title inline-block white">
-          Contact us
-        </h1>
-        <el-form :rules="formRules" :model="form" class="p8 form">
-          <el-row :gutter="20">
-            <el-col :span="12">
-              <el-form-item label="Name" prop="name" required>
-                <el-input v-model="form.name" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="Email" prop="email" required>
-                <el-input v-model="form.email" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="24">
-              <el-form-item label="Message" prop="msg">
-                <el-input type="textarea" :rows="4" v-model="form.msg" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="24">
-              <el-form-item>
-                <div class="flex mt4 row justify-content-end">
-                  <el-button type="primary">
-                    Send
-                  </el-button>
-                </div>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-      </div>
-      <el-divider />
-    </div>
     <div class="inner-wrapper">
       <div class="logo-wrapper">
         <h1 class="logo-title inline-block">
@@ -143,7 +107,7 @@ export default {
     exploreLinks: [
       {
         label: 'Home',
-        url: '/'
+        url: '/home'
       },
       {
         label: 'Blog',
@@ -158,29 +122,7 @@ export default {
         label: 'Sponsorships',
         url: '/sponsorships'
       }
-    ],
-    form: {
-      name: '',
-      email: '',
-      msg: ''
-    },
-    formRules: {
-      name: [
-        {
-          required: true,
-          message: 'Please input your full name',
-          trigger: 'change'
-        }
-      ],
-      email: [
-        {
-          type: 'email',
-          message: 'Please input a valid email address',
-          trigger: ['blur', 'change']
-        }
-      ],
-      msg: []
-    }
+    ]
   }),
   computed: {
     year() {

@@ -161,6 +161,9 @@ export default {
       return this.$store.state.isDark
     }
   },
+  beforeCreate() {
+    this.$emit('layout', 'profile-layout')
+  },
   async created() {
     if (Object.keys(this.$route.query).length) {
       await this.$router.replace('/user/profile')

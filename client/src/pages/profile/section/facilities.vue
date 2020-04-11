@@ -39,6 +39,9 @@ export default {
       return this.$store.state.isDark
     }
   },
+  beforeCreate() {
+    this.$emit('layout', 'profile-layout')
+  },
   methods: {
     handleEditFac() {},
     handleDeleteFac() {}

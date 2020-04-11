@@ -38,6 +38,16 @@
       font-size: 24px;
     }
   }
+  &.sm {
+    text-align: left;
+    color: $dark-charcoal;
+    font-size: 24px;
+    @extend .no-selectable;
+    text-transform: capitalize;
+    @media screen and (max-width: $break-xs) {
+      font-size: 18px;
+    }
+  }
   &.white {
     line-height: 1.2;
     color: $white-full;
@@ -61,7 +71,7 @@
       color: $light-charcoal;
       @extend .dont-break-out;
       &.font-bold {
-        max-width: 52.4rem;
+        max-width: 60.4rem;
         min-width: 24rem;
         @media screen and (max-width: $break-xs) {
           max-width: unset;
@@ -69,7 +79,7 @@
         }
       }
       &.sub {
-        max-width: 50rem;
+        max-width: 60.4rem;
         margin-top: 1rem;
       }
     }
@@ -114,7 +124,11 @@
 }
 
 .carousel-section {
+  .carousel-wrapper {
+    margin: 0 auto;
+    width: 80vw;
+  }
   .el-carousel__item {
-    // background-color: #99a9bf;
+    background-color: $white-full;
   }
 }

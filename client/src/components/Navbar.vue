@@ -35,6 +35,21 @@
                 class="inline-block no-selectable relative hidden-sm-and-down"
                 role="listitem"
               >
+                <a
+                  href="https://www.infrapedia.com/blog"
+                  target="_blank"
+                  class="list-item pr4 pl4"
+                  title="Infrapedia's Blog"
+                  v-text="`Infrapedia's Blog`"
+                />
+              </li>
+
+              <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
+
+              <li
+                class="inline-block no-selectable relative hidden-sm-and-down"
+                role="listitem"
+              >
                 <premium-partners-button
                   @item-selected="handleItemListSelection"
                 />
@@ -44,7 +59,6 @@
 
               <li
                 class="inline-block relative hidden-sm-and-down"
-                data-no-outline="true"
                 @click="toggleDrawerVisibility"
                 @keyup.enter="toggleDrawerVisibility"
               >
@@ -407,7 +421,7 @@ import FullScreenSearch from './FullScreenSearch.vue'
 import { TOGGLE_DARK } from '../store/actionTypes'
 import * as events from '../events/navbar'
 import { bus } from '../helpers/eventBus'
-import { setCookie } from '../helpers/cookies'
+import { setCookie, deleteCookie } from '../helpers/cookies'
 
 const c_name = '_v-app_inf'
 
@@ -494,7 +508,7 @@ export default {
       this.isUserMenuOpen = !this.isUserMenuOpen
     },
     logOutUser() {
-      window.localStorage.removeItem('auth.token-session')
+      deleteCookie('auth.token-session')
       return this.$auth.logout()
     },
     handleUserButtonDynamics() {

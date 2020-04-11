@@ -73,6 +73,9 @@ export default {
       return this.mode === 'create' ? this.createOrg : this.saveEditedOrg
     }
   },
+  beforeCreate() {
+    this.$emit('layout', 'profile-layout')
+  },
   async mounted() {
     await this.getOrganizationsList()
   },

@@ -40,6 +40,9 @@ export default {
     },
     columns: [...clsColumns].filter(col => col.showTable)
   }),
+  beforeCreate() {
+    this.$emit('layout', 'profile-layout')
+  },
   async mounted() {
     await this.getClssList()
   },

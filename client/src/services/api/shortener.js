@@ -9,8 +9,7 @@ export const shareLink = async ({ user_id, url }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization:
-        'Bearer ' + window.localStorage.getItem('auth.token-session')
+      Authorization: apiConfig.bearer()
     }
   })
 

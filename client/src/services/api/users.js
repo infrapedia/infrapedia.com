@@ -11,8 +11,7 @@ export const usersLogs = async ({ user_id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization:
-        'Bearer ' + window.localStorage.getItem('auth.token-session')
+      Authorization: apiConfig.bearer()
     }
   })
 
@@ -31,8 +30,7 @@ export const verifyElement = async ({ user_id, type, elemnt, email }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization:
-        'Bearer ' + window.localStorage.getItem('auth.token-session')
+      Authorization: apiConfig.bearer()
     }
   })
   return res

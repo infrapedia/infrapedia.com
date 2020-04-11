@@ -1,7 +1,7 @@
 <template>
-  <el-header class="fs-small p4 vertical-align bottom-shadow">
+  <el-header class="fs-small p4 vertical-align pr45 pl48 header">
     <h1 class="logo-title inline-block">
-      <router-link to="/" class="hidden-sm-and-down">
+      <router-link :to="checkIfLoggedIn" class="hidden-sm-and-down">
         <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
       </router-link>
       <el-button
@@ -36,12 +36,16 @@ export default {
     links: [
       {
         label: 'Home',
-        url: '/'
+        url: '/home'
       },
       {
         label: 'Blog',
         url: 'https://infrapedia.com/blog',
         tab: true
+      },
+      {
+        label: 'About us',
+        url: '/about'
       },
       {
         label: 'Services',
@@ -56,6 +60,9 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    checkIfLoggedIn() {
+      return this.$auth.isAuthenticated ? '/' : '/home'
     },
     imageURL() {
       return this.dark

@@ -78,7 +78,7 @@
       </router-link>
     </div>
     <div class="carousel-section">
-      <div class="p4">
+      <div class="carousel-wrapper p4">
         <h3 class="title">Our Sponsors</h3>
         <el-carousel
           :interval="5000"
@@ -96,7 +96,7 @@
           </el-carousel-item>
         </el-carousel>
       </div>
-      <div class="p4">
+      <div class="carousel-wrapper p4">
         <el-divider></el-divider>
         <div class="mt20">
           <h3 class="title">Our Partners</h3>
@@ -120,7 +120,7 @@
           </el-carousel>
         </div>
       </div>
-      <div class="p4">
+      <div class="carousel-wrapper p4">
         <el-divider></el-divider>
         <div class="mt20">
           <h3 class="title">Blog</h3>
@@ -133,12 +133,12 @@
             <el-carousel-item v-for="(post, i) in blogPosts" :key="i">
               <div class="flex row nowrap justify-content-center">
                 <a :href="post.link" target="_blank">
-                  <el-card shadow="never" class="p4 w80">
+                  <el-card shadow="never" class="p8">
                     <div>
                       <small>
                         {{ formatDate(post.modified_gmt) }}
                       </small>
-                      <h3>
+                      <h3 class="title sm">
                         {{ post.title.rendered }}
                       </h3>
                       <p v-html="post.excerpt.rendered" />
@@ -222,6 +222,6 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../../assets/scss/components/homepage-styles.scss';
 </style>

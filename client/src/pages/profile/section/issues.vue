@@ -72,6 +72,9 @@ export default {
       return this.$store.state.isDark
     }
   },
+  beforeCreate() {
+    this.$emit('layout', 'profile-layout')
+  },
   async mounted() {
     await this.getIssuesList()
   },

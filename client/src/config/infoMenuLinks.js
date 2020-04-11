@@ -1,6 +1,6 @@
 const infoMenuLinks = {
   info: [
-    { label: 'About us', url: 'https://www.infrapedia.com/', openTab: true },
+    { label: 'About us', url: '/about', router: true },
     // {
     //   label: 'List your business',
     //   url: 'https://www.infrapedia.com/yourbusiness',
@@ -15,8 +15,8 @@ const infoMenuLinks = {
     },
     {
       label: 'Attributions',
-      url: 'https://github.com/infrapedia/public/blob/master/attributions',
-      openTab: true
+      url: '/attributions',
+      router: true
     }
   ],
   social: [

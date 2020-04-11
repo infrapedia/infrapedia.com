@@ -19,6 +19,7 @@ import {
   getClustersPointsNetworks,
   getClustersPointsOrgs
 } from '../services/api/clusters'
+import getBoundsCoords from '../helpers/getBoundsCoords'
 
 export const dataMutations = {
   [types.GET_PREMIUM_DATA](state, data) {
@@ -41,12 +42,8 @@ export const dataActions = {
   async getSubseaCableBoundsData({ commit }, data) {
     const res = await viewCableBBox(data)
     if (res && res.data && res.data.r && res.data.r.length) {
-      const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
       const coords = res.data.r[0].coordinates
-      const bbox = coords.reduce(
-        (bounds, coord) => bounds.extend(coord),
-        new mapboxgl.LngLatBounds(coords[0], coords[0])
-      )
+      const bbox = getBoundsCoords(coords)
       commit(`${MAP_BOUNDS}`, [bbox._ne, bbox._sw])
     }
   },
@@ -85,12 +82,8 @@ export const dataActions = {
       res.data.r.features &&
       res.data.r.features.length
     ) {
-      const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
       const coords = res.data.r.features[0].geometry.coordinates
-      const bbox = coords.reduce(
-        (bounds, coord) => bounds.extend(coord),
-        new mapboxgl.LngLatBounds(coords, coords)
-      )
+      const bbox = getBoundsCoords(coords)
       commit(`${MAP_BOUNDS}`, bbox)
     }
     return res
@@ -105,12 +98,8 @@ export const dataActions = {
       res.data.r.features &&
       res.data.r.features.length
     ) {
-      const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
       const coords = res.data.r.features[0].geometry.coordinates
-      const bbox = coords.reduce(
-        (bounds, coord) => bounds.extend(coord),
-        new mapboxgl.LngLatBounds(coords, coords)
-      )
+      const bbox = getBoundsCoords(coords)
       commit(`${MAP_BOUNDS}`, bbox)
     }
     return res

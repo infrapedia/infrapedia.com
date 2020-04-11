@@ -393,6 +393,10 @@
   @extend .dont-break-out;
 }
 
+.overflow-scroll-y-imp {
+  overflow-y: scroll !important;
+}
+
 @for $i from 1 through 120 {
   $base: 0.25rem;
   $val: $base * $i;

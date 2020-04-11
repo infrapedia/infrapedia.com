@@ -82,6 +82,9 @@ export default {
       }
     }
   },
+  beforeCreate() {
+    this.$emit('layout', 'profile-layout')
+  },
   async mounted() {
     await this.getMyIssuesList()
   },

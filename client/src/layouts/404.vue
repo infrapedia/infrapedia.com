@@ -1,6 +1,8 @@
 <template>
-  <div class="w-fit-full vpw-full text-center">
-    404 NOT FOUND
+  <div class="vph-half text-center">
+    <h2 class="mt50">
+      404 NOT FOUND
+    </h2>
   </div>
 </template>
 

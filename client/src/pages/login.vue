@@ -20,6 +20,9 @@ export default {
   data: () => ({
     isUserBlock: false
   }),
+  beforeCreate() {
+    this.$emit('layout', 'nothing-layout')
+  },
   created() {
     if (
       this.$route.hash &&

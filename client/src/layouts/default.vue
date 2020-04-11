@@ -19,9 +19,7 @@
         @close="() => (openEditDialog = false)"
       />
       <user-cables-button />
-      <transition name="fade" mode="out-in">
-        <router-view />
-      </transition>
+      <slot />
     </template>
     <i-footer role="contentinfo" class="ml20 hidden-sm-and-down" />
   </div>
@@ -39,7 +37,7 @@ import {
 } from '../store/actionTypes'
 import { disableAlert } from '../services/api/alerts'
 import Sidebar from '../components/Sidebar.vue'
-import { checkCookie } from '../helpers/cookies'
+import { checkCookie, setCookie } from '../helpers/cookies'
 
 export default {
   components: {
@@ -77,9 +75,7 @@ export default {
   methods: {
     async setToken() {
       const token = await this.$auth.getIdTokenClaims()
-      if (token) {
-        window.localStorage.setItem('auth.token-session', token.__raw)
-      }
+      if (token) setCookie('auth.token-session', token.__raw, 20)
     },
     openBuyDialog(option) {
       this.$store.commit(`${BUY_TYPE}`, { title: option })

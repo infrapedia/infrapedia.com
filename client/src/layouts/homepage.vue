@@ -1,9 +1,7 @@
 <template>
   <el-container direction="vertical">
     <h-navbar />
-    <transition name="fade" mode="out-in">
-      <router-view />
-    </transition>
+    <slot />
     <h-footer />
   </el-container>
 </template>

@@ -1,4 +1,5 @@
-import Home from '../pages/Home.vue'
+import Landing from '../pages/Landing.vue'
+import MapHome from '../pages/MapHome.vue'
 import Login from '../pages/login.vue'
 import NotFound from '../layouts/404.vue'
 import User from '../pages/profile/index.vue'
@@ -17,16 +18,28 @@ import MyIssuesSection from '../pages/profile/section/myissues.vue'
 import FacilitiesSection from '../pages/profile/section/facilities.vue'
 import EmailProviders from '../pages/profile/email-providers.vue'
 import MarketPlace from '../pages/marketplace'
-import Dashboard from '../pages/dashboard'
 import MessagesSection from '../pages/profile/section/messages.vue'
 import MyMessagesSection from '../pages/profile/section/mymessages.vue'
+import Contact from '../pages/Contact.vue'
+import About from '../pages/About.vue'
+import Attributions from '../pages/Attributions.vue'
 
 const routes = [
   { path: '*', component: NotFound },
   {
     path: '/',
-    name: 'home',
-    component: Home
+    name: 'map-app',
+    component: MapHome
+  },
+  {
+    path: '/home',
+    name: 'landing',
+    component: Landing
+  },
+  {
+    path: '/attributions',
+    name: 'attributions',
+    component: Attributions
   },
   {
     path: '/marketplace',
@@ -34,9 +47,14 @@ const routes = [
     component: MarketPlace
   },
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: Dashboard
+    path: '/contact',
+    name: 'contact',
+    component: Contact
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: About
   },
   {
     path: '/login',

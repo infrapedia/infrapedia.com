@@ -78,6 +78,9 @@ export default {
       return this.passw === this.passwr
     }
   },
+  beforeCreate() {
+    this.$emit('layout', 'nothing-layout')
+  },
   methods: {
     async sendData() {
       if (!this.isPassEqual) return

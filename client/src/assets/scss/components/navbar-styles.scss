@@ -135,8 +135,7 @@ $header-color: rgb(37, 95, 185);
   }
 
   li:not([data-no-outline='true']) {
-    &:focus,
-    &:focus-within {
+    &:hover {
       outline: none 0;
       &::after {
         transform: scaleX(1);

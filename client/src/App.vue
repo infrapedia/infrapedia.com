@@ -1,67 +1,44 @@
 <template>
   <div
     class="application"
-    :class="{ dark, light: !dark, 'no-overflow': !isHomePageRoute }"
+    :class="{ dark, light: !dark, 'no-overflow': isAuthenticated }"
     role="main"
     :style="getDarkStyles"
   >
     <versions-banner />
     <transition mode="out-in" name="fade">
-      <component :is="layout" />
+      <component :is="layout">
+        <router-view :layout.sync="layout" @layout="changeLayout" />
+      </component>
     </transition>
   </div>
 </template>
 
 <script>
-import DashboardLayout from './layouts/dashboard'
 import ProfileLayout from './layouts/profile'
-import DefaultLayout from './layouts/default'
-import BlogLayout from './layouts/blog'
 import NoNav from './layouts/nothing'
+import LandingPage from './layouts/homepage'
+import MapHome from './layouts/default'
 import VersionsBanner from './components/VersionsBanner'
-import HomePageLayout from './layouts/homepage'
 
 export default {
   name: 'App',
   components: {
     VersionsBanner
   },
-  async created() {
+  data: () => ({
+    layout: LandingPage
+  }),
+  created() {
     this.checkIfIsNotSecure()
     this.handleSharedView()
   },
   computed: {
-    layout() {
-      let layout
-
-      if (this.isHomePageRoute) {
-        layout = HomePageLayout
-      } else if (this.isProfileRoute) {
-        layout = ProfileLayout
-      } else if (this.isBlogLayout || this.isLoginRoute) {
-        layout = BlogLayout
-      } else if (this.isRecoverPass) {
-        layout = NoNav
-      } else if (this.isDashboard) {
-        layout = DashboardLayout
-      } else if (this.$auth.isAuthenticated) {
-        layout = DefaultLayout
-      }
-
-      return layout
-    },
     dark() {
       return this.$store.state.isDark
     },
-    isHomePageRoute() {
-      return (
-        !this.isProfileRoute &&
-        !this.$auth.isAuthenticated &&
-        !this.isRecoverPass &&
-        !this.isLoginRoute &&
-        !this.isDashboard &&
-        !this.isBlogLayout
-      )
+    isAuthenticated() {
+      return this.$auth.isAuthenticated
     },
     getDarkStyles() {
       let theme = {}
@@ -71,23 +48,6 @@ export default {
         }
       }
       return theme
-    },
-    isRecoverPass() {
-      return this.$route.name === 'change-password'
-    },
-    isDashboard() {
-      return (
-        this.$route.name === 'dashboard' || this.$route.name === 'marketplace'
-      )
-    },
-    isBlogLayout() {
-      return this.$route.name === 'blog'
-    },
-    isLoginRoute() {
-      return this.$route.name === 'login'
-    },
-    isProfileRoute() {
-      return this.$route.name.includes('user')
     }
   },
   methods: {
@@ -108,10 +68,40 @@ export default {
         this.$route.query &&
         !window.localStorage.getItem('__easePointData')
       ) {
-        window.localStorage.setItem(
-          '__easePointData',
-          JSON.stringify(this.$route.query)
-        )
+        const keys = Object.keys(this.$route.query)
+        const query = {}
+
+        for (let key of keys) {
+          if (key.includes('amp;')) {
+            query[key.split('amp;')[1]] = this.$route.query[key]
+          } else {
+            query[key] = this.$route.query[key]
+          }
+        }
+
+        window.localStorage.setItem('__easePointData', JSON.stringify(query))
+      }
+    },
+    changeLayout(layoutName) {
+      const doc = document.querySelector('body')
+
+      switch (layoutName) {
+        case 'map-app-layout':
+          doc.className = 'no-overflow'
+          this.layout = MapHome
+          break
+        case 'nothing-layout':
+          doc.className = 'no-overflow'
+          this.layout = NoNav
+          break
+        case 'profile-layout':
+          doc.className = 'no-overflow'
+          this.layout = ProfileLayout
+          break
+        default:
+          doc.className = 'overflow-scroll-y-imp'
+          this.layout = LandingPage
+          break
       }
     }
   }
