@@ -58,7 +58,7 @@ export default {
   },
   beforeCreate() {
     // If the route has a query it must be a link shared
-    if (this.$route.query.hasToEase) {
+    if (this.$route.query.hasToEase || this.$route.query.amphasToEase) {
       this.$store.commit(`${HAS_TO_EASE_TO}`, true)
     }
   },
