@@ -8,19 +8,23 @@
       />
     </div>
     <div class="gallery-wrapper">
-      <header class="w-fit-full">
+      <header class="w-fit-full text-center">
         <h2 class="title">
           Our team
         </h2>
       </header>
       <div class="boxes-wrapper mt20 mb20">
         <div class="box text-center" v-for="(p, i) of team" :key="i">
-          <div class="img" />
-          <strong class="inline-block mt4">
-            {{ p.name }}
-          </strong>
-          <br />
-          <p>{{ p.position }}</p>
+          <span class="img">
+            <fa :icon="['fas', 'user']" />
+          </span>
+          <div>
+            <strong class="inline-block mt4">
+              {{ p.name }}
+            </strong>
+            <br />
+            <p>{{ p.position }}</p>
+          </div>
         </div>
       </div>
       <p class="content">

@@ -51,7 +51,11 @@ import {
   faGlobeAmericas,
   faHeadset,
   faPeopleArrows,
-  faAngleDoubleRight
+  faAngleDoubleRight,
+  faChalkboardTeacher,
+  faChartArea,
+  faBullhorn,
+  faCode
 } from '@fortawesome/free-solid-svg-icons'
 import { faHandPointUp } from '@fortawesome/free-regular-svg-icons'
 import {
@@ -66,6 +70,10 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
+  faCode,
+  faBullhorn,
+  faChartArea,
+  faChalkboardTeacher,
   faAngleDoubleRight,
   faPeopleArrows,
   faGlobeAmericas,

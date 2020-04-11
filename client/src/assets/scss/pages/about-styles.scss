@@ -1,4 +1,5 @@
 @import '../base/variables';
+@import '../helpers/atomic-classes';
 
 .banner-wrapper {
   display: grid;
@@ -24,15 +25,16 @@
     display: grid;
     width: 100%;
     gap: 1rem;
-    grid-template-columns: repeat(7, 1fr);
+    grid-auto-flow: dense;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     .box {
       border: 1px solid $dark-charcoal;
-      padding: 2rem;
+      padding: 2rem 0;
       height: 24vh;
       .img {
         width: 100%;
         height: 60%;
-        background-color: burlywood;
+        font-size: 8rem;
       }
     }
   }
@@ -42,5 +44,44 @@
     font-weight: 400;
     font-size: 20px;
     text-align: justify;
+  }
+}
+
+.title {
+  line-height: 1.3;
+  font-weight: 500;
+  font-size: 40px;
+  color: rgb(15, 50, 86);
+  text-align: center;
+  &.md {
+    text-align: left;
+    color: $dark-charcoal;
+    font-size: 30px;
+    @extend .no-selectable;
+    text-transform: capitalize;
+    @media screen and (max-width: $break-xs) {
+      font-size: 24px;
+    }
+  }
+  &.sm {
+    text-align: left;
+    color: $dark-charcoal;
+    font-size: 24px;
+    @extend .no-selectable;
+    text-transform: capitalize;
+    @media screen and (max-width: $break-xs) {
+      font-size: 18px;
+    }
+  }
+  &.white {
+    line-height: 1.2;
+    color: $white-full;
+  }
+  small {
+    font-size: 14px;
+    margin-top: 1rem;
+  }
+  @media screen and (max-width: $break-xs) {
+    font-size: 34px;
   }
 }

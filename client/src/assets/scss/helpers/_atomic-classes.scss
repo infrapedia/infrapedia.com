@@ -397,6 +397,10 @@
   overflow-y: scroll !important;
 }
 
+.min-height60vh {
+  min-height: 60vh;
+}
+
 @for $i from 1 through 120 {
   $base: 0.25rem;
   $val: $base * $i;

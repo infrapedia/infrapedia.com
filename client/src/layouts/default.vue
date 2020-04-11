@@ -19,7 +19,9 @@
         @close="() => (openEditDialog = false)"
       />
       <user-cables-button />
-      <slot />
+      <div class="h-fit-content min-height60vh">
+        <slot />
+      </div>
     </template>
     <i-footer role="contentinfo" class="ml20 hidden-sm-and-down" />
   </div>

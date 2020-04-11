@@ -23,6 +23,7 @@ import MyMessagesSection from '../pages/profile/section/mymessages.vue'
 import Contact from '../pages/Contact.vue'
 import About from '../pages/About.vue'
 import Attributions from '../pages/Attributions.vue'
+import Services from '../pages/Services.vue'
 
 const routes = [
   { path: '*', component: NotFound },
@@ -40,6 +41,11 @@ const routes = [
     path: '/attributions',
     name: 'attributions',
     component: Attributions
+  },
+  {
+    path: '/services',
+    name: 'services',
+    component: Services
   },
   {
     path: '/marketplace',

@@ -1,0 +1,115 @@
+@import '../helpers/atomic-classes';
+
+.banner-wrapper {
+  display: grid;
+  height: 72vh;
+  grid-template-columns: repeat(4, 1fr);
+  overflow: hidden;
+  .banner-img {
+    grid-row: 1/3;
+    grid-column: 1/4;
+  }
+}
+
+.card-wrapper {
+  width: 76vw;
+  margin: 0 auto;
+  min-height: 60vh;
+  padding: 4rem;
+  transform: translateY(-4.6rem);
+
+  .services-wrapper {
+    display: grid;
+    gap: 1rem;
+    grid-auto-flow: dense;
+    grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+
+    .inner-wrapper {
+      .inner-wrapper_header {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex-flow: row-reverse nowrap;
+        .md-icon {
+          font-size: 40px;
+          margin-right: 2rem;
+        }
+        .md-icon,
+        .title {
+          @extend .transition-all;
+        }
+      }
+      &:hover {
+        .title,
+        .md-icon {
+          color: $dark-blue;
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width: $break-sm) {
+    width: 72vw;
+    padding: 2rem;
+  }
+  @media screen and (max-width: $break-xs) {
+    padding: 1rem;
+    .services-wrapper {
+      .inner-wrapper {
+        padding: 1rem;
+        width: 16.4rem;
+        .el-card {
+          padding: 1rem;
+          min-width: auto;
+        }
+      }
+    }
+  }
+}
+
+.title {
+  line-height: 1.3;
+  font-weight: 500;
+  font-size: 40px;
+  color: rgb(15, 50, 86);
+  text-align: center;
+  &.md {
+    text-align: left;
+    color: $dark-charcoal;
+    font-size: 30px;
+    @extend .no-selectable;
+    text-transform: capitalize;
+    @media screen and (max-width: $break-xs) {
+      font-size: 24px;
+    }
+  }
+  &.sm {
+    text-align: left;
+    color: $dark-charcoal;
+    font-size: 24px;
+    @extend .no-selectable;
+    text-transform: capitalize;
+    @media screen and (max-width: $break-xs) {
+      font-size: 18px;
+    }
+  }
+  &.white {
+    line-height: 1.2;
+    color: $white-full;
+  }
+  small {
+    font-size: 14px;
+    margin-top: 1rem;
+  }
+  @media screen and (max-width: $break-xs) {
+    font-size: 34px;
+  }
+}
+
+p.text {
+  color: $dark-charcoal;
+  line-height: 1.2;
+  font-weight: 400;
+  font-size: 18px;
+  text-align: justify;
+}

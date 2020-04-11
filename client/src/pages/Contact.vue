@@ -13,13 +13,23 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
+              <el-form-item label="Last name" prop="name" required>
+                <el-input v-model="form.lastname" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="Company" prop="company" required>
+                <el-input v-model="form.company" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
               <el-form-item label="Email" prop="email" required>
                 <el-input v-model="form.email" />
               </el-form-item>
             </el-col>
             <el-col :span="24">
-              <el-form-item label="Message" prop="msg">
-                <el-input type="textarea" :rows="4" v-model="form.msg" />
+              <el-form-item label="Message" prop="message">
+                <el-input type="textarea" :rows="4" v-model="form.message" />
               </el-form-item>
             </el-col>
             <el-col :span="24">
@@ -42,7 +52,7 @@
 export default {
   data: () => ({
     form: {
-      msg: '',
+      message: '',
       name: '',
       email: ''
     },
@@ -54,6 +64,13 @@ export default {
           trigger: 'change'
         }
       ],
+      lastname: [
+        {
+          required: true,
+          message: 'Please input your last name',
+          trigger: 'change'
+        }
+      ],
       email: [
         {
           type: 'email',
@@ -61,7 +78,8 @@ export default {
           trigger: ['blur', 'change']
         }
       ],
-      msg: []
+      message: [],
+      company: []
     }
   }),
   beforeCreate() {

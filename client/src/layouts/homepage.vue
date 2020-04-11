@@ -1,7 +1,9 @@
 <template>
   <el-container direction="vertical">
     <h-navbar />
-    <slot />
+    <div class="h-fit-content min-height60vh">
+      <slot />
+    </div>
     <h-footer />
   </el-container>
 </template>
