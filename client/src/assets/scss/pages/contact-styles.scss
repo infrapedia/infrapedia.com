@@ -1,20 +1,90 @@
 @import '../base/variables';
+@import '../helpers/atomic-classes';
 
-.form-wrapper {
-  width: 100%;
+.inner-wrapper {
+  width: 80vw;
+  margin: 0 auto;
   display: grid;
-  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  gap: 1rem;
+  grid-auto-flow: dense;
+  grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+  header.description_title {
+    @media screen and (max-width: $break-xl) {
+      width: 22vw;
+      align-self: start;
+      transform: translateY(1.2rem);
+    }
+    @media screen and (max-width: $break-lg) {
+      width: auto;
+      transform: translateY(0);
+    }
+  }
   .form {
     background-color: white;
     padding: 2rem;
     margin-top: 6rem;
   }
 
-  .inner-wrapper {
+  .form-wrapper {
     margin: 0 auto;
-    width: 80vw;
+    width: 24vw;
     display: flex;
     flex-flow: column nowrap;
     color: $dark-charcoal;
+
+    @media screen and (max-width: 1060px) {
+      width: 68vw;
+      margin: 0;
+    }
+    @media screen and (max-width: $break-sm) {
+      width: auto;
+      margin: 0;
+    }
   }
+  @media screen and (max-width: $break-xs) {
+    margin: 0;
+    width: 88vw;
+    padding: 1rem;
+    display: block;
+  }
+}
+
+.title {
+  line-height: 1.3;
+  font-weight: 500;
+  font-size: 40px;
+  color: rgb(15, 50, 86);
+  &.md {
+    text-align: left;
+    color: $dark-charcoal;
+    font-size: 30px;
+    @extend .no-selectable;
+    text-transform: capitalize;
+    @media screen and (max-width: $break-xs) {
+      font-size: 24px;
+    }
+  }
+  &.sm {
+    color: $dark-charcoal;
+    font-size: 18px;
+  }
+  &.white {
+    line-height: 1.2;
+    color: $white-full;
+  }
+  small {
+    font-size: 14px;
+    margin-top: 1rem;
+  }
+  @media screen and (max-width: $break-xs) {
+    font-size: 34px;
+  }
+}
+
+.text {
+  line-height: 1.3;
+  font-weight: 500;
+  font-size: 18px;
 }
