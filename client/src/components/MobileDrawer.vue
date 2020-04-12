@@ -55,13 +55,12 @@
         </li>
         <li class="w-fit-full" data-no-outline="true">
           <div class="no-selectable">
-            <a
-              href="https://www.infrapedia.com"
-              target="_blank"
+            <router-link
+              to="/contact"
               class="no-underline inherit color-inherit p4 mr4 ml4 inline-block"
             >
               Contact us
-            </a>
+            </router-link>
           </div>
         </li>
       </ul>

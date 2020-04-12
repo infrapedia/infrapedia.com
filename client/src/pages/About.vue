@@ -1,8 +1,9 @@
 <template>
   <div class="flex column wrap justify-content-center no-overflow-x">
     <div class="banner-wrapper">
-      <img
-        srcset="https://images.unsplash.com/photo-1577481759281-b2e3a1e62c2b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9"
+      <el-image
+        lazy
+        fit="cover"
         src="https://images.unsplash.com/photo-1577481759281-b2e3a1e62c2b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9"
         class="banner-img"
       />

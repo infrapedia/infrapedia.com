@@ -10,8 +10,8 @@ const infoMenuLinks = {
     { label: 'Blog', url: 'https://www.infrapedia.com/blog', openTab: true },
     {
       label: 'Contact us',
-      url: 'mailto:admin@infrapedia.com',
-      openTab: true
+      url: '/contact',
+      router: true
     },
     {
       label: 'Attributions',
