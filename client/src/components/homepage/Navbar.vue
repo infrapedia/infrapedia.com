@@ -22,9 +22,24 @@
         >
           {{ link.label }}
         </a>
-        <router-link v-else :key="i" :to="link.url" class="mr4 underline-hover">
-          {{ link.label }}
-        </router-link>
+        <template v-else>
+          <router-link
+            v-if="i === 0"
+            :key="i"
+            :to="checkIfLoggedIn"
+            class="mr4 underline-hover"
+          >
+            {{ link.label }}
+          </router-link>
+          <router-link
+            v-else
+            :key="i"
+            :to="link.url"
+            class="mr4 underline-hover"
+          >
+            {{ link.label }}
+          </router-link>
+        </template>
       </template>
     </div>
   </el-header>

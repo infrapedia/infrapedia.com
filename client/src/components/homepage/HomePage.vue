@@ -215,8 +215,9 @@ export default {
       const res = await getBlogPosts()
       if (res) this.blogPosts = res
     },
-    async askToRegister() {
-      await this.$auth.loginWithRedirect()
+    askToRegister() {
+      this.$parent.$emit('layout', 'nothing-layout')
+      this.$router.push('/login?redirect=true')
     }
   }
 }

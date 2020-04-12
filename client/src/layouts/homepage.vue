@@ -1,9 +1,10 @@
 <template>
   <el-container direction="vertical">
+    <cookie-consent :message="cc.message" :href="cc.href" />
     <h-navbar />
-    <div class="h-fit-content min-height60vh">
+    <transition mode="out-in" name="fade">
       <slot />
-    </div>
+    </transition>
     <h-footer />
   </el-container>
 </template>
@@ -14,6 +15,14 @@ import HNavbar from '../components/homepage/Navbar'
 
 export default {
   name: 'homepage',
+  data: () => ({
+    cc: {
+      message:
+        'This website uses cookies to improve your experience. Visit our Privacy Policy page for more information about cookies and how we use them.',
+      href:
+        'https://networkatlas.com/wp-content/uploads/2019/03/privacy-policy.pdf'
+    }
+  }),
   components: {
     HFooter,
     HNavbar

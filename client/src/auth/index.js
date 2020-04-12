@@ -10,7 +10,7 @@ export const getInstance = () => instance
 export const useAuth0 = ({
   onRedirectCallback = () =>
     window.history.replaceState({}, document.title, window.location.pathname),
-  redirectUri = window.location.origin,
+  redirectUri = options.redirectUri,
   ...options
 }) => {
   if (instance) return instance

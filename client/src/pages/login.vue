@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { deleteCookie } from '../helpers/cookies'
 export default {
   data: () => ({
     isUserBlock: false
@@ -32,33 +33,35 @@ export default {
     ) {
       this.isUserBlock = true
     }
-
+  },
+  mounted() {
     try {
-      setTimeout(() => {
-        if (this.$auth.isAuthenticated) {
-          this.$router
-            .replace('/app')
-            .then(() => {})
-            // eslint-disable-next-line
-            .catch(err => {
-              // Ignore
+      if (!this.$route.query.redirect) {
+        setTimeout(() => {
+          if (this.$auth.isAuthenticated) {
+            this.$router
+              .replace('/app')
+              .then(() => {})
+              // eslint-disable-next-line
+              .catch(err => {
+                // Ignore
+              })
+          } else {
+            deleteCookie('auth0.is.authenticated')
+            this.$notify({
+              title: 'Something wrong happened...',
+              message:
+                'There has been an error while trying to validate your current session... Please login.',
+              type: 'info'
             })
-        } else {
-          this.$router
-            .replace('/')
-            .then(() => {})
-            // eslint-disable-next-line
-            .catch(err => {
-              // Ignore
-            })
-          this.$notify({
-            title: 'Something wrong happened...',
-            message:
-              'There has been an error while trying to validate your current session... Please login.',
-            type: 'info'
-          })
-        }
-      }, 5000)
+            this.$auth.loginWithRedirect()
+          }
+        }, 3200)
+      } else {
+        setTimeout(() => {
+          this.$auth.loginWithRedirect()
+        }, 2000)
+      }
     } catch {
       // Ignore
     }

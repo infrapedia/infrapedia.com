@@ -27,29 +27,7 @@ Vue.use(Vue2TouchEvents)
 Vue.use(Auth0Plugin, {
   domain,
   clientId,
-  // additionalSignUpFields: [
-  //   {
-  //     name: 'companyname',
-  //     placeholder: 'Enter your company name'
-  //     // The following properties are optional
-  //     // icon: 'https://example.com/assests/address_icon.png',
-  //     // prefill: 'street 123',
-  //     // validator: function(address) {
-  //     //   return {
-  //     //     valid: address.length >= 10,
-  //     //     hint: 'Must have 10 or more chars' // optional
-  //     //   }
-  //     // }
-  //   },
-  //   {
-  //     name: 'name',
-  //     placeholder: 'Enter your name'
-  //   },
-  //   {
-  //     name: 'lastname',
-  //     placeholder: 'Enter your last name'
-  //   }
-  // ],
+  redirectUri: process.env.VUE_APP_REDIRECT_URI,
   onRedirectCallback: appState => {
     router.push(
       appState && appState.targetUrl

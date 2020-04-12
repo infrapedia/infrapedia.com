@@ -1,5 +1,5 @@
 <template>
-  <el-container class="vph-full no-overflow">
+  <el-container style="overflow: hidden; height: 100vh;">
     <slot />
   </el-container>
 </template>
@@ -7,5 +7,3 @@
 <script>
 export default {}
 </script>
-
-<style></style>

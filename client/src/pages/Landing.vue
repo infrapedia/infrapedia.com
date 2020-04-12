@@ -1,5 +1,7 @@
 <template>
-  <home-page />
+  <div class="min-height60vh">
+    <home-page />
+  </div>
 </template>
 
 <script>

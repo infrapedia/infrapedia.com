@@ -24,12 +24,24 @@
             >
               {{ link.label }}
             </a>
-            <router-link
-              v-else
-              :to="link.url"
-              class="underline-hover color-inherit"
-              v-text="link.label"
-            />
+            <template v-else>
+              <router-link
+                v-if="i === 0"
+                :key="i"
+                :to="checkIfLoggedIn"
+                class="underline-hover color-inherit"
+              >
+                {{ link.label }}
+              </router-link>
+              <router-link
+                v-else
+                :key="i"
+                :to="link.url"
+                class="underline-hover color-inherit"
+              >
+                {{ link.label }}
+              </router-link>
+            </template>
           </li>
         </ul>
       </div>
@@ -127,6 +139,9 @@ export default {
   computed: {
     year() {
       return currentYear()
+    },
+    checkIfLoggedIn() {
+      return this.$auth.isAuthenticated ? '/app' : '/'
     },
     imageURL() {
       return !this.dark

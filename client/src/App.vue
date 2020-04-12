@@ -6,11 +6,13 @@
     :style="getDarkStyles"
   >
     <versions-banner />
-    <transition mode="out-in" name="fade">
-      <component :is="layout">
-        <router-view :layout.sync="layout" @layout="changeLayout" />
-      </component>
-    </transition>
+    <div class="h-fit-content min-height60vh">
+      <transition mode="out-in" name="fade">
+        <component :is="layout">
+          <router-view :layout.sync="layout" @layout="changeLayout" />
+        </component>
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -29,9 +31,12 @@ export default {
   data: () => ({
     layout: LandingPage
   }),
-  created() {
+  async created() {
     this.checkIfIsNotSecure()
     this.handleSharedView()
+    if (this.$route.name === 'login') {
+      this.layout = NoNav
+    }
   },
   computed: {
     dark() {
@@ -49,6 +54,10 @@ export default {
       }
       return theme
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    console.log(to, from)
+    next()
   },
   methods: {
     checkIfIsNotSecure() {

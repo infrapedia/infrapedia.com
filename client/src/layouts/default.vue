@@ -1,6 +1,5 @@
 <template>
   <div>
-    <cookie-consent :message="cc.message" :href="cc.href" />
     <i-navbar role="navigation" />
     <template>
       <i-sidebar
@@ -57,13 +56,7 @@ export default {
   data: () => ({
     BUY_CAPACITY,
     EDIT_CABLE,
-    openEditDialog: false,
-    cc: {
-      message:
-        'This website uses cookies to improve your experience. Visit our Privacy Policy page for more information about cookies and how we use them.',
-      href:
-        'https://networkatlas.com/wp-content/uploads/2019/03/privacy-policy.pdf'
-    }
+    openEditDialog: false
   }),
   async mounted() {
     if (
@@ -108,10 +101,6 @@ export default {
             )
           : (this.openEditDialog = true)
       } else {
-        // this.$store.state.isSafariNavigator
-        // ?
-        // this.$auth.loginWithPopup()
-        // :
         this.$auth.loginWithRedirect()
       }
     }
