@@ -29,9 +29,9 @@ export default {
     tableData: [],
     loading: false,
     tableConfig: {
-      title: 'Ixps',
+      title: 'IXPs',
       creation_link: '/user/section/create?id=ixp',
-      btn_label: 'Create Ixps'
+      btn_label: 'Create IXPs'
     },
     columns: [...ixpsColumns].filter(col => col.showTable)
   }),

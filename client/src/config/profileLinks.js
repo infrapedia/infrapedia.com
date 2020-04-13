@@ -50,14 +50,20 @@ const profileLinks = [
     icon: ['fas', 'bezier-curve']
   },
   {
+    label: 'IXPs',
+    url: '/user/section/ixps',
+    icon: ['fas', 'dot-circle']
+  },
+  {
+    label: 'Facilities',
+    url: '/user/section/facilities',
+    icon: ['fas', 'building']
+  },
+  {
     label: 'Maps',
     icon: ['fas', 'map-marked-alt'],
     url: '/user/section/create?id=map'
   }
-  // {
-  //   label: 'Ixps',
-  //   url: '/user/section/ixps'
-  // },
 ]
 
 export default profileLinks

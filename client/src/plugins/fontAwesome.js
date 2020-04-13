@@ -55,7 +55,9 @@ import {
   faChalkboardTeacher,
   faChartArea,
   faBullhorn,
-  faCode
+  faCode,
+  faBuilding,
+  faDotCircle
 } from '@fortawesome/free-solid-svg-icons'
 import { faHandPointUp } from '@fortawesome/free-regular-svg-icons'
 import {
@@ -70,6 +72,8 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
+  faBuilding,
+  faDotCircle,
   faCode,
   faBullhorn,
   faChartArea,

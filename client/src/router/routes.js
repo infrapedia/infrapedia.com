@@ -108,7 +108,7 @@ const routes = [
     component: CLS
   },
   {
-    path: '/user/section/facs',
+    path: '/user/section/facilities',
     name: 'user/facs-section',
     component: FacilitiesSection
   },

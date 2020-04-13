@@ -68,6 +68,8 @@ import cableStates from '../../../config/cableStates'
 import EditorMap from '../../../components/editor/Editor'
 import CLSForm from '../../../components/userCreationForms/cls'
 import CableForm from '../../../components/userCreationForms/cables'
+import FacilityForm from '../../../components/userCreationForms/facilities'
+import IXPForm from '../../../components/userCreationForms/ixp'
 import { createCls, editCls, viewClsOwner } from '../../../services/api/cls'
 import {
   createCable,
@@ -113,7 +115,7 @@ export default {
       }
     },
     '$route.query'(q) {
-      if (q.id !== this.creationType) {
+      if (q.id != this.creationType) {
         this.creationType = q.id
         this.mapKey += 1
       }
@@ -146,6 +148,12 @@ export default {
         case 'map':
           view = MapForm
           break
+        case 'facility':
+          view = FacilityForm
+          break
+        case 'ixp':
+          view = IXPForm
+          break
         default:
           view = CableForm
           break
@@ -174,6 +182,12 @@ export default {
           case 'map':
             method = this.setMap
             break
+          case 'facility':
+            method = this.editFacility
+            break
+          case 'ixp':
+            method = this.editIXP
+            break
           default:
             method = this.editCable
             break
@@ -186,6 +200,12 @@ export default {
           case 'map':
             method = this.setMap
             break
+          case 'facility':
+            method = this.createFacility
+            break
+          case 'ixp':
+            method = this.createIXP
+            break
           default:
             method = this.createCable
             break
@@ -195,14 +215,19 @@ export default {
       return method
     },
     routeGiver() {
-      const { creationType } = this
       let route
-      switch (creationType) {
+      switch (this.creationType.toLowerCase()) {
         case 'cls':
           route = '/user/section/cls'
           break
         case 'subsea':
           route = '/user/section/subsea-cables'
+          break
+        case 'ixp':
+          route = '/user/section/ixps'
+          break
+        case 'facility':
+          route = '/user/section/facilities'
           break
         default:
           route = '/user/section/terrestrial-networks'
@@ -407,6 +432,12 @@ export default {
         case 'subsea':
           route = '/user/section/subsea-cables'
           break
+        case 'ixp':
+          route = '/user/section/ixps'
+          break
+        case 'facility':
+          route = '/user/section/facilities'
+          break
         default:
           route = '/user/section/terrestrial-networks'
           break
@@ -464,6 +495,18 @@ export default {
 
       this.isSendingData = false
       if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+    },
+    async createIXP() {
+      return await console.log('not done yet')
+    },
+    async createFacility() {
+      return await console.log('not done yet')
+    },
+    async editIXP() {
+      return await console.log('not done yet')
+    },
+    async editFacility() {
+      return await console.log('not done yet')
     }
   }
 }
