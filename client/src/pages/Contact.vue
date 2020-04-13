@@ -7,8 +7,8 @@
           Contact us
         </h1>
         <p class="text">
-          Feeling like contacting us? Submit your queries here and we will get
-          back to you as soon as possible.
+          Submit your queries here and we will get back to you as soon as
+          possible.
         </p>
       </header>
       <el-card class="form-wrapper p8 round">
@@ -55,6 +55,13 @@
             </el-col>
           </el-row>
         </el-form>
+        <footer>
+          <el-divider></el-divider>
+          <p class="text sm">
+            If you’re enjoying our blog, subscribe to our Newsletter and never
+            miss a thing.
+          </p>
+        </footer>
       </el-card>
     </div>
   </div>

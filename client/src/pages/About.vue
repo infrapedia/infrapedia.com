@@ -11,36 +11,50 @@
     <div class="gallery-wrapper">
       <header class="w-fit-full text-center">
         <h2 class="title">
-          Our team
+          About us
         </h2>
       </header>
-      <div class="boxes-wrapper mt20 mb20">
-        <div class="box text-center" v-for="(p, i) of team" :key="i">
-          <span class="img">
-            <fa :icon="['fas', 'user']" />
-          </span>
-          <div>
-            <strong class="inline-block mt4">
-              {{ p.name }}
-            </strong>
-            <br />
-            <p>{{ p.position }}</p>
-          </div>
-        </div>
-      </div>
       <p class="content">
         Infrapedia is your team for the world’s largest internet infrastructure
         map access, plus services and data to help you improve your connectivity
         and engage directly with a global network of providers. We are the
         community's go-to provider for data, maps, and services.
       </p>
-      <p class="content mb20">
-        We are focused on network and data center infrastructures. We scour the
-        Internet and maintain close relationships with key market players,
-        industry specialists, and Internet resources to find infrastructure
-        assets around the world and update our databases on a daily basis with
-        subsea cable and data center statuses, outages, and social media posts.
-      </p>
+
+      <div>
+        <h2 class="title">
+          Our team
+        </h2>
+        <div class="boxes-wrapper mt20 mb20">
+          <div class="box text-center" v-for="(p, i) of team" :key="i">
+            <span class="img">
+              <fa :icon="['fas', 'user']" />
+            </span>
+            <div>
+              <strong class="inline-block mt4">
+                {{ p.name }}
+              </strong>
+              <br />
+              <p>{{ p.position }}</p>
+            </div>
+          </div>
+        </div>
+        <p class="content">
+          Infrapedia is your team for the world’s largest internet
+          infrastructure map access, plus services and data to help you improve
+          your connectivity and engage directly with a global network of
+          providers. We are the community's go-to provider for data, maps, and
+          services.
+        </p>
+        <p class="content mb20">
+          We are focused on network and data center infrastructures. We scour
+          the Internet and maintain close relationships with key market players,
+          industry specialists, and Internet resources to find infrastructure
+          assets around the world and update our databases on a daily basis with
+          subsea cable and data center statuses, outages, and social media
+          posts.
+        </p>
+      </div>
     </div>
   </div>
 </template>

@@ -1,13 +1,28 @@
 <template>
   <div class="vph-half text-center">
-    <h2 class="mt50">
-      404 NOT FOUND
-    </h2>
+    <el-divider class="m0"></el-divider>
+    <div class="mt50">
+      <h2>
+        404 NOT FOUND
+      </h2>
+      <p>
+        The page you’re looking for was not found...
+        <router-link :to="checkIfLoggedIn" class="underline-hover">
+          Home
+        </router-link>
+      </p>
+    </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  computed: {
+    checkIfLoggedIn() {
+      return this.$auth.isAuthenticated ? '/app' : '/'
+    }
+  }
+}
 </script>
 
 <style></style>

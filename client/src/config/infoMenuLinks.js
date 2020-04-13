@@ -38,7 +38,7 @@ const infoMenuLinks = {
     {
       label: 'Instagram',
       icon: ['fab', 'instagram'],
-      url: 'https://www.instagram.com/infrapedia/'
+      url: 'https://www.instagram.com/live.infrapedia/'
     }
   ]
 }

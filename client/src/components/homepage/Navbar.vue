@@ -87,7 +87,7 @@ export default {
   },
   methods: {
     toggleMobileDrawer() {
-      console.warn('not done yet')
+      this.$emit('toggle-mobile-drawer')
     }
   }
 }

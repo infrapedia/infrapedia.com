@@ -1,4 +1,4 @@
-@import '../base/variables';
+@import '../../base/variables';
 
 .drawer-wrapper {
   background: $white-full;
@@ -29,14 +29,16 @@
   }
 
   .el-card {
-    width: 100%;
-    height: 100%;
     border: none;
     min-width: auto;
     border-radius: 0;
     overflow-y: auto;
     overflow-x: hidden;
     background: $white-full;
+
+    .inner-wrapper {
+      width: 100vw;
+    }
 
     h1.title {
       max-width: 18rem;
@@ -74,27 +76,18 @@ header {
   }
 }
 
-.footer {
-  width: 100%;
-  margin: 0;
-  padding: 1rem;
-  margin-top: 14rem;
-}
-
-.links-wrapper {
-  margin-bottom: 1rem;
-  a {
-    width: 90.4%;
-    outline: 0;
-    color: #333;
-    border-bottom: 1px solid #ebeef5;
-  }
-}
-
 #html-wrapper.dark {
   header {
     .icon {
       color: $white-full;
+    }
+  }
+  .el-card {
+    background-color: $dark-charcoal;
+    border-radius: 0;
+    h2,
+    .el-button {
+      color: $white-partial;
     }
   }
 }
@@ -104,16 +97,6 @@ header {
     color: $white-partial;
     border-bottom: 1px solid $light-charcoal;
   }
-}
-
-.el-collapse.dark,
-header.dark {
-  background-color: $dark-charcoal;
-}
-
-.el-collapse.dark {
-  border-top-color: $light-charcoal;
-  border-bottom-color: $dark-charcoal;
 }
 
 .application.light {
