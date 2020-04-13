@@ -98,14 +98,14 @@ export default {
     this.$emit('layout', 'profile-layout')
   },
   async mounted() {
-    if (Object.keys(this.$route.query).length) this.$router.replace('/user')
+    if (Object.keys(this.$route.query).length > 0) this.$router.replace('/user')
     await this.loadLogs()
     this.createMap()
     await this.setUserData()
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      if (Object.keys(vm.$route.query).length) vm.$router.replace('/user')
+      if (Object.keys(vm.$route.query).length > 0) vm.$router.replace('/user')
     })
   },
   methods: {
@@ -116,7 +116,8 @@ export default {
       }
     },
     async setUserData() {
-      if (!this.$auth || !this.$auth.user) return
+      if (!this.$auth.user) return
+
       this.loading = true
       const userID = this.$auth.user.sub
       if (userID) {

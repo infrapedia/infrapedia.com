@@ -176,7 +176,7 @@ export default {
       else this.catchaVerified = true
     },
     async setUserData() {
-      if (!this.$auth || !this.$auth.user) return
+      if (!this.$auth.user) return
       this.loading = true
       const userData = await getUserData(this.$auth.user.sub)
 

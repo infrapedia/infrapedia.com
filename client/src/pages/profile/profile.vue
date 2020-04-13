@@ -181,7 +181,8 @@ export default {
       return this.$router.push('/user/profile/email-providers')
     },
     async setUserData() {
-      if (!this.$auth || !this.$auth.user) return
+      if (!this.$auth.user) return
+
       this.loading = true
       setTimeout(async () => {
         const userData = await getUserData(this.$auth.user.sub)

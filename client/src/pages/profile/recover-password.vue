@@ -75,7 +75,7 @@ export default {
       return this.$store.state.isDark
     },
     isPassEqual() {
-      return this.passw === this.passwr
+      return this.passw == this.passwr
     }
   },
   beforeCreate() {
