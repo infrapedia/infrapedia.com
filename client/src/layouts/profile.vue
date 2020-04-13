@@ -16,7 +16,7 @@
                   .toLowerCase()
                   .replace(' ', '-')}-link`
               "
-              :class="checkURL(link) || isCurrentStep"
+              :class="checkURL(link)"
               class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
             >
               <fa :icon="link.icon" class="mr2" /> {{ link.label }}
@@ -32,7 +32,14 @@
       @close="handleToggleMobileProfileDrawer"
     />
 
-    <slot />
+    <transition
+      mode="out-in"
+      name="animated faster2x"
+      enter-active-class="fadeIn"
+      leave-active-class="fadeOut"
+    >
+      <slot />
+    </transition>
 
     <i-footer
       role="contentinfo"

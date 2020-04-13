@@ -390,7 +390,7 @@ export default {
         t: getSelectionTypeNumber(this.focus.type)
       })
 
-      if (res && res.status && res.status !== 'error') {
+      if (res && res.t && res.t != 'error') {
         this.closeDialog()
       }
       this.isSendingData = false

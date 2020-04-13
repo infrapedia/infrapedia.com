@@ -45,9 +45,6 @@
       </el-row>
     </el-form>
     <footer class="footer flex wrap justify-content-end pr0 pl6 mt4">
-      <!-- <small class="inline-block mt2 mb4">
-        <span class="text-red">*</span> indicates required field
-      </small> -->
       <div>
         <el-button plain type="info" class="mr2" @click="closeDialog"
           >Cancel</el-button

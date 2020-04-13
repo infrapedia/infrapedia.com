@@ -6,7 +6,12 @@
       @close="toggleDrawerVisibility"
     />
     <h-navbar @toggle-mobile-drawer="toggleDrawerVisibility" />
-    <transition mode="out-in" name="fade">
+    <transition
+      mode="out-in"
+      name="animated faster2x"
+      enter-active-class="fadeIn"
+      leave-active-class="fadeOut"
+    >
       <slot />
     </transition>
     <h-footer />

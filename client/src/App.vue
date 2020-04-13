@@ -7,11 +7,16 @@
   >
     <versions-banner />
     <div class="h-fit-content min-height60vh">
-      <transition mode="out-in" name="fade">
-        <component :is="layout">
-          <router-view :layout.sync="layout" @layout="changeLayout" />
-        </component>
-      </transition>
+      <!-- <transition
+        mode="out-in"
+        name="animated faster2x"
+        enter-active-class="fadeIn"
+        leave-active-class="fadeOut"
+      > -->
+      <component :is="layout">
+        <router-view :layout.sync="layout" @layout="changeLayout" />
+      </component>
+      <!-- </transition> -->
     </div>
   </div>
 </template>
