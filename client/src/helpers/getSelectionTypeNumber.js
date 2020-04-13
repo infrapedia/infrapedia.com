@@ -29,7 +29,7 @@ const types = [
   }
 ]
 
-export const getSelectionTypeNumber = type => {
+export function getSelectionTypeNumber(type) {
   for (let t of types) {
     if (t.t.includes(type)) return t.value
     else continue

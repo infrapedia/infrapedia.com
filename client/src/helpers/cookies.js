@@ -1,19 +1,19 @@
-export const setCookie = (cname, cvalue, exdays) => {
+export function setCookie(cname, cValue, exDays) {
   const d = new Date()
-  d.setTime(d.getTime() + Number(exdays) * 24 * 60 * 60 * 1000)
+  d.setTime(d.getTime() + Number(exDays) * 24 * 60 * 60 * 1000)
   const expires = 'expires=' + d.toUTCString()
-  document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/'
+  document.cookie = cname + '=' + cValue + ';' + expires + ';path=/'
 }
 
-export const getCookie = cname => {
+export function getCookie(cname) {
   let match = document.cookie.match(new RegExp('(^| )' + cname + '=([^;]+)'))
   if (match) return match[2]
 }
 
-export const deleteCookie = cname => {
+export function deleteCookie(cname) {
   document.cookie = cname + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
 }
 
-export const checkCookie = cname => {
-  return getCookie(cname) ? true : false
+export function checkCookie(cname) {
+  return Boolean(getCookie(cname))
 }

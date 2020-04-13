@@ -1,4 +1,6 @@
-export const fCollectionFormat = features => ({
-  type: 'FeatureCollection',
-  features
-})
+export function fCollectionFormat(features) {
+  return {
+    type: 'FeatureCollection',
+    features: Array.isArray(features) ? features : []
+  }
+}

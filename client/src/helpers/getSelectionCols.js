@@ -7,7 +7,7 @@ import {
   facsColumns
 } from '../config/columns'
 
-export const getSelectionCols = type => {
+export function getSelectionCols(type) {
   if (!type) return []
 
   let col = []
