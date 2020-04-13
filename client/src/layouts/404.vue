@@ -6,10 +6,12 @@
         404 NOT FOUND
       </h2>
       <p>
-        The page you’re looking for was not found...
+        The page you’re looking for was not found... but you can find every
+        single subsea and terrestrial cable in our map, click
         <router-link :to="checkIfLoggedIn" class="underline-hover">
-          Home
+          here
         </router-link>
+        to head over there now.
       </p>
     </div>
   </div>
