@@ -8,7 +8,7 @@
     <h-navbar @toggle-mobile-drawer="toggleDrawerVisibility" />
     <transition
       mode="out-in"
-      name="animated faster2x"
+      name="animated faster3x"
       enter-active-class="fadeIn"
       leave-active-class="fadeOut"
     >

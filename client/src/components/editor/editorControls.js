@@ -54,7 +54,10 @@ class EditorControls {
         className: 'editor-ctrl editor-point',
         title: 'Create point',
         visible:
-          this.type === 'map' || this.type === 'cls' || this.type === 'facility'
+          this.type === 'map' ||
+          this.type === 'cls' ||
+          this.type === 'ixp' ||
+          this.type === 'facilities'
             ? true
             : false,
         eventListener: () => {
@@ -67,7 +70,8 @@ class EditorControls {
         container: this.controlGroup,
         className: 'editor-ctrl editor-polygon',
         title: 'Create polygon',
-        visible: this.type === 'map' || this.type === 'facility' ? true : false,
+        visible:
+          this.type === 'map' || this.type === 'facilities' ? true : false,
         eventListener: () => {
           this.$dispatch('editor/beginCreation')
           this.draw.changeMode(this.draw.modes.DRAW_POLYGON)

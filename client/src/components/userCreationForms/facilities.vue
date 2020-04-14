@@ -1,61 +1,70 @@
 <template>
   <div class="pb6 pt6 pr8 pl8">
     <header slot="header" class="w-fit-full mb8">
-      <h1 class="title capitalize">
-        Create facility
-      </h1>
+      <h1 class="title capitalize">{{ title }} Facility</h1>
     </header>
     <el-form ref="form" :model="form">
       <el-form-item label="Name">
-        <el-input class="w-fit-full" v-model="form.name" />
-      </el-form-item>
-      <el-form-item label="System length">
-        <el-input-number
-          :min="0"
-          class="w-fit-full"
-          controls-position="right"
-          v-model="form.system_length"
-        />
+        <el-input class="w-fit-full" :class="{ dark }" v-model="form.name" />
       </el-form-item>
       <el-form-item label="Point">
-        <el-input class="w-fit-full" v-model="form.point" />
+        <el-input class="w-fit-full" :class="{ dark }" v-model="form.point" />
       </el-form-item>
-      <el-form-item label="Address">
-        <el-input class="w-fit-full" v-model="form.address" />
-      </el-form-item>
-      <el-form-item label="Websites">
-        <el-tag
-          :key="tag"
-          v-for="tag in form.websites"
-          closable
-          :disable-transitions="false"
-          @close="handleClose(tag)"
+      <el-form-item label="Address" class="mt2">
+        <el-select
+          v-model="form.address"
+          multiple
+          filterable
+          placeholder
+          allow-create
+          :class="{ dark }"
+          class="w-fit-full"
+          default-first-option
         >
-          {{ tag }}
-        </el-tag>
+          <el-option
+            v-for="item in form.addressList"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="Website">
         <el-input
-          type="url"
-          v-if="inputVisible"
-          v-model="tag"
-          ref="saveTagInput"
-          size="mini"
-          @input="validateURL"
-          @keyup.enter.native="confirmTag"
-          @blur="confirmTag"
+          class="w-fit-full"
+          :class="{ dark }"
+          v-model="form.website"
+          @change="validateURL"
         />
         <el-alert
           v-if="isURLValid !== null && !isURLValid"
           title="This url is not valid"
           type="danger"
         />
-        <el-button
-          v-else
-          class="w42 text-center"
-          size="small"
-          @click="showInput"
+      </el-form-item>
+      <el-form-item label="Geometry">
+        <el-input
+          class="w-fit-full"
+          :class="{ dark }"
+          v-model="form.geomtery"
+        />
+      </el-form-item>
+      <el-form-item label="IXPs">
+        <el-select
+          v-model="form.ixps"
+          class="w-fit-full"
+          :class="{ dark }"
+          multiple
+          filterable
+          placeholder
         >
-          Add url
-        </el-button>
+          <el-option
+            v-for="(opt, i) in ixpsList"
+            :key="i"
+            :label="opt.label"
+            :value="opt.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="Tags" class="mt2">
         <el-select
@@ -76,8 +85,47 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item>
-        <dragger />
+      <el-form-item label="Type">
+        <el-select
+          v-model="form.t"
+          class="w-fit-full"
+          :class="{ dark }"
+          placeholder
+        >
+          <el-option
+            v-for="(opt, i) in facilitiesTypes"
+            :key="i"
+            :label="opt.label"
+            :value="opt.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="Ready For Service (RFS)">
+        <el-date-picker
+          class="inline-block w-fit-ful"
+          v-model="form.startDate"
+          type="year"
+          :class="{ dark }"
+          placeholder
+        />
+      </el-form-item>
+      <el-form-item label="Type of building">
+        <el-select
+          v-model="form.building"
+          class="w-fit-full"
+          :class="{ dark }"
+          placeholder
+        >
+          <el-option
+            v-for="(opt, i) in facilitiesBuildingTypes"
+            :key="i"
+            :value="opt.value"
+          >
+            <span class="capitalize">
+              {{ opt.label }}
+            </span>
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item class="mt12">
         <el-button
@@ -86,7 +134,7 @@
           round
           @click="sendData"
         >
-          Create and start drawing
+          {{ title }} Facility
         </el-button>
       </el-form-item>
     </el-form>
@@ -94,29 +142,61 @@
 </template>
 
 <script>
-import Dragger from '../../components/Dragger'
 import validateUrl from '../../helpers/validateUrl'
+import {
+  facilitiesTypes,
+  facilitiesBuildingTypes
+} from '../../config/facilitiesTypes'
 
 export default {
   name: 'FacsForm',
-  components: {
-    Dragger
-  },
   data: () => ({
     tag: '',
+    facilitiesTypes,
+    facilitiesBuildingTypes,
     isURLValid: null,
-    inputVisible: false,
-    tagsList: []
+    inputAdressVisible: false,
+    inputTagsVisible: false,
+    tagsList: [],
+    addressList: [],
+    ixpsList: []
   }),
   props: {
     form: {
       type: Object,
       required: true
+    },
+    mode: {
+      type: String,
+      required: true
+    },
+    isSendingData: {
+      type: Boolean,
+      default: () => false
+    }
+  },
+  computed: {
+    title() {
+      return this.mode === 'create' ? 'Create' : 'Edit'
+    },
+    dark() {
+      return this.$store.state.isDark
+    }
+  },
+  mounted() {
+    if (this.mode === 'create') {
+      setTimeout(() => {
+        if (this.$refs.form) {
+          this.$refs.form.clearValidate()
+        }
+      }, 50)
     }
   },
   methods: {
     sendData() {
-      return this.$emit('send-data')
+      return this.$refs['form'].validate(isValid =>
+        isValid ? this.$emit('send-data') : false
+      )
     },
     handleClose(tag) {
       this.form.websites.splice(this.form.websites.indexOf(tag), 1)

@@ -1,61 +1,47 @@
 <template>
   <div class="pb6 pt6 pr8 pl8">
     <header slot="header" class="w-fit-full mb8">
-      <h1 class="title capitalize">
-        Create IXP
-      </h1>
+      <h1 class="title capitalize">{{ title }} IXP</h1>
     </header>
     <el-form ref="form" :model="form">
       <el-form-item label="Name">
         <el-input class="w-fit-full" v-model="form.name" />
       </el-form-item>
-      <el-form-item label="System length">
-        <el-input-number
-          :min="0"
-          class="w-fit-full"
-          controls-position="right"
-          v-model="form.system_length"
-        />
+      <el-form-item label="Long name">
+        <el-input class="w-fit-full" v-model="form.nameLong" />
       </el-form-item>
-      <el-form-item label="Point">
-        <el-input class="w-fit-full" v-model="form.point" />
+      <el-form-item label="Policy Email">
+        <el-input class="w-fit-full" v-model="form.policyEmail" />
       </el-form-item>
-      <el-form-item label="Address">
-        <el-input class="w-fit-full" v-model="form.address" />
+      <el-form-item label="Policy Phone">
+        <el-input class="w-fit-full" v-model="form.policyPhone" />
       </el-form-item>
-      <el-form-item label="Websites">
-        <el-tag
-          :key="tag"
-          v-for="tag in form.websites"
-          closable
-          :disable-transitions="false"
-          @close="handleClose(tag)"
+      <el-form-item label="Proto ivp6">
+        <el-radio-group
+          v-model="form.proto_ivp6"
+          class="flex row justify-content-start w-fit-full"
         >
-          {{ tag }}
-        </el-tag>
-        <el-input
-          type="url"
-          v-if="inputVisible"
-          v-model="tag"
-          ref="saveTagInput"
-          size="mini"
-          @input="validateURL"
-          @keyup.enter.native="confirmTag"
-          @blur="confirmTag"
-        />
-        <el-alert
-          v-if="isURLValid !== null && !isURLValid"
-          title="This url is not valid"
-          type="danger"
-        />
-        <el-button
-          v-else
-          class="w42 text-center"
-          size="small"
-          @click="showInput"
+          <el-radio-button :label="true">Yes</el-radio-button>
+          <el-radio-button :label="false">No</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="Proto multicast">
+        <el-radio-group
+          v-model="form.proto_multicast"
+          class="flex row justify-content-start w-fit-full"
         >
-          Add url
-        </el-button>
+          <el-radio-button :label="true">Yes</el-radio-button>
+          <el-radio-button :label="false">No</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="Proto unicast">
+        <el-radio-group
+          v-model="form.proto_unicast"
+          class="flex row justify-content-start w-fit-full"
+        >
+          <el-radio-button :label="true">Yes</el-radio-button>
+          <el-radio-button :label="false">No</el-radio-button>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="Tags" class="mt2">
         <el-select
@@ -76,17 +62,14 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item>
-        <dragger />
-      </el-form-item>
-      <el-form-item class="mt12">
+      <el-form-item class="mt16">
         <el-button
           type="primary"
           class="w-fit-full capitalize"
           round
           @click="sendData"
         >
-          Create and start drawing
+          {{ title }} IXP
         </el-button>
       </el-form-item>
     </el-form>
@@ -94,14 +77,8 @@
 </template>
 
 <script>
-import Dragger from '../../components/Dragger'
-import validateUrl from '../../helpers/validateUrl'
-
 export default {
   name: 'FacsForm',
-  components: {
-    Dragger
-  },
   data: () => ({
     tag: '',
     isURLValid: null,
@@ -112,14 +89,41 @@ export default {
     form: {
       type: Object,
       required: true
+    },
+    mode: {
+      type: String,
+      required: true
+    },
+    isSendingData: {
+      type: Boolean,
+      default: () => false
+    }
+  },
+  computed: {
+    title() {
+      return this.mode === 'create' ? 'Create' : 'Edit'
+    },
+    dark() {
+      return this.$store.state.isDark
+    }
+  },
+  mounted() {
+    if (this.mode === 'create') {
+      setTimeout(() => {
+        if (this.$refs.form) {
+          this.$refs.form.clearValidate()
+        }
+      }, 50)
     }
   },
   methods: {
     sendData() {
-      return this.$emit('send-data')
+      return this.$refs['form'].validate(isValid =>
+        isValid ? this.$emit('send-data') : false
+      )
     },
     handleClose(tag) {
-      this.form.websites.splice(this.form.websites.indexOf(tag), 1)
+      this.form.tags.splice(this.form.tags.indexOf(tag), 1)
     },
     showInput() {
       this.inputVisible = true
@@ -131,15 +135,12 @@ export default {
         console.error(err)
       }
     },
-    validateURL(url) {
-      this.isURLValid = validateUrl(url)
-    },
     confirmTag() {
       let tag = this.tag
       const isTagAlreadyCreated = this.form.websites.includes(tag)
       if (isTagAlreadyCreated || !this.isURLValid) return
 
-      if (tag) this.form.websites.push(tag)
+      if (tag) this.form.tags.push(tag)
       this.inputVisible = false
       this.isURLValid = null
       this.tag = ''

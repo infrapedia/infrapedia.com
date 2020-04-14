@@ -37,7 +37,7 @@ export default {
     layout: LandingPage
   }),
   async created() {
-    // this.checkIfIsNotSecure()
+    this.checkIfIsNotSecure()
     this.handleSharedView()
     if (this.$route.name === 'login') {
       this.layout = NoNav
@@ -46,6 +46,9 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    title() {
+      return this.mode === 'create' ? 'Create' : 'Edit'
     },
     isAuthenticated() {
       return this.$auth.isAuthenticated

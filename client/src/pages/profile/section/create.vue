@@ -88,6 +88,7 @@ import {
   setMyMap,
   setupMyMapArchives
 } from '../../../services/api/map'
+import { fCollectionFormat } from '../../../helpers/featureCollection'
 
 export default {
   name: 'CreateSection',
@@ -148,7 +149,7 @@ export default {
         case 'map':
           view = MapForm
           break
-        case 'facility':
+        case 'facilities':
           view = FacilityForm
           break
         case 'ixp':
@@ -182,7 +183,7 @@ export default {
           case 'map':
             method = this.setMap
             break
-          case 'facility':
+          case 'facilities':
             method = this.editFacility
             break
           case 'ixp':
@@ -200,7 +201,7 @@ export default {
           case 'map':
             method = this.setMap
             break
-          case 'facility':
+          case 'facilities':
             method = this.createFacility
             break
           case 'ixp':
@@ -226,7 +227,7 @@ export default {
         case 'ixp':
           route = '/user/section/ixps'
           break
-        case 'facility':
+        case 'facilities':
           route = '/user/section/facilities'
           break
         default:
@@ -334,6 +335,32 @@ export default {
             facilities: []
           }
           break
+        case 'ixp':
+          this.form = {
+            name: '',
+            tags: [],
+            nameLong: '',
+            policyEmail: '',
+            policyPhone: '',
+            proto_ivp6: false,
+            proto_unicast: false,
+            proto_multicast: false
+          }
+          break
+        case 'facilities':
+          this.form = {
+            name: '',
+            point: '',
+            address: '',
+            website: '',
+            geometry: fCollectionFormat([]),
+            ixps: [],
+            tags: [],
+            t: '',
+            startDate: '',
+            building: ''
+          }
+          break
         default:
           this.form = {
             cls: [],
@@ -435,7 +462,7 @@ export default {
         case 'ixp':
           route = '/user/section/ixps'
           break
-        case 'facility':
+        case 'facilities':
           route = '/user/section/facilities'
           break
         default:

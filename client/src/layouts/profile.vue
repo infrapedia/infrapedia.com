@@ -32,12 +32,7 @@
       @close="handleToggleMobileProfileDrawer"
     />
 
-    <transition
-      mode="out-in"
-      name="animated faster2x"
-      enter-active-class="fadeIn"
-      leave-active-class="fadeOut"
-    >
+    <transition mode="out-in" name="fade">
       <slot />
     </transition>
 

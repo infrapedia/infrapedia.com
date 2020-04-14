@@ -29,7 +29,7 @@ export default {
     loading: false,
     tableConfig: {
       title: 'Facilities',
-      creation_link: '/user/section/create?id=facility',
+      creation_link: '/user/section/create?id=facilities',
       btn_label: 'Create facility'
     },
     columns: [...facsColumns].filter(col => col.showTable)
