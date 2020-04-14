@@ -1,0 +1,67 @@
+@import '../base/variables';
+@import '../helpers/atomic-classes';
+
+.main-wrapper {
+  border-top: 1px solid $grey-ligthen-3;
+}
+
+.inner-wrapper {
+  margin: 0 auto;
+  width: 78vw;
+  padding: 2rem;
+  @media screen and (max-width: $break-xs) {
+    padding: 1.2rem;
+  }
+}
+
+.title {
+  line-height: 1.3;
+  font-weight: 500;
+  font-size: 40px;
+  color: rgb(15, 50, 86);
+  text-align: center;
+  &.md {
+    text-align: left;
+    color: $dark-charcoal;
+    font-size: 30px;
+    @extend .no-selectable;
+    text-transform: capitalize;
+    @media screen and (max-width: $break-xs) {
+      font-size: 24px;
+    }
+  }
+  &.sm {
+    text-align: left;
+    color: $dark-charcoal;
+    font-size: 24px;
+    @extend .no-selectable;
+    text-transform: capitalize;
+    @media screen and (max-width: $break-xs) {
+      font-size: 18px;
+    }
+  }
+  &.white {
+    line-height: 1.2;
+    color: $white-full;
+  }
+  small {
+    font-size: 14px;
+    margin-top: 1rem;
+  }
+  @media screen and (max-width: $break-xs) {
+    font-size: 34px;
+  }
+}
+
+.content {
+  color: $dark-charcoal;
+  line-height: 1.2;
+  font-weight: 400;
+  font-size: 20px;
+  text-align: justify;
+}
+
+.highlight {
+  background-color: yellow;
+  padding: 0.2rem;
+}

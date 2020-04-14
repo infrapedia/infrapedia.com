@@ -166,6 +166,20 @@
           </el-card>
         </router-link>
       </div>
+      <footer class="mt8">
+        <el-divider />
+        <router-link to="/contact" class="underline-hover cursor-pointer">
+          Contact us</router-link
+        >
+        or
+        <el-button
+          type="text"
+          @click="showPopup"
+          class="cursor-pointer fs-medium underline-hover"
+          >subscribe</el-button
+        >
+        to our newsletter
+      </footer>
     </el-card>
   </div>
 </template>
@@ -175,6 +189,11 @@ export default {
   name: 'ServicesPage',
   beforeCreate() {
     this.$emit('layout', 'landing-layout')
+  },
+  methods: {
+    showPopup() {
+      return console.warn('not done yet')
+    }
   }
 }
 </script>

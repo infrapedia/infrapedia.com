@@ -58,8 +58,14 @@
         <footer>
           <el-divider></el-divider>
           <p class="text sm">
-            If you’re enjoying our blog, subscribe to our Newsletter and never
-            miss a thing.
+            If you’re enjoying our blog,
+            <el-button
+              type="text"
+              @click="showPopup"
+              class="cursor-pointer underline-hover"
+              >subscribe</el-button
+            >
+            to our Newsletter and never miss a thing.
           </p>
         </footer>
       </el-card>
@@ -103,6 +109,11 @@ export default {
   }),
   beforeCreate() {
     this.$emit('layout', 'landing-layout')
+  },
+  methods: {
+    showPopup() {
+      return console.warn('not done yet')
+    }
   }
 }
 </script>
