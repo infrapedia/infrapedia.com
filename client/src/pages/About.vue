@@ -4,7 +4,7 @@
       <el-image
         lazy
         fit="cover"
-        src="https://images.unsplash.com/photo-1577481759281-b2e3a1e62c2b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9"
+        src="https://cdn1.infrapedia.com/bgs/b3.jpg"
         class="banner-img"
       />
     </div>
