@@ -74,6 +74,8 @@
 </template>
 
 <script>
+import openMCPopup from '../helpers/openMCPopup'
+
 export default {
   data: () => ({
     form: {
@@ -115,7 +117,7 @@ export default {
   },
   methods: {
     showPopup() {
-      return console.warn('not done yet')
+      return openMCPopup()
     }
   }
 }
