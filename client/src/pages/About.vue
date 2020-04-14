@@ -94,6 +94,21 @@ export default {
       }
     ]
   }),
+  head: {
+    title: 'Infrapedia | About Us | Global Internet Infrastructure Map',
+    meta: [
+      {
+        name: 'description',
+        content:
+          'Meet the team that makes Infrapedia possible. We are committed to bringing you a reliable source of information and services regarding the world’s internet infrastructure.'
+      },
+      {
+        name: 'keywords',
+        content:
+          'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
+      }
+    ]
+  },
   beforeCreate() {
     this.$emit('layout', 'landing-layout')
   }

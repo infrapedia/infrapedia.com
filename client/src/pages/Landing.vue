@@ -12,6 +12,26 @@ export default {
   components: {
     HomePage
   },
+  head: {
+    title: 'Global Internet Infrastructure Map | Infrapedia',
+    meta: [
+      {
+        name: 'application-name',
+        content:
+          'Global Internet Infrastructure Map | Telecommunications and Data Center Infrastructure'
+      },
+      {
+        name: 'description',
+        content:
+          "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
+      },
+      {
+        name: 'keywords',
+        content:
+          'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
+      }
+    ]
+  },
   beforeCreate() {
     this.$emit('layout', 'landing-layout')
   },

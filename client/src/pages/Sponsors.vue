@@ -73,6 +73,7 @@
 
 <script>
 export default {
+  name: 'SponsorsPage',
   data: () => ({
     sponsorsFeatures: [
       {
@@ -208,7 +209,28 @@ export default {
         yearly: '$6,000'
       }
     ]
-  })
+  }),
+  head: {
+    title:
+      'Infrapedia | Exclusive Sponsorships | Global Internet Infrastructure Map',
+    meta: [
+      {
+        name: 'application-name',
+        content:
+          'Infrapedia | Exclusive Sponsorships | Global Internet Infrastructure Map'
+      },
+      {
+        name: 'description',
+        content:
+          'Infrapedia is the world’s largest crowd-sourced Live Map of the Global Internet Infrastructure. Be one of our Exclusive Sponsors and be everywhere we are.'
+      },
+      {
+        name: 'keywords',
+        content:
+          'custom maps, fiber optics maps, internet infrastructure map, live map, consulting, data center, sponsorship, ads, telecommunications'
+      }
+    ]
+  }
 }
 </script>
 

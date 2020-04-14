@@ -107,6 +107,9 @@ export default {
       company: []
     }
   }),
+  head: {
+    title: 'Infrapedia | Contact Us | Global Internet Infrastructure Map'
+  },
   beforeCreate() {
     this.$emit('layout', 'landing-layout')
   },

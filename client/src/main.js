@@ -16,12 +16,20 @@ import * as vueTour from './plugins/vue-tour'
 import initiateCall from './plugins/freshchat'
 import { bus } from './helpers/eventBus'
 import { AUTH_USER } from './events/auth'
+import injectInitialState from './helpers/injectInitialState'
+import VueMeta from 'vue-meta'
 
 Vue.config.productionTip = false
 Vue.config.errorHandler = (err, vm, info) => appErrorHandler(err, vm, info)
 
 // Install vue2-touch-events
 Vue.use(Vue2TouchEvents)
+
+// Install VueMeta here for SEO enhancement
+Vue.use(VueMeta, {
+  refreshOnceOnNavigation: true,
+  keyName: 'head'
+})
 
 // Install the authentication plugin here
 Vue.use(Auth0Plugin, {
@@ -43,7 +51,7 @@ Vue.use(VueAxios, {
   timeout: 1000
 })
 
-new Vue({
+const app = new Vue({
   router,
   store,
   icons,
@@ -70,4 +78,29 @@ new Vue({
       }
     }
   }
-}).$mount('#app')
+})
+
+router.beforeResolve(async (to, from, next) => {
+  try {
+    const components = router.getMatchedComponents(to)
+
+    // By using `await` we make sure to wait
+    // for the API request made by the `fetch()`
+    // method to resolve before rendering the view.
+    await Promise.all(components.map(x => x.fetch && x.fetch({ store })))
+
+    // The `injectInitialState()` function injects
+    // the current state as a global variable
+    // `__INITIAL_STATE__` if the page is currently
+    // pre-rendered.
+    if (window.__PRERENDER_INJECTED) injectInitialState(store.state)
+  } catch (error) {
+    // This is the place for error handling in
+    // case the API request fails for example.
+    console.log(error)
+  }
+
+  return next()
+})
+
+app.$mount('#app')

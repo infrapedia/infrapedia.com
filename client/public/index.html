@@ -5,6 +5,31 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
+    <!---- TWITTER -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://live.infrapedia.com" />
+    <meta
+      name="twitter:title"
+      content="The world’s largest network and datacenter infrastructure atlas."
+    />
+    <meta
+      name="twitter:description"
+      content="Infrapedia - Datacenter and Network - The world’s largest network and datacenter infrastructure atlas."
+    />
+    <meta name="twitter:image" content="/infrapedia-2.jpg" />
+    <!---- OPEN GRAPH - FACEBOOK -->
+    <meta name="og:type" content="website" />
+    <meta name="og:url" content="https://live.infrapedia.com" />
+    <meta
+      name="og:title"
+      content="The world’s largest network and datacenter infrastructure atlas."
+    />
+    <meta
+      name="og:description"
+      content="Infrapedia - Datacenter and Network - The world’s largest network and datacenter infrastructure atlas."
+    />
+    <meta name="og:image" content="/infrapedia-2.jpg" />
+    <!---- END ---->
     <title>
       The world’s largest network and datacenter infrastructure atlas
     </title>
@@ -22,7 +47,7 @@
       >
     </noscript>
     <div id="app"></div>
-    <script>
+    <script async defer>
       window.NREUM || (NREUM = {}),
         (__nr_require = (function(t, e, n) {
           function r(n) {
@@ -1685,9 +1710,10 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script
       async
+      defer
       src="https://www.googletagmanager.com/gtag/js?id=<%= VUE_APP_GOOGLE_ANALYTICS %>"
     ></script>
-    <script>
+    <script async defer>
       window.dataLayer = window.dataLayer || []
       function gtag() {
         dataLayer.push(arguments)
@@ -1696,6 +1722,7 @@
       gtag('config', '<%= VUE_APP_GOOGLE_ANALYTICS %>')
     </script>
     <script
+      async
       type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=<%= VUE_APP_GOOGLE_API_KEY %>&libraries=places"
       defer

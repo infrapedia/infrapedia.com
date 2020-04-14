@@ -187,6 +187,22 @@
 <script>
 export default {
   name: 'ServicesPage',
+  head: {
+    title:
+      'Infrapedia | Services & Consultancy | Global Internet Infrastructure Map',
+    meta: [
+      {
+        name: 'description',
+        content:
+          'Infrapedia is your one-stop partner for internet infrastructure data, map, and services that include custom maps and personalized consulting.'
+      },
+      {
+        name: 'keywords',
+        content:
+          'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
+      }
+    ]
+  },
   beforeCreate() {
     this.$emit('layout', 'landing-layout')
   },
