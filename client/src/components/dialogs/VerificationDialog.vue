@@ -55,7 +55,6 @@
 import { mapState } from 'vuex'
 import { getUserData } from '../../services/api/auth'
 import { verifyElement } from '../../services/api/users'
-import { MAP_FOCUS_ON } from '../../store/actionTypes/map'
 import { TOGGLE_VERIFICATION_DIALOG } from '../../store/actionTypes'
 import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
 import VueRecaptcha from 'vue-recaptcha'
@@ -74,8 +73,8 @@ export default {
   }),
   computed: {
     ...mapState({
-      focus: state => state.map.focus,
-      dark: state => state.isDark
+      dark: state => state.isDark,
+      focus: state => state.map.focus
     }),
     isVisible: {
       get() {
@@ -131,7 +130,6 @@ export default {
     },
     closeDialog() {
       this.$store.commit(`${TOGGLE_VERIFICATION_DIALOG}`, false)
-      this.$store.commit(`${MAP_FOCUS_ON}`, null)
       this.email = ''
     }
   }
