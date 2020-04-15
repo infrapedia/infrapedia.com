@@ -1,12 +1,13 @@
 const token = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN
 
-const cableSubsea = 'subsea'
-const cableSubseaLabel = 'cables_subsea_label'
-const cableSubseaHighlight = 'cables_subsea_highlight'
-const cableTerrestrial = 'terrestrial'
-const cableTerrestrialLabel = 'cables_terrestrial_label'
-const cableTerrestrialHighlight = 'cables_terrestrial_highlight'
+// const cableSubsea = 'subsea'
+// const cableSubseaLabel = 'cables_subsea_label'
+// const cableSubseaHighlight = 'cables_subsea_highlight'
+// const cableTerrestrial = 'cables'
+const cablesLabel = 'cables_label'
+const cablesHighlight = 'cables_highlight'
 
+const cables = 'cables'
 const cls = 'cls'
 const ixps = 'ixps'
 const clusters = 'clusters'
@@ -22,47 +23,48 @@ export const mapConfig = {
   center: [-34.292, 27.57],
   cls,
   ixps,
+  cables,
   clusters,
   facilities,
+  cablesLabel,
+  cablesHighlight,
   facilitiesLabel,
-  cableTerrestrial,
-  cableSubsea,
-  cableSubseaLabel,
-  cableSubseaHighlight,
-  cableTerrestrialLabel,
-  cableTerrestrialHighlight,
+  // cableTerrestrial,
+  // cableSubsea,
+  // cableSubseaLabel,
+  // cableSubseaHighlight,
+  // cableTerrestrialLabel,
+  // cableTerrestrialHighlight,
   data: {
     sources: [
       {
-        name: cableTerrestrial,
+        name: 'cables',
         opts: {
           type: 'vector',
-          // minzoom: 4,
           tiles: [`${process.env.VUE_APP_TILES_TERRESTRIAL_CABLES}`]
         }
       },
-      {
-        name: cableTerrestrialHighlight,
-        opts: {
-          type: 'vector',
-          // minzoom: 4,
-          tiles: [`${process.env.VUE_APP_TILES_TERRESTRIAL_CABLES}`]
-        }
-      },
-      {
-        name: cableSubsea,
-        opts: {
-          type: 'vector',
-          tiles: [`${process.env.VUE_APP_TILES_SUBSEA_CABLES}`]
-        }
-      },
-      {
-        name: cableSubseaHighlight,
-        opts: {
-          type: 'vector',
-          tiles: [`${process.env.VUE_APP_TILES_SUBSEA_CABLES}`]
-        }
-      },
+      // {
+      //   name: cableTerrestrialHighlight,
+      //   opts: {
+      //     type: 'vector',
+      //     tiles: [`${process.env.VUE_APP_TILES_TERRESTRIAL_CABLES}`]
+      //   }
+      // },
+      // {
+      //   name: cableSubsea,
+      //   opts: {
+      //     type: 'vector',
+      //     tiles: [`${process.env.VUE_APP_TILES_SUBSEA_CABLES}`]
+      //   }
+      // },
+      // {
+      //   name: cableSubseaHighlight,
+      //   opts: {
+      //     type: 'vector',
+      //     tiles: [`${process.env.VUE_APP_TILES_SUBSEA_CABLES}`]
+      //   }
+      // },
       {
         name: ixps,
         opts: {
@@ -100,11 +102,10 @@ export const mapConfig = {
     ],
     layers: [
       {
-        id: cableTerrestrial,
-        source: cableTerrestrial,
-        'source-layer': cableTerrestrial,
+        id: cables,
+        source: cables,
+        'source-layer': cables,
         type: 'line',
-        minzoom: 4,
         paint: {
           'line-width': 1.62,
           'line-color': [
@@ -128,9 +129,9 @@ export const mapConfig = {
         }
       },
       {
-        id: cableTerrestrialLabel,
-        source: cableTerrestrial,
-        'source-layer': cableTerrestrial,
+        id: cablesLabel,
+        source: 'cables',
+        'source-layer': 'cables',
         type: 'symbol',
         layout: {
           'text-field': '{name}',
@@ -146,72 +147,54 @@ export const mapConfig = {
         }
       },
       {
-        id: cableTerrestrialHighlight,
+        id: cablesHighlight,
         type: 'line',
-        source: cableTerrestrialHighlight,
-        'source-layer': cableTerrestrial,
+        source: cables,
+        'source-layer': cables,
         paint: {
           'line-width': 2.6,
           'line-color': '#F7D079'
         },
         filter: ['==', ['get', '_id'], false]
       },
-      {
-        id: cableSubsea,
-        type: 'line',
-        source: cableSubsea,
-        'source-layer': cableSubsea,
-        paint: {
-          'line-width': 1.62,
-          'line-color': [
-            'case',
-            ['==', ['get', 'status'], 0],
-            '#FF0000',
-            [
-              '>',
-              ['get', 'activationDateTime'],
-              (new Date().getTime() / 1000) * 1000
-            ],
-            '#af6ec7',
-            ['==', ['get', 'hasoutage'], 'true'],
-            '#7288b0',
-            ['==', ['get', 'haspartial'], 'true'],
-            '#CC591F',
-            ['==', ['get', 'terrestrial'], 'true'],
-            '#7288b0',
-            '#7288b0'
-          ]
-        }
-      },
-      {
-        id: cableSubseaLabel,
-        source: cableSubsea,
-        'source-layer': cableSubsea,
-        type: 'symbol',
-        layout: {
-          'text-field': '{name}',
-          'symbol-placement': 'line',
-          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-          'text-size': 10,
-          'text-justify': 'right',
-          'text-anchor': 'bottom',
-          'text-offset': [0, -0.1]
-        },
-        paint: {
-          'text-color': '#485E69'
-        }
-      },
-      {
-        id: cableSubseaHighlight,
-        type: 'line',
-        source: cableSubseaHighlight,
-        'source-layer': cableSubsea,
-        paint: {
-          'line-width': 2.6,
-          'line-color': '#F7D079'
-        },
-        filter: ['==', ['get', '_id'], false]
-      },
+      // {
+      //   id: 'terrestrial_highlight',
+      //   type: 'line',
+      //   source: cables,
+      //   'source-layer': cables,
+      //   paint: {
+      //     'line-width': 2.6,
+      //     'line-color': '#F7D079'
+      //   },
+      //   filter: ['==', ['get', '_id'], false]
+      // },
+      // {
+      //   id: 'subsea',
+      //   type: 'line',
+      //   source: cables,
+      //   'source-layer': cables,
+      //   paint: {
+      //     'line-width': 1.62,
+      //     'line-color': [
+      //       'case',
+      //       ['==', ['get', 'status'], 0],
+      //       '#FF0000',
+      //       [
+      //         '>',
+      //         ['get', 'activationDateTime'],
+      //         (new Date().getTime() / 1000) * 1000
+      //       ],
+      //       '#af6ec7',
+      //       ['==', ['get', 'hasoutage'], 'true'],
+      //       '#7288b0',
+      //       ['==', ['get', 'haspartial'], 'true'],
+      //       '#CC591F',
+      //       ['==', ['get', 'terrestrial'], 'true'],
+      //       '#7288b0',
+      //       '#7288b0'
+      //     ]
+      //   }
+      // },
       {
         id: facilities,
         type: 'fill-extrusion',
@@ -327,7 +310,7 @@ export const mapConfig = {
     activeSubsea: [
       'all',
       ['!=', 'terrestrial', 'true'],
-      ['!=', 'isinactive', 'true']
+      ['<', 'activationDateTime', currentEpoch * 1000]
     ],
     active: ['<', ['get', 'activationDateTime'], currentEpoch * 1000],
     all: ['has', '_id'],

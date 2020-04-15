@@ -32,19 +32,13 @@ function disableCurrentHighlight({
   commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
 
   // Removing highlight layer filter
-  map.setFilter(mapConfig.cableSubseaHighlight, ['in', '_id', false])
-  map.setFilter(mapConfig.cableTerrestrialHighlight, ['in', '_id', false])
+  map.setFilter(mapConfig.cablesHighlight, ['in', '_id', false])
 
   // Changing cables colors back to normal
   map.setPaintProperty(
-    mapConfig.cableTerrestrial,
+    mapConfig.cables,
     'line-color',
     mapConfig.data.layers[0].paint['line-color']
-  )
-  map.setPaintProperty(
-    mapConfig.cableSubsea,
-    'line-color',
-    mapConfig.data.layers[3].paint['line-color']
   )
 }
 

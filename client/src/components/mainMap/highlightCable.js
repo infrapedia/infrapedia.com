@@ -15,24 +15,10 @@ function highlightCurrentCable({ dark, cable, map, commit }) {
   const unselectedColor = dark ? 'rgba(50,50,50,0.35)' : 'rgba(23,23,23, 0.2)'
 
   // Changing cables line colors
-  map.setPaintProperty(
-    mapConfig.cableTerrestrial,
-    'line-color',
-    unselectedColor
-  )
-  map.setPaintProperty(mapConfig.cableSubsea, 'line-color', unselectedColor)
+  map.setPaintProperty(mapConfig.cables, 'line-color', unselectedColor)
 
   // Showing only the selected cable on the highlight layer
-  map.setFilter(mapConfig.cableTerrestrialHighlight, [
-    '==',
-    ['get', '_id'],
-    cable._id
-  ])
-  map.setFilter(mapConfig.cableSubseaHighlight, [
-    '==',
-    ['get', '_id'],
-    cable._id
-  ])
+  map.setFilter(mapConfig.cablesHighlight, ['==', ['get', '_id'], cable._id])
 
   // Keeping record of the selection and map current filter
   commit(`${CURRENT_MAP_FILTER}`, ['==', ['get', '_id'], cable._id])

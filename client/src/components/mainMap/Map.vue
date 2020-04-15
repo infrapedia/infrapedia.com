@@ -174,7 +174,7 @@ export default {
         container: 'map',
         zoom: mapConfig.zoom,
         maxZoom: 18,
-        minZoom: 1,
+        minZoom: 2,
         center: mapConfig.center,
         style: mapConfig.default
       })
@@ -241,7 +241,7 @@ export default {
       for (let layer of mapConfig.data.layers) {
         map.addLayer(layer)
       }
-      map.setFilter(mapConfig.cableTerrestrial, mapConfig.filter.all)
+      map.setFilter(mapConfig.cables, mapConfig.filter.all)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
     },
     /**
@@ -255,16 +255,13 @@ export default {
         className: 'mapPopup'
       })
 
-      map.on('mouseenter', mapConfig.cableTerrestrial, function(e) {
-        vm.handlePopupVisibilityOn(e, popup, false)
-      })
-      map.on('mouseenter', mapConfig.cableSubsea, function(e) {
+      map.on('mouseenter', mapConfig.cables, function(e) {
         vm.handlePopupVisibilityOn(e, popup, false)
       })
       map.on('mouseenter', mapConfig.ixps, function(e) {
         vm.handlePopupVisibilityOn(e, popup, true)
       })
-      map.on('mouseleave', mapConfig.cableTerrestrial, function() {
+      map.on('mouseleave', mapConfig.cables, function() {
         vm.handlePopupVisibilityOff(popup)
       })
 
@@ -395,11 +392,11 @@ export default {
       if (this.isDrawing) return
 
       if (this.$auth.isAuthenticated) {
-        const cablesTerrestrial = this.map.queryRenderedFeatures(e.point, {
-          layers: [mapConfig.cableTerrestrial]
-        })
-        const cablesSubsea = this.map.queryRenderedFeatures(e.point, {
-          layers: [mapConfig.cableSubsea]
+        // const cablesTerrestrial = this.map.queryRenderedFeatures(e.point, {
+        //   layers: [mapConfig.cableTerrestrial]
+        // })
+        const cables = this.map.queryRenderedFeatures(e.point, {
+          layers: [mapConfig.cables]
         })
         const facilities = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.facilities]
@@ -434,13 +431,8 @@ export default {
           })
         }
 
-        if (cablesTerrestrial.length) {
-          await this.handleCablesSelection(
-            !!cablesTerrestrial.length,
-            cablesTerrestrial
-          )
-        } else if (cablesSubsea.length) {
-          await this.handleCablesSelection(!!cablesSubsea.length, cablesSubsea)
+        if (cables.length) {
+          await this.handleCablesSelection(!!cables.length, cables)
         } else if (clusters.length) {
           await this.handleClustersSelection(clusters, this.map)
         } else if (
@@ -846,8 +838,8 @@ export default {
 
       await this.disableCableHighlight()
       this.$nextTick(() => {
-        this.map.setFilter(mapConfig.cableTerrestrial, filter)
-        this.map.setFilter(mapConfig.cableTerrestrialLabel, filter)
+        this.map.setFilter(mapConfig.cables, filter)
+        this.map.setFilter(mapConfig.cablesLabel, filter)
       })
     },
     /**
@@ -855,7 +847,6 @@ export default {
      */
     async handleFilterSelection(selection) {
       let filter
-      const { map } = this
       const filters = mapConfig.filter
 
       switch (selection) {
@@ -876,7 +867,7 @@ export default {
           break
       }
 
-      if (filter === 3) {
+      if (filter == 3) {
         return this.handleUpdateTimeMachine({
           year: currentYear(),
           isActive: false
@@ -884,14 +875,11 @@ export default {
       }
 
       await this.disableCableHighlight()
-      if (selection === 2) {
-        await map.setFilter(mapConfig.cableSubsea, filter)
-        await map.setFilter(mapConfig.cableSubseaLabel, filter)
+      if (selection == 2) {
+        await this.map.setFilter(mapConfig.cables, filter)
       } else {
-        await map.setFilter(mapConfig.cableSubsea, filter)
-        await map.setFilter(mapConfig.cableSubseaLabel, filter)
-        await map.setFilter(mapConfig.cableTerrestrial, filter)
-        await map.setFilter(mapConfig.cableTerrestrialLabel, filter)
+        await this.map.setFilter(mapConfig.cables, filter)
+        await this.map.setFilter(mapConfig.cablesLabel, filter)
       }
     },
     /**
@@ -906,28 +894,19 @@ export default {
 
       if (target === 'checkbox') {
         if (isActive) {
-          await map.setFilter(
-            mapConfig.cableTerrestrial,
-            mapConfig.filter.subsea
-          )
-          await map.setFilter(
-            mapConfig.cableTerrestrialLabel,
-            mapConfig.filter.subsea
-          )
+          await map.setFilter(mapConfig.cables, mapConfig.filter.subsea)
 
           filter[2] = epoch
-          await map.setFilter(mapConfig.cableSubsea, filter)
+          await map.setFilter(mapConfig.cables, filter)
         } else {
           filter = mapConfig.filter.all
-          await map.setFilter(mapConfig.cableSubsea, filter)
-          await map.setFilter(mapConfig.cableSubseaLabel, filter)
-          await map.setFilter(mapConfig.cableTerrestrial, filter)
-          await map.setFilter(mapConfig.cableTerrestrialLabel, filter)
+          await map.setFilter(mapConfig.cables, filter)
+          await map.setFilter(mapConfig.cablesLabel, filter)
         }
       } else if (target === 'slider') {
         filter[2] = epoch
-        await map.setFilter(mapConfig.cableSubsea, filter)
-        await map.setFilter(mapConfig.cableSubseaLabel, filter)
+        await map.setFilter(mapConfig.cables, filter)
+        await map.setFilter(mapConfig.cablesLabel, filter)
       }
 
       await this.$store.commit(`${CURRENT_MAP_FILTER}`, filter)

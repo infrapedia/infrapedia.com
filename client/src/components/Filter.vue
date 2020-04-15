@@ -50,7 +50,7 @@
                 class="mr1"
                 v-model="filters.radio"
                 :true-label="0"
-                :false-label="'no-active'"
+                false-label="no-active"
                 @change="emitRadioSelection"
                 >{{ '' + '' }}</el-checkbox
               >
@@ -58,7 +58,7 @@
                 class="mt9"
                 v-model="filters.radio"
                 :true-label="1"
-                :false-label="'no-future'"
+                false-label="no-future"
                 @change="emitRadioSelection"
                 >{{ '' + '' }}</el-checkbox
               >
@@ -166,12 +166,12 @@ export default {
      */
     emitRadioSelection(selection) {
       if (
-        (selection === 'no-active' || selection === 'no-future') &&
+        (selection == 'no-active' || selection == 'no-future') &&
         !this.filters.isSubseaOnly
       ) {
         return bus.$emit(`${TOGGLE_FILTER_SELECTION}`, -1)
       } else if (
-        (selection === 'no-active' || selection === 'no-future') &&
+        (selection == 'no-active' || selection == 'no-future') &&
         this.filters.isSubseaOnly
       ) {
         return bus.$emit(`${TOGGLE_FILTER_SELECTION}`, 3)
@@ -183,8 +183,17 @@ export default {
       }
 
       if (this.filters.isSubseaOnly) {
-        return bus.$emit(`${TOGGLE_FILTER_SELECTION}`, 2)
+        if (selection == 1) {
+          return bus.$emit(`${TOGGLE_FILTER_SELECTION}`, 1)
+        } else {
+          return bus.$emit(`${TOGGLE_FILTER_SELECTION}`, 2)
+        }
       }
+
+      // TODO: there's some caveats with the filter
+      // For example: if you active subseaOnly and future only at the same time
+      // When you remove the future only checkbox is doesn't show you all the subsea cables again
+      // The filter gets stuck with the last one you selected
 
       bus.$emit(`${TOGGLE_FILTER_SELECTION}`, selection)
     },

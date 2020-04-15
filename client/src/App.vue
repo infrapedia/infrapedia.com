@@ -63,10 +63,6 @@ export default {
       return theme
     }
   },
-  beforeRouteLeave(to, from, next) {
-    console.log(to, from)
-    next()
-  },
   methods: {
     checkIfIsNotSecure() {
       if (
