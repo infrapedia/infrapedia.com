@@ -75,3 +75,56 @@ export const getIxpsGeoms = async ({ user_id, ids }) => {
 
   return res
 }
+
+export const getIxps = async ({ user_id, page }) => {
+  url = `${apiConfig.url}/auth/ixps/all?p=${page}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: apiConfig.bearer()
+    }
+  })
+
+  return res
+}
+
+export const viewIXPOwner = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/auth/ixps/owner/${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const editIXP = async ({ user_id }) => {
+  url = `${apiConfig.url}/auth/ixps/edit`
+  form = new FormData()
+
+  const res = await $axios.put(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const createIXP = async ({ user_id }) => {
+  url = `${apiConfig.url}/auth/ixps/edit`
+  form = new FormData()
+
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: apiConfig.bearer()
+    }
+  })
+  return res
+}

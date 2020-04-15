@@ -3,22 +3,39 @@
     <header slot="header" class="w-fit-full mb8">
       <h1 class="title capitalize">{{ title }} IXP</h1>
     </header>
-    <el-form ref="form" :model="form">
+    <el-form ref="form" :model="form" :rules="formRules">
       <el-form-item label="Name">
-        <el-input class="w-fit-full" v-model="form.name" />
+        <el-input
+          class="w-fit-full"
+          v-model="form.name"
+          :disabled="isViewMode"
+        />
       </el-form-item>
       <el-form-item label="Long name">
-        <el-input class="w-fit-full" v-model="form.nameLong" />
+        <el-input
+          class="w-fit-full"
+          v-model="form.nameLong"
+          :disabled="isViewMode"
+        />
       </el-form-item>
       <el-form-item label="Policy Email">
-        <el-input class="w-fit-full" v-model="form.policyEmail" />
+        <el-input
+          class="w-fit-full"
+          v-model="form.policyEmail"
+          :disabled="isViewMode"
+        />
       </el-form-item>
       <el-form-item label="Policy Phone">
-        <el-input class="w-fit-full" v-model="form.policyPhone" />
+        <el-input
+          class="w-fit-full"
+          v-model="form.policyPhone"
+          :disabled="isViewMode"
+        />
       </el-form-item>
       <el-form-item label="Proto ivp6">
         <el-radio-group
           v-model="form.proto_ivp6"
+          :disabled="isViewMode"
           class="flex row justify-content-start w-fit-full"
         >
           <el-radio-button :label="true">Yes</el-radio-button>
@@ -28,6 +45,7 @@
       <el-form-item label="Proto multicast">
         <el-radio-group
           v-model="form.proto_multicast"
+          :disabled="isViewMode"
           class="flex row justify-content-start w-fit-full"
         >
           <el-radio-button :label="true">Yes</el-radio-button>
@@ -37,6 +55,7 @@
       <el-form-item label="Proto unicast">
         <el-radio-group
           v-model="form.proto_unicast"
+          :disabled="isViewMode"
           class="flex row justify-content-start w-fit-full"
         >
           <el-radio-button :label="true">Yes</el-radio-button>
@@ -46,6 +65,7 @@
       <el-form-item label="Tags" class="mt2">
         <el-select
           v-model="form.tags"
+          :disabled="isViewMode"
           multiple
           filterable
           placeholder
@@ -62,7 +82,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item class="mt16">
+      <el-form-item class="mt16" v-if="!isViewMode">
         <el-button
           type="primary"
           class="w-fit-full capitalize"
@@ -81,9 +101,9 @@ export default {
   name: 'FacsForm',
   data: () => ({
     tag: '',
-    isURLValid: null,
     inputVisible: false,
-    tagsList: []
+    tagsList: [],
+    formRules: {}
   }),
   props: {
     form: {
@@ -101,7 +121,14 @@ export default {
   },
   computed: {
     title() {
-      return this.mode === 'create' ? 'Create' : 'Edit'
+      return this.mode == 'create'
+        ? 'Create'
+        : this.mode == 'view'
+        ? 'View'
+        : 'Edit'
+    },
+    isViewMode() {
+      return this.mode == 'view'
     },
     dark() {
       return this.$store.state.isDark
@@ -121,29 +148,6 @@ export default {
       return this.$refs['form'].validate(isValid =>
         isValid ? this.$emit('send-data') : false
       )
-    },
-    handleClose(tag) {
-      this.form.tags.splice(this.form.tags.indexOf(tag), 1)
-    },
-    showInput() {
-      this.inputVisible = true
-      try {
-        this.$nextTick(() => {
-          this.$refs.saveTagInput.$refs.input.focus()
-        })
-      } catch (err) {
-        console.error(err)
-      }
-    },
-    confirmTag() {
-      let tag = this.tag
-      const isTagAlreadyCreated = this.form.websites.includes(tag)
-      if (isTagAlreadyCreated || !this.isURLValid) return
-
-      if (tag) this.form.tags.push(tag)
-      this.inputVisible = false
-      this.isURLValid = null
-      this.tag = ''
     }
   }
 }

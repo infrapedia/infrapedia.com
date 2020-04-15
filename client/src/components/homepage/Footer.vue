@@ -132,7 +132,7 @@ export default {
       },
       {
         label: 'Sponsorships',
-        url: '/sponsorships'
+        url: '/sponsors'
       }
     ]
   }),

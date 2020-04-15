@@ -68,10 +68,10 @@ export default {
         name: 'Mehmet Akcin',
         position: 'President'
       },
-      {
-        name: 'Naaz Bax',
-        position: '{{ blank }}'
-      },
+      // {
+      //   name: 'Naaz Bax',
+      //   position: '{{ blank }}'
+      // },
       {
         name: 'Hubert Soisa',
         position: 'Director of Operations'
