@@ -41,7 +41,7 @@ export const mapConfig = {
         name: 'cables',
         opts: {
           type: 'vector',
-          tiles: [`${process.env.VUE_APP_TILES_TERRESTRIAL_CABLES}`]
+          tiles: [`${process.env.VUE_APP_TILES_CABLES}`]
         }
       },
       // {
