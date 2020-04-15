@@ -5,14 +5,19 @@
     </header>
     <el-form ref="form" :model="form" :rules="formRules">
       <el-form-item label="Name">
-        <el-input class="w-fit-full" :class="{ dark }" v-model="form.name" />
+        <el-input
+          class="w-fit-full"
+          :class="{ dark }"
+          v-model="form.name"
+          :disabled="isViewMode"
+        />
       </el-form-item>
       <el-form-item label="Address" class="mt2">
         <div class="flex row wrap w-fit-full">
           <el-tag
             :key="i"
             v-for="(tag, i) in form.address"
-            closable
+            :closable="!isViewMode"
             :disable-transitions="false"
             @close="handleAddressRemove(tag)"
           >
@@ -75,6 +80,7 @@
             :class="{ dark }"
             class="w42 text-center"
             size="small"
+            :disabled="isViewMode"
             @click="showAdressInput"
           >
             Add
@@ -85,6 +91,7 @@
         <el-input
           class="w-fit-full"
           :class="{ dark }"
+          :disabled="isViewMode"
           v-model="form.website"
           @change="validateURL"
         />
@@ -103,6 +110,7 @@
           :class="{ dark }"
           multiple
           filterable
+          :disabled="isViewMode"
           placeholder
         >
           <el-option
@@ -118,6 +126,7 @@
           v-model="form.tags"
           multiple
           filterable
+          :disabled="isViewMode"
           placeholder
           allow-create
           :class="{ dark }"
@@ -137,6 +146,7 @@
       <el-form-item label="Type">
         <el-select
           v-model="form.t"
+          :disabled="isViewMode"
           class="w-fit-full"
           :class="{ dark }"
           placeholder
@@ -155,6 +165,7 @@
           v-model="form.startDate"
           type="year"
           :class="{ dark }"
+          :disabled="isViewMode"
           placeholder
         />
       </el-form-item>
@@ -163,6 +174,7 @@
           v-model="form.building"
           class="w-fit-full"
           :class="{ dark }"
+          :disabled="isViewMode"
           placeholder
         >
           <el-option
@@ -176,7 +188,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item class="mt12">
+      <el-form-item class="mt12" v-if="!isViewMode">
         <el-button
           type="primary"
           class="w-fit-full capitalize"
@@ -257,7 +269,14 @@ export default {
   },
   computed: {
     title() {
-      return this.mode === 'create' ? 'Create' : 'Edit'
+      return this.mode == 'create'
+        ? 'Create'
+        : this.mode == 'view'
+        ? 'View'
+        : 'Edit'
+    },
+    isViewMode() {
+      return this.mode == 'view'
     },
     dark() {
       return this.$store.state.isDark

@@ -9,6 +9,11 @@
       :config="tableConfig"
       :table-data="tableData"
       :pagination="true"
+      :can-create="false"
+      :can-edit="false"
+      :can-delete="false"
+      :can-view="true"
+      @view-item="handleViewItem"
       @edit-item="handleEditIxp"
       @delete-item="handleDeleteIxp"
       @page-change="getIxpsList"
@@ -57,6 +62,12 @@ export default {
       this.loading = false
     },
     handleEditIxp(_id) {
+      return this.$router.push({
+        path: '/user/section/create',
+        query: { id: 'ixps', item: _id }
+      })
+    },
+    handleViewItem(_id) {
       return this.$router.push({
         path: '/user/section/create',
         query: { id: 'ixps', item: _id }

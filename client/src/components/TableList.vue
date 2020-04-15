@@ -120,6 +120,7 @@
               <fa :icon="['fas', 'eye']" />
             </el-button>
             <el-button
+              v-if="canDelete"
               type="danger"
               class="p2 fs-regular"
               size="small"
@@ -189,6 +190,10 @@ export default {
       default: () => false
     },
     canCreate: {
+      type: Boolean,
+      default: () => true
+    },
+    canDelete: {
       type: Boolean,
       default: () => true
     },

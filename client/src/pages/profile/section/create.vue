@@ -253,6 +253,10 @@ export default {
       bus.$emit(`${SET_MAP_SOURCES}`)
       await this.checkUserMapExistance()
     }
+
+    if (this.creationType === 'ixps' || this.creationType == 'facilities') {
+      this.mode = 'view'
+    }
   },
   methods: {
     toggleMapFormLoading(bool) {
