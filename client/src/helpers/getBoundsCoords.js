@@ -1,4 +1,6 @@
 export default function getBoundsCoords(coords) {
+  console.log(coords)
+
   const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
   const checkArr = arr => (Array.isArray(arr) ? arr : coords)
 

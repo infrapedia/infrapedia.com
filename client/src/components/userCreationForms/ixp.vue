@@ -3,7 +3,7 @@
     <header slot="header" class="w-fit-full mb8">
       <h1 class="title capitalize">{{ title }} IXP</h1>
     </header>
-    <el-form ref="form" :model="form">
+    <el-form ref="form" :model="form" :rules="formRules">
       <el-form-item label="Name">
         <el-input class="w-fit-full" v-model="form.name" />
       </el-form-item>
@@ -81,9 +81,9 @@ export default {
   name: 'FacsForm',
   data: () => ({
     tag: '',
-    isURLValid: null,
     inputVisible: false,
-    tagsList: []
+    tagsList: [],
+    formRules: {}
   }),
   props: {
     form: {
@@ -121,29 +121,6 @@ export default {
       return this.$refs['form'].validate(isValid =>
         isValid ? this.$emit('send-data') : false
       )
-    },
-    handleClose(tag) {
-      this.form.tags.splice(this.form.tags.indexOf(tag), 1)
-    },
-    showInput() {
-      this.inputVisible = true
-      try {
-        this.$nextTick(() => {
-          this.$refs.saveTagInput.$refs.input.focus()
-        })
-      } catch (err) {
-        console.error(err)
-      }
-    },
-    confirmTag() {
-      let tag = this.tag
-      const isTagAlreadyCreated = this.form.websites.includes(tag)
-      if (isTagAlreadyCreated || !this.isURLValid) return
-
-      if (tag) this.form.tags.push(tag)
-      this.inputVisible = false
-      this.isURLValid = null
-      this.tag = ''
     }
   }
 }

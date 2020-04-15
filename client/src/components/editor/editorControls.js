@@ -38,9 +38,9 @@ class EditorControls {
         className: 'editor-ctrl editor-line-string',
         title: 'Draw line',
         visible:
-          this.type === 'map' ||
-          this.type === 'subsea' ||
-          this.type === 'terrestrial-network'
+          this.type == 'map' ||
+          this.type == 'subsea' ||
+          this.type == 'terrestrial-network'
             ? true
             : false,
         eventListener: () => {
@@ -54,10 +54,10 @@ class EditorControls {
         className: 'editor-ctrl editor-point',
         title: 'Create point',
         visible:
-          this.type === 'map' ||
-          this.type === 'cls' ||
-          this.type === 'ixp' ||
-          this.type === 'facilities'
+          this.type == 'map' ||
+          this.type == 'cls' ||
+          this.type == 'ixps' ||
+          this.type == 'facilities'
             ? true
             : false,
         eventListener: () => {
@@ -175,7 +175,7 @@ class EditorControls {
         this.buttons.point.style.setProperty('display', 'none')
       }
 
-      if (this.type !== 'cls') {
+      if (this.type != 'cls' && this.type != 'ixps') {
         this.buttons.line_string.style.setProperty('display', 'block')
       } else {
         this.buttons.line_string.style.setProperty('display', 'none')

@@ -30,6 +30,7 @@ import {
 } from '../../events/editor'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { editorMapConfig } from '../../config/editorMapConfig'
+import getBoundsCoords from '../../helpers/getBoundsCoords'
 
 export default {
   components: {
@@ -119,11 +120,10 @@ export default {
     },
     async handleFileConverted(fc) {
       if (!fc.features.length) return
-
-      const { draw, $store } = this
-      await draw.set(fc)
+      console.log(fc)
+      await this.draw.set(fc)
       await this.handleZoomToFeature(fc)
-      return await $store.dispatch('editor/setList', fc.features)
+      return await this.$store.dispatch('editor/setList', fc.features)
     },
     async handleMapFormFeatureSelection({ t, fc, removeLoadState }) {
       if (!this.map) return
@@ -155,20 +155,14 @@ export default {
                   .length - 1
               ]
         ]
-        bbox = coords.reduce(
-          (bounds, coord) => bounds.extend(coord),
-          new mapboxgl.LngLatBounds(coords[0], coords[0])
-        )
+        bbox = getBoundsCoords(coords)
       } else {
         // Calculation of bounds for points
         coords = [
           fc.features[0].geometry.coordinates,
           fc.features[fc.features.length - 1].geometry.coordinates
         ]
-        bbox = coords.reduce(
-          (bounds, coord) => bounds.extend(coord),
-          new mapboxgl.LngLatBounds(coords[0], coords[0])
-        )
+        bbox = getBoundsCoords(coords)
       }
 
       await this.map.fitBounds(bbox, {

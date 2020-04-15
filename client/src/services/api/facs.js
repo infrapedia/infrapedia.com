@@ -75,3 +75,56 @@ export const getFacilitiesGeom = async ({ user_id, ids }) => {
 
   return res
 }
+
+export const getFacilities = async ({ user_id, page }) => {
+  url = `${apiConfig.url}/auth/facilities/all?p=${page}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: apiConfig.bearer()
+    }
+  })
+
+  return res
+}
+
+export const viewFacilityOwner = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/auth/facilities/owner/${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const editFacility = async ({ user_id }) => {
+  url = `${apiConfig.url}/auth/facilities/edit`
+  form = new FormData()
+
+  const res = await $axios.put(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const createFacility = async ({ user_id }) => {
+  url = `${apiConfig.url}/auth/facilities/edit`
+  form = new FormData()
+
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: apiConfig.bearer()
+    }
+  })
+  return res
+}

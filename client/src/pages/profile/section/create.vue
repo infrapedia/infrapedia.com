@@ -89,6 +89,8 @@ import {
   setupMyMapArchives
 } from '../../../services/api/map'
 import { fCollectionFormat } from '../../../helpers/featureCollection'
+import { viewFacilityOwner } from '../../../services/api/facs'
+import { viewIXPOwner } from '../../../services/api/ixps'
 
 export default {
   name: 'CreateSection',
@@ -152,7 +154,7 @@ export default {
         case 'facilities':
           view = FacilityForm
           break
-        case 'ixp':
+        case 'ixps':
           view = IXPForm
           break
         default:
@@ -186,7 +188,7 @@ export default {
           case 'facilities':
             method = this.editFacility
             break
-          case 'ixp':
+          case 'ixps':
             method = this.editIXP
             break
           default:
@@ -204,7 +206,7 @@ export default {
           case 'facilities':
             method = this.createFacility
             break
-          case 'ixp':
+          case 'ixps':
             method = this.createIXP
             break
           default:
@@ -224,7 +226,7 @@ export default {
         case 'subsea':
           route = '/user/section/subsea-cables'
           break
-        case 'ixp':
+        case 'ixps':
           route = '/user/section/ixps'
           break
         case 'facilities':
@@ -335,7 +337,7 @@ export default {
             facilities: []
           }
           break
-        case 'ixp':
+        case 'ixps':
           this.form = {
             name: '',
             tags: [],
@@ -351,7 +353,7 @@ export default {
           this.form = {
             name: '',
             point: '',
-            address: '',
+            address: [],
             website: '',
             geometry: fCollectionFormat([]),
             ixps: [],
@@ -392,6 +394,12 @@ export default {
         case 'cls':
           currentElement = await this.viewCurrentCLS(_id)
           break
+        case 'facilities':
+          currentElement = await this.viewCurrentFacility(_id)
+          break
+        case 'ixps':
+          currentElement = await this.viewCurrentIXP(_id)
+          break
         default:
           currentElement = await this.viewCurrentCable(_id)
           break
@@ -414,13 +422,31 @@ export default {
           }))
           this.form.cables = data.cables.map(f => f._id)
           break
+        case 'ixps':
+          break
+        case 'facilities':
+          break
         default:
           this.handleCablesEditMode(data)
           break
       }
 
-      if (this.form.geom && this.form.geom.features) {
-        await this.$store.dispatch('editor/setList', data.geom.features)
+      if (data.geom) {
+        const features =
+          data.geom.type == 'Point'
+            ? [
+                {
+                  type: 'Feature',
+                  properties: {},
+                  geometry: {
+                    type: data.geom.type,
+                    coordinates: data.geom.coordinates
+                  }
+                }
+              ]
+            : data.geom.features
+
+        await this.$store.dispatch('editor/setList', features)
         await (this.form.geom = this.$store.state.editor.scene.features.list)
         await bus.$emit(`${EDITOR_LOAD_DRAW}`)
       }
@@ -442,6 +468,14 @@ export default {
       this.form.ownersList = ownersData
       this.form.activationDateTime = new Date(this.form.activationDateTime)
     },
+    async viewCurrentFacility(_id) {
+      const res = await viewFacilityOwner({ user_id: this.$auth.user.sub, _id })
+      return res && res.data && res.data.r ? res.data.r : {}
+    },
+    async viewCurrentIXP(_id) {
+      const res = await viewIXPOwner({ user_id: this.$auth.user.sub, _id })
+      return res && res.data && res.data.r ? res.data.r : {}
+    },
     async viewCurrentCLS(_id) {
       const res = await viewClsOwner({ user_id: this.$auth.user.sub, _id })
       return res && res.data && res.data.r ? res.data.r : {}
@@ -459,7 +493,7 @@ export default {
         case 'subsea':
           route = '/user/section/subsea-cables'
           break
-        case 'ixp':
+        case 'ixps':
           route = '/user/section/ixps'
           break
         case 'facilities':

@@ -9,9 +9,9 @@
       :config="tableConfig"
       :table-data="tableData"
       :pagination="true"
-      @page-change="getIxpsList"
       @edit-item="handleEditIxp"
       @delete-item="handleDeleteIxp"
+      @page-change="getIxpsList"
     />
   </div>
 </template>
@@ -19,6 +19,7 @@
 <script>
 import { ixpsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
+import { getIxps } from '../../../services/api/ixps'
 
 export default {
   name: 'IxpsSection',
@@ -43,9 +44,24 @@ export default {
   beforeCreate() {
     this.$emit('layout', 'profile-layout')
   },
+  async mounted() {
+    await this.getIxpsList()
+  },
   methods: {
-    getIxpsList() {},
-    handleEditIxp() {},
+    async getIxpsList(page = 0) {
+      this.loading = true
+      const res = await getIxps({ user_id: this.$auth.user.sub, page })
+      if (res.t !== 'error' && res.data) {
+        this.tableData = res.data.r
+      }
+      this.loading = false
+    },
+    handleEditIxp(_id) {
+      return this.$router.push({
+        path: '/user/section/create',
+        query: { id: 'ixps', item: _id }
+      })
+    },
     handleDeleteIxp() {}
   }
 }

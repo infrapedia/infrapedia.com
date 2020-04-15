@@ -26,10 +26,12 @@ Vue.config.errorHandler = (err, vm, info) => appErrorHandler(err, vm, info)
 Vue.use(Vue2TouchEvents)
 
 // Install VueMeta here for SEO enhancement
-Vue.use(VueMeta, {
-  refreshOnceOnNavigation: true,
-  keyName: 'head'
-})
+if (process.env.NODE_ENV == 'production') {
+  Vue.use(VueMeta, {
+    refreshOnceOnNavigation: true,
+    keyName: 'head'
+  })
+}
 
 // Install the authentication plugin here
 Vue.use(Auth0Plugin, {
@@ -80,27 +82,29 @@ const app = new Vue({
   }
 })
 
-router.beforeResolve(async (to, from, next) => {
-  try {
-    const components = router.getMatchedComponents(to)
+if (process.env.NODE_ENV == 'production') {
+  router.beforeResolve(async (to, from, next) => {
+    try {
+      const components = router.getMatchedComponents(to)
 
-    // By using `await` we make sure to wait
-    // for the API request made by the `fetch()`
-    // method to resolve before rendering the view.
-    await Promise.all(components.map(x => x.fetch && x.fetch({ store })))
+      // By using `await` we make sure to wait
+      // for the API request made by the `fetch()`
+      // method to resolve before rendering the view.
+      await Promise.all(components.map(x => x.fetch && x.fetch({ store })))
 
-    // The `injectInitialState()` function injects
-    // the current state as a global variable
-    // `__INITIAL_STATE__` if the page is currently
-    // pre-rendered.
-    if (window.__PRERENDER_INJECTED) injectInitialState(store.state)
-  } catch (error) {
-    // This is the place for error handling in
-    // case the API request fails for example.
-    console.log(error)
-  }
+      // The `injectInitialState()` function injects
+      // the current state as a global variable
+      // `__INITIAL_STATE__` if the page is currently
+      // pre-rendered.
+      if (window.__PRERENDER_INJECTED) injectInitialState(store.state)
+    } catch (error) {
+      // This is the place for error handling in
+      // case the API request fails for example.
+      console.log(error)
+    }
 
-  return next()
-})
+    return next()
+  })
+}
 
 app.$mount('#app')
