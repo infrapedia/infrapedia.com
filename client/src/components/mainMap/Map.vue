@@ -173,7 +173,7 @@ export default {
       const map = new mapboxgl.Map({
         container: 'map',
         zoom: mapConfig.zoom,
-        maxZoom: 18,
+        maxZoom: 17.8,
         minZoom: 2,
         center: mapConfig.center,
         style: mapConfig.default
