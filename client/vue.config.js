@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const PrerenderSpaPlugin = require('prerender-spa-plugin')
 const WebpackBar = require('webpackbar')
+const CompressionPlugin = require('compression-webpack-plugin')
 
 function getRoutes() {
   let arr = []
@@ -42,7 +43,7 @@ module.exports = {
       ? 'https://cdn1.infrapedia.com/dist/'
       : '',
   configureWebpack: config => {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV == 'production') {
       config.plugins.push(...productionPlugins)
     } else {
       config.plugins.push(new WebpackBar())
@@ -55,5 +56,17 @@ module.exports = {
       .options({
         fix: true
       })
+
+    if (process.env.NODE_ENV == 'production') {
+      config.plugins.delete('prefetch')
+      config.plugin('CompressionPlugin').use(CompressionPlugin)
+      config.module
+        .rule('gzip-loader')
+        .use('gzip-loader')
+        .options({
+          enforce: 'pre',
+          test: /\.gz$/
+        })
+    }
   }
 }
