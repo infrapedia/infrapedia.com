@@ -3,9 +3,7 @@ const path = require('path')
 const PrerenderSpaPlugin = require('prerender-spa-plugin')
 const WebpackBar = require('webpackbar')
 const CompressionPlugin = require('compression-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const gzip = require('@gfx/zopfli').gzip
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 
 function getRoutes() {
   let arr = []
@@ -41,18 +39,7 @@ const productionPlugins = [
 ]
 
 module.exports = {
-  // publicPath:
-  // process.env.NODE_ENV === 'production'
-  // ? 'https://cdn1.infrapedia.com/dist/'
-  // : '',
-  optimization: {
-    minimizer: [
-      new UglifyJsPlugin(),
-      new OptimizeCSSAssetsPlugin({
-        preset: ['default', { discardComments: { removeAll: true } }]
-      })
-    ]
-  },
+  // publicPath: process.env.NODE_ENV == 'production' ? 'https://cdn1.infrapedia.com/dist/' : '/',
   configureWebpack: config => {
     if (process.env.NODE_ENV == 'production') {
       config.plugins.push(...productionPlugins)
