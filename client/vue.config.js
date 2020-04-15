@@ -37,6 +37,10 @@ const productionPlugins = [
 ]
 
 module.exports = {
+  publicPath:
+    process.env.NODE_ENV === 'production'
+      ? 'https://cdn1.infrapedia.com/dist/'
+      : '',
   configureWebpack: config => {
     if (process.env.NODE_ENV === 'production') {
       config.plugins.push(...productionPlugins)
