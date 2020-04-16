@@ -9,11 +9,6 @@
       :config="tableConfig"
       :table-data="tableData"
       :pagination="true"
-      :can-create="false"
-      :can-edit="false"
-      :can-delete="false"
-      :can-view="true"
-      @view-item="handleViewItem"
       @edit-item="handleEditFac"
       @delete-item="handleDeleteFac"
       @page-change="getFacilitiesList"
@@ -54,12 +49,6 @@ export default {
   },
   methods: {
     handleEditFac(_id) {
-      return this.$router.push({
-        path: '/user/section/create',
-        query: { id: 'facilities', item: _id }
-      })
-    },
-    handleViewItem(_id) {
       return this.$router.push({
         path: '/user/section/create',
         query: { id: 'facilities', item: _id }

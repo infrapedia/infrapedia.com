@@ -9,11 +9,6 @@
       :config="tableConfig"
       :table-data="tableData"
       :pagination="true"
-      :can-create="false"
-      :can-edit="false"
-      :can-delete="false"
-      :can-view="true"
-      @view-item="handleViewItem"
       @edit-item="handleEditIxp"
       @delete-item="handleDeleteIxp"
       @page-change="getIxpsList"
@@ -36,7 +31,7 @@ export default {
     loading: false,
     tableConfig: {
       title: 'IXPs',
-      creation_link: '/user/section/create?id=ixp',
+      creation_link: '/user/section/create?id=ixps',
       btn_label: 'Create IXPs'
     },
     columns: [...ixpsColumns].filter(col => col.showTable)
@@ -62,12 +57,6 @@ export default {
       this.loading = false
     },
     handleEditIxp(_id) {
-      return this.$router.push({
-        path: '/user/section/create',
-        query: { id: 'ixps', item: _id }
-      })
-    },
-    handleViewItem(_id) {
       return this.$router.push({
         path: '/user/section/create',
         query: { id: 'ixps', item: _id }

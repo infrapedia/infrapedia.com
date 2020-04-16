@@ -186,8 +186,6 @@
 </template>
 
 <script>
-import openMCPopup from '../helpers/openMCPopup'
-
 export default {
   name: 'ServicesPage',
   head: {
@@ -211,7 +209,7 @@ export default {
   },
   methods: {
     showPopup() {
-      return openMCPopup()
+      return console.warn('not done yet')
     }
   }
 }

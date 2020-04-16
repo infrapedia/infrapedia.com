@@ -4,37 +4,51 @@
       <h1 class="title capitalize">{{ title }} IXP</h1>
     </header>
     <el-form ref="form" :model="form" :rules="formRules">
-      <el-form-item label="Name">
+      <el-form-item label="Name" prop="name">
         <el-input
           class="w-fit-full"
           v-model="form.name"
           :disabled="isViewMode"
         />
       </el-form-item>
-      <el-form-item label="Long name">
+      <el-form-item label="Long name" prop="nameLong">
         <el-input
           class="w-fit-full"
           v-model="form.nameLong"
           :disabled="isViewMode"
         />
       </el-form-item>
-      <el-form-item label="Policy Email">
+      <el-form-item label="Policy Email" prop="policyEmail">
         <el-input
           class="w-fit-full"
           v-model="form.policyEmail"
           :disabled="isViewMode"
         />
       </el-form-item>
-      <el-form-item label="Policy Phone">
+      <el-form-item label="Policy Phone" prop="policyPhone">
         <el-input
           class="w-fit-full"
           v-model="form.policyPhone"
           :disabled="isViewMode"
         />
       </el-form-item>
-      <el-form-item label="Proto ivp6">
+      <el-form-item label="Tech Phone" prop="techPhone">
+        <el-input
+          class="w-fit-full"
+          v-model="form.techPhone"
+          :disabled="isViewMode"
+        />
+      </el-form-item>
+      <el-form-item label="Tech Email" prop="techEmail">
+        <el-input
+          class="w-fit-full"
+          v-model="form.techEmail"
+          :disabled="isViewMode"
+        />
+      </el-form-item>
+      <el-form-item label="Proto ivp6" prop="proto_ipv6">
         <el-radio-group
-          v-model="form.proto_ivp6"
+          v-model="form.proto_ipv6"
           :disabled="isViewMode"
           class="flex row justify-content-start w-fit-full"
         >
@@ -42,7 +56,7 @@
           <el-radio-button :label="false">No</el-radio-button>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="Proto multicast">
+      <el-form-item label="Proto multicast" prop="proto_multicast">
         <el-radio-group
           v-model="form.proto_multicast"
           :disabled="isViewMode"
@@ -52,7 +66,7 @@
           <el-radio-button :label="false">No</el-radio-button>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="Proto unicast">
+      <el-form-item label="Proto unicast" prop="proto_unicast">
         <el-radio-group
           v-model="form.proto_unicast"
           :disabled="isViewMode"
@@ -62,7 +76,7 @@
           <el-radio-button :label="false">No</el-radio-button>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="Tags" class="mt2">
+      <el-form-item label="Tags" class="mt2" prop="tags">
         <el-select
           v-model="form.tags"
           :disabled="isViewMode"
@@ -87,6 +101,8 @@
           type="primary"
           class="w-fit-full capitalize"
           round
+          :disabled="checkGeomLength"
+          :loading="isSendingData"
           @click="sendData"
         >
           {{ title }} IXP
@@ -103,7 +119,44 @@ export default {
     tag: '',
     inputVisible: false,
     tagsList: [],
-    formRules: {}
+    formRules: {
+      name: [
+        {
+          required: true,
+          message: 'Please input short IXP name',
+          trigger: 'change'
+        },
+        { min: 1, message: 'Length should be at least 1', trigger: 'change' }
+      ],
+      nameLong: [
+        {
+          required: true,
+          message: 'Please input long IXP name',
+          trigger: 'change'
+        },
+        { min: 3, message: 'Length should be at least 3', trigger: 'change' }
+      ],
+      techEmail: [
+        {
+          type: 'email',
+          message: 'Please input correct email address',
+          trigger: ['blur', 'change']
+        }
+      ],
+      policyEmail: [
+        {
+          type: 'email',
+          message: 'Please input correct email address',
+          trigger: ['blur', 'change']
+        }
+      ],
+      proto_ipv6: [],
+      proto_unicast: [],
+      proto_multicast: [],
+      techPhone: [],
+      policyPhone: [],
+      tags: []
+    }
   }),
   props: {
     form: {
@@ -130,12 +183,15 @@ export default {
     isViewMode() {
       return this.mode == 'view'
     },
+    checkGeomLength() {
+      return this.$store.state.editor.scene.features.list.length ? false : true
+    },
     dark() {
       return this.$store.state.isDark
     }
   },
   mounted() {
-    if (this.mode === 'create') {
+    if (this.mode == 'create') {
       setTimeout(() => {
         if (this.$refs.form) {
           this.$refs.form.clearValidate()

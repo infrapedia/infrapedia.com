@@ -101,11 +101,47 @@ export const viewFacilityOwner = async ({ user_id, _id }) => {
   return res
 }
 
-export const editFacility = async ({ user_id }) => {
-  url = `${apiConfig.url}/auth/facilities/edit`
+export const createFacility = async ({
+  user_id,
+  ixps,
+  name,
+  website,
+  geom,
+  tags,
+  t,
+  building,
+  startDate,
+  address
+}) => {
+  url = `${apiConfig.url}/auth/facilities/add`
   form = new FormData()
 
-  const res = await $axios.put(url, form, {
+  form.append('name', name)
+  form.append('website', website)
+  form.append('geom', JSON.stringify(geom))
+  form.append('t', t)
+  form.append('startDate', startDate)
+  form.append('building', building)
+
+  if (ixps.length > 0) {
+    ixps.forEach((ixp, i) => {
+      form.append(`ixp[${i}]`, ixp)
+    })
+  } else form.append('ixps', [])
+
+  if (address.length > 0) {
+    address.forEach((a, i) => {
+      form.append(`address[${i}]`, JSON.stringify(a))
+    })
+  } else form.append('address', [])
+
+  if (tags.length > 0) {
+    tags.forEach((tag, i) => {
+      form.append(`tags[${i}]`, tag)
+    })
+  } else form.append('tags', tags)
+
+  const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
       userid: user_id,
@@ -115,11 +151,55 @@ export const editFacility = async ({ user_id }) => {
   return res
 }
 
-export const createFacility = async ({ user_id }) => {
+export const editFacility = async ({
+  user_id,
+  _id,
+  ixps,
+  name,
+  website,
+  geom,
+  tags,
+  t,
+  building,
+  startDate,
+  status,
+  uDate,
+  address,
+  rgDate
+}) => {
   url = `${apiConfig.url}/auth/facilities/edit`
   form = new FormData()
 
-  const res = await $axios.post(url, form, {
+  form.append('_id', _id)
+  form.append('name', name)
+  form.append('website', website)
+  form.append('geom', JSON.stringify(geom))
+  form.append('t', t)
+  form.append('startDate', startDate)
+  form.append('building', building)
+  form.append('rgDate', rgDate)
+  form.append('uDate', uDate)
+  form.append('status', status)
+
+  if (ixps.length > 0) {
+    ixps.forEach((ixp, i) => {
+      form.append(`ixp[${i}]`, ixp)
+    })
+  } else form.append('ixps', [])
+
+  if (address.length > 0) {
+    address.forEach((a, i) => {
+      form.append(`address[${i}]`, JSON.stringify(a))
+    })
+  } else form.append('address', [])
+
+  if (tags.length > 0) {
+    tags.forEach((tag, i) => {
+      form.append(`tags[${i}]`, tag)
+    })
+  } else form.append('tags', tags)
+
+  const res = await $axios.put(url, form, {
     withCredentials: true,
     headers: {
       userid: user_id,

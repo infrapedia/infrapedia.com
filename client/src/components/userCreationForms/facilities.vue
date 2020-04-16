@@ -4,7 +4,7 @@
       <h1 class="title capitalize">{{ title }} Facility</h1>
     </header>
     <el-form ref="form" :model="form" :rules="formRules">
-      <el-form-item label="Name">
+      <el-form-item label="Name" prop="name">
         <el-input
           class="w-fit-full"
           :class="{ dark }"
@@ -93,15 +93,17 @@
           :class="{ dark }"
           :disabled="isViewMode"
           v-model="form.website"
-          @change="validateURL"
+          @input="validateURL"
         />
-        <el-alert
-          v-if="isURLValid !== null && !isURLValid"
-          title="This url is not valid"
-          type="error"
-          class="mt2 p1"
-          :closable="false"
-        />
+        <el-collapse-transition>
+          <el-alert
+            v-if="isURLValid !== null && !isURLValid"
+            title="This url is not valid"
+            type="error"
+            class="mt2 p1"
+            :closable="false"
+          />
+        </el-collapse-transition>
       </el-form-item>
       <el-form-item label="IXPs">
         <el-select
@@ -193,6 +195,8 @@
           type="primary"
           class="w-fit-full capitalize"
           round
+          :disabled="checkGeomLength"
+          :loading="isSendingData"
           @click="sendData"
         >
           {{ title }} Facility
@@ -251,7 +255,16 @@ export default {
       ],
       address: []
     },
-    formRules: {}
+    formRules: {
+      name: [
+        {
+          required: true,
+          message: 'Please input facility name',
+          trigger: 'change'
+        },
+        { min: 3, message: 'Length should be at least 3', trigger: 'change' }
+      ]
+    }
   }),
   props: {
     form: {
@@ -284,12 +297,15 @@ export default {
     autocompleteAddress() {
       return this.tag ? this.tag.fullAddress : ''
     },
+    checkGeomLength() {
+      return this.$store.state.editor.scene.features.list.length ? false : true
+    },
     tagMode() {
       return this.tagOnEdit !== null && this.tag ? 'edit' : 'create'
     }
   },
   mounted() {
-    if (this.mode === 'create') {
+    if (this.mode == 'create') {
       setTimeout(() => {
         if (this.$refs.form) {
           this.$refs.form.clearValidate()
@@ -310,7 +326,7 @@ export default {
       }
     },
     handleAddressRemove(tag) {
-      this.form.address.splice(this.form.websites.indexOf(tag), 1)
+      this.form.address.splice(this.form.address.indexOf(tag), 1)
     },
     showInput() {
       this.inputVisible = true

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" id="html-wrapper">
   <head>
+    <base href="/" />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
@@ -46,7 +47,7 @@
         enabled. Please enable it to continue.</strong
       >
     </noscript>
-    <div id="app"></div>
+    <div id="app" />
     <script async defer>
       window.NREUM || (NREUM = {}),
         (__nr_require = (function(t, e, n) {
@@ -1726,11 +1727,6 @@
       type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=<%= VUE_APP_GOOGLE_API_KEY %>&libraries=places"
       defer
-    ></script>
-    <script
-      type="text/javascript"
-      src="//downloads.mailchimp.com/js/signup-forms/popup/unique-methods/embed.js"
-      data-dojo-config="usePlainJson: true, isDebug: false"
     ></script>
     <!-- built files will be auto injected -->
   </body>

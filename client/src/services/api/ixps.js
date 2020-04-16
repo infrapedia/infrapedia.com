@@ -101,11 +101,37 @@ export const viewIXPOwner = async ({ user_id, _id }) => {
   return res
 }
 
-export const editIXP = async ({ user_id }) => {
-  url = `${apiConfig.url}/auth/ixps/edit`
+export const createIXP = async ({
+  user_id,
+  name,
+  tags,
+  nameLong,
+  policyEmail,
+  policyPhone,
+  proto_ipv6,
+  geom,
+  proto_multicast,
+  proto_unicast
+}) => {
+  url = `${apiConfig.url}/auth/ixps/add`
   form = new FormData()
 
-  const res = await $axios.put(url, form, {
+  form.append('name', name)
+  form.append('geom', JSON.stringify(geom))
+  form.append('nameLong', nameLong)
+  form.append('policyEmail', policyEmail)
+  form.append('policyPhone', policyPhone)
+  form.append('proto_unicast', proto_unicast)
+  form.append('proto_multicast', proto_multicast)
+  form.append('proto_ipv6', proto_ipv6)
+
+  if (tags.length > 0) {
+    tags.forEach((tag, i) => {
+      form.append(`tags[${i}]`, tag)
+    })
+  } else form.append('tags', tags)
+
+  const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
       userid: user_id,
@@ -115,11 +141,39 @@ export const editIXP = async ({ user_id }) => {
   return res
 }
 
-export const createIXP = async ({ user_id }) => {
+export const editIXP = async ({
+  user_id,
+  name,
+  _id,
+  tags,
+  geom,
+  nameLong,
+  policyEmail,
+  policyPhone,
+  proto_ipv6,
+  proto_multicast,
+  proto_unicast
+}) => {
   url = `${apiConfig.url}/auth/ixps/edit`
   form = new FormData()
 
-  const res = await $axios.post(url, form, {
+  form.append('_id', _id)
+  form.append('name', name)
+  form.append('geom', JSON.stringify(geom))
+  form.append('nameLong', nameLong)
+  form.append('policyEmail', policyEmail)
+  form.append('policyPhone', policyPhone)
+  form.append('proto_unicast', proto_unicast)
+  form.append('proto_multicast', proto_multicast)
+  form.append('proto_ipv6', proto_ipv6)
+
+  if (tags.length > 0) {
+    tags.forEach((tag, i) => {
+      form.append(`tags[${i}]`, tag)
+    })
+  } else form.append('tags', tags)
+
+  const res = await $axios.put(url, form, {
     withCredentials: true,
     headers: {
       userid: user_id,

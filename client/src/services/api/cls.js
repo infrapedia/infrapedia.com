@@ -49,7 +49,7 @@ export const createCls = async ({
   return res
 }
 
-export const editCls = async ({
+export const editCLS = async ({
   name,
   cables,
   geom,

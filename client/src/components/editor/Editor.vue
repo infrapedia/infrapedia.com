@@ -120,7 +120,7 @@ export default {
     },
     async handleFileConverted(fc) {
       if (!fc.features.length) return
-      console.log(fc)
+
       await this.draw.set(fc)
       await this.handleZoomToFeature(fc)
       return await this.$store.dispatch('editor/setList', fc.features)
@@ -198,6 +198,7 @@ export default {
 
       const map = new mapboxgl.Map({
         container: 'map',
+        maxZoom: 17.8,
         zoom: mapConfig.zoom,
         center: mapConfig.center,
         style: mapConfig.default
