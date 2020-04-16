@@ -100,7 +100,6 @@
           </template>
         </el-table-column>
         <el-table-column
-          v-if="tableData.length > 0"
           fixed="right"
           label="Operations"
           :width="canSearch ? 220 : 90"
@@ -110,7 +109,9 @@
               :key="scope.index"
               v-model="tableSearch"
               size="mini"
+              clearable
               @input="$emit('search-input', $event)"
+              @clear="$emit('clear-search-input')"
               placeholder="Type to search by name"
             />
           </template>

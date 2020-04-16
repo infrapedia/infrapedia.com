@@ -65,11 +65,12 @@ export default {
       })
     },
     handleIxpSearch: debounce(async function(s) {
-      this.loading = true
       if (s == '') {
-        return this.getIxpsList()
+        if (!this.loading) await this.getIxpsList()
+        return
       }
 
+      this.loading = true
       const res = await searchIxps({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
         this.tableData = res.data

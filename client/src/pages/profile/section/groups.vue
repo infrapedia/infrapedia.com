@@ -15,6 +15,7 @@
       @search-input="handleNetworkSearch"
       :pagination="true"
       @page-change="getNetworksList"
+      @clear-search-input="getNetworksList"
     />
     <connection-form
       :form="form"
@@ -194,12 +195,12 @@ export default {
       }
     },
     handleNetworkSearch: debounce(async function(s) {
-      this.loading = true
       if (s == '') {
-        await this.getNetworksList()
+        if (!this.loading) await this.getNetworksList()
         return
       }
 
+      this.loading = true
       const res = await searchNetwork({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
         this.tableData = res.data

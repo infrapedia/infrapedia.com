@@ -13,6 +13,7 @@
       @edit-item="handleEditFac"
       @delete-item="handleDeleteFac"
       @page-change="getFacilitiesList"
+      @clear-search-input="getFacilitiesList"
     />
   </div>
 </template>
@@ -65,11 +66,12 @@ export default {
       })
     },
     handleFacsSearch: debounce(async function(s) {
-      this.loading = true
       if (s == '') {
-        return this.getFacilitiesList()
+        if (!this.loading) await this.getFacilitiesList()
+        return
       }
 
+      this.loading = true
       const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
         this.tableData = res.data

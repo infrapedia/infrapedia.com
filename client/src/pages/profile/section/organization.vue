@@ -15,6 +15,7 @@
       :pagination="true"
       @search-input="handleOrgSearch"
       @page-change="getOrganizationsList"
+      @clear-search-input="getOrganizationsList"
     />
     <org-form
       :form="form"
@@ -161,12 +162,12 @@ export default {
       }
     },
     handleOrgSearch: debounce(async function(s) {
-      this.loading = true
       if (s == '') {
-        await this.getOrganizationsList()
+        if (!this.loading) await this.getOrganizationsList()
         return
       }
 
+      this.loading = true
       const res = await searchOrganization({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
         this.tableData = res.data

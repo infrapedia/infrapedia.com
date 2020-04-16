@@ -317,3 +317,25 @@ export const getSubseaCables = async ({ user_id, page }) => {
 
   return res
 }
+
+export const getSearchByCablesS = async ({ user_id, s }) => {
+  const res = await $axios.get(`${apiConfig.url}/cables/search/s?s=${s}`, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const getSearchByCablesT = async ({ user_id, s }) => {
+  const res = await $axios.get(`${apiConfig.url}/cables/search/t?s=${s}`, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
