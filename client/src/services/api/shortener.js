@@ -9,7 +9,7 @@ export const shareLink = async ({ user_id, url }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 

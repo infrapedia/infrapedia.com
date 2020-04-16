@@ -12,7 +12,7 @@ export const uploadOrgLogo = async ({ logo, user_id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res
@@ -27,7 +27,7 @@ export const uploadKmz = async ({ file, user_id }) => {
     headers: {
       userid: user_id,
       'Content-Type': 'multipart/form-data',
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res
@@ -41,7 +41,7 @@ export const kmzLinesToJSON = async ({ link, user_id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res
@@ -55,7 +55,7 @@ export const kmzPointsToJSON = async ({ link, user_id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res
@@ -72,7 +72,7 @@ export const editElemnt = async ({ file, information, user_id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res
