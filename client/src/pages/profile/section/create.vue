@@ -349,6 +349,7 @@ export default {
             tags: [],
             geom: this.featuresList,
             nameLong: '',
+            media: '',
             policyEmail: '',
             policyPhone: '',
             proto_ipv6: false,
@@ -366,7 +367,7 @@ export default {
             ixps: [],
             tags: [],
             t: '',
-            startDate: '',
+            StartDate: '',
             building: ''
           }
           break
@@ -430,8 +431,15 @@ export default {
           this.form.cables = data.cables.map(f => f._id)
           break
         case 'ixps':
+          if (!this.form.media || this.form.media == 'undefined') {
+            this.form.media = ''
+          }
+          if (!this.form.geom || this.form.geom == 'undefined') {
+            this.form.geom = this.featuresList
+          }
           break
         case 'facilities':
+          this.handleFacsEditMode(data)
           break
         default:
           this.handleCablesEditMode(data)
@@ -457,6 +465,14 @@ export default {
         await (this.form.geom = this.$store.state.editor.scene.features.list)
         await bus.$emit(`${EDITOR_LOAD_DRAW}`)
       }
+    },
+    handleFacsEditMode(data) {
+      const facsData = data.ixps.map(f => ({
+        name: f.label,
+        _id: f._id
+      }))
+      this.form.ixpsList = facsData
+      this.form.ixps = facsData
     },
     handleCablesEditMode(data) {
       const facsData = data.facilities.map(f => ({
@@ -598,7 +614,6 @@ export default {
     async createFacility() {
       this.isSendingData = true
 
-      console.log(this.form)
       const res = await createFacility({
         ...this.form,
         user_id: this.$auth.user.sub

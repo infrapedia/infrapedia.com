@@ -755,7 +755,8 @@ export default {
       if (hasToEase) await this.handleFocusOnEasePoints()
       else if (focus && bounds && bounds.length) {
         await map.fitBounds(bounds, {
-          padding: 20
+          padding: 20,
+          zoom: 4
         })
       }
 

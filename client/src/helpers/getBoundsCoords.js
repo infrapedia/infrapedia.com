@@ -1,9 +1,11 @@
 export default function getBoundsCoords(coords) {
-  const mapboxgl = require('mapbox-gl/dist/mapbox-gl')
-  const checkArr = arr => (Array.isArray(arr) ? arr : coords)
+  function getArrayDepth(value) {
+    return Array.isArray(value) ? 1 + Math.max(...value.map(getArrayDepth)) : 0
+  }
 
-  return coords.reduce(
-    (bounds, coord) => bounds.extend(coord),
-    new mapboxgl.LngLatBounds(checkArr(coords[0]), checkArr(coords[0]))
-  )
+  return getArrayDepth(coords) > 2
+    ? [coords.flat(1)[0], coords.flat(1)[parseInt(coords.length - 1)]]
+    : getArrayDepth(coords) >= 1
+    ? [coords, coords]
+    : coords
 }

@@ -18,6 +18,16 @@
           :disabled="isViewMode"
         />
       </el-form-item>
+      <el-form-item label="Media" prop="media">
+        <el-select v-model="form.media" class="w-fit-full" placeholder>
+          <el-option
+            v-for="(opt, i) in mediaOptions"
+            :key="i"
+            :label="opt.label"
+            :value="opt.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="Policy Email" prop="policyEmail">
         <el-input
           class="w-fit-full"
@@ -32,17 +42,17 @@
           :disabled="isViewMode"
         />
       </el-form-item>
-      <el-form-item label="Tech Phone" prop="techPhone">
-        <el-input
-          class="w-fit-full"
-          v-model="form.techPhone"
-          :disabled="isViewMode"
-        />
-      </el-form-item>
       <el-form-item label="Tech Email" prop="techEmail">
         <el-input
           class="w-fit-full"
           v-model="form.techEmail"
+          :disabled="isViewMode"
+        />
+      </el-form-item>
+      <el-form-item label="Tech Phone" prop="techPhone">
+        <el-input
+          class="w-fit-full"
+          v-model="form.techPhone"
           :disabled="isViewMode"
         />
       </el-form-item>
@@ -119,6 +129,16 @@ export default {
     tag: '',
     inputVisible: false,
     tagsList: [],
+    mediaOptions: [
+      {
+        label: 'Ethernet',
+        value: 'ethernet'
+      },
+      {
+        label: 'Multiple',
+        value: 'multiple'
+      }
+    ],
     formRules: {
       name: [
         {
@@ -128,6 +148,7 @@ export default {
         },
         { min: 1, message: 'Length should be at least 1', trigger: 'change' }
       ],
+      media: [],
       nameLong: [
         {
           required: true,

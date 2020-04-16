@@ -162,8 +162,14 @@ export default {
   },
   methods: {
     handleClose() {
-      if (this.form.name === '') {
+      if (this.form.name == '') {
         this.form.name = 'default_' + this.feature.id
+      }
+      if (
+        this.feature.geometry.type.toLowerCase() == 'polygon' &&
+        this.form.height == 0
+      ) {
+        this.form.height = 1
       }
       return this.$emit('close', this.form)
     }

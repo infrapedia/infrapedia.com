@@ -42,33 +42,28 @@ export const dataActions = {
   async getSubseaCableBoundsData({ commit }, data) {
     const res = await viewCableBBox(data)
     if (res && res.data && res.data.r && res.data.r.length) {
-      const coords = res.data.r[0].coordinates
-      const bbox = getBoundsCoords(coords)
-      commit(`${MAP_BOUNDS}`, [bbox._ne, bbox._sw])
+      commit(`${MAP_BOUNDS}`, getBoundsCoords(res.data.r[0].coordinates))
     }
   },
 
   async getClsBoundsData({ commit }, data) {
     const res = await viewClsBBox(data)
     if (res && res.data && res.data.r && res.data.r.length) {
-      const coords = res.data.r[0].coordinates
-      commit(`${MAP_BOUNDS}`, [coords, coords])
+      commit(`${MAP_BOUNDS}`, getBoundsCoords(res.data.r[0].coordinates))
     }
   },
 
   async getFacilityBoundsData({ commit }, data) {
     const res = await viewFacilityBBox(data)
     if (res && res.data && res.data.r && res.data.r.length) {
-      const coords = res.data.r[0].coordinates
-      commit(`${MAP_BOUNDS}`, [coords, coords])
+      commit(`${MAP_BOUNDS}`, getBoundsCoords(res.data.r[0].coordinates))
     }
   },
 
   async getIxpsBoundsData({ commit }, data) {
     const res = await viewIxpsBBox(data)
     if (res && res.data && res.data.r && res.data.r.length) {
-      const coords = res.data.r[0].coordinates
-      commit(`${MAP_BOUNDS}`, [coords, coords])
+      commit(`${MAP_BOUNDS}`, getBoundsCoords(res.data.r[0].coordinates))
     }
   },
 
@@ -82,9 +77,10 @@ export const dataActions = {
       res.data.r.features &&
       res.data.r.features.length
     ) {
-      const coords = res.data.r.features[0].geometry.coordinates
-      const bbox = getBoundsCoords(coords)
-      commit(`${MAP_BOUNDS}`, bbox)
+      commit(
+        `${MAP_BOUNDS}`,
+        getBoundsCoords(res.data.r.features[0].geometry.coordinates)
+      )
     }
     return res
   },
@@ -98,9 +94,10 @@ export const dataActions = {
       res.data.r.features &&
       res.data.r.features.length
     ) {
-      const coords = res.data.r.features[0].geometry.coordinates
-      const bbox = getBoundsCoords(coords)
-      commit(`${MAP_BOUNDS}`, bbox)
+      commit(
+        `${MAP_BOUNDS}`,
+        getBoundsCoords(res.data.r.features[0].geometry.coordinates)
+      )
     }
     return res
   },

@@ -1,5 +1,6 @@
 import $axios from '../axios'
 import apiConfig from '../../config/apiConfig'
+import { fCollectionFormat } from '../../helpers/featureCollection'
 
 // eslint-disable-next-line
 var url
@@ -110,6 +111,9 @@ export const createIXP = async ({
   policyPhone,
   proto_ipv6,
   geom,
+  techPhone,
+  techEmail,
+  media,
   proto_multicast,
   proto_unicast
 }) => {
@@ -117,13 +121,16 @@ export const createIXP = async ({
   form = new FormData()
 
   form.append('name', name)
-  form.append('geom', JSON.stringify(geom))
+  form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   form.append('nameLong', nameLong)
   form.append('policyEmail', policyEmail)
   form.append('policyPhone', policyPhone)
   form.append('proto_unicast', proto_unicast)
   form.append('proto_multicast', proto_multicast)
   form.append('proto_ipv6', proto_ipv6)
+  form.append('techEmail', techEmail)
+  form.append('techPhone', techPhone)
+  form.append('media', media)
 
   if (tags.length > 0) {
     tags.forEach((tag, i) => {
@@ -151,6 +158,9 @@ export const editIXP = async ({
   policyEmail,
   policyPhone,
   proto_ipv6,
+  techPhone,
+  techEmail,
+  media,
   proto_multicast,
   proto_unicast
 }) => {
@@ -159,13 +169,16 @@ export const editIXP = async ({
 
   form.append('_id', _id)
   form.append('name', name)
-  form.append('geom', JSON.stringify(geom))
+  form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   form.append('nameLong', nameLong)
   form.append('policyEmail', policyEmail)
   form.append('policyPhone', policyPhone)
   form.append('proto_unicast', proto_unicast)
   form.append('proto_multicast', proto_multicast)
   form.append('proto_ipv6', proto_ipv6)
+  form.append('techEmail', techEmail)
+  form.append('techPhone', techPhone)
+  form.append('media', media)
 
   if (tags.length > 0) {
     tags.forEach((tag, i) => {

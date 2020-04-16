@@ -1,5 +1,6 @@
 import $axios from '../axios'
 import apiConfig from '../../config/apiConfig'
+import { fCollectionFormat } from '../../helpers/featureCollection'
 
 // eslint-disable-next-line
 var url
@@ -118,14 +119,14 @@ export const createFacility = async ({
 
   form.append('name', name)
   form.append('website', website)
-  form.append('geom', JSON.stringify(geom))
+  form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   form.append('t', t)
   form.append('startDate', startDate)
   form.append('building', building)
 
   if (ixps.length > 0) {
     ixps.forEach((ixp, i) => {
-      form.append(`ixp[${i}]`, ixp)
+      form.append(`ixps[${i}]`, ixp._id)
     })
   } else form.append('ixps', [])
 
@@ -161,11 +162,8 @@ export const editFacility = async ({
   tags,
   t,
   building,
-  startDate,
-  status,
-  uDate,
-  address,
-  rgDate
+  StartDate,
+  address
 }) => {
   url = `${apiConfig.url}/auth/facilities/edit`
   form = new FormData()
@@ -173,17 +171,14 @@ export const editFacility = async ({
   form.append('_id', _id)
   form.append('name', name)
   form.append('website', website)
-  form.append('geom', JSON.stringify(geom))
+  form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   form.append('t', t)
-  form.append('startDate', startDate)
+  form.append('StartDate', StartDate)
   form.append('building', building)
-  form.append('rgDate', rgDate)
-  form.append('uDate', uDate)
-  form.append('status', status)
 
   if (ixps.length > 0) {
     ixps.forEach((ixp, i) => {
-      form.append(`ixp[${i}]`, ixp)
+      form.append(`ixps[${i}]`, ixp._id)
     })
   } else form.append('ixps', [])
 

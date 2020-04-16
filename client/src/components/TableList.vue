@@ -99,44 +99,55 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="Operations" width="120">
+        <el-table-column fixed="right" label="Operations" width="220">
+          <template v-if="canSearch" slot="header" slot-scope="scope">
+            <el-input
+              :key="scope.index"
+              v-model="tableSearch"
+              size="mini"
+              @input="$emit('search-input')"
+              placeholder="Type to search by name"
+            />
+          </template>
           <template slot-scope="scope">
-            <el-button
-              v-if="canEdit"
-              plain
-              size="small"
-              class="p2 mr4 fs-regular"
-              @click="$emit('edit-item', scope.row._id)"
-            >
-              <fa :icon="['fas', 'pen']" />
-            </el-button>
-            <el-button
-              v-if="canView"
-              plain
-              size="small"
-              class="p2 mr4 fs-regular"
-              @click="$emit('view-item', scope.row._id)"
-            >
-              <fa :icon="['fas', 'eye']" />
-            </el-button>
-            <el-button
-              v-if="canDelete"
-              type="danger"
-              class="p2 fs-regular"
-              size="small"
-              @click="
-                $emit(
-                  'delete-item',
-                  scope.row.idReport
-                    ? scope.row.idReport
-                    : scope.row.idMessage
-                    ? scope.row.idMessage
-                    : scope.row._id
-                )
-              "
-            >
-              <fa :icon="deleteIcon" />
-            </el-button>
+            <div class="flex row nowrap justify-content-center">
+              <el-button
+                v-if="canEdit"
+                plain
+                size="small"
+                class="p2 mr4 fs-regular"
+                @click="$emit('edit-item', scope.row._id)"
+              >
+                <fa :icon="['fas', 'pen']" />
+              </el-button>
+              <el-button
+                v-if="canView"
+                plain
+                size="small"
+                class="p2 mr4 fs-regular"
+                @click="$emit('view-item', scope.row._id)"
+              >
+                <fa :icon="['fas', 'eye']" />
+              </el-button>
+              <el-button
+                v-if="canDelete"
+                type="danger"
+                class="p2 fs-regular"
+                size="small"
+                @click="
+                  $emit(
+                    'delete-item',
+                    scope.row.idReport
+                      ? scope.row.idReport
+                      : scope.row.idMessage
+                      ? scope.row.idMessage
+                      : scope.row._id
+                  )
+                "
+              >
+                <fa :icon="deleteIcon" />
+              </el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -181,6 +192,10 @@ export default {
       type: Boolean,
       default: () => true
     },
+    canSearch: {
+      type: Boolean,
+      default: () => true
+    },
     isLoading: {
       type: Boolean,
       default: () => false
@@ -215,6 +230,7 @@ export default {
   },
   data: () => ({
     formatDate,
+    tableSearch: '',
     paginationPage: 0
   }),
   methods: {
