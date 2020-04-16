@@ -318,8 +318,13 @@ export const getSubseaCables = async ({ user_id, page }) => {
   return res
 }
 
-export const getSearchByCablesS = async ({ user_id, s }) => {
-  const res = await $axios.get(`${apiConfig.url}/cables/search/s?s=${s}`, {
+export const getSearchByCablesS = async ({ user_id, s, psz }) => {
+  url = `${apiConfig.url}/cables/search/s?s=${s}`
+  if (psz) {
+    url = url + '&psz=1'
+  }
+
+  const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
       userid: user_id,
@@ -329,8 +334,13 @@ export const getSearchByCablesS = async ({ user_id, s }) => {
   return res
 }
 
-export const getSearchByCablesT = async ({ user_id, s }) => {
-  const res = await $axios.get(`${apiConfig.url}/cables/search/t?s=${s}`, {
+export const getSearchByCablesT = async ({ user_id, s, psz }) => {
+  url = `${apiConfig.url}/cables/search/t?s=${s}`
+  if (psz) {
+    url = url + '&psz=1'
+  }
+
+  const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
       userid: user_id,

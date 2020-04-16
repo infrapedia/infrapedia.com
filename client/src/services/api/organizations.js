@@ -124,8 +124,11 @@ export const viewOrganization = async ({ user_id, _id }) => {
   return res
 }
 
-export const searchOrganization = async ({ user_id, s }) => {
+export const searchOrganization = async ({ user_id, s, psz }) => {
   url = `${apiConfig.url}/organization/search?s=${s}`
+  if (psz) {
+    url = url + '&psz=1'
+  }
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {

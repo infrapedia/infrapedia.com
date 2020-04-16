@@ -6,8 +6,11 @@ import { fCollectionFormat } from '../../helpers/featureCollection'
 var url
 var form
 
-export const searchIxps = async ({ s, user_id }) => {
+export const searchIxps = async ({ s, user_id, psz }) => {
   url = `${apiConfig.url}/auth/ixps/search?s=${s}`
+  if (psz) {
+    url = url + '&psz=1'
+  }
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {

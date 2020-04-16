@@ -97,7 +97,11 @@ export default {
         return
       }
 
-      const res = await searchCls({ user_id: this.$auth.user.sub, s })
+      const res = await searchCls({
+        user_id: this.$auth.user.sub,
+        psz: true,
+        s
+      })
       if (res && res.data) {
         this.tableData = res.data
       }

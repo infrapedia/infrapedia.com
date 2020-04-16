@@ -168,7 +168,11 @@ export default {
       }
 
       this.loading = true
-      const res = await searchOrganization({ user_id: this.$auth.user.sub, s })
+      const res = await searchOrganization({
+        user_id: this.$auth.user.sub,
+        psz: true,
+        s
+      })
       if (res && res.data) {
         this.tableData = res.data
       }

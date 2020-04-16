@@ -156,8 +156,11 @@ export const viewClsBBox = async ({ user_id, _id }) => {
   return res
 }
 
-export const searchCls = async ({ user_id, s }) => {
+export const searchCls = async ({ user_id, s, psz }) => {
   url = `${apiConfig.url}/cls/search?s=${s}`
+  if (psz) {
+    url = url + '&psz=1'
+  }
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
