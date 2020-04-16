@@ -9,9 +9,10 @@
       :config="tableConfig"
       :table-data="tableData"
       :pagination="true"
+      @search-input="handleIxpSearch"
       @edit-item="handleEditIxp"
-      @delete-item="handleDeleteIxp"
       @page-change="getIxpsList"
+      @delete-item="handleDeleteIXP"
     />
   </div>
 </template>
@@ -19,7 +20,8 @@
 <script>
 import { ixpsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { getIxps } from '../../../services/api/ixps'
+import { getIxps, searchIxps } from '../../../services/api/ixps'
+import debounce from '../../../helpers/debounce'
 
 export default {
   name: 'IxpsSection',
@@ -62,7 +64,19 @@ export default {
         query: { id: 'ixps', item: _id }
       })
     },
-    handleDeleteIxp() {}
+    handleIxpSearch: debounce(async function(s) {
+      this.loading = true
+      if (s == '') {
+        return this.getIxpsList()
+      }
+
+      const res = await searchIxps({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.tableData = res.data
+      }
+      this.loading = false
+    }, 820),
+    handleDeleteIXP() {}
   }
 }
 </script>

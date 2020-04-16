@@ -424,11 +424,7 @@ export default {
     async handleEditModeSettings(data) {
       switch (this.creationType) {
         case 'cls':
-          this.form.cablesList = data.cables.map(f => ({
-            name: f.label,
-            _id: f._id
-          }))
-          this.form.cables = data.cables.map(f => f._id)
+          this.handleCLSEditMode(data)
           break
         case 'ixps':
           if (!this.form.media || this.form.media == 'undefined') {
@@ -464,6 +460,17 @@ export default {
         await this.$store.dispatch('editor/setList', features)
         await (this.form.geom = this.$store.state.editor.scene.features.list)
         await bus.$emit(`${EDITOR_LOAD_DRAW}`)
+      }
+    },
+    handleCLSEditMode(data) {
+      const clsData = data.cables.map(f => ({
+        name: f.label,
+        _id: f._id
+      }))
+      this.form.cablesList = clsData
+      this.form.cables = clsData
+      if (this.form.state == 'null' || this.form.state == 'undefined') {
+        this.form.state = 'unknown'
       }
     },
     handleFacsEditMode(data) {

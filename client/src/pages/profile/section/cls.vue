@@ -11,6 +11,7 @@
       @edit-item="handleEditCLS"
       @delete-item="handleDeleteCLS"
       @alert-message="handleSendMessage"
+      @search-input="handleCLSSearch"
       :pagination="true"
       @page-change="getClssList"
       :row-classes="['state', 'light-yellow-bg', 'false']"
@@ -21,12 +22,13 @@
 <script>
 import { clsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { getClss, deleteCls } from '../../../services/api/cls'
+import { getClss, deleteCls, searchCls } from '../../../services/api/cls'
 import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
 import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
+import debounce from '../../../helpers/debounce'
 
 export default {
-  name: 'CablesSection',
+  name: 'ClsSection',
   components: {
     TableList
   },
@@ -86,7 +88,20 @@ export default {
           }).then(() => this.getClssList())
         })
         .catch(() => {})
-    }
+    },
+    handleCLSSearch: debounce(async function(s) {
+      this.loading = true
+      if (s == '') {
+        await this.getClssList()
+        return
+      }
+
+      const res = await searchCls({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.tableData = res.data
+      }
+      this.loading = false
+    }, 820)
   }
 }
 </script>

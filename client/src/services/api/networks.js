@@ -204,3 +204,15 @@ export const viewNetwork = async ({ user_id, _id }) => {
   })
   return res
 }
+
+export const searchNetwork = async ({ user_id, s }) => {
+  url = `${apiConfig.url}/network/search?s=${s}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: apiConfig.bearer()
+    }
+  })
+  return res
+}

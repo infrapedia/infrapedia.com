@@ -12,7 +12,7 @@ import SubseaCablesSection from '../pages/profile/section/subsea-cables.vue'
 import IssuesSection from '../pages/profile/section/issues.vue'
 import AlertsSection from '../pages/profile/section/alerts.vue'
 import ChangePassword from '../pages/profile/recover-password.vue'
-import ConnectionsSection from '../pages/profile/section/connections.vue'
+import Groups from '../pages/profile/section/groups.vue'
 import OrgsSection from '../pages/profile/section/organization.vue'
 import MyIssuesSection from '../pages/profile/section/myissues.vue'
 import FacilitiesSection from '../pages/profile/section/facilities.vue'
@@ -125,8 +125,8 @@ const routes = [
   },
   {
     path: '/user/section/groups',
-    name: 'user/networks-section',
-    component: ConnectionsSection
+    name: 'user/groups-section',
+    component: Groups
   },
   {
     path: '/user/section/issues',

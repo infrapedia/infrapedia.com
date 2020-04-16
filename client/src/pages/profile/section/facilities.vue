@@ -9,6 +9,7 @@
       :config="tableConfig"
       :table-data="tableData"
       :pagination="true"
+      @search-input="handleFacsSearch"
       @edit-item="handleEditFac"
       @delete-item="handleDeleteFac"
       @page-change="getFacilitiesList"
@@ -19,7 +20,8 @@
 <script>
 import { facsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { getFacilities } from '../../../services/api/facs'
+import { getFacilities, searchFacilities } from '../../../services/api/facs'
+import debounce from '../../../helpers/debounce'
 
 export default {
   name: 'FacilitiesSection',
@@ -48,13 +50,6 @@ export default {
     await this.getFacilitiesList()
   },
   methods: {
-    handleEditFac(_id) {
-      return this.$router.push({
-        path: '/user/section/create',
-        query: { id: 'facilities', item: _id }
-      })
-    },
-    handleDeleteFac() {},
     async getFacilitiesList(page = 0) {
       this.loading = true
       const res = await getFacilities({ user_id: this.$auth.user.sub, page })
@@ -62,7 +57,26 @@ export default {
         this.tableData = res.data.r
       }
       this.loading = false
-    }
+    },
+    handleEditFac(_id) {
+      return this.$router.push({
+        path: '/user/section/create',
+        query: { id: 'facilities', item: _id }
+      })
+    },
+    handleFacsSearch: debounce(async function(s) {
+      this.loading = true
+      if (s == '') {
+        return this.getFacilitiesList()
+      }
+
+      const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.tableData = res.data
+      }
+      this.loading = false
+    }, 820),
+    handleDeleteFac() {}
   }
 }
 </script>
