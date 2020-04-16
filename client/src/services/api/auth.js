@@ -1,4 +1,5 @@
 import $axios from '../axios'
+import apiConfig from '../../config/apiConfig'
 
 const url = `https://${process.env.VUE_APP_AUTH0_DOMAIN}/api/v2/`
 const defaultOptions = {
@@ -24,15 +25,12 @@ export const getAccessToken = async () => {
 export const getUserData = async id => {
   if (!id) return
 
-  const token = await getAccessToken()
-  if (token && token.access_token) {
-    const res = await $axios.get(`${url}users/${id}`, {
-      headers: {
-        Authorization: 'Bearer ' + token.access_token
-      }
-    })
-    return res
-  }
+  const res = await $axios.get(`${url}users/${id}`, {
+    headers: {
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
 }
 
 export const updateUserData = async (data, user, isPassword) => {

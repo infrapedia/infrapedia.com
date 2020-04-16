@@ -1,7 +1,6 @@
 export const providers = [
   {
-    img:
-      'https://cdn.auth0.com/manhattan/versions/1.1118.0/assets/logos/mandrill/mandrill-logo.svg',
+    img: 'https://cdn1.infrapedia.com/logos/mandrill-logo.svg',
     value: 'mandrill'
   }
   // {
