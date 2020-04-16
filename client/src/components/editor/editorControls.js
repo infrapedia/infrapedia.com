@@ -146,6 +146,7 @@ class EditorControls {
   updateControls(scene = this.scene) {
     const isCreation = scene.creation || scene.edition
     const isEdition = !scene.creation || !scene.edition
+    const lineStringAllowed = ['map', 'subsea', 'terrestrial-network']
 
     if (isCreation) {
       this.buttons.ok.style.setProperty('display', 'block')
@@ -175,7 +176,7 @@ class EditorControls {
         this.buttons.point.style.setProperty('display', 'none')
       }
 
-      if (this.type != 'cls' && this.type != 'ixps') {
+      if (lineStringAllowed.includes(this.type)) {
         this.buttons.line_string.style.setProperty('display', 'block')
       } else {
         this.buttons.line_string.style.setProperty('display', 'none')
@@ -235,12 +236,17 @@ class EditorControls {
     const { features } = this.scene
 
     if (features && features.selected.length) {
-      if (this.type === 'cls' && this.scene.features.list.length) return
-      else {
-        return await this.handleBeforeFeatureCreation({
-          ...features.selected[0]
-        })
+      const onlyOneFeatureAllowed = ['cls', 'ixps']
+      if (
+        onlyOneFeatureAllowed.includes(this.type) &&
+        this.scene.features.list.length > 0
+      ) {
+        return
       }
+
+      return await this.handleBeforeFeatureCreation({
+        ...features.selected[0]
+      })
     } else return
   }
   /**

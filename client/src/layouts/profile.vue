@@ -93,6 +93,8 @@ import profileLinks from '../config/profileLinks'
 import profileTourSteps from '../config/profileTourSteps'
 import * as navbarEvents from '../events/navbar'
 import { bus } from '../helpers/eventBus'
+import { setCookie } from '../helpers/cookies'
+import { getAccessToken } from '../services/api/auth'
 
 const TOUR_DONE_KEY = '__is-profile-tour-done'
 
@@ -118,7 +120,7 @@ export default {
       return this.$store.state.isDark
     }
   },
-  mounted() {
+  async mounted() {
     const isTourDoneAlready = window.localStorage.getItem(TOUR_DONE_KEY)
     if (
       !isTourDoneAlready ||
@@ -127,12 +129,22 @@ export default {
       this.$tours['profile-tour'].start()
     }
 
+    if (this.$auth.isAuthenticated) {
+      await this.setToken()
+    }
+
     bus.$on(
       `${navbarEvents.TOGGLE_MOBILE_DRAWER_PROFILE}`,
       this.handleToggleMobileProfileDrawer
     )
   },
   methods: {
+    async setToken() {
+      const token = await getAccessToken()
+      if (token) {
+        setCookie('auth.token-session', token.access_token, 20)
+      }
+    },
     handleToggleMobileProfileDrawer() {
       this.isMobileProfileDrawer = !this.isMobileProfileDrawer
     },

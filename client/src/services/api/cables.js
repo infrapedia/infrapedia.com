@@ -80,7 +80,7 @@ export const createCable = async ({
     headers: {
       userid: user_id,
       'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -164,7 +164,7 @@ export const editCable = async ({
     headers: {
       userid: user_id,
       'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -177,7 +177,7 @@ export const getCables = async ({ user_id, page }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -190,7 +190,7 @@ export const getCablesShortList = async ({ user_id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -203,7 +203,7 @@ export const deleteCable = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -216,7 +216,7 @@ export const viewCableOwner = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res
@@ -228,7 +228,7 @@ export const viewCable = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res
@@ -240,7 +240,7 @@ export const viewCableBBox = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res
@@ -252,7 +252,7 @@ export const searchCables = async ({ user_id, s }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res
@@ -264,7 +264,7 @@ export const getCableGeom = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -285,7 +285,7 @@ export const getCablesGeom = async ({ user_id, ids }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -298,7 +298,7 @@ export const getTerrestrialNetworks = async ({ user_id, page }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -311,9 +311,41 @@ export const getSubseaCables = async ({ user_id, page }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
+  return res
+}
+
+export const getSearchByCablesS = async ({ user_id, s, psz }) => {
+  url = `${apiConfig.url}/cables/search/s?s=${s}`
+  if (psz) {
+    url = url + '&psz=1'
+  }
+
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const getSearchByCablesT = async ({ user_id, s, psz }) => {
+  url = `${apiConfig.url}/cables/search/t?s=${s}`
+  if (psz) {
+    url = url + '&psz=1'
+  }
+
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
   return res
 }

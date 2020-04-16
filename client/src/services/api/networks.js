@@ -73,7 +73,7 @@ export const createNetwork = async ({
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -149,7 +149,7 @@ export const editNetwork = async ({
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -162,7 +162,7 @@ export const getNetworks = async ({ user_id, page }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res
@@ -174,7 +174,7 @@ export const deleteNetwork = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -187,7 +187,7 @@ export const viewNetworkOwner = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res
@@ -199,7 +199,22 @@ export const viewNetwork = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const searchNetwork = async ({ user_id, s, psz }) => {
+  url = `${apiConfig.url}/network/search?s=${s}`
+  if (psz) {
+    url = url + '&psz=1'
+  }
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res

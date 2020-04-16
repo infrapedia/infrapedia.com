@@ -1,17 +1,21 @@
 import $axios from '../axios'
 import apiConfig from '../../config/apiConfig'
+import { fCollectionFormat } from '../../helpers/featureCollection'
 
 // eslint-disable-next-line
 var url
 var form
 
-export const searchIxps = async ({ s, user_id }) => {
+export const searchIxps = async ({ s, user_id, psz }) => {
   url = `${apiConfig.url}/auth/ixps/search?s=${s}`
+  if (psz) {
+    url = url + '&psz=1'
+  }
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -24,7 +28,7 @@ export const viewIxps = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res
@@ -36,7 +40,7 @@ export const viewIxpsBBox = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res
@@ -48,7 +52,7 @@ export const getIxpsGeom = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -69,7 +73,7 @@ export const getIxpsGeoms = async ({ user_id, ids }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -82,7 +86,7 @@ export const getIxps = async ({ user_id, page }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -95,35 +99,101 @@ export const viewIXPOwner = async ({ user_id, _id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res
 }
 
-export const editIXP = async ({ user_id }) => {
-  url = `${apiConfig.url}/auth/ixps/edit`
+export const createIXP = async ({
+  user_id,
+  name,
+  tags,
+  nameLong,
+  policyEmail,
+  policyPhone,
+  proto_ipv6,
+  geom,
+  techPhone,
+  techEmail,
+  media,
+  proto_multicast,
+  proto_unicast
+}) => {
+  url = `${apiConfig.url}/auth/ixps/add`
   form = new FormData()
 
-  const res = await $axios.put(url, form, {
-    withCredentials: true,
-    headers: {
-      userid: user_id,
-      Authorization: apiConfig.bearer()
-    }
-  })
-  return res
-}
+  form.append('name', name)
+  form.append('geom', JSON.stringify(fCollectionFormat(geom)))
+  form.append('nameLong', nameLong)
+  form.append('policyEmail', policyEmail)
+  form.append('policyPhone', policyPhone)
+  form.append('proto_unicast', proto_unicast)
+  form.append('proto_multicast', proto_multicast)
+  form.append('proto_ipv6', proto_ipv6)
+  form.append('techEmail', techEmail)
+  form.append('techPhone', techPhone)
+  form.append('media', media)
 
-export const createIXP = async ({ user_id }) => {
-  url = `${apiConfig.url}/auth/ixps/edit`
-  form = new FormData()
+  if (tags.length > 0) {
+    tags.forEach((tag, i) => {
+      form.append(`tags[${i}]`, tag)
+    })
+  } else form.append('tags', tags)
 
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const editIXP = async ({
+  user_id,
+  name,
+  _id,
+  tags,
+  geom,
+  nameLong,
+  policyEmail,
+  policyPhone,
+  proto_ipv6,
+  techPhone,
+  techEmail,
+  media,
+  proto_multicast,
+  proto_unicast
+}) => {
+  url = `${apiConfig.url}/auth/ixps/edit`
+  form = new FormData()
+
+  form.append('_id', _id)
+  form.append('name', name)
+  form.append('geom', JSON.stringify(fCollectionFormat(geom)))
+  form.append('nameLong', nameLong)
+  form.append('policyEmail', policyEmail)
+  form.append('policyPhone', policyPhone)
+  form.append('proto_unicast', proto_unicast)
+  form.append('proto_multicast', proto_multicast)
+  form.append('proto_ipv6', proto_ipv6)
+  form.append('techEmail', techEmail)
+  form.append('techPhone', techPhone)
+  form.append('media', media)
+
+  if (tags.length > 0) {
+    tags.forEach((tag, i) => {
+      form.append(`tags[${i}]`, tag)
+    })
+  } else form.append('tags', tags)
+
+  const res = await $axios.put(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res

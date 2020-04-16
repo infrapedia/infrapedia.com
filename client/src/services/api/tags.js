@@ -10,7 +10,7 @@ export const getTags = async ({ user_id, s }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res

@@ -9,14 +9,10 @@
       :config="tableConfig"
       :table-data="tableData"
       :pagination="true"
-      :can-create="false"
-      :can-edit="false"
-      :can-delete="false"
-      :can-view="true"
-      @view-item="handleViewItem"
+      @search-input="handleIxpSearch"
       @edit-item="handleEditIxp"
-      @delete-item="handleDeleteIxp"
       @page-change="getIxpsList"
+      @delete-item="handleDeleteIXP"
     />
   </div>
 </template>
@@ -24,7 +20,8 @@
 <script>
 import { ixpsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { getIxps } from '../../../services/api/ixps'
+import { getIxps, searchIxps } from '../../../services/api/ixps'
+import debounce from '../../../helpers/debounce'
 
 export default {
   name: 'IxpsSection',
@@ -36,7 +33,7 @@ export default {
     loading: false,
     tableConfig: {
       title: 'IXPs',
-      creation_link: '/user/section/create?id=ixp',
+      creation_link: '/user/section/create?id=ixps',
       btn_label: 'Create IXPs'
     },
     columns: [...ixpsColumns].filter(col => col.showTable)
@@ -67,13 +64,24 @@ export default {
         query: { id: 'ixps', item: _id }
       })
     },
-    handleViewItem(_id) {
-      return this.$router.push({
-        path: '/user/section/create',
-        query: { id: 'ixps', item: _id }
+    handleIxpSearch: debounce(async function(s) {
+      if (s == '') {
+        if (!this.loading) await this.getIxpsList()
+        return
+      }
+
+      this.loading = true
+      const res = await searchIxps({
+        user_id: this.$auth.user.sub,
+        psz: true,
+        s
       })
-    },
-    handleDeleteIxp() {}
+      if (res && res.data) {
+        this.tableData = res.data
+      }
+      this.loading = false
+    }, 820),
+    handleDeleteIXP() {}
   }
 }
 </script>

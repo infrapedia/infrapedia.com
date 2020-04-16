@@ -11,6 +11,7 @@
       :can-view="true"
       :can-create="true"
       :table-data="tableData"
+      :can-search="false"
       @view-item="viewSelectedMessage"
       @delete-item="deleteIssues"
       :row-classes="['status', 'light-yellow-bg', 'false']"

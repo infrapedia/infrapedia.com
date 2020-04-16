@@ -12,8 +12,10 @@
       @edit-item="viewNet"
       @delete-item="deleteNet"
       @alert-message="handleSendMessage"
+      @search-input="handleNetworkSearch"
       :pagination="true"
       @page-change="getNetworksList"
+      @clear-search-input="getNetworksList"
     />
     <connection-form
       :form="form"
@@ -33,14 +35,16 @@ import {
   getNetworks,
   deleteNetwork,
   editNetwork,
-  viewNetworkOwner
+  viewNetworkOwner,
+  searchNetwork
 } from '../../../services/api/networks'
 import { netColumns } from '../../../config/columns'
 import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
 import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
+import debounce from '../../../helpers/debounce'
 
 export default {
-  name: 'CablesSection',
+  name: 'ConnectionSection',
   components: {
     TableList,
     ConnectionForm
@@ -189,7 +193,24 @@ export default {
         this.toggleDialog(true)
         this.getNetworksList()
       }
-    }
+    },
+    handleNetworkSearch: debounce(async function(s) {
+      if (s == '') {
+        if (!this.loading) await this.getNetworksList()
+        return
+      }
+
+      this.loading = true
+      const res = await searchNetwork({
+        user_id: this.$auth.user.sub,
+        psz: true,
+        s
+      })
+      if (res && res.data) {
+        this.tableData = res.data
+      }
+      this.loading = false
+    }, 820)
   }
 }
 </script>

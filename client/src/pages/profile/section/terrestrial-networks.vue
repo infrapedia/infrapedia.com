@@ -12,7 +12,9 @@
       @delete-item="handleDeleteCable"
       @alert-message="handleSendMessage"
       :pagination="true"
+      @search-input="handleTerrestrialSearch"
       @page-change="getCablesList"
+      @clear-search-input="getCablesList"
     />
   </div>
 </template>
@@ -22,10 +24,12 @@ import { cablesColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
 import {
   getTerrestrialNetworks,
-  deleteCable
+  deleteCable,
+  getSearchByCablesT
 } from '../../../services/api/cables'
 import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
 import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
+import debounce from '../../../helpers/debounce'
 
 export default {
   name: 'CablesSection',
@@ -93,7 +97,24 @@ export default {
           }).then(() => this.getCablesList())
         })
         .catch(() => {})
-    }
+    },
+    handleTerrestrialSearch: debounce(async function(s) {
+      if (s == '') {
+        if (!this.loading) await this.getCablesList()
+        return
+      }
+
+      this.loading = true
+      const res = await getSearchByCablesT({
+        user_id: this.$auth.user.sub,
+        psz: true,
+        s
+      })
+      if (res && res.data) {
+        this.tableData = res.data
+      }
+      this.loading = false
+    }, 820)
   }
 }
 </script>

@@ -4,7 +4,7 @@
       <h1 class="title capitalize">{{ title }} Facility</h1>
     </header>
     <el-form ref="form" :model="form" :rules="formRules">
-      <el-form-item label="Name">
+      <el-form-item label="Name" prop="name">
         <el-input
           class="w-fit-full"
           :class="{ dark }"
@@ -93,33 +93,28 @@
           :class="{ dark }"
           :disabled="isViewMode"
           v-model="form.website"
-          @change="validateURL"
+          @input="validateURL"
         />
-        <el-alert
-          v-if="isURLValid !== null && !isURLValid"
-          title="This url is not valid"
-          type="error"
-          class="mt2 p1"
-          :closable="false"
-        />
+        <el-collapse-transition>
+          <el-alert
+            v-if="isURLValid !== null && !isURLValid"
+            title="This url is not valid"
+            type="error"
+            class="mt2 p1"
+            :closable="false"
+          />
+        </el-collapse-transition>
       </el-form-item>
       <el-form-item label="IXPs">
-        <el-select
-          v-model="form.ixps"
-          class="w-fit-full"
-          :class="{ dark }"
-          multiple
-          filterable
-          :disabled="isViewMode"
-          placeholder
-        >
-          <el-option
-            v-for="(opt, i) in ixpsList"
-            :key="i"
-            :label="opt.label"
-            :value="opt.value"
-          />
-        </el-select>
+        <v-multi-select
+          :mode="mode"
+          :options="ixpsList"
+          @input="loadIXpsSearch"
+          :loading="isLoadingIXPs"
+          :value="mode === 'create' ? [] : [...form.ixps]"
+          @values-change="handleIxpsSelectChange"
+          @remove="handleIxpsSelectRemoveItem"
+        />
       </el-form-item>
       <el-form-item label="Tags" class="mt2">
         <el-select
@@ -162,7 +157,7 @@
       <el-form-item label="Ready For Service (RFS)">
         <el-date-picker
           class="inline-block w-fit-full-imp"
-          v-model="form.startDate"
+          v-model="form.StartDate"
           type="year"
           :class="{ dark }"
           :disabled="isViewMode"
@@ -193,6 +188,8 @@
           type="primary"
           class="w-fit-full capitalize"
           round
+          :disabled="checkGeomLength"
+          :loading="isSendingData"
           @click="sendData"
         >
           {{ title }} Facility
@@ -210,11 +207,14 @@ import {
 } from '../../config/facilitiesTypes'
 import { getTags } from '../../services/api/tags'
 import AutocompleteGoogle from '../../components/AutocompleteGoogle'
+import { searchIxps } from '../../services/api/ixps'
+import VMultiSelect from '../../components/MultiSelect'
 
 export default {
   name: 'FacsForm',
   components: {
-    AutocompleteGoogle
+    AutocompleteGoogle,
+    VMultiSelect
   },
   data: () => ({
     tag: {
@@ -234,6 +234,7 @@ export default {
     inputVisible: false,
     tagsList: [],
     addressList: [],
+    isLoadingIXPs: false,
     ixpsList: [],
     tagRules: {
       reference: [
@@ -251,7 +252,16 @@ export default {
       ],
       address: []
     },
-    formRules: {}
+    formRules: {
+      name: [
+        {
+          required: true,
+          message: 'Please input facility name',
+          trigger: 'change'
+        },
+        { min: 3, message: 'Length should be at least 3', trigger: 'change' }
+      ]
+    }
   }),
   props: {
     form: {
@@ -284,12 +294,22 @@ export default {
     autocompleteAddress() {
       return this.tag ? this.tag.fullAddress : ''
     },
+    checkGeomLength() {
+      return this.$store.state.editor.scene.features.list.length ? false : true
+    },
     tagMode() {
       return this.tagOnEdit !== null && this.tag ? 'edit' : 'create'
     }
   },
+  watch: {
+    'form.ixpsList'(ixps) {
+      if (!ixps) return
+      this.ixpsList = [...ixps]
+      delete this.form.ixpsList
+    }
+  },
   mounted() {
-    if (this.mode === 'create') {
+    if (this.mode == 'create') {
       setTimeout(() => {
         if (this.$refs.form) {
           this.$refs.form.clearValidate()
@@ -303,6 +323,23 @@ export default {
         isValid ? this.$emit('send-data') : false
       )
     },
+    async loadIXpsSearch(s) {
+      if (s == '') return
+
+      this.isLoadingIXPs = true
+      const res = await searchIxps({ user_id: this.$auth.user.sub, s })
+      if (res && res.data) {
+        this.ixpsList = res.data
+      }
+
+      this.isLoadingIXPs = false
+    },
+    handleIxpsSelectChange(data) {
+      this.form.ixps = Array.from(data)
+    },
+    handleIxpsSelectRemoveItem(_id) {
+      this.form.ixps = this.form.ixps.filter(item => item._id != _id)
+    },
     async getTagsList(s) {
       const res = await getTags({ user_id: this.$auth.user.sub, s })
       if (res && res.data) {
@@ -310,7 +347,7 @@ export default {
       }
     },
     handleAddressRemove(tag) {
-      this.form.address.splice(this.form.websites.indexOf(tag), 1)
+      this.form.address.splice(this.form.address.indexOf(tag), 1)
     },
     showInput() {
       this.inputVisible = true

@@ -13,7 +13,9 @@
       @delete-item="deleteOrg"
       @alert-message="handleSendMessage"
       :pagination="true"
+      @search-input="handleOrgSearch"
       @page-change="getOrganizationsList"
+      @clear-search-input="getOrganizationsList"
     />
     <org-form
       :form="form"
@@ -33,11 +35,13 @@ import {
   getOrganizations,
   deleteOrganization,
   editOrganization,
-  viewOrganizationOwner
+  viewOrganizationOwner,
+  searchOrganization
 } from '../../../services/api/organizations'
 import { orgsColumns } from '../../../config/columns'
 import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
 import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
+import debounce from '../../../helpers/debounce'
 
 export default {
   name: 'CablesSection',
@@ -156,7 +160,24 @@ export default {
         this.toggleDialog(true)
         this.getOrganizationsList()
       }
-    }
+    },
+    handleOrgSearch: debounce(async function(s) {
+      if (s == '') {
+        if (!this.loading) await this.getOrganizationsList()
+        return
+      }
+
+      this.loading = true
+      const res = await searchOrganization({
+        user_id: this.$auth.user.sub,
+        psz: true,
+        s
+      })
+      if (res && res.data) {
+        this.tableData = res.data
+      }
+      this.loading = false
+    }, 820)
   }
 }
 </script>

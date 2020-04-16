@@ -11,7 +11,7 @@ export const usersLogs = async ({ user_id }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
 
@@ -30,7 +30,7 @@ export const verifyElement = async ({ user_id, type, elemnt, email }) => {
     withCredentials: true,
     headers: {
       userid: user_id,
-      Authorization: apiConfig.bearer()
+      Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
   return res

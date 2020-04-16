@@ -38,7 +38,8 @@ import {
 } from '../store/actionTypes'
 import { disableAlert } from '../services/api/alerts'
 import Sidebar from '../components/Sidebar.vue'
-import { checkCookie, setCookie } from '../helpers/cookies'
+import { setCookie } from '../helpers/cookies'
+import { getAccessToken } from '../services/api/auth'
 
 export default {
   components: {
@@ -59,18 +60,16 @@ export default {
     openEditDialog: false
   }),
   async mounted() {
-    if (
-      this.$auth &&
-      this.$auth.isAuthenticated &&
-      checkCookie('auth0.is.authenticated')
-    ) {
+    if (this.$auth.isAuthenticated) {
       await this.setToken()
     }
   },
   methods: {
     async setToken() {
-      const token = await this.$auth.getIdTokenClaims()
-      if (token) setCookie('auth.token-session', token.__raw, 20)
+      const token = await getAccessToken()
+      if (token) {
+        setCookie('auth.token-session', token.access_token, 20)
+      }
     },
     openBuyDialog(option) {
       this.$store.commit(`${BUY_TYPE}`, { title: option })

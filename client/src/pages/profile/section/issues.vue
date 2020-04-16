@@ -10,6 +10,7 @@
       :config="issuesConf"
       :table-data="tableData"
       :can-view="true"
+      :can-search="false"
       @view-item="viewSelectedIssue"
       @delete-item="deleteIssues"
       :row-classes="['viewed', 'light-yellow-bg', 'true']"

@@ -338,16 +338,33 @@ export default {
 
       let message
 
-      if (this.dialogTitle.toLowerCase() !== 'backbone') {
-        message =
-          data.message !== ''
-            ? data.message
-            : `Hi, ${data.fullname} (${data.email})
-          , you asked to buy an amount of ${data.capacity} for ${data.cable}(${data.type})`
-      } else if (
+      message =
+        data.message != ''
+          ? `
+            <p style="font-size: 16px; color: #323232;"> Hi, ${
+              data.fullname
+            } (${data.email}) sent you a message: </p>
+            <br />
+            <p style="font-size: 16px; color: #323232; text-transform: capitalize;"> ${
+              data.message
+            } </p>
+            <br />
+            <p style="font-size: 16px; color: #323232;"> AI: asked to buy an amount of ${
+              data.capacity ? data.capacity : data.totalRack + ' rack total'
+            } for ${data.cable}(${data.type}) </p>`
+          : `
+            <p style="font-size: 16px; color: #323232;"> Hi, ${
+              data.fullname
+            } (${data.email}) </p>
+            <br />
+            <p style="font-size: 16px; color: #323232;"> AI: asked to buy an amount of ${
+              data.capacity ? data.capacity : data.totalRack + ' rack total'
+            } for ${data.cable}(${data.type}) </p>`
+
+      if (
         data.address.pointA &&
         data.address.pointB &&
-        this.dialogTitle.toLowerCase() === 'backbone'
+        this.dialogTitle.toLowerCase() == 'backbone'
       ) {
         let zipcodeA = ''
         let zipcodeB = ''
@@ -365,20 +382,40 @@ export default {
         }
 
         message =
-          data.message !== ''
-            ? `${data.message} from pointA ${data.address.pointA.fullAddress}${
-                zipcodeA && zipcodeA !== '' ? '(' + zipcodeA + ')' : ''
+          data.message != ''
+            ? `
+            <p style="font-size: 16px; color: #323232;"> Hi, ${
+              data.fullname
+            } (${data.email}) sent you a message: </p>
+            <br />
+            <p style="font-size: 16px; color: #323232; text-transform: capitalize;"> ${
+              data.message
+            } </p>
+            <br />
+            <p style="font-size: 16px; color: #323232;"> AI: asked to buy an amount of ${
+              data.capacity ? data.capacity : data.totalRack + ' rack total'
+            } for ${data.cable}(${data.type}). From pointA ${
+                data.address.pointA.fullAddress
+              }${
+                zipcodeA && zipcodeA != '' ? '(' + zipcodeA + ')' : ''
               } to pointB ${data.address.pointB.fullAddress}${
-                zipcodeB && zipcodeB !== '' ? '(' + zipcodeB + ')' : ''
-              }`
-            : `Hi, ${data.fullname} (${data.email})
-          , you asked to buy an amount of ${data.capacity} for ${data.cable}(${
-                data.type
-              }) from pointA ${data.address.pointA.fullAddress}${
-                zipcodeA && zipcodeA !== '' ? '(' + zipcodeA + ')' : ''
+                zipcodeB && zipcodeB != '' ? '(' + zipcodeB + ')' : ''
+              } </p>`
+            : `
+              <p style="font-size: 16px; color: #323232;"> Hi, ${
+                data.fullname
+              } (${data.email}) </p>
+              <br />
+              <p style="font-size: 16px; color: #323232;"> AI: asked to buy an amount of ${
+                data.capacity ? data.capacity : data.totalRack + ' rack total'
+              } for ${data.cable}(${data.type}). From pointA ${
+                data.address.pointA.fullAddress
+              }${
+                zipcodeA && zipcodeA != '' ? '(' + zipcodeA + ')' : ''
               } to pointB ${data.address.pointB.fullAddress}${
-                zipcodeB && zipcodeB !== '' ? '(' + zipcodeB + ')' : ''
-              }`
+                zipcodeB && zipcodeB != '' ? '(' + zipcodeB + ')' : ''
+              }</p>
+              `
       }
 
       const res = await sendMessage({
