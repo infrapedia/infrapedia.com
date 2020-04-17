@@ -12,7 +12,7 @@
       :class="{ dark, light: !dark }"
       class="drawer-wrapper"
     >
-      <div class="w-full">
+      <div class="inner-wrapper">
         <header
           class="h14 pr4 pl4 pb2 flex justify-content-space-between align-items-center"
           :class="{ dark, light: !dark }"
@@ -33,7 +33,7 @@
               v-if="i === 0"
               :key="i"
               :to="checkIfLoggedIn"
-              class="el-button no-border w-fit-full text-left transparent p4 mr4 underline-hover"
+              class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
             >
               {{ link.label }}
             </router-link>
@@ -41,23 +41,19 @@
               v-else
               :key="i"
               :to="link.url"
-              class="el-button no-border w-fit-full text-left transparent p4 mr4 underline-hover"
+              class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
             >
               {{ link.label }}
             </router-link>
           </li>
         </ul>
-        <div class="text-center mt12">
-          <el-divider inset />
+        <div class="text-center mt12 w80" id="sponsors-wrapper">
+          <el-divider />
           <h2 class="m0 mb10">
             Sponsors
           </h2>
           <ul role="list">
-            <li
-              class="inline-block relative"
-              data-no-outline="true"
-              role="listitem"
-            >
+            <li class="block relative" data-no-outline="true" role="listitem">
               <div class="list-item" data-no-hover-bg="true">
                 <a href="https://www.catchpoint.com" target="_blank">
                   <el-image
@@ -72,7 +68,7 @@
             </li>
 
             <li
-              class="inline-block relative mt8"
+              class="block relative mt8"
               data-no-outline="true"
               role="listitem"
             >
