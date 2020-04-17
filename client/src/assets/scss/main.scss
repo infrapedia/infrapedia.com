@@ -88,6 +88,9 @@ h1 {
     width: 2rem;
     right: 0;
   }
+  @media screen and (max-width: 320px) and (max-height: 580px) {
+    bottom: 10.2rem !important;
+  }
 }
 .mapboxgl-ctrl-group > button {
   color: inherit;

@@ -47,7 +47,7 @@
             <a
               href="https://www.infrapedia.com/blog"
               target="_blank"
-              class="no-underline inherit color-inherit p4 mr4 ml4 inline-block"
+              class="no-underline inherit color-inherit p4 mr4 inline-block"
             >
               Blog
             </a>
@@ -57,7 +57,7 @@
           <div class="no-selectable">
             <router-link
               to="/contact"
-              class="no-underline inherit color-inherit p4 mr4 ml4 inline-block"
+              class="no-underline inherit color-inherit p4 mr4 inline-block"
             >
               Contact us
             </router-link>
