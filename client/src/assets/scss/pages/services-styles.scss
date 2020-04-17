@@ -38,6 +38,9 @@
         .title {
           @extend .transition-all;
         }
+        @media screen and (max-width: $break-xs) {
+          flex-wrap: wrap;
+        }
       }
       &:hover {
         .title,
@@ -57,7 +60,7 @@
     .services-wrapper {
       .inner-wrapper {
         padding: 1rem;
-        width: 16.4rem;
+        width: 12rem;
         .el-card {
           padding: 1rem;
           min-width: auto;

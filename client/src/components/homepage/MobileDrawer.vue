@@ -28,14 +28,23 @@
           </span>
         </header>
         <ul role="list">
-          <li v-for="(item, i) in links" :key="i" role="listitem">
-            <el-button
-              plain
-              class="no-border pt4 pb4 w-fit-full text-left transparent"
-              @click="goToRoute(item.url)"
+          <li v-for="(link, i) in links" :key="i" role="listitem">
+            <router-link
+              v-if="i === 0"
+              :key="i"
+              :to="checkIfLoggedIn"
+              class="el-button no-border w-fit-full text-left transparent p4 mr4 underline-hover"
             >
-              {{ item.label }}
-            </el-button>
+              {{ link.label }}
+            </router-link>
+            <router-link
+              v-else
+              :key="i"
+              :to="link.url"
+              class="el-button no-border w-fit-full text-left transparent p4 mr4 underline-hover"
+            >
+              {{ link.label }}
+            </router-link>
           </li>
         </ul>
         <div class="text-center mt12">
@@ -109,7 +118,7 @@ export default {
       },
       {
         label: 'Sponsorships',
-        url: '/sponsorships'
+        url: '/sponsors'
       }
     ]
   }),
@@ -119,9 +128,19 @@ export default {
       required: true
     }
   },
+  watch: {
+    '$route.path'(path) {
+      if (path) {
+        this.toggleVisibility()
+      }
+    }
+  },
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    checkIfLoggedIn() {
+      return this.$auth.isAuthenticated ? '/app' : '/'
     },
     imageURL() {
       return this.dark
