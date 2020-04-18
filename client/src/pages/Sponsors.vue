@@ -248,6 +248,9 @@ export default {
           'custom maps, fiber optics maps, internet infrastructure map, live map, consulting, data center, sponsorship, ads, telecommunications'
       }
     ]
+  },
+  beforeCreate() {
+    this.$emit('layout', 'landing-layout')
   }
 }
 </script>
