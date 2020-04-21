@@ -10,7 +10,6 @@ export const createOrganization = async ({
   notes,
   link,
   address,
-  url,
   information,
   user_id
 }) => {
