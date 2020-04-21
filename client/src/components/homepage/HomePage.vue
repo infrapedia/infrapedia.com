@@ -213,7 +213,7 @@ export default {
     },
     async loadBlogPosts() {
       const res = await getBlogPosts()
-      if (res && !res.toString().includes('Error')) this.blogPosts = res
+      if (res && res.status) this.blogPosts = res
     },
     askToRegister() {
       this.$parent.$emit('layout', 'nothing-layout')
