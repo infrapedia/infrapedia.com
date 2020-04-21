@@ -57,7 +57,7 @@ export default {
       name: '',
       logo: '',
       notes: '',
-      url: '',
+      link: '',
       address: [],
       information: ''
     },
@@ -124,7 +124,7 @@ export default {
           name: '',
           logo: '',
           notes: '',
-          url: '',
+          link: '',
           address: [],
           information: ''
         }
