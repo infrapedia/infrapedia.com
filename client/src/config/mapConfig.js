@@ -8,7 +8,9 @@ const cls = 'cls'
 const ixps = 'ixps'
 const clusters = 'clusters'
 const facilities = 'facilities'
-const facilitiesClusters = 'facilities_clusters'
+// const facilitiesCount = 'facilities-count'
+// const facilitiesSinglePoints = 'facilities-single-points'
+// const facilitiesClusters = 'facilities_clusters'
 const facilitiesLabel = 'facilities_label'
 const currentEpoch = Math.round(new Date().getTime() / 1000)
 
@@ -27,7 +29,15 @@ export const mapConfig = {
   cablesLabel,
   cablesHighlight,
   facilitiesLabel,
-  facilitiesClusters,
+  // facilitiesCount,
+  // facilitiesClusters,
+  // facilitiesSinglePoints,
+  // highlightFeatureState: [
+  //   'case',
+  //   ['boolean', ['feature-state', 'highlight'], true],
+  //   '#F7D079',
+  //   '#7288b0'
+  // ],
   data: {
     sources: [
       {
@@ -51,17 +61,17 @@ export const mapConfig = {
           data: `${process.env.VUE_APP_TILES_FACILITIES}`
         }
       },
-      {
-        name: facilitiesClusters,
-        opts: {
-          type: 'geojson',
-          data: `${process.env.VUE_APP_TILES_FACS_CLUSTERS}`,
-          cluster: true,
-          maxzoom: 12,
-          clusterRadius: 50,
-          clusterMaxZoom: 14
-        }
-      },
+      // {
+      //   name: facilitiesClusters,
+      //   opts: {
+      //     type: 'geojson',
+      //     data: `${process.env.VUE_APP_TILES_FACS_CLUSTERS}`,
+      //     cluster: true,
+      //     maxzoom: 12,
+      //     clusterRadius: 50,
+      //     clusterMaxZoom: 14
+      //   }
+      // },
       {
         name: cls,
         opts: {
@@ -194,56 +204,56 @@ export const mapConfig = {
           'text-halo-width': 0.75
         }
       },
-      {
-        id: facilitiesClusters,
-        type: 'circle',
-        source: facilitiesClusters,
-        maxzoom: 14,
-        filter: ['has', 'point_count'],
-        paint: {
-          'circle-color': [
-            'step',
-            ['get', 'point_count'],
-            '#51bbd6',
-            100,
-            '#f1f075',
-            750,
-            '#f28cb1'
-          ],
-          'circle-radius': [
-            'step',
-            ['get', 'point_count'],
-            20,
-            100,
-            30,
-            750,
-            40
-          ]
-        }
-      },
-      {
-        id: 'facilities-count',
-        type: 'symbol',
-        source: facilitiesClusters,
-        maxzoom: 14,
-        filter: ['has', 'point_count'],
-        layout: {
-          'text-field': '{point_count_abbreviated}',
-          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-          'text-size': 12
-        }
-      },
-      {
-        id: 'facilities-single-points',
-        type: 'circle',
-        maxzoom: 14,
-        source: facilitiesClusters,
-        filter: ['!', ['has', 'point_count']],
-        paint: {
-          'circle-color': '#2196f3',
-          'circle-radius': 10
-        }
-      },
+      // {
+      //   id: facilitiesClusters,
+      //   type: 'circle',
+      //   source: facilitiesClusters,
+      //   maxzoom: 14,
+      //   filter: ['has', 'point_count'],
+      //   paint: {
+      //     'circle-color': [
+      //       'step',
+      //       ['get', 'point_count'],
+      //       '#51bbd6',
+      //       100,
+      //       '#f1f075',
+      //       750,
+      //       '#f28cb1'
+      //     ],
+      //     'circle-radius': [
+      //       'step',
+      //       ['get', 'point_count'],
+      //       20,
+      //       100,
+      //       30,
+      //       750,
+      //       40
+      //     ]
+      //   }
+      // },
+      // {
+      //   id: facilitiesCount,
+      //   type: 'symbol',
+      //   source: facilitiesClusters,
+      //   maxzoom: 14,
+      //   filter: ['has', 'point_count'],
+      //   layout: {
+      //     'text-field': '{point_count_abbreviated}',
+      //     'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+      //     'text-size': 12
+      //   }
+      // },
+      // {
+      //   id: facilitiesSinglePoints,
+      //   type: 'circle',
+      //   maxzoom: 14,
+      //   source: facilitiesClusters,
+      //   filter: ['!', ['has', 'point_count']],
+      //   paint: {
+      //     'circle-color': '#2196f3',
+      //     'circle-radius': 10
+      //   }
+      // },
       {
         id: ixps,
         type: 'circle',

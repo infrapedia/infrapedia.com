@@ -304,11 +304,11 @@ export default {
         segment: prop.segment
       }
 
-      const facsClusters = this.map.queryRenderedFeatures(e.point, {
-        layers: [mapConfig.facilitiesClusters]
-      })
+      // const facsClusters = this.map.queryRenderedFeatures(e.point, {
+      //   layers: [mapConfig.facilitiesClusters]
+      // })
 
-      if (facsClusters.length > 0) return
+      // if (facsClusters.length > 0) return
 
       let str = `<div class="cable-name dark-color"><b>${this.mapTooltip.name}</b></div>`
 
@@ -415,9 +415,9 @@ export default {
         const clusters = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.clusters]
         })
-        const facsClusters = this.map.queryRenderedFeatures(e.point, {
-          layers: [mapConfig.facilitiesClusters]
-        })
+        // const facsClusters = this.map.queryRenderedFeatures(e.point, {
+        //   layers: [mapConfig.facilitiesClusters]
+        // })
 
         // If in the region selected there is a point or a building
         // Call the api to retrieve that facility data and open the sidebar
@@ -439,10 +439,11 @@ export default {
           })
         }
 
-        if (clusters.length > 0 || facsClusters.length > 0) {
-          const data = clusters.length > 0 ? clusters : facsClusters
+        // || facsClusters.length > 0
+        if (clusters.length > 0) {
+          // const data = clusters.length > 0 ? clusters : facsClusters
           return await this.handleClustersSelection(
-            data,
+            clusters,
             this.map,
             clusters.length > 0
               ? mapConfig.clusters
@@ -521,8 +522,8 @@ export default {
      * @param bool { Boolean } - If it opens the sidebar
      * @param cables { Object } [{ properties: { cable_id: String } }]
      */
-    async handleCablesSelection(bool, cables) {
-      switch (bool) {
+    async handleCablesSelection(opensSidebar, cables) {
+      switch (opensSidebar) {
         case true:
           // Change sidebar mode back to cable in case is on data_centers mode
           await this.changeSidebarMode(-1)
@@ -619,36 +620,28 @@ export default {
       this.disableCableHighlight(false)
     },
     toggleDarkMode() {
-      const map = this.map
-
       this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
-
       const style = this.dark ? mapConfig.darkBasemap : mapConfig.default
-      // If I dont' remove this events it will throw some errors at the console
 
       const loadStyles = () => {
-        if (!map.loaded()) return
+        if (!this.map.loaded()) return
 
-        this.addMapSources(map)
-        // if (this.$store.state.isLocating) {
-        //   this.isLocationZoomIn = false
-        //   this.geolocateUser()
-        // }
+        this.addMapSources(this.map)
         if (this.focus && this.focus.type.toLowerCase() === 'cable') {
           this.handleCablesSelection(true, [
             { properties: { _id: this.focus.id } }
           ])
         }
-        map.off('render', loadStyles)
+        this.map.off('render', loadStyles)
       }
 
       const switchStyles = style => {
-        map.setStyle(style)
-        map.on('render', loadStyles)
+        this.map.setStyle(style)
+        this.map.on('render', loadStyles)
       }
 
       // We have to remove the filter cause if not it will only draw the filtered cable
-      map.setFilter(mapConfig.cableTerrestrialHighlight, ['all'])
+      this.map.setFilter(mapConfig.cableTerrestrialHighlight, ['all'])
       this.$store.commit(`${CURRENT_MAP_FILTER}`, ['all'])
       switchStyles(style)
     },
