@@ -220,7 +220,7 @@ export default {
 
       this.isBadge = true
       const res = await shareLink({
-        url: this.$route.path + getCookie(queryCookieName),
+        url: window.origin + this.$route.path + getCookie(queryCookieName),
         user_id: this.$auth.user.sub
       })
       if (res && res.data && res.data.r) {

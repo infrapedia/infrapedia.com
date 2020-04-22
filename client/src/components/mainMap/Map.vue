@@ -736,7 +736,7 @@ export default {
         window.localStorage.removeItem('__easePointData')
         deleteCookie(queryCookieName)
         if (this.$route.query.sharedView) {
-          this.$router.replace(this.$route.path)
+          this.$router.replace(this.$route.fullPath)
         }
       }
     },
