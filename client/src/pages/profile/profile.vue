@@ -165,16 +165,7 @@ export default {
     this.$emit('layout', 'profile-layout')
   },
   async created() {
-    if (Object.keys(this.$route.query).length) {
-      await this.$router.replace('/user/profile')
-    }
     await this.setUserData()
-  },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      if (Object.keys(vm.$route.query).length)
-        vm.$router.replace('/user/profile')
-    })
   },
   methods: {
     goToRoute() {

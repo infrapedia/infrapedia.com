@@ -90,54 +90,42 @@ export default {
     loadDataIfQueryParamsExist: debounce(function() {
       setTimeout(() => {
         if (window.localStorage.getItem('__easePointData')) {
-          const {
-            id,
-            type,
-            zoom,
-            swLng,
-            swLat,
-            neLat,
-            neLng,
-            pitch,
-            bearing,
-            centerLat,
-            centerLng,
-            hasToEase
-          } = JSON.parse(window.localStorage.getItem('__easePointData'))
+          const query = JSON.parse(
+            window.localStorage.getItem('__easePointData')
+          )
 
           // If all this query params exist we can assume it's a view sharing
           // So we need to save the easePoint on the store
           if (
-            swLat &&
-            neLat &&
-            neLng &&
-            swLng &&
-            zoom &&
-            bearing &&
-            pitch &&
-            centerLat &&
-            centerLng &&
-            hasToEase === 'true'
+            query.swLat &&
+            query.neLat &&
+            query.neLng &&
+            query.swLng &&
+            query.zoom &&
+            query.bearing &&
+            query.pitch &&
+            query.centerLat &&
+            query.centerLng &&
+            query.sharedView == 'true'
           ) {
             this.$store.commit(`${EASE_POINT}`, {
               center: [
-                [neLng, neLat],
-                [swLng, swLat]
+                [query.neLng, query.neLat],
+                [query.swLng, query.swLat]
               ],
-              cameraCenter: [centerLng, centerLat],
-              hasToEase: true,
-              bearing,
-              pitch,
-              zoom
+              cameraCenter: [query.centerLng, query.centerLat],
+              bearing: query.bearing,
+              pitch: query.pitch,
+              zoom: query.zoom,
+              hasToEase: true
             })
           }
 
           // If there is there is no id or nor type only ease to the coordinates point
           // Otherwise if only cable and type exist we open the sidebar and not ease
-          // console.log(id, type)
-          !id || !type
+          !query.id || !query.type
             ? bus.$emit(`${FOCUS_ON_CITY}`)
-            : this.handleItemListSelection({ option: type, id })
+            : this.handleItemListSelection({ option: query.type, id: query.id })
         }
       }, 1000)
     }, 2200)

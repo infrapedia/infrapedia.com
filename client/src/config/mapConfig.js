@@ -14,7 +14,8 @@ const currentEpoch = Math.round(new Date().getTime() / 1000)
 
 export const mapConfig = {
   mapToken: token,
-  default: 'mapbox://styles/networkatlas/cjt4y5k77443z1fmfu2pfbcuu',
+  default:
+    'mapbox://styles/networkatlas/cjt4y5k77443z1fmfu2pfbcuu?optimize=true',
   darkBasemap: 'mapbox://styles/mapbox/dark-v10',
   zoom: 1.75,
   center: [-34.292, 27.57],
@@ -88,6 +89,7 @@ export const mapConfig = {
         source: cables,
         'source-layer': cables,
         type: 'line',
+        maxzoom: 20,
         paint: {
           'line-width': 1.62,
           'line-color': [
@@ -115,6 +117,7 @@ export const mapConfig = {
         source: 'cables',
         'source-layer': 'cables',
         type: 'symbol',
+        minzoom: 2.89,
         layout: {
           'text-field': '{name}',
           'symbol-placement': 'line',
@@ -177,6 +180,7 @@ export const mapConfig = {
         id: facilitiesLabel,
         type: 'symbol',
         source: facilities,
+        minzoom: 13.89,
         layout: {
           'text-field': ['to-string', ['get', 'address']],
           'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Regular'],
@@ -277,6 +281,7 @@ export const mapConfig = {
         id: 'cluster-count',
         type: 'symbol',
         source: clusters,
+        maxzoom: 14,
         filter: ['has', 'point_count'],
         layout: {
           'text-field': '{point_count_abbreviated}',

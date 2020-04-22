@@ -107,6 +107,8 @@ import boundsChange from './boundsChange'
 import highlightCurrentCable from './highlightCable'
 import disableCurrentHighlight from './disableHighlight'
 import GooeyMenu from './GooeyMenu'
+import { deleteCookie } from '../../helpers/cookies'
+import { queryCookieName } from '../../config/sharedViewCookieName'
 
 export default {
   name: 'Map',
@@ -431,9 +433,7 @@ export default {
           })
         }
 
-        if (cables.length > 0) {
-          await this.handleCablesSelection(!!cables.length, cables)
-        } else if (clusters.length > 0 || facsClusters.length > 0) {
+        if (clusters.length > 0 || facsClusters.length > 0) {
           const data = clusters.length > 0 ? clusters : facsClusters
           return await this.handleClustersSelection(
             data,
@@ -442,11 +442,12 @@ export default {
               ? mapConfig.clusters
               : mapConfig.facilitiesClusters
           )
+        } else if (cables.length > 0) {
+          await this.handleCablesSelection(!!cables.length, cables)
         } else if (
           facilities.length <= 0 &&
           ixps.length <= 0 &&
-          cls.length <= 0 &&
-          clusters.length <= 0
+          cls.length <= 0
         ) {
           // Clearing clusters source in case there was something previously selected
           try {
@@ -730,6 +731,14 @@ export default {
         case 'networks':
           await this.handleNetworkFocus(id, fc)
           break
+      }
+
+      if (window.localStorage.getItem('__easePointData')) {
+        window.localStorage.removeItem('__easePointData')
+        deleteCookie(queryCookieName)
+        if (this.$route.query.sharedView) {
+          this.$router.replace(this.$route.path)
+        }
       }
     },
     async handleCityFocus() {
