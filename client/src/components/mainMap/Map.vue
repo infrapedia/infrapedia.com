@@ -157,7 +157,7 @@ export default {
     bus.$on(REMOVE_QUERY_ROUTE_REPLACE, this.handleRemoveQueryRouteReplacer)
 
     if (this.dark) this.map.setStyle(mapConfig.darkBasemap)
-    this.handlePreviouslySelected()
+    if (this.currentSelection && this.focus) this.handlePreviouslySelected()
   },
   methods: {
     ...mapActions({
@@ -392,9 +392,6 @@ export default {
       if (this.isDrawing) return
 
       if (this.$auth.isAuthenticated) {
-        // const cablesTerrestrial = this.map.queryRenderedFeatures(e.point, {
-        //   layers: [mapConfig.cableTerrestrial]
-        // })
         const cables = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.cables]
         })
@@ -410,36 +407,46 @@ export default {
         const clusters = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.clusters]
         })
+        const facsClusters = this.map.queryRenderedFeatures(e.point, {
+          layers: [mapConfig.facilitiesClusters]
+        })
 
         // If in the region selected there is a point or a building
         // Call the api to retrieve that facility data and open the sidebar
 
-        if (facilities.length) {
+        if (facilities.length > 0) {
           await this.handleFacilitySelection({
             id: facilities[0].properties._id,
             type: 'facilities'
           })
-        } else if (ixps.length) {
+        } else if (ixps.length > 0) {
           await this.handleIxpsSelection({
             id: facilities[0].properties._id,
             type: 'ixps'
           })
-        } else if (cls.length) {
+        } else if (cls.length > 0) {
           await this.handleClsSelection({
             id: cls[0].properties._id,
             type: 'ixps'
           })
         }
 
-        if (cables.length) {
+        if (cables.length > 0) {
           await this.handleCablesSelection(!!cables.length, cables)
-        } else if (clusters.length) {
-          await this.handleClustersSelection(clusters, this.map)
+        } else if (clusters.length > 0 || facsClusters.length > 0) {
+          const data = clusters.length > 0 ? clusters : facsClusters
+          return await this.handleClustersSelection(
+            data,
+            this.map,
+            clusters.length > 0
+              ? mapConfig.clusters
+              : mapConfig.facilitiesClusters
+          )
         } else if (
-          !facilities.length &&
-          !ixps.length &&
-          !cls.length &&
-          !clusters.length
+          facilities.length <= 0 &&
+          ixps.length <= 0 &&
+          cls.length <= 0 &&
+          clusters.length <= 0
         ) {
           // Clearing clusters source in case there was something previously selected
           try {
@@ -471,7 +478,6 @@ export default {
         this.map.flyTo({
           center: mapConfig.center,
           zoom: mapConfig.zoom,
-          easing: t => t,
           speed: 1.8,
           curve: 1
         })
@@ -529,10 +535,10 @@ export default {
      * @param clusters { Array }
      * @param map { Object } Mapbox map - Object reference (ie: this.map)
      */
-    async handleClustersSelection(clusters, map) {
+    async handleClustersSelection(clusters, map, sourceName) {
       if (!map) return
       await map
-        .getSource(mapConfig.clusters)
+        .getSource(sourceName)
         .getClusterExpansionZoom(clusters[0].properties.cluster_id, function(
           err,
           zoom
@@ -913,11 +919,7 @@ export default {
       await this.$store.commit(`${CURRENT_MAP_FILTER}`, filter)
     },
     handlePreviouslySelected: debounce(function() {
-      if (!this.currentSelection || !this.focus) return
-
-      if (this.map.loaded()) {
-        return this.handleFocusOn({ id: this.focus.id, type: this.focus.type })
-      }
+      if (this.map.loaded()) this.handleFocusOn(this.focus)
     }, 1200),
     handleRemoveQueryRouteReplacer() {
       return this.map.off('render', this.handleBoundsChange)
