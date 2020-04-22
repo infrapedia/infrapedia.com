@@ -47,6 +47,7 @@ export const mapConfig = {
         name: facilities,
         opts: {
           type: 'geojson',
+          minzoom: 14,
           data: `${process.env.VUE_APP_TILES_FACILITIES}`
         }
       },
@@ -54,11 +55,9 @@ export const mapConfig = {
         name: facilitiesClusters,
         opts: {
           type: 'geojson',
-          data: {
-            type: 'FeatureCollection',
-            features: []
-          },
+          data: `${process.env.VUE_APP_TILES_FACS_CLUSTERS}`,
           cluster: true,
+          maxzoom: 12,
           clusterRadius: 50,
           clusterMaxZoom: 14
         }
@@ -224,6 +223,7 @@ export const mapConfig = {
       {
         id: 'facilities-count',
         type: 'symbol',
+        maxzoom: 15,
         source: facilitiesClusters,
         filter: ['has', 'point_count'],
         layout: {
@@ -236,7 +236,7 @@ export const mapConfig = {
         id: 'facilities-single-points',
         type: 'circle',
         source: facilitiesClusters,
-        maxzoom: 17,
+        maxzoom: 15,
         filter: ['!', ['has', 'point_count']],
         paint: {
           'circle-color': '#2196f3',

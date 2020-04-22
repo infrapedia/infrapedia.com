@@ -107,7 +107,6 @@ import boundsChange from './boundsChange'
 import highlightCurrentCable from './highlightCable'
 import disableCurrentHighlight from './disableHighlight'
 import GooeyMenu from './GooeyMenu'
-import loadFacsClustersData from '../../helpers/loadFacsClustersData'
 
 export default {
   name: 'Map',
@@ -226,7 +225,6 @@ export default {
       let vm = this
       map.on('load', function() {
         vm.addMapSources(map)
-        loadFacsClustersData(map)
       })
       return map
     },
@@ -437,7 +435,13 @@ export default {
           await this.handleCablesSelection(!!cables.length, cables)
         } else if (clusters.length > 0 || facsClusters.length > 0) {
           const data = clusters.length > 0 ? clusters : facsClusters
-          await this.handleClustersSelection(data, this.map)
+          return await this.handleClustersSelection(
+            data,
+            this.map,
+            clusters.length > 0
+              ? mapConfig.clusters
+              : mapConfig.facilitiesClusters
+          )
         } else if (
           facilities.length <= 0 &&
           ixps.length <= 0 &&
@@ -531,10 +535,10 @@ export default {
      * @param clusters { Array }
      * @param map { Object } Mapbox map - Object reference (ie: this.map)
      */
-    async handleClustersSelection(clusters, map) {
+    async handleClustersSelection(clusters, map, sourceName) {
       if (!map) return
       await map
-        .getSource(mapConfig.clusters)
+        .getSource(sourceName)
         .getClusterExpansionZoom(clusters[0].properties.cluster_id, function(
           err,
           zoom
