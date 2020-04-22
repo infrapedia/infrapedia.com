@@ -107,8 +107,6 @@ import boundsChange from './boundsChange'
 import highlightCurrentCable from './highlightCable'
 import disableCurrentHighlight from './disableHighlight'
 import GooeyMenu from './GooeyMenu'
-import { deleteCookie } from '../../helpers/cookies'
-import { queryCookieName } from '../../config/sharedViewCookieName'
 
 export default {
   name: 'Map',
@@ -730,14 +728,6 @@ export default {
         case 'networks':
           await this.handleNetworkFocus(id, fc)
           break
-      }
-
-      if (window.localStorage.getItem('__easePointData')) {
-        window.localStorage.removeItem('__easePointData')
-        deleteCookie(queryCookieName)
-        if (this.$route.query.sharedView) {
-          this.$router.replace(this.$route.fullPath)
-        }
       }
     },
     async handleCityFocus() {
