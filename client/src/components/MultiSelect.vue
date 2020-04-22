@@ -52,8 +52,9 @@
     </div>
     <el-alert
       v-if="isTagRepeated"
+      center
       title="This selection is already included on the list"
-      class="h12 pr2 pl2 pt2 pb2 mb4"
+      class="h20 text-center w-fit-full pr2 pl2 pt2 pb2 mb4"
       :closable="false"
     />
   </div>
@@ -78,6 +79,10 @@ export default {
     isMultiple: {
       type: Boolean,
       default: () => true
+    },
+    getSelectedId: {
+      type: Boolean,
+      default: () => false
     },
     mode: {
       type: String,
@@ -148,9 +153,14 @@ export default {
           this.selections.push(inputValue)
         } else {
           this.isTagRepeated = true
+          return
         }
       }
-      return this.$emit('values-change', this.selections)
+
+      return this.$emit(
+        'values-change',
+        this.getSelectedId ? this.selected._id : this.selections
+      )
     }
   }
 }

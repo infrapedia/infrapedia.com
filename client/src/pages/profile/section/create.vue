@@ -281,7 +281,13 @@ export default {
           logos,
           draw,
           ixps,
-          config
+          config,
+          owners,
+          address,
+          techEmail,
+          techPhone,
+          saleEmail,
+          salePhone
         } = res.data.r
 
         this.form = {
@@ -292,7 +298,13 @@ export default {
           logos: Array.isArray(logos) ? logos : [],
           cables: Array.isArray(cables) ? cables : [],
           facilities: Array.isArray(facilities) ? facilities : [],
-          config: typeof config === 'string' ? JSON.parse(config) : config
+          config: typeof config == 'string' ? JSON.parse(config) : config,
+          owners: Array.isArray(owners) ? owners : [],
+          address: Array.isArray(address) ? address : [],
+          techEmail: techEmail ? techEmail : '',
+          techPhone: techPhone ? techPhone : '',
+          saleEmail: saleEmail ? saleEmail : '',
+          salePhone: salePhone ? salePhone : ''
         }
 
         const fc = typeof draw === 'string' ? JSON.parse(draw) : draw
@@ -312,7 +324,7 @@ export default {
     async setMap(data) {
       this.isSendingData = true
       const res = await setMyMap({ ...data, user_id: this.$auth.user.sub })
-      if (res && res.t !== 'error') {
+      if (res && res.t != 'error') {
         this.mode = 'create'
         await setupMyMapArchives(data.subdomain)
         await this.checkUserMapExistance()
@@ -340,7 +352,13 @@ export default {
             ixps: [],
             logos: [],
             cables: [],
-            facilities: []
+            owners: [],
+            facilities: [],
+            address: [],
+            techEmail: '',
+            techPhone: '',
+            saleEmail: '',
+            salePhone: ''
           }
           break
         case 'ixps':
