@@ -304,6 +304,12 @@ export default {
         segment: prop.segment
       }
 
+      const facsClusters = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.facilitiesClusters]
+      })
+
+      if (facsClusters.length > 0) return
+
       let str = `<div class="cable-name dark-color"><b>${this.mapTooltip.name}</b></div>`
 
       if (isPoint) {
