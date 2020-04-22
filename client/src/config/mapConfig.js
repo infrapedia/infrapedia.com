@@ -47,7 +47,6 @@ export const mapConfig = {
         name: facilities,
         opts: {
           type: 'geojson',
-          minzoom: 14,
           data: `${process.env.VUE_APP_TILES_FACILITIES}`
         }
       },
@@ -144,7 +143,6 @@ export const mapConfig = {
         id: facilities,
         type: 'fill-extrusion',
         source: facilities,
-        minzoom: 14,
         paint: {
           'fill-extrusion-color': [
             'case',
@@ -179,7 +177,6 @@ export const mapConfig = {
         id: facilitiesLabel,
         type: 'symbol',
         source: facilities,
-        minzoom: 12,
         layout: {
           'text-field': ['to-string', ['get', 'address']],
           'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Regular'],
@@ -197,7 +194,7 @@ export const mapConfig = {
         id: facilitiesClusters,
         type: 'circle',
         source: facilitiesClusters,
-        minzoom: 2,
+        maxzoom: 14,
         filter: ['has', 'point_count'],
         paint: {
           'circle-color': [
@@ -223,8 +220,8 @@ export const mapConfig = {
       {
         id: 'facilities-count',
         type: 'symbol',
-        maxzoom: 15,
         source: facilitiesClusters,
+        maxzoom: 14,
         filter: ['has', 'point_count'],
         layout: {
           'text-field': '{point_count_abbreviated}',
@@ -235,8 +232,8 @@ export const mapConfig = {
       {
         id: 'facilities-single-points',
         type: 'circle',
+        maxzoom: 14,
         source: facilitiesClusters,
-        maxzoom: 15,
         filter: ['!', ['has', 'point_count']],
         paint: {
           'circle-color': '#2196f3',
