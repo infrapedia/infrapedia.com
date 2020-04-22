@@ -36,10 +36,9 @@ export default {
   data: () => ({
     layout: LandingPage
   }),
-  async created() {
-    this.checkIfIsNotSecure()
+  created() {
     this.handleSharedView()
-    if (this.$route.name === 'login') {
+    if (this.$route.name == 'login') {
       this.layout = NoNav
     }
   },
@@ -64,26 +63,26 @@ export default {
     }
   },
   methods: {
-    checkIfIsNotSecure() {
-      if (
-        process.env.NODE_ENV === 'production' &&
-        window.location.protocol !== 'https:'
-      ) {
-        window.location.replace(
-          `https:${window.location.href.substring(
-            window.location.protocol.length
-          )}`
-        )
-      }
-    },
+    // checkIfIsNotSecure() {
+    //   if (
+    //     process.env.NODE_ENV === 'production' &&
+    //     window.location.protocol !== 'https:'
+    //   ) {
+    //     window.location.replace(
+    //       `https:${window.location.href.substring(
+    //         window.location.protocol.length
+    //       )}`
+    //     )
+    //   }
+    // },
     handleSharedView() {
-      if (this.$route.query && this.$route.query.sharedView == 'true') {
+      if (this.$route.query.sharedView == 'true') {
         const keys = Object.keys(this.$route.query)
         const query = {}
 
         for (let key of keys) {
-          if (key.includes('amp;')) {
-            query[key.split('amp;')[1]] = this.$route.query[key]
+          if (key.includes('amp')) {
+            query[key.split('amp')[1]] = this.$route.query[key]
           } else {
             query[key] = this.$route.query[key]
           }

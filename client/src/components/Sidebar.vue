@@ -90,7 +90,7 @@ import {
 } from '../events/sidebar'
 import { shareLink } from '../services/api/shortener'
 import { TOGGLE_VERIFICATION_DIALOG } from '../store/actionTypes'
-import { getCookie } from '../helpers/cookies'
+import { getCookie, deleteCookie } from '../helpers/cookies'
 import { queryCookieName } from '../config/sharedViewCookieName'
 
 export default {
@@ -185,6 +185,14 @@ export default {
 
       if (window.localStorage.getItem('__easePointData')) {
         window.localStorage.removeItem('__easePointData')
+      }
+
+      if (
+        this.$route.query.sharedView &&
+        window.localStorage.getItem('__easePointDataLoaded') == 'true'
+      ) {
+        this.$router.replace(window.origin + this.$route.path)
+        deleteCookie(queryCookieName)
       }
     },
     toggleActiveClassOnMobile() {

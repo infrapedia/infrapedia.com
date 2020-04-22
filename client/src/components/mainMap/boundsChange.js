@@ -54,14 +54,6 @@ async function boundsChange({ map }) {
         }
       }
     }
-
-    // if (
-    //   this.$route.query.sharedView &&
-    //   window.localStorage.getItem('__easePointDataLoaded') == 'true'
-    // ) {
-    //   this.$router.replace(this.$route.path)
-    //   deleteCookie(queryCookieName)
-    // }
   } catch (err) {
     console.error(err, 'boundsChange.js err')
   }
