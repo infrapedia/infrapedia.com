@@ -108,6 +108,7 @@ import highlightCurrentCable from './highlightCable'
 import disableCurrentHighlight from './disableHighlight'
 import GooeyMenu from './GooeyMenu'
 import loadFacsClustersData from '../../helpers/loadFacsClustersData'
+import PrintGL from './print'
 
 export default {
   name: 'Map',
@@ -123,6 +124,7 @@ export default {
   },
   data: () => ({
     is3D: false,
+    print: null,
     trackID: null,
     mapTooltip: {},
     map: undefined,
@@ -213,6 +215,8 @@ export default {
 
         window.draw = draw
       }
+
+      window.print = this.print = new PrintGL({ map })
 
       window.mapboxgl = mapboxgl
 
