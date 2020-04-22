@@ -90,6 +90,8 @@ import {
 } from '../events/sidebar'
 import { shareLink } from '../services/api/shortener'
 import { TOGGLE_VERIFICATION_DIALOG } from '../store/actionTypes'
+import { getCookie } from '../helpers/cookies'
+import { queryCookieName } from '../config/sharedViewCookieName'
 
 export default {
   name: 'ISidebar',
@@ -216,18 +218,9 @@ export default {
     async copyToClip() {
       if (!this.focus) return
 
-      const { id, type, name } = this.focus
-      let url
-
       this.isBadge = true
-      if (this.$route.query.neLng) {
-        url = `${window.location.origin}${this.$route.fullPath}`
-      } else {
-        url = `${window.location.origin}?name=${name}&type=${type}&id=${id}`
-      }
-
       const res = await shareLink({
-        url,
+        url: this.$route.path + getCookie(queryCookieName),
         user_id: this.$auth.user.sub
       })
       if (res && res.data && res.data.r) {

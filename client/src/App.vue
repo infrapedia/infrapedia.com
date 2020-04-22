@@ -77,10 +77,7 @@ export default {
       }
     },
     handleSharedView() {
-      if (
-        this.$route.query &&
-        !window.localStorage.getItem('__easePointData')
-      ) {
+      if (this.$route.query && this.$route.query.sharedView == 'true') {
         const keys = Object.keys(this.$route.query)
         const query = {}
 

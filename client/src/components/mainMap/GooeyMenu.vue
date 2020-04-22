@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     async handleShareLink(funcName) {
-      return await share[funcName](this.userID)
+      return await share[funcName](this.userID, this.$route.path)
     }
   }
 }
