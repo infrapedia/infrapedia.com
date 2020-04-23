@@ -26,7 +26,7 @@
         id="menuOpener"
         circle
         size="small"
-        title="Share menu and toggle dark mode button"
+        title="Share menu, print map, and toggle dark mode button"
         class="absolute z-index1 w11 h11"
         @click.stop="toggleMenu"
         tabindex="0"
@@ -44,6 +44,9 @@
           class="absolute flex justify-content-space-around align-items-center"
           :class="{ active: isMenuOpen }"
         >
+          <li role="listitem">
+            <print-button :map="map" />
+          </li>
           <li role="listitem">
             <i-theme-toggler
               id="toggleTheme"
@@ -107,11 +110,13 @@ import boundsChange from './boundsChange'
 import highlightCurrentCable from './highlightCable'
 import disableCurrentHighlight from './disableHighlight'
 import GooeyMenu from './GooeyMenu'
+import PrintButton from './PrintButton'
 
 export default {
   name: 'Map',
   components: {
     IThemeToggler,
+    PrintButton,
     GooeyMenu
   },
   props: {
@@ -122,6 +127,7 @@ export default {
   },
   data: () => ({
     is3D: false,
+    print: null,
     trackID: null,
     mapTooltip: {},
     map: undefined,
