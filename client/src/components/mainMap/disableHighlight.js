@@ -40,6 +40,15 @@ function disableCurrentHighlight({
     'line-color',
     mapConfig.data.layers[0].paint['line-color']
   )
+
+  // Displaying the facilities clusters again
+  // map.setLayoutProperty(mapConfig.facilitiesClusters, 'visibility', 'visible')
+  // map.setLayoutProperty(mapConfig.facilitiesCount, 'visibility', 'visible')
+  // map.setLayoutProperty(
+  //   mapConfig.facilitiesSinglePoints,
+  //   'visibility',
+  //   'visible'
+  // )
 }
 
 export default disableCurrentHighlight

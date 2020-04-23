@@ -98,15 +98,9 @@ export default {
     this.$emit('layout', 'profile-layout')
   },
   async mounted() {
-    if (Object.keys(this.$route.query).length > 0) this.$router.replace('/user')
-    await this.loadLogs()
     this.createMap()
+    await this.loadLogs()
     await this.setUserData()
-  },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      if (Object.keys(vm.$route.query).length > 0) vm.$router.replace('/user')
-    })
   },
   methods: {
     async loadLogs() {

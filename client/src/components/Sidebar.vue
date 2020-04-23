@@ -90,6 +90,8 @@ import {
 } from '../events/sidebar'
 import { shareLink } from '../services/api/shortener'
 import { TOGGLE_VERIFICATION_DIALOG } from '../store/actionTypes'
+import { getCookie, deleteCookie } from '../helpers/cookies'
+import { queryCookieName } from '../config/sharedViewCookieName'
 
 export default {
   name: 'ISidebar',
@@ -184,6 +186,14 @@ export default {
       if (window.localStorage.getItem('__easePointData')) {
         window.localStorage.removeItem('__easePointData')
       }
+
+      if (
+        this.$route.query.sharedView &&
+        window.localStorage.getItem('__easePointDataLoaded') == 'true'
+      ) {
+        this.$router.replace(window.origin + this.$route.path)
+        deleteCookie(queryCookieName)
+      }
     },
     toggleActiveClassOnMobile() {
       this.isSidebarActive = !this.isSidebarActive
@@ -216,18 +226,9 @@ export default {
     async copyToClip() {
       if (!this.focus) return
 
-      const { id, type, name } = this.focus
-      let url
-
       this.isBadge = true
-      if (this.$route.query.neLng) {
-        url = `${window.location.origin}${this.$route.fullPath}`
-      } else {
-        url = `${window.location.origin}?name=${name}&type=${type}&id=${id}`
-      }
-
       const res = await shareLink({
-        url,
+        url: window.origin + this.$route.path + getCookie(queryCookieName),
         user_id: this.$auth.user.sub
       })
       if (res && res.data && res.data.r) {

@@ -8,13 +8,16 @@ const cls = 'cls'
 const ixps = 'ixps'
 const clusters = 'clusters'
 const facilities = 'facilities'
-const facilitiesClusters = 'facilities_clusters'
+// const facilitiesCount = 'facilities-count'
+// const facilitiesSinglePoints = 'facilities-single-points'
+// const facilitiesClusters = 'facilities_clusters'
 const facilitiesLabel = 'facilities_label'
 const currentEpoch = Math.round(new Date().getTime() / 1000)
 
 export const mapConfig = {
   mapToken: token,
-  default: 'mapbox://styles/networkatlas/cjt4y5k77443z1fmfu2pfbcuu',
+  default:
+    'mapbox://styles/networkatlas/cjt4y5k77443z1fmfu2pfbcuu?optimize=true',
   darkBasemap: 'mapbox://styles/mapbox/dark-v10',
   zoom: 1.75,
   center: [-34.292, 27.57],
@@ -26,7 +29,15 @@ export const mapConfig = {
   cablesLabel,
   cablesHighlight,
   facilitiesLabel,
-  facilitiesClusters,
+  // facilitiesCount,
+  // facilitiesClusters,
+  // facilitiesSinglePoints,
+  // highlightFeatureState: [
+  //   'case',
+  //   ['boolean', ['feature-state', 'highlight'], true],
+  //   '#F7D079',
+  //   '#7288b0'
+  // ],
   data: {
     sources: [
       {
@@ -50,19 +61,17 @@ export const mapConfig = {
           data: `${process.env.VUE_APP_TILES_FACILITIES}`
         }
       },
-      {
-        name: facilitiesClusters,
-        opts: {
-          type: 'geojson',
-          data: {
-            type: 'FeatureCollection',
-            features: []
-          },
-          cluster: true,
-          clusterRadius: 50,
-          clusterMaxZoom: 14
-        }
-      },
+      // {
+      //   name: facilitiesClusters,
+      //   opts: {
+      //     type: 'geojson',
+      //     data: `${process.env.VUE_APP_TILES_FACS_CLUSTERS}`,
+      //     cluster: true,
+      //     maxzoom: 12,
+      //     clusterRadius: 50,
+      //     clusterMaxZoom: 14
+      //   }
+      // },
       {
         name: cls,
         opts: {
@@ -90,6 +99,7 @@ export const mapConfig = {
         source: cables,
         'source-layer': cables,
         type: 'line',
+        maxzoom: 20,
         paint: {
           'line-width': 1.62,
           'line-color': [
@@ -117,6 +127,7 @@ export const mapConfig = {
         source: 'cables',
         'source-layer': 'cables',
         type: 'symbol',
+        minzoom: 2.89,
         layout: {
           'text-field': '{name}',
           'symbol-placement': 'line',
@@ -145,7 +156,6 @@ export const mapConfig = {
         id: facilities,
         type: 'fill-extrusion',
         source: facilities,
-        minzoom: 14,
         paint: {
           'fill-extrusion-color': [
             'case',
@@ -180,7 +190,7 @@ export const mapConfig = {
         id: facilitiesLabel,
         type: 'symbol',
         source: facilities,
-        minzoom: 12,
+        minzoom: 13.89,
         layout: {
           'text-field': ['to-string', ['get', 'address']],
           'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Regular'],
@@ -194,55 +204,56 @@ export const mapConfig = {
           'text-halo-width': 0.75
         }
       },
-      {
-        id: facilitiesClusters,
-        type: 'circle',
-        source: facilitiesClusters,
-        minzoom: 2,
-        filter: ['has', 'point_count'],
-        paint: {
-          'circle-color': [
-            'step',
-            ['get', 'point_count'],
-            '#51bbd6',
-            100,
-            '#f1f075',
-            750,
-            '#f28cb1'
-          ],
-          'circle-radius': [
-            'step',
-            ['get', 'point_count'],
-            20,
-            100,
-            30,
-            750,
-            40
-          ]
-        }
-      },
-      {
-        id: 'facilities-count',
-        type: 'symbol',
-        source: facilitiesClusters,
-        filter: ['has', 'point_count'],
-        layout: {
-          'text-field': '{point_count_abbreviated}',
-          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-          'text-size': 12
-        }
-      },
-      {
-        id: 'facilities-single-points',
-        type: 'circle',
-        source: facilitiesClusters,
-        maxzoom: 17,
-        filter: ['!', ['has', 'point_count']],
-        paint: {
-          'circle-color': '#2196f3',
-          'circle-radius': 10
-        }
-      },
+      // {
+      //   id: facilitiesClusters,
+      //   type: 'circle',
+      //   source: facilitiesClusters,
+      //   maxzoom: 14,
+      //   filter: ['has', 'point_count'],
+      //   paint: {
+      //     'circle-color': [
+      //       'step',
+      //       ['get', 'point_count'],
+      //       '#51bbd6',
+      //       100,
+      //       '#f1f075',
+      //       750,
+      //       '#f28cb1'
+      //     ],
+      //     'circle-radius': [
+      //       'step',
+      //       ['get', 'point_count'],
+      //       20,
+      //       100,
+      //       30,
+      //       750,
+      //       40
+      //     ]
+      //   }
+      // },
+      // {
+      //   id: facilitiesCount,
+      //   type: 'symbol',
+      //   source: facilitiesClusters,
+      //   maxzoom: 14,
+      //   filter: ['has', 'point_count'],
+      //   layout: {
+      //     'text-field': '{point_count_abbreviated}',
+      //     'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+      //     'text-size': 12
+      //   }
+      // },
+      // {
+      //   id: facilitiesSinglePoints,
+      //   type: 'circle',
+      //   maxzoom: 14,
+      //   source: facilitiesClusters,
+      //   filter: ['!', ['has', 'point_count']],
+      //   paint: {
+      //     'circle-color': '#2196f3',
+      //     'circle-radius': 10
+      //   }
+      // },
       {
         id: ixps,
         type: 'circle',
@@ -280,6 +291,7 @@ export const mapConfig = {
         id: 'cluster-count',
         type: 'symbol',
         source: clusters,
+        maxzoom: 14,
         filter: ['has', 'point_count'],
         layout: {
           'text-field': '{point_count_abbreviated}',

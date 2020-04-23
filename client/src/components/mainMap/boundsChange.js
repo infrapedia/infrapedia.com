@@ -1,3 +1,6 @@
+import { setCookie } from '../../helpers/cookies'
+import { queryCookieName } from '../../config/sharedViewCookieName'
+
 /**
  *
  * @param { ctx } Object - Reference to the vue this context
@@ -19,35 +22,40 @@ async function boundsChange({ map }) {
   })
 
   if (!bounds && !center) return
+
   try {
     if (!window.localStorage.getItem('__easePointData')) {
       if (!this.focus) {
-        await this.$router.replace(
+        setCookie(
+          queryCookieName,
           `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
             bounds._sw.lng
           }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
             0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
             center.center.lat
-          }`
+          }&sharedView=true`,
+          1
         )
       } else {
         const { id, type, name } = this.focus
 
         if (id && type) {
-          await this.$router.replace(
+          setCookie(
+            queryCookieName,
             `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
               bounds._sw.lng
             }&swLat=${bounds._sw.lat}&zoom=${center.zoom}&bearing=${bearing ||
               center.bearing ||
               0}&pitch=${pitch}&centerLng=${center.center.lng}&centerLat=${
               center.center.lat
-            }&name=${name}&type=${type}&id=${id}`
+            }&name=${name || ''}&type=${type}&id=${id}&sharedView=true`,
+            1
           )
         }
       }
     }
-  } catch {
-    // Ignore
+  } catch (err) {
+    console.error(err, 'boundsChange.js err')
   }
 }
 
