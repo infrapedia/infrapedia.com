@@ -3,8 +3,8 @@ import mapboxgl from 'mapbox-gl'
 
 export default class PrintGL {
   constructor({ map }) {
-    this.dpi = 96
     this.map = map
+    this.loading = false
     this.mapContainerID = 'printMap'
   }
 
@@ -37,10 +37,14 @@ export default class PrintGL {
     return fulldate
   }
 
-  createVirtualCanvas() {
+  getLoading() {
+    return this.loading
+  }
+
+  async createVirtualCanvas(dpi) {
     const originalCanvas = this.map.getCanvas()
-    const width = originalCanvas.width / this.getPixelRatio()
-    const height = originalCanvas.height / this.getPixelRatio()
+    const width = originalCanvas.width / this.getPixelRatio(dpi)
+    const height = originalCanvas.height / this.getPixelRatio(dpi)
 
     const hiddenMapWrapper = document.createElement('div')
     hiddenMapWrapper.id = this.mapContainerID
@@ -73,27 +77,29 @@ export default class PrintGL {
     return map
   }
 
-  getPixelRatio() {
-    return this.dpi / 96
+  getPixelRatio(dpi) {
+    return dpi / 96
   }
 
-  downloadCanvas(canvas, name) {
+  async downloadCanvas(canvas, name) {
     const mapWrapper = document.getElementById(this.mapContainerID)
-    canvas.getCanvas().toBlob(function(blob) {
+    await canvas.getCanvas().toBlob(function(blob) {
       if (mapWrapper) mapWrapper.remove()
       download(blob, name + '.png', 'image/png')
     })
   }
 
-  printMap(dpi = this.dpi, fileName = 'Infrapedia-Print-Map-') {
-    const map = this.createVirtualCanvas(parseInt(dpi, 10))
+  async printMap(dpi = 300, fileName = 'Infrapedia-Print-Map-') {
+    this.loading = true
+    const map = await this.createVirtualCanvas(parseInt(dpi, 10))
     let vm = this
     let once = 0
 
     map.on('idle', function() {
       setTimeout(() => {
         if (once == 0) {
-          vm.downloadCanvas(map, fileName + vm.getDate() + '.png')
+          vm.downloadCanvas(map, fileName + vm.getDate())
+          vm.loading = false
           once += 1
         }
       }, 5000)

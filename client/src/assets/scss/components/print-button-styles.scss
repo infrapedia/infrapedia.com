@@ -1,0 +1,11 @@
+@import '../base/variables';
+
+.footer-buttons {
+  @media screen and (max-width: $break-xs) {
+    flex-wrap: wrap-reverse;
+    justify-content: center;
+    .el-button:first-child {
+      margin-top: 1rem;
+    }
+  }
+}
