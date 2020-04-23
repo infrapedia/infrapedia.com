@@ -70,8 +70,13 @@
           <el-table-column label="Premium Partner" prop="premium" width="200" />
           <el-table-column
             label="Exclusive Sponsor - Three Exclusive Spots Available"
-            prop="exclusive"
-          />
+          >
+            <template slot-scope="scope">
+              <router-link to="/contact">
+                {{ scope.row.exclusive }}
+              </router-link>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <el-divider class="transparent" />
@@ -186,25 +191,25 @@ export default {
         recurrence: 'Monthly',
         partner: 'N/A',
         premium: '$750',
-        exclusive: 'N/A'
+        exclusive: 'Contact us for details'
       },
       {
         recurrence: 'Yearly',
         partner: '$2,500',
         premium: '$7,500',
-        exclusive: '$25,000'
+        exclusive: 'Contact us for details'
       },
       {
         recurrence: 'Share your Data Discount (yearly plans only)',
         partner: '$2,500',
         premium: '$2,500',
-        exclusive: '$0'
+        exclusive: 'Contact us for details'
       },
       {
         recurrence: 'You pay',
         partner: '$0',
         premium: '$5,500',
-        exclusive: '$25,000'
+        exclusive: 'Contact us for details'
       }
     ],
     ads: [
