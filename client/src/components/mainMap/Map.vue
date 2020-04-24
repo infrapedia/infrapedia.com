@@ -419,6 +419,7 @@ export default {
         const clusters = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.clusters]
         })
+
         // const facsClusters = this.map.queryRenderedFeatures(e.point, {
         //   layers: [mapConfig.facilitiesClusters]
         // })

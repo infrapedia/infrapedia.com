@@ -31,9 +31,6 @@ function disableCurrentHighlight({
 
   commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
 
-  // Removing highlight layer filter
-  map.setFilter(mapConfig.cablesHighlight, ['in', '_id', false])
-
   // Changing cables colors back to normal
   map.setPaintProperty(
     mapConfig.cables,
