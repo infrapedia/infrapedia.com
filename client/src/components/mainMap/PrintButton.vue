@@ -12,28 +12,30 @@
     <el-dialog
       :visible.sync="printDialog"
       append-to-body
+      :width="dialogWidth"
       :before-close="handleClose"
     >
       <h2 class="font-medium fs-large" slot="title">
         Print configuration
       </h2>
-      <el-form :rules="formRules" :model="form">
-        <el-form-item label="DPI">
-          <el-select v-model="form.dpi" class="w-fit-full" :class="{ dark }">
-            <el-option
-              v-for="(opt, i) in dpiOptions"
-              :key="i"
-              :label="opt.label"
-              :value="opt.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Filename">
-          <el-input
-            v-model="form.filename"
-            class="w-fit-full"
-            :class="{ dark }"
-          />
+      <el-form>
+        <el-form-item>
+          <el-radio-group class="w-fit-full" v-model="form.dpi">
+            <div class="radio-buttons-wrapper">
+              <el-radio-button
+                v-for="(opt, i) in printDpiOptions"
+                :key="i"
+                :label="opt.value"
+              >
+                <div class="flex column wrap justify-content-center">
+                  <el-image lazy :src="opt.img" fit="contain" />
+                  <span class="w-fit-full inline-block mt2">
+                    {{ opt.label }}
+                  </span>
+                </div>
+              </el-radio-button>
+            </div>
+          </el-radio-group>
         </el-form-item>
         <el-form-item>
           <div class="flex row nowrap justify-content-end footer-buttons">
@@ -62,29 +64,16 @@
 
 <script>
 import PrintGL from './print'
+import printDpiOptions from '../../config/printDpiOptions'
 
 export default {
   data: () => ({
     printDialog: false,
     printer: undefined,
     form: {
-      filename: 'Infrapedia-map',
-      dpi: 300
+      dpi: 96
     },
-    dpiOptions: [
-      {
-        label: '96 - lowest resolution',
-        value: 96
-      },
-      {
-        label: '150 - regular resolution',
-        value: 150
-      },
-      {
-        label: '300 - best resolution',
-        value: 300
-      }
-    ],
+    printDpiOptions,
     donwloadingMap: false
   }),
   props: {
@@ -97,10 +86,8 @@ export default {
     dark() {
       return this.$store.state.isDark
     },
-    formRules() {
-      return {
-        dpi: []
-      }
+    dialogWidth() {
+      return window.innerWidth <= 1200 ? '82%' : '74%'
     }
   },
   mounted() {
@@ -122,7 +109,7 @@ export default {
     },
     async print() {
       if (this.form.dpi) {
-        await this.printer.printMap(this.form.dpi, this.form.filename)
+        await this.printer.printMap(this.form.dpi)
         const interval = setInterval(() => {
           this.donwloadingMap = this.printer.getLoading()
           if (!this.donwloadingMap) {

@@ -9,3 +9,18 @@
     }
   }
 }
+
+.radio-buttons-wrapper {
+  display: grid;
+  gap: 1.2rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  .el-image {
+    min-width: 100%;
+    min-height: 6rem;
+  }
+}
+
+.el-radio-button:nth-child(2),
+.el-radio-button:nth-child(3) {
+  border-left: 1px solid #dcdfe6;
+}

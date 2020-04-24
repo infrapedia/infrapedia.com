@@ -1,7 +1,12 @@
 const token = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN
 
 const cablesLabel = 'cables_label'
-const cablesHighlight = 'cables_highlight'
+const highlightFeatureState = [
+  'case',
+  ['==', ['get', 'id'], 0],
+  '#F7D079',
+  'rgba(23,23,23, 0.2)'
+]
 
 const cables = 'cables'
 const cls = 'cls'
@@ -27,17 +32,11 @@ export const mapConfig = {
   clusters,
   facilities,
   cablesLabel,
-  cablesHighlight,
   facilitiesLabel,
   // facilitiesCount,
   // facilitiesClusters,
   // facilitiesSinglePoints,
-  // highlightFeatureState: [
-  //   'case',
-  //   ['boolean', ['feature-state', 'highlight'], true],
-  //   '#F7D079',
-  //   '#7288b0'
-  // ],
+  highlightFeatureState,
   data: {
     sources: [
       {
@@ -140,17 +139,6 @@ export const mapConfig = {
         paint: {
           'text-color': '#485E69'
         }
-      },
-      {
-        id: cablesHighlight,
-        type: 'line',
-        source: cables,
-        'source-layer': cables,
-        paint: {
-          'line-width': 2.6,
-          'line-color': '#F7D079'
-        },
-        filter: ['==', ['get', '_id'], false]
       },
       {
         id: facilities,
