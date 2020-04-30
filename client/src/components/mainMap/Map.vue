@@ -420,9 +420,9 @@ export default {
           layers: [mapConfig.clusters]
         })
 
-        // const facsClusters = this.map.queryRenderedFeatures(e.point, {
-        //   layers: [mapConfig.facilitiesClusters]
-        // })
+        const facsClusters = this.map.queryRenderedFeatures(e.point, {
+          layers: [mapConfig.facilitiesClusters]
+        })
 
         // If in the region selected there is a point or a building
         // Call the api to retrieve that facility data and open the sidebar
@@ -444,18 +444,16 @@ export default {
           })
         }
 
-        // || facsClusters.length > 0
-        if (clusters.length > 0) {
-          // const data = clusters.length > 0 ? clusters : facsClusters
-          return await this.handleClustersSelection(
-            clusters,
-            this.map,
+        if (clusters.length > 0 || facsClusters.length > 0) {
+          let data = clusters.length > 0 ? clusters : facsClusters
+          let sourceName =
             clusters.length > 0
               ? mapConfig.clusters
               : mapConfig.facilitiesClusters
-          )
+
+          return await this.handleClustersSelection(data, this.map, sourceName)
         } else if (cables.length > 0) {
-          await this.handleCablesSelection(!!cables.length, cables)
+          await this.handleCablesSelection(Boolean(cables.length), cables)
         } else if (
           facilities.length <= 0 &&
           ixps.length <= 0 &&
