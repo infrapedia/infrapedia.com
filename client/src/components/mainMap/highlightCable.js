@@ -22,11 +22,6 @@ export default function highlightCurrentCable({ dark, cable, map, commit }) {
 
   map.setPaintProperty(mapConfig.cables, 'line-color', filter)
 
-  // There's no need to show the facilities clusters if you want to see a specific cable
-  // map.setLayoutProperty(mapConfig.facilitiesCount, 'visibility', 'none')
-  // map.setLayoutProperty(mapConfig.facilitiesClusters, 'visibility', 'none')
-  // map.setLayoutProperty(mapConfig.facilitiesSinglePoints, 'visibility', 'none')
-
   // Keeping record of the selection and map current filter
   commit(`${CURRENT_MAP_FILTER}`, ['==', ['get', '_id'], cable._id])
   commit(`${MAP_FOCUS_ON}`, {
