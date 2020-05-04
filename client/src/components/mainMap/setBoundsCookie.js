@@ -10,7 +10,13 @@ import { queryCookieName } from '../../config/sharedViewCookieName'
  * @param { focus } object with id, type and name of the current selection of the map
  */
 
-async function setBoundsCookie({ pitch, bounds, bearing, center, focus }) {
+export default async function setBoundsCookie({
+  pitch,
+  bounds,
+  bearing,
+  center,
+  focus
+}) {
   try {
     let queryString = `?neLng=${bounds._ne.lng}&neLat=${bounds._ne.lat}&swLng=${
       bounds._sw.lng
@@ -41,5 +47,3 @@ async function setBoundsCookie({ pitch, bounds, bearing, center, focus }) {
     console.error('setBoundsCookie.js err', err, JSON.stringify(err))
   }
 }
-
-export default setBoundsCookie

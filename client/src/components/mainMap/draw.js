@@ -6,7 +6,7 @@ import { DRAWING, TITLE_BY_SELECTION } from '../../events'
  * @param { data } Array - Draw Array containing all the draws
  * @param { elemnt } Object - HTML Element to set the calculated data
  */
-function handleDraw({ data, elemnt }) {
+export default function handleDraw({ data, elemnt }) {
   if (data.features.length) {
     this.$emit(`${DRAWING}`, true)
     let calculated
@@ -63,5 +63,3 @@ function handleDraw({ data, elemnt }) {
     }
   } else this.$emit(`${DRAWING}`, false)
 }
-
-export default handleDraw

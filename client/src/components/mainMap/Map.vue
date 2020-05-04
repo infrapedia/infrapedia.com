@@ -306,11 +306,11 @@ export default {
         segment: prop.segment
       }
 
-      const facsClusters = this.map.queryRenderedFeatures(e.point, {
-        layers: [mapConfig.facilitiesClusters]
-      })
+      // const facsClusters = this.map.queryRenderedFeatures(e.point, {
+      //   layers: [mapConfig.facilitiesClusters]
+      // })
 
-      if (facsClusters.length > 0) return
+      // if (facsClusters.length > 0) return
 
       let str = `<div class="cable-name dark-color"><b>${this.mapTooltip.name}</b></div>`
 
@@ -428,9 +428,9 @@ export default {
           layers: [mapConfig.clusters]
         })
 
-        const facsClusters = this.map.queryRenderedFeatures(e.point, {
-          layers: [mapConfig.facilitiesClusters]
-        })
+        // const facsClusters = this.map.queryRenderedFeatures(e.point, {
+        //   layers: [mapConfig.facilitiesClusters]
+        // })
 
         // If in the region selected there is a point or a building
         // Call the api to retrieve that facility data and open the sidebar
@@ -452,14 +452,19 @@ export default {
           })
         }
 
-        if (clusters.length > 0 || facsClusters.length > 0) {
-          let data = clusters.length > 0 ? clusters : facsClusters
-          let sourceName =
-            clusters.length > 0
-              ? mapConfig.clusters
-              : mapConfig.facilitiesClusters
+        // || facsClusters.length > 0
+        if (clusters.length > 0) {
+          // let data = clusters.length > 0 ? clusters : facsClusters
+          // let sourceName =
+          //   clusters.length > 0
+          //     ? mapConfig.clusters
+          //     : mapConfig.facilitiesClusters
 
-          return await this.handleClustersSelection(data, this.map, sourceName)
+          return await this.handleClustersSelection(
+            clusters,
+            this.map,
+            mapConfig.clusters
+          )
         } else if (cables.length > 0) {
           await this.handleCablesSelection(Boolean(cables.length), cables)
         } else if (
@@ -555,7 +560,6 @@ export default {
      * @param map { Object } Mapbox map - Object reference (ie: this.map)
      */
     async handleClustersSelection(clusters, map, sourceName) {
-      if (!map) return
       await map
         .getSource(sourceName)
         .getClusterExpansionZoom(clusters[0].properties.cluster_id, function(
