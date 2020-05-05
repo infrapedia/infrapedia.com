@@ -213,9 +213,8 @@ export default {
           trigger: 'blur'
         },
         {
-          min: 3,
-          max: 10,
-          message: 'Length should be 3 to 10',
+          max: 50,
+          message: 'Length should be max 50',
           trigger: ['change', 'blur']
         }
       ],
