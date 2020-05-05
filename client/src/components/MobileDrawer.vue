@@ -45,7 +45,7 @@
         <li class="w-fit-full" data-no-outline="true">
           <div class="no-selectable">
             <a
-              href="https://www.infrapedia.com/blog"
+              href="https://blog.infrapedia.com"
               target="_blank"
               class="no-underline inherit color-inherit p4 mr4 inline-block"
             >
