@@ -36,7 +36,7 @@
                 role="listitem"
               >
                 <a
-                  href="https://www.infrapedia.com/blog"
+                  href="https://blog.infrapedia.com"
                   target="_blank"
                   class="list-item pr4 pl4"
                   title="Blog"
@@ -260,7 +260,7 @@
             <ul class="p0 pr4 m0 h-fit-full" role="group" :key="2" v-else>
               <li class="inline-block relative" data-no-outline="true">
                 <a
-                  href="https://www.infrapedia.com/blog"
+                  href="https://blog.infrapedia.com"
                   class="list-item pl3 pr3"
                   target="_blank"
                 >

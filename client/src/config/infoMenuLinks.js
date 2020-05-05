@@ -1,7 +1,7 @@
 const infoMenuLinks = {
   info: [
     { label: 'About us', url: '/about', router: true },
-    { label: 'Blog', url: 'https://www.infrapedia.com/blog', openTab: true },
+    { label: 'Blog', url: 'https://blog.infrapedia.com', openTab: true },
     {
       label: 'Contact us',
       url: '/contact',

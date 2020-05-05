@@ -55,7 +55,7 @@ export default {
       },
       {
         label: 'Blog',
-        url: 'https://infrapedia.com/blog',
+        url: 'https://blog.infrapedia.com',
         tab: true
       },
       {

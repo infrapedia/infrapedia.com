@@ -9,7 +9,7 @@ const types = [
   },
   {
     value: 3,
-    t: ['fac', 'facility', 'datacenters', 'data centers']
+    t: ['fac', 'facility', 'facilities', 'facs', 'datacenters', 'data centers']
   },
   {
     value: 4,
@@ -23,6 +23,7 @@ const types = [
     value: 6,
     t: ['net', 'networks', 'network']
   },
+  // 'owners'
   {
     value: 7,
     t: ['org', 'organizations']
