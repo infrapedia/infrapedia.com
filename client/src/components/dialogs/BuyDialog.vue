@@ -257,7 +257,7 @@ export default {
       }
     },
     dialogTitle() {
-      return (this.buyType && this.buyType.title) || ''
+      return this.buyType && this.buyType.title ? this.buyType.title : ''
     },
     isFormUncomplete() {
       // TODO: fix this form uncomplete checker for when using & !using: totalRack
