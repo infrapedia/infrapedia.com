@@ -33,7 +33,8 @@
               :key="i"
               :href="link.url"
               v-if="link.tab"
-              class="underline-hover mr4"
+              target="_blank"
+              class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
             >
               {{ link.label }}
             </a>
