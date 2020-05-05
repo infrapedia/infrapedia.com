@@ -78,8 +78,7 @@ import {
   CABLE_SELECTED,
   CLEAR_SELECTION,
   FOCUS_ON,
-  FOCUS_ON_CITY,
-  REMOVE_QUERY_ROUTE_REPLACE
+  FOCUS_ON_CITY
 } from '../../events'
 import {
   TOGGLE_FILTER_SELECTION,
@@ -106,7 +105,7 @@ import debounce from '../../helpers/debounce'
 import { viewNetwork } from '../../services/api/networks'
 import { viewOrganization } from '../../services/api/organizations'
 import handleDraw from './draw'
-import boundsChange from './boundsChange'
+import setBoundsCookie from './setBoundsCookie'
 import highlightCurrentCable from './highlightCable'
 import disableCurrentHighlight from './disableHighlight'
 import GooeyMenu from './GooeyMenu'
@@ -160,7 +159,6 @@ export default {
     bus.$on(UPDATE_TIME_MACHINE, this.handleUpdateTimeMachine)
     bus.$on(TOGGLE_FILTER_SELECTION, this.handleFilterSelection)
     bus.$on(SUBSEA_FILTER, this.handleSubseaToggle)
-    bus.$on(REMOVE_QUERY_ROUTE_REPLACE, this.handleRemoveQueryRouteReplacer)
 
     if (this.dark) this.map.setStyle(mapConfig.darkBasemap)
     if (this.currentSelection && this.focus) this.handlePreviouslySelected()
@@ -220,7 +218,6 @@ export default {
       }
 
       window.mapboxgl = mapboxgl
-
       return map
     },
     /**
@@ -231,6 +228,7 @@ export default {
       let vm = this
       map.on('load', function() {
         vm.addMapSources(map)
+        vm.addMapLayers(map)
       })
       return map
     },
@@ -241,7 +239,6 @@ export default {
       for (let source of mapConfig.data.sources) {
         map.addSource(source.name, source.opts)
       }
-      this.addMapLayers(map)
     },
     addMapLayers(map) {
       for (let layer of mapConfig.data.layers) {
@@ -262,14 +259,15 @@ export default {
       })
 
       map.on('mouseenter', mapConfig.cables, function(e) {
-        vm.handlePopupVisibilityOn(e, popup, false)
+        vm.handlePopupVisibilityOn({ e, popup, isPoint: false })
       })
       map.on('mouseenter', mapConfig.ixps, function(e) {
-        vm.handlePopupVisibilityOn(e, popup, true)
+        vm.handlePopupVisibilityOn({ e, popup, isPoint: true })
       })
-      map.on('mouseleave', mapConfig.cables, function() {
-        vm.handlePopupVisibilityOff(popup)
-      })
+
+      map.on('mouseleave', mapConfig.cables, () =>
+        vm.handlePopupVisibilityOff({ popup, map })
+      )
 
       if (!this.disabled) {
         map.on('click', this.handleMapClick)
@@ -336,33 +334,25 @@ export default {
      * @param popup { Object } The map popup instance
      * @param isPoint { Boolean } If the tooltip is for a Point
      */
-    handlePopupVisibilityOn(e, popup, isPoint) {
+    handlePopupVisibilityOn({ e, popup, isPoint }) {
       if (!this.map) return
-      const map = this.map
-      const clusters = map.queryRenderedFeatures(e.point, {
+
+      const clusters = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.clusters]
       })
 
       if (!clusters.length && e.features.length && !this.isMobile) {
-        map.getCanvas().style.cursor = 'pointer'
-        this.showPopup(e, map, popup, isPoint)
+        this.map.getCanvas().style.cursor = 'pointer'
+        this.showPopup(e, this.map, popup, isPoint)
       }
     },
     /**
      * @param popup { Object } The map popup instance
+     * @param map { Object } The map instance
      */
-    handlePopupVisibilityOff(popup) {
-      if (!this.map || !popup) return
-      this.map.getCanvas().style.cursor = ''
+    handlePopupVisibilityOff({ popup, map }) {
+      map.getCanvas().style.cursor = ''
       popup.remove()
-    },
-    async handleBoundsChange() {
-      if (!this.map) return
-      try {
-        return await boundsChange.call(this, { map: this.map })
-      } catch (err) {
-        console.error(err)
-      }
     },
     /**
      * @param cable { Object } - Contains the ID of the selected cable
@@ -380,6 +370,24 @@ export default {
         console.error(err)
       }
     },
+    handleBoundsChange() {
+      if (!this.map) return
+
+      const pitch = this.map.getPitch()
+      const bounds = this.map.getBounds()
+      const bearing = this.map.getBearing()
+      const center = this.map.cameraForBounds(bounds, {
+        padding: { top: 10, bottom: 25, left: 15, right: 5 }
+      })
+
+      return setBoundsCookie({
+        pitch,
+        bounds,
+        bearing,
+        center,
+        focus: this.focus
+      })
+    },
     /**
      * @param closesSidebar { Boolean } - If besides removing cables highlight it also closes the sidebar
      */
@@ -387,8 +395,8 @@ export default {
       if (!this.map) return
       try {
         return disableCurrentHighlight({
-          closesSidebar,
           map: this.map,
+          closesSidebar,
           commit: this.$store.commit,
           handleBoundsChange: this.handleBoundsChange
         })
@@ -420,9 +428,9 @@ export default {
           layers: [mapConfig.clusters]
         })
 
-        const facsClusters = this.map.queryRenderedFeatures(e.point, {
-          layers: [mapConfig.facilitiesClusters]
-        })
+        // const facsClusters = this.map.queryRenderedFeatures(e.point, {
+        //   layers: [mapConfig.facilitiesClusters]
+        // })
 
         // If in the region selected there is a point or a building
         // Call the api to retrieve that facility data and open the sidebar
@@ -444,14 +452,19 @@ export default {
           })
         }
 
-        if (clusters.length > 0 || facsClusters.length > 0) {
-          let data = clusters.length > 0 ? clusters : facsClusters
-          let sourceName =
-            clusters.length > 0
-              ? mapConfig.clusters
-              : mapConfig.facilitiesClusters
+        // || facsClusters.length > 0
+        if (clusters.length > 0) {
+          // let data = clusters.length > 0 ? clusters : facsClusters
+          // let sourceName =
+          //   clusters.length > 0
+          //     ? mapConfig.clusters
+          //     : mapConfig.facilitiesClusters
 
-          return await this.handleClustersSelection(data, this.map, sourceName)
+          return await this.handleClustersSelection(
+            clusters,
+            this.map,
+            mapConfig.clusters
+          )
         } else if (cables.length > 0) {
           await this.handleCablesSelection(Boolean(cables.length), cables)
         } else if (
@@ -467,7 +480,7 @@ export default {
           } catch {
             // Ignore
           } finally {
-            this.disableCableHighlight(true)
+            this.disableCableHighlight()
           }
         }
       } else await this.$auth.loginWithRedirect()
@@ -547,7 +560,6 @@ export default {
      * @param map { Object } Mapbox map - Object reference (ie: this.map)
      */
     async handleClustersSelection(clusters, map, sourceName) {
-      if (!map) return
       await map
         .getSource(sourceName)
         .getClusterExpansionZoom(clusters[0].properties.cluster_id, function(
@@ -923,10 +935,7 @@ export default {
     },
     handlePreviouslySelected: debounce(function() {
       if (this.map.loaded()) this.handleFocusOn(this.focus)
-    }, 1200),
-    handleRemoveQueryRouteReplacer() {
-      return this.map.off('render', this.handleBoundsChange)
-    }
+    }, 1200)
   }
 }
 </script>

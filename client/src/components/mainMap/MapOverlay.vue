@@ -28,7 +28,7 @@ import { bus } from '../../helpers/eventBus'
 import debounce from '../../helpers/debounce'
 import dataCollection from '../../mixins/dataCollection.vue'
 import { IS_DRAWING, TOGGLE_SIDEBAR } from '../../store/actionTypes'
-import { FOCUS_ON_CITY, REMOVE_QUERY_ROUTE_REPLACE } from '../../events'
+import { FOCUS_ON_CITY } from '../../events'
 import { HAS_TO_EASE_TO, EASE_POINT } from '../../store/actionTypes/map'
 import MobileDrawer from '../../components/MobileDrawer.vue'
 import * as navbarEvents from '../../events/navbar'
@@ -64,7 +64,6 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     if (this.isSidebar) this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
-    bus.$emit(REMOVE_QUERY_ROUTE_REPLACE)
     next()
   },
   async mounted() {
