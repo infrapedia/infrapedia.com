@@ -29,22 +29,32 @@
         </header>
         <ul role="list">
           <li v-for="(link, i) in links" :key="i" role="listitem">
-            <router-link
-              v-if="i === 0"
+            <a
               :key="i"
-              :to="checkIfLoggedIn"
-              class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
+              :href="link.url"
+              v-if="link.tab"
+              class="underline-hover mr4"
             >
               {{ link.label }}
-            </router-link>
-            <router-link
-              v-else
-              :key="i"
-              :to="link.url"
-              class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
-            >
-              {{ link.label }}
-            </router-link>
+            </a>
+            <template v-else>
+              <router-link
+                v-if="i === 0"
+                :key="i"
+                :to="checkIfLoggedIn"
+                class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
+              >
+                {{ link.label }}
+              </router-link>
+              <router-link
+                v-else
+                :key="i"
+                :to="link.url"
+                class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
+              >
+                {{ link.label }}
+              </router-link>
+            </template>
           </li>
         </ul>
         <div class="text-center mt12 w80" id="sponsors-wrapper">
