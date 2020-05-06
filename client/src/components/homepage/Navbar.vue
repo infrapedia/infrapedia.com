@@ -8,7 +8,7 @@
         circle
         icon="el-icon-menu"
         class="no-border hidden-md-and-up color-inherit mt1"
-        @click="toggleMobileDrawer"
+        @click.stop="toggleMobileDrawer"
       />
     </h1>
     <el-divider class="transparent" />
@@ -67,6 +67,10 @@ export default {
         url: '/services'
       },
       {
+        label: 'Contact us',
+        url: '/contact'
+      },
+      {
         label: 'Sponsorships',
         url: '/sponsors'
       }
@@ -94,5 +98,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/scss/components/navbar-homepage-styles.scss';
+@import '../../assets/scss/components/homepage/navbar-homepage-styles.scss';
 </style>

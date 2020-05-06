@@ -224,5 +224,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/scss/components/homepage-styles.scss';
+@import '../../assets/scss/components/homepage/homepage-styles.scss';
 </style>
