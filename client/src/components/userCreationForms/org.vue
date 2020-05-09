@@ -31,14 +31,15 @@
       </el-form-item>
       <el-form-item>
         <el-upload
+          ref="upload"
           accept="image/*.jpg"
           list-type="picture"
           :multiple="false"
+          :auto-upload="false"
           :action="uploadURL"
+          :http-request="handleUserLogoUpload"
           :file-list="fileList"
-          :headers="uploadLogoHeaders"
-          :on-success="handleLogoUpload"
-          :before-upload="handleUploadProgress"
+          :on-change="handleFileListChange"
         >
           <el-button size="small" type="primary">Click to upload</el-button>
           <div slot="tip" class="el-upload__tip ml1" :class="{ dark }">
@@ -149,6 +150,7 @@
 <script>
 import apiConfig from '../../config/apiConfig'
 import countriesList from '../../config/countriesList'
+import { uploadOrgLogo } from '../../services/api/uploads'
 import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 
 export default {
@@ -191,12 +193,6 @@ export default {
           required: true,
           message: 'Please input a reference name',
           trigger: ['blur', 'change']
-        },
-        {
-          min: 2,
-          max: 5,
-          message: 'Length should be 2 to 5',
-          trigger: ['blur', 'change']
         }
       ],
       address: []
@@ -226,9 +222,6 @@ export default {
     }
   },
   computed: {
-    uploadLogoHeaders() {
-      return { userid: this.$auth.user.sub }
-    },
     title() {
       return this.mode == 'create' ? 'Create' : 'Edit'
     },
@@ -256,16 +249,25 @@ export default {
     }
   },
   methods: {
-    setLogoUrl() {
-      if (this.form.logo !== '' && this.form.logo != undefined) {
-        this.fileList.push(this.form.logo)
+    handleFileListChange(file, fileList) {
+      if (file && fileList.length > 0) {
+        this.fileList = [file.raw]
+        this.$refs.upload.submit()
       }
     },
-    handleUploadProgress() {
+    async handleUserLogoUpload() {
       this.uploadLogo.show = false
       this.uploadLogo.loading = true
-    },
-    handleLogoUpload({ data: { r: logo = [] } } = { data: { logo: [] } }) {
+
+      const {
+        data: { r: logo = [] }
+      } = (await uploadOrgLogo({
+        user_id: this.$auth.user.sub,
+        logo: this.fileList[0]
+      })) || {
+        data: { logo: [] }
+      }
+
       if (!logo.length) {
         this.fileList = logo
         this.uploadLogo = {
@@ -287,6 +289,11 @@ export default {
         loading: false
       }
     },
+    setLogoUrl() {
+      if (this.form.logo !== '' && this.form.logo != undefined) {
+        this.fileList.push({ url: this.form.logo })
+      }
+    },
     sendData() {
       return this.$refs['orgForm'].validate(isValid =>
         isValid ? this.$emit('send-data') : false
@@ -294,9 +301,7 @@ export default {
     },
     handleBeforeClose() {
       this.fileList = []
-      this.tagOnEdit = null
-      this.inputVisible = false
-      this.isTagReferenceMissing = false
+      this.clearAddress()
       this.$refs['orgForm'].clearValidate()
       return this.$emit('close')
     },
@@ -318,8 +323,13 @@ export default {
         zipcode: ''
       }
     },
-    editAddress(tag, i) {
-      this.tag = { ...tag }
+    editAddress({ ...tag }, i) {
+      if (!tag.fullAddress) {
+        tag.fullAddress = `${tag.city} ${tag.state ? `(${tag.state})` : ''}, ${
+          tag.country
+        }`
+      }
+      this.tag = tag
       this.tagOnEdit = i
       this.inputVisible = true
     },
