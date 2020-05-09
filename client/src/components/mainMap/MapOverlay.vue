@@ -30,7 +30,6 @@ import dataCollection from '../../mixins/dataCollection.vue'
 import { IS_DRAWING, TOGGLE_SIDEBAR } from '../../store/actionTypes'
 import { FOCUS_ON_CITY } from '../../events'
 import { HAS_TO_EASE_TO, EASE_POINT } from '../../store/actionTypes/map'
-import MobileDrawer from '../../components/MobileDrawer.vue'
 import * as navbarEvents from '../../events/navbar'
 
 export default {
@@ -38,7 +37,7 @@ export default {
   mixins: [dataCollection],
   components: {
     'i-map': Map,
-    IMobileDrawer: MobileDrawer
+    IMobileDrawer: () => import('../../components/MobileDrawer.vue')
   },
   data: () => ({
     title: '',
