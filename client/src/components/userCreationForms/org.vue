@@ -249,19 +249,22 @@ export default {
       }
     }
   },
+  mounted() {
+    if (this.mode == 'create') {
+      setTimeout(() => {
+        if (this.$refs.orgForm) {
+          this.$refs.orgForm.clearValidate()
+        }
+      }, 50)
+    }
+  },
   methods: {
     handleFileListRemove() {
       this.form.logo = ''
       this.fileList = []
     },
     handleFileListChange(file, fileList) {
-      console.warn('here', this, file, this.fileList, this.mode)
-      if (
-        file &&
-        fileList.length > 0 &&
-        !this.form.logo &&
-        this.form.logo !== ''
-      ) {
+      if (file && fileList.length > 0 && !this.form.logo) {
         this.fileList = [file.raw]
         this.$refs.upload.submit()
       }
