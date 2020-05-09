@@ -39,6 +39,7 @@
           :action="uploadURL"
           :http-request="handleUserLogoUpload"
           :file-list="fileList"
+          :on-remove="handleFileListRemove"
           :on-change="handleFileListChange"
         >
           <el-button size="small" type="primary">Click to upload</el-button>
@@ -249,9 +250,18 @@ export default {
     }
   },
   methods: {
+    handleFileListRemove() {
+      this.form.logo = ''
+      this.fileList = []
+    },
     handleFileListChange(file, fileList) {
-      console.warn('here', file, this.fileList, this.mode)
-      if (file && fileList.length > 0) {
+      console.warn('here', this, file, this.fileList, this.mode)
+      if (
+        file &&
+        fileList.length > 0 &&
+        !this.form.logo &&
+        this.form.logo !== ''
+      ) {
         this.fileList = [file.raw]
         this.$refs.upload.submit()
       }
