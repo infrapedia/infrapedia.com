@@ -509,7 +509,10 @@ export default {
     async loadOrgSearch(s) {
       if (s === '') return
       this.isLoadingOrg = true
-      const res = await searchOrganization({ user_id: this.$auth.user.sub, s })
+      const res = await searchOrganization({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
       if (res && res.data) {
         this.selectsData.organizations = res.data
       }
@@ -518,7 +521,10 @@ export default {
     async loadCablesSearch(s) {
       if (s === '') return
       this.isLoadingCables = true
-      const res = await searchCables({ user_id: this.$auth.user.sub, s })
+      const res = await searchCables({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
       if (res && res.data) {
         this.selectsData.cables = res.data
       }
@@ -527,7 +533,7 @@ export default {
     async loadClsSearch(s) {
       if (s === '') return
       this.isLoadingCls = true
-      const res = await searchCls({ user_id: this.$auth.user.sub, s })
+      const res = await searchCls({ user_id: await this.$auth.getUserID(), s })
       if (res && res.data) {
         this.selectsData.cls = res.data
       }
@@ -536,14 +542,17 @@ export default {
     async loadFacSearch(s) {
       if (s === '') return
       this.isLoadingFacs = true
-      const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
+      const res = await searchFacilities({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
       if (res && res.data) {
         this.selectsData.facilities = res.data
       }
       this.isLoadingFacs = false
     },
     async getTagsList(s) {
-      const res = await getTags({ user_id: this.$auth.user.sub, s })
+      const res = await getTags({ user_id: await this.$auth.getUserID(), s })
       if (res && res.data) {
         this.form.tagsList = res.data
       }

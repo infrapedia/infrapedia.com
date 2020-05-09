@@ -65,7 +65,7 @@ export default {
     },
     async getClssList(page = 0) {
       this.loading = true
-      const res = await getClss({ user_id: this.$auth.user.sub, page })
+      const res = await getClss({ user_id: await this.$auth.getUserID(), page })
       if (res.t !== 'error' && res.data) {
         this.tableData = res.data.r
       }
@@ -84,7 +84,7 @@ export default {
       )
         .then(async () => {
           await deleteCls({
-            user_id: this.$auth.user.sub,
+            user_id: await this.$auth.getUserID(),
             _id
           }).then(() => this.getClssList())
         })
@@ -98,7 +98,7 @@ export default {
       }
 
       const res = await searchCls({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         psz: true,
         s
       })

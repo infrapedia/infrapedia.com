@@ -94,7 +94,7 @@ export default {
     },
     async viewOrg(_id) {
       const res = await viewOrganizationOwner({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id
       })
       if (res && res.data && res.data.r) {
@@ -112,7 +112,7 @@ export default {
       )
         .then(async () => {
           await deleteOrganization({
-            user_id: this.$auth.user.sub,
+            user_id: await this.$auth.getUserID(),
             _id
           }).then(() => this.getOrganizationsList())
         })
@@ -135,7 +135,7 @@ export default {
     async getOrganizationsList(page = 0) {
       this.loading = true
       const res = await getOrganizations({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         page
       })
       if (res && res.data && res.t !== 'error') {
@@ -146,7 +146,7 @@ export default {
     async createOrg() {
       const res = await createOrganization({
         ...this.form,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
       if (res && res.data && res.t !== 'error') {
         this.toggleDialog(true)
@@ -156,7 +156,7 @@ export default {
     async saveEditedOrg() {
       const res = await editOrganization({
         ...this.form,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
       if (res && res.t !== 'error') {
         this.toggleDialog(true)
@@ -171,7 +171,7 @@ export default {
 
       this.loading = true
       const res = await searchOrganization({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         psz: true,
         s
       })

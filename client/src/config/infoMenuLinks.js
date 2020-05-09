@@ -1,6 +1,6 @@
 const infoMenuLinks = {
   info: [
-    { label: 'About us', url: '/about', router: true },
+    { label: 'About us', url: '/about', router: true, footer: true },
     { label: 'Blog', url: 'https://blog.infrapedia.com', openTab: true },
     {
       label: 'Services',
@@ -15,7 +15,8 @@ const infoMenuLinks = {
     {
       label: 'Contact us',
       url: '/contact',
-      router: true
+      router: true,
+      footer: true
     },
     {
       label: 'Attributions',
@@ -37,7 +38,7 @@ const infoMenuLinks = {
     {
       label: 'Linkedin',
       icon: ['fab', 'linkedin'],
-      url: 'https://www.linkedin.com/company/netatlas'
+      url: 'https://www.linkedin.com/company/infrapedia'
     },
     {
       label: 'Instagram',

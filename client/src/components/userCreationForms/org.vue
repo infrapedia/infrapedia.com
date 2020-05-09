@@ -247,15 +247,15 @@ export default {
       if (str == 'edit') {
         this.setLogoUrl()
       }
-    }
-  },
-  mounted() {
-    if (this.mode == 'create') {
-      setTimeout(() => {
-        if (this.$refs.orgForm) {
-          this.$refs.orgForm.clearValidate()
-        }
-      }, 50)
+    },
+    visible(bool) {
+      if (bool) {
+        setTimeout(() => {
+          if (this.$refs.orgForm) {
+            this.$refs.orgForm.clearValidate()
+          }
+        }, 50)
+      }
     }
   },
   methods: {
@@ -276,7 +276,7 @@ export default {
       const {
         data: { r: logo = [] }
       } = (await uploadOrgLogo({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         logo: this.fileList[0]
       })) || {
         data: { logo: [] }
@@ -305,7 +305,7 @@ export default {
     },
     setLogoUrl() {
       if (this.form.logo !== '' && this.form.logo != undefined) {
-        this.fileList.push({ url: this.form.logo })
+        this.fileList = [{ url: this.form.logo }]
       }
     },
     sendData() {
@@ -316,6 +316,12 @@ export default {
     handleBeforeClose() {
       this.fileList = []
       this.clearAddress()
+      this.uploadLogo = {
+        text: '',
+        type: '',
+        show: false,
+        loading: false
+      }
       this.$refs['orgForm'].clearValidate()
       return this.$emit('close')
     },

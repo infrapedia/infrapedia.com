@@ -104,7 +104,7 @@ export default {
   },
   methods: {
     async loadLogs() {
-      const res = await usersLogs({ user_id: this.$auth.user.sub })
+      const res = await usersLogs({ user_id: await this.$auth.getUserID() })
       if (res && res.t !== 'err' && res.data && res.data.r) {
         this.logsData = res.data.r
       }
@@ -113,7 +113,7 @@ export default {
       if (!this.$auth.user) return
 
       this.loading = true
-      const userID = this.$auth.user.sub
+      const userID = await this.$auth.getUserID()
       if (userID) {
         const userData = await getUserData(userID)
         if (userData) {

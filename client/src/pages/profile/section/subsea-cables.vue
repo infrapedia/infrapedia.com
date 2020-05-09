@@ -68,7 +68,10 @@ export default {
     },
     async getCablesList(page = 0) {
       this.loading = true
-      const res = await getSubseaCables({ user_id: this.$auth.user.sub, page })
+      const res = await getSubseaCables({
+        user_id: await this.$auth.getUserID(),
+        page
+      })
       if (res.t !== 'error' && res.data) {
         this.tableData = res.data.r
       }
@@ -87,7 +90,7 @@ export default {
       )
         .then(async () => {
           await deleteCable({
-            user_id: this.$auth.user.sub,
+            user_id: await this.$auth.getUserID(),
             _id
           }).then(() => this.getCablesList())
         })
@@ -101,7 +104,7 @@ export default {
 
       this.loading = true
       const res = await getSearchByCablesS({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         psz: true,
         s
       })

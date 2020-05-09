@@ -229,7 +229,7 @@ export default {
       this.isBadge = true
       const res = await shareLink({
         url: window.origin + this.$route.path + getCookie(queryCookieName),
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
       if (res && res.data && res.data.r) {
         return copyToClipboard(res.data.r)

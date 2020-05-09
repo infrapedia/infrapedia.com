@@ -7,6 +7,13 @@
             <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
           </router-link>
         </h1>
+        <a
+          target="_blank"
+          href="https://www.google.com/maps/place/South+San+Francisco,+California+94083,+EE.+UU./@37.6500162,-122.4187548,15z/data=!3m1!4b1!4m5!3m4!1s0x808f79ac2e06d7eb:0x899aea1b64c95f9b!8m2!3d37.65!4d-122.41"
+          class="fs-small mt4 inline-block w-fit-full underline-hover"
+        >
+          San Francisco, California 94083, US
+        </a>
         <p class="fs-small mt4">
           {{ year }} Copyright, All Rights Reserved by Infrapedia Inc.
         </p>
@@ -53,20 +60,22 @@
             v-for="(link, i) in infoMenuLinks.info"
             :key="i"
           >
-            <a
-              v-if="link.openTab"
-              :href="link.url"
-              target="_blank"
-              class="underline-hover color-inherit"
-            >
-              {{ link.label }}
-            </a>
-            <router-link
-              v-else
-              :to="link.url"
-              class="underline-hover color-inherit"
-              v-text="link.label"
-            />
+            <template v-if="link.footer">
+              <a
+                v-if="link.openTab"
+                :href="link.url"
+                target="_blank"
+                class="underline-hover color-inherit"
+              >
+                {{ link.label }}
+              </a>
+              <router-link
+                v-else
+                :to="link.url"
+                class="underline-hover color-inherit"
+                v-text="link.label"
+              />
+            </template>
           </li>
           <li class="list-item mb6">
             <router-link

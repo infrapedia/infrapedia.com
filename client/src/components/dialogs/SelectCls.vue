@@ -104,7 +104,7 @@ export default {
     async updateSelectedCLS(data) {
       const res = await clsUpdateCable({
         cable_id: this.$route.query.item,
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: data._id
       })
 
@@ -116,7 +116,7 @@ export default {
     async updateRemoveSelectedCLS(data) {
       const res = await clsRemoveCable({
         cable_id: this.$route.query.item,
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: data._id
       })
 
@@ -127,7 +127,7 @@ export default {
     },
     handleSearchChange: debounce(async function(s) {
       this.loading = true
-      const res = await searchCls({ user_id: this.$auth.user.sub, s })
+      const res = await searchCls({ user_id: await this.$auth.getUserID(), s })
       if (res && res.data) {
         this.clsList = res.data
       }

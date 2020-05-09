@@ -269,7 +269,7 @@ export default {
     },
     async checkUserMapExistance() {
       this.loading = true
-      const res = await getMyMap({ user_id: this.$auth.user.sub })
+      const res = await getMyMap({ user_id: await this.$auth.getUserID() })
       if (res && res.t !== 'error' && res.data && res.data.r) {
         this.mode = 'edit'
         const {
@@ -323,7 +323,10 @@ export default {
     },
     async setMap(data) {
       this.isSendingData = true
-      const res = await setMyMap({ ...data, user_id: this.$auth.user.sub })
+      const res = await setMyMap({
+        ...data,
+        user_id: await this.$auth.getUserID()
+      })
       if (res && res.t != 'error') {
         this.mode = 'create'
         await setupMyMapArchives(data.subdomain)
@@ -517,19 +520,31 @@ export default {
       this.form.activationDateTime = new Date(this.form.activationDateTime)
     },
     async viewCurrentFacility(_id) {
-      const res = await viewFacilityOwner({ user_id: this.$auth.user.sub, _id })
+      const res = await viewFacilityOwner({
+        user_id: await this.$auth.getUserID(),
+        _id
+      })
       return res && res.data && res.data.r ? res.data.r : {}
     },
     async viewCurrentIXP(_id) {
-      const res = await viewIXPOwner({ user_id: this.$auth.user.sub, _id })
+      const res = await viewIXPOwner({
+        user_id: await this.$auth.getUserID(),
+        _id
+      })
       return res && res.data && res.data.r ? res.data.r : {}
     },
     async viewCurrentCLS(_id) {
-      const res = await viewClsOwner({ user_id: this.$auth.user.sub, _id })
+      const res = await viewClsOwner({
+        user_id: await this.$auth.getUserID(),
+        _id
+      })
       return res && res.data && res.data.r ? res.data.r : {}
     },
     async viewCurrentCable(_id) {
-      const res = await viewCableOwner({ user_id: this.$auth.user.sub, _id })
+      const res = await viewCableOwner({
+        user_id: await this.$auth.getUserID(),
+        _id
+      })
       return res && res.data && res.data.r ? res.data.r : {}
     },
     handleReturningRoute(type) {
@@ -562,7 +577,7 @@ export default {
 
       const res = await createCls({
         ...this.form,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
 
       this.isSendingData = false
@@ -577,7 +592,7 @@ export default {
 
       const res = await editCLS({
         ...this.form,
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: this.$route.query.item
       })
 
@@ -588,7 +603,7 @@ export default {
       this.isSendingData = true
       const res = await createCable({
         ...this.form,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
 
       this.isSendingData = false
@@ -598,7 +613,7 @@ export default {
       this.isSendingData = true
       const res = await editCable({
         ...this.form,
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: this.$route.query.item
       })
 
@@ -614,7 +629,7 @@ export default {
 
       const res = await createIXP({
         ...this.form,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
 
       this.isSendingData = false
@@ -630,7 +645,7 @@ export default {
       const res = await editIXP({
         ...this.form,
         _id: this.$route.query.item,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
 
       this.isSendingData = false
@@ -641,7 +656,7 @@ export default {
 
       const res = await createFacility({
         ...this.form,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
 
       this.isSendingData = false
@@ -653,7 +668,7 @@ export default {
       const res = await editFacility({
         ...this.form,
         _id: this.$route.query.item,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
 
       this.isSendingData = false

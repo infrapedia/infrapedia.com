@@ -96,7 +96,10 @@ export default {
     async getNetworksList(page = 0) {
       try {
         this.loading = true
-        const res = await getNetworks({ user_id: this.$auth.user.sub, page })
+        const res = await getNetworks({
+          user_id: await this.$auth.getUserID(),
+          page
+        })
         if (res && res.data && res.t !== 'error') {
           this.tableData = res.data.r
         }
@@ -108,7 +111,10 @@ export default {
     },
     async viewNet(_id) {
       this.loading = true
-      const res = await viewNetworkOwner({ user_id: this.$auth.user.sub, _id })
+      const res = await viewNetworkOwner({
+        user_id: await this.$auth.getUserID(),
+        _id
+      })
       if (res && res.data && res.data.r) {
         this.form = { ...res.data.r }
         const props = ['cables', 'facilities', 'cls', 'organizations']
@@ -168,7 +174,7 @@ export default {
       )
         .then(async () => {
           await deleteNetwork({
-            user_id: this.$auth.user.sub,
+            user_id: await this.$auth.getUserID(),
             _id
           }).then(() => this.getNetworksList())
         })
@@ -177,7 +183,7 @@ export default {
     async createNet() {
       const res = await createNetwork({
         ...this.form,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
       if (res && res.t !== 'error') {
         this.toggleDialog(true)
@@ -187,7 +193,7 @@ export default {
     async saveEditedNet() {
       const res = await editNetwork({
         ...this.form,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
       if (res && res.t !== 'error') {
         this.toggleDialog(true)
@@ -202,7 +208,7 @@ export default {
 
       this.loading = true
       const res = await searchNetwork({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         psz: true,
         s
       })

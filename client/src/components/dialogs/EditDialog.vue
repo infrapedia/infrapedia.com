@@ -129,7 +129,7 @@ export default {
     async submitForm() {
       this.isSendingData = true
       const res = await editElemnt({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         ...this.form
       })
       if (res && res.t && res.t !== 'error') this.closeDialog()

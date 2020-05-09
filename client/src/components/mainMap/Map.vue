@@ -486,7 +486,10 @@ export default {
       } else await this.$auth.loginWithRedirect()
     },
     async handleOrganizationFocus(_id, fc) {
-      const res = await viewOrganization({ user_id: this.$auth.user.sub, _id })
+      const res = await viewOrganization({
+        user_id: await this.$auth.getUserID(),
+        _id
+      })
       if (res && res.data && res.data.r && res.data.r.length) {
         // Change sidebar mode to data_centers mode
         this.changeSidebarMode(1)
@@ -510,7 +513,10 @@ export default {
     async handleNetworkFocus(_id, fc) {
       const { focus, bounds, map } = this
 
-      const res = await viewNetwork({ user_id: this.$auth.user.sub, _id })
+      const res = await viewNetwork({
+        user_id: await this.$auth.getUserID(),
+        _id
+      })
       if (res && res.data && res.data.r && res.data.r.length) {
         // Change sidebar mode to data_centers mode
         this.changeSidebarMode(1)
@@ -579,7 +585,7 @@ export default {
      */
     async handleFacilitySelection({ id, type }) {
       const data = await this.getFacilityData({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: id
       })
       this.$store.commit(`${MAP_FOCUS_ON}`, {
@@ -598,7 +604,7 @@ export default {
     },
     async handleClsSelection({ id, type }) {
       const data = await this.getClsData({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: id
       })
       this.$store.commit(`${MAP_FOCUS_ON}`, {
@@ -617,7 +623,7 @@ export default {
     },
     async handleIxpsSelection({ id, type }) {
       const data = await this.getIxpsData({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: id
       })
       this.$store.commit(`${MAP_FOCUS_ON}`, {

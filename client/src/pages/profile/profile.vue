@@ -176,7 +176,7 @@ export default {
 
       this.loading = true
       setTimeout(async () => {
-        const userData = await getUserData(this.$auth.user.sub)
+        const userData = await getUserData(await this.$auth.getUserID())
         if (userData) {
           const { user_metadata } = userData
           this.form = {

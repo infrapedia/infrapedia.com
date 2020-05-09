@@ -82,7 +82,7 @@ export default {
     async submitForm() {
       this.isSendingData = true
       const res = await sendEmail({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         id: this.focus.id,
         ...this.form
       })

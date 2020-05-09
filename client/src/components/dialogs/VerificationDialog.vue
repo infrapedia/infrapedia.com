@@ -105,7 +105,7 @@ export default {
     async setUserData() {
       if (!this.$auth.user) return
       this.loading = true
-      const userData = await getUserData(this.$auth.user.sub)
+      const userData = await getUserData(await this.$auth.getUserID())
 
       if (userData) {
         this.email =
@@ -118,7 +118,7 @@ export default {
     async submitForm() {
       this.sendingData = true
       const res = await verifyElement({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         email: this.email,
         elemnt: this.focus.id,
         type: getSelectionTypeNumber(this.focus.type)

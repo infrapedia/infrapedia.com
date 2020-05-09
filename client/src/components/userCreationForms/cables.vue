@@ -401,7 +401,7 @@ export default {
     },
     async getClsListConnectedToCable() {
       const res = await clsListConnectedToCable({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         cable_id: this.$route.query.item
       })
       if (res && res.data && res.data.r) {
@@ -409,7 +409,7 @@ export default {
       }
     },
     async getTagsList(s) {
-      const res = await getTags({ user_id: this.$auth.user.sub, s })
+      const res = await getTags({ user_id: await this.$auth.getUserID(), s })
       if (res && res.data) {
         this.form.tagsList = res.data
       }
@@ -425,7 +425,10 @@ export default {
     async loadFacsSearch(s) {
       if (s === '') return
       this.isLoadingFacs = true
-      const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
+      const res = await searchFacilities({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
       if (res && res.data) {
         this.facsList = res.data.reduce(
           (acc = Array.from(this.facsList), item) => {
@@ -439,7 +442,10 @@ export default {
     async loadOrgsSearch(s) {
       if (s === '') return
       this.isLoadingOrgs = true
-      const res = await searchOrganization({ user_id: this.$auth.user.sub, s })
+      const res = await searchOrganization({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
       if (res && res.data) {
         this.orgsList = res.data.reduce(
           (acc = Array.from(this.orgsList), item) => {

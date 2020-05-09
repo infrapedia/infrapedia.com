@@ -155,7 +155,7 @@ export default {
   },
   methods: {
     async getTagsList(s) {
-      const res = await getTags({ user_id: this.$auth.user.sub, s })
+      const res = await getTags({ user_id: await this.$auth.getUserID(), s })
       if (res && res.data) {
         this.form.tagsList = res.data
       }
@@ -163,7 +163,10 @@ export default {
     async loadCablesSearch(s) {
       if (s === '') return
       this.isLoadingCables = true
-      const res = await searchCables({ user_id: this.$auth.user.sub, s })
+      const res = await searchCables({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
       if (res && res.data) {
         this.cablesList = res.data
       }
