@@ -3,21 +3,17 @@
 .drawer-wrapper {
   background: $white-full;
   position: absolute;
-  width: 52%;
+  width: auto;
   max-width: 42rem;
   height: 100vh;
   z-index: 2000 !important;
   left: 0;
-  top: 48px;
+  top: -5px;
   overflow: hidden;
   display: flex;
   flex-flow: row nowrap;
   border-color: transparent;
   transition: all $regular-transition;
-
-  @media screen and (max-width: $break-sm) {
-    width: 48%;
-  }
 
   @media screen and (max-width: $break-xs) {
     top: 0;
@@ -37,7 +33,7 @@
     background: $white-full;
 
     .inner-wrapper {
-      width: 100vw;
+      width: 100%;
     }
 
     h1.title {
@@ -75,6 +71,17 @@ header {
     }
   }
 }
+
+#sponsors-wrapper {
+  width: 30rem;
+  @media screen and (max-width: $break-xs) {
+    width: 100vw;
+  }
+}
+
+/*
+ * Theme variants
+*/
 
 #html-wrapper.dark {
   header {

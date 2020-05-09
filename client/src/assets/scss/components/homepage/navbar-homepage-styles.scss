@@ -1,4 +1,4 @@
-@import '../base/variables';
+@import '../../base/variables';
 
 .logo-title {
   margin-top: -0.05rem;
@@ -10,7 +10,7 @@
 }
 
 .wrapper-right {
-  min-width: 21rem;
+  min-width: 28rem;
 }
 
 @media screen and (max-width: $break-md) {

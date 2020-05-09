@@ -1,0 +1,26 @@
+@import '../base/variables';
+
+.footer-buttons {
+  @media screen and (max-width: $break-xs) {
+    flex-wrap: wrap-reverse;
+    justify-content: center;
+    .el-button:first-child {
+      margin-top: 1rem;
+    }
+  }
+}
+
+.radio-buttons-wrapper {
+  display: grid;
+  gap: 1.2rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  .el-image {
+    min-width: 100%;
+    min-height: 6rem;
+  }
+}
+
+.el-radio-button:nth-child(2),
+.el-radio-button:nth-child(3) {
+  border-left: 1px solid #dcdfe6;
+}

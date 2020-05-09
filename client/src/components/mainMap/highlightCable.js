@@ -1,8 +1,8 @@
 import { mapConfig } from '../../config/mapConfig'
 import { CURRENT_MAP_FILTER, MAP_FOCUS_ON } from '../../store/actionTypes/map'
 
-function highlightCurrentCable({ dark, cable, map, commit }) {
-  if (!cable || !map || !commit || typeof dark === 'undefined') {
+export default function highlightCurrentCable({ dark, cable, map, commit }) {
+  if (!cable || !map || !commit || typeof dark == 'undefined') {
     throw {
       message: `highlightCable.js module line 7. \n
         expected 'cable' to be an Object reference to currentSelection, found:${typeof cable};\n
@@ -14,11 +14,13 @@ function highlightCurrentCable({ dark, cable, map, commit }) {
 
   const unselectedColor = dark ? 'rgba(50,50,50,0.35)' : 'rgba(23,23,23, 0.2)'
 
-  // Changing cables line colors
-  map.setPaintProperty(mapConfig.cables, 'line-color', unselectedColor)
+  // I need to change the ID property to be matched dynamically for the colors-change to work
+  const filter = mapConfig.highlightFeatureState
+  filter[1][2] = cable.id
+  // Cables need to be kinda less visible when one is selected
+  filter[3] = unselectedColor
 
-  // Showing only the selected cable on the highlight layer
-  map.setFilter(mapConfig.cablesHighlight, ['==', ['get', '_id'], cable._id])
+  map.setPaintProperty(mapConfig.cables, 'line-color', filter)
 
   // Keeping record of the selection and map current filter
   commit(`${CURRENT_MAP_FILTER}`, ['==', ['get', '_id'], cable._id])
@@ -28,5 +30,3 @@ function highlightCurrentCable({ dark, cable, map, commit }) {
     name: cable.name
   })
 }
-
-export default highlightCurrentCable

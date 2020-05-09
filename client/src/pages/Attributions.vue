@@ -5,8 +5,8 @@
     </h1>
     <p>
       We apologize in advance if we missed your contribution. Please e-mail
-      <a href="mailto:admin@networkatlas.com" target="_blank">
-        admin@networkatlas.com
+      <a href="mailto:admin@infrapedia.com" target="_blank">
+        admin@infrapedia.com
       </a>
       to quickly add your contribution to this list. 2019012801 Removed Moana
       and APX East errors.

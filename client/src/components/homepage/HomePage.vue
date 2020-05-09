@@ -1,11 +1,11 @@
 <template>
-  <div class="pb20 no-overflow-x">
+  <div class="main-wrapper pb20 no-overflow-x">
     <div class="hero-wrapper relative">
       <div
         class="absolute z-index20 cubic-transition overlay-inner w-fit-full h-fit-full flex column nowrap justify-content-center align-items-center"
         @click="askToRegister"
       >
-        <div class="w120 flex justify-content-center row wrap">
+        <div class="inner-wrapper-text flex justify-content-center row wrap">
           <h2 class="title white mb12">
             Create your account today and begin to explore
             <small class="block">
@@ -35,7 +35,7 @@
       <div
         class="inner-wrapper mt24 flex justify-content-center column wrap align-items-center"
       >
-        <p class="text font-bold">
+        <p class="text heading">
           Infrapedia is more than just the world’s largest crowd-sourced
           real-time global internet infrastructure map. We are one of the most
           versatile and useful tools you can use to discover new internet routes
@@ -46,7 +46,7 @@
           connect and request information and quotes from providers all over the
           world easily.
         </p>
-        <div class="centered-wrapper relative w-fit-full mt24 pt2">
+        <div class="centered-wrapper relative w-fit-full mt24">
           <div class="flex row nowrap with-icon justify-self-center">
             <div
               class="inner-wrapper"
@@ -213,7 +213,7 @@ export default {
     },
     async loadBlogPosts() {
       const res = await getBlogPosts()
-      if (res) this.blogPosts = res
+      this.blogPosts = res || []
     },
     askToRegister() {
       this.$parent.$emit('layout', 'nothing-layout')
@@ -224,5 +224,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/scss/components/homepage-styles.scss';
+@import '../../assets/scss/components/homepage/homepage-styles.scss';
 </style>

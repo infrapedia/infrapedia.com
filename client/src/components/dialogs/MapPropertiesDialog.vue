@@ -4,7 +4,6 @@
     width="20%"
     top="20vh"
     append-to-body
-    :show-close="false"
     :close-on-press-escape="false"
     :close-on-click-modal="false"
     :before-close="handleClose"
@@ -13,9 +12,11 @@
       {{ title }}
     </h2>
     <el-form>
+      <el-form-item label="Category">
+        <el-input v-model="form.category" />
+      </el-form-item>
       <el-form-item label="Stroke color">
-        <el-color-picker v-model="form.color" :predefine="predefineColors">
-        </el-color-picker>
+        <el-color-picker v-model="form.color" :predefine="predefineColors" />
       </el-form-item>
       <el-form-item label="Line style" v-if="featureType === 'cables'">
         <el-radio-group v-model="form['line-style']">
@@ -71,21 +72,7 @@ export default {
   watch: {
     isVisible(bool) {
       if (!bool) return
-
-      if (this.mode !== 'create') {
-        this.form = { ...this.feature.properties }
-      } else {
-        if (this.featureType !== 'Point') {
-          this.form = {
-            color: '',
-            'line-style': 'normal'
-          }
-        } else {
-          this.form = {
-            color: ''
-          }
-        }
-      }
+      this.createFormKeys()
     }
   },
   computed: {
@@ -98,7 +85,31 @@ export default {
     }
   },
   methods: {
+    createFormKeys() {
+      if (this.mode != 'create') {
+        this.form = { ...this.feature.properties }
+        if (!this.form.category) {
+          this.form.category = ''
+        }
+      } else {
+        if (this.featureType != 'Point') {
+          this.form = {
+            color: '',
+            category: '',
+            'line-style': 'normal'
+          }
+        } else {
+          this.form = {
+            color: '',
+            category: ''
+          }
+        }
+      }
+    },
     handleClose() {
+      if (this.form.color === '') {
+        this.form.color = '#1e90ff'
+      }
       return this.$emit('close', this.form)
     }
   }

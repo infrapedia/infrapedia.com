@@ -20,17 +20,17 @@
       v-loading="loading"
     >
       <el-row :gutter="15">
-        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="8">
+        <el-col :xs="24" :sm="12" :md="24" :lg="24" :xl="12">
           <el-form-item label="Company name" prop="company">
             <el-input v-model="form.company" :class="{ dark }" />
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="24" :lg="12" :xl="8">
+        <el-col :xs="24" :sm="12" :md="24" :lg="24" :xl="12">
           <el-form-item label="Full Name" prop="fullname">
             <el-input v-model="form.fullname" :class="{ dark }" />
           </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="24" :lg="12" :xl="8">
+        <!-- <el-col :xs="24" :sm="12" :md="24" :lg="12" :xl="8">
           <el-form-item label="Phone number">
             <div class="el-input">
               <i-phone-input
@@ -51,10 +51,10 @@
               />
             </el-collapse-transition>
           </el-form-item>
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row :gutter="30">
-        <el-col :xs="24" :sm="12" :md="24" :lg="12" :xl="12">
+        <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
           <el-form-item label="Email" prop="email">
             <el-input type="email" v-model="form.email" :class="{ dark }" />
           </el-form-item>
@@ -99,23 +99,29 @@
           </el-col>
         </template>
         <template v-if="isBackboneSelection">
-          <el-col :span="12">
-            <el-form-item label="From (A-end)" prop="fromA">
+          <el-col :md="24" :xl="12">
+            <div class="el-form-item is-required">
+              <label for="addressPoinB" class="el-form-item__label">
+                From (A-end)
+              </label>
               <autocomplete-google
                 @place-changed="handleAddressChanged($event, 'a')"
                 size="regular"
                 id="pointA"
               />
-            </el-form-item>
+            </div>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="To (B-end)" prop="toB">
+          <el-col :md="24" :xl="12">
+            <div class="el-form-item is-required">
+              <label for="addressPoinB" class="el-form-item__label">
+                To (B-end)
+              </label>
               <autocomplete-google
                 @place-changed="handleAddressChanged($event, 'b')"
                 size="regular"
                 id="pointB"
               />
-            </el-form-item>
+            </div>
           </el-col>
         </template>
         <el-col :span="24">
@@ -192,20 +198,20 @@ export default {
       capacity: '',
       totalRack: 0,
       message: '',
-      phonenumber: {
-        num: '',
-        valid: null
-      },
+      // phonenumber: {
+      //   num: '',
+      //   valid: null
+      // },
       address: {
         pointA: null,
         pointB: null
       }
     },
     formRules: {
-      phonenumber: [],
+      // phonenumber: [],
       message: [],
-      fromA: [],
-      toB: [],
+      'address.fromA': [],
+      'address.toB': [],
       fullname: [
         {
           required: true,
@@ -213,9 +219,8 @@ export default {
           trigger: 'blur'
         },
         {
-          min: 3,
-          max: 10,
-          message: 'Length should be 3 to 10',
+          max: 50,
+          message: 'Length should be max 50',
           trigger: ['change', 'blur']
         }
       ],
@@ -258,7 +263,7 @@ export default {
       }
     },
     dialogTitle() {
-      return (this.buyType && this.buyType.title) || ''
+      return this.buyType && this.buyType.title ? this.buyType.title : ''
     },
     isFormUncomplete() {
       // TODO: fix this form uncomplete checker for when using & !using: totalRack
@@ -266,7 +271,9 @@ export default {
       return (emptyFields.length &&
         this.dialogTitle === 'Datacenter' &&
         emptyFields.includes('totalRack')) ||
-        !this.catchaVerified
+        !this.catchaVerified ||
+        this.form.address.pointA == null ||
+        this.form.address.pointB == null
         ? true
         : false
     },
@@ -432,16 +439,16 @@ export default {
       }
       this.isSendingData = false
     },
-    validatePhoneNumber({ number, isValid }) {
-      try {
-        this.form.phonenumber = {
-          num: number,
-          valid: isValid
-        }
-      } catch {
-        // Ignore
-      }
-    },
+    // validatePhoneNumber({ number, isValid }) {
+    //   try {
+    //     this.form.phonenumber = {
+    //       num: number,
+    //       valid: isValid
+    //     }
+    //   } catch {
+    //     // Ignore
+    //   }
+    // },
     submitForm(formRef) {
       this.$refs[formRef].validate(valid => {
         if (valid) this.sendBuyRequest()
@@ -451,6 +458,7 @@ export default {
     closeDialog() {
       this.$store.commit(`${TOGGLE_BUY_DIALOG}`, false)
       this.$refs.form.resetFields()
+      this.catchaVerified = null
       this.form = {
         company: '',
         email: '',
@@ -458,10 +466,10 @@ export default {
         fullname: '',
         capacity: '',
         totalRack: 0,
-        phonenumber: {
-          num: '',
-          valid: null
-        },
+        // phonenumber: {
+        //   num: '',
+        //   valid: null
+        // },
         address: {
           pointA: null,
           pointB: null

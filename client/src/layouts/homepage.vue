@@ -2,6 +2,7 @@
   <el-container direction="vertical">
     <cookie-consent :message="cc.message" :href="cc.href" />
     <h-mobile-drawer
+      class="hidden-md-and-up"
       :visibility="isMobileDrawer"
       @close="toggleDrawerVisibility"
     />

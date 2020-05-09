@@ -17,8 +17,8 @@
       <el-form-item label="Name" prop="name" required>
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
-      <el-form-item label="URL" prop="url">
-        <el-input :class="{ dark }" class="w-fit-full" v-model="form.url" />
+      <el-form-item label="URL" prop="link">
+        <el-input :class="{ dark }" class="w-fit-full" v-model="form.link" />
       </el-form-item>
       <el-form-item label="Information" prop="inf">
         <el-input
@@ -170,7 +170,7 @@ export default {
           trigger: ['blur', 'change']
         }
       ],
-      url: [],
+      link: [],
       inf: []
     },
     tagRules: {

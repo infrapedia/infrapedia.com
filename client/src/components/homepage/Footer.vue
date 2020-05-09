@@ -123,7 +123,7 @@ export default {
       },
       {
         label: 'Blog',
-        url: 'https://infrapedia.com/blog',
+        url: 'https://blog.infrapedia.com',
         tab: true
       },
       {
@@ -153,5 +153,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/scss/components/footer-homepage-styles.scss';
+@import '../../assets/scss/components/homepage/footer-homepage-styles.scss';
 </style>

@@ -2,6 +2,7 @@
   <transition
     tag="div"
     mode="out-in"
+    @click.stop
     name="animated faster"
     enter-active-class="slideInLeft"
     leave-active-class="slideOutLeft"
@@ -9,10 +10,11 @@
     <el-card
       v-if="visibility"
       shadow="hover"
+      id="homepage-mobile-drawer"
       :class="{ dark, light: !dark }"
       class="drawer-wrapper"
     >
-      <div class="w-full">
+      <div class="inner-wrapper">
         <header
           class="h14 pr4 pl4 pb2 flex justify-content-space-between align-items-center"
           :class="{ dark, light: !dark }"
@@ -28,27 +30,43 @@
           </span>
         </header>
         <ul role="list">
-          <li v-for="(item, i) in links" :key="i" role="listitem">
-            <el-button
-              plain
-              class="no-border pt4 pb4 w-fit-full text-left transparent"
-              @click="goToRoute(item.url)"
+          <li v-for="(link, i) in links" :key="i" role="listitem">
+            <a
+              :key="i"
+              :href="link.url"
+              v-if="link.tab"
+              target="_blank"
+              class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
             >
-              {{ item.label }}
-            </el-button>
+              {{ link.label }}
+            </a>
+            <template v-else>
+              <router-link
+                v-if="i === 0"
+                :key="i"
+                :to="checkIfLoggedIn"
+                class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
+              >
+                {{ link.label }}
+              </router-link>
+              <router-link
+                v-else
+                :key="i"
+                :to="link.url"
+                class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
+              >
+                {{ link.label }}
+              </router-link>
+            </template>
           </li>
         </ul>
-        <div class="text-center mt12">
-          <el-divider inset />
+        <div class="text-center mt12 w80" id="sponsors-wrapper">
+          <el-divider />
           <h2 class="m0 mb10">
             Sponsors
           </h2>
           <ul role="list">
-            <li
-              class="inline-block relative"
-              data-no-outline="true"
-              role="listitem"
-            >
+            <li class="block relative" data-no-outline="true" role="listitem">
               <div class="list-item" data-no-hover-bg="true">
                 <a href="https://www.catchpoint.com" target="_blank">
                   <el-image
@@ -63,7 +81,7 @@
             </li>
 
             <li
-              class="inline-block relative mt8"
+              class="block relative mt8"
               data-no-outline="true"
               role="listitem"
             >
@@ -87,6 +105,8 @@
 </template>
 
 <script>
+const body = document.querySelector('body')
+
 export default {
   data: () => ({
     links: [
@@ -96,7 +116,7 @@ export default {
       },
       {
         label: 'Blog',
-        url: 'https://infrapedia.com/blog',
+        url: 'https://blog.infrapedia.com',
         tab: true
       },
       {
@@ -109,7 +129,7 @@ export default {
       },
       {
         label: 'Sponsorships',
-        url: '/sponsorships'
+        url: '/sponsors'
       }
     ]
   }),
@@ -119,9 +139,19 @@ export default {
       required: true
     }
   },
+  watch: {
+    '$route.path'(path) {
+      if (path) {
+        this.toggleVisibility()
+      }
+    }
+  },
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    checkIfLoggedIn() {
+      return this.$auth.isAuthenticated ? '/app' : '/'
     },
     imageURL() {
       return this.dark
@@ -132,7 +162,21 @@ export default {
       return this.dark ? 'dark' : 'light'
     }
   },
+  created() {
+    body.addEventListener('click', this.handleOutsideClick)
+  },
+  beforeDestroy() {
+    body.removeEventListener('click', this.handleOutsideClick)
+  },
   methods: {
+    handleOutsideClick(e) {
+      if (
+        this.visibility &&
+        e.target.offsetParent.id != 'homepage-mobile-drawer'
+      ) {
+        this.toggleVisibility()
+      }
+    },
     goToRoute(link) {
       if (this.$route.path != link) {
         this.toggleVisibility()

@@ -31,6 +31,11 @@ export const setMyMap = async ({
   googleID,
   facilities,
   cls,
+  owners,
+  techEmail,
+  techPhone,
+  saleEmail,
+  salePhone,
   cables,
   logos,
   draw,
@@ -43,12 +48,20 @@ export const setMyMap = async ({
 
   form.append('googleID', googleID)
   form.append('subdomain', subdomain)
+  form.append('techEmail', techEmail)
+  form.append('techPhone', techPhone)
+  form.append('saleEmail', saleEmail)
+  form.append('salePhone', salePhone)
   form.append('config', JSON.stringify(config))
   form.append('draw', JSON.stringify(fCollectionFormat(draw)))
 
   if (facilities && facilities.length) {
     facilities.forEach((fac, i) => form.append(`facilities[${i}]`, fac))
   } else form.append('facilities', [])
+
+  if (owners && owners.length) {
+    owners.forEach((fac, i) => form.append(`owners[${i}]`, fac))
+  } else form.append('owners', [])
 
   if (ixps && ixps.length) {
     ixps.forEach((ixp, i) => form.append(`ixps[${i}]`, ixp))

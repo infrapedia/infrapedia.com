@@ -8,7 +8,7 @@
         circle
         icon="el-icon-menu"
         class="no-border hidden-md-and-up color-inherit mt1"
-        @click="toggleMobileDrawer"
+        @click.stop="toggleMobileDrawer"
       />
     </h1>
     <el-divider class="transparent" />
@@ -55,7 +55,7 @@ export default {
       },
       {
         label: 'Blog',
-        url: 'https://infrapedia.com/blog',
+        url: 'https://blog.infrapedia.com',
         tab: true
       },
       {
@@ -65,6 +65,10 @@ export default {
       {
         label: 'Services',
         url: '/services'
+      },
+      {
+        label: 'Contact us',
+        url: '/contact'
       },
       {
         label: 'Sponsorships',
@@ -94,5 +98,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/scss/components/navbar-homepage-styles.scss';
+@import '../../assets/scss/components/homepage/navbar-homepage-styles.scss';
 </style>

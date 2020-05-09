@@ -45,9 +45,9 @@
         <li class="w-fit-full" data-no-outline="true">
           <div class="no-selectable">
             <a
-              href="https://www.infrapedia.com/blog"
+              href="https://blog.infrapedia.com"
               target="_blank"
-              class="no-underline inherit color-inherit p4 mr4 ml4 inline-block"
+              class="no-underline inherit color-inherit p4 mr4 inline-block"
             >
               Blog
             </a>
@@ -57,7 +57,7 @@
           <div class="no-selectable">
             <router-link
               to="/contact"
-              class="no-underline inherit color-inherit p4 mr4 ml4 inline-block"
+              class="no-underline inherit color-inherit p4 mr4 inline-block"
             >
               Contact us
             </router-link>

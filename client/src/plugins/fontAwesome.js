@@ -57,7 +57,8 @@ import {
   faBullhorn,
   faCode,
   faBuilding,
-  faDotCircle
+  faDotCircle,
+  faPrint
 } from '@fortawesome/free-solid-svg-icons'
 import { faHandPointUp } from '@fortawesome/free-regular-svg-icons'
 import {
@@ -72,6 +73,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
+  faPrint,
   faBuilding,
   faDotCircle,
   faCode,
