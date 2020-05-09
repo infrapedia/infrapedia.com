@@ -327,7 +327,7 @@ export default {
       if (s == '') return
 
       this.isLoadingIXPs = true
-      const res = await searchIxps({ user_id: this.$auth.user.sub, s })
+      const res = await searchIxps({ user_id: await this.$auth.getUserID(), s })
       if (res && res.data) {
         this.ixpsList = res.data
       }
@@ -341,7 +341,7 @@ export default {
       this.form.ixps = this.form.ixps.filter(item => item._id != _id)
     },
     async getTagsList(s) {
-      const res = await getTags({ user_id: this.$auth.user.sub, s })
+      const res = await getTags({ user_id: await this.$auth.getUserID(), s })
       if (res && res.data) {
         this.form.tagsList = res.data
       }

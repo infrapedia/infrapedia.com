@@ -422,19 +422,31 @@ export default {
         : this.$store.dispatch('editor/toggleMapFormLoading', false)
     },
     async handleGetCablesGeom(ids) {
-      const res = await getCablesGeom({ user_id: this.$auth.user.sub, ids })
+      const res = await getCablesGeom({
+        user_id: await this.$auth.getUserID(),
+        ids
+      })
       return res && res.data && res.data.r ? res.data.r : fCollectionFormat()
     },
     async handleGetFacsGeom(ids) {
-      const res = await getFacilitiesGeom({ user_id: this.$auth.user.sub, ids })
+      const res = await getFacilitiesGeom({
+        user_id: await this.$auth.getUserID(),
+        ids
+      })
       return res && res.data && res.data.r ? res.data.r : fCollectionFormat()
     },
     async handleGetClsGeom(ids) {
-      const res = await getClsGeoms({ user_id: this.$auth.user.sub, ids })
+      const res = await getClsGeoms({
+        user_id: await this.$auth.getUserID(),
+        ids
+      })
       return res && res.data && res.data.r ? res.data.r : fCollectionFormat()
     },
     async handleGetIxpsGeom(ids) {
-      const res = await getIxpsGeoms({ user_id: this.$auth.user.sub, ids })
+      const res = await getIxpsGeoms({
+        user_id: await this.$auth.getUserID(),
+        ids
+      })
       return res && res.data && res.data.r ? res.data.r : fCollectionFormat()
     },
     handleGetOwnersGeom(ids) {
@@ -456,7 +468,10 @@ export default {
     async loadOwnersSearch(s) {
       if (s === '') return
       this.isLoadingOwners = true
-      const res = await searchOrganization({ user_id: this.$auth.user.sub, s })
+      const res = await searchOrganization({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
       if (res && res.data) {
         this.owners = res.data
       }
@@ -468,7 +483,10 @@ export default {
     async loadCablesSearch(s) {
       if (s === '') return
       this.isLoadingCables = true
-      const res = await searchCables({ user_id: this.$auth.user.sub, s })
+      const res = await searchCables({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
       if (res && res.data) {
         this.cables = res.data
       }
@@ -480,7 +498,7 @@ export default {
     async loadClsSearch(s) {
       if (s === '') return
       this.isLoadingCls = true
-      const res = await searchCls({ user_id: this.$auth.user.sub, s })
+      const res = await searchCls({ user_id: await this.$auth.getUserID(), s })
       if (res && res.data) {
         this.cls = res.data
       }
@@ -489,7 +507,7 @@ export default {
     async loadIxpsSearch(s) {
       if (s === '') return
       this.isLoadingIxps = true
-      const res = await searchIxps({ user_id: this.$auth.user.sub, s })
+      const res = await searchIxps({ user_id: await this.$auth.getUserID(), s })
       if (res && res.data) {
         this.ixps = res.data
       }
@@ -501,7 +519,10 @@ export default {
     async loadFacSearch(s) {
       if (s === '') return
       this.isLoadingCls = true
-      const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
+      const res = await searchFacilities({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
       if (res && res.data) {
         this.facilities = res.data
       }

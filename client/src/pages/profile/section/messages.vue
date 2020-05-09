@@ -87,7 +87,7 @@ export default {
       this.loading = true
       const res = await getMessages({
         page,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
 
       if (res && res.data && res.data.r) {
@@ -103,7 +103,7 @@ export default {
         const res = await viewMessage({
           elemnt: issue.t,
           id: issue.idMessage,
-          user_id: this.$auth.user.sub
+          user_id: await this.$auth.getUserID()
         })
         try {
           this.issueOnView = res.data.r[0]
@@ -124,7 +124,7 @@ export default {
       )
         .then(async () => {
           await deleteMessage({
-            user_id: this.$auth.user.sub,
+            user_id: await this.$auth.getUserID(),
             id
           }).then(() => this.getMessagesList())
         })

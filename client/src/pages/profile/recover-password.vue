@@ -88,7 +88,7 @@ export default {
         {
           password: this.passw
         },
-        { _id: this.$auth.user.sub },
+        { _id: await this.$auth.getUserID() },
         true
       ).then(() =>
         this.$notify({

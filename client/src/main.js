@@ -72,9 +72,9 @@ const app = new Vue({
     bus.$on(`${AUTH_USER}`, this.handleSetUserData)
   },
   methods: {
-    handleSetUserData() {
+    async handleSetUserData() {
       if (window.fcWidget) {
-        window.fcWidget.setExternalId(this.$auth.user.sub)
+        window.fcWidget.setExternalId(await this.$auth.getUserID())
         window.fcWidget.user.setEmail(this.$auth.user.email)
         window.fcWidget.user.setFirstName(this.$auth.user.name)
       }

@@ -53,7 +53,10 @@ export default {
   methods: {
     async getFacilitiesList(page = 0) {
       this.loading = true
-      const res = await getFacilities({ user_id: this.$auth.user.sub, page })
+      const res = await getFacilities({
+        user_id: await this.$auth.getUserID(),
+        page
+      })
       if (res.t !== 'error' && res.data) {
         this.tableData = res.data.r
       }
@@ -73,7 +76,7 @@ export default {
 
       this.loading = true
       const res = await searchFacilities({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         psz: true,
         s
       })

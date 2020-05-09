@@ -52,7 +52,7 @@ export default {
   methods: {
     async getIxpsList(page = 0) {
       this.loading = true
-      const res = await getIxps({ user_id: this.$auth.user.sub, page })
+      const res = await getIxps({ user_id: await this.$auth.getUserID(), page })
       if (res.t !== 'error' && res.data) {
         this.tableData = res.data.r
       }
@@ -72,7 +72,7 @@ export default {
 
       this.loading = true
       const res = await searchIxps({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         psz: true,
         s
       })

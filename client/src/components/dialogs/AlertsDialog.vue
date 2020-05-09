@@ -134,7 +134,7 @@ export default {
     async setUserData() {
       if (!this.$auth.user) return
       this.loading = true
-      const userData = await getUserData(this.$auth.user.sub)
+      const userData = await getUserData(await this.$auth.getUserID())
 
       if (userData) {
         const { user_metadata } = userData
@@ -166,7 +166,7 @@ export default {
     async submitForm() {
       this.isSendingData = true
       const res = await createAlert({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         elemnt: this.focus.id,
         t: getSelectionTypeNumber(this.focus.type),
         ...this.form

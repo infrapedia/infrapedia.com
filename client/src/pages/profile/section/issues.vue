@@ -84,7 +84,7 @@ export default {
       this.loading = true
       const res = await getIssues({
         page,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
       if (res && res.data && res.data.r) {
         this.tableData = res.data.r
@@ -99,7 +99,7 @@ export default {
         const res = await viewIssue({
           elemnt: issue.t,
           id: issue.idReport,
-          user_id: this.$auth.user.sub
+          user_id: await this.$auth.getUserID()
         })
         try {
           this.issueOnView = res.data.r[0]
@@ -117,7 +117,7 @@ export default {
       )
         .then(async () => {
           await deleteIssue({
-            user_id: this.$auth.user.sub,
+            user_id: await this.$auth.getUserID(),
             id
           }).then(() => this.getIssuesList())
         })

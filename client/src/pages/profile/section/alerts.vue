@@ -113,7 +113,7 @@ export default {
       this.loading = true
       const res = await getAlerts({
         page,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
       if (res && res.data && res.data.r) {
         this.tableData = res.data.r
@@ -132,17 +132,17 @@ export default {
             )
               .then(async () => {
                 await disableAlert({
-                  user_id: this.$auth.user.sub,
+                  user_id: await this.$auth.getUserID(),
                   elemnt: elemnt._idElement,
                   t: getSelectionTypeNumber(elemnt.t)
                 })
               })
               .catch(() => {})
           } else if (elemnt.disabled) {
-            const userData = await getUserData(this.$auth.user.sub)
+            const userData = await getUserData(await this.$auth.getUserID())
             if (userData) {
               return await createAlert({
-                user_id: this.$auth.user.sub,
+                user_id: await this.$auth.getUserID(),
                 elemnt: elemnt._idElement,
                 email: userData.email,
                 phone:
