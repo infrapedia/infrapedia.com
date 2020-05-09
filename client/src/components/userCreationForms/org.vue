@@ -250,6 +250,7 @@ export default {
   },
   methods: {
     handleFileListChange(file, fileList) {
+      console.warn('here', file, this.fileList, this.mode)
       if (file && fileList.length > 0) {
         this.fileList = [file.raw]
         this.$refs.upload.submit()
