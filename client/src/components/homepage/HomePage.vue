@@ -3,7 +3,6 @@
     <div class="hero-wrapper relative">
       <div
         class="absolute z-index20 cubic-transition overlay-inner w-fit-full h-fit-full flex column nowrap justify-content-center align-items-center"
-        @click="askToRegister"
       >
         <div class="inner-wrapper-text flex justify-content-center row wrap">
           <h2 class="title white mb12">

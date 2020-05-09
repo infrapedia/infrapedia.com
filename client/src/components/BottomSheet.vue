@@ -3,7 +3,10 @@
     class="text-center h-fit-full flex align-items-center"
     @click.stop="toggleVisibility"
   >
-    <span class="drawer-opener">Trusted by</span>
+    <span class="drawer-opener">
+      Trusted by
+      <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon" />
+    </span>
     <transition
       tag="div"
       enter-active-class="animated faster slideInDown"
