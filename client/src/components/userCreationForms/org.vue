@@ -32,10 +32,10 @@
       <el-form-item>
         <el-upload
           accept="image/*.jpg"
+          list-type="picture"
           :multiple="false"
           :action="uploadURL"
           :file-list="fileList"
-          :show-file-list="false"
           :headers="uploadLogoHeaders"
           :on-success="handleLogoUpload"
           :before-upload="handleUploadProgress"
@@ -257,11 +257,12 @@ export default {
   },
   methods: {
     setLogoUrl() {
-      if (this.form.logo != '' && this.form.logo != undefined) {
+      if (this.form.logo !== '' && this.form.logo != undefined) {
         this.fileList.push(this.form.logo)
       }
     },
     handleUploadProgress() {
+      this.uploadLogo.show = false
       this.uploadLogo.loading = true
     },
     handleLogoUpload({ data: { r: logo = [] } } = { data: { logo: [] } }) {
