@@ -2,6 +2,7 @@
   <transition
     tag="div"
     mode="out-in"
+    @click.stop
     name="animated faster"
     enter-active-class="slideInLeft"
     leave-active-class="slideOutLeft"
@@ -9,6 +10,7 @@
     <el-card
       v-if="visibility"
       shadow="hover"
+      id="homepage-mobile-drawer"
       :class="{ dark, light: !dark }"
       class="drawer-wrapper"
     >
@@ -103,6 +105,8 @@
 </template>
 
 <script>
+const body = document.querySelector('body')
+
 export default {
   data: () => ({
     links: [
@@ -158,7 +162,21 @@ export default {
       return this.dark ? 'dark' : 'light'
     }
   },
+  created() {
+    body.addEventListener('click', this.handleOutsideClick)
+  },
+  beforeDestroy() {
+    body.removeEventListener('click', this.handleOutsideClick)
+  },
   methods: {
+    handleOutsideClick(e) {
+      if (
+        this.visibility &&
+        e.target.offsetParent.id != 'homepage-mobile-drawer'
+      ) {
+        this.toggleVisibility()
+      }
+    },
     goToRoute(link) {
       if (this.$route.path != link) {
         this.toggleVisibility()

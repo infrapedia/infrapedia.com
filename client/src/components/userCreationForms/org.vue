@@ -29,19 +29,31 @@
           :rows="4"
         />
       </el-form-item>
-      <el-upload
-        accept="image/*.jpg"
-        :action="uploadURL"
-        :file-list="fileList"
-        :headers="uploadLogoHeaders"
-        :on-success="handleLogoUpload"
-        :before-upload="handleUploadProgress"
-      >
-        <el-button size="small" type="primary">Click to upload</el-button>
-        <div slot="tip" class="el-upload__tip mt2 ml1" :class="{ dark }">
-          - jpg files only
-        </div>
-      </el-upload>
+      <el-form-item>
+        <el-upload
+          accept="image/*.jpg"
+          :multiple="false"
+          :action="uploadURL"
+          :file-list="fileList"
+          :show-file-list="false"
+          :headers="uploadLogoHeaders"
+          :on-success="handleLogoUpload"
+          :before-upload="handleUploadProgress"
+        >
+          <el-button size="small" type="primary">Click to upload</el-button>
+          <div slot="tip" class="el-upload__tip ml1" :class="{ dark }">
+            - jpg files only
+          </div>
+        </el-upload>
+      </el-form-item>
+      <el-collapse-transition>
+        <el-alert
+          v-show="uploadLogo.show"
+          :closable="false"
+          :type="uploadLogo.type"
+          :title="uploadLogo.text"
+        />
+      </el-collapse-transition>
       <el-form-item label="Address" class="mt2">
         <el-tag
           :key="i"
@@ -121,7 +133,7 @@
         :class="{ dark }"
         type="primary"
         plain
-        :disabled="isUploadingImage"
+        :disabled="uploadLogo.loading"
         round
         @click="sendData"
       >
@@ -189,9 +201,14 @@ export default {
       ],
       address: []
     },
+    uploadLogo: {
+      text: '',
+      type: '',
+      show: false,
+      loading: false
+    },
     tagOnEdit: null,
     inputVisible: false,
-    isUploadingImage: false,
     isTagReferenceMissing: false
   }),
   props: {
@@ -210,13 +227,13 @@ export default {
   },
   computed: {
     uploadLogoHeaders() {
-      return { user_id: this.$auth.user.sub }
+      return { userid: this.$auth.user.sub }
     },
     title() {
-      return this.mode === 'create' ? 'Create' : 'Edit'
+      return this.mode == 'create' ? 'Create' : 'Edit'
     },
     saveBtn() {
-      return this.mode === 'create' ? 'Create organization' : 'Save changes'
+      return this.mode == 'create' ? 'Create organization' : 'Save changes'
     },
     dark() {
       return this.$store.state.isDark
@@ -228,17 +245,46 @@ export default {
       return this.tag ? this.tag.fullAddress : ''
     },
     tagMode() {
-      return this.tagOnEdit !== null && this.tag ? 'edit' : 'create'
+      return this.tagOnEdit != null && this.tag ? 'edit' : 'create'
+    }
+  },
+  watch: {
+    mode(str) {
+      if (str == 'edit') {
+        this.setLogoUrl()
+      }
     }
   },
   methods: {
-    handleUploadProgress() {
-      this.isUploadingImage = true
+    setLogoUrl() {
+      if (this.form.logo != '' && this.form.logo != undefined) {
+        this.fileList.push(this.form.logo)
+      }
     },
-    handleLogoUpload(res) {
-      if (!res.data && res.data.r.length) return
-      this.form.logo = res.data.r[0]
-      this.isUploadingImage = false
+    handleUploadProgress() {
+      this.uploadLogo.loading = true
+    },
+    handleLogoUpload({ data: { r: logo = [] } } = { data: { logo: [] } }) {
+      if (!logo.length) {
+        this.fileList = logo
+        this.uploadLogo = {
+          type: 'info',
+          text:
+            'There has been an error trying to upload your logo. Please, try again.',
+          show: true,
+          loading: false
+        }
+        setTimeout(() => (this.uploadLogo.show = false), 5200)
+        return
+      }
+
+      this.form.logo = logo[0]
+      this.uploadLogo = {
+        type: 'success',
+        text: 'Success! Your logo has been uploaded.',
+        show: true,
+        loading: false
+      }
     },
     sendData() {
       return this.$refs['orgForm'].validate(isValid =>
