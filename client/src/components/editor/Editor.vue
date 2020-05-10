@@ -8,6 +8,8 @@
     </div>
     <properties-dialog
       :mode="dialog.mode"
+      :type="type"
+      :creation-form="form"
       :is-visible="dialog.visible"
       :feature="dialog.selectedFeature"
       @close="handleDialogData"
@@ -54,6 +56,10 @@ export default {
     type: {
       type: String,
       default: () => ''
+    },
+    form: {
+      type: Object,
+      required: true
     }
   },
   computed: {
@@ -138,12 +144,13 @@ export default {
     async handleZoomToFeature(fc) {
       const coords = fc.features[0].geometry.coordinates
       const bbox = getBoundsCoords(coords)
+      const zoomLevel = this.type == 'facilities' ? 16.8 : 4
 
       await this.map.fitBounds(bbox, {
+        zoom: zoomLevel,
         animate: true,
         speed: 1.75,
         padding: 90,
-        zoom: 4,
         pan: {
           duration: 25
         }
@@ -158,7 +165,7 @@ export default {
         ...data
       }
 
-      this.dialog.mode === 'create'
+      this.dialog.mode == 'create'
         ? this.handleCreateFeature(feature)
         : this.handleEditFeatProps([feature])
 
@@ -225,15 +232,38 @@ export default {
       })
       return map
     },
-    async handleRecreateDraw() {
+    async handleRecreateDraw(feats) {
       // Deleting everything in case there's something already drawn that could be repeted
       await this.draw.trash()
-      const features = JSON.parse(JSON.stringify(this.scene.features.list))
-      this.draw.set(fCollectionFormat(features))
-      return await this.handleZoomToFeature({ features })
+      const featuresCollection = fCollectionFormat(
+        JSON.parse(JSON.stringify(this.scene.features.list))
+      )
+      const featuresID = this.draw.set(featuresCollection)
+
+      if (
+        featuresCollection.features.length > 0 &&
+        !featuresCollection.features[0].id
+      ) {
+        this.$store.dispatch(
+          'editor/setList',
+          this.setFeaturesID(featuresCollection, featuresID)
+        )
+      }
+
+      return await this.handleZoomToFeature(
+        feats ? fCollectionFormat(feats) : featuresCollection
+      )
+    },
+    setFeaturesID(fc, ids = []) {
+      return fc.features.map((ft, i) => {
+        if (ids.length > 0) {
+          ft.id = ids[i]
+        }
+        return ft
+      })
     },
     handleDrawSelectionChange(e) {
-      if (!e.features.length) return
+      if (e.features.length <= 0) return
       const featureSelected = this.scene.features.list.filter(
         feat => feat.id === e.features[0].id
       )
