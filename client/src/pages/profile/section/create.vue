@@ -369,6 +369,8 @@ export default {
             geom: this.featuresList,
             nameLong: '',
             media: '',
+            techEmail: '',
+            techPhone: '',
             policyEmail: '',
             policyPhone: '',
             proto_ipv6: false,

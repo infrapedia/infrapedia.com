@@ -88,16 +88,14 @@ export default {
       return this.$confirm(
         'Are you sure you want to delete this Cable. This action is irreversible',
         'Please confirm to continue'
-      )
-        .then(async () => {
-          await deleteCable({
-            user_id: await this.$auth.getUserID(),
-            _id
-          }).then(() =>
-            this.handleSubseaSearch(this.$refs.tableList.getTableSearchValue())
-          )
-        })
-        .catch(() => {})
+      ).then(async () => {
+        await deleteCable({
+          user_id: await this.$auth.getUserID(),
+          _id
+        }).then(() =>
+          this.handleSubseaSearch(this.$refs.tableList.getTableSearchValue())
+        )
+      }, console.error)
     },
     handleSubseaSearch: debounce(async function(s) {
       if (s == '') {

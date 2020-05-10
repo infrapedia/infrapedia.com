@@ -4,6 +4,7 @@
     :class="{ dark, light: !dark }"
   >
     <table-list
+      ref="tableList"
       :is-loading="loading"
       :columns="columns"
       :config="tableConfig"
@@ -129,16 +130,14 @@ export default {
       return this.$confirm(
         'Are you sure you want to delete this organization. This action is irreversible',
         'Please confirm to continue'
-      )
-        .then(async () => {
-          await deleteOrganization({
-            user_id: await this.$auth.getUserID(),
-            _id
-          }).then(() => {
-            this.handleOrgSearch(this.$refs.tableList.getTableSearchValue())
-          })
+      ).then(async () => {
+        await deleteOrganization({
+          user_id: await this.$auth.getUserID(),
+          _id
+        }).then(() => {
+          this.handleOrgSearch(this.$refs.tableList.getTableSearchValue())
         })
-        .catch(() => {})
+      }, console.error)
     },
     toggleDialog(itClearsForm) {
       this.isDialog = !this.isDialog

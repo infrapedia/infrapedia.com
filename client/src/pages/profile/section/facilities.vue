@@ -4,6 +4,7 @@
     :class="{ dark, light: !dark }"
   >
     <table-list
+      ref="tableList"
       :is-loading="loading"
       :columns="columns"
       :config="tableConfig"
