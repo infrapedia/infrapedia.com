@@ -327,7 +327,7 @@ export default {
         : 'Facilities (On-net & Off-Net)'
     },
     isCableTypeTerrestrial() {
-      return this.creationID === 'subsea'
+      return this.creationID == 'subsea'
     },
     title() {
       let t = `${
