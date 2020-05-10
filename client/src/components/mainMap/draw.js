@@ -1,4 +1,5 @@
-import turf from 'turf'
+import distance from '@turf/distance'
+import area from '@turf/area'
 import { DRAWING, TITLE_BY_SELECTION } from '../../events'
 
 /**
@@ -20,7 +21,7 @@ export default function handleDraw({ data, elemnt }) {
 
         if (featureData.geometry.type.toLowerCase() === 'polygon') {
           this.$emit(`${TITLE_BY_SELECTION}`, 'Area')
-          calculated = turf.area(data)
+          calculated = area(data)
 
           elemnt.innerHTML =
             '<p><strong>' +
@@ -28,7 +29,7 @@ export default function handleDraw({ data, elemnt }) {
             '</strong></p><p>hectares</p>'
         } else if (featureData.geometry.type.toLowerCase() === 'linestring') {
           this.$emit(`${TITLE_BY_SELECTION}`, 'Distance')
-          calculated = turf.distance(
+          calculated = distance(
             featureData.geometry.coordinates[0],
             featureData.geometry.coordinates[1]
           )
@@ -44,7 +45,7 @@ export default function handleDraw({ data, elemnt }) {
     for (let feature of data.features) {
       if (feature.geometry.type.toLowerCase() === 'linestring') {
         this.$emit(`${TITLE_BY_SELECTION}`, 'Distance')
-        calculated = turf.distance(
+        calculated = distance(
           feature.geometry.coordinates[0],
           feature.geometry.coordinates[1]
         )
@@ -53,7 +54,7 @@ export default function handleDraw({ data, elemnt }) {
           '<p><strong>' + calculated + '</strong></p><p>Kms</p>'
       } else {
         this.$emit(`${TITLE_BY_SELECTION}`, 'Area')
-        calculated = turf.area(data)
+        calculated = area(data)
 
         elemnt.innerHTML =
           '<p><strong>' +

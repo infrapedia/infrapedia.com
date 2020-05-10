@@ -74,8 +74,8 @@ import { createCls, editCLS, viewClsOwner } from '../../../services/api/cls'
 import {
   createCable,
   editCable,
-  viewCableOwner,
-  viewCableBBoxHMR
+  viewCableOwner
+  // viewCableBBoxHMR
 } from '../../../services/api/cables'
 import {
   EDITOR_LOAD_DRAW,
@@ -306,7 +306,7 @@ export default {
           salePhone: salePhone ? salePhone : ''
         }
 
-        const fc = typeof draw === 'string' ? JSON.parse(draw) : draw
+        const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
         if (fc.features && fc.features.length) {
           this.$store.dispatch('editor/setList', fc.features)
           bus.$emit(`${EDITOR_LOAD_DRAW}`)
@@ -408,8 +408,8 @@ export default {
             systemLength: 0,
             capacityTBPS: 0,
             litCapacity: [],
-            owners: this.creationType === 'subsea' ? [] : '',
-            terrestrial: this.creationType === 'subsea' ? false : true,
+            owners: this.creationType == 'subsea' ? [] : '',
+            terrestrial: this.creationType == 'subsea' ? false : true,
             category: cableStates[0],
             activationDateTime: '',
             geom: this.featuresList
@@ -479,14 +479,10 @@ export default {
             this.creationType == 'terrestrial-network') &&
           data.geom.features.length > 0
         ) {
-          const {
-            data: { r: [{ coordinates: coords }] = [] }
-          } = (await viewCableBBoxHMR({
-            user_id: this.$auth.user.sub,
-            _id: data._id
-          })) || { data: { r: [{ coordinates: [] }] } }
-
-          coordinates = coords
+          const bbox = async () => await import('@turf/bbox')
+          const coords = data.geom.features.map(ft => ft.geometry.coordinates)
+          const bounds = bbox(coords)
+          coordinates = bounds
         }
       }
 
