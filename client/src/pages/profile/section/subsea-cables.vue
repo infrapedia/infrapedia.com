@@ -4,6 +4,7 @@
     :class="{ dark, light: !dark }"
   >
     <table-list
+      ref="tableList"
       :is-loading="loading"
       :columns="columns"
       :config="tableConfig"
@@ -92,7 +93,9 @@ export default {
           await deleteCable({
             user_id: await this.$auth.getUserID(),
             _id
-          }).then(() => this.getCablesList())
+          }).then(() =>
+            this.handleSubseaSearch(this.$refs.tableList.getTableSearchValue())
+          )
         })
         .catch(() => {})
     },

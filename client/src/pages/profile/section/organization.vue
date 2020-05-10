@@ -93,14 +93,34 @@ export default {
       return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
     },
     async viewOrg(_id) {
-      const res = await viewOrganizationOwner({
+      const {
+        data: { r: orgData = {} }
+      } = (await viewOrganizationOwner({
         user_id: await this.$auth.getUserID(),
         _id
-      })
-      if (res && res.data && res.data.r) {
-        this.form = { ...res.data.r }
-        delete this.form.url
-        this.form.link = res.data.r.url
+      })) || {
+        data: {
+          orgData: {}
+        }
+      }
+
+      const { name, url, notes, address, information, logo } = orgData
+      this.form = {
+        name,
+        logo,
+        notes,
+        address: address.map(ad => {
+          if (
+            ad.country &&
+            ad.country != undefined &&
+            ad.reference.trim() == ''
+          ) {
+            ad.reference = ad.country
+          }
+          return ad
+        }),
+        link: url,
+        information
       }
       this.mode = 'edit'
       this.toggleDialog()
@@ -114,7 +134,9 @@ export default {
           await deleteOrganization({
             user_id: await this.$auth.getUserID(),
             _id
-          }).then(() => this.getOrganizationsList())
+          }).then(() => {
+            this.handleOrgSearch(this.$refs.tableList.getTableSearchValue())
+          })
         })
         .catch(() => {})
     },

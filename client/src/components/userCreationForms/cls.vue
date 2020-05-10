@@ -31,8 +31,9 @@
           :options="cablesList"
           @input="loadCablesSearch"
           :loading="isLoadingCables"
-          @values-change="form.cables = $event"
-          :value="mode === 'create' ? [] : form.cables"
+          @remove="handleSubseaCablesSelection(form.cables)"
+          @values-change="handleSubseaCablesSelection"
+          :value="mode == 'create' ? [] : form.cables"
         />
       </el-form-item>
       <el-form-item label="Tags" class="mt2">
@@ -78,9 +79,10 @@
 
 <script>
 import Dragger from '../../components/Dragger'
-import { searchCables } from '../../services/api/cables'
+import { searchCables, getCablesGeom } from '../../services/api/cables'
 import { getTags } from '../../services/api/tags'
 import VMultiSelect from '../../components/MultiSelect'
+import { fCollectionFormat } from '../../helpers/featureCollection'
 
 export default {
   name: 'CLSForm',
@@ -126,18 +128,21 @@ export default {
       return this.$store.state.isDark
     },
     title() {
-      return this.mode === 'create' ? 'Create' : 'Edit'
+      return this.mode == 'create' ? 'Create' : 'Edit'
     },
     saveBtn() {
-      return this.mode === 'create' ? 'Create CLS' : 'Save changes'
+      return this.mode == 'create' ? 'Create CLS' : 'Save changes'
     },
     checkGeomLength() {
-      return this.$store.state.editor.scene.features.list.length ? false : true
+      return this.$store.state.editor.scene.features.list.length > 0
+        ? false
+        : true
     }
   },
   watch: {
     'form.cablesList'(cables) {
       this.cablesList = [...cables]
+      this.handleSubseaCablesSelection(cables)
       delete this.form.cablesList
     },
     'form.tags'(tag) {
@@ -145,7 +150,7 @@ export default {
     }
   },
   mounted() {
-    if (this.mode === 'create') {
+    if (this.mode == 'create') {
       setTimeout(() => {
         if (this.$refs.form) {
           this.$refs.form.clearValidate()
@@ -154,22 +159,38 @@ export default {
     }
   },
   methods: {
-    async getTagsList(s) {
-      const res = await getTags({ user_id: await this.$auth.getUserID(), s })
-      if (res && res.data) {
-        this.form.tagsList = res.data
+    async handleSubseaCablesSelection(cablesSelected) {
+      this.form.cables = cablesSelected
+      const {
+        data: { r: featureCollection = [] }
+      } = (await getCablesGeom({
+        ids: cablesSelected.map(c => c._id),
+        user_id: this.$auth.getUserID()
+      })) || {
+        data: { featureCollection: [] }
       }
+      return this.$emit('set-selection-onto-map', {
+        fc: Array.isArray(featureCollection)
+          ? fCollectionFormat(featureCollection)
+          : featureCollection,
+        t: 'cables'
+      })
+    },
+    async getTagsList(s) {
+      const { data } = (await getTags({
+        user_id: await this.$auth.getUserID(),
+        s
+      })) || { data: [] }
+      this.form.tagsList = data
     },
     async loadCablesSearch(s) {
       if (s === '') return
       this.isLoadingCables = true
-      const res = await searchCables({
+      const { data = [] } = (await searchCables({
         user_id: await this.$auth.getUserID(),
         s
-      })
-      if (res && res.data) {
-        this.cablesList = res.data
-      }
+      })) || { data: [] }
+      this.cablesList = data
       this.isLoadingCables = false
     },
     handleFileConverted(fc) {

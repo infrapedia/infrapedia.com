@@ -25,8 +25,7 @@ import { mapConfig } from '../../config/mapConfig'
 import {
   EDITOR_LOAD_DRAW,
   EDITOR_SET_FEATURES,
-  EDITOR_FILE_CONVERTED,
-  SET_MAP_SOURCES
+  EDITOR_FILE_CONVERTED
 } from '../../events/editor'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { editorMapConfig } from '../../config/editorMapConfig'
@@ -90,8 +89,8 @@ export default {
       this.handleRecreateDraw()
     }
 
+    this.handleSetMapSources()
     bus.$on(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
-    bus.$on(`${SET_MAP_SOURCES}`, this.handleSetMapSources)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
   },
@@ -107,7 +106,7 @@ export default {
         for (let source of editorMapConfig.sources) {
           vm.map.addSource(source, {
             type: 'geojson',
-            data: fCollectionFormat([])
+            data: fCollectionFormat()
           })
         }
         vm.addMapLayers(vm.map)
@@ -127,7 +126,6 @@ export default {
     },
     async handleMapFormFeatureSelection({ t, fc, removeLoadState }) {
       if (!this.map) return
-
       await setTimeout(async () => {
         const source = this.map.getSource(`${t}-source`)
         if (source) await source.setData(fc)
@@ -138,37 +136,14 @@ export default {
       }, 10)
     },
     async handleZoomToFeature(fc) {
-      let bbox = []
-      let coords = []
-
-      // Calculation of bounds for cables
-      if (fc.features[0].geometry.type !== 'Point') {
-        coords = [
-          fc.features[0].geometry.coordinates[0],
-          fc.features.length > 1
-            ? fc.features[fc.features.length - 1].geometry.coordinates[0]
-            : // In case there's only one feature,
-              // we can't take coordinates from position 0, cause both will be equal
-              // And it will only focus the beginning of the feature
-              fc.features[fc.features.length - 1].geometry.coordinates[
-                fc.features[fc.features.length - 1].geometry.coordinates
-                  .length - 1
-              ]
-        ]
-        bbox = getBoundsCoords(coords)
-      } else {
-        // Calculation of bounds for points
-        coords = [
-          fc.features[0].geometry.coordinates,
-          fc.features[fc.features.length - 1].geometry.coordinates
-        ]
-        bbox = getBoundsCoords(coords)
-      }
+      const coords = fc.features[0].geometry.coordinates
+      const bbox = getBoundsCoords(coords)
 
       await this.map.fitBounds(bbox, {
-        padding: 90,
         animate: true,
         speed: 1.75,
+        padding: 90,
+        zoom: 4,
         pan: {
           duration: 25
         }
