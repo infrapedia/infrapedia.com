@@ -111,32 +111,21 @@
           :options="ixpsList"
           @input="loadIXpsSearch"
           :loading="isLoadingIXPs"
-          :value="mode === 'create' ? [] : [...form.ixps]"
+          :value="mode === 'create' ? [] : form.ixps"
           @values-change="handleIxpsSelectChange"
           @remove="handleIxpsSelectRemoveItem"
         />
       </el-form-item>
-      <el-form-item label="Tags" class="mt2">
-        <el-select
-          v-model="form.tags"
-          multiple
-          filterable
-          :disabled="isViewMode"
-          placeholder
-          allow-create
-          :class="{ dark }"
-          class="w-fit-full"
-          collapse-tags
-          default-first-option
-          @change="getTagsList"
-        >
-          <el-option
-            v-for="item in form.tagsList"
-            :key="item"
-            :label="item"
-            :value="item"
-          />
-        </el-select>
+      <el-form-item label="Owners">
+        <v-multi-select
+          :mode="mode"
+          :options="ownersList"
+          @input="loadOwnersSearch"
+          :loading="isLoadingOwners"
+          :value="mode === 'create' ? [] : form.owners"
+          @values-change="handleOwnersSelectChange"
+          @remove="handleOwnersSelectRemoveItem"
+        />
       </el-form-item>
       <el-form-item label="Type">
         <el-select
@@ -183,6 +172,28 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="Tags" class="mt2">
+        <el-select
+          v-model="form.tags"
+          multiple
+          filterable
+          :disabled="isViewMode"
+          placeholder
+          allow-create
+          :class="{ dark }"
+          class="w-fit-full"
+          collapse-tags
+          default-first-option
+          @change="getTagsList"
+        >
+          <el-option
+            v-for="item in form.tagsList"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item class="mt12" v-if="!isViewMode">
         <el-button
           type="primary"
@@ -209,6 +220,7 @@ import { getTags } from '../../services/api/tags'
 import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 import { searchIxps } from '../../services/api/ixps'
 import VMultiSelect from '../../components/MultiSelect'
+import { searchOrganization } from '../../services/api/organizations'
 
 export default {
   name: 'FacsForm',
@@ -235,7 +247,9 @@ export default {
     tagsList: [],
     addressList: [],
     isLoadingIXPs: false,
+    isLoadingOwners: false,
     ixpsList: [],
+    ownersList: [],
     tagRules: {
       reference: [
         {
@@ -245,8 +259,7 @@ export default {
         },
         {
           min: 2,
-          max: 5,
-          message: 'Length should be 2 to 5',
+          message: 'Length should be at least 2',
           trigger: ['blur', 'change']
         }
       ],
@@ -306,6 +319,11 @@ export default {
       if (!ixps) return
       this.ixpsList = [...ixps]
       delete this.form.ixpsList
+    },
+    'form.ownersList'(owners) {
+      if (!owners) return
+      this.ownersList = [...owners]
+      delete this.form.ownersList
     }
   },
   mounted() {
@@ -333,6 +351,24 @@ export default {
       }
 
       this.isLoadingIXPs = false
+    },
+    async loadOwnersSearch(s) {
+      if (s == '') return
+
+      this.isLoadingOwners = true
+      const { data: owners = [] } = (await searchOrganization({
+        user_id: await this.$auth.getUserID(),
+        s
+      })) || { owners: [] }
+
+      this.ownersList = owners
+      this.isLoadingOwners = false
+    },
+    handleOwnersSelectRemoveItem(_id) {
+      this.form.owners = this.form.owners.filter(item => item._id != _id)
+    },
+    handleOwnersSelectChange(data) {
+      this.form.owners = Array.from(data)
     },
     handleIxpsSelectChange(data) {
       this.form.ixps = Array.from(data)
