@@ -331,15 +331,15 @@ export default {
     },
     title() {
       let t = `${
-        this.creationID === 'subsea' ? 'subsea cable' : 'terrestrial network'
+        this.creationID == 'subsea' ? 'subsea cable' : 'terrestrial network'
       }`
-      return this.mode === 'create' ? `Create ${t}` : `Edit ${t}`
+      return this.mode == 'create' ? `Create ${t}` : `Edit ${t}`
     },
     saveBtn() {
       let t = `${
-        this.creationID === 'subsea' ? 'subsea cable' : 'terrestrial network'
+        this.creationID == 'subsea' ? 'subsea cable' : 'terrestrial network'
       }`
-      return this.mode === 'create' ? `Create ${t}` : `Save changes`
+      return this.mode == 'create' ? `Create ${t}` : `Save changes`
     },
     dark() {
       return this.$store.state.isDark

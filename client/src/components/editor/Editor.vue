@@ -142,7 +142,7 @@ export default {
       }, 10)
     },
     async handleZoomToFeature(fc) {
-      const coords = fc.features[0].geometry.coordinates
+      const coords = fc.features.map(ft => ft.geometry.coordinates)
       const bbox = getBoundsCoords(coords)
       const zoomLevel = this.type == 'facilities' ? 16.8 : 4
 

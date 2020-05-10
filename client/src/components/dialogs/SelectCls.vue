@@ -31,7 +31,7 @@
           v-for="(cls, i) in clsList"
           :key="i"
           class="box p2 w32 ml2 mb2 text-center h-fit-full cursor-pointer transition-all"
-          :class="{ selected: selectionList.map(c => c._id).includes(cls._id) }"
+          :class="{ selected: isCLSSelected(cls._id) }"
           @click="handleSelectionChange(cls)"
         >
           <fa :icon="['fas', 'award']" v-if="cls.yours === 1" class="mr1" />
@@ -85,6 +85,9 @@ export default {
   computed: {
     customDialogClass() {
       return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
+    },
+    isCLSSelected() {
+      return id => this.selectionList.map(c => c._id).includes(id)
     }
   },
   watch: {
