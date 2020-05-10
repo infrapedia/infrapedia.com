@@ -67,7 +67,7 @@ export default {
   name: 'VMultiselect',
   props: {
     value: {
-      type: Array,
+      type: [Array, String],
       default: () => []
     },
     options: {
@@ -145,6 +145,12 @@ export default {
         this.selected = null
       }
     },
+    emitInputValue() {
+      return this.$emit(
+        'values-change',
+        this.getSelectedId ? this.selected._id : this.selections
+      )
+    },
     handleInputConfirm() {
       const inputValue = this.selected
       const selectedIDs = this.selections.map(opt => opt._id)
@@ -156,13 +162,18 @@ export default {
           return
         }
         this.isTagRepeated = false
+
+        if (!this.isMultiple) {
+          if (this.selections.length > 0) {
+            this.selections = []
+          }
+          this.selections.push(inputValue)
+          return this.emitInputValue()
+        }
         this.selections.push(inputValue)
       }
 
-      return this.$emit(
-        'values-change',
-        this.getSelectedId ? this.selected._id : this.selections
-      )
+      return this.emitInputValue()
     }
   }
 }

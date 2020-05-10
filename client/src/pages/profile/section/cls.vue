@@ -4,6 +4,7 @@
     :class="{ dark, light: !dark }"
   >
     <table-list
+      ref="tableList"
       :is-loading="loading"
       :columns="columns"
       :config="tableConfig"
@@ -81,14 +82,14 @@ export default {
       this.$confirm(
         'Are you sure you want to delete this CLS. This action is irreversible',
         'Please confirm to continue'
-      )
-        .then(async () => {
-          await deleteCls({
-            user_id: await this.$auth.getUserID(),
-            _id
-          }).then(() => this.getClssList())
+      ).then(async () => {
+        await deleteCls({
+          user_id: await this.$auth.getUserID(),
+          _id
+        }).then(() => {
+          this.handleCLSSearch(this.$refs.tableList.getTableSearchValue())
         })
-        .catch(() => {})
+      }, console.error)
     },
     handleCLSSearch: debounce(async function(s) {
       this.loading = true

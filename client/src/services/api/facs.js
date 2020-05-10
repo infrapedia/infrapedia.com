@@ -113,8 +113,9 @@ export const createFacility = async ({
   geom,
   tags,
   t,
+  owners,
   building,
-  startDate,
+  StartDate,
   address
 }) => {
   url = `${apiConfig.url}/auth/facilities/add`
@@ -124,7 +125,7 @@ export const createFacility = async ({
   form.append('website', website)
   form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   form.append('t', t)
-  form.append('startDate', startDate)
+  form.append('StartDate', StartDate)
   form.append('building', building)
 
   if (ixps.length > 0) {
@@ -132,6 +133,12 @@ export const createFacility = async ({
       form.append(`ixps[${i}]`, ixp._id)
     })
   } else form.append('ixps', [])
+
+  if (owners.length > 0) {
+    owners.forEach((ixp, i) => {
+      form.append(`owners[${i}]`, ixp._id)
+    })
+  } else form.append('owners', [])
 
   if (address.length > 0) {
     address.forEach((a, i) => {
@@ -164,6 +171,7 @@ export const editFacility = async ({
   geom,
   tags,
   t,
+  owners,
   building,
   StartDate,
   address
@@ -185,6 +193,12 @@ export const editFacility = async ({
     })
   } else form.append('ixps', [])
 
+  if (owners.length > 0) {
+    owners.forEach((ixp, i) => {
+      form.append(`owners[${i}]`, ixp._id)
+    })
+  } else form.append('owners', [])
+
   if (address.length > 0) {
     address.forEach((a, i) => {
       form.append(`address[${i}]`, JSON.stringify(a))
@@ -204,5 +218,18 @@ export const editFacility = async ({
       Authorization: 'Bearer ' + apiConfig.bearer()
     }
   })
+  return res
+}
+
+export const deleteFacility = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/auth/facilities/delete/${_id}`
+  const res = await $axios.delete(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+
   return res
 }

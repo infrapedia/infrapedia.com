@@ -4,6 +4,7 @@
     :class="{ dark, light: !dark }"
   >
     <table-list
+      ref="tableList"
       :is-loading="loading"
       :columns="columns"
       :config="tableConfig"
@@ -21,7 +22,11 @@
 <script>
 import { facsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { getFacilities, searchFacilities } from '../../../services/api/facs'
+import {
+  getFacilities,
+  searchFacilities,
+  deleteFacility
+} from '../../../services/api/facs'
 import debounce from '../../../helpers/debounce'
 
 export default {
@@ -85,7 +90,19 @@ export default {
       }
       this.loading = false
     }, 820),
-    handleDeleteFac() {}
+    async handleDeleteFac(_id) {
+      return await this.$confirm(
+        'Are you sure you want to delete this Facility. This action is irreversible',
+        'Please confirm to continue'
+      ).then(async () => {
+        await deleteFacility({
+          user_id: await this.$auth.getUserID(),
+          _id
+        }).then(() => {
+          this.handleFacsSearch(this.$refs.tableList.getTableSearchValue())
+        })
+      }, console.error)
+    }
   }
 }
 </script>

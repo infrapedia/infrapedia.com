@@ -94,7 +94,15 @@ export default {
       type: String,
       required: true
     },
+    type: {
+      type: String,
+      required: true
+    },
     feature: {
+      type: Object,
+      required: true
+    },
+    creationForm: {
       type: Object,
       required: true
     }
@@ -105,7 +113,7 @@ export default {
 
       const type = this.feature.geometry.type
 
-      if (this.mode !== 'create') {
+      if (this.mode != 'create') {
         this.form = { ...this.feature.properties }
       } else {
         switch (type.toLowerCase()) {
@@ -138,17 +146,29 @@ export default {
   computed: {
     title() {
       let title = ''
-      if (this.feature.geometry) {
-        if (this.mode === 'create') {
-          title =
-            this.feature.geometry.type === 'Point'
-              ? 'Create CLS properties'
-              : 'Create segment properties'
-        } else if (this.mode === 'edit') {
-          title =
-            this.feature.geometry.type === 'Point'
-              ? 'Edit CLS properties'
-              : 'Edit segment properties'
+      if (this.mode == 'create') {
+        switch (this.type.toLowerCase()) {
+          case 'cls':
+            title = 'Create CLS properties'
+            break
+          case 'ixps':
+            title = 'Create IXP properties'
+            break
+          default:
+            title = 'Edit segment properties'
+            break
+        }
+      } else if (this.mode == 'edit') {
+        switch (this.type.toLowerCase()) {
+          case 'cls':
+            title = 'Edit CLS properties'
+            break
+          case 'ixps':
+            title = 'Edit IXP properties'
+            break
+          default:
+            title = 'Edit segment properties'
+            break
         }
       }
       return title
@@ -162,8 +182,8 @@ export default {
   },
   methods: {
     handleClose() {
-      if (this.form.name == '') {
-        this.form.name = 'default_' + this.feature.id
+      if (!this.form.name || this.form.name == undefined) {
+        this.form.name = this.creationForm.name
       }
       if (
         this.feature.geometry.type.toLowerCase() == 'polygon' &&
