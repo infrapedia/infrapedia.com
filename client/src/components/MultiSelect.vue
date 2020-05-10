@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import debounce from '../helpers/debounce'
+
 export default {
   name: 'VMultiselect',
   props: {
@@ -102,25 +104,26 @@ export default {
   },
   watch: {
     mode(mode) {
-      if (mode !== 'create' && this.value.length) {
+      if (mode != 'create' && this.value.length > 0) {
         this.selections = this.value
       }
     },
     value(arr) {
-      if (this.mode !== 'create' && arr.length) {
+      if (this.mode != 'create' && arr.length > 0) {
         this.selections = arr
       }
     }
   },
   mounted() {
-    if (this.mode !== 'create') {
+    if (this.mode != 'create') {
       this.selections = this.value
     }
   },
   methods: {
-    handleInputChange(s) {
-      return this.$emit('input', s)
-    },
+    handleInputChange: debounce(function(s) {
+      if (s.length <= 3) return
+      else return this.$emit('input', s)
+    }, 320),
     handleRemovedItem(tag) {
       this.selections.splice(
         this.selections.map(opt => opt._id).indexOf(tag._id),
@@ -148,13 +151,12 @@ export default {
 
       if (inputValue) {
         const isTagRepeated = selectedIDs.includes(inputValue._id)
-        if (!isTagRepeated) {
-          this.isTagRepeated = false
-          this.selections.push(inputValue)
-        } else {
+        if (isTagRepeated) {
           this.isTagRepeated = true
           return
         }
+        this.isTagRepeated = false
+        this.selections.push(inputValue)
       }
 
       return this.$emit(

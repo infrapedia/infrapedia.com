@@ -79,8 +79,7 @@ import {
 import {
   EDITOR_LOAD_DRAW,
   EDITOR_FILE_CONVERTED,
-  EDITOR_SET_FEATURES,
-  SET_MAP_SOURCES
+  EDITOR_SET_FEATURES
 } from '../../../events/editor'
 import MapForm from '../../../components/userCreationForms/map'
 import {
@@ -255,8 +254,7 @@ export default {
 
     if (this.$route.query.item) {
       this.getElementOnEdit(this.$route.query.item)
-    } else if (this.$route.query.id === 'map') {
-      bus.$emit(`${SET_MAP_SOURCES}`)
+    } else if (this.$route.query.id == 'map') {
       await this.checkUserMapExistance()
     }
   },
@@ -342,7 +340,7 @@ export default {
             slug: '',
             tags: [],
             cables: [],
-            state: null,
+            state: 'unknown',
             geom: this.featuresList
           }
           break
@@ -488,8 +486,8 @@ export default {
         name: f.label,
         _id: f._id
       }))
-      this.form.cablesList = clsData
       this.form.cables = clsData
+      this.form.cablesList = clsData
       if (this.form.state == 'null' || this.form.state == 'undefined') {
         this.form.state = 'unknown'
       }

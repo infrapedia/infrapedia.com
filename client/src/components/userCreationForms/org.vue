@@ -345,9 +345,9 @@ export default {
     },
     editAddress({ ...tag }, i) {
       if (!tag.fullAddress) {
-        tag.fullAddress = `${tag.city} ${tag.state ? `(${tag.state})` : ''}, ${
-          tag.country
-        }`
+        tag.fullAddress = `${tag.city ? tag.city : ''}${
+          tag.state ? ` (${tag.state}), ` : ''
+        }${tag.country ? tag.country : ''}`
       }
       this.tag = tag
       this.tagOnEdit = i

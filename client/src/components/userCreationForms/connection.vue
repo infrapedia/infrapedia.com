@@ -87,12 +87,13 @@
       <el-form-item label="Organizations" prop="orgs">
         <v-multi-select
           v-if="visible"
+          ref="orgMultiSelect"
           :mode="mode"
           :options="selectsData.organizations"
           @input="loadOrgSearch"
           :loading="isLoadingOrg"
           @values-change="createTableFromSelection($event, 'organizations')"
-          :value="mode === 'create' ? [] : [...form.organizations]"
+          :value="mode == 'create' ? [] : form.organizations"
           @remove="handleRemoveTableDataItem($event, 'organizations')"
         />
       </el-form-item>
@@ -104,32 +105,34 @@
           @input="loadFacSearch"
           :loading="isLoadingFacs"
           @values-change="createTableFromSelection($event, 'facilities')"
-          :value="mode === 'create' ? [] : [...form.facilities]"
-          @remove="handleRemoveTableDataItem"
+          :value="mode == 'create' ? [] : form.facilities"
+          @remove="handleRemoveTableDataItem($event, 'factilies')"
         />
       </el-form-item>
       <el-form-item label="Terrestrial Networks" prop="tNets">
         <v-multi-select
           v-if="visible"
+          ref="terrestrialMultiSelect"
           :mode="mode"
           :options="terrestrialNetworksOptions"
           @input="loadCablesSearch"
           :loading="isLoadingCables"
           @values-change="createTableFromSelection($event, 'cables')"
-          :value="mode === 'create' ? [] : [...form.terrestrials]"
-          @remove="handleRemoveTableDataItem"
+          :value="mode == 'create' ? [] : form.terrestrials"
+          @remove="handleRemoveTableDataItem($event, 'cables')"
         />
       </el-form-item>
       <el-form-item label="Subsea Cables" prop="sCables">
         <v-multi-select
           v-if="visible"
+          ref="subseaMultiSelect"
           :mode="mode"
           :options="subseaCablesOptions"
           @input="loadCablesSearch"
           :loading="isLoadingCables"
           @values-change="createTableFromSelection($event, 'cables')"
-          :value="mode === 'create' ? [] : [...form.subsea]"
-          @remove="handleRemoveTableDataItem"
+          :value="mode == 'create' ? [] : form.subsea"
+          @remove="handleRemoveTableDataItem($event, 'cables')"
         />
       </el-form-item>
       <el-form-item label="CLS" prop="cls">
@@ -140,8 +143,8 @@
           @input="loadClsSearch"
           :loading="isLoadingCls"
           @values-change="createTableFromSelection($event, 'cls')"
-          :value="mode === 'create' ? [] : [...form.cls]"
-          @remove="handleRemoveTableDataItem"
+          :value="mode == 'create' ? [] : form.cls"
+          @remove="handleRemoveTableDataItem($event, 'cls')"
         />
       </el-form-item>
       <el-form-item label="Tags" class="mt2" prop="tags">
@@ -294,10 +297,10 @@ export default {
   },
   computed: {
     title() {
-      return this.mode === 'create' ? 'Create' : 'Edit'
+      return this.mode == 'create' ? 'Create' : 'Edit'
     },
     saveBtn() {
-      return this.mode === 'create' ? 'Create group' : 'Save changes'
+      return this.mode == 'create' ? 'Create group' : 'Save changes'
     },
     dark() {
       return this.$store.state.isDark
@@ -305,15 +308,15 @@ export default {
     tableData() {
       return this.form.references &&
         Array.isArray(this.form.references) &&
-        this.form.references.length
+        this.form.references.length > 0
         ? this.form.references[0].options
         : []
     },
     tableDataHasLength() {
       return (
-        this.tableData.length &&
+        this.tableData.length > 0 &&
         Array.isArray(this.form.references) &&
-        this.form.references.length &&
+        this.form.references.length > 0 &&
         this.form.references[0].orgs &&
         this.form.references[0].orgs.length
       )
@@ -328,7 +331,11 @@ export default {
   watch: {
     visible(bool) {
       if (!bool) return this.clearAll()
-      else if (this.mode !== 'create') {
+      else if (bool && this.mode == 'create') {
+        setTimeout(() => {
+          if (this.$refs.netForm) this.$refs.netForm.clearValidate()
+        }, 50)
+      } else if (this.mode != 'create') {
         this.handleEditModeScenario()
       }
     },
@@ -379,6 +386,10 @@ export default {
           this.$refs[`${refData[0]}_${refData[1]}`][1].blur()
         }
       })
+
+      if (this.form.tags.length > 0) {
+        this.form.tagsList = Array.from(this.form.tags)
+      }
     },
     handleReferenceSelectionChange(ref, row, orgID) {
       let data = null
@@ -423,7 +434,7 @@ export default {
           ...new Set([...Array.from(this.form.cables), ...ids])
         ]
 
-        if (this.mode !== 'create') {
+        if (this.mode != 'create') {
           const isTerrestrial = ids[0].terrestrial
           isTerrestrial
             ? (this.form.terrestrials = ids)
@@ -437,7 +448,7 @@ export default {
         if (this.selectsData[type].length) {
           for (let item of this.selectsData[type]) {
             if (item._id === selection._id) {
-              if (type === 'organizations') {
+              if (type == 'organizations') {
                 if (data.orgs.length) {
                   if (!orgsID.includes(item._id)) {
                     data.orgs.push({
@@ -483,13 +494,13 @@ export default {
       this.form.references = [data]
     },
     handleRemoveTableDataItem(id, type) {
-      if (type && type === 'organizations') {
+      if (type && type == 'organizations') {
         this.form.references[0].orgs = this.form.references[0].orgs.filter(
-          item => item._id !== id
+          item => item._id != id
         )
       } else {
         this.form.references[0].options = this.form.references[0].options.filter(
-          item => item._id !== id
+          item => item._id != id
         )
       }
     },

@@ -247,13 +247,16 @@ export default {
     }
   },
   methods: {
+    getTableSearchValue() {
+      return this.tableSearch
+    },
     getKeys(arr) {
       if (!arr.length) return []
       return Object.keys(arr[0]).sort()
     },
     tableRowClassName({ row }) {
-      if (this.rowClasses.length) {
-        return String(row[this.rowClasses[0]]) === this.rowClasses[2]
+      if (this.rowClasses.length > 0) {
+        return String(row[this.rowClasses[0]]) == this.rowClasses[2]
           ? this.rowClasses[1]
           : ''
       }
