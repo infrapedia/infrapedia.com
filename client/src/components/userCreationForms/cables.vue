@@ -33,12 +33,13 @@
         />
       </el-form-item>
       <el-form-item
-        v-if="creationID === 'subsea'"
+        v-if="creationID == 'subsea'"
         label="RFS (Ready for Service)"
         prop="activationDateTime"
         required
       >
         <el-date-picker
+          type="year"
           :class="{ dark }"
           class="w-fit-full-imp"
           v-model="form.activationDateTime"
@@ -101,7 +102,7 @@
           </el-button>
         </div>
       </el-form-item>
-      <template v-if="creationID === 'subsea'">
+      <template v-if="creationID == 'subsea'">
         <el-form-item label="Design Capacity (Tbps)" prop="tbpsCapacity">
           <el-input-number
             :min="0"
@@ -170,7 +171,7 @@
           @input="loadFacsSearch"
           :loading="isLoadingFacs"
           @values-change="form.facilities = $event"
-          :value="mode === 'create' ? [] : form.facilities"
+          :value="mode == 'create' ? [] : form.facilities"
         />
       </el-form-item>
       <el-form-item label="Owners" prop="owners">
@@ -181,7 +182,7 @@
           :loading="isLoadingOrgs"
           :is-multiple="isCableTypeTerrestrial"
           @values-change="form.owners = $event"
-          :value="mode === 'create' ? [] : form.owners"
+          :value="mode == 'create' ? [] : form.owners"
         />
       </el-form-item>
       <el-form-item label="Tags" class="mt2" prop="tags">
@@ -348,7 +349,7 @@ export default {
     }
   },
   mounted() {
-    if (this.mode === 'create') {
+    if (this.mode == 'create') {
       setTimeout(() => {
         if (this.$refs.form) {
           this.$refs.form.clearValidate()
@@ -356,7 +357,7 @@ export default {
       }, 50)
     }
 
-    if (this.creationID === 'subsea') {
+    if (this.creationID == 'subsea') {
       this.formRules.activationDateTime = [
         {
           type: 'date',
@@ -368,7 +369,7 @@ export default {
     }
 
     setTimeout(async () => {
-      if (this.mode !== 'create' && this.creationID === 'subsea') {
+      if (this.mode != 'create' && this.creationID == 'subsea') {
         await this.getClsListConnectedToCable()
       }
     }, 320)
