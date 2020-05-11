@@ -10,7 +10,7 @@
         <a
           target="_blank"
           href="https://www.google.com/maps/place/South+San+Francisco,+California+94083,+EE.+UU./@37.6500162,-122.4187548,15z/data=!3m1!4b1!4m5!3m4!1s0x808f79ac2e06d7eb:0x899aea1b64c95f9b!8m2!3d37.65!4d-122.41"
-          class="fs-small mt4 inline-block w-fit-full underline-hover"
+          class="fs-small text-white mt4 inline-block w-fit-full underline-hover"
         >
           San Francisco, California 94083, US
         </a>
