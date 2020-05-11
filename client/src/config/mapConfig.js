@@ -260,7 +260,7 @@ export const mapConfig = {
         source: cls,
         minzoom: 3.4,
         paint: {
-          'circle-radius': 4.8,
+          'circle-radius': 3.4,
           'circle-color': '#ffffff',
           'circle-stroke-width': 2,
           'circle-stroke-color': '#333333'

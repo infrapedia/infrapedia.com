@@ -397,6 +397,7 @@ export default {
         return disableCurrentHighlight({
           map: this.map,
           closesSidebar,
+          focus: this.focus,
           commit: this.$store.commit,
           handleBoundsChange: this.handleBoundsChange
         })

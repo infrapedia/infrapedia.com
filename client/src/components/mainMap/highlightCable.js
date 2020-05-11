@@ -12,7 +12,7 @@ export default function highlightCurrentCable({ dark, cable, map, commit }) {
     }
   }
 
-  const unselectedColor = dark ? 'rgba(50,50,50,0.35)' : 'rgba(23,23,23, 0.2)'
+  const unselectedColor = dark ? 'rgba(50,50,50,0.24)' : 'rgba(18,18,18, 0.1)'
 
   // I need to change the ID property to be matched dynamically for the colors-change to work
   const filter = mapConfig.highlightFeatureState
@@ -21,6 +21,13 @@ export default function highlightCurrentCable({ dark, cable, map, commit }) {
   filter[3] = unselectedColor
 
   map.setPaintProperty(mapConfig.cables, 'line-color', filter)
+  map.setPaintProperty(mapConfig.cables, 'line-width', [
+    'match',
+    ['get', 'id'],
+    cable.id,
+    3,
+    1
+  ])
 
   // Keeping record of the selection and map current filter
   commit(`${CURRENT_MAP_FILTER}`, ['==', ['get', '_id'], cable._id])
