@@ -265,11 +265,14 @@ export default {
       })
       map.on('mouseenter', mapConfig.cls, function(e) {
         vm.handlePopupVisibilityOn({ e, popup, isPoint: true, type: 'cls' })
+        vm.handleCLSHover(e, true)
       })
-
-      map.on('mouseleave', mapConfig.cables, () =>
+      map.on('mouseleave', mapConfig.cls, function(e) {
+        vm.handleCLSHover(e, false)
+      })
+      map.on('mouseleave', mapConfig.cables, () => {
         vm.handlePopupVisibilityOff({ popup, map })
-      )
+      })
 
       if (!this.disabled) {
         map.on('click', this.handleMapClick)
@@ -277,7 +280,6 @@ export default {
         map.on('render', this.handleBoundsChange)
       } else {
         const disabledClick = () => this.$emit('clicked-disabled-map')
-
         map.on('click', disabledClick)
         map.on('touchend', disabledClick)
       }
@@ -287,6 +289,17 @@ export default {
       map.on('draw.update', this.handleDrawEvents)
 
       return map
+    },
+    handleCLSHover({ features: [{ id }] = [{ id }] }, isHovering) {
+      if (!this.map) return
+
+      this.map.setPaintProperty(mapConfig.cls, 'circle-radius', [
+        'match',
+        ['get', 'id'],
+        id,
+        isHovering ? 5.4 : 3.4,
+        3.4
+      ])
     },
     handleDrawEvents() {
       const data = window.draw.getAll()
