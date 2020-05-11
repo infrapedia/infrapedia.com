@@ -155,7 +155,7 @@ export default {
       )
 
       if (res && res.data.length) {
-        this.searchResults.r = res.data
+        this.searchResults.r = res.data.filter(i => i)
       }
 
       this.searchResults.places = places.features

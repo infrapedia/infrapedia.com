@@ -32,7 +32,7 @@
             <template slot-scope="scope">
               <el-button
                 v-if="scope.row.disabled"
-                type="primary"
+                type="info"
                 class="p2 no-y fs-regular"
                 size="small"
                 @click="toggleSelectedAlert(scope.row._id)"
@@ -41,7 +41,7 @@
               </el-button>
               <el-button
                 v-else
-                type="danger"
+                type="success"
                 class="p2 no-y fs-regular"
                 size="small"
                 @click="toggleSelectedAlert(scope.row._id)"

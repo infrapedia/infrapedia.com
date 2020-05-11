@@ -2,16 +2,7 @@
   <div class="pr8 pl8 pt2 pb8">
     <div v-for="(col, i) in facColumns" :key="i">
       <!---- COLLAPSE SECTION STARTS---->
-      <template
-        v-if="
-          col.value.toLowerCase().includes('org') ||
-            col.value.toLowerCase().includes('networks') ||
-            col.value.toLowerCase().includes('cables') ||
-            col.value.toLowerCase().includes('cls') ||
-            col.value.toLowerCase().includes('address') ||
-            col.value.toLowerCase().includes('facilities')
-        "
-      >
+      <template v-if="collapseColumns.includes(col.value.toLowerCase())">
         <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
           <el-col :span="24">
             <el-collapse v-model="collapse">
@@ -279,6 +270,7 @@ export default {
     }
   },
   data: () => ({
+    colsKey: 0,
     BUY_CAPACITY,
     REPORT_ISSUE,
     CREATE_ALERT,
@@ -290,6 +282,9 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    collapseColumns() {
+      return ['org', 'networks', 'cables', 'cls', 'address', 'facilities']
     },
     facColumns() {
       const cols = [...this.columns]

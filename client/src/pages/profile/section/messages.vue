@@ -98,7 +98,7 @@ export default {
     async viewSelectedMessage(_id) {
       this.loading = true
 
-      const issue = this.tableData.filter(i => i._id === _id)[0]
+      const issue = this.tableData.filter(i => i._id == _id)[0]
       if (issue) {
         const res = await viewMessage({
           elemnt: issue.t,

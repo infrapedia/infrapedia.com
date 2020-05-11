@@ -106,16 +106,23 @@ export default {
 
       const issue = this.tableData.filter(i => i._id === _id)[0]
       if (issue) {
-        const res = await viewIssue({
+        const {
+          data: { r: issueData = {} }
+        } = (await viewIssue({
           elemnt: issue.t,
           id: issue.idReport,
           user_id: await this.$auth.getUserID()
-        })
-        try {
-          this.issueOnView = res.data.r[0]
+        })) || { data: { issueData: null } }
+
+        if (issueData && issueData.length) {
+          this.issueOnView = issueData[0]
           this.isViewDialog = true
-        } catch {
-          // Ignore
+        } else {
+          this.$notify({
+            title: 'Something wrong happened...',
+            message: 'There was an error trying to load this issue',
+            type: 'info'
+          })
         }
       }
       this.loading = false

@@ -322,6 +322,9 @@
 .bg-white {
   background-color: #fff;
 }
+.text-white {
+  color: #fff;
+}
 .seamless-hoverbg {
   @extend .transition-all;
   &.light {

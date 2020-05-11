@@ -15,7 +15,7 @@
         'full-active': this.isSidebarFullActive
       }"
     >
-      <el-card shadow="hover" v-loading="isSidebarLoad">
+      <el-card shadow="hover">
         <header
           class="header pt10 pr8 pl8 h-fit-content pb10 relative"
           @click.stop="toggleActiveClassOnMobile"
@@ -119,7 +119,6 @@ export default {
   computed: {
     ...mapState({
       focus: state => state.map.focus,
-      isLoading: state => state.isLoading,
       isSidebar: state => state.isSidebar,
       sidebarMode: state => state.sidebarMode,
       currentSelection: state => state.map.currentSelection
@@ -132,9 +131,6 @@ export default {
     },
     currentView() {
       return this.isCable ? 'i-cable-attributes' : 'i-data-center'
-    },
-    isSidebarLoad() {
-      return this.isLoading && !this.isSidebar
     }
   },
   watch: {
@@ -176,12 +172,13 @@ export default {
     handleColSelectionChange() {
       if (!this.focus) return
 
-      this.currentSelectionColumns = getSelectionCols(this.focus.type)
+      let columns = getSelectionCols(this.focus.type)
+      // activationDateTime column is irrelevant on terrestrial cables
       if (this.currentSelection && this.currentSelection.terrestrial) {
-        this.currentSelectionColumns = this.currentSelectionColumns.filter(
-          col => col.value !== 'activationDateTime'
-        )
+        columns = columns.filter(col => col.value != 'activationDateTime')
       }
+
+      this.currentSelectionColumns = Array.from(columns)
 
       if (window.localStorage.getItem('__easePointData')) {
         window.localStorage.removeItem('__easePointData')
@@ -209,14 +206,14 @@ export default {
       const mobileWidth = 425
       if (window.innerWidth <= mobileWidth) {
         this.transitionsClasses = {
-          name: 'animated faster',
+          name: 'animated faster delay-1s',
           active: 'slideInUp',
           leave: 'slideOutDown'
         }
         return true
       } else {
         this.transitionsClasses = {
-          name: 'animated faster',
+          name: 'animated faster delay-1s',
           active: 'slideInLeft',
           leave: 'slideOutLeft'
         }

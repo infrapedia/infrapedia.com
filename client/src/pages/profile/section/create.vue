@@ -642,13 +642,25 @@ export default {
     },
     async createCable() {
       this.isSendingData = true
-      const { t } = (await createCable({
+      const {
+        t,
+        data: { r: cableid }
+      } = (await createCable({
         ...this.form,
         user_id: await this.$auth.getUserID()
       })) || { t: 'error' }
 
       this.isSendingData = false
-      if (t !== 'error') this.mode = 'edit'
+      if (t != 'error') {
+        this.mode = 'edit'
+        this.$router.push({
+          path: '/user/section/create',
+          query: {
+            id: this.$route.query.id,
+            item: cableid
+          }
+        })
+      }
     },
     async editCable() {
       this.isSendingData = true
