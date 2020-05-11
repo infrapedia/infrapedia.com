@@ -332,7 +332,9 @@ export default {
     },
     async getCurrentEmailProvider() {
       this.currentEmailProvider = 'Loading ...'
-      const res = await activeEmailProvider({ user_id: this.$auth.user.sub })
+      const res = await activeEmailProvider({
+        user_id: await this.$auth.getUserID()
+      })
       if (res && res.data && res.data.r) {
         if (res.data.r.length) {
           this.currentEmailProvider = res.data.r[0].provider
@@ -350,7 +352,7 @@ export default {
     async save() {
       this.loading = true
       const res = await configProviders({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         ...this.form,
         provider: this.emailProviderSelected
       })

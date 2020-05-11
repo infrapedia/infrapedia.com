@@ -29,19 +29,33 @@
           :rows="4"
         />
       </el-form-item>
-      <el-upload
-        accept="image/*.jpg"
-        :action="uploadURL"
-        :file-list="fileList"
-        :headers="uploadLogoHeaders"
-        :on-success="handleLogoUpload"
-        :before-upload="handleUploadProgress"
-      >
-        <el-button size="small" type="primary">Click to upload</el-button>
-        <div slot="tip" class="el-upload__tip mt2 ml1" :class="{ dark }">
-          - jpg files only
-        </div>
-      </el-upload>
+      <el-form-item>
+        <el-upload
+          ref="upload"
+          accept="image/*.jpg"
+          list-type="picture"
+          :multiple="false"
+          :auto-upload="false"
+          :action="uploadURL"
+          :http-request="handleUserLogoUpload"
+          :file-list="fileList"
+          :on-remove="handleFileListRemove"
+          :on-change="handleFileListChange"
+        >
+          <el-button size="small" type="primary">Click to upload</el-button>
+          <div slot="tip" class="el-upload__tip ml1" :class="{ dark }">
+            - jpg files only
+          </div>
+        </el-upload>
+      </el-form-item>
+      <el-collapse-transition>
+        <el-alert
+          v-show="uploadLogo.show"
+          :closable="false"
+          :type="uploadLogo.type"
+          :title="uploadLogo.text"
+        />
+      </el-collapse-transition>
       <el-form-item label="Address" class="mt2">
         <el-tag
           :key="i"
@@ -121,7 +135,7 @@
         :class="{ dark }"
         type="primary"
         plain
-        :disabled="isUploadingImage"
+        :disabled="uploadLogo.loading"
         round
         @click="sendData"
       >
@@ -137,6 +151,7 @@
 <script>
 import apiConfig from '../../config/apiConfig'
 import countriesList from '../../config/countriesList'
+import { uploadOrgLogo } from '../../services/api/uploads'
 import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 
 export default {
@@ -179,19 +194,18 @@ export default {
           required: true,
           message: 'Please input a reference name',
           trigger: ['blur', 'change']
-        },
-        {
-          min: 2,
-          max: 5,
-          message: 'Length should be 2 to 5',
-          trigger: ['blur', 'change']
         }
       ],
       address: []
     },
+    uploadLogo: {
+      text: '',
+      type: '',
+      show: false,
+      loading: false
+    },
     tagOnEdit: null,
     inputVisible: false,
-    isUploadingImage: false,
     isTagReferenceMissing: false
   }),
   props: {
@@ -209,14 +223,11 @@ export default {
     }
   },
   computed: {
-    uploadLogoHeaders() {
-      return { user_id: this.$auth.user.sub }
-    },
     title() {
-      return this.mode === 'create' ? 'Create' : 'Edit'
+      return this.mode == 'create' ? 'Create' : 'Edit'
     },
     saveBtn() {
-      return this.mode === 'create' ? 'Create organization' : 'Save changes'
+      return this.mode == 'create' ? 'Create organization' : 'Save changes'
     },
     dark() {
       return this.$store.state.isDark
@@ -228,17 +239,74 @@ export default {
       return this.tag ? this.tag.fullAddress : ''
     },
     tagMode() {
-      return this.tagOnEdit !== null && this.tag ? 'edit' : 'create'
+      return this.tagOnEdit != null && this.tag ? 'edit' : 'create'
+    }
+  },
+  watch: {
+    mode(str) {
+      if (str == 'edit') {
+        this.setLogoUrl()
+      }
+    },
+    visible(bool) {
+      if (bool) {
+        setTimeout(() => {
+          if (this.$refs.orgForm) {
+            this.$refs.orgForm.clearValidate()
+          }
+        }, 50)
+      }
     }
   },
   methods: {
-    handleUploadProgress() {
-      this.isUploadingImage = true
+    handleFileListRemove() {
+      this.form.logo = ''
+      this.fileList = []
     },
-    handleLogoUpload(res) {
-      if (!res.data && res.data.r.length) return
-      this.form.logo = res.data.r[0]
-      this.isUploadingImage = false
+    handleFileListChange(file, fileList) {
+      if (file && fileList.length > 0 && !this.form.logo) {
+        this.fileList = [file.raw]
+        this.$refs.upload.submit()
+      }
+    },
+    async handleUserLogoUpload() {
+      this.uploadLogo.show = false
+      this.uploadLogo.loading = true
+
+      const {
+        data: { r: logo = [] }
+      } = (await uploadOrgLogo({
+        user_id: await this.$auth.getUserID(),
+        logo: this.fileList[0]
+      })) || {
+        data: { logo: [] }
+      }
+
+      if (!logo.length) {
+        this.fileList = logo
+        this.uploadLogo = {
+          type: 'info',
+          text:
+            'There has been an error trying to upload your logo. Please, try again.',
+          show: true,
+          loading: false
+        }
+        setTimeout(() => (this.uploadLogo.show = false), 5200)
+        return
+      }
+
+      this.form.logo = logo[0]
+      this.uploadLogo = {
+        type: 'success',
+        text: 'Success! Your logo has been uploaded.',
+        show: true,
+        loading: false
+      }
+    },
+    setLogoUrl() {
+      if (this.form.logo !== '' && this.form.logo != undefined) {
+        this.fileList = [{ url: this.form.logo }]
+      }
     },
     sendData() {
       return this.$refs['orgForm'].validate(isValid =>
@@ -247,9 +315,13 @@ export default {
     },
     handleBeforeClose() {
       this.fileList = []
-      this.tagOnEdit = null
-      this.inputVisible = false
-      this.isTagReferenceMissing = false
+      this.clearAddress()
+      this.uploadLogo = {
+        text: '',
+        type: '',
+        show: false,
+        loading: false
+      }
       this.$refs['orgForm'].clearValidate()
       return this.$emit('close')
     },
@@ -271,8 +343,13 @@ export default {
         zipcode: ''
       }
     },
-    editAddress(tag, i) {
-      this.tag = { ...tag }
+    editAddress({ ...tag }, i) {
+      if (!tag.fullAddress) {
+        tag.fullAddress = `${tag.city ? tag.city : ''}${
+          tag.state ? ` (${tag.state}), ` : ''
+        }${tag.country ? tag.country : ''}`
+      }
+      this.tag = tag
       this.tagOnEdit = i
       this.inputVisible = true
     },

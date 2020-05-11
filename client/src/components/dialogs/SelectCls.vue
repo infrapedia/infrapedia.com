@@ -31,7 +31,7 @@
           v-for="(cls, i) in clsList"
           :key="i"
           class="box p2 w32 ml2 mb2 text-center h-fit-full cursor-pointer transition-all"
-          :class="{ selected: selectionList.map(c => c._id).includes(cls._id) }"
+          :class="{ selected: isCLSSelected(cls._id) }"
           @click="handleSelectionChange(cls)"
         >
           <fa :icon="['fas', 'award']" v-if="cls.yours === 1" class="mr1" />
@@ -85,6 +85,9 @@ export default {
   computed: {
     customDialogClass() {
       return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
+    },
+    isCLSSelected() {
+      return id => this.selectionList.map(c => c._id).includes(id)
     }
   },
   watch: {
@@ -104,7 +107,7 @@ export default {
     async updateSelectedCLS(data) {
       const res = await clsUpdateCable({
         cable_id: this.$route.query.item,
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: data._id
       })
 
@@ -116,7 +119,7 @@ export default {
     async updateRemoveSelectedCLS(data) {
       const res = await clsRemoveCable({
         cable_id: this.$route.query.item,
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: data._id
       })
 
@@ -127,7 +130,7 @@ export default {
     },
     handleSearchChange: debounce(async function(s) {
       this.loading = true
-      const res = await searchCls({ user_id: this.$auth.user.sub, s })
+      const res = await searchCls({ user_id: await this.$auth.getUserID(), s })
       if (res && res.data) {
         this.clsList = res.data
       }

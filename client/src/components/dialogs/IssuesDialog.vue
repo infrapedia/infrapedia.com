@@ -178,7 +178,7 @@ export default {
     async setUserData() {
       if (!this.$auth.user) return
       this.loading = true
-      const userData = await getUserData(this.$auth.user.sub)
+      const userData = await getUserData(await this.$auth.getUserID())
 
       if (userData) {
         const { user_metadata } = userData
@@ -208,7 +208,7 @@ export default {
 
       this.isSendingData = true
       const res = await createIssue({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         ...this.form,
         elemnt: focus.id,
         t: getSelectionTypeNumber(focus.type)

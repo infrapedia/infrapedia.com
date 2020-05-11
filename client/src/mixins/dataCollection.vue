@@ -27,7 +27,7 @@ export default {
       await this.$store.commit(`${TOGGLE_LOADING}`, true)
       try {
         await this.getCableData({
-          user_id: this.$auth.user.sub,
+          user_id: await this.$auth.getUserID(),
           _id
         }).then(() => {
           this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
@@ -103,7 +103,7 @@ export default {
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
       await this.getSubseaCableBoundsData({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: id
       })
       bus.$emit(`${FOCUS_ON}`, { id, type: 'cable' })
@@ -113,7 +113,7 @@ export default {
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
       await this.getFacilityBoundsData({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: id
       })
 
@@ -124,7 +124,7 @@ export default {
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
       await this.getIxpsBoundsData({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: id
       })
 
@@ -135,7 +135,7 @@ export default {
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
       await this.getClsBoundsData({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: id
       })
 
@@ -145,7 +145,7 @@ export default {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       const res = await this.getClustersPointsNetworksData({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: id
       })
       return bus.$emit(`${FOCUS_ON}`, {
@@ -161,7 +161,7 @@ export default {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       const res = await this.getClustersPointsOrgsData({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: id
       })
       return bus.$emit(`${FOCUS_ON}`, {

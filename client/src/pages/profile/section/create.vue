@@ -22,7 +22,7 @@
       />
     </div>
     <div class="right w-fit-full">
-      <editor-map :key="mapKey" :type="creationType" />
+      <editor-map :key="mapKey" :type="creationType" :form="form" />
     </div>
     <el-dialog
       :visible.sync="isLoadingDialog"
@@ -75,12 +75,12 @@ import {
   createCable,
   editCable,
   viewCableOwner
+  // viewCableBBoxHMR
 } from '../../../services/api/cables'
 import {
   EDITOR_LOAD_DRAW,
   EDITOR_FILE_CONVERTED,
-  EDITOR_SET_FEATURES,
-  SET_MAP_SOURCES
+  EDITOR_SET_FEATURES
 } from '../../../events/editor'
 import MapForm from '../../../components/userCreationForms/map'
 import {
@@ -135,13 +135,13 @@ export default {
       return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
     },
     isMapFormSendingData() {
-      return this.isSendingData && this.creationType === 'map'
+      return this.isSendingData && this.creationType == 'map'
     },
     isLoadingDialog() {
       const type =
-        this.creationType === 'cls' ||
-        this.creationType === 'subsea' ||
-        this.creationType === 'terrestrial-network'
+        this.creationType == 'cls' ||
+        this.creationType == 'subsea' ||
+        this.creationType == 'terrestrial-network'
       return type && this.isSendingData
     },
     currentView() {
@@ -183,7 +183,7 @@ export default {
     checkType() {
       let method
 
-      if (this.mode === 'edit') {
+      if (this.mode == 'edit') {
         switch (this.creationType) {
           case 'cls':
             method = this.editCLS
@@ -255,8 +255,7 @@ export default {
 
     if (this.$route.query.item) {
       this.getElementOnEdit(this.$route.query.item)
-    } else if (this.$route.query.id === 'map') {
-      bus.$emit(`${SET_MAP_SOURCES}`)
+    } else if (this.$route.query.id == 'map') {
       await this.checkUserMapExistance()
     }
   },
@@ -269,7 +268,7 @@ export default {
     },
     async checkUserMapExistance() {
       this.loading = true
-      const res = await getMyMap({ user_id: this.$auth.user.sub })
+      const res = await getMyMap({ user_id: await this.$auth.getUserID() })
       if (res && res.t !== 'error' && res.data && res.data.r) {
         this.mode = 'edit'
         const {
@@ -307,7 +306,7 @@ export default {
           salePhone: salePhone ? salePhone : ''
         }
 
-        const fc = typeof draw === 'string' ? JSON.parse(draw) : draw
+        const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
         if (fc.features && fc.features.length) {
           this.$store.dispatch('editor/setList', fc.features)
           bus.$emit(`${EDITOR_LOAD_DRAW}`)
@@ -323,8 +322,12 @@ export default {
     },
     async setMap(data) {
       this.isSendingData = true
-      const res = await setMyMap({ ...data, user_id: this.$auth.user.sub })
-      if (res && res.t != 'error') {
+      const { t } = (await setMyMap({
+        ...data,
+        user_id: await this.$auth.getUserID()
+      })) || { t: 'error' }
+
+      if (t != 'error') {
         this.mode = 'create'
         await setupMyMapArchives(data.subdomain)
         await this.checkUserMapExistance()
@@ -339,7 +342,7 @@ export default {
             slug: '',
             tags: [],
             cables: [],
-            state: null,
+            state: 'unknown',
             geom: this.featuresList
           }
           break
@@ -368,6 +371,8 @@ export default {
             geom: this.featuresList,
             nameLong: '',
             media: '',
+            techEmail: '',
+            techPhone: '',
             policyEmail: '',
             policyPhone: '',
             proto_ipv6: false,
@@ -385,7 +390,8 @@ export default {
             ixps: [],
             tags: [],
             t: '',
-            StartDate: '',
+            owners: [],
+            StartDate: new Date(),
             building: ''
           }
           break
@@ -402,8 +408,8 @@ export default {
             systemLength: 0,
             capacityTBPS: 0,
             litCapacity: [],
-            owners: this.creationType === 'subsea' ? [] : '',
-            terrestrial: this.creationType === 'subsea' ? false : true,
+            owners: this.creationType == 'subsea' ? [] : '',
+            terrestrial: this.creationType == 'subsea' ? false : true,
             category: cableStates[0],
             activationDateTime: '',
             geom: this.featuresList
@@ -425,14 +431,16 @@ export default {
           break
         case 'ixps':
           currentElement = await this.viewCurrentIXP(_id)
+          currentElement.owners
+            ? currentElement.owners
+            : (currentElement.owners = [])
           break
         default:
           currentElement = await this.viewCurrentCable(_id)
+          if (this.creationType == 'subsea' && !currentElement.litCapacity) {
+            currentElement.litCapacity = []
+          }
           break
-      }
-
-      if (this.creationType === 'subsea' && !currentElement.litCapacity) {
-        currentElement.litCapacity = []
       }
 
       this.form = { ...currentElement }
@@ -460,13 +468,35 @@ export default {
           break
       }
 
-      if (data.geom) {
-        const features =
+      let coordinates = []
+      let features = []
+
+      // If if any type of cable I need to get cable bounds
+      // From a hot service
+      {
+        if (
+          (this.creationType == 'subsea' ||
+            this.creationType == 'terrestrial-network') &&
+          data.geom.features.length > 0
+        ) {
+          const bbox = async () => await import('@turf/bbox')
+          const coords = data.geom.features.map(ft => ft.geometry.coordinates)
+          const bounds = bbox(coords)
+          coordinates = bounds
+        }
+      }
+
+      // I need to set the proper structure for setting the features list
+      // when it's a point feature
+      {
+        features =
           data.geom.type == 'Point'
             ? [
                 {
                   type: 'Feature',
-                  properties: {},
+                  properties: data.geom.properties
+                    ? { ...data.geom.properties }
+                    : { name: '' },
                   geometry: {
                     type: data.geom.type,
                     coordinates: data.geom.coordinates
@@ -474,30 +504,44 @@ export default {
                 }
               ]
             : data.geom.features
-
-        await this.$store.dispatch('editor/setList', features)
-        await (this.form.geom = this.$store.state.editor.scene.features.list)
-        await bus.$emit(`${EDITOR_LOAD_DRAW}`)
       }
+
+      await this.$store.dispatch('editor/setList', features)
+      this.form.geom = this.$store.state.editor.scene.features.list
+      await bus.$emit(
+        `${EDITOR_LOAD_DRAW}`,
+        coordinates.length > 0 ? [{ geometry: { coordinates } }] : false
+      )
     },
     handleCLSEditMode(data) {
       const clsData = data.cables.map(f => ({
         name: f.label,
         _id: f._id
       }))
-      this.form.cablesList = clsData
       this.form.cables = clsData
+      this.form.cablesList = clsData
       if (this.form.state == 'null' || this.form.state == 'undefined') {
         this.form.state = 'unknown'
       }
     },
     handleFacsEditMode(data) {
-      const facsData = data.ixps.map(f => ({
-        name: f.label,
-        _id: f._id
-      }))
-      this.form.ixpsList = facsData
-      this.form.ixps = facsData
+      {
+        let ixpsData = data.ixps.map(ixp => ({
+          name: ixp.label,
+          _id: ixp._id
+        }))
+        this.form.ixps = ixpsData
+        this.form.ixpsList = ixpsData
+      }
+
+      {
+        let ownersData = data.owners.map(owner => ({
+          name: owner.label,
+          _id: owner._id
+        }))
+        this.form.owners = ownersData
+        this.form.ownersList = ownersData
+      }
     },
     handleCablesEditMode(data) {
       const facsData = data.facilities.map(f => ({
@@ -517,19 +561,31 @@ export default {
       this.form.activationDateTime = new Date(this.form.activationDateTime)
     },
     async viewCurrentFacility(_id) {
-      const res = await viewFacilityOwner({ user_id: this.$auth.user.sub, _id })
+      const res = await viewFacilityOwner({
+        user_id: await this.$auth.getUserID(),
+        _id
+      })
       return res && res.data && res.data.r ? res.data.r : {}
     },
     async viewCurrentIXP(_id) {
-      const res = await viewIXPOwner({ user_id: this.$auth.user.sub, _id })
+      const res = await viewIXPOwner({
+        user_id: await this.$auth.getUserID(),
+        _id
+      })
       return res && res.data && res.data.r ? res.data.r : {}
     },
     async viewCurrentCLS(_id) {
-      const res = await viewClsOwner({ user_id: this.$auth.user.sub, _id })
+      const res = await viewClsOwner({
+        user_id: await this.$auth.getUserID(),
+        _id
+      })
       return res && res.data && res.data.r ? res.data.r : {}
     },
     async viewCurrentCable(_id) {
-      const res = await viewCableOwner({ user_id: this.$auth.user.sub, _id })
+      const res = await viewCableOwner({
+        user_id: await this.$auth.getUserID(),
+        _id
+      })
       return res && res.data && res.data.r ? res.data.r : {}
     },
     handleReturningRoute(type) {
@@ -562,7 +618,7 @@ export default {
 
       const res = await createCls({
         ...this.form,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
 
       this.isSendingData = false
@@ -577,7 +633,7 @@ export default {
 
       const res = await editCLS({
         ...this.form,
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: this.$route.query.item
       })
 
@@ -586,24 +642,36 @@ export default {
     },
     async createCable() {
       this.isSendingData = true
-      const res = await createCable({
+      const {
+        t,
+        data: { r: cableid }
+      } = (await createCable({
         ...this.form,
-        user_id: this.$auth.user.sub
-      })
+        user_id: await this.$auth.getUserID()
+      })) || { t: 'error' }
 
       this.isSendingData = false
-      if (res.t !== 'error') this.mode = 'edit'
+      if (t != 'error') {
+        this.mode = 'edit'
+        this.$router.push({
+          path: '/user/section/create',
+          query: {
+            id: this.$route.query.id,
+            item: cableid
+          }
+        })
+      }
     },
     async editCable() {
       this.isSendingData = true
-      const res = await editCable({
+      const { t } = (await editCable({
         ...this.form,
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: this.$route.query.item
-      })
+      })) || { t: 'error' }
 
       this.isSendingData = false
-      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (t !== 'error') return this.handleReturningRoute(this.creationType)
     },
     async createIXP() {
       this.isSendingData = true
@@ -614,7 +682,7 @@ export default {
 
       const res = await createIXP({
         ...this.form,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
 
       this.isSendingData = false
@@ -630,7 +698,7 @@ export default {
       const res = await editIXP({
         ...this.form,
         _id: this.$route.query.item,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
 
       this.isSendingData = false
@@ -641,7 +709,7 @@ export default {
 
       const res = await createFacility({
         ...this.form,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
 
       this.isSendingData = false
@@ -653,7 +721,7 @@ export default {
       const res = await editFacility({
         ...this.form,
         _id: this.$route.query.item,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
 
       this.isSendingData = false

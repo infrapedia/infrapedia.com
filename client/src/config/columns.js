@@ -28,7 +28,13 @@ export const clsColumns = [
 
 // name, activation time, cls, facilities, operations
 export const cablesColumns = [
-  { label: 'Name', value: 'name', showSidebar: true, showTable: true },
+  {
+    label: 'Name',
+    value: 'name',
+    showSidebar: true,
+    showTable: true,
+    sortable: true
+  },
   {
     label: 'Latency',
     value: 'systemLength',

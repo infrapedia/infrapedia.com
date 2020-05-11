@@ -85,7 +85,7 @@ export default {
       return await disableAlert({
         t: focus.type,
         elemnt: focus.id,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
     },
     openAlertsDialog() {
@@ -94,7 +94,7 @@ export default {
     async handleEditCable({ _id, owner, terrestrial }) {
       if (this.$auth && this.$auth.isAuthenticated) {
         let queryType = terrestrial ? 'terrestrial-network' : 'subsea'
-        return owner === this.$auth.user.sub
+        return owner === (await this.$auth.getUserID())
           ? this.$router.push(
               `/user/section/create?id=${queryType}&item=${_id}`
             )

@@ -4,6 +4,7 @@
     :class="{ dark, light: !dark }"
   >
     <table-list
+      ref="tableList"
       :is-loading="loading"
       :columns="columns"
       :config="tableConfig"
@@ -93,14 +94,34 @@ export default {
       return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
     },
     async viewOrg(_id) {
-      const res = await viewOrganizationOwner({
-        user_id: this.$auth.user.sub,
+      const {
+        data: { r: orgData = {} }
+      } = (await viewOrganizationOwner({
+        user_id: await this.$auth.getUserID(),
         _id
-      })
-      if (res && res.data && res.data.r) {
-        this.form = { ...res.data.r }
-        delete this.form.url
-        this.form.link = res.data.r.url
+      })) || {
+        data: {
+          orgData: {}
+        }
+      }
+
+      const { name, url, notes, address, information, logo } = orgData
+      this.form = {
+        name,
+        logo,
+        notes,
+        address: address.map(ad => {
+          if (
+            ad.country &&
+            ad.country != undefined &&
+            ad.reference.trim() == ''
+          ) {
+            ad.reference = ad.country
+          }
+          return ad
+        }),
+        link: url,
+        information
       }
       this.mode = 'edit'
       this.toggleDialog()
@@ -109,14 +130,14 @@ export default {
       return this.$confirm(
         'Are you sure you want to delete this organization. This action is irreversible',
         'Please confirm to continue'
-      )
-        .then(async () => {
-          await deleteOrganization({
-            user_id: this.$auth.user.sub,
-            _id
-          }).then(() => this.getOrganizationsList())
+      ).then(async () => {
+        await deleteOrganization({
+          user_id: await this.$auth.getUserID(),
+          _id
+        }).then(() => {
+          this.handleOrgSearch(this.$refs.tableList.getTableSearchValue())
         })
-        .catch(() => {})
+      }, console.error)
     },
     toggleDialog(itClearsForm) {
       this.isDialog = !this.isDialog
@@ -135,7 +156,7 @@ export default {
     async getOrganizationsList(page = 0) {
       this.loading = true
       const res = await getOrganizations({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         page
       })
       if (res && res.data && res.t !== 'error') {
@@ -146,7 +167,7 @@ export default {
     async createOrg() {
       const res = await createOrganization({
         ...this.form,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
       if (res && res.data && res.t !== 'error') {
         this.toggleDialog(true)
@@ -156,7 +177,7 @@ export default {
     async saveEditedOrg() {
       const res = await editOrganization({
         ...this.form,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
       if (res && res.t !== 'error') {
         this.toggleDialog(true)
@@ -171,7 +192,7 @@ export default {
 
       this.loading = true
       const res = await searchOrganization({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         psz: true,
         s
       })

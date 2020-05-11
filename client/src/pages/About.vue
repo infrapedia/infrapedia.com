@@ -26,7 +26,7 @@
           Our team
         </h2>
         <div class="boxes-wrapper mt20 mb20">
-          <div class="box text-center" v-for="(p, i) of team" :key="i">
+          <div class="box text-center" v-for="(p, i) of teamMembers" :key="i">
             <span class="img">
               <fa :icon="['fas', 'user']" />
             </span>
@@ -39,13 +39,6 @@
             </div>
           </div>
         </div>
-        <p class="content">
-          Infrapedia is your team for the world’s largest internet
-          infrastructure map access, plus services and data to help you improve
-          your connectivity and engage directly with a global network of
-          providers. We are the community's go-to provider for data, maps, and
-          services.
-        </p>
         <p class="content mb20">
           We are focused on network and data center infrastructures. We scour
           the Internet and maintain close relationships with key market players,
@@ -60,39 +53,12 @@
 </template>
 
 <script>
+import teamMembers from '../config/teamMembers'
+
 export default {
   name: 'About',
   data: () => ({
-    team: [
-      {
-        name: 'Mehmet Akcin',
-        position: 'President'
-      },
-      // {
-      //   name: 'Naaz Bax',
-      //   position: '{{ blank }}'
-      // },
-      {
-        name: 'Hubert Soisa',
-        position: 'Director of Operations'
-      },
-      {
-        name: 'José Martinez',
-        position: 'Lead Engineer'
-      },
-      {
-        name: 'Ali Kilic',
-        position: 'GIS Engineer'
-      },
-      {
-        name: 'Manuel Blanco',
-        position: 'Front End Engineer'
-      },
-      {
-        name: 'Diego Garzon',
-        position: 'Director of Marketing'
-      }
-    ]
+    teamMembers
   }),
   head: {
     title: 'Infrapedia | About Us | Global Internet Infrastructure Map',

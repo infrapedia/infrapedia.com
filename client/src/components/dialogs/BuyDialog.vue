@@ -294,7 +294,7 @@ export default {
     },
     async setUserData() {
       if (!this.$auth.user) return
-      const userData = await getUserData(this.$auth.user.sub)
+      const userData = await getUserData(await this.$auth.getUserID())
 
       if (userData) {
         this.loading = true
@@ -430,7 +430,7 @@ export default {
         phone: data.phonenumber,
         message,
         elemnt: this.focus.id,
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         t: getSelectionTypeNumber(this.focus.type)
       })
 

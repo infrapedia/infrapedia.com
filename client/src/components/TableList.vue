@@ -20,7 +20,7 @@
     <el-divider />
     <el-card shadow="never" class="w-fit-full">
       <el-table
-        :data="tableData"
+        :data="tableDataSorted"
         max-height="500"
         v-loading="isLoading"
         :row-class-name="tableRowClassName"
@@ -170,6 +170,7 @@
 
 <script>
 import { formatDate } from '../helpers/formatDate'
+import sortAlphabetically from '../helpers/sortAlphabetically'
 
 export default {
   name: 'TableList',
@@ -239,14 +240,23 @@ export default {
     tableSearch: '',
     paginationPage: 0
   }),
+  computed: {
+    tableDataSorted() {
+      const data = Array.from(this.tableData)
+      return data.sort((a, b) => sortAlphabetically(a, b))
+    }
+  },
   methods: {
+    getTableSearchValue() {
+      return this.tableSearch
+    },
     getKeys(arr) {
       if (!arr.length) return []
       return Object.keys(arr[0]).sort()
     },
     tableRowClassName({ row }) {
-      if (this.rowClasses.length) {
-        return String(row[this.rowClasses[0]]) === this.rowClasses[2]
+      if (this.rowClasses.length > 0) {
+        return String(row[this.rowClasses[0]]) == this.rowClasses[2]
           ? this.rowClasses[1]
           : ''
       }

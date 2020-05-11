@@ -33,12 +33,13 @@
         />
       </el-form-item>
       <el-form-item
-        v-if="creationID === 'subsea'"
+        v-if="creationID == 'subsea'"
         label="RFS (Ready for Service)"
         prop="activationDateTime"
         required
       >
         <el-date-picker
+          type="year"
           :class="{ dark }"
           class="w-fit-full-imp"
           v-model="form.activationDateTime"
@@ -101,7 +102,7 @@
           </el-button>
         </div>
       </el-form-item>
-      <template v-if="creationID === 'subsea'">
+      <template v-if="creationID == 'subsea'">
         <el-form-item label="Design Capacity (Tbps)" prop="tbpsCapacity">
           <el-input-number
             :min="0"
@@ -170,7 +171,7 @@
           @input="loadFacsSearch"
           :loading="isLoadingFacs"
           @values-change="form.facilities = $event"
-          :value="mode === 'create' ? [] : form.facilities"
+          :value="mode == 'create' ? [] : form.facilities"
         />
       </el-form-item>
       <el-form-item label="Owners" prop="owners">
@@ -181,7 +182,7 @@
           :loading="isLoadingOrgs"
           :is-multiple="isCableTypeTerrestrial"
           @values-change="form.owners = $event"
-          :value="mode === 'create' ? [] : form.owners"
+          :value="mode == 'create' ? [] : form.owners"
         />
       </el-form-item>
       <el-form-item label="Tags" class="mt2" prop="tags">
@@ -326,19 +327,19 @@ export default {
         : 'Facilities (On-net & Off-Net)'
     },
     isCableTypeTerrestrial() {
-      return this.creationID === 'subsea'
+      return this.creationID == 'subsea'
     },
     title() {
       let t = `${
-        this.creationID === 'subsea' ? 'subsea cable' : 'terrestrial network'
+        this.creationID == 'subsea' ? 'subsea cable' : 'terrestrial network'
       }`
-      return this.mode === 'create' ? `Create ${t}` : `Edit ${t}`
+      return this.mode == 'create' ? `Create ${t}` : `Edit ${t}`
     },
     saveBtn() {
       let t = `${
-        this.creationID === 'subsea' ? 'subsea cable' : 'terrestrial network'
+        this.creationID == 'subsea' ? 'subsea cable' : 'terrestrial network'
       }`
-      return this.mode === 'create' ? `Create ${t}` : `Save changes`
+      return this.mode == 'create' ? `Create ${t}` : `Save changes`
     },
     dark() {
       return this.$store.state.isDark
@@ -348,7 +349,7 @@ export default {
     }
   },
   mounted() {
-    if (this.mode === 'create') {
+    if (this.mode == 'create') {
       setTimeout(() => {
         if (this.$refs.form) {
           this.$refs.form.clearValidate()
@@ -356,7 +357,7 @@ export default {
       }, 50)
     }
 
-    if (this.creationID === 'subsea') {
+    if (this.creationID == 'subsea') {
       this.formRules.activationDateTime = [
         {
           type: 'date',
@@ -368,7 +369,7 @@ export default {
     }
 
     setTimeout(async () => {
-      if (this.mode !== 'create' && this.creationID === 'subsea') {
+      if (this.mode != 'create' && this.creationID == 'subsea') {
         await this.getClsListConnectedToCable()
       }
     }, 320)
@@ -401,7 +402,7 @@ export default {
     },
     async getClsListConnectedToCable() {
       const res = await clsListConnectedToCable({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         cable_id: this.$route.query.item
       })
       if (res && res.data && res.data.r) {
@@ -409,7 +410,7 @@ export default {
       }
     },
     async getTagsList(s) {
-      const res = await getTags({ user_id: this.$auth.user.sub, s })
+      const res = await getTags({ user_id: await this.$auth.getUserID(), s })
       if (res && res.data) {
         this.form.tagsList = res.data
       }
@@ -425,7 +426,10 @@ export default {
     async loadFacsSearch(s) {
       if (s === '') return
       this.isLoadingFacs = true
-      const res = await searchFacilities({ user_id: this.$auth.user.sub, s })
+      const res = await searchFacilities({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
       if (res && res.data) {
         this.facsList = res.data.reduce(
           (acc = Array.from(this.facsList), item) => {
@@ -439,7 +443,10 @@ export default {
     async loadOrgsSearch(s) {
       if (s === '') return
       this.isLoadingOrgs = true
-      const res = await searchOrganization({ user_id: this.$auth.user.sub, s })
+      const res = await searchOrganization({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
       if (res && res.data) {
         this.orgsList = res.data.reduce(
           (acc = Array.from(this.orgsList), item) => {

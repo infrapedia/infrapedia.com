@@ -93,7 +93,7 @@ export default {
       this.loading = true
       const res = await getMyIssues({
         page,
-        user_id: this.$auth.user.sub
+        user_id: await this.$auth.getUserID()
       })
 
       if (res && res.data && res.data.r) {
@@ -106,16 +106,23 @@ export default {
 
       const issue = this.tableData.filter(i => i._id === _id)[0]
       if (issue) {
-        const res = await viewIssue({
+        const {
+          data: { r: issueData = {} }
+        } = (await viewIssue({
           elemnt: issue.t,
           id: issue.idReport,
-          user_id: this.$auth.user.sub
-        })
-        try {
-          this.issueOnView = res.data.r[0]
+          user_id: await this.$auth.getUserID()
+        })) || { data: { issueData: null } }
+
+        if (issueData && issueData.length) {
+          this.issueOnView = issueData[0]
           this.isViewDialog = true
-        } catch {
-          // Ignore
+        } else {
+          this.$notify({
+            title: 'Something wrong happened...',
+            message: 'There was an error trying to load this issue',
+            type: 'info'
+          })
         }
       }
       this.loading = false
@@ -130,7 +137,7 @@ export default {
       )
         .then(async () => {
           await deleteIssue({
-            user_id: this.$auth.user.sub,
+            user_id: await this.$auth.getUserID(),
             id
           }).then(() => this.getMyIssuesList())
         })

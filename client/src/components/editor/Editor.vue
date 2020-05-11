@@ -8,6 +8,8 @@
     </div>
     <properties-dialog
       :mode="dialog.mode"
+      :type="type"
+      :creation-form="form"
       :is-visible="dialog.visible"
       :feature="dialog.selectedFeature"
       @close="handleDialogData"
@@ -25,8 +27,7 @@ import { mapConfig } from '../../config/mapConfig'
 import {
   EDITOR_LOAD_DRAW,
   EDITOR_SET_FEATURES,
-  EDITOR_FILE_CONVERTED,
-  SET_MAP_SOURCES
+  EDITOR_FILE_CONVERTED
 } from '../../events/editor'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { editorMapConfig } from '../../config/editorMapConfig'
@@ -55,6 +56,10 @@ export default {
     type: {
       type: String,
       default: () => ''
+    },
+    form: {
+      type: Object,
+      required: true
     }
   },
   computed: {
@@ -90,8 +95,8 @@ export default {
       this.handleRecreateDraw()
     }
 
+    this.handleSetMapSources()
     bus.$on(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
-    bus.$on(`${SET_MAP_SOURCES}`, this.handleSetMapSources)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
   },
@@ -107,7 +112,7 @@ export default {
         for (let source of editorMapConfig.sources) {
           vm.map.addSource(source, {
             type: 'geojson',
-            data: fCollectionFormat([])
+            data: fCollectionFormat()
           })
         }
         vm.addMapLayers(vm.map)
@@ -127,7 +132,6 @@ export default {
     },
     async handleMapFormFeatureSelection({ t, fc, removeLoadState }) {
       if (!this.map) return
-
       await setTimeout(async () => {
         const source = this.map.getSource(`${t}-source`)
         if (source) await source.setData(fc)
@@ -138,37 +142,15 @@ export default {
       }, 10)
     },
     async handleZoomToFeature(fc) {
-      let bbox = []
-      let coords = []
-
-      // Calculation of bounds for cables
-      if (fc.features[0].geometry.type !== 'Point') {
-        coords = [
-          fc.features[0].geometry.coordinates[0],
-          fc.features.length > 1
-            ? fc.features[fc.features.length - 1].geometry.coordinates[0]
-            : // In case there's only one feature,
-              // we can't take coordinates from position 0, cause both will be equal
-              // And it will only focus the beginning of the feature
-              fc.features[fc.features.length - 1].geometry.coordinates[
-                fc.features[fc.features.length - 1].geometry.coordinates
-                  .length - 1
-              ]
-        ]
-        bbox = getBoundsCoords(coords)
-      } else {
-        // Calculation of bounds for points
-        coords = [
-          fc.features[0].geometry.coordinates,
-          fc.features[fc.features.length - 1].geometry.coordinates
-        ]
-        bbox = getBoundsCoords(coords)
-      }
+      const coords = fc.features.map(ft => ft.geometry.coordinates)
+      const bbox = getBoundsCoords(coords)
+      const zoomLevel = this.type == 'facilities' ? 16.8 : 4
 
       await this.map.fitBounds(bbox, {
-        padding: 90,
+        zoom: zoomLevel,
         animate: true,
         speed: 1.75,
+        padding: 90,
         pan: {
           duration: 25
         }
@@ -183,7 +165,7 @@ export default {
         ...data
       }
 
-      this.dialog.mode === 'create'
+      this.dialog.mode == 'create'
         ? this.handleCreateFeature(feature)
         : this.handleEditFeatProps([feature])
 
@@ -250,15 +232,38 @@ export default {
       })
       return map
     },
-    async handleRecreateDraw() {
+    async handleRecreateDraw(feats) {
       // Deleting everything in case there's something already drawn that could be repeted
       await this.draw.trash()
-      const features = JSON.parse(JSON.stringify(this.scene.features.list))
-      this.draw.set(fCollectionFormat(features))
-      return await this.handleZoomToFeature({ features })
+      const featuresCollection = fCollectionFormat(
+        JSON.parse(JSON.stringify(this.scene.features.list))
+      )
+      const featuresID = this.draw.set(featuresCollection)
+
+      if (
+        featuresCollection.features.length > 0 &&
+        !featuresCollection.features[0].id
+      ) {
+        this.$store.dispatch(
+          'editor/setList',
+          this.setFeaturesID(featuresCollection, featuresID)
+        )
+      }
+
+      return await this.handleZoomToFeature(
+        feats ? fCollectionFormat(feats) : featuresCollection
+      )
+    },
+    setFeaturesID(fc, ids = []) {
+      return fc.features.map((ft, i) => {
+        if (ids.length > 0) {
+          ft.id = ids[i]
+        }
+        return ft
+      })
     },
     handleDrawSelectionChange(e) {
-      if (!e.features.length) return
+      if (e.features.length <= 0) return
       const featureSelected = this.scene.features.list.filter(
         feat => feat.id === e.features[0].id
       )

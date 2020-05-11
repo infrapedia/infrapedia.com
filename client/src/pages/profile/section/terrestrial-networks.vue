@@ -4,6 +4,7 @@
     :class="{ dark, light: !dark }"
   >
     <table-list
+      ref="tableList"
       :is-loading="loading"
       :columns="columns"
       :config="tableConfig"
@@ -71,7 +72,7 @@ export default {
     async getCablesList(page = 0) {
       this.loading = true
       const res = await getTerrestrialNetworks({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         page
       })
       if (res.t !== 'error' && res.data) {
@@ -89,14 +90,16 @@ export default {
       return this.$confirm(
         'Are you sure you want to delete this Cable. This action is irreversible',
         'Please confirm to continue'
-      )
-        .then(async () => {
-          await deleteCable({
-            user_id: this.$auth.user.sub,
-            _id
-          }).then(() => this.getCablesList())
+      ).then(async () => {
+        await deleteCable({
+          user_id: await this.$auth.getUserID(),
+          _id
+        }).then(() => {
+          this.handleTerrestrialSearch(
+            this.$refs.tableList.getTableSearchValue()
+          )
         })
-        .catch(() => {})
+      }, console.error)
     },
     handleTerrestrialSearch: debounce(async function(s) {
       if (s == '') {
@@ -106,7 +109,7 @@ export default {
 
       this.loading = true
       const res = await getSearchByCablesT({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         psz: true,
         s
       })

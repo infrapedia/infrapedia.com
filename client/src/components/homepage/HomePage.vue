@@ -3,7 +3,6 @@
     <div class="hero-wrapper relative">
       <div
         class="absolute z-index20 cubic-transition overlay-inner w-fit-full h-fit-full flex column nowrap justify-content-center align-items-center"
-        @click="askToRegister"
       >
         <div class="inner-wrapper-text flex justify-content-center row wrap">
           <h2 class="title white mb12">
@@ -79,13 +78,13 @@
     </div>
     <div class="carousel-section">
       <div class="carousel-wrapper p4">
-        <h3 class="title">Our Sponsors</h3>
+        <h3 class="title">Trusted by</h3>
         <el-carousel
           :interval="5000"
           height="40vh"
           indicator-position="outside"
         >
-          <el-carousel-item v-for="(img, i) in sponsors" :key="i">
+          <el-carousel-item v-for="(img, i) in trustedBy" :key="i">
             <div class="flex row nowrap justify-content-center">
               <el-image
                 :src="img.logo"
@@ -189,7 +188,7 @@ export default {
       ]
     },
     formatDate,
-    sponsors: [],
+    trustedBy: [],
     blogPosts: []
   }),
   computed: {
@@ -206,14 +205,16 @@ export default {
   },
   methods: {
     async loadTrustedBy() {
-      const res = await getTrustedBy()
-      if (res && res.data && res.data.r) {
-        this.sponsors = res.data.r
+      const {
+        data: { r = [] }
+      } = (await getTrustedBy()) || {
+        data: { r: [] }
       }
+      this.trustedBy = r
     },
     async loadBlogPosts() {
-      const res = await getBlogPosts()
-      this.blogPosts = res || []
+      const posts = (await getBlogPosts()) || []
+      this.blogPosts = posts
     },
     askToRegister() {
       this.$parent.$emit('layout', 'nothing-layout')

@@ -2,15 +2,7 @@
   <div class="pr8 pl8 pt2 pb8 no-overflow-x">
     <div v-for="(col, i) in cableColumns" :key="i">
       <!---- COLLAPSE SECTION STARTS---->
-      <template
-        v-if="
-          col.value.toLowerCase().includes('org') ||
-            col.value.toLowerCase().includes('cls') ||
-            col.value.toLowerCase().includes('networks') ||
-            col.value.toLowerCase().includes('fac') ||
-            col.value.toLowerCase().includes('owners')
-        "
-      >
+      <template v-if="collapseColumns.includes(col.value.toLowerCase())">
         <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
           <el-col :span="24">
             <el-collapse v-model="collapse">
@@ -68,14 +60,14 @@
           <el-col
             :span="10"
             class="p2"
-            v-else-if="col.label === 'Latency' && !info.terrestrial"
+            v-else-if="col.label == 'Latency' && !info.terrestrial"
           >
             <p class="label capitalize">{{ col.label }}</p>
           </el-col>
           <el-col
             :span="10"
             class="p2"
-            v-else-if="info[col.value] && col.label !== 'Latency'"
+            v-else-if="info[col.value] && col.label != 'Latency'"
           >
             <p class="label capitalize">{{ col.label }}</p>
           </el-col>
@@ -117,7 +109,7 @@
               :span="12"
               v-else-if="
                 !isArrCol(info[col.value]) &&
-                  col.label === 'Latency' &&
+                  col.label == 'Latency' &&
                   !info.terrestrial
               "
             >
@@ -125,7 +117,7 @@
             </el-col>
             <el-col
               :span="12"
-              v-else-if="col.label.includes('EOL') && info.status !== 'project'"
+              v-else-if="col.label.includes('EOL') && info.status != 'project'"
             >
               <p class="text-bold">
                 {{ convertToYear(calculateEOL(info[col.value])) }}
@@ -133,7 +125,7 @@
             </el-col>
             <el-col
               :span="12"
-              v-else-if="!isArrCol(info[col.value]) && col.label !== 'Latency'"
+              v-else-if="!isArrCol(info[col.value]) && col.label != 'Latency'"
             >
               <p class="text-bold">
                 {{ info[col.value] }}
@@ -300,7 +292,10 @@ export default {
     currentCableStatus() {
       return this.info.has_outage || this.isFutureState
     },
-    getYear: () => row => new Date(row.year).getFullYear()
+    getYear: () => row => new Date(row.year).getFullYear(),
+    collapseColumns() {
+      return ['org', 'cls', 'networks', 'fac', 'owners']
+    }
   },
   methods: {
     isArrCol(item) {

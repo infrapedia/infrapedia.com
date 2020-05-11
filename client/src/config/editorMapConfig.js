@@ -17,7 +17,7 @@ export const editorMapConfig = {
       source: 'cls-source',
       // 'source-layer': 'cls-layer',
       paint: {
-        'circle-radius': 4,
+        'circle-radius': 5.42,
         'circle-color': '#f78682',
         'circle-stroke-width': 1,
         'circle-stroke-color': '#333333'

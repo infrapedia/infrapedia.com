@@ -412,6 +412,8 @@ export default {
       if (this.isDrawing) return
 
       if (this.$auth.isAuthenticated) {
+        if (this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
+
         const cables = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.cables]
         })
@@ -435,20 +437,20 @@ export default {
         // If in the region selected there is a point or a building
         // Call the api to retrieve that facility data and open the sidebar
 
-        if (facilities.length > 0) {
+        if (ixps.length > 0) {
+          await this.handleIxpsSelection({
+            id: ixps[0].properties._id,
+            type: 'ixps'
+          })
+        } else if (facilities.length > 0) {
           await this.handleFacilitySelection({
             id: facilities[0].properties._id,
             type: 'facilities'
           })
-        } else if (ixps.length > 0) {
-          await this.handleIxpsSelection({
-            id: facilities[0].properties._id,
-            type: 'ixps'
-          })
         } else if (cls.length > 0) {
           await this.handleClsSelection({
             id: cls[0].properties._id,
-            type: 'ixps'
+            type: 'cls'
           })
         }
 
@@ -486,7 +488,10 @@ export default {
       } else await this.$auth.loginWithRedirect()
     },
     async handleOrganizationFocus(_id, fc) {
-      const res = await viewOrganization({ user_id: this.$auth.user.sub, _id })
+      const res = await viewOrganization({
+        user_id: await this.$auth.getUserID(),
+        _id
+      })
       if (res && res.data && res.data.r && res.data.r.length) {
         // Change sidebar mode to data_centers mode
         this.changeSidebarMode(1)
@@ -510,7 +515,10 @@ export default {
     async handleNetworkFocus(_id, fc) {
       const { focus, bounds, map } = this
 
-      const res = await viewNetwork({ user_id: this.$auth.user.sub, _id })
+      const res = await viewNetwork({
+        user_id: await this.$auth.getUserID(),
+        _id
+      })
       if (res && res.data && res.data.r && res.data.r.length) {
         // Change sidebar mode to data_centers mode
         this.changeSidebarMode(1)
@@ -579,7 +587,7 @@ export default {
      */
     async handleFacilitySelection({ id, type }) {
       const data = await this.getFacilityData({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: id
       })
       this.$store.commit(`${MAP_FOCUS_ON}`, {
@@ -598,7 +606,7 @@ export default {
     },
     async handleClsSelection({ id, type }) {
       const data = await this.getClsData({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: id
       })
       this.$store.commit(`${MAP_FOCUS_ON}`, {
@@ -617,7 +625,7 @@ export default {
     },
     async handleIxpsSelection({ id, type }) {
       const data = await this.getIxpsData({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         _id: id
       })
       this.$store.commit(`${MAP_FOCUS_ON}`, {
@@ -641,8 +649,13 @@ export default {
       const loadStyles = () => {
         if (!this.map.loaded()) return
 
-        this.addMapSources(this.map)
-        if (this.focus && this.focus.type.toLowerCase() === 'cable') {
+        try {
+          this.addMapSources(this.map)
+          this.addMapLayers(this.map)
+        } catch {
+          // Ignore
+        }
+        if (this.focus && this.focus.type.toLowerCase() == 'cable') {
           this.handleCablesSelection(true, [
             { properties: { _id: this.focus.id } }
           ])
@@ -656,7 +669,6 @@ export default {
       }
 
       // We have to remove the filter cause if not it will only draw the filtered cable
-      this.map.setFilter(mapConfig.cableTerrestrialHighlight, ['all'])
       this.$store.commit(`${CURRENT_MAP_FILTER}`, ['all'])
       switchStyles(style)
     },

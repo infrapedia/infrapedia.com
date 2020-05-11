@@ -349,3 +349,15 @@ export const getSearchByCablesT = async ({ user_id, s, psz }) => {
   })
   return res
 }
+
+export const viewCableBBoxHMR = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/cables/box/edit/${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}

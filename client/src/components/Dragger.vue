@@ -107,7 +107,7 @@ export default {
         this.file = this.file.splice(1)
       }
 
-      const user_id = this.$auth.user.sub
+      const user_id = await this.$auth.getUserID()
       const res = await uploadKmz({ file: this.file, user_id })
 
       if (res && res.data && res.data.r && res.data.r.length) {

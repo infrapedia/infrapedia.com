@@ -4,6 +4,7 @@
     :class="{ dark, light: !dark }"
   >
     <table-list
+      ref="tableList"
       :is-loading="loading"
       :columns="columns"
       :config="tableConfig"
@@ -18,10 +19,10 @@
 </template>
 
 <script>
+import debounce from '../../../helpers/debounce'
 import { ixpsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { getIxps, searchIxps } from '../../../services/api/ixps'
-import debounce from '../../../helpers/debounce'
+import { getIxps, searchIxps, deleteIXP } from '../../../services/api/ixps'
 
 export default {
   name: 'IxpsSection',
@@ -52,7 +53,7 @@ export default {
   methods: {
     async getIxpsList(page = 0) {
       this.loading = true
-      const res = await getIxps({ user_id: this.$auth.user.sub, page })
+      const res = await getIxps({ user_id: await this.$auth.getUserID(), page })
       if (res.t !== 'error' && res.data) {
         this.tableData = res.data.r
       }
@@ -72,7 +73,7 @@ export default {
 
       this.loading = true
       const res = await searchIxps({
-        user_id: this.$auth.user.sub,
+        user_id: await this.$auth.getUserID(),
         psz: true,
         s
       })
@@ -81,7 +82,19 @@ export default {
       }
       this.loading = false
     }, 820),
-    handleDeleteIXP() {}
+    async handleDeleteIXP(_id) {
+      this.$confirm(
+        'Are you sure you want to delete this IXP. This action is irreversible',
+        'Please confirm to continue'
+      ).then(async () => {
+        await deleteIXP({
+          user_id: await this.$auth.getUserID(),
+          _id
+        }).then(() => {
+          this.handleIxpSearch(this.$refs.tableList.getTableSearchValue())
+        })
+      }, console.error)
+    }
   }
 }
 </script>

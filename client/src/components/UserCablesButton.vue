@@ -121,7 +121,9 @@ export default {
     },
     async getCablesList() {
       this.loading = true
-      const res = await getCablesShortList({ user_id: this.$auth.user.sub })
+      const res = await getCablesShortList({
+        user_id: await this.$auth.getUserID()
+      })
       if (res && res.data && res.data.r) {
         this.cablesList = res.data.r
       }
