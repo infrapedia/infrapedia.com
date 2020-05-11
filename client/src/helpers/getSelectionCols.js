@@ -13,7 +13,7 @@ export function getSelectionCols(type) {
   let col = []
   let t = type.toLowerCase()
 
-  if (t === 'cls') {
+  if (t == 'cls') {
     col = [...clsColumns]
   } else if (t.includes('fac')) {
     col = [...facsColumns]
@@ -23,7 +23,7 @@ export function getSelectionCols(type) {
     col = [...ixpsColumns]
   } else if (t.includes('org') || t.includes('owners')) {
     col = [...orgsColumns]
-  } else if (t.includes('networks')) {
+  } else if (t.includes('network')) {
     col = [...netColumns]
   }
   return col

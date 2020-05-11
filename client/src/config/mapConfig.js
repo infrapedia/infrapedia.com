@@ -246,11 +246,11 @@ export const mapConfig = {
         id: ixps,
         type: 'circle',
         source: ixps,
-        minzoom: 12,
+        minzoom: 15,
         paint: {
-          'circle-radius': 4,
+          'circle-radius': 10,
           'circle-color': '#b10f0f',
-          'circle-stroke-width': 1,
+          'circle-stroke-width': 2,
           'circle-stroke-color': '#333333'
         }
       },
@@ -260,9 +260,9 @@ export const mapConfig = {
         source: cls,
         minzoom: 3.4,
         paint: {
-          'circle-radius': 3,
+          'circle-radius': 4.8,
           'circle-color': '#ffffff',
-          'circle-stroke-width': 1,
+          'circle-stroke-width': 2,
           'circle-stroke-color': '#333333'
         }
       },
