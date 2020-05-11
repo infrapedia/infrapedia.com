@@ -128,7 +128,6 @@ export default {
     is3D: false,
     print: null,
     trackID: null,
-    mapTooltip: {},
     map: undefined,
     isMenuOpen: false,
     isGooeyMenu: false,
@@ -262,7 +261,10 @@ export default {
         vm.handlePopupVisibilityOn({ e, popup, isPoint: false })
       })
       map.on('mouseenter', mapConfig.ixps, function(e) {
-        vm.handlePopupVisibilityOn({ e, popup, isPoint: true })
+        vm.handlePopupVisibilityOn({ e, popup, isPoint: true, type: 'ixps' })
+      })
+      map.on('mouseenter', mapConfig.cls, function(e) {
+        vm.handlePopupVisibilityOn({ e, popup, isPoint: true, type: 'cls' })
       })
 
       map.on('mouseleave', mapConfig.cables, () =>
@@ -297,30 +299,25 @@ export default {
      * @param map { Object } The map instance
      * @param isPoint { Boolean } If the tooltip is for a Point
      */
-    showPopup(e, map, popup, isPoint) {
-      const prop = JSON.parse(JSON.stringify(e.features[0].properties))
-
-      this.mapTooltip = {
-        name: prop.name,
-        status: prop.status,
-        segment: prop.segment
-      }
-
+    showPopup({ e, map, popup, isPoint, type }) {
+      const { name, status, segment } = JSON.parse(
+        JSON.stringify(e.features[0].properties)
+      )
       // const facsClusters = this.map.queryRenderedFeatures(e.point, {
       //   layers: [mapConfig.facilitiesClusters]
       // })
 
       // if (facsClusters.length > 0) return
 
-      let str = `<div class="cable-name dark-color"><b>${this.mapTooltip.name}</b></div>`
+      let str = `<div class="cable-name dark-color"><b>${name}</b></div>`
 
       if (isPoint) {
-        str = `<div class="cable-name dark-color"><b>Point name : ${this.mapTooltip.name}</b></div>`
+        str = `<div class="cable-name dark-color"><b>${type} name : ${name}</b></div>`
       } else {
-        if (this.mapTooltip.segment) {
-          str += `<div class="segment-name dark-color">Segment: ${this.mapTooltip.segment}</div>`
+        if (segment) {
+          str += `<div class="segment-name dark-color">Segment: ${segment}</div>`
         }
-        str += `<div class="status dark-color"> Status: ${this.mapTooltip.status}</div>`
+        str += `<div class="status dark-color"> Status: ${status}</div>`
         str += `<div class="details dark-color">Click for more details</div>`
       }
 
@@ -334,7 +331,7 @@ export default {
      * @param popup { Object } The map popup instance
      * @param isPoint { Boolean } If the tooltip is for a Point
      */
-    handlePopupVisibilityOn({ e, popup, isPoint }) {
+    handlePopupVisibilityOn({ e, popup, isPoint, type = '' }) {
       if (!this.map) return
 
       const clusters = this.map.queryRenderedFeatures(e.point, {
@@ -343,7 +340,7 @@ export default {
 
       if (!clusters.length && e.features.length && !this.isMobile) {
         this.map.getCanvas().style.cursor = 'pointer'
-        this.showPopup(e, this.map, popup, isPoint)
+        this.showPopup({ e, map: this.map, popup, isPoint, type })
       }
     },
     /**
@@ -438,7 +435,12 @@ export default {
         // If in the region selected there is a point or a building
         // Call the api to retrieve that facility data and open the sidebar
 
-        if (ixps.length > 0) {
+        if (cls.length > 0) {
+          await this.handleClsSelection({
+            id: cls[0].properties._id,
+            type: 'cls'
+          })
+        } else if (ixps.length > 0) {
           await this.handleIxpsSelection({
             id: ixps[0].properties._id,
             type: 'ixps'
@@ -447,11 +449,6 @@ export default {
           await this.handleFacilitySelection({
             id: facilities[0].properties._id,
             type: 'facilities'
-          })
-        } else if (cls.length > 0) {
-          await this.handleClsSelection({
-            id: cls[0].properties._id,
-            type: 'cls'
           })
         }
 
