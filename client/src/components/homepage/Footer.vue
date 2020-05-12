@@ -7,6 +7,7 @@
             <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
           </router-link>
         </h1>
+        <p class="fs-small m0 mt4">v{{ packageVersion }}</p>
         <a
           target="_blank"
           href="https://www.google.com/maps/place/South+San+Francisco,+California+94083,+EE.+UU./@37.6500162,-122.4187548,15z/data=!3m1!4b1!4m5!3m4!1s0x808f79ac2e06d7eb:0x899aea1b64c95f9b!8m2!3d37.65!4d-122.41"
@@ -15,7 +16,7 @@
           San Francisco, California 94083, US
         </a>
         <p class="fs-small mt4">
-          {{ year }} Copyright, All Rights Reserved by Infrapedia Inc.
+          ©️ {{ year }} Copyright, All Rights Reserved by Infrapedia Inc.
         </p>
       </div>
       <!-- <el-divider class="transparent w80 hidden-md-and-down"></el-divider> -->
@@ -120,6 +121,7 @@
 <script>
 import infoMenuLinks from '../../config/infoMenuLinks'
 import currentYear from '../../helpers/currentYear'
+import pkg from '../../../package.json'
 
 export default {
   name: 'HFooter',
@@ -148,6 +150,9 @@ export default {
   computed: {
     year() {
       return currentYear()
+    },
+    packageVersion() {
+      return pkg.version
     },
     checkIfLoggedIn() {
       return this.$auth.isAuthenticated ? '/app' : '/'
