@@ -51,7 +51,7 @@
       :visible.sync="isMapFormSendingData"
       width="44%"
       top="12vh"
-      title="Uploading map and creating map archives..."
+      title="Uploading map and creating map files..."
       :show-close="false"
       :custom-class="customDialogClass"
       :close-on-click-modal="false"
