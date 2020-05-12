@@ -188,7 +188,7 @@ export default {
       })
       if (res && res.t !== 'error') {
         this.toggleDialog(true)
-        this.getNetworksList()
+        this.handleNetworkSearch(this.$refs.tableList.getTableSearchValue())
       }
     },
     async saveEditedNet() {
@@ -198,7 +198,7 @@ export default {
       })
       if (res && res.t !== 'error') {
         this.toggleDialog(true)
-        this.getNetworksList()
+        this.handleNetworkSearch(this.$refs.tableList.getTableSearchValue())
       }
     },
     handleNetworkSearch: debounce(async function(s) {
