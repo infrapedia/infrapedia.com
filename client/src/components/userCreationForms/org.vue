@@ -255,6 +255,8 @@ export default {
             this.$refs.orgForm.clearValidate()
           }
         }, 50)
+      } else {
+        this.fileList = []
       }
     }
   },
