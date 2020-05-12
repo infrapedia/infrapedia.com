@@ -17,6 +17,13 @@
   }
 }
 
+.el-card.map-wrapper {
+  @media screen and (max-width: $break-md) {
+    margin-bottom: 10rem;
+    height: 27rem;
+  }
+}
+
 .main-wrapper {
   @media screen and (max-width: $break-md) {
     overflow-y: auto;
