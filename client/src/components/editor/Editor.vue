@@ -136,8 +136,12 @@ export default {
         const source = this.map.getSource(
           `${t == 'subsea' || t == 'terrestrials' ? 'cables' : t}-source`
         )
-        if (source) await source.setData(fc)
 
+        if (!fc.features) {
+          fc = fCollectionFormat(fc)
+        }
+
+        if (source) await source.setData(fc)
         if (removeLoadState) {
           await this.$store.dispatch('editor/toggleMapFormLoading', false)
         }

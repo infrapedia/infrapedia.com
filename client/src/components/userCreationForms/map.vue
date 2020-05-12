@@ -367,6 +367,9 @@ export default {
     autocompleteAddress() {
       return this.tag && this.tag.fullAddress ? this.tag.fullAddress : ''
     },
+    getSelectionID() {
+      return t => this.form[t].map(t => (typeof t == 'string' ? t : t._id))
+    },
     checkGeomLength() {
       let disabled
 
@@ -387,9 +390,20 @@ export default {
       this.setLogoUrl()
     }
   },
+  async mounted() {
+    if (this.mode == 'edit') {
+      await this.handleEditModeScenario()
+      this.setLogoUrl()
+    }
+  },
   methods: {
     async handleRemoveFeature(t) {
       this.form[t] = this.$refs[`${t}-MultiSelect`].emitInputValue(true)
+      const ids = this.getSelectionID(t)
+
+      this.mapCreationData[t] = this.mapCreationData[t].filter(t =>
+        ids.includes(t._id)
+      )
       await this.handleSetFeatureOntoMap({ t, removeLoadState: true })
     },
     handleFileListRemove() {
@@ -477,9 +491,7 @@ export default {
         this.$store.dispatch('editor/toggleMapFormLoading', true)
       }
 
-      const selectionIDs = this.form[t].map(item =>
-        typeof item == 'string' ? item : item._id
-      )
+      const selectionIDs = this.getSelectionID(t)
 
       let fc = {}
       switch (t) {
@@ -590,7 +602,7 @@ export default {
         s
       })) || { data: [] }
 
-      if (type == 'terrestrial') this.terrestrials = data
+      if (type == 'terrestrials') this.terrestrials = data
       else this.subsea = data
 
       this.isLoadingCables = false
@@ -646,6 +658,13 @@ export default {
      * @param _id { String } - selection id
      */
     async handleSelectionChange(t, _id) {
+      {
+        let selectedIDs = this.getSelectionID(t)
+        if (!selectedIDs.includes(_id)) {
+          this.form[t].push(this[t].filter(t => t._id == _id)[0])
+        }
+      }
+
       if (this.form[t].length < this.mapCreationData[t].length) {
         // Loading again the featureCollections
         setTimeout(async () => {
@@ -654,16 +673,8 @@ export default {
             t: t
           })
         }, 320)
-
-        // Removing from mapCreationData[type] the one just removed from this.form[t]
-        if (this.form[t].length) {
-          return (this.mapCreationData[t] = this.mapCreationData[t].filter(d =>
-            this.form[t].includes(d._id)
-          ))
-        } else return (this.mapCreationData[t] = [])
       }
 
-      this.form[t].push(this[t].filter(t => t._id == _id)[0])
       this.featureType = t
       this.currentSelectionID = _id
       if (t != 'owners') {
