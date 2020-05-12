@@ -28,6 +28,7 @@
 
     <i-message-dialog />
     <i-mobile-profile-drawer
+      class="hidden-md-and-up"
       :visibility.sync="isMobileProfileDrawer"
       @close="handleToggleMobileProfileDrawer"
     />

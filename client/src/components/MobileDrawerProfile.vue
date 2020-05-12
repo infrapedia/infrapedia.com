@@ -27,7 +27,7 @@
           <fa :icon="['fas', 'times']" />
         </span>
       </header>
-      <ul role="group" class="p0 w-fit-full h-fit-full">
+      <ul role="group" class="p0 w-fit-full h-fit-full overflow-y-auto mb12">
         <li
           role="listitem"
           class="h18"

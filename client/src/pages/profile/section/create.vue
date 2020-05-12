@@ -317,7 +317,7 @@ export default {
         const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
         if (fc.features && fc.features.length) {
           this.$store.dispatch('editor/setList', fc.features)
-          bus.$emit(`${EDITOR_LOAD_DRAW}`)
+          bus.$emit(`${EDITOR_LOAD_DRAW}`, null, false)
         }
       }
       this.loading = false

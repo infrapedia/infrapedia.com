@@ -140,14 +140,21 @@ export async function setupMyMapCables(sub) {
   return res
 }
 
+export async function setupMyMapSubdomain(sub) {
+  url = `${apiConfig.url}/map/setinfo/${sub}`
+  const res = await $axios.get(url)
+  return res
+}
+
 export const setupMyMapArchives = async subdomain => {
   url = `${apiConfig.url}/map/ixps/${subdomain}`
   const res = await Promise.all([
-    setupMyMapIxps(subdomain),
     setupMyMapCLS(subdomain),
-    setupMyMapCables(subdomain),
+    setupMyMapIxps(subdomain),
     setupMyMapFacs(subdomain),
-    setupMyMapDraw(subdomain)
+    setupMyMapCables(subdomain),
+    setupMyMapDraw(subdomain),
+    setupMyMapSubdomain(subdomain)
   ])
   return res
 }

@@ -136,8 +136,12 @@ export default {
         const source = this.map.getSource(
           `${t == 'subsea' || t == 'terrestrials' ? 'cables' : t}-source`
         )
-        if (source) await source.setData(fc)
 
+        if (!fc.features) {
+          fc = fCollectionFormat(fc)
+        }
+
+        if (source) await source.setData(fc)
         if (removeLoadState) {
           await this.$store.dispatch('editor/toggleMapFormLoading', false)
         }
@@ -248,7 +252,7 @@ export default {
       })
       return map
     },
-    async handleRecreateDraw(feats) {
+    async handleRecreateDraw(feats, zoomTo = true) {
       // Deleting everything in case there's something already drawn that could be repeted
       await this.draw.trash()
       const featuresCollection = fCollectionFormat(
@@ -266,9 +270,11 @@ export default {
         )
       }
 
-      return await this.handleZoomToFeature(
-        feats ? fCollectionFormat(feats) : featuresCollection
-      )
+      if (zoomTo) {
+        return await this.handleZoomToFeature(
+          feats ? fCollectionFormat(feats) : featuresCollection
+        )
+      }
     },
     setFeaturesID(fc, ids = []) {
       return fc.features.map((ft, i) => {

@@ -9,7 +9,7 @@
       <span
         >©️ {{ year }} Copyright, All Rights Reserved by Infrapedia Inc.</span
       >
-      <p class="fs-small m0">v{{ packageVersion }}</p>
+      <p class="fs-small m0 ml2">- v {{ packageVersion }}</p>
       <router-link
         class="link ml2 mr2 mt2 color-inherit"
         to="/terms-and-conditions"

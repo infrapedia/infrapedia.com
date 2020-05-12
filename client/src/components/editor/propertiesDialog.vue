@@ -16,7 +16,7 @@
       <el-form-item label="Name">
         <el-input v-model="form.name" />
       </el-form-item>
-      <template v-if="feature.geometry && feature.geometry.type !== 'Point'">
+      <template v-if="feature.geometry && feature.geometry.type != 'Point'">
         <el-form-item label="Status">
           <el-switch
             active-color="#13ce66"
@@ -28,7 +28,7 @@
             v-model="form.status"
           />
         </el-form-item>
-        <el-form-item label="Height" v-if="feature.geometry.type === 'Polygon'">
+        <el-form-item label="Height" v-if="feature.geometry.type == 'Polygon'">
           <el-input-number
             class="w-fit-full"
             controls-position="right"
@@ -41,7 +41,7 @@
         </el-form-item>
         <el-form-item
           label="Stroke width"
-          v-if="feature.geometry.type === 'LineString'"
+          v-if="feature.geometry.type == 'LineString'"
         >
           <el-input-number
             v-model="form['stroke-width']"
@@ -52,7 +52,7 @@
         </el-form-item>
         <el-form-item
           label="Stroke opacity"
-          v-if="feature.geometry.type === 'LineString'"
+          v-if="feature.geometry.type == 'LineString'"
         >
           <el-input-number
             v-model="form['stroke-opacity']"
