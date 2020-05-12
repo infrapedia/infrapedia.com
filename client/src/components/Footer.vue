@@ -6,7 +6,10 @@
     <div
       class="bgcolor-inherit flex justify-content-space-around wrap align-items-center"
     >
-      <span>&copy; 2019 Copyright, All Rights Reserved by Infrapedia</span>
+      <span
+        >©️ {{ year }} Copyright, All Rights Reserved by Infrapedia Inc.</span
+      >
+      <p class="fs-small m0">v{{ packageVersion }}</p>
       <router-link
         class="link ml2 mr2 mt2 color-inherit"
         to="/terms-and-conditions"
@@ -21,11 +24,20 @@
 </template>
 
 <script>
+import currentYear from '../helpers/currentYear'
+import pkg from '../../package.json'
+
 export default {
   name: 'IFooter',
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    year() {
+      return currentYear()
+    },
+    packageVersion() {
+      return pkg.version
     }
   }
 }
