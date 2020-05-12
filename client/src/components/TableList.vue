@@ -47,10 +47,10 @@
                   size="small"
                   :title="item.name || item"
                   v-else-if="
-                    col.value === 'websites' ||
-                      col.value === 'cables' ||
-                      col.value === 'cls' ||
-                      col.value === 'facilities'
+                    col.value == 'websites' ||
+                      col.value == 'cables' ||
+                      col.value == 'cls' ||
+                      col.value == 'facilities'
                   "
                 >
                   {{ item.name ? item.name : item }}
@@ -66,7 +66,7 @@
               :src="scope.row[col.value]"
               class="w12 h12 circle"
             />
-            <template v-else-if="col.value === 'alerts'">
+            <template v-else-if="col.value == 'alerts'">
               <span v-if="!scope.row[col.value]">
                 0
               </span>
@@ -91,8 +91,8 @@
             <span
               v-else-if="
                 !Array.isArray(scope.row[col.value]) &&
-                  typeof scope.row[col.value] !== 'object' &&
-                  typeof scope.row[col.value] !== 'undefined'
+                  typeof scope.row[col.value] != 'object' &&
+                  typeof scope.row[col.value] != 'undefined'
               "
             >
               {{ `${scope.row[col.value]}` }}
@@ -110,6 +110,7 @@
               v-model="tableSearch"
               size="mini"
               clearable
+              :class="{ dark }"
               @input="$emit('search-input', $event)"
               @clear="$emit('clear-search-input')"
               placeholder="Type to search by name"
@@ -244,6 +245,9 @@ export default {
     tableDataSorted() {
       const data = Array.from(this.tableData)
       return data.sort((a, b) => sortAlphabetically(a, b))
+    },
+    dark() {
+      return this.$store.state.isDark
     }
   },
   methods: {

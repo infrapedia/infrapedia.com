@@ -110,9 +110,9 @@
                 role="listitem"
               >
                 <div class="list-item" data-no-hover-bg="true">
-                  <a href="https://www.catchpoint.com" target="_blank">
+                  <a :href="sponsors[0].url" target="_blank">
                     <el-image
-                      src="https://storage.googleapis.com/infrapedia_bucket/sponsors/catchpoint-logo.png"
+                      :src="sponsors[0].src"
                       lazy
                       class="w28 image-sponsor"
                       fit="cover"
@@ -131,10 +131,10 @@
                 role="listitem"
               >
                 <div class="list-item" data-no-hover-bg="true">
-                  <a href="https://ipv4.global" target="_blank">
+                  <a :href="sponsors[1].url" target="_blank">
                     <el-image
                       lazy
-                      src="https://storage.googleapis.com/infrapedia_bucket/sponsors/ipv4global-footer.png"
+                      :src="sponsors[1].src"
                       fit="center"
                       class="w28 image-sponsor ipv4"
                       alt="ipv4 logo"
@@ -434,8 +434,8 @@ export default {
     },
     imageURL() {
       return this.dark
-        ? 'https://cdn.infrapedia.com/logos/dark-mode-logo.svg'
-        : 'https://cdn.infrapedia.com/logos/light-mode-logo.svg'
+        ? 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo.svg'
+        : 'https://cdn1.infrapedia.com/assets/img/light-mode-logo.svg'
     },
     isProfileRoute() {
       let isProfile = false

@@ -54,7 +54,7 @@
             </el-card>
           </el-col>
           <el-col :md="24" :lg="14">
-            <el-card shadow="never" class="pr8 pl8 h100">
+            <el-card shadow="never" class="map-wrapper pr8 pl8 h100">
               <header class="header p4">
                 <h2 class="title-user-variant m0 color-inherit">
                   Map

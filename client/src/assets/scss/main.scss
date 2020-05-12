@@ -619,7 +619,14 @@ input.issues-dialog {
 
   .el-collapse-item__wrap,
   .el-collapse-item__header {
-    background-color: $light-charcoal;
+    background-color: $dark-charcoal;
+  }
+
+  .sidebar-wrapper {
+    .el-collapse-item__wrap,
+    .el-collapse-item__header {
+      background-color: $light-charcoal;
+    }
   }
 
   .el-input-group__prepend {
