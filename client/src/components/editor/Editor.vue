@@ -133,7 +133,9 @@ export default {
     async handleMapFormFeatureSelection({ t, fc, removeLoadState }) {
       if (!this.map) return
       await setTimeout(async () => {
-        const source = this.map.getSource(`${t}-source`)
+        const source = this.map.getSource(
+          `${t == 'subsea' || t == 'terrestrials' ? 'cables' : t}-source`
+        )
         if (source) await source.setData(fc)
 
         if (removeLoadState) {
@@ -142,7 +144,21 @@ export default {
       }, 10)
     },
     async handleZoomToFeature(fc) {
-      const coords = fc.features.map(ft => ft.geometry.coordinates)
+      if (fc.features.length <= 0) return
+      let coords = []
+
+      // Need to differentiate between points features
+      // And Lines,Polygons for getting the right bbox coords
+      {
+        let fCollection = Array.from(fc.features)
+        const isPoint = this.type == 'cls' || this.type == 'facilities'
+        if (isPoint) {
+          coords = fCollection[0].geometry.coordinates
+        } else {
+          coords = fCollection.flatMap(ft => ft.geometry.coordinates)
+        }
+      }
+
       const bbox = getBoundsCoords(coords)
       const zoomLevel = this.type == 'facilities' ? 16.8 : 4
 
