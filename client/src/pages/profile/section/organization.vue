@@ -107,6 +107,7 @@ export default {
 
       const { name, url, notes, address, information, logo } = orgData
       this.form = {
+        _id,
         name,
         logo,
         notes,

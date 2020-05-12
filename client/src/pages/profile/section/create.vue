@@ -301,7 +301,7 @@ export default {
           subdomain,
           ixps: Array.isArray(ixps) ? ixps : [],
           cls: Array.isArray(cls) ? cls : [],
-          logo: Array.isArray(logos) ? logos[0] : '',
+          logo: Array.isArray(logos) && logos.length > 0 ? logos[0] : '',
           subsea: Array.isArray(subsea) ? subsea : [],
           terrestrials: Array.isArray(terrestrials) ? terrestrials : [],
           facilities: Array.isArray(facilities) ? facilities : [],
