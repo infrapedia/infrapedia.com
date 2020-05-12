@@ -133,8 +133,7 @@
           @input="loadOwnersSearch"
           :loading="isLoadingOwners"
           @values-change="handleSelectionChange('owners', $event)"
-          :value="mode == 'create' ? [] : [...form.owners]"
-          @remove="handleRemoveItemFromMultiSelect('owners', $event)"
+          :value="mode == 'create' ? [] : form.owners"
         />
       </el-form-item>
       <el-form-item label="Facilities">
@@ -145,20 +144,29 @@
           :get-selected-id="true"
           :loading="isLoadingFacs"
           @values-change="handleSelectionChange('facilities', $event)"
-          :value="mode == 'create' ? [] : [...form.facilities]"
-          @remove="handleRemoveItemFromMultiSelect('facilities', $event)"
+          :value="mode == 'create' ? [] : form.facilities"
         />
       </el-form-item>
-      <el-form-item label="Cables">
+      <el-form-item label="Terrestrial Networks" prop="tNets">
         <v-multi-select
           :mode="mode"
-          :options="cables"
+          :options="terrestrials"
           :get-selected-id="true"
-          @input="loadCablesSearch"
+          @input="loadCablesSearch($event, 'terrestrial')"
           :loading="isLoadingCables"
-          @values-change="handleSelectionChange('cables', $event)"
-          :value="mode == 'create' ? [] : [...form.cables]"
-          @remove="handleRemoveItemFromMultiSelect('cables', $event)"
+          @values-change="handleSelectionChange('terrestrials', $event)"
+          :value="mode == 'create' ? [] : form.terrestrials"
+        />
+      </el-form-item>
+      <el-form-item label="Subsea Cables" prop="sCables">
+        <v-multi-select
+          :mode="mode"
+          :get-selected-id="true"
+          :options="subsea"
+          @input="loadCablesSearch($event, 'subsea')"
+          :loading="isLoadingCables"
+          @values-change="handleSelectionChange('subsea', $event)"
+          :value="mode == 'create' ? [] : form.subsea"
         />
       </el-form-item>
       <el-form-item label="CLS">
@@ -169,8 +177,7 @@
           :loading="isLoadingCls"
           :get-selected-id="true"
           @values-change="handleSelectionChange('cls', $event)"
-          :value="mode == 'create' ? [] : [...form.cls]"
-          @remove="handleRemoveItemFromMultiSelect('cls', $event)"
+          :value="mode == 'create' ? [] : form.cls"
         />
       </el-form-item>
       <el-form-item label="Ixps">
@@ -181,26 +188,36 @@
           @input="loadIxpsSearch"
           :loading="isLoadingIxps"
           @values-change="handleSelectionChange('ixps', $event)"
-          :value="mode == 'create' ? [] : [...form.ixps]"
-          @remove="handleRemoveItemFromMultiSelect('ixps', $event)"
+          :value="mode == 'create' ? [] : form.ixps"
         />
       </el-form-item>
       <el-form-item label="Logo(s)">
         <br />
         <div class="block w-fit-full">
           <el-upload
-            list-type="picture-card"
+            ref="upload"
+            :multiple="false"
             accept="image/*.jpg"
             :action="uploadURL"
-            :file-list.sync="form.logos"
-            :headers="uploadLogoHeaders"
-            :on-success="handleLogoUpload"
-            :before-upload="handleUploadProgress"
+            :auto-upload="false"
+            :file-list="fileList"
+            list-type="picture-card"
+            :on-remove="handleFileListRemove"
+            :on-change="handleFileListChange"
+            :http-request="handleUserLogoUpload"
           >
             <i class="el-icon-plus" />
           </el-upload>
         </div>
       </el-form-item>
+      <el-collapse-transition>
+        <el-alert
+          v-show="uploadLogo.show"
+          :closable="false"
+          :type="uploadLogo.type"
+          :title="uploadLogo.text"
+        />
+      </el-collapse-transition>
       <el-form-item class="mt12">
         <el-button
           type="primary"
@@ -227,7 +244,11 @@
 
 <script>
 import { searchFacilities, getFacilitiesGeom } from '../../services/api/facs'
-import { searchCables, getCablesGeom } from '../../services/api/cables'
+import {
+  getSearchByCablesT,
+  getSearchByCablesS,
+  getCablesGeom
+} from '../../services/api/cables'
 import { searchIxps, getIxpsGeoms } from '../../services/api/ixps'
 import { searchCls, getClsGeoms } from '../../services/api/cls'
 import apiConfig from '../../config/apiConfig'
@@ -236,6 +257,7 @@ import { fCollectionFormat } from '../../helpers/featureCollection'
 import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 import { searchOrganization } from '../../services/api/organizations'
 import VMultiSelect from '../../components/MultiSelect'
+import { uploadOrgLogo } from '../../services/api/uploads'
 
 export default {
   name: 'MapForm',
@@ -246,11 +268,13 @@ export default {
   },
   data: () => ({
     facilities: [],
-    cables: [],
+    subsea: [],
+    terrestrials: [],
     cls: [],
     ixps: [],
     owners: [],
     feature: {},
+    fileList: [],
     featureType: '',
     tag: {
       fullAddress: '',
@@ -272,14 +296,20 @@ export default {
     isLoadingCables: false,
     isLoadingOwners: false,
     isPropertiesDialog: false,
-    isUploadingImage: false,
     currentSelectionID: null,
     mapCreationData: {
       cls: [],
       ixps: [],
-      cables: [],
+      subsea: [],
+      terrestrials: [],
       owners: [],
       facilities: []
+    },
+    uploadLogo: {
+      text: '',
+      type: '',
+      show: false,
+      loading: false
     },
     tagRules: {
       reference: [
@@ -313,13 +343,10 @@ export default {
   },
   computed: {
     title() {
-      return this.mode === 'create' ? 'Create' : 'Edit'
+      return this.mode == 'create' ? 'Create' : 'Edit'
     },
     saveBtn() {
-      return this.mode === 'create' ? 'Create map' : 'Save changes'
-    },
-    uploadLogoHeaders() {
-      return { user_id: this.$auth.user.sub }
+      return this.mode == 'create' ? 'Create map' : 'Save changes'
     },
     uploadURL() {
       return `${apiConfig.url}/auth/upload/logo`
@@ -333,7 +360,7 @@ export default {
     checkGeomLength() {
       let disabled
 
-      if (this.$route.query.id !== 'map') {
+      if (this.$route.query.id != 'map') {
         disabled = this.$store.state.editor.scene.features.list.length
           ? false
           : true
@@ -345,39 +372,90 @@ export default {
   },
   watch: {
     async mode(m) {
-      if (m === 'create') return
+      if (m == 'create') return
       await this.handleEditModeScenario()
+      this.setLogosUrl()
     }
   },
   methods: {
-    handleRemoveItemFromMultiSelect(t, _id) {
-      this.form[t] = this.form[t].filter(id => id !== _id)
-      this.handleSelectionChange(t, _id)
+    handleFileListRemove() {
+      this.form.logo = ''
+      this.fileList = []
     },
-    handleUploadProgress() {
-      this.isUploadingImage = true
+    handleFileListChange(file, fileList) {
+      if (file && fileList.length > 0 && !this.form.logo) {
+        this.fileList = [file.raw]
+        this.$refs.upload.submit()
+      }
     },
-    handleLogoUpload(res) {
-      if (!res.data && res.data.r.length) return
-      this.form.logos.push(res.data.r[0])
-      this.isUploadingImage = false
+    async handleUserLogoUpload() {
+      this.uploadLogo.show = false
+      this.uploadLogo.loading = true
+
+      const {
+        data: { r: logo = [] }
+      } = (await uploadOrgLogo({
+        user_id: await this.$auth.getUserID(),
+        logo: this.fileList[0]
+      })) || {
+        data: { logo: [] }
+      }
+
+      if (!logo.length) {
+        this.fileList = logo
+        this.uploadLogo = {
+          type: 'info',
+          text:
+            'There has been an error trying to upload your logo. Please, try again.',
+          show: true,
+          loading: false
+        }
+        setTimeout(() => (this.uploadLogo.show = false), 5200)
+        return
+      }
+
+      this.form.logo = logo[0]
+      this.uploadLogo = {
+        type: 'success',
+        text: 'Success! Your logo has been uploaded.',
+        show: true,
+        loading: false
+      }
+    },
+    setLogoUrl() {
+      if (this.form.logo !== '' && this.form.logo != undefined) {
+        this.fileList = [{ url: this.form.logo }]
+      }
     },
     async handleEditModeScenario() {
-      const { cables, cls, facilities, ixps, owners } = this.form
+      const { cls, facilities, ixps, owners, terrestrials, subsea } = this.form
 
       this.facilities = facilities.map(f => ({ name: f.label, _id: f._id }))
-      this.cables = cables.map(c => ({ name: c.label, _id: c._id }))
+
+      this.subsea = subsea.map(c => ({ name: c.label, _id: c._id }))
+      this.terrestrials = terrestrials.map(c => ({ name: c.label, _id: c._id }))
+
       this.cls = cls.map(c => ({ name: c.label, _id: c._id }))
       this.ixps = ixps.map(c => ({ name: c.label, _id: c._id }))
       this.owners = owners.map(c => ({ name: c.label, _id: c._id }))
 
       this.form.facilities = facilities.map(f => f._id)
       this.form.owners = owners.map(f => f._id)
-      this.form.cables = await cables.map(c => c._id)
+
+      this.subsea = subsea.map(c => c._id)
+      this.terrestrials = terrestrials.map(c => c._id)
+
       this.form.cls = cls.map(c => c._id)
       this.form.ixps = ixps.map(c => c._id)
 
-      for (let t of ['facilities', 'cables', 'cls', 'ixps', 'owners']) {
+      for (let t of [
+        'facilities',
+        'terrestrials',
+        'subsea',
+        'cls',
+        'ixps',
+        'owners'
+      ]) {
         await this.handleSetFeatureOntoMap({ t })
       }
 
@@ -396,8 +474,17 @@ export default {
 
       let fc = {}
       switch (t) {
-        case 'cables':
-          fc = await this.handleGetCablesGeom(this.form[t])
+        case 'terrestrials':
+          fc = await this.handleGetCablesGeom([
+            ...this.form.subsea,
+            ...this.form[t]
+          ])
+          break
+        case 'subsea':
+          fc = await this.handleGetCablesGeom([
+            ...this.form.terrestrials,
+            ...this.form[t]
+          ])
           break
         case 'facilities':
           fc = await this.handleGetFacsGeom(this.form[t])
@@ -480,16 +567,26 @@ export default {
     /**
      * @param s { String } - search queried from cables select input
      */
-    async loadCablesSearch(s) {
+    async loadCablesSearch(s, type) {
       if (s === '') return
       this.isLoadingCables = true
-      const res = await searchCables({
+      let method = () => {}
+      switch (type) {
+        case 'terrestrial':
+          method = getSearchByCablesT
+          break
+        default:
+          method = getSearchByCablesS
+          break
+      }
+      const { data = [] } = (await method({
         user_id: await this.$auth.getUserID(),
         s
-      })
-      if (res && res.data) {
-        this.cables = res.data
-      }
+      })) || { data: [] }
+
+      if (type == 'terrestrial') this.terrestrials = data
+      else this.subsea = data
+
       this.isLoadingCables = false
     },
     /**

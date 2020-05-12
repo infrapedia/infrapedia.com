@@ -133,7 +133,9 @@ export default {
     async handleMapFormFeatureSelection({ t, fc, removeLoadState }) {
       if (!this.map) return
       await setTimeout(async () => {
-        const source = this.map.getSource(`${t}-source`)
+        const source = this.map.getSource(
+          `${t == 'subsea' || t == 'terrestrials' ? 'cables' : t}-source`
+        )
         if (source) await source.setData(fc)
 
         if (removeLoadState) {

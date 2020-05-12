@@ -115,7 +115,7 @@
           ref="terrestrialMultiSelect"
           :mode="mode"
           :options="terrestrialNetworksOptions"
-          @input="loadCablesSearch"
+          @input="loadCablesSearch($event, 'terrestrial')"
           :loading="isLoadingCables"
           @values-change="createTableFromSelection($event, 'cables')"
           :value="mode == 'create' ? [] : form.terrestrials"
@@ -128,7 +128,7 @@
           ref="subseaMultiSelect"
           :mode="mode"
           :options="subseaCablesOptions"
-          @input="loadCablesSearch"
+          @input="loadCablesSearch($event, 'cables')"
           :loading="isLoadingCables"
           @values-change="createTableFromSelection($event, 'cables')"
           :value="mode == 'create' ? [] : form.subsea"
@@ -231,7 +231,10 @@
 <script>
 import { searchOrganization } from '../../services/api/organizations'
 import { searchFacilities } from '../../services/api/facs'
-import { searchCables } from '../../services/api/cables'
+import {
+  getSearchByCablesS,
+  getSearchByCablesT
+} from '../../services/api/cables'
 import validateUrl from '../../helpers/validateUrl'
 import { searchCls } from '../../services/api/cls'
 import { getTags } from '../../services/api/tags'
@@ -529,16 +532,23 @@ export default {
       }
       this.isLoadingOrg = false
     },
-    async loadCablesSearch(s) {
+    async loadCablesSearch(s, type) {
       if (s === '') return
       this.isLoadingCables = true
-      const res = await searchCables({
+      let method = () => {}
+      switch (type) {
+        case 'terrestrial':
+          method = getSearchByCablesT
+          break
+        default:
+          method = getSearchByCablesS
+          break
+      }
+      const { data = [] } = (await method({
         user_id: await this.$auth.getUserID(),
         s
-      })
-      if (res && res.data) {
-        this.selectsData.cables = res.data
-      }
+      })) || { data: [] }
+      this.selectsData.cables = data
       this.isLoadingCables = false
     },
     async loadClsSearch(s) {

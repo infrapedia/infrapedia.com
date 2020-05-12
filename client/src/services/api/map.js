@@ -36,8 +36,10 @@ export const setMyMap = async ({
   techPhone,
   saleEmail,
   salePhone,
-  cables,
-  logos,
+  address,
+  subsea,
+  terrestrials,
+  logo,
   draw,
   ixps,
   config,
@@ -46,6 +48,7 @@ export const setMyMap = async ({
   url = `${apiConfig.url}/auth/map/mymap`
   form = new FormData()
 
+  form.append('logo', logo)
   form.append('googleID', googleID)
   form.append('subdomain', subdomain)
   form.append('techEmail', techEmail)
@@ -55,31 +58,43 @@ export const setMyMap = async ({
   form.append('config', JSON.stringify(config))
   form.append('draw', JSON.stringify(fCollectionFormat(draw)))
 
-  if (facilities && facilities.length) {
+  if (facilities && facilities.length > 0) {
     facilities.forEach((fac, i) => form.append(`facilities[${i}]`, fac))
   } else form.append('facilities', [])
 
-  if (owners && owners.length) {
+  if (owners && owners.length > 0) {
     owners.forEach((fac, i) => form.append(`owners[${i}]`, fac))
   } else form.append('owners', [])
 
-  if (ixps && ixps.length) {
+  if (ixps && ixps.length > 0) {
     ixps.forEach((ixp, i) => form.append(`ixps[${i}]`, ixp))
   } else form.append('ixps', [])
 
-  if (cls && cls.length) {
+  if (cls && cls.length > 0) {
     cls.forEach((cls, i) => form.append(`cls[${i}]`, cls))
   } else form.append('cls', [])
 
-  if (cables && cables.length) {
-    cables.forEach((cable, i) => form.append(`cables[${i}]`, cable))
-  } else form.append('cables', [])
+  if (subsea && subsea.length > 0) {
+    subsea.forEach((subsea, i) => form.append(`subsea[${i}]`, subsea))
+  } else form.append('subsea', [])
 
-  if (logos && logos.length) {
-    logos.forEach((logo, i) => {
-      form.append(`logos[${i}]`, logo)
+  if (terrestrials && terrestrials.length > 0) {
+    terrestrials.forEach((terrestrial, i) =>
+      form.append(`terrestrials[${i}]`, terrestrial)
+    )
+  } else form.append('terrestrials', [])
+
+  // if (logos && logos.length > 0) {
+  //   logos.forEach((logo, i) => {
+  //     form.append(`logos[${i}]`, logo)
+  //   })
+  // } else form.append('logos', [])
+
+  if (address && address.length > 0) {
+    address.forEach((address, i) => {
+      form.append(`address[${i}]`, JSON.stringify(address))
     })
-  } else form.append('logos', [])
+  } else form.append('address,', [])
 
   const res = await $axios.post(url, form, {
     withCredentials: true,
