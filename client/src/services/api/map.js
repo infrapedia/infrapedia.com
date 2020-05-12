@@ -48,7 +48,10 @@ export const setMyMap = async ({
   url = `${apiConfig.url}/auth/map/mymap`
   form = new FormData()
 
-  form.append('logo', logo)
+  function checkStringID(item) {
+    return typeof item == 'string' ? item : item._id
+  }
+
   form.append('googleID', googleID)
   form.append('subdomain', subdomain)
   form.append('techEmail', techEmail)
@@ -56,39 +59,40 @@ export const setMyMap = async ({
   form.append('saleEmail', saleEmail)
   form.append('salePhone', salePhone)
   form.append('config', JSON.stringify(config))
+  form.append('logos', logo.length > 0 ? logo[0] : '')
   form.append('draw', JSON.stringify(fCollectionFormat(draw)))
 
   if (facilities && facilities.length > 0) {
-    facilities.forEach((fac, i) => form.append(`facilities[${i}]`, fac))
+    facilities.forEach((fac, i) =>
+      form.append(`facilities[${i}]`, checkStringID(fac))
+    )
   } else form.append('facilities', [])
 
   if (owners && owners.length > 0) {
-    owners.forEach((fac, i) => form.append(`owners[${i}]`, fac))
+    owners.forEach((owner, i) =>
+      form.append(`owners[${i}]`, checkStringID(owner))
+    )
   } else form.append('owners', [])
 
   if (ixps && ixps.length > 0) {
-    ixps.forEach((ixp, i) => form.append(`ixps[${i}]`, ixp))
+    ixps.forEach((ixp, i) => form.append(`ixps[${i}]`, checkStringID(ixp)))
   } else form.append('ixps', [])
 
   if (cls && cls.length > 0) {
-    cls.forEach((cls, i) => form.append(`cls[${i}]`, cls))
+    cls.forEach((cls, i) => form.append(`cls[${i}]`, checkStringID(cls)))
   } else form.append('cls', [])
 
   if (subsea && subsea.length > 0) {
-    subsea.forEach((subsea, i) => form.append(`subsea[${i}]`, subsea))
+    subsea.forEach((subsea, i) =>
+      form.append(`subsea[${i}]`, checkStringID(subsea))
+    )
   } else form.append('subsea', [])
 
   if (terrestrials && terrestrials.length > 0) {
     terrestrials.forEach((terrestrial, i) =>
-      form.append(`terrestrials[${i}]`, terrestrial)
+      form.append(`terrestrials[${i}]`, checkStringID(terrestrial))
     )
   } else form.append('terrestrials', [])
-
-  // if (logos && logos.length > 0) {
-  //   logos.forEach((logo, i) => {
-  //     form.append(`logos[${i}]`, logo)
-  //   })
-  // } else form.append('logos', [])
 
   if (address && address.length > 0) {
     address.forEach((address, i) => {
