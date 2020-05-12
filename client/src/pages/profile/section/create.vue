@@ -268,15 +268,22 @@ export default {
     },
     async checkUserMapExistance() {
       this.loading = true
-      const res = await getMyMap({ user_id: await this.$auth.getUserID() })
-      if (res && res.t !== 'error' && res.data && res.data.r) {
+      const {
+        t,
+        data: { r: mymap = [] }
+      } = (await getMyMap({ user_id: await this.$auth.getUserID() })) || {
+        data: { mymap: [] }
+      }
+
+      if (t != 'error' && mymap.length > 0) {
         this.mode = 'edit'
         const {
           subdomain,
           googleID,
           cls,
           facilities,
-          cables,
+          terrestrials,
+          subsea,
           logos,
           draw,
           ixps,
@@ -287,15 +294,16 @@ export default {
           techPhone,
           saleEmail,
           salePhone
-        } = res.data.r
+        } = mymap[0]
 
         this.form = {
           googleID,
           subdomain,
           ixps: Array.isArray(ixps) ? ixps : [],
           cls: Array.isArray(cls) ? cls : [],
-          logos: Array.isArray(logos) ? logos : [],
-          cables: Array.isArray(cables) ? cables : [],
+          logo: Array.isArray(logos) ? logos[0] : '',
+          subsea: Array.isArray(subsea) ? subsea : [],
+          terrestrials: Array.isArray(terrestrials) ? terrestrials : [],
           facilities: Array.isArray(facilities) ? facilities : [],
           config: typeof config == 'string' ? JSON.parse(config) : config,
           owners: Array.isArray(owners) ? owners : [],
@@ -329,7 +337,7 @@ export default {
 
       if (t != 'error') {
         this.mode = 'create'
-        await setupMyMapArchives(data.subdomain)
+        await setupMyMapArchives(data.subdomain).catch(console.error)
         await this.checkUserMapExistance()
       }
       this.isSendingData = false

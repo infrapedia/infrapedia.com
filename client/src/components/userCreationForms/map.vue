@@ -133,62 +133,72 @@
           @input="loadOwnersSearch"
           :loading="isLoadingOwners"
           @values-change="handleSelectionChange('owners', $event)"
-          :value="mode == 'create' ? [] : form.owners"
+          :value="mode == 'create' ? [] : [...form.owners]"
         />
       </el-form-item>
       <el-form-item label="Facilities">
         <v-multi-select
+          ref="facilities-MultiSelect"
           :mode="mode"
           :options="facilities"
           @input="loadFacSearch"
           :get-selected-id="true"
           :loading="isLoadingFacs"
+          @remove="handleRemoveFeature('facilities')"
           @values-change="handleSelectionChange('facilities', $event)"
-          :value="mode == 'create' ? [] : form.facilities"
+          :value="mode == 'create' ? [] : [...form.facilities]"
         />
       </el-form-item>
       <el-form-item label="Terrestrial Networks" prop="tNets">
         <v-multi-select
+          ref="terrestrials-MultiSelect"
           :mode="mode"
           :options="terrestrials"
           :get-selected-id="true"
-          @input="loadCablesSearch($event, 'terrestrial')"
+          @input="loadCablesSearch($event, 'terrestrials')"
           :loading="isLoadingCables"
+          @remove="handleRemoveFeature('terrestrials')"
           @values-change="handleSelectionChange('terrestrials', $event)"
-          :value="mode == 'create' ? [] : form.terrestrials"
+          :value="mode == 'create' ? [] : [...form.terrestrials]"
         />
       </el-form-item>
       <el-form-item label="Subsea Cables" prop="sCables">
         <v-multi-select
+          ref="subsea-MultiSelect"
           :mode="mode"
           :get-selected-id="true"
           :options="subsea"
           @input="loadCablesSearch($event, 'subsea')"
           :loading="isLoadingCables"
+          @remove="handleRemoveFeature('subsea')"
           @values-change="handleSelectionChange('subsea', $event)"
-          :value="mode == 'create' ? [] : form.subsea"
+          :value="mode == 'create' ? [] : [...form.subsea]"
         />
       </el-form-item>
       <el-form-item label="CLS">
         <v-multi-select
+          ref="cls-MultiSelect"
           :mode="mode"
           :options="cls"
           @input="loadClsSearch"
           :loading="isLoadingCls"
           :get-selected-id="true"
+          @remove="handleRemoveFeature('cls')"
           @values-change="handleSelectionChange('cls', $event)"
-          :value="mode == 'create' ? [] : form.cls"
+          :value="mode == 'create' ? [] : [...form.cls]"
         />
       </el-form-item>
       <el-form-item label="Ixps">
         <v-multi-select
+          ref="ixps-MultiSelect"
           :mode="mode"
           :options="ixps"
           :get-selected-id="true"
           @input="loadIxpsSearch"
           :loading="isLoadingIxps"
+          @remove="handleRemoveFeature('ixps')"
           @values-change="handleSelectionChange('ixps', $event)"
-          :value="mode == 'create' ? [] : form.ixps"
+          :value="mode == 'create' ? [] : [...form.ixps]"
         />
       </el-form-item>
       <el-form-item label="Logo(s)">
@@ -374,10 +384,14 @@ export default {
     async mode(m) {
       if (m == 'create') return
       await this.handleEditModeScenario()
-      this.setLogosUrl()
+      this.setLogoUrl()
     }
   },
   methods: {
+    async handleRemoveFeature(t) {
+      this.form[t] = this.$refs[`${t}-MultiSelect`].emitInputValue(true)
+      await this.handleSetFeatureOntoMap({ t, removeLoadState: true })
+    },
     handleFileListRemove() {
       this.form.logo = ''
       this.fileList = []
@@ -428,34 +442,25 @@ export default {
       }
     },
     async handleEditModeScenario() {
-      const { cls, facilities, ixps, owners, terrestrials, subsea } = this.form
-
-      this.facilities = facilities.map(f => ({ name: f.label, _id: f._id }))
-
-      this.subsea = subsea.map(c => ({ name: c.label, _id: c._id }))
-      this.terrestrials = terrestrials.map(c => ({ name: c.label, _id: c._id }))
-
-      this.cls = cls.map(c => ({ name: c.label, _id: c._id }))
-      this.ixps = ixps.map(c => ({ name: c.label, _id: c._id }))
-      this.owners = owners.map(c => ({ name: c.label, _id: c._id }))
-
-      this.form.facilities = facilities.map(f => f._id)
-      this.form.owners = owners.map(f => f._id)
-
-      this.subsea = subsea.map(c => c._id)
-      this.terrestrials = terrestrials.map(c => c._id)
-
-      this.form.cls = cls.map(c => c._id)
-      this.form.ixps = ixps.map(c => c._id)
-
-      for (let t of [
+      const multiselectFields = [
         'facilities',
         'terrestrials',
         'subsea',
         'cls',
         'ixps',
         'owners'
-      ]) {
+      ]
+
+      const multiSelectFormat = arr =>
+        arr.map(item => ({ name: item.label, _id: item._id }))
+
+      for (let field of multiselectFields) {
+        let value = multiSelectFormat(this.form[field])
+        this[field] = value
+        this.form[field] = value
+      }
+
+      for (let t of multiselectFields) {
         await this.handleSetFeatureOntoMap({ t })
       }
 
@@ -472,28 +477,32 @@ export default {
         this.$store.dispatch('editor/toggleMapFormLoading', true)
       }
 
+      const selectionIDs = this.form[t].map(item =>
+        typeof item == 'string' ? item : item._id
+      )
+
       let fc = {}
       switch (t) {
         case 'terrestrials':
           fc = await this.handleGetCablesGeom([
-            ...this.form.subsea,
-            ...this.form[t]
+            ...this.form.subsea.map(item => (item._id ? item._id : item)),
+            ...selectionIDs
           ])
           break
         case 'subsea':
           fc = await this.handleGetCablesGeom([
-            ...this.form.terrestrials,
-            ...this.form[t]
+            ...this.form.terrestrials.map(item => (item._id ? item._id : item)),
+            ...selectionIDs
           ])
           break
         case 'facilities':
-          fc = await this.handleGetFacsGeom(this.form[t])
+          fc = await this.handleGetFacsGeom(selectionIDs)
           break
         case 'cls':
-          fc = await this.handleGetClsGeom(this.form[t])
+          fc = await this.handleGetClsGeom(selectionIDs)
           break
         case 'ixps':
-          fc = await this.handleGetIxpsGeom(this.form[t])
+          fc = await this.handleGetIxpsGeom(selectionIDs)
           break
         case 'owners':
           fc = fCollectionFormat()
@@ -536,9 +545,6 @@ export default {
       })
       return res && res.data && res.data.r ? res.data.r : fCollectionFormat()
     },
-    handleGetOwnersGeom(ids) {
-      return console.warn('not done yet', ids)
-    },
     /**
      * @param name { String } - subdomain name
      */
@@ -572,7 +578,7 @@ export default {
       this.isLoadingCables = true
       let method = () => {}
       switch (type) {
-        case 'terrestrial':
+        case 'terrestrials':
           method = getSearchByCablesT
           break
         default:
@@ -636,7 +642,7 @@ export default {
       })
     },
     /**
-     * @param t { String } - selection type { can be: facilities, cables, cls, ixps }
+     * @param t { String } - selection type { can be: facilities, cables, cls, ixps, subsea, terrestrials }
      * @param _id { String } - selection id
      */
     async handleSelectionChange(t, _id) {
@@ -657,7 +663,7 @@ export default {
         } else return (this.mapCreationData[t] = [])
       }
 
-      this.form[t].push(_id)
+      this.form[t].push(this[t].filter(t => t._id == _id)[0])
       this.featureType = t
       this.currentSelectionID = _id
       if (t != 'owners') {

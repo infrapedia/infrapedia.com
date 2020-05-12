@@ -145,11 +145,15 @@ export default {
         this.selected = null
       }
     },
-    emitInputValue() {
-      return this.$emit(
-        'values-change',
-        this.getSelectedId ? this.selected._id : this.selections
-      )
+    emitInputValue(multiple) {
+      let value = null
+      {
+        if (multiple || !this.getSelectedId) value = this.selections
+        else if (this.getSelectedId) value = this.selected._id
+      }
+
+      if (multiple) return value
+      else return this.$emit('values-change', value)
     },
     handleInputConfirm() {
       const inputValue = this.selected
