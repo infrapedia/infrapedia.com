@@ -795,7 +795,6 @@ export default {
      */
     async handleCableFocus(id) {
       const { map, focus, bounds, hasToEase } = this
-      console.log(bounds)
       if (hasToEase) await this.handleFocusOnEasePoints()
       else if (focus && bounds && bounds.length) {
         await map.fitBounds(bounds, {
