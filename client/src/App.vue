@@ -63,31 +63,15 @@ export default {
     }
   },
   methods: {
-    // checkIfIsNotSecure() {
-    //   if (
-    //     process.env.NODE_ENV === 'production' &&
-    //     window.location.protocol !== 'https:'
-    //   ) {
-    //     window.location.replace(
-    //       `https:${window.location.href.substring(
-    //         window.location.protocol.length
-    //       )}`
-    //     )
-    //   }
-    // },
     handleSharedView() {
-      if (this.$route.query.sharedView == 'true') {
-        const keys = Object.keys(this.$route.query)
-        const query = {}
+      const isSharedView =
+        this.$route.query['amp;sharedView'] == 'true' ||
+        this.$route.query['ampsharedView'] == 'true' ||
+        this.$route.query.sharedView == 'true'
 
-        for (let key of keys) {
-          if (key.includes('amp')) {
-            query[key.split('amp')[1]] = this.$route.query[key]
-          } else {
-            query[key] = this.$route.query[key]
-          }
-        }
-
+      if (isSharedView) {
+        const getQueryParams = require('./helpers/getQueryParams').default
+        const query = getQueryParams(decodeURIComponent(this.$route.fullPath))
         window.localStorage.setItem('__easePointData', JSON.stringify(query))
       }
     },
