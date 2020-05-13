@@ -393,8 +393,8 @@ export default {
       return setBoundsCookie({
         pitch,
         bounds,
-        bearing,
         center,
+        bearing,
         focus: this.focus
       })
     },
