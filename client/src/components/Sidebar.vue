@@ -82,7 +82,7 @@ import * as modes from '../config/sidebarModes'
 import dataCollection from '../mixins/dataCollection'
 import copyToClipboard from '../helpers/copyToClipboard'
 import { getSelectionCols } from '../helpers/getSelectionCols'
-import { CURRENT_SELECTION, MAP_FOCUS_ON } from '../store/actionTypes/map'
+// import { CURRENT_SELECTION, MAP_FOCUS_ON } from '../store/actionTypes/map'
 import {
   BUY_CAPACITY,
   EDIT_CABLE,
@@ -239,10 +239,7 @@ export default {
       return this.$store.commit(`${TOGGLE_VERIFICATION_DIALOG}`, true)
     },
     closeSidebar() {
-      bus.$emit(`${CLEAR_SELECTION}`)
-      this.isSidebarActive = false
-      this.$store.commit(`${MAP_FOCUS_ON}`, null)
-      this.$store.commit(`${CURRENT_SELECTION}`, null)
+      return bus.$emit(`${CLEAR_SELECTION}`)
     }
   }
 }

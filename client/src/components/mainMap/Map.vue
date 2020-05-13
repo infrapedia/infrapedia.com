@@ -726,7 +726,7 @@ export default {
 
       this.$store.commit(`${MAP_FOCUS_ON}`, {
         id,
-        type: type === 'orgs' ? 'organizations' : type
+        type: type == 'orgs' ? 'organizations' : type
       })
 
       // Clearing clusters source in case there was something previously selected
@@ -795,6 +795,7 @@ export default {
      */
     async handleCableFocus(id) {
       const { map, focus, bounds, hasToEase } = this
+      console.log(bounds)
       if (hasToEase) await this.handleFocusOnEasePoints()
       else if (focus && bounds && bounds.length) {
         await map.fitBounds(bounds, {
