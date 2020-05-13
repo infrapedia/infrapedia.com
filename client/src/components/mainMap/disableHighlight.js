@@ -1,5 +1,10 @@
 import { mapConfig } from '../../config/mapConfig'
-import { CURRENT_MAP_FILTER, MAP_FOCUS_ON } from '../../store/actionTypes/map'
+import {
+  CURRENT_MAP_FILTER,
+  MAP_FOCUS_ON,
+  MAP_BOUNDS,
+  EASE_POINT
+} from '../../store/actionTypes/map'
 import { TOGGLE_SIDEBAR } from '../../store/actionTypes'
 
 function disableCurrentHighlight({
@@ -25,6 +30,8 @@ function disableCurrentHighlight({
   if (closesSidebar) {
     commit(`${TOGGLE_SIDEBAR}`, false)
     commit(`${MAP_FOCUS_ON}`, null)
+    commit(`${EASE_POINT}`, false)
+    commit(`${MAP_BOUNDS}`, [])
     handleBoundsChange()
   }
 

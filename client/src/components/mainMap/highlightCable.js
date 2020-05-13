@@ -16,24 +16,26 @@ export default function highlightCurrentCable({ dark, cable, map, commit }) {
 
   // I need to change the ID property to be matched dynamically for the colors-change to work
   const filter = mapConfig.highlightFeatureState
-  filter[1][2] = cable.id
+  const cableID = cable._id
+  filter[1][2] = cableID
   // Cables need to be kinda less visible when one is selected
   filter[3] = unselectedColor
 
   map.setPaintProperty(mapConfig.cables, 'line-color', filter)
   map.setPaintProperty(mapConfig.cables, 'line-width', [
-    'match',
-    ['get', 'id'],
-    cable.id,
+    'case',
+    ['==', ['get', '_id'], cableID],
     3,
+    ['!=', ['get', '_id'], cableID],
+    1,
     1
   ])
 
   // Keeping record of the selection and map current filter
-  commit(`${CURRENT_MAP_FILTER}`, ['==', ['get', '_id'], cable._id])
+  commit(`${CURRENT_MAP_FILTER}`, ['==', ['get', '_id'], cableID])
   commit(`${MAP_FOCUS_ON}`, {
+    id: cableID,
     type: 'cable',
-    id: cable._id,
     name: cable.name
   })
 }

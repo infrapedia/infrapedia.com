@@ -726,7 +726,7 @@ export default {
 
       this.$store.commit(`${MAP_FOCUS_ON}`, {
         id,
-        type: type === 'orgs' ? 'organizations' : type
+        type: type == 'orgs' ? 'organizations' : type
       })
 
       // Clearing clusters source in case there was something previously selected

@@ -3,7 +3,7 @@ const token = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN
 const cablesLabel = 'cables_label'
 const highlightFeatureState = [
   'case',
-  ['==', ['get', 'id'], 0],
+  ['==', ['get', '_id'], 0],
   '#F7D079',
   'rgba(23,23,23, 0.2)'
 ]

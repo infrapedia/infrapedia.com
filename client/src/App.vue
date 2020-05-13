@@ -71,8 +71,8 @@ export default {
 
       if (isSharedView) {
         const getQueryParams = require('./helpers/getQueryParams').default
-        const query = getQueryParams(decodeURIComponent(this.$route.fullPath))
-        window.localStorage.setItem('__easePointData', JSON.stringify(query))
+        const params = getQueryParams(decodeURIComponent(this.$route.fullPath))
+        window.localStorage.setItem('__easePointData', JSON.stringify(params))
       }
     },
     changeLayout(layoutName) {
