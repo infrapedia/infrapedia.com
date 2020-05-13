@@ -20,12 +20,13 @@
           class="header pt10 pr8 pl8 h-fit-content pb10 relative"
           @click.stop="toggleActiveClassOnMobile"
         >
-          <span
-            class="inline-block w4 h4 icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
+          <el-button
+            type="text"
+            class="inline-block icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
             @click="closeSidebar"
           >
             <fa :icon="['fas', 'times']" />
-          </span>
+          </el-button>
           <el-tooltip
             effect="dark"
             content="Click to copy link"
