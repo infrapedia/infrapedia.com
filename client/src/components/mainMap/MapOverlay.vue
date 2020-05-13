@@ -106,7 +106,7 @@ export default {
             query.centerLng &&
             query.sharedView == 'true'
           ) {
-            this.$store.commit(`${EASE_POINT}`, {
+            const boundsData = {
               center: [
                 [query.neLng, query.neLat],
                 [query.swLng, query.swLat]
@@ -116,7 +116,9 @@ export default {
               pitch: query.pitch,
               zoom: query.zoom,
               hasToEase: true
-            })
+            }
+
+            this.$store.commit(`${EASE_POINT}`, boundsData)
           }
 
           // If there is there is no id or nor type only ease to the coordinates point
