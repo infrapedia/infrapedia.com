@@ -34,6 +34,9 @@ const mutations = {
   },
   EASE_POINT(state, easePoint) {
     state.easePoint = easePoint
+    if (easePoint && easePoint.hasToEase) {
+      state.hasToEase = easePoint.hasToEase
+    }
   }
 }
 

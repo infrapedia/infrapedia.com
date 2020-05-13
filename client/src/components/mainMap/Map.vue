@@ -854,7 +854,7 @@ export default {
         })
       }
     },
-    async handleFocusOnEasePoints() {
+    handleFocusOnEasePoints: debounce(async function() {
       if (!this.hasToEase || !this.easePoint) return
       /**
        * - The ease point is exclusibly use when the user wants to share
@@ -874,9 +874,17 @@ export default {
       })
 
       // Clearing ease point so it wont ease everytime the user comes to the home page
-      this.$store.commit(`${EASE_POINT}`, null)
+      this.$store.commit(`${EASE_POINT}`, false)
       this.$store.commit(`${HAS_TO_EASE_TO}`, false)
-    },
+
+      // Removing view shared bounds data
+      if (window.localStorage.getItem('__easePointData')) {
+        window.localStorage.removeItem('__easePointData')
+      }
+      if (Object.keys(this.$route.query).length > 0) {
+        this.$router.push('/app')
+      }
+    }, 820),
     async handleSubseaToggle(bool) {
       const filter = bool ? mapConfig.filter.subsea : mapConfig.filter.all
 
