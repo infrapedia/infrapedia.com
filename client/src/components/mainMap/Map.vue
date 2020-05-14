@@ -290,14 +290,21 @@ export default {
 
       return map
     },
-    handleCLSHover({ features: [{ id }] = [{ id }] }, isHovering) {
+    handleCLSHover(e, isHovering) {
       if (!this.map) return
+      const {
+        features: [
+          {
+            properties: { _id }
+          }
+        ] = [{ properties: { _id: '' } }]
+      } = e
 
       this.map.setPaintProperty(mapConfig.cls, 'circle-radius', [
         'match',
-        ['get', 'id'],
-        id,
-        isHovering ? 5.4 : 3.4,
+        ['get', '_id'],
+        _id,
+        isHovering ? 7.4 : 3.4,
         3.4
       ])
     },
