@@ -114,7 +114,7 @@
           <el-col :md="24" :xl="12">
             <div class="el-form-item is-required">
               <label for="addressPoinB" class="el-form-item__label">
-                To (B-end)
+                To (Z-end)
               </label>
               <autocomplete-google
                 @place-changed="handleAddressChanged($event, 'b')"

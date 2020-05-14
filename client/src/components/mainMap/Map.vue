@@ -290,14 +290,21 @@ export default {
 
       return map
     },
-    handleCLSHover({ features: [{ id }] = [{ id }] }, isHovering) {
+    handleCLSHover(e, isHovering) {
       if (!this.map) return
+      const {
+        features: [
+          {
+            properties: { _id }
+          }
+        ] = [{ properties: { _id: '' } }]
+      } = e
 
       this.map.setPaintProperty(mapConfig.cls, 'circle-radius', [
         'match',
-        ['get', 'id'],
-        id,
-        isHovering ? 5.4 : 3.4,
+        ['get', '_id'],
+        _id,
+        isHovering ? 7.4 : 3.4,
         3.4
       ])
     },
@@ -779,15 +786,21 @@ export default {
       if (hasToEase) {
         await this.handleFocusOnEasePoints()
       } else if (focus && bounds && bounds.length) {
-        await map.fitBounds(bounds, {
-          padding: isMobile ? 10 : 35,
-          maxZoom: 16.5,
-          animate: true,
-          speed: 1.75,
-          pan: {
-            duration: 25
-          }
-        })
+        try {
+          await map.fitBounds(bounds, {
+            padding: isMobile ? 10 : 35,
+            maxZoom: 16.5,
+            animate: true,
+            speed: 1.75,
+            pan: {
+              duration: 25
+            }
+          })
+        } catch {
+          // Ignore
+          // Even thought that it throws an error
+          // The bounds are been set correctly
+        }
       }
     },
     /**
@@ -797,10 +810,16 @@ export default {
       const { map, focus, bounds, hasToEase } = this
       if (hasToEase) await this.handleFocusOnEasePoints()
       else if (focus && bounds && bounds.length) {
-        await map.fitBounds(bounds, {
-          padding: 20,
-          zoom: 4
-        })
+        try {
+          await map.fitBounds(bounds, {
+            padding: 20,
+            zoom: 4
+          })
+        } catch {
+          // Ignore
+          // Even thought that it throws an error
+          // The bounds are been set correctly
+        }
       }
 
       await this.handleCablesSelection(true, [{ properties: { _id: id } }])
@@ -813,30 +832,41 @@ export default {
 
       await this.handleFacilitySelection({ id, type })
       if (focus && bounds && bounds.length) {
-        map.fitBounds(bounds, {
-          pan: { duration: 25 },
-          animate: true,
-          padding: 20,
-          speed: 1.1,
-          zoom: 18,
-          pitch: 45
-        })
+        try {
+          map.fitBounds(bounds, {
+            pan: { duration: 25 },
+            animate: true,
+            padding: 20,
+            speed: 1.1,
+            zoom: 18,
+            pitch: 45
+          })
+        } catch {
+          // Ignore
+          // Even thought that it throws an error
+          // The bounds are been set correctly
+        }
       }
     },
     async handleClsFocus({ id, type }) {
       const { map, focus, bounds } = this
 
       await this.handleClsSelection({ id, type })
-
       if (focus && bounds && bounds.length) {
-        map.fitBounds(bounds, {
-          pan: { duration: 25 },
-          animate: true,
-          padding: 20,
-          speed: 1.1,
-          zoom: 12,
-          pitch: 45
-        })
+        try {
+          map.fitBounds([bounds, bounds], {
+            pan: { duration: 25 },
+            animate: true,
+            padding: 20,
+            speed: 1.1,
+            zoom: 12,
+            pitch: 45
+          })
+        } catch {
+          // Ignore
+          // Even thought that it throws an error
+          // The bounds are been set correctly
+        }
       }
     },
     async handleIxpsFocus(data) {
@@ -844,14 +874,20 @@ export default {
 
       await this.handleIxpsSelection(data)
       if (focus && bounds && bounds.length) {
-        map.fitBounds(bounds, {
-          pan: { duration: 25 },
-          animate: true,
-          padding: 20,
-          speed: 1.1,
-          zoom: 18,
-          pitch: 45
-        })
+        try {
+          map.fitBounds([bounds, bounds], {
+            pan: { duration: 25 },
+            animate: true,
+            padding: 20,
+            speed: 1.1,
+            zoom: 18,
+            pitch: 45
+          })
+        } catch {
+          // Ignore
+          // Even thought that it throws an error
+          // The bounds are been set correctly
+        }
       }
     },
     handleFocusOnEasePoints: debounce(async function() {

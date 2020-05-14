@@ -58,7 +58,7 @@ export const useAuth0 = ({
         }
       },
       async getUserID() {
-        if (!this.user.sub) {
+        if (!this.user || (this.user && !this.user.sub)) {
           if (!this.auth0Client) await this.createAuthClient()
           this.user = await this.auth0Client.getUser()
         }
