@@ -76,10 +76,16 @@
     .services-wrapper {
       .inner-wrapper {
         padding: 1rem;
-        width: 12rem;
+        width: 15.8rem;
         .el-card {
           padding: 1rem;
           min-width: auto;
+          height: auto;
+          .card-inner-wrapper {
+            footer {
+              position: relative;
+            }
+          }
         }
       }
     }
