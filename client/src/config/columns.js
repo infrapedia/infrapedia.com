@@ -35,8 +35,14 @@ export const cablesColumns = [
     showTable: true,
     sortable: true
   },
+  { label: 'Status', value: 'category', showSidebar: true },
   {
     label: 'Latency',
+    value: 'systemLength',
+    showSidebar: true
+  },
+  {
+    label: 'Length',
     value: 'systemLength',
     showSidebar: true
   },

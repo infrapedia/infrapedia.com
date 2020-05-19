@@ -5,11 +5,11 @@
       <template v-if="collapseColumns.includes(col.value.toLowerCase())">
         <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
           <el-col :span="24">
-            <el-collapse v-model="collapse">
+            <el-collapse v-model="collapse" :ref="`collapse_${i}`">
               <template v-if="!col.label.toLowerCase().includes('address')">
                 <template
                   v-if="
-                    col.value === 'cables' && col.filter(info[col.value]).length
+                    col.value == 'cables' && col.filter(info[col.value]).length
                   "
                 >
                   <el-collapse-item :title="col.label" :name="i">
@@ -24,7 +24,7 @@
                     </el-tag>
                   </el-collapse-item>
                 </template>
-                <template v-else-if="col.value !== 'cables'">
+                <template v-else-if="col.value != 'cables'">
                   <el-collapse-item :title="col.label" :name="i">
                     <el-tag
                       v-for="(item, index) in info[col.value]"
@@ -155,7 +155,7 @@
               :class="{ active: info[col.value] === 'true' }"
               v-else-if="col.label.toLowerCase().includes('state')"
             >
-              {{ info[col.value] === 'true' ? 'On' : 'Off' }}
+              {{ info[col.value] == 'true' ? 'On' : 'Off' }}
             </p>
             <template
               v-else-if="isArrCol(info[col.value]) && col.label.includes('web')"
@@ -210,6 +210,7 @@
               </ul>
             </el-card>
             <div
+              v-if="focus.type != 'cls'"
               slot="reference"
               @click="toggleMenu"
               class="cursor-pointer no-outline no-selectable"
@@ -232,7 +233,13 @@
             <span class="cursor-pointer fs-regular label">Report issue</span>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="24" :lg="12" class="mt8">
+        <el-col
+          :xs="24"
+          :sm="12"
+          :md="24"
+          :lg="12"
+          :class="{ mt8: focus.type != 'cls' }"
+        >
           <div
             class="cursor-pointer no-selectable"
             @click="$emit(CREATE_ALERT)"
@@ -283,6 +290,9 @@ export default {
     dark() {
       return this.$store.state.isDark
     },
+    focus() {
+      return this.$store.state.map.focus
+    },
     collapseColumns() {
       return ['org', 'networks', 'cables', 'cls', 'address', 'facilities']
     },
@@ -305,6 +315,15 @@ export default {
         })
         .filter(col => col)
       return cols
+    }
+  },
+  mounted() {
+    try {
+      for (let collapse in this.$refs) {
+        this.collapse.push(Number(collapse.split('_')[1]))
+      }
+    } catch {
+      // Ignore
     }
   },
   methods: {

@@ -5,7 +5,7 @@
       <template v-if="collapseColumns.includes(col.value.toLowerCase())">
         <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
           <el-col :span="24">
-            <el-collapse v-model="collapse">
+            <el-collapse v-model="collapse" :ref="`collapse_${i}`">
               <el-collapse-item :title="col.label" :name="i">
                 <el-tag
                   v-for="(item, index) in info[col.value]"
@@ -67,7 +67,18 @@
           <el-col
             :span="10"
             class="p2"
-            v-else-if="info[col.value] && col.label != 'Latency'"
+            v-else-if="col.value == 'systemLength' && !info.terrestrial"
+          >
+            <p class="label capitalize">{{ col.label }}</p>
+          </el-col>
+          <el-col
+            :span="10"
+            class="p2"
+            v-else-if="
+              info[col.value] &&
+                col.label != 'Latency' &&
+                col.value != 'systemLength'
+            "
           >
             <p class="label capitalize">{{ col.label }}</p>
           </el-col>
@@ -101,7 +112,7 @@
               class="p2"
               v-else-if="col.value.includes('activationDateTime')"
             >
-              <p class="text-bold">
+              <p class="text-bold" style="margin: 1.4rem 0">
                 {{ convertToYear(info[col.value]) }}
               </p>
             </el-col>
@@ -113,21 +124,35 @@
                   !info.terrestrial
               "
             >
-              <p class="text-bold">{{ getCableLatency(info[col.value]) }} ms</p>
+              <p class="text-bold" style="margin: 1.4rem 0">
+                {{ getCableLatency(info[col.value]) }} ms
+              </p>
             </el-col>
             <el-col
               :span="12"
               v-else-if="col.label.includes('EOL') && info.status != 'project'"
             >
-              <p class="text-bold">
+              <p class="text-bold" style="margin: 1.4rem 0">
                 {{ convertToYear(calculateEOL(info[col.value])) }}
               </p>
             </el-col>
             <el-col
               :span="12"
-              v-else-if="!isArrCol(info[col.value]) && col.label != 'Latency'"
+              v-else-if="col.value == 'systemLength' && !info.terrestrial"
             >
-              <p class="text-bold">
+              <p class="text-bold" style="margin: 1.4rem 0">
+                {{ info[col.value] }} kms
+              </p>
+            </el-col>
+            <el-col
+              :span="12"
+              v-else-if="
+                !isArrCol(info[col.value]) &&
+                  col.label != 'Latency' &&
+                  col.value != 'systemLength'
+              "
+            >
+              <p class="text-bold" style="margin: 1.4rem 0">
                 {{ info[col.value] }}
               </p>
             </el-col>
@@ -261,6 +286,9 @@ export default {
     isMenuOpen: false
   }),
   computed: {
+    focus() {
+      return this.$store.state.map.focus
+    },
     dark() {
       return this.$store.state.isDark
     },
@@ -295,6 +323,15 @@ export default {
     getYear: () => row => new Date(row.year).getFullYear(),
     collapseColumns() {
       return ['org', 'cls', 'networks', 'fac', 'owners']
+    }
+  },
+  mounted() {
+    try {
+      for (let collapse in this.$refs) {
+        this.collapse.push(Number(collapse.split('_')[1]))
+      }
+    } catch {
+      // Ignore
     }
   },
   methods: {
