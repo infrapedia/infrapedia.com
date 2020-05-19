@@ -461,7 +461,7 @@ export default {
       return isProfile
     },
     userName() {
-      return this.$auth.user.name
+      return this.$auth.user ? this.$auth.user.name : ''
     }
     // versionOneLink() {
     //   return process.env.VUE_APP_VERSION_APP_LINK

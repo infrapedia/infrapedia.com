@@ -83,6 +83,7 @@
                 type="warning"
                 class="w22"
                 size="medium"
+                :loading="sendingData"
                 @click="validateForm"
               >
                 Save
@@ -112,6 +113,7 @@ export default {
   name: 'profile',
   data: () => ({
     loading: false,
+    sendingData: false,
     form: {
       name: '',
       email: '',
@@ -134,9 +136,14 @@ export default {
       ],
       'user_metadata.companyname': [
         {
-          required: true,
+          // required: true,
           message: 'Please input your company name',
           trigger: 'blur'
+        },
+        {
+          message: "Special characters aren't allowed",
+          pattern: /^[_A-z0-9]*((-|\s)*[_A-z0-9])*$/g,
+          trigger: 'change'
         }
       ],
       'user_metadata.lastname': [
@@ -223,18 +230,27 @@ export default {
       this.$refs.form.validate(valid => (valid ? this.updateUser() : false))
     },
     async updateUser() {
-      const { form, $auth } = this
-      const res = updateUserData(
-        { ...form },
-        { _id: $auth.user.sub, connection: $auth.user.sub.split('|')[0] },
-        false
-      )
-      if (res) {
-        this.$notify({
-          title: 'Success!',
-          message: 'The changes has been saved successfully',
-          type: 'success'
-        })
+      this.sendingData = true
+      try {
+        const res = updateUserData(
+          { ...this.form },
+          {
+            _id: this.$auth.user.sub,
+            connection: this.$auth.user.sub.split('|')[0]
+          },
+          false
+        )
+        if (res) {
+          this.$notify({
+            title: 'Success!',
+            message: 'The changes has been saved successfully',
+            type: 'success'
+          })
+        }
+      } catch {
+        // Ignore
+      } finally {
+        this.sendingData = false
       }
     }
   }

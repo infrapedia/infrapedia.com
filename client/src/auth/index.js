@@ -61,6 +61,8 @@ export const useAuth0 = ({
         if (!this.user || (this.user && !this.user.sub)) {
           if (!this.auth0Client) await this.createAuthClient()
           this.user = await this.auth0Client.getUser()
+          if (!this.user) return this.loginWithRedirect()
+          else return this.user.sub
         }
 
         return this.user.sub
