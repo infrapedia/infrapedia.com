@@ -1,5 +1,8 @@
-import apiConfig, { url, form } from '../../config/apiConfig'
+import apiConfig from '../../config/apiConfig'
 import $axios from '../axios'
+
+var url
+var form
 
 export const sendContactForm = async ({
   email,
@@ -17,7 +20,7 @@ export const sendContactForm = async ({
   form.append('company', company)
   form.append('message', message)
 
-  const res = await $axios.post(url)
+  const res = await $axios.post(url, form)
   return res
 }
 
@@ -33,6 +36,6 @@ export const registerToNewsletter = async ({
   form.append('first_name', first_name)
   form.append('last_name', last_name)
 
-  const res = await $axios.post(url)
+  const res = await $axios.post(url, form)
   return res
 }

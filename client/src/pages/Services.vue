@@ -196,19 +196,31 @@
         or
         <el-button
           type="text"
-          @click="showPopup"
+          @click="toggleNewsletterDialog"
           class="cursor-pointer fs-medium underline-hover"
           >subscribe</el-button
         >
         to our newsletter
       </footer>
     </el-card>
+    <newsletter-dialog
+      :visibility="isNewsLetterDialog"
+      @close="toggleNewsletterDialog"
+    />
   </div>
 </template>
 
 <script>
+import NewsletterDialog from '../components/dialogs/NewsletterDialog'
+
 export default {
   name: 'ServicesPage',
+  components: {
+    NewsletterDialog
+  },
+  data: () => ({
+    isNewsLetterDialog: false
+  }),
   head: {
     title:
       'Infrapedia | Services & Consultancy | Global Internet Infrastructure Map',
@@ -229,8 +241,8 @@ export default {
     this.$emit('layout', 'landing-layout')
   },
   methods: {
-    showPopup() {
-      return console.warn('not done yet')
+    toggleNewsletterDialog() {
+      this.isNewsLetterDialog = !this.isNewsLetterDialog
     }
   }
 }
