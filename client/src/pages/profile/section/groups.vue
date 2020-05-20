@@ -84,7 +84,8 @@ export default {
       policy_locations: '',
       policy_ratio: '',
       policy_url: '',
-      route_server: ''
+      route_server: '',
+      created: ''
     },
     columns: [...netColumns].filter(col => col.showTable)
   }),

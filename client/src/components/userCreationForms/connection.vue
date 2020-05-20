@@ -304,6 +304,15 @@
                 <el-input v-model="form.route_server" />
               </el-form-item>
             </el-col>
+            <el-col :xs="24" :sm="12" :lg="12">
+              <el-form-item label="Creation Date">
+                <el-date-picker
+                  v-model="form.created"
+                  type="date"
+                  placeholder
+                />
+              </el-form-item>
+            </el-col>
           </el-row>
         </el-tab-pane>
       </el-tabs>

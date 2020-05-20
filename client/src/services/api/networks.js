@@ -32,12 +32,14 @@ export const createNetwork = async ({
   policy_locations = '',
   policy_ratio = '',
   policy_url = '',
-  route_server = ''
+  route_server = '',
+  created = ''
 }) => {
   url = `${apiConfig.url}/auth/network/add`
 
   form = new FormData()
   form.append('name', name)
+  form.append('created', created)
   form.append('asn', asn)
   form.append('info_ipv6', info_ipv6)
   form.append('info_multicast', info_multicast)
@@ -142,12 +144,14 @@ export const editNetwork = async ({
   policy_locations = '',
   policy_ratio = '',
   policy_url = '',
-  route_server = ''
+  route_server = '',
+  created = ''
 }) => {
   url = `${apiConfig.url}/auth/network/edit`
   form = new FormData()
   form.append('_id', _id)
   form.append('name', name)
+  form.append('created', created)
   form.append('asn', asn)
   form.append('info_ipv6', info_ipv6)
   form.append('info_multicast', info_multicast)

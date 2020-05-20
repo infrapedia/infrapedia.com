@@ -231,6 +231,11 @@ export const netColumns = [
     showTable: true
   },
   {
+    label: 'Creation date',
+    value: 'created',
+    showSidebar: true
+  },
+  {
     label: 'Facilities',
     value: 'facilities',
     showSidebar: true
