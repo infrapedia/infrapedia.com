@@ -239,7 +239,7 @@ export default {
       return this.$store.commit(`${TOGGLE_VERIFICATION_DIALOG}`, true)
     },
     closeSidebar() {
-      return bus.$emit(`${CLEAR_SELECTION}`)
+      return bus.$emit(`${CLEAR_SELECTION}`, true, this.focus.type)
     }
   }
 }

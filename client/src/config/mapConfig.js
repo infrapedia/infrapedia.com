@@ -8,6 +8,68 @@ const highlightFeatureState = [
   'rgba(23,23,23, 0.2)'
 ]
 
+const ixpsPaintConfig = {
+  'circle-radius': 10,
+  'circle-stroke-width': 2,
+  'circle-color': '#b10f0f',
+  'circle-stroke-color': '#333333'
+}
+
+const clsPaintConfig = {
+  'circle-radius': 3.4,
+  'circle-color': '#ffffff',
+  'circle-stroke-width': 2,
+  'circle-stroke-color': '#333333'
+}
+
+const facsPaintConfig = {
+  'fill-extrusion-color': [
+    'case',
+    ['==', ['get', 'premium'], true],
+    '#ff9800',
+    ['==', ['get', 'premium'], false],
+    '#666666',
+    '#666666'
+  ],
+  'fill-extrusion-height': [
+    'interpolate',
+    ['linear'],
+    ['zoom'],
+    15,
+    0,
+    15.05,
+    ['get', 'height']
+  ],
+  'fill-extrusion-base': [
+    'interpolate',
+    ['linear'],
+    ['zoom'],
+    15,
+    0,
+    15.05,
+    ['get', 'min_height']
+  ],
+  'fill-extrusion-opacity': 1
+}
+
+const cablesPaintConfig = {
+  'line-width': 1.62,
+  'line-color': [
+    'case',
+    ['==', ['get', 'status'], 0],
+    '#FF0000',
+    ['>', ['get', 'activationDateTime'], (new Date().getTime() / 1000) * 1000],
+    '#af6ec7',
+    ['==', ['get', 'hasoutage'], 'true'],
+    '#7288b0',
+    ['==', ['get', 'haspartial'], 'true'],
+    '#CC591F',
+    ['==', ['get', 'terrestrial'], 'true'],
+    '#7288b0',
+    '#7288b0'
+  ]
+}
+
 const cables = 'cables'
 const cls = 'cls'
 const ixps = 'ixps'
@@ -32,6 +94,10 @@ export const mapConfig = {
   clusters,
   facilities,
   cablesLabel,
+  clsPaintConfig,
+  ixpsPaintConfig,
+  facsPaintConfig,
+  cablesPaintConfig,
   facilitiesLabel,
   // facilitiesCount,
   // facilitiesClusters,
@@ -99,27 +165,7 @@ export const mapConfig = {
         'source-layer': cables,
         type: 'line',
         maxzoom: 20,
-        paint: {
-          'line-width': 1.62,
-          'line-color': [
-            'case',
-            ['==', ['get', 'status'], 0],
-            '#FF0000',
-            [
-              '>',
-              ['get', 'activationDateTime'],
-              (new Date().getTime() / 1000) * 1000
-            ],
-            '#af6ec7',
-            ['==', ['get', 'hasoutage'], 'true'],
-            '#7288b0',
-            ['==', ['get', 'haspartial'], 'true'],
-            '#CC591F',
-            ['==', ['get', 'terrestrial'], 'true'],
-            '#7288b0',
-            '#7288b0'
-          ]
-        }
+        paint: cablesPaintConfig
       },
       {
         id: cablesLabel,
@@ -144,35 +190,7 @@ export const mapConfig = {
         id: facilities,
         type: 'fill-extrusion',
         source: facilities,
-        paint: {
-          'fill-extrusion-color': [
-            'case',
-            ['==', ['get', 'premium'], true],
-            '#ff9800',
-            ['==', ['get', 'premium'], false],
-            '#666666',
-            '#666666'
-          ],
-          'fill-extrusion-height': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            15,
-            0,
-            15.05,
-            ['get', 'height']
-          ],
-          'fill-extrusion-base': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            15,
-            0,
-            15.05,
-            ['get', 'min_height']
-          ],
-          'fill-extrusion-opacity': 1
-        }
+        paint: facsPaintConfig
       },
       {
         id: facilitiesLabel,
@@ -247,24 +265,14 @@ export const mapConfig = {
         type: 'circle',
         source: ixps,
         minzoom: 15,
-        paint: {
-          'circle-radius': 10,
-          'circle-color': '#b10f0f',
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#333333'
-        }
+        paint: ixpsPaintConfig
       },
       {
         id: cls,
         type: 'circle',
         source: cls,
         minzoom: 3.4,
-        paint: {
-          'circle-radius': 3.4,
-          'circle-color': '#ffffff',
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#333333'
-        }
+        paint: clsPaintConfig
       },
       {
         id: clusters,

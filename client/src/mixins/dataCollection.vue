@@ -2,13 +2,18 @@
 import { mapActions } from 'vuex'
 import { bus } from '../helpers/eventBus'
 import { TOGGLE_SIDEBAR, TOGGLE_LOADING } from '../store/actionTypes'
-import { FOCUS_ON } from '../events'
+import { FOCUS_ON, CLEAR_SELECTION } from '../events'
 import { MAP_FOCUS_ON, MAP_BOUNDS } from '../store/actionTypes/map'
 
 export default {
   data: () => ({
     sharedViewData: null
   }),
+  computed: {
+    focus() {
+      return this.$store.state.map.focus
+    }
+  },
   mounted() {
     if (window.localStorage.getItem('__easePointData')) {
       this.sharedViewData = JSON.parse(
@@ -62,6 +67,13 @@ export default {
     },
     async handleItemListSelection({ option, id }) {
       if (this.$auth.isAuthenticated) {
+        if (this.focus) {
+          bus.$emit(
+            `${CLEAR_SELECTION}`,
+            false,
+            this.focus.type.split().join('')
+          )
+        }
         switch (option.toLowerCase().trim()) {
           case 'ixps':
             await this.handleIxpsItemSelected({ id, type: option })
