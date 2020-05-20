@@ -20,30 +20,44 @@
   padding: 2rem 0;
   display: flex;
   flex-flow: row wrap;
-
-  .boxes-wrapper {
-    display: grid;
-    width: 100%;
-    gap: 1rem;
-    grid-auto-flow: dense;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    .box {
-      height: 24vh;
-      padding: 2rem 0;
-      .image-wrapper {
-        width: 12rem;
-        .img {
-          border-radius: 50%;
+  .team-wrapper {
+    .boxes-wrapper {
+      display: grid;
+      width: 100%;
+      gap: 1rem;
+      grid-auto-flow: dense;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      .box {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        padding: 2rem 0;
+        .image-wrapper {
+          width: 12rem;
+          .img {
+            border-radius: 50%;
+          }
         }
       }
+      @media screen and (max-width: $break-xs) {
+        margin-bottom: 0;
+      }
     }
-  }
-  p.content {
-    color: $dark-charcoal;
-    line-height: 1.2;
-    font-weight: 400;
-    font-size: 20px;
-    text-align: justify;
+    p.content {
+      color: $dark-charcoal;
+      line-height: 1.2;
+      font-weight: 400;
+      font-size: 20px;
+      text-align: justify;
+      @media screen and (max-width: $break-xs) {
+        font-size: 16px;
+        padding: 0 2rem;
+      }
+    }
+
+    @media screen and (max-width: $break-xs) {
+      margin-left: -2rem;
+    }
   }
 }
 

@@ -9,8 +9,11 @@
   border-top: 1px solid $grey-ligthen-3;
   .inner-wrapper-text {
     width: 30rem;
+    @media screen and (max-width: $break-sm) {
+      width: 24rem;
+    }
     @media screen and (max-width: $break-xs) {
-      width: 25rem;
+      width: 18rem;
     }
   }
   &:hover {
@@ -70,7 +73,7 @@
     font-family: 'helveticaregular';
   }
   @media screen and (max-width: $break-xs) {
-    font-size: 34px;
+    font-size: 20px;
   }
 }
 
@@ -88,13 +91,20 @@
         max-width: 60.4rem;
         min-width: 24rem;
         @media screen and (max-width: $break-xs) {
+          font-size: 17px;
           max-width: unset;
           min-width: unset;
+          padding: 2rem;
         }
       }
       &.sub {
         max-width: 60.4rem;
         margin-top: 1rem;
+        @media screen and (max-width: $break-xs) {
+          margin-top: -2rem;
+          font-size: 17px;
+          padding: 2rem;
+        }
       }
     }
     .centered-wrapper {
@@ -139,6 +149,10 @@
           padding: 1rem;
         }
       }
+    }
+
+    @media screen and (max-width: $break-xs) {
+      margin-top: 2rem;
     }
   }
 }
