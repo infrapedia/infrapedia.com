@@ -25,191 +25,290 @@
       <el-form-item label="Name" prop="name" required>
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
-      <el-form-item label="Websites" prop="websites">
-        <div class="w-fit-full relative inline-block">
-          <div class="flex row wrap">
-            <el-tag
-              :key="tag"
-              v-for="tag in form.websites"
-              closable
-              :class="{ dark }"
-              class="mr1 mb4"
-              :disable-transitions="false"
-              @close="handleClose(tag)"
-            >
-              {{ tag }}
-            </el-tag>
-            <template v-if="inputVisible">
-              <el-input
-                :class="{ dark }"
-                v-model="tag"
-                ref="saveTagInput"
-                size="mini"
-                @input="validateURL"
-                @keyup.enter.native="confirmTag"
-                @blur="confirmTag"
-              />
-              <el-collapse-transition>
-                <el-alert
-                  v-if="isURLValid !== null && !isURLValid"
-                  title="This url is not valid"
-                  show-icon
-                  type="warning"
-                  effect="dark"
-                  class="h6"
-                  :closable="false"
-                />
-              </el-collapse-transition>
-              <el-collapse-transition>
-                <el-alert
-                  v-if="warnTagDuplicate"
-                  title="This url is duplicated"
-                  show-icon
-                  type="info"
-                  effect="dark"
-                  class="h6"
-                  :closable="false"
-                />
-              </el-collapse-transition>
-            </template>
-            <el-button
-              v-else
-              :class="{ dark }"
-              class="w42 h8 text-center"
-              size="small"
-              @click.stop="showInput"
-            >
-              Add
-            </el-button>
-          </div>
-        </div>
-      </el-form-item>
-      <el-form-item label="Organizations" prop="orgs">
-        <v-multi-select
-          v-if="visible"
-          ref="orgMultiSelect"
-          :mode="mode"
-          :options="selectsData.organizations"
-          @input="loadOrgSearch"
-          :loading="isLoadingOrg"
-          @values-change="createTableFromSelection($event, 'organizations')"
-          :value="mode == 'create' ? [] : form.organizations"
-          @remove="handleRemoveTableDataItem($event, 'organizations')"
-        />
-      </el-form-item>
-      <el-form-item label="Facilities" prop="facs">
-        <v-multi-select
-          v-if="visible"
-          :mode="mode"
-          :options="selectsData.facilities"
-          @input="loadFacSearch"
-          :loading="isLoadingFacs"
-          @values-change="createTableFromSelection($event, 'facilities')"
-          :value="mode == 'create' ? [] : form.facilities"
-          @remove="handleRemoveTableDataItem($event, 'factilies')"
-        />
-      </el-form-item>
-      <el-form-item label="Terrestrial Networks" prop="tNets">
-        <v-multi-select
-          v-if="visible"
-          ref="terrestrialMultiSelect"
-          :mode="mode"
-          :options="terrestrialNetworksOptions"
-          @input="loadCablesSearch($event, 'terrestrial')"
-          :loading="isLoadingCables"
-          @values-change="createTableFromSelection($event, 'cables')"
-          :value="mode == 'create' ? [] : form.terrestrials"
-          @remove="handleRemoveTableDataItem($event, 'cables')"
-        />
-      </el-form-item>
-      <el-form-item label="Subsea Cables" prop="sCables">
-        <v-multi-select
-          v-if="visible"
-          ref="subseaMultiSelect"
-          :mode="mode"
-          :options="subseaCablesOptions"
-          @input="loadCablesSearch($event, 'cables')"
-          :loading="isLoadingCables"
-          @values-change="createTableFromSelection($event, 'cables')"
-          :value="mode == 'create' ? [] : form.subsea"
-          @remove="handleRemoveTableDataItem($event, 'cables')"
-        />
-      </el-form-item>
-      <el-form-item label="CLS" prop="cls">
-        <v-multi-select
-          v-if="visible"
-          :mode="mode"
-          :options="selectsData.cls"
-          @input="loadClsSearch"
-          :loading="isLoadingCls"
-          @values-change="createTableFromSelection($event, 'cls')"
-          :value="mode == 'create' ? [] : form.cls"
-          @remove="handleRemoveTableDataItem($event, 'cls')"
-        />
-      </el-form-item>
-      <el-form-item label="Tags" class="mt2" prop="tags">
-        <el-select
-          v-model="form.tags"
-          multiple
-          filterable
-          placeholder
-          allow-create
-          :class="{ dark }"
-          class="w-fit-full"
-          default-first-option
-        >
-          <el-option
-            v-for="(item, i) in form.tagsList"
-            :key="i"
-            :label="item"
-            :value="item"
-          />
-        </el-select>
-      </el-form-item>
-      <el-table
-        :data="tableData"
-        class="w-fit-full"
-        v-if="tableDataHasLength"
-        max-height="580"
-      >
-        <el-table-column fixed prop="name" label="Element" width="200" />
-        <el-table-column label="Organization" v-if="form.references.length">
-          <template slot-scope="scope">
-            <div class="flex row nowrap w-fit-full">
-              <div
-                v-for="(item, i) in form.references[0].orgs"
-                :key="i"
-                class="ml2"
-              >
-                <el-form-item :label="item.name">
-                  <el-select
-                    v-model="scope.row.reference[i]"
-                    class="w-fit-full"
-                    placeholder
+      <el-tabs type="card">
+        <el-tab-pane label="Associations">
+          <el-form-item label="Websites" prop="websites">
+            <div class="w-fit-full relative inline-block">
+              <div class="flex row wrap">
+                <el-tag
+                  :key="tag"
+                  v-for="tag in form.websites"
+                  closable
+                  :class="{ dark }"
+                  class="mr1 mb4"
+                  :disable-transitions="false"
+                  @close="handleClose(tag)"
+                >
+                  {{ tag }}
+                </el-tag>
+                <template v-if="inputVisible">
+                  <el-input
                     :class="{ dark }"
-                    :ref="`${item._id}_${scope.row._id}`"
-                    @change="
-                      handleReferenceSelectionChange(
-                        $event,
-                        scope.row,
-                        item._id
-                      )
-                    "
-                  >
-                    <el-option
-                      v-for="(type, i) in referencesTypes"
-                      :key="i"
-                      :value="type"
-                      :label="type"
+                    v-model="tag"
+                    ref="saveTagInput"
+                    size="mini"
+                    @input="validateURL"
+                    @keyup.enter.native="confirmTag"
+                    @blur="confirmTag"
+                  />
+                  <el-collapse-transition>
+                    <el-alert
+                      v-if="isURLValid !== null && !isURLValid"
+                      title="This url is not valid"
+                      show-icon
+                      type="warning"
+                      effect="dark"
+                      class="h6"
+                      :closable="false"
                     />
-                  </el-select>
-                </el-form-item>
+                  </el-collapse-transition>
+                  <el-collapse-transition>
+                    <el-alert
+                      v-if="warnTagDuplicate"
+                      title="This url is duplicated"
+                      show-icon
+                      type="info"
+                      effect="dark"
+                      class="h6"
+                      :closable="false"
+                    />
+                  </el-collapse-transition>
+                </template>
+                <el-button
+                  v-else
+                  :class="{ dark }"
+                  class="w42 h8 text-center"
+                  size="small"
+                  @click.stop="showInput"
+                >
+                  Add
+                </el-button>
               </div>
             </div>
-          </template>
-        </el-table-column>
-      </el-table>
+          </el-form-item>
+          <el-form-item label="Organizations" prop="orgs">
+            <v-multi-select
+              v-if="visible"
+              ref="orgMultiSelect"
+              :mode="mode"
+              :options="selectsData.organizations"
+              @input="loadOrgSearch"
+              :loading="isLoadingOrg"
+              @values-change="createTableFromSelection($event, 'organizations')"
+              :value="mode == 'create' ? [] : form.organizations"
+              @remove="handleRemoveTableDataItem($event, 'organizations')"
+            />
+          </el-form-item>
+          <el-form-item label="Facilities" prop="facs">
+            <v-multi-select
+              v-if="visible"
+              :mode="mode"
+              :options="selectsData.facilities"
+              @input="loadFacSearch"
+              :loading="isLoadingFacs"
+              @values-change="createTableFromSelection($event, 'facilities')"
+              :value="mode == 'create' ? [] : form.facilities"
+              @remove="handleRemoveTableDataItem($event, 'factilies')"
+            />
+          </el-form-item>
+          <el-form-item label="Terrestrial Networks" prop="tNets">
+            <v-multi-select
+              v-if="visible"
+              ref="terrestrialMultiSelect"
+              :mode="mode"
+              :options="terrestrialNetworksOptions"
+              @input="loadCablesSearch($event, 'terrestrial')"
+              :loading="isLoadingCables"
+              @values-change="createTableFromSelection($event, 'cables')"
+              :value="mode == 'create' ? [] : form.terrestrials"
+              @remove="handleRemoveTableDataItem($event, 'cables')"
+            />
+          </el-form-item>
+          <el-form-item label="Subsea Cables" prop="sCables">
+            <v-multi-select
+              v-if="visible"
+              ref="subseaMultiSelect"
+              :mode="mode"
+              :options="subseaCablesOptions"
+              @input="loadCablesSearch($event, 'cables')"
+              :loading="isLoadingCables"
+              @values-change="createTableFromSelection($event, 'cables')"
+              :value="mode == 'create' ? [] : form.subsea"
+              @remove="handleRemoveTableDataItem($event, 'cables')"
+            />
+          </el-form-item>
+          <el-form-item label="CLS" prop="cls">
+            <v-multi-select
+              v-if="visible"
+              :mode="mode"
+              :options="selectsData.cls"
+              @input="loadClsSearch"
+              :loading="isLoadingCls"
+              @values-change="createTableFromSelection($event, 'cls')"
+              :value="mode == 'create' ? [] : form.cls"
+              @remove="handleRemoveTableDataItem($event, 'cls')"
+            />
+          </el-form-item>
+          <el-form-item label="Tags" class="mt2" prop="tags">
+            <el-select
+              v-model="form.tags"
+              multiple
+              filterable
+              placeholder
+              allow-create
+              :class="{ dark }"
+              class="w-fit-full"
+              default-first-option
+            >
+              <el-option
+                v-for="(item, i) in form.tagsList"
+                :key="i"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+          </el-form-item>
+          <el-table
+            :data="tableData"
+            class="w-fit-full"
+            v-if="tableDataHasLength"
+            max-height="580"
+          >
+            <el-table-column fixed prop="name" label="Element" width="200" />
+            <el-table-column label="Organization" v-if="form.references.length">
+              <template slot-scope="scope">
+                <div class="flex row nowrap w-fit-full">
+                  <div
+                    v-for="(item, i) in form.references[0].orgs"
+                    :key="i"
+                    class="ml2"
+                  >
+                    <el-form-item :label="item.name">
+                      <el-select
+                        v-model="scope.row.reference[i]"
+                        class="w-fit-full"
+                        placeholder
+                        :class="{ dark }"
+                        :ref="`${item._id}_${scope.row._id}`"
+                        @change="
+                          handleReferenceSelectionChange(
+                            $event,
+                            scope.row,
+                            item._id
+                          )
+                        "
+                      >
+                        <el-option
+                          v-for="(type, i) in referencesTypes"
+                          :key="i"
+                          :value="type"
+                          :label="type"
+                        />
+                      </el-select>
+                    </el-form-item>
+                  </div>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="Information">
+          <el-row :gutter="20">
+            <el-col :lg="6">
+              <el-form-item label="AKA">
+                <el-input v-model="form.aka" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="ASN">
+                <el-input v-model="form.asn" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Ipv6">
+                <el-input v-model="form.info_ipv6" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Multicast">
+                <el-input v-model="form.info_multicast" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Prefixes4">
+                <el-input v-model="form.info_prefixes4" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Ratio">
+                <el-input v-model="form.info_ratio" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Scope">
+                <el-input v-model="form.info_scope" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Traffic">
+                <el-input v-model="form.info_traffic" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Type">
+                <el-input v-model="form.info_type" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Unicast">
+                <el-input v-model="form.info_unicast" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="IRR as set">
+                <el-input v-model="form.irr_as_set" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Looking Glass">
+                <el-input v-model="form.looking_glass" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Policy Contrats">
+                <el-input v-model="form.policy_contrats" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Policy General">
+                <el-input v-model="form.policy_general" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Policy Locations">
+                <el-input v-model="form.policy_locations" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Policy Ratio">
+                <el-input v-model="form.policy_ratio" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Policy url">
+                <el-input v-model="form.policy_url" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6">
+              <el-form-item label="Router server">
+                <el-input v-model="form.route_server" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
+      </el-tabs>
     </el-form>
+
     <div slot="footer" class="dialog-footer-mobile">
       <el-button
         class="h10 capitalize"
