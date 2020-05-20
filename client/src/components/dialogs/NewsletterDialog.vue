@@ -38,6 +38,7 @@
               <div class="flex mt4 row justify-content-end">
                 <el-button
                   round
+                  :disabled="!catchaVerified"
                   :loading="isSendingData"
                   class="w-fit-full"
                   type="primary"
@@ -118,13 +119,17 @@ export default {
       else this.catchaVerified = true
     },
     async sendData() {
-      this.isSendingData = true
-      const { t } = await registerToNewsletter(this.form)
-      if (t != 'error') {
-        this.clearForm()
-        this.handleClose()
-      }
-      this.isSendingData = false
+      await this.$refs.form.validate(async isValid => {
+        if (!isValid || !this.catchaVerified) return
+
+        this.isSendingData = true
+        const { t } = await registerToNewsletter(this.form)
+        if (t != 'error') {
+          this.clearForm()
+          this.handleClose()
+        }
+        this.isSendingData = false
+      })
     },
     clearForm() {
       this.$refs.form.resetFields()
