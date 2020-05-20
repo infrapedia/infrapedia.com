@@ -11,6 +11,17 @@
           :disabled="isViewMode"
         />
       </el-form-item>
+      <el-form-item label="Owners">
+        <v-multi-select
+          :mode="mode"
+          :options="ownersList"
+          @input="loadOwnersSearch"
+          :loading="isLoadingOwners"
+          :value="mode === 'create' ? [] : form.owners"
+          @values-change="handleOwnersSelectChange"
+          @remove="handleOwnersSelectRemoveItem"
+        />
+      </el-form-item>
       <el-form-item label="Long name" prop="nameLong">
         <el-input
           class="w-fit-full"
@@ -123,12 +134,20 @@
 </template>
 
 <script>
+import { searchOrganization } from '../../services/api/organizations'
+import VMultiSelect from '../../components/MultiSelect'
+
 export default {
   name: 'FacsForm',
+  components: {
+    VMultiSelect
+  },
   data: () => ({
     tag: '',
     inputVisible: false,
     tagsList: [],
+    isLoadingOwners: false,
+    ownersList: [],
     mediaOptions: [
       {
         label: 'Ethernet',
@@ -211,6 +230,13 @@ export default {
       return this.$store.state.isDark
     }
   },
+  watch: {
+    'form.ownersList'(owners) {
+      if (!owners) return
+      this.ownersList = [...owners]
+      delete this.form.ownersList
+    }
+  },
   mounted() {
     if (this.mode == 'create') {
       setTimeout(() => {
@@ -221,6 +247,24 @@ export default {
     }
   },
   methods: {
+    async loadOwnersSearch(s) {
+      if (s === '') return
+
+      this.isLoadingOwners = true
+      const { data: owners = [] } = (await searchOrganization({
+        user_id: await this.$auth.getUserID(),
+        s
+      })) || { owners: [] }
+
+      this.ownersList = owners
+      this.isLoadingOwners = false
+    },
+    handleOwnersSelectRemoveItem(_id) {
+      this.form.owners = this.form.owners.filter(item => item._id != _id)
+    },
+    handleOwnersSelectChange(data) {
+      this.form.owners = Array.from(data)
+    },
     sendData() {
       return this.$refs['form'].validate(isValid =>
         isValid ? this.$emit('send-data') : false

@@ -111,7 +111,7 @@
           :options="ixpsList"
           @input="loadIXpsSearch"
           :loading="isLoadingIXPs"
-          :value="mode === 'create' ? [] : form.ixps"
+          :value="mode == 'create' ? [] : form.ixps"
           @values-change="handleIxpsSelectChange"
           @remove="handleIxpsSelectRemoveItem"
         />
@@ -122,7 +122,7 @@
           :options="ownersList"
           @input="loadOwnersSearch"
           :loading="isLoadingOwners"
-          :value="mode === 'create' ? [] : form.owners"
+          :value="mode == 'create' ? [] : form.owners"
           @values-change="handleOwnersSelectChange"
           @remove="handleOwnersSelectRemoveItem"
         />

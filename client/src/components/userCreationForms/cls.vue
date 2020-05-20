@@ -36,6 +36,17 @@
           :value="mode == 'create' ? [] : form.cables"
         />
       </el-form-item>
+      <el-form-item label="Owners">
+        <v-multi-select
+          :mode="mode"
+          :options="ownersList"
+          @input="loadOwnersSearch"
+          :loading="isLoadingOwners"
+          :value="mode === 'create' ? [] : form.owners"
+          @values-change="handleOwnersSelectChange"
+          @remove="handleOwnersSelectRemoveItem"
+        />
+      </el-form-item>
       <el-form-item label="Tags" class="mt2">
         <el-select
           v-model="form.tags"
@@ -83,11 +94,14 @@ import { searchCables, getCablesGeom } from '../../services/api/cables'
 import { getTags } from '../../services/api/tags'
 import VMultiSelect from '../../components/MultiSelect'
 import { fCollectionFormat } from '../../helpers/featureCollection'
+import { searchOrganization } from '../../services/api/organizations'
 
 export default {
   name: 'CLSForm',
   data: () => ({
     tagsList: [],
+    isLoadingOwners: false,
+    ownersList: [],
     cablesList: [],
     loading: false,
     isLoadingCables: false,
@@ -145,6 +159,11 @@ export default {
       this.handleSubseaCablesSelection(cables)
       delete this.form.cablesList
     },
+    'form.ownersList'(owners) {
+      if (!owners) return
+      this.ownersList = [...owners]
+      delete this.form.ownersList
+    },
     'form.tags'(tag) {
       this.getTagsList(tag)
     }
@@ -159,6 +178,24 @@ export default {
     }
   },
   methods: {
+    async loadOwnersSearch(s) {
+      if (s === '') return
+
+      this.isLoadingOwners = true
+      const { data: owners = [] } = (await searchOrganization({
+        user_id: await this.$auth.getUserID(),
+        s
+      })) || { owners: [] }
+
+      this.ownersList = owners
+      this.isLoadingOwners = false
+    },
+    handleOwnersSelectRemoveItem(_id) {
+      this.form.owners = this.form.owners.filter(item => item._id != _id)
+    },
+    handleOwnersSelectChange(data) {
+      this.form.owners = Array.from(data)
+    },
     async handleSubseaCablesSelection(cablesSelected) {
       this.form.cables = cablesSelected
       const {

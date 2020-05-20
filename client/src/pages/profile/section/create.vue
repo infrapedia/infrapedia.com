@@ -350,6 +350,7 @@ export default {
             slug: '',
             tags: [],
             cables: [],
+            owners: [],
             state: 'unknown',
             geom: this.featuresList
           }
@@ -377,6 +378,7 @@ export default {
           this.form = {
             name: '',
             tags: [],
+            owners: [],
             geom: this.featuresList,
             nameLong: '',
             media: '',
@@ -462,12 +464,7 @@ export default {
           this.handleCLSEditMode(data)
           break
         case 'ixps':
-          if (!this.form.media || this.form.media == 'undefined') {
-            this.form.media = ''
-          }
-          if (!this.form.geom || this.form.geom == 'undefined') {
-            this.form.geom = this.featuresList
-          }
+          this.handleIxpsEditMode(data)
           break
         case 'facilities':
           this.handleFacsEditMode(data)
@@ -523,14 +520,28 @@ export default {
       )
     },
     handleCLSEditMode(data) {
-      const clsData = data.cables.map(f => ({
-        name: f.label,
-        _id: f._id
-      }))
-      this.form.cables = clsData
-      this.form.cablesList = clsData
       if (this.form.state == 'null' || this.form.state == 'undefined') {
         this.form.state = 'unknown'
+      }
+
+      {
+        let clsData = data.cables.map(f => ({
+          name: f.label,
+          _id: f._id
+        }))
+        this.form.cables = clsData
+        this.form.cablesList = clsData
+      }
+
+      if (data.owners && Array.isArray(data.owners)) {
+        const ownersData = data.owners.map(owner => ({
+          name: owner.label,
+          _id: owner._id
+        }))
+        this.form.owners = ownersData
+        this.form.ownersList = ownersData
+      } else {
+        this.form.owners = []
       }
     },
     handleFacsEditMode(data) {
@@ -550,6 +561,25 @@ export default {
         }))
         this.form.owners = ownersData
         this.form.ownersList = ownersData
+      }
+    },
+    handleIxpsEditMode(data) {
+      if (!this.form.media || this.form.media == 'undefined') {
+        this.form.media = ''
+      }
+      if (!this.form.geom || this.form.geom == 'undefined') {
+        this.form.geom = this.featuresList
+      }
+
+      if (data.owners && Array.isArray(data.owners)) {
+        let ownersData = data.owners.map(owner => ({
+          name: owner.label,
+          _id: owner._id
+        }))
+        this.form.owners = ownersData
+        this.form.ownersList = ownersData
+      } else {
+        this.form.owners = []
       }
     },
     handleCablesEditMode(data) {
