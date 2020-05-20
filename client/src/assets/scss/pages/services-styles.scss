@@ -13,9 +13,9 @@
 
 .card-wrapper {
   width: 76vw;
+  padding: 4rem;
   margin: 0 auto;
   min-height: 60vh;
-  padding: 4rem;
   transform: translateY(-8.6rem);
 
   .services-wrapper {
@@ -25,6 +25,22 @@
     grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
 
     .inner-wrapper {
+      .el-card {
+        height: 24rem;
+        position: relative;
+        .card-inner-wrapper {
+          display: flex;
+          flex-flow: column wrap;
+          p.text:last-child {
+            height: 13rem;
+          }
+          footer {
+            position: absolute;
+            bottom: 2rem;
+          }
+        }
+      }
+
       .inner-wrapper_header {
         display: flex;
         align-items: center;
@@ -60,10 +76,16 @@
     .services-wrapper {
       .inner-wrapper {
         padding: 1rem;
-        width: 12rem;
+        width: 15.8rem;
         .el-card {
           padding: 1rem;
           min-width: auto;
+          height: auto;
+          .card-inner-wrapper {
+            footer {
+              position: relative;
+            }
+          }
         }
       }
     }

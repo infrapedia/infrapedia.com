@@ -35,8 +35,14 @@ export const cablesColumns = [
     showTable: true,
     sortable: true
   },
+  { label: 'Status', value: 'category', showSidebar: true },
   {
     label: 'Latency',
+    value: 'systemLength',
+    showSidebar: true
+  },
+  {
+    label: 'Length',
     value: 'systemLength',
     showSidebar: true
   },
@@ -225,6 +231,11 @@ export const netColumns = [
     showTable: true
   },
   {
+    label: 'Creation date',
+    value: 'created',
+    showSidebar: true
+  },
+  {
     label: 'Facilities',
     value: 'facilities',
     showSidebar: true
@@ -255,7 +266,40 @@ export const netColumns = [
     label: 'Configured alerts',
     value: 'alerts',
     showTable: true
-  }
+  },
+  { label: 'asn', value: 'asn', showSidebar: true },
+  { label: 'info ipv6', value: 'info_ipv6', showSidebar: true },
+  {
+    label: 'info multicast',
+    value: 'info_multicast',
+    showSidebar: true
+  },
+  { label: 'prefixes4', value: 'prefixes4', showSidebar: true },
+  { label: 'info ratio', value: 'info_ratio', showSidebar: true },
+  { label: 'info scope', value: 'info_scope', showSidebar: true },
+  { label: 'info traffic', value: 'info_traffic', showSidebar: true },
+  { label: 'info type', value: 'info_type', showSidebar: true },
+  { label: 'info unicast', value: 'info_unicast', showSidebar: true },
+  { label: 'irr as_set', value: 'irr_as_set', showSidebar: true },
+  { label: 'looking glass', value: 'looking_glass', showSidebar: true },
+  {
+    label: 'policy contrats',
+    value: 'policy_contrats',
+    showSidebar: true
+  },
+  {
+    label: 'policy general',
+    value: 'policy_general',
+    showSidebar: true
+  },
+  {
+    label: 'policy locations',
+    value: 'policy_locations',
+    showSidebar: true
+  },
+  { label: 'policy ratio', value: 'policy_ratio', showSidebar: true },
+  { label: 'policy url', value: 'policy_url', showSidebar: true },
+  { label: 'route server', value: 'route_server', showSidebar: true }
 ]
 
 export const orgsColumns = [

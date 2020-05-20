@@ -225,6 +225,22 @@
                             class="inline-block w-inherit color-inherit underline-hover"
                           />
                         </li>
+                        <li class="w-fit-full h6 mb4 link-info">
+                          <router-link
+                            class="inline-block w-inherit color-inherit underline-hover"
+                            to="/privacy-policy"
+                          >
+                            Privacy Policy
+                          </router-link>
+                        </li>
+                        <li class="w-fit-full h6 mb4 link-info">
+                          <router-link
+                            class="inline-block w-inherit color-inherit underline-hover"
+                            to="/terms-and-conditions"
+                          >
+                            Terms & Conditions
+                          </router-link>
+                        </li>
                       </ul>
                       <el-divider class="m0" />
                       <ul
@@ -445,7 +461,7 @@ export default {
       return isProfile
     },
     userName() {
-      return this.$auth.user.name
+      return this.$auth.user ? this.$auth.user.name : ''
     }
     // versionOneLink() {
     //   return process.env.VUE_APP_VERSION_APP_LINK

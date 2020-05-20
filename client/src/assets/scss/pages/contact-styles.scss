@@ -34,6 +34,9 @@
     flex-flow: column nowrap;
     color: $dark-charcoal;
 
+    @media screen and (max-width: $break-md) {
+      margin: 4rem auto;
+    }
     @media screen and (max-width: 1060px) {
       width: 68vw;
       margin: 0;

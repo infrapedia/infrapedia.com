@@ -27,9 +27,9 @@
         </h2>
         <div class="boxes-wrapper mt20 mb20">
           <div class="box text-center" v-for="(p, i) of teamMembers" :key="i">
-            <span class="img">
-              <fa :icon="['fas', 'user']" />
-            </span>
+            <div class="image-wrapper">
+              <el-image class="img" lazy :src="p.photo" />
+            </div>
             <div>
               <strong class="inline-block mt4">
                 {{ p.name }}

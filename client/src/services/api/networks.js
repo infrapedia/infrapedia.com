@@ -15,12 +15,48 @@ export const createNetwork = async ({
   facilities,
   organizations,
   tags,
-  references
+  references,
+  asn = '',
+  info_ipv6 = '',
+  info_multicast = '',
+  prefixes4 = '',
+  info_ratio = '',
+  info_scope = '',
+  info_traffic = '',
+  info_type = '',
+  info_unicast = '',
+  irr_as_set = '',
+  looking_glass = '',
+  policy_contrats = '',
+  policy_general = '',
+  policy_locations = '',
+  policy_ratio = '',
+  policy_url = '',
+  route_server = '',
+  created = ''
 }) => {
   url = `${apiConfig.url}/auth/network/add`
 
   form = new FormData()
   form.append('name', name)
+  form.append('created', created)
+  form.append('asn', asn)
+  form.append('info_ipv6', info_ipv6)
+  form.append('info_multicast', info_multicast)
+  form.append('info_ratio', info_ratio)
+  form.append('info_unicast', info_unicast)
+  form.append('info_type', info_type)
+  form.append('info_scope', info_scope)
+  form.append('info_traffic', info_traffic)
+  form.append('prefixes4', prefixes4)
+  form.append('irr_as_set', irr_as_set)
+  form.append('looking_glass', looking_glass)
+  form.append('policy_contrats', policy_contrats)
+  form.append('policy_general', policy_general)
+  form.append('policy_locations', policy_locations)
+  form.append('policy_ratio', policy_ratio)
+  form.append('policy_url', policy_url)
+  form.append('route_server', route_server)
 
   if (websites.length) {
     websites.forEach((a, i) => {
@@ -91,12 +127,48 @@ export const editNetwork = async ({
   facilities,
   organizations,
   tags,
-  references
+  references,
+  asn = '',
+  info_ipv6 = '',
+  info_multicast = '',
+  prefixes4 = '',
+  info_ratio = '',
+  info_scope = '',
+  info_traffic = '',
+  info_type = '',
+  info_unicast = '',
+  irr_as_set = '',
+  looking_glass = '',
+  policy_contrats = '',
+  policy_general = '',
+  policy_locations = '',
+  policy_ratio = '',
+  policy_url = '',
+  route_server = '',
+  created = ''
 }) => {
   url = `${apiConfig.url}/auth/network/edit`
   form = new FormData()
   form.append('_id', _id)
   form.append('name', name)
+  form.append('created', created)
+  form.append('asn', asn)
+  form.append('info_ipv6', info_ipv6)
+  form.append('info_multicast', info_multicast)
+  form.append('info_ratio', info_ratio)
+  form.append('info_unicast', info_unicast)
+  form.append('info_type', info_type)
+  form.append('info_scope', info_scope)
+  form.append('info_traffic', info_traffic)
+  form.append('prefixes4', prefixes4)
+  form.append('irr_as_set', irr_as_set)
+  form.append('looking_glass', looking_glass)
+  form.append('policy_contrats', policy_contrats)
+  form.append('policy_general', policy_general)
+  form.append('policy_locations', policy_locations)
+  form.append('policy_ratio', policy_ratio)
+  form.append('policy_url', policy_url)
+  form.append('route_server', route_server)
 
   if (websites.length) {
     websites.forEach((a, i) => {

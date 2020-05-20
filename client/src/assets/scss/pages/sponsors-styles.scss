@@ -40,6 +40,10 @@
       padding: 0;
     }
   }
+  @media screen and (max-width: $break-xs) {
+    width: 15.8rem;
+    padding: 3rem 1rem;
+  }
 }
 
 .title {

@@ -128,7 +128,7 @@ export default {
       return modes.CABLE_MODE
     },
     isCable() {
-      return this.sidebarMode === this.defaultMode
+      return this.sidebarMode == this.defaultMode
     },
     currentView() {
       return this.isCable ? 'i-cable-attributes' : 'i-data-center'
