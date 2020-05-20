@@ -44,16 +44,27 @@
                 <el-input v-model="form.email" />
               </el-form-item>
             </el-col>
-            <el-col :sm="24" :lg="24">
+            <el-col :span="24">
               <el-form-item label="Message" prop="message">
                 <el-input type="textarea" :rows="4" v-model="form.message" />
               </el-form-item>
             </el-col>
-            <el-col :sm="24" :lg="24">
+            <el-col :span="24">
+              <vue-recaptcha
+                ref="catpcha"
+                :sitekey="siteKey"
+                :loadRecaptchaScript="true"
+                @verify="handleCatchaVerification"
+                @error="() => (catchaVerified = false)"
+                @expired="() => (catchaVerified = false)"
+              />
+            </el-col>
+            <el-col :span="24">
               <el-form-item>
                 <div class="flex mt4 row justify-content-end">
                   <el-button
                     round
+                    :disabled="!catchaVerified"
                     :loading="isSendingData"
                     class="w-fit-full"
                     type="primary"
@@ -91,12 +102,16 @@
 <script>
 import { sendContactForm } from '../services/api/contact'
 import NewsletterDialog from '../components/dialogs/NewsletterDialog'
+import VueRecaptcha from 'vue-recaptcha'
+import siteKey from '../config/siteKey'
 
 export default {
   components: {
+    VueRecaptcha,
     NewsletterDialog
   },
   data: () => ({
+    catchaVerified: null,
     isNewsLetterDialog: false,
     isSendingData: false,
     form: {
@@ -111,6 +126,9 @@ export default {
     title: 'Infrapedia | Contact Us | Global Internet Infrastructure Map'
   },
   computed: {
+    siteKey() {
+      return siteKey
+    },
     formRules() {
       return {
         first_name: [
@@ -143,16 +161,23 @@ export default {
     this.$emit('layout', 'landing-layout')
   },
   methods: {
+    handleCatchaVerification(v) {
+      if (!v) return
+      else this.catchaVerified = true
+    },
     toggleNewsletterDialog() {
       this.isNewsLetterDialog = !this.isNewsLetterDialog
     },
     async sendData() {
-      this.isSendingData = true
-      const { t } = await sendContactForm(this.form)
-      if (t != 'error') {
-        this.$refs.contactForm.resetFields()
-      }
-      this.isSendingData = false
+      await this.$refs.contactForm.validate(async isValid => {
+        if (!isValid || !this.catchaVerified) return
+        this.isSendingData = true
+        const { t } = await sendContactForm(this.form)
+        if (t != 'error') {
+          this.$refs.contactForm.resetFields()
+        }
+        this.isSendingData = false
+      })
     }
   }
 }

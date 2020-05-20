@@ -18,12 +18,22 @@
               <el-input :class="{ dark }" v-model="form.last_name" />
             </el-form-item>
           </el-col>
-          <el-col :sm="24" :lg="24">
+          <el-col :span="24">
             <el-form-item label="Email" prop="email" required>
               <el-input :class="{ dark }" v-model="form.email" />
             </el-form-item>
           </el-col>
-          <el-col :sm="24" :lg="24">
+          <el-col :span="24">
+            <vue-recaptcha
+              ref="catpcha"
+              :sitekey="siteKey"
+              :loadRecaptchaScript="true"
+              @verify="handleCatchaVerification"
+              @error="() => (catchaVerified = false)"
+              @expired="() => (catchaVerified = false)"
+            />
+          </el-col>
+          <el-col :span="24">
             <el-form-item>
               <div class="flex mt4 row justify-content-end">
                 <el-button
@@ -46,8 +56,14 @@
 
 <script>
 import { registerToNewsletter } from '../../services/api/contact'
+import VueRecaptcha from 'vue-recaptcha'
+import siteKey from '../../config/siteKey'
 
 export default {
+  name: 'NewsletterDialog',
+  components: {
+    VueRecaptcha
+  },
   props: {
     visibility: {
       type: Boolean,
@@ -56,6 +72,7 @@ export default {
   },
   data: () => ({
     isSendingData: false,
+    catchaVerified: null,
     form: {
       first_name: '',
       last_name: '',
@@ -63,6 +80,9 @@ export default {
     }
   }),
   computed: {
+    siteKey() {
+      return siteKey
+    },
     dark() {
       return this.$store.state.isDark
     },
@@ -93,6 +113,10 @@ export default {
     }
   },
   methods: {
+    handleCatchaVerification(v) {
+      if (!v) return
+      else this.catchaVerified = true
+    },
     async sendData() {
       this.isSendingData = true
       const { t } = await registerToNewsletter(this.form)

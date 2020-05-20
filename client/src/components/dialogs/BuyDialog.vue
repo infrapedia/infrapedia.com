@@ -252,7 +252,7 @@ export default {
       focus: state => state.map.focus
     }),
     isBackboneSelection() {
-      return this.focus && this.dialogTitle.toLowerCase() === 'backbone'
+      return this.focus && this.dialogTitle.toLowerCase() == 'backbone'
     },
     isVisible: {
       get() {
