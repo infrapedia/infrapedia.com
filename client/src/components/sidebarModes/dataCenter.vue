@@ -5,53 +5,48 @@
       <template v-if="collapseColumns.includes(col.value.toLowerCase())">
         <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
           <el-col :span="24">
-            <el-collapse v-model="collapse" :ref="`collapse_${i}`">
-              <template v-if="!col.label.toLowerCase().includes('address')">
-                <template
-                  v-if="
-                    col.value == 'cables' && col.filter(info[col.value]).length
-                  "
+            <template v-if="!col.label.toLowerCase().includes('address')">
+              <template
+                v-if="
+                  col.value == 'cables' && col.filter(info[col.value]).length
+                "
+              >
+                <p class="label capitalize">{{ col.label }}</p>
+                <el-tag
+                  v-for="(item, index) in col.filter(info[col.value])"
+                  :key="index + item.name"
+                  @click="handleSelection(item._id, col.label)"
+                  class="mr2 cursor-pointer"
+                  size="mini"
                 >
-                  <el-collapse-item :title="col.label" :name="i">
-                    <el-tag
-                      v-for="(item, index) in col.filter(info[col.value])"
-                      :key="index + item.name"
-                      @click="handleSelection(item._id, col.label)"
-                      class="mr2 cursor-pointer"
-                      size="mini"
-                    >
-                      {{ item.name }}
-                    </el-tag>
-                  </el-collapse-item>
-                </template>
-                <template v-else-if="col.value != 'cables'">
-                  <el-collapse-item :title="col.label" :name="i">
-                    <el-tag
-                      v-for="(item, index) in info[col.value]"
-                      :key="index + item.name"
-                      @click="handleSelection(item._id, col.label)"
-                      class="mr2 cursor-pointer"
-                      size="mini"
-                    >
-                      {{ item.name }}
-                    </el-tag>
-                  </el-collapse-item>
-                </template>
+                  {{ item.name }}
+                </el-tag>
               </template>
-              <template v-else>
-                <el-collapse-item :title="col.label" :name="i">
-                  <p
-                    v-for="(item, index) in info[col.value]"
-                    :key="index + item"
-                    class="text-bold"
-                  >
-                    {{ item.street }} {{ item.city ? item.city : '' }},
-                    {{ item.state ? item.state + ', ' : '' }}
-                    {{ item.country ? item.country : '' }}.
-                  </p>
-                </el-collapse-item>
+              <template v-else-if="col.value != 'cables'">
+                <p class="label capitalize">{{ col.label }}</p>
+                <el-tag
+                  v-for="(item, index) in info[col.value]"
+                  :key="index + item.name"
+                  @click="handleSelection(item._id, col.label)"
+                  class="mr2 cursor-pointer"
+                  size="mini"
+                >
+                  {{ item.name }}
+                </el-tag>
               </template>
-            </el-collapse>
+            </template>
+            <template v-else>
+              <p class="label capitalize">{{ col.label }}</p>
+              <p
+                v-for="(item, index) in info[col.value]"
+                :key="index + item"
+                class="text-bold"
+              >
+                {{ item.street }} {{ item.city ? item.city : '' }},
+                {{ item.state ? item.state + ', ' : '' }}
+                {{ item.country ? item.country : '' }}.
+              </p>
+            </template>
           </el-col>
         </el-row>
       </template>
@@ -261,7 +256,7 @@
 </template>
 
 <script>
-import convertToYear from '../../helpers/converToYear'
+import convertToYear from '../../helpers/convertToYear'
 import { BUY_CAPACITY, REPORT_ISSUE, CREATE_ALERT } from '../../events/sidebar'
 
 export default {
@@ -351,5 +346,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/scss/components/data-center-styles.scss';
+@import '../../assets/scss/components/sidebar-inner-component-styles.scss';
 </style>

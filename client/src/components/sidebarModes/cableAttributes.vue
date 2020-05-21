@@ -1,170 +1,161 @@
 <template>
-  <div class="pr8 pl8 pt2 pb8 no-overflow-x">
-    <div v-for="(col, i) in cableColumns" :key="i">
-      <!---- COLLAPSE SECTION STARTS---->
-      <template v-if="collapseColumns.includes(col.value.toLowerCase())">
-        <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
-          <el-col :span="24">
-            <el-collapse v-model="collapse" :ref="`collapse_${i}`">
-              <el-collapse-item :title="col.label" :name="i">
-                <el-tag
-                  v-for="(item, index) in info[col.value]"
-                  :key="`${index}_${item.name}`"
-                  @click="handleSelection(item._id, col.label)"
-                  class="mr2 cursor-pointer"
-                  size="mini"
-                >
-                  {{ item.name }}
-                </el-tag>
-              </el-collapse-item>
-            </el-collapse>
-          </el-col>
-        </el-row>
-      </template>
-      <template v-else-if="col.value.toLowerCase().includes('litcapacity')">
-        <el-row
-          :gutter="20"
-          v-if="info[col.value] && col.showSidebar && !info.terrestrial"
-        >
-          <el-col :span="24">
-            <el-collapse v-model="collapse">
-              <el-collapse-item :title="col.label" :name="i">
-                <el-table :data="info[col.value]">
-                  <el-table-column
-                    label="Year"
-                    prop="year"
-                    :formatter="getYear"
-                  />
-                  <el-table-column label="Capacity in Tbps" prop="cap" />
-                </el-table>
-              </el-collapse-item>
-            </el-collapse>
-          </el-col>
-        </el-row>
-      </template>
-      <!---- COLLAPSE SECTION END --->
-      <!---- LABELS SECTION STARTS---->
-      <template v-else>
-        <el-row :gutter="20">
-          <template
-            v-if="col.label.toLowerCase().includes('url') && info[col.value]"
+  <div class="no-overflow-x">
+    <div class="pr8 pl8 pt2 pb4 columns-wrapper no-overflow-x overflow-y-auto">
+      <div v-for="(col, i) in cableColumns" :key="i">
+        <!---- COLLAPSE SECTION STARTS---->
+        <template v-if="collapseColumns.includes(col.value.toLowerCase())">
+          <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
+            <el-col :span="24">
+              <p class="label capitalize">{{ col.label }}</p>
+              <el-tag
+                v-for="(item, index) in info[col.value]"
+                :key="`${index}_${item.name}`"
+                @click="handleSelection(item._id, col.label)"
+                class="mr2 cursor-pointer"
+                size="mini"
+              >
+                {{ item.name }}
+              </el-tag>
+            </el-col>
+          </el-row>
+        </template>
+        <template v-else-if="col.value.toLowerCase().includes('litcapacity')">
+          <el-row
+            :gutter="20"
+            v-if="info[col.value] && col.showSidebar && !info.terrestrial"
           >
-            <el-col :span="24" class="pt2 pb2">
-              <small>
-                <p class="capitalize">
-                  More information:
-                </p>
-              </small>
+            <el-col :span="24">
+              <el-collapse v-model="collapse">
+                <el-collapse-item :title="col.label" :name="i">
+                  <el-table :data="info[col.value]">
+                    <el-table-column
+                      label="Year"
+                      prop="year"
+                      :formatter="getYear"
+                    />
+                    <el-table-column label="Capacity in Tbps" prop="cap" />
+                  </el-table>
+                </el-collapse-item>
+              </el-collapse>
             </el-col>
-          </template>
-          <el-col
-            :span="10"
-            class="p2"
-            v-else-if="col.label == 'Latency' && !info.terrestrial"
-          >
-            <p class="label capitalize">{{ col.label }}</p>
-          </el-col>
-          <el-col
-            :span="10"
-            class="p2"
-            v-else-if="col.value == 'systemLength' && !info.terrestrial"
-          >
-            <p class="label capitalize">{{ col.label }}</p>
-          </el-col>
-          <el-col
-            :span="10"
-            class="p2"
-            v-else-if="
-              info[col.value] &&
-                col.label != 'Latency' &&
-                col.value != 'systemLength'
-            "
-          >
-            <p class="label capitalize">{{ col.label }}</p>
-          </el-col>
-          <!---- LABELS SECTION END ---->
-
-          <!---- VALUES SECTION START ---->
-          <template v-if="info[col.value]">
-            <el-col
-              v-if="
-                col.value.toLowerCase().includes('url') ||
-                  col.value.toLowerCase().includes('web')
-              "
-              class="p2"
-              :span="12"
+          </el-row>
+        </template>
+        <!---- COLLAPSE SECTION END --->
+        <!---- LABELS SECTION STARTS---->
+        <template v-else>
+          <el-row :gutter="20">
+            <template
+              v-if="col.label.toLowerCase().includes('url') && info[col.value]"
             >
-              <a
-                class="underline dont-break-out fs-regular mr2 inline-block"
-                v-for="(url, i) in info[col.value]"
-                :href="
-                  url.includes('http://') || url.includes('https://')
-                    ? url
-                    : `http://${url}`
-                "
-                target="_blank"
-                :key="i"
-                v-text="url"
-              />
-            </el-col>
+              <el-col :span="24">
+                <small>
+                  <p class="capitalize">
+                    More information:
+                  </p>
+                </small>
+              </el-col>
+            </template>
             <el-col
-              :span="12"
-              class="p2"
-              v-else-if="col.value.includes('activationDateTime')"
+              :span="10"
+              v-else-if="col.label == 'Latency' && !info.terrestrial"
             >
-              <p class="text-bold" style="margin: 1.4rem 0">
-                {{ convertToYear(info[col.value]) }}
-              </p>
+              <p class="label capitalize">{{ col.label }}</p>
             </el-col>
             <el-col
-              :span="12"
-              v-else-if="
-                !isArrCol(info[col.value]) &&
-                  col.label == 'Latency' &&
-                  !info.terrestrial
-              "
-            >
-              <p class="text-bold" style="margin: 1.4rem 0">
-                {{ getCableLatency(info[col.value]) }} ms
-              </p>
-            </el-col>
-            <el-col
-              :span="12"
-              v-else-if="col.label.includes('EOL') && info.status != 'project'"
-            >
-              <p class="text-bold" style="margin: 1.4rem 0">
-                {{ convertToYear(calculateEOL(info[col.value])) }}
-              </p>
-            </el-col>
-            <el-col
-              :span="12"
+              :span="10"
               v-else-if="col.value == 'systemLength' && !info.terrestrial"
             >
-              <p class="text-bold" style="margin: 1.4rem 0">
-                {{ info[col.value] }} kms
-              </p>
+              <p class="label capitalize">{{ col.label }}</p>
             </el-col>
             <el-col
-              :span="12"
+              :span="10"
               v-else-if="
-                !isArrCol(info[col.value]) &&
+                info[col.value] &&
                   col.label != 'Latency' &&
                   col.value != 'systemLength'
               "
             >
-              <p class="text-bold" style="margin: 1.4rem 0">
-                {{ info[col.value] }}
-              </p>
+              <p class="label capitalize">{{ col.label }}</p>
             </el-col>
-          </template>
-          <div v-if="info.notes" v-html="info.notes" />
-        </el-row>
-      </template>
+            <!---- LABELS SECTION END ---->
+
+            <!---- VALUES SECTION START ---->
+            <template v-if="info[col.value]">
+              <el-col
+                v-if="
+                  col.value.toLowerCase().includes('url') ||
+                    col.value.toLowerCase().includes('web')
+                "
+                :span="12"
+              >
+                <a
+                  class="underline dont-break-out fs-regular mr2 inline-block"
+                  v-for="(url, i) in info[col.value]"
+                  :href="
+                    url.includes('http://') || url.includes('https://')
+                      ? url
+                      : `http://${url}`
+                  "
+                  target="_blank"
+                  :key="i"
+                  v-text="url"
+                />
+              </el-col>
+              <el-col
+                :span="12"
+                v-else-if="
+                  col.value.includes('activationDateTime') && col.label != 'EOL'
+                "
+              >
+                <p class="text-bold">
+                  {{ convertToYear(info[col.value]) }}
+                </p>
+              </el-col>
+              <el-col
+                :span="12"
+                v-else-if="
+                  !isArrCol(info[col.value]) &&
+                    col.label == 'Latency' &&
+                    !info.terrestrial
+                "
+              >
+                <p class="text-bold">
+                  {{ getCableLatency(info[col.value]) }} ms
+                </p>
+              </el-col>
+              <el-col :span="12" v-else-if="col.label.includes('EOL')">
+                <p class="text-bold">
+                  {{ convertToYear(calculateEOL(info[col.value])) }}
+                </p>
+              </el-col>
+              <el-col
+                :span="12"
+                v-else-if="col.value == 'systemLength' && !info.terrestrial"
+              >
+                <p class="text-bold">{{ info[col.value] }} km</p>
+              </el-col>
+              <el-col
+                :span="12"
+                v-else-if="
+                  !isArrCol(info[col.value]) &&
+                    col.label != 'Latency' &&
+                    col.value != 'systemLength'
+                "
+              >
+                <p class="text-bold">
+                  {{ info[col.value] }}
+                </p>
+              </el-col>
+            </template>
+            <div v-if="info.notes" v-html="info.notes" />
+          </el-row>
+        </template>
+      </div>
+      <!---- VALUES SECTION END ---->
     </div>
-    <!---- VALUES SECTION END ---->
-    <el-divider />
     <!---- FOOTER SECTION STARTS ----->
-    <footer class="p0 mt12">
+    <footer class="pr8 pl8 pb8">
+      <el-divider class="mt0" />
       <el-row :gutter="20">
         <el-col :xs="24" :sm="12" :md="24" :lg="12">
           <el-popover
@@ -254,7 +245,7 @@
 </template>
 
 <script>
-import convertToYear from '../../helpers/converToYear'
+import convertToYear from '../../helpers/convertToYear'
 import calculateEOL from '../../helpers/calculateEOL'
 import {
   BUY_CAPACITY,
@@ -293,7 +284,7 @@ export default {
       return this.$store.state.isDark
     },
     cableColumns() {
-      const cols = [...this.columns]
+      let cols = [...this.columns]
         .map(col => {
           if (
             Array.isArray(this.info[col.value]) &&
@@ -310,6 +301,10 @@ export default {
           }
         })
         .filter(col => col)
+
+      if (this.info.category == 'project') {
+        cols = cols.filter(col => col.label != 'EOL')
+      }
       return cols
     },
     isFutureState() {
@@ -323,15 +318,6 @@ export default {
     getYear: () => row => new Date(row.year).getFullYear(),
     collapseColumns() {
       return ['org', 'cls', 'networks', 'fac', 'owners']
-    }
-  },
-  mounted() {
-    try {
-      for (let collapse in this.$refs) {
-        this.collapse.push(Number(collapse.split('_')[1]))
-      }
-    } catch {
-      // Ignore
     }
   },
   methods: {
@@ -363,5 +349,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/scss/components/cable-attributes-styles.scss';
+@import '../../assets/scss/components/sidebar-inner-component-styles.scss';
 </style>

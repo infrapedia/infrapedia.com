@@ -70,10 +70,11 @@ export default {
         if (this.focus) {
           bus.$emit(
             `${CLEAR_SELECTION}`,
-            false,
+            true,
             this.focus.type.split().join('')
           )
         }
+
         switch (option.toLowerCase().trim()) {
           case 'ixps':
             await this.handleIxpsItemSelected({ id, type: option })

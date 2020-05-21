@@ -62,7 +62,7 @@ export default function highlightCurrentSelection({
   focusType
 }) {
   const args = { dark, id, map }
-  switch (focusType) {
+  switch (focusType.toLowerCase()) {
     case 'cls':
       highlightCls(args)
       break

@@ -23,18 +23,8 @@ function disableCurrentHighlight({
   map
 }) {
   if (!focusType) return
-
-  if (closesSidebar) {
-    commit(`${TOGGLE_SIDEBAR}`, false)
-    commit(`${MAP_FOCUS_ON}`, null)
-    commit(`${EASE_POINT}`, false)
-    commit(`${MAP_BOUNDS}`, [])
-    handleBoundsChange()
-  }
-
   commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
-
-  switch (focusType) {
+  switch (focusType.toLowerCase()) {
     case 'cls':
       map.setPaintProperty(
         mapConfig.cls,
@@ -68,6 +58,14 @@ function disableCurrentHighlight({
         mapConfig.cablesPaintConfig['line-width']
       )
       break
+  }
+
+  if (closesSidebar) {
+    commit(`${TOGGLE_SIDEBAR}`, false)
+    commit(`${MAP_FOCUS_ON}`, null)
+    commit(`${EASE_POINT}`, false)
+    commit(`${MAP_BOUNDS}`, [])
+    handleBoundsChange()
   }
 }
 

@@ -2,7 +2,7 @@
 @import '../base/variables';
 
 a {
-  width: 10rem;
+  width: 20rem;
 }
 
 p {
@@ -12,6 +12,10 @@ p {
 
 span.label {
   font-weight: 700;
+}
+
+.columns-wrapper {
+  max-height: 45vh;
 }
 
 footer {
@@ -28,16 +32,11 @@ footer {
     }
   }
 }
-
 /*
 * THEMES VARIANT'S
 */
 
 .application.light {
-  a {
-    color: $gray;
-  }
-
   .el-col span.label,
   p.label {
     color: $dark-blue;
@@ -45,7 +44,7 @@ footer {
 
   .status-text {
     color: #ff8282;
-    &.active {
+    &.active-cable {
       color: #2aa9b7;
     }
   }
@@ -56,7 +55,7 @@ footer {
   }
   .status-text {
     color: #ff4e46;
-    &.active {
+    &.active-cable {
       color: #57ced8;
     }
   }
@@ -67,6 +66,8 @@ footer {
       background-color: darken($light-yellow, 8%);
     }
   }
+
+  a,
   .el-col span.label {
     color: $white-partial;
   }

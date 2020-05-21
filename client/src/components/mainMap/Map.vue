@@ -374,6 +374,8 @@ export default {
       popup.remove()
     },
     highlightSelection(id) {
+      if (!this.focus) return
+
       try {
         return highlightCurrentSelection({
           id,
@@ -409,7 +411,7 @@ export default {
      * @param closesSidebar { Boolean } - If besides removing cables highlight it also closes the sidebar
      */
     disableSelectionHighlight(closesSidebar = true, type) {
-      if (!this.map || !this.focus) return
+      if (!this.map) return
       try {
         return disableCurrentHighlight({
           map: this.map,
@@ -430,13 +432,13 @@ export default {
       if (this.isDrawing) return
 
       if (this.$auth.isAuthenticated) {
-        if (this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
         if (this.focus) {
           this.disableSelectionHighlight(
             false,
             this.focus.type.split().join('')
           )
         }
+        if (this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
 
         const cables = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.cables]
