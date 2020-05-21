@@ -94,7 +94,7 @@ export default {
       return this.$store.state.isDark
     },
     checkMode() {
-      return this.mode === 'create' ? this.createNet : this.saveEditedNet
+      return this.mode == 'create' ? this.createNet : this.saveEditedNet
     }
   },
   beforeCreate() {

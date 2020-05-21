@@ -23,6 +23,22 @@ export const useAuth0 = ({
       popupOpen: false,
       error: null
     }),
+    computed: {
+      userID() {
+        return this.$auth.user && this.$auth.user.sub
+          ? this.$auth.user.sub
+          : this.$auth.getUserID()
+      },
+      isUserAnAdmin() {
+        const admIDs = process.env.VUE_APP_RESTRICTED_IDS
+          ? process.env.VUE_APP_RESTRICTED_IDS.split(',')
+          : []
+        return admIDs.includes(this.userID)
+      }
+    },
+    mounted() {
+      bus.$on('get-user-id', this.getUserID)
+    },
     async created() {
       await this.createAuthClient()
     },

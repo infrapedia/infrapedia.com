@@ -4,7 +4,7 @@
 
     <el-aside class="mt12 oveflow-y-auto no-overflow-x hidden-md-and-down">
       <ul role="group" class="pt10 pb20 h-fit-full">
-        <template v-for="(link, i) in profileLinks">
+        <template v-for="(link, i) in links">
           <li role="listitem" class="h18" :key="i">
             <router-link
               exact
@@ -108,7 +108,6 @@ export default {
   },
   data() {
     return {
-      profileLinks,
       profileTourSteps,
       isMobileProfileDrawer: false,
       tourCallbacks: {
@@ -119,20 +118,16 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    links() {
+      return profileLinks.filter(link =>
+        !this.$auth.isUserAnAdmin ? !link.adminOnly : link
+      )
     }
   },
   async mounted() {
-    const isTourDoneAlready = window.localStorage.getItem(TOUR_DONE_KEY)
-    if (
-      !isTourDoneAlready ||
-      (isTourDoneAlready && isTourDoneAlready !== 'true')
-    ) {
-      this.$tours['profile-tour'].start()
-    }
-
-    if (this.$auth.isAuthenticated) {
-      await this.setToken()
-    }
+    this.handleTourStart()
+    await this.setToken()
 
     bus.$on(
       `${navbarEvents.TOGGLE_MOBILE_DRAWER_PROFILE}`,
@@ -140,7 +135,17 @@ export default {
     )
   },
   methods: {
+    handleTourStart() {
+      const isTourDoneAlready = window.localStorage.getItem(TOUR_DONE_KEY)
+      if (
+        !isTourDoneAlready ||
+        (isTourDoneAlready && isTourDoneAlready != 'true')
+      ) {
+        this.$tours['profile-tour'].start()
+      }
+    },
     async setToken() {
+      if (!this.$auth.isAuthenticated) return
       const token = await getAccessToken()
       if (token) {
         setCookie('auth.token-session', token.access_token, 20)
@@ -159,13 +164,13 @@ export default {
     checkURL(link) {
       let obj = {}
 
-      if (this.$route.fullPath === '/user/section/issues-reported') {
+      if (this.$route.fullPath == '/user/section/issues-reported') {
         obj = {
           'router-link-exact-active router-link-active': link.url.includes(
             'issues'
           )
         }
-      } else if (this.$route.fullPath === '/user/profile/email-providers') {
+      } else if (this.$route.fullPath == '/user/profile/email-providers') {
         obj = {
           'router-link-exact-active router-link-active': link.url.includes(
             'profile'

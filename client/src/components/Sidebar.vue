@@ -157,11 +157,9 @@ export default {
   beforeMount() {
     window.addEventListener('resize', this.resizeWatcher)
     this.resizeWatcher()
-    this.prohibitedIDs = [
-      process.env.VUE_APP_RESTRICTED_IDS
-        ? process.env.VUE_APP_RESTRICTED_IDS.split(',')
-        : []
-    ]
+    this.prohibitedIDs = process.env.VUE_APP_RESTRICTED_IDS
+      ? process.env.VUE_APP_RESTRICTED_IDS.split(',')
+      : []
   },
   mounted() {
     this.handleColSelectionChange()
