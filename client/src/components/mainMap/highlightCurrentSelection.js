@@ -1,6 +1,10 @@
 import { mapConfig } from '../../config/mapConfig'
 import { CURRENT_MAP_FILTER, MAP_FOCUS_ON } from '../../store/actionTypes/map'
 
+function highlightColor(dark) {
+  return dark ? '#f7dc82' : '#1e419a'
+}
+
 function highlightCable({ id, dark, map }) {
   const unselectedColor = dark ? 'rgba(50,50,50,0.24)' : 'rgba(18,18,18, 0.1)'
   const currentFilter = mapConfig.highlightFeatureState
@@ -24,7 +28,7 @@ function highlightCls({ id, dark, map }) {
   map.setPaintProperty(mapConfig.cls, 'circle-color', [
     'case',
     ['==', ['get', '_id'], id],
-    dark ? 'yellow' : 'red',
+    highlightColor(dark),
     ['!=', ['get', '_id'], id],
     '#ffffff',
     '#ffffff'
@@ -35,7 +39,7 @@ function highlightFacility({ id, dark, map }) {
   map.setPaintProperty(mapConfig.facilities, 'fill-extrusion-color', [
     'case',
     ['==', ['get', '_id'], id],
-    dark ? 'yellow' : 'red',
+    highlightColor(dark),
     ['!=', ['get', '_id'], id],
     '#666666',
     '#666666'
@@ -46,7 +50,7 @@ function highlightIXP({ id, dark, map }) {
   map.setPaintProperty(mapConfig.ixps, 'circle-color', [
     'case',
     ['==', ['get', '_id'], id],
-    dark ? 'yellow' : 'purple',
+    highlightColor(dark),
     ['!=', ['get', '_id'], id],
     '#b10f0f',
     '#b10f0f'
