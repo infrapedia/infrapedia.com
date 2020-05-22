@@ -129,8 +129,7 @@ export default {
       return this.sidebarMode == this.defaultMode
     },
     isVerified() {
-      // return this.prohibitedIDs.includes(this.currentSelection.uuid)
-      return true
+      return this.prohibitedIDs.includes(this.currentSelection.uuid)
     },
     currentView() {
       return this.isCable ? 'i-cable-attributes' : 'i-data-center'
