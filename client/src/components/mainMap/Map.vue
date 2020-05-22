@@ -60,7 +60,7 @@
               type="primary"
               class="w11 h11"
               circle
-              @click="toggleGooeyMenu"
+              @click.stop="toggleGooeyMenu"
             >
               <fa :icon="['fas', 'share-alt']" />
             </el-button>

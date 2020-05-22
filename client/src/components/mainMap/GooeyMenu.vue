@@ -4,7 +4,12 @@
     @click.stop="$emit('close')"
     :class="{ active: isActive }"
   >
-    <ul role="group" class="relative regular-transition" id="gooeyList">
+    <ul
+      v-if="isActive"
+      role="group"
+      class="relative regular-transition"
+      id="gooeyList"
+    >
       <li
         role="listitem"
         class="mb1"
