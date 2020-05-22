@@ -39,21 +39,18 @@
               {{ currentSelection.name }}
             </h1>
           </el-tooltip>
-          <span
-            :class="{
-              'is-verified': !prohibitedIDs.includes(currentSelection.uuid)
-            }"
+          <el-button
+            type="text"
             id="verified-i"
-            class="ml2 p1 mt-2 inline-block cursor-pointer"
-            :title="
-              !prohibitedIDs.includes(currentSelection.uuid)
-                ? 'Owner verified'
-                : 'Owner unverified'
-            "
             @click.stop="handleVerification"
+            class="transparent inline-block cursor-pointer"
+            :title="isVerified ? 'Owner verified' : 'Owner unverified'"
           >
-            <fa :icon="['fas', 'check-double']" />
-          </span>
+            <certificated-icon v-if="isVerified" />
+            <span v-else>
+              <fa :icon="['fas', 'check-double']" />
+            </span>
+          </el-button>
           <p class="text-bold">{{ currentSelection.segment_name }}</p>
         </header>
         <!---------------------- SIDEBAR MODES ----------------------->
@@ -97,6 +94,7 @@ import { queryCookieName } from '../config/sharedViewCookieName'
 export default {
   name: 'ISidebar',
   components: {
+    CertificatedIcon: () => import('./CertificatedIcon'),
     'i-data-center': () => import('./sidebarModes/dataCenter'),
     'i-cable-attributes': () => import('./sidebarModes/cableAttributes')
   },
@@ -129,6 +127,10 @@ export default {
     },
     isCable() {
       return this.sidebarMode == this.defaultMode
+    },
+    isVerified() {
+      // return this.prohibitedIDs.includes(this.currentSelection.uuid)
+      return true
     },
     currentView() {
       return this.isCable ? 'i-cable-attributes' : 'i-data-center'
@@ -192,13 +194,16 @@ export default {
       }
     },
     toggleActiveClassOnMobile() {
-      this.isSidebarActive = !this.isSidebarActive
-      if (this.isSidebarActive) {
-        setTimeout(() => {
-          this.isSidebarFullActive = true
-        }, 325)
-      } else {
-        this.isSidebarFullActive = false
+      const isMobile = this.resizeWatcher()
+      if (isMobile) {
+        this.isSidebarActive = !this.isSidebarActive
+        if (this.isSidebarActive) {
+          setTimeout(() => {
+            this.isSidebarFullActive = true
+          }, 325)
+        } else {
+          this.isSidebarFullActive = false
+        }
       }
     },
     resizeWatcher() {

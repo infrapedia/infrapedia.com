@@ -58,7 +58,8 @@ import {
   faCode,
   faBuilding,
   faDotCircle,
-  faPrint
+  faPrint,
+  faCheck
 } from '@fortawesome/free-solid-svg-icons'
 import { faHandPointUp } from '@fortawesome/free-regular-svg-icons'
 import {
@@ -74,6 +75,7 @@ import {
 
 library.add(
   faPrint,
+  faCheck,
   faBuilding,
   faDotCircle,
   faCode,
