@@ -33,24 +33,25 @@
             placement="bottom"
           >
             <h1
-              class="inline-block cursor-pointer title font-bold m0 p1 round dont-break-out fs-large underline"
+              class="inline-block cursor-pointer relative title font-bold m0 p1 round dont-break-out fs-large underline"
               @click.stop="copyToClip"
             >
               {{ currentSelection.name }}
+              <el-button
+                type="text"
+                id="verified-i"
+                @click.stop="handleVerification"
+                class="transparent inline-block cursor-pointer"
+                :class="{ 'is-verified': isVerified }"
+                :title="isVerified ? 'Owner verified' : 'Owner unverified'"
+              >
+                <certificated-icon v-if="isVerified" />
+                <span v-else>
+                  <fa :icon="['fas', 'check-double']" />
+                </span>
+              </el-button>
             </h1>
           </el-tooltip>
-          <el-button
-            type="text"
-            id="verified-i"
-            @click.stop="handleVerification"
-            class="transparent inline-block cursor-pointer"
-            :title="isVerified ? 'Owner verified' : 'Owner unverified'"
-          >
-            <certificated-icon v-if="isVerified" />
-            <span v-else>
-              <fa :icon="['fas', 'check-double']" />
-            </span>
-          </el-button>
           <p class="text-bold">{{ currentSelection.segment_name }}</p>
         </header>
         <!---------------------- SIDEBAR MODES ----------------------->
