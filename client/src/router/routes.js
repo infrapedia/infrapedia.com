@@ -25,13 +25,11 @@ import About from '../pages/About.vue'
 import Attributions from '../pages/Attributions.vue'
 import Services from '../pages/Services.vue'
 import Sponsors from '../pages/Sponsors.vue'
-import { bus } from '../helpers/eventBus'
+import { getInstance } from '../auth/index'
 
-function handleAdminOnlyRoutes(next, to) {
-  const admIDs = process.env.VUE_APP_RESTRICTED_IDS
-    ? process.env.VUE_APP_RESTRICTED_IDS.split(',')
-    : []
-  const isUserAnAdmin = admIDs.includes(bus.$emit('get-user-id'))
+async function handleAdminOnlyRoutes(next, to) {
+  const $authInstance = getInstance()
+  const isUserAnAdmin = $authInstance.isUserAnAdmin
   // If the user is not an admin
   // There's no reason for them to access the creation page of those sections
   if (to) {

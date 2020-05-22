@@ -36,9 +36,6 @@ export const useAuth0 = ({
         return admIDs.includes(this.userID)
       }
     },
-    mounted() {
-      bus.$on('get-user-id', this.getUserID)
-    },
     async created() {
       await this.createAuthClient()
     },
