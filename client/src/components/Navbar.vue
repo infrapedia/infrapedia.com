@@ -10,6 +10,13 @@
           <router-link :to="checkIfLoggedIn" class="hidden-md-and-down">
             <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
           </router-link>
+          <router-link :to="checkIfLoggedIn" class="sphere-logo">
+            <el-image
+              class="mt2 logo-img"
+              :src="imageURLSphere"
+              fit="scale-down"
+            />
+          </router-link>
           <el-button
             circle
             icon="el-icon-menu"
@@ -43,6 +50,21 @@
                 >
                   Blog
                 </a>
+              </li>
+
+              <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
+
+              <li
+                class="inline-block no-selectable relative hidden-sm-and-down"
+                role="listitem"
+              >
+                <router-link
+                  to="/services"
+                  class="list-item pr4 pl4"
+                  title="Services"
+                >
+                  Services
+                </router-link>
               </li>
 
               <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
@@ -452,6 +474,11 @@ export default {
       return this.dark
         ? 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo.svg'
         : 'https://cdn1.infrapedia.com/assets/img/light-mode-logo.svg'
+    },
+    imageURLSphere() {
+      return this.dark
+        ? 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo-sphere.svg'
+        : 'https://cdn1.infrapedia.com/assets/img/light-mode-logo-sphere.svg'
     },
     isProfileRoute() {
       let isProfile = false

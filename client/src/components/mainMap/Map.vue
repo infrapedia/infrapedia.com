@@ -418,7 +418,11 @@ export default {
           closesSidebar,
           commit: this.$store.commit,
           handleBoundsChange: this.handleBoundsChange,
-          focusType: type ? type : this.focus.type.split().join('')
+          focusType: type
+            ? type
+            : this.focus
+            ? this.focus.type.split().join('')
+            : false
         })
       } catch (err) {
         console.error(err)

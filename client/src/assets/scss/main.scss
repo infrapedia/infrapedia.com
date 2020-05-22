@@ -277,6 +277,53 @@ input.issues-dialog {
   }
 }
 
+.header-inner-wrapper .navbar-wrapper {
+  @media screen and (max-width: 1024px) {
+    .logo-img {
+      width: 40px;
+    }
+    .image-sponsor {
+      width: 5rem;
+    }
+    .el-input {
+      width: 4rem;
+      .el-input__inner {
+        width: 9.8rem;
+        padding: 0 0 0 0.4rem;
+      }
+    }
+  }
+
+  .el-input-group__prepend {
+    @media screen and (max-width: 1024px) {
+      width: 0.2rem;
+      padding: 0;
+      color: transparent;
+    }
+  }
+  .search-navbar-select {
+    @media screen and (max-width: $break-lg) {
+      width: 7rem;
+    }
+    @media screen and (max-width: 1024px) {
+      width: 4rem;
+      .el-input {
+        // width: 4rem;
+      }
+      .el-input--suffix {
+        width: 3rem;
+      }
+    }
+  }
+
+  #search-select-navbar {
+    @media screen and (max-width: 1024px) {
+      height: 0.4rem;
+      width: 2.4rem;
+    }
+  }
+}
+
 /*
 *  THEME VARIANT'S
 */

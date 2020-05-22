@@ -10,7 +10,7 @@
       v-if="visibility"
       shadow="hover"
       :class="{ dark, light: !dark }"
-      class="drawer-wrapper"
+      class="drawer-wrapper overflow-y"
     >
       <header
         class="h14 pr4 pl4 pb2 flex justify-content-space-between align-items-center"
@@ -51,6 +51,16 @@
             >
               Blog
             </a>
+          </div>
+        </li>
+        <li class="w-fit-full" data-no-outline="true">
+          <div class="no-selectable">
+            <router-link
+              to="/services"
+              class="no-underline inherit color-inherit p4 mr4 inline-block"
+            >
+              Services
+            </router-link>
           </div>
         </li>
         <li class="w-fit-full" data-no-outline="true">
@@ -123,7 +133,7 @@
             </li> -->
         </ul>
       </div>
-      <i-footer class="footer relative m0-imp p0-imp" />
+      <i-footer class="footer relative m0-imp p0-imp" style="width: 96%" />
     </el-card>
   </transition>
 </template>
