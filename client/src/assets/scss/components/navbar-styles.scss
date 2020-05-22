@@ -26,9 +26,12 @@ $header-color: rgb(37, 95, 185);
     width: 120px;
   }
   .sphere-logo {
-    display: none !important;
-    @media screen and (max-width: 1024px) {
+    display: none;
+    @media screen and (max-width: 1180px) {
       display: block;
+    }
+    @media screen and (max-width: 890px) {
+      display: none;
     }
   }
 

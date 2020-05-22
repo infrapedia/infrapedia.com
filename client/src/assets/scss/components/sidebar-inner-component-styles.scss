@@ -47,6 +47,12 @@ footer {
     &.active-cable {
       color: #2aa9b7;
     }
+    &.cls {
+      color: grey;
+      &.active {
+        color: green;
+      }
+    }
   }
 }
 .application.dark {
@@ -57,6 +63,12 @@ footer {
     color: #ff4e46;
     &.active-cable {
       color: #57ced8;
+    }
+    &.cls {
+      color: grey;
+      &.active {
+        color: green;
+      }
     }
   }
   .el-button {

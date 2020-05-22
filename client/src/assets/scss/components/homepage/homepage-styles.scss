@@ -35,6 +35,13 @@
   height: 100%;
 }
 
+#contactUsButtonUnderHeading {
+  margin-left: -2rem;
+  @media screen and (max-width: $break-xs) {
+    margin-left: 0;
+  }
+}
+
 .title {
   font-family: 'helveticabold';
   line-height: 1.2;
@@ -90,6 +97,11 @@
       &.heading {
         max-width: 60.4rem;
         min-width: 24rem;
+        @media screen and (max-width: $break-md) {
+          max-width: 41.4rem;
+          min-width: 18rem;
+          font-size: 30px;
+        }
         @media screen and (max-width: $break-xs) {
           font-size: 17px;
           max-width: unset;
@@ -100,6 +112,11 @@
       &.sub {
         max-width: 60.4rem;
         margin-top: 1rem;
+        @media screen and (max-width: $break-md) {
+          max-width: 41.4rem;
+          font-size: 30px;
+        }
+
         @media screen and (max-width: $break-xs) {
           margin-top: -2rem;
           font-size: 17px;

@@ -46,7 +46,7 @@
           world easily.
         </p>
         <div
-          style="margin-left: -4rem"
+          id="contactUsButtonUnderHeading"
           class="text-center flex w-fit-full justify-content-center mt12"
         >
           <router-link class="el-button el-button--default" to="/contact">
@@ -202,7 +202,7 @@ export default {
       return this.$store.state.premium
     },
     blogHeight() {
-      return window.innerWidth <= 375 ? '80vh' : '24vh'
+      return window.innerWidth <= 425 ? '40vh' : '28vh'
     }
   },
   async mounted() {

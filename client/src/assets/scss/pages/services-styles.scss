@@ -68,10 +68,7 @@
   }
 
   @media screen and (max-width: $break-sm) {
-    width: 72vw;
-    padding: 2rem;
-  }
-  @media screen and (max-width: $break-xs) {
+    width: 80vw;
     padding: 1rem;
   }
 }
@@ -79,7 +76,7 @@
 .services-wrapper {
   @media screen and (max-width: $break-xs) {
     .inner-wrapper {
-      width: 13.5rem;
+      width: 80vw;
       .el-card {
         height: auto;
         padding: 1rem;

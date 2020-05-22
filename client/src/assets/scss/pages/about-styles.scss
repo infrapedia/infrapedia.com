@@ -51,12 +51,13 @@
       text-align: justify;
       @media screen and (max-width: $break-xs) {
         font-size: 16px;
-        padding: 0 2rem;
+        padding: 0 1rem;
       }
     }
 
     @media screen and (max-width: $break-xs) {
-      margin-left: -2rem;
+      margin-left: 0;
+      padding: 0;
     }
   }
 }

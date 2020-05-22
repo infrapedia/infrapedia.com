@@ -21,8 +21,11 @@
                 }}
               </strong>
             </p>
-            <p class="mt6 fs-small">
-              {{ userData.company ? userData.company : 'Company: Unknown' }}
+            <p class="fs-regular">
+              {{ userData.email }}
+            </p>
+            <p class="mt6 fs-small" v-if="userData.company">
+              {{ userData.company }}
             </p>
           </div>
           <router-link
@@ -117,8 +120,9 @@ export default {
       if (userID) {
         const userData = await getUserData(userID)
         if (userData) {
-          const { user_metadata } = userData
+          const { email, user_metadata } = userData
           this.userData = {
+            email,
             name:
               user_metadata && user_metadata.name
                 ? user_metadata.name
