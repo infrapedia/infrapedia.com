@@ -24,41 +24,50 @@
     <div class="right w-fit-full">
       <editor-map :key="mapKey" :type="creationType" :form="form" />
     </div>
-    <el-dialog
-      :visible.sync="isLoadingDialog"
-      width="44%"
-      top="12vh"
-      title="Uploading file..."
-      :show-close="false"
-      :custom-class="customDialogClass"
-      :close-on-click-modal="false"
-    >
-      Usually, this takes time when uploading large files... Please be patient.
-    </el-dialog>
-    <el-dialog
-      :visible.sync="isMapFormLoading"
-      width="44%"
-      top="12vh"
-      title="Loading map..."
-      :show-close="false"
-      :custom-class="customDialogClass"
-      :close-on-click-modal="false"
-    >
-      Usually, this takes time when loading a map with lots of data... Please be
-      patient.
-    </el-dialog>
-    <el-dialog
-      :visible.sync="isMapFormSendingData"
-      width="44%"
-      top="12vh"
-      title="Uploading map and creating map files..."
-      :show-close="false"
-      :custom-class="customDialogClass"
-      :close-on-click-modal="false"
-    >
-      Usually, this takes time when uploading a map with lots of data... Please
-      be patient.
-    </el-dialog>
+    <template>
+      <el-dialog
+        :visible.sync="isLoadingDialog"
+        width="44%"
+        top="12vh"
+        title="Uploading file..."
+        :show-close="false"
+        :custom-class="customDialogClass"
+        :close-on-click-modal="false"
+      >
+        Usually, this takes time when uploading large files... Please be
+        patient.
+      </el-dialog>
+      <el-dialog
+        :visible.sync="isMapFormLoading"
+        width="44%"
+        top="12vh"
+        title="Loading map..."
+        :show-close="false"
+        :custom-class="customDialogClass"
+        :close-on-click-modal="false"
+      >
+        Usually, this takes time when loading a map with lots of data... Please
+        be patient.
+      </el-dialog>
+      <el-dialog
+        :visible.sync="isMapFormSendingData"
+        width="44%"
+        top="12vh"
+        title="Uploading map and creating map files..."
+        :show-close="false"
+        :custom-class="customDialogClass"
+        :close-on-click-modal="false"
+      >
+        Usually, this takes time when uploading a map with lots of data...
+        Please be patient.
+      </el-dialog>
+    </template>
+
+    <manual-kmz-submit-dialog
+      :form-data="manualSubmitFormData"
+      :is-visible="isManualUploadDialog"
+      @close="() => (isManualUploadDialog = false)"
+    />
   </div>
 </template>
 
@@ -94,13 +103,15 @@ import {
   createFacility
 } from '../../../services/api/facs'
 import { viewIXPOwner, editIXP, createIXP } from '../../../services/api/ixps'
+import ManualKMZSubmitDialog from '../../../components/dialogs/ManualKMZSubmit'
 
 export default {
   name: 'CreateSection',
   components: {
     'cls-form': CLSForm,
     'editor-map': EditorMap,
-    'cable-form': CableForm
+    'cable-form': CableForm,
+    'manual-kmz-submit-dialog': ManualKMZSubmitDialog
   },
   data() {
     return {
@@ -110,6 +121,7 @@ export default {
       loading: false,
       isSendingData: false,
       isPropertiesDialog: false,
+      isManualUploadDialog: true,
       isLoadingSelectionGeom: false,
       creationType: this.$route.query.id
     }
@@ -136,6 +148,9 @@ export default {
     },
     isMapFormSendingData() {
       return this.isSendingData && this.creationType == 'map'
+    },
+    manualSubmitFormData() {
+      return this.form
     },
     isLoadingDialog() {
       const type =
@@ -250,6 +265,8 @@ export default {
     if (!this.$route.query.id) return this.$router.push('/user')
   },
   async mounted() {
+    // window.toggleDialog = () =>
+    //   (this.isManualUploadDialog = !this.isManualUploadDialog)
     this.creationType = this.$route.query.id
     this.checkCreationType(this.creationType)
 
