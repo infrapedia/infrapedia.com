@@ -109,10 +109,12 @@
             </el-col>
             <el-col
               :span="12"
-              class="p2"
-              v-else-if="col.value.includes('activationDateTime')"
+              v-else-if="
+                col.value.includes('activationDateTime') &&
+                  col.label != 'EOL (End of Life)'
+              "
             >
-              <p class="text-bold" style="margin: 1.4rem 0">
+              <p class="text-bold">
                 {{ convertToYear(info[col.value]) }}
               </p>
             </el-col>
@@ -124,15 +126,13 @@
                   !info.terrestrial
               "
             >
-              <p class="text-bold" style="margin: 1.4rem 0">
-                {{ getCableLatency(info[col.value]) }} ms
-              </p>
+              <p class="text-bold">{{ getCableLatency(info[col.value]) }} ms</p>
             </el-col>
             <el-col
               :span="12"
-              v-else-if="col.label.includes('EOL') && info.status != 'project'"
+              v-else-if="col.label.includes('EOL (End of Life)')"
             >
-              <p class="text-bold" style="margin: 1.4rem 0">
+              <p class="text-bold">
                 {{ convertToYear(calculateEOL(info[col.value])) }}
               </p>
             </el-col>
@@ -293,7 +293,7 @@ export default {
       return this.$store.state.isDark
     },
     cableColumns() {
-      const cols = [...this.columns]
+      let cols = [...this.columns]
         .map(col => {
           if (
             Array.isArray(this.info[col.value]) &&
@@ -310,6 +310,10 @@ export default {
           }
         })
         .filter(col => col)
+
+      if (this.info.category == 'project') {
+        cols = cols.filter(col => col.label != 'EOL (End of Life)')
+      }
       return cols
     },
     isFutureState() {
