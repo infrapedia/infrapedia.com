@@ -111,6 +111,7 @@ import GooeyMenu from './GooeyMenu'
 import PrintButton from './PrintButton'
 import highlightCurrentSelection from './highlightCurrentSelection'
 import dataCollection from '../../mixins/dataCollection'
+import convertToYear from '../../helpers/convertToYear'
 
 export default {
   name: 'Map',
@@ -322,9 +323,14 @@ export default {
      * @param isPoint { Boolean } If the tooltip is for a Point
      */
     showPopup({ e, map, popup, isPoint, type }) {
-      const { name, status, segment } = JSON.parse(
+      const { name, category, segment, activationDateTime } = JSON.parse(
         JSON.stringify(e.features[0].properties)
       )
+
+      const rfs = new Date(activationDateTime)
+      const cableCategoryColor =
+        category == 'active' ? 'green' : category == 'project' ? 'red' : 'black'
+
       // const facsClusters = this.map.queryRenderedFeatures(e.point, {
       //   layers: [mapConfig.facilitiesClusters]
       // })
@@ -339,7 +345,10 @@ export default {
         if (segment) {
           str += `<div class="segment-name dark-color">Segment: ${segment}</div>`
         }
-        str += `<div class="status dark-color"> Status: ${status}</div>`
+        str += `<div class="status dark-color"> Status: <span style="color: ${cableCategoryColor}" class="category capitalize">${category}</span></div>`
+        str += `<div class="rfs dark-color"> RFS: ${convertToYear(
+          rfs.toISOString()
+        )}</div>`
         str += `<div class="details dark-color">Click for more details</div>`
       }
 
