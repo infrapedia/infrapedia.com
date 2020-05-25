@@ -299,8 +299,9 @@ export default {
         StartDate: [
           {
             type: 'date',
+            required: true,
             trigger: ['blur', 'change'],
-            message: 'RFS date is required'
+            message: 'Please pick a date'
           }
         ],
         owners: [
