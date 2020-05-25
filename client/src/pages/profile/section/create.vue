@@ -121,7 +121,7 @@ export default {
       loading: false,
       isSendingData: false,
       isPropertiesDialog: false,
-      isManualUploadDialog: true,
+      isManualUploadDialog: false,
       isLoadingSelectionGeom: false,
       creationType: this.$route.query.id
     }
@@ -365,6 +365,7 @@ export default {
           this.form = {
             name: '',
             slug: '',
+            country: '',
             tags: [],
             cables: [],
             owners: [],

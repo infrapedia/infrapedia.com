@@ -7,6 +7,21 @@
       <el-form-item label="Name" required prop="name">
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
+      <el-form-item label="Country" required prop="country">
+        <el-select
+          placeholder="A country is required"
+          class="w-fit-full"
+          :class="{ dark }"
+          v-model="form.country"
+        >
+          <el-option
+            v-for="(country, i) in countries"
+            :key="i"
+            :label="country.name"
+            :value="country.code"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="Status" prop="state">
         <el-radio-group :class="{ dark }" v-model="form.state">
           <el-radio label="operational">
@@ -95,6 +110,7 @@ import { getTags } from '../../services/api/tags'
 import VMultiSelect from '../../components/MultiSelect'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { searchOrganization } from '../../services/api/organizations'
+import countriesList from '../../config/countriesList'
 
 export default {
   name: 'CLSForm',
@@ -104,20 +120,7 @@ export default {
     ownersList: [],
     cablesList: [],
     loading: false,
-    isLoadingCables: false,
-    formRules: {
-      name: [
-        {
-          required: true,
-          message: 'Please input a name',
-          trigger: 'change'
-        },
-        { min: 3, message: 'Length should be at least 3', trigger: 'change' }
-      ],
-      cables: [],
-      slug: [],
-      state: []
-    }
+    isLoadingCables: false
   }),
   components: {
     Dragger,
@@ -138,6 +141,62 @@ export default {
     }
   },
   computed: {
+    countries() {
+      const countries = [...countriesList]
+      function once() {
+        // eslint-disable-next-line no-unused-vars
+        let counter = 0
+        return function addNA() {
+          if (counter >= 1) return
+          countries.unshift({ name: 'N.A (Not Available)', code: 'N.A' })
+          counter += 1
+        }
+      }
+      once()()
+      return countries
+    },
+    formRules() {
+      return {
+        name: [
+          {
+            type: 'string',
+            required: true,
+            trigger: 'blur',
+            message: 'Please input a name'
+          },
+          {
+            type: 'string',
+            trigger: 'change',
+            message: 'Please input a valid name',
+            transform: value => value.trim(),
+            // eslint-disable-next-line
+            pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.´ \-]+$/
+          },
+          { min: 3, message: 'Length should be at least 3', trigger: 'change' }
+        ],
+        country: [
+          {
+            type: 'string',
+            required: true,
+            trigger: 'blur',
+            message: 'Please select a country'
+          }
+          // {
+          //   required: true,
+          //   type: 'string',
+          //   message:
+          //     'Please input a valid name for the country where the cls is located',
+          //   trigger: 'change',
+          //   transform: value => value.trim(),
+          //   // eslint-disable-next-line
+          //   pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.´ \-]+$/
+          // }
+        ],
+        cables: [],
+        slug: [],
+        state: []
+      }
+    },
     dark() {
       return this.$store.state.isDark
     },
@@ -179,7 +238,7 @@ export default {
   },
   methods: {
     async loadOwnersSearch(s) {
-      if (s === '') return
+      if (s.length <= 0) return
 
       this.isLoadingOwners = true
       const { data: owners = [] } = (await searchOrganization({
