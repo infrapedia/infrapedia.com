@@ -22,7 +22,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="Status" prop="state">
+      <el-form-item label="Status" prop="state" required>
         <el-radio-group :class="{ dark }" v-model="form.state">
           <el-radio label="operational">
             Operational
@@ -51,9 +51,11 @@
           :value="mode == 'create' ? [] : form.cables"
         />
       </el-form-item>
-      <el-form-item label="Owners">
+      <el-form-item label="Owners" prop="owners" required>
         <v-multi-select
           :mode="mode"
+          :is-required="true"
+          :is-field-empty="isOwnersSelectEmpty"
           :options="ownersList"
           @input="loadOwnersSearch"
           :loading="isLoadingOwners"
@@ -120,7 +122,8 @@ export default {
     ownersList: [],
     cablesList: [],
     loading: false,
-    isLoadingCables: false
+    isLoadingCables: false,
+    isOwnersSelectEmpty: false
   }),
   components: {
     Dragger,
@@ -194,7 +197,12 @@ export default {
         ],
         cables: [],
         slug: [],
-        state: []
+        state: [],
+        owners: [
+          {
+            message: 'At least one owner is required'
+          }
+        ]
       }
     },
     dark() {
@@ -254,6 +262,7 @@ export default {
     },
     handleOwnersSelectChange(data) {
       this.form.owners = Array.from(data)
+      this.setOwnersEmptyState()
     },
     async handleSubseaCablesSelection(cablesSelected) {
       this.form.cables = cablesSelected
@@ -292,10 +301,18 @@ export default {
     handleFileConverted(fc) {
       return this.$emit('handle-file-converted', fc)
     },
+    setOwnersEmptyState() {
+      if (this.form.owners.length <= 0) {
+        this.isOwnersSelectEmpty = true
+      }
+    },
     sendData() {
-      return this.$refs['form'].validate(isValid =>
-        isValid ? this.$emit('send-data') : false
-      )
+      this.setOwnersEmptyState()
+      return this.$refs['form'].validate(isValid => {
+        return isValid && !this.isOwnersSelectEmpty
+          ? this.$emit('send-data')
+          : false
+      })
     }
   }
 }

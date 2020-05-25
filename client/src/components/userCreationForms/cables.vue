@@ -7,7 +7,7 @@
       <el-form-item label="Name" prop="name" required>
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
-      <el-form-item label="Status" prop="category">
+      <el-form-item label="Status" prop="category" required>
         <el-select
           class="w-fit-full"
           filterable
@@ -174,14 +174,16 @@
           :value="mode == 'create' ? [] : form.facilities"
         />
       </el-form-item>
-      <el-form-item label="Owners" prop="owners">
+      <el-form-item label="Owners" prop="owners" required>
         <v-multi-select
           :mode="mode"
+          :is-required="true"
+          :is-field-empty="isOwnersSelectEmpty"
           :options="orgsList"
           @input="loadOrgsSearch"
           :loading="isLoadingOrgs"
           :is-multiple="isCableTypeTerrestrial"
-          @values-change="form.owners = $event"
+          @values-change="handleOwnersSelectChange"
           :value="mode == 'create' ? [] : form.owners"
         />
       </el-form-item>
@@ -262,6 +264,7 @@ export default {
   data: () => ({
     clsSelectedList: [],
     tag: '',
+    isOwnersSelectEmpty: false,
     currentYear: new Date(),
     cableStates,
     facsList: [],
@@ -273,42 +276,6 @@ export default {
     isLoadingOrgs: false,
     warnTagDuplicate: false,
     isClsSelectionDialogVisible: false,
-    formRules: {
-      activationDateTime: [],
-      litCapacity: [],
-      name: [
-        {
-          required: true,
-          message: 'Please input cable name',
-          trigger: 'change'
-        },
-        {
-          type: 'string',
-          trigger: 'change',
-          message: 'Please input a valid name',
-          transform: value => value.trim(),
-          // eslint-disable-next-line
-          pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.´ \-]+$/
-        },
-        { min: 3, message: 'Length should be at least 3', trigger: 'change' }
-      ],
-      cc: [
-        {
-          type: 'email',
-          message: 'Please input correct email address',
-          trigger: ['blur', 'change']
-        }
-      ],
-      urls: [],
-      tags: [],
-      cls: [],
-      owners: [],
-      category: [],
-      fiberPairs: [],
-      facilities: [],
-      tbpsCapacity: [],
-      systemLength: []
-    },
     litCapacityFields: []
   }),
   props: {
@@ -326,6 +293,48 @@ export default {
     }
   },
   computed: {
+    formRules() {
+      return {
+        activationDateTime: [],
+        litCapacity: [],
+        name: [
+          {
+            required: true,
+            message: 'Please input cable name',
+            trigger: 'change'
+          },
+          {
+            type: 'string',
+            trigger: 'change',
+            message: 'Please input a valid name',
+            transform: value => value.trim(),
+            // eslint-disable-next-line
+            pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.´ \-]+$/
+          },
+          { min: 3, message: 'Length should be at least 3', trigger: 'change' }
+        ],
+        cc: [
+          {
+            type: 'email',
+            message: 'Please input correct email address',
+            trigger: ['blur', 'change']
+          }
+        ],
+        urls: [],
+        tags: [],
+        cls: [],
+        owners: [
+          {
+            message: 'At least one owner is required'
+          }
+        ],
+        category: [],
+        fiberPairs: [],
+        facilities: [],
+        tbpsCapacity: [],
+        systemLength: []
+      }
+    },
     creationID() {
       return this.$route.query.id
     },
@@ -426,9 +435,19 @@ export default {
     handleFileConverted(fc) {
       return this.$emit('handle-file-converted', fc)
     },
+    handleOwnersSelectChange(data) {
+      this.form.owners = data
+      this.setOwnersEmptyState()
+    },
+    setOwnersEmptyState() {
+      if (this.form.owners.length <= 0) {
+        this.isOwnersSelectEmpty = true
+      }
+    },
     sendData() {
+      this.setOwnersEmptyState()
       return this.$refs['form'].validate(isValid =>
-        isValid ? this.$emit('send-data') : false
+        isValid && !this.isOwnersSelectEmpty ? this.$emit('send-data') : false
       )
     },
     async loadFacsSearch(s) {
