@@ -13,7 +13,7 @@ export const createIssue = async ({
   phone,
   user_id
 }) => {
-  url = `${apiConfig.url}/auth/issues/report`
+  url = `${apiConfig.url}/issues/report`
   form = new FormData()
 
   form.append('t', t)
