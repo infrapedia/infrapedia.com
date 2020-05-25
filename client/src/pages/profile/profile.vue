@@ -72,6 +72,7 @@
                 <el-input
                   v-model="form.user_metadata.companyname"
                   :class="{ dark }"
+                  clearable
                 />
               </el-form-item>
             </el-col>
