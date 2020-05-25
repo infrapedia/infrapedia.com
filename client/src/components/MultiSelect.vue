@@ -34,7 +34,7 @@
           :label="opt.name"
         >
           <div>
-            <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
+            <fa :icon="['fas', 'award']" v-if="opt.yours == 1" class="mr1" />
             {{ opt.name }}
           </div>
         </el-option>
@@ -44,11 +44,15 @@
         round
         plain
         class="h8"
+        :class="{ 'border-red-imp': isRequired && isFieldEmpty }"
         size="small"
         @click.stop="toggleInput(true)"
       >
         Add
       </el-button>
+      <!-- <div v-if="isRequired && isFieldEmpty" class="el-form-item__error">
+        This field is required
+      </div> -->
     </div>
     <el-alert
       v-if="isTagRepeated"
@@ -83,6 +87,14 @@ export default {
       default: () => true
     },
     getSelectedId: {
+      type: Boolean,
+      default: () => false
+    },
+    isRequired: {
+      type: Boolean,
+      default: () => false
+    },
+    isFieldEmpty: {
       type: Boolean,
       default: () => false
     },
