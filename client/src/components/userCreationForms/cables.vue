@@ -282,6 +282,14 @@ export default {
           message: 'Please input cable name',
           trigger: 'change'
         },
+        {
+          type: 'string',
+          trigger: 'change',
+          message: 'Please input a valid name',
+          transform: value => value.trim(),
+          // eslint-disable-next-line
+          pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.´ \-]+$/
+        },
         { min: 3, message: 'Length should be at least 3', trigger: 'change' }
       ],
       cc: [
