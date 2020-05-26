@@ -1,6 +1,6 @@
 <template>
   <div class="pb6 pt6 pr8 pl8">
-    <header slot="header" class="w-fit-full mb8">
+    <header slot="header" class="w-fit-full mb8" v-if="showTitle">
       <h1 class="title capitalize">{{ title }}</h1>
     </header>
     <el-form ref="form" :model="form" :rules="formRules">
@@ -207,31 +207,36 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="CLS" prop="cls" v-if="mode !== 'create'">
-        <el-button
-          class="inline-block w-fit-full"
-          type="info"
-          :plain="clsSelectedList.length ? false : true"
-          @click="() => (isClsSelectionDialogVisible = true)"
-        >
-          {{ clsSelectedList.length ? 'Edit selected' : 'Select' }} CLS
-        </el-button>
-      </el-form-item>
-      <el-form-item>
-        <dragger @handle-file-converted="handleFileConverted" />
-      </el-form-item>
-      <el-form-item class="mt12">
-        <el-button
-          type="primary"
-          class="w-fit-full capitalize"
-          round
-          :loading="isSendingData"
-          :disabled="checkGeomLength"
-          @click="sendData"
-        >
-          {{ saveBtn }}
-        </el-button>
-      </el-form-item>
+      <template v-if="!isManualKmzUpload">
+        <el-form-item label="CLS" prop="cls" v-if="mode !== 'create'">
+          <el-button
+            class="inline-block w-fit-full"
+            type="info"
+            :plain="clsSelectedList.length ? false : true"
+            @click="() => (isClsSelectionDialogVisible = true)"
+          >
+            {{ clsSelectedList.length ? 'Edit selected' : 'Select' }} CLS
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <dragger
+            @handle-file-converted="handleFileConverted"
+            @dragger-geojson-upload-failed="handleConvertionFailed"
+          />
+        </el-form-item>
+        <el-form-item class="mt12">
+          <el-button
+            type="primary"
+            class="w-fit-full capitalize"
+            round
+            :loading="isSendingData"
+            :disabled="checkGeomLength"
+            @click="sendData"
+          >
+            {{ saveBtn }}
+          </el-button>
+        </el-form-item>
+      </template>
     </el-form>
 
     <select-cls-dialog
@@ -279,6 +284,14 @@ export default {
     litCapacityFields: []
   }),
   props: {
+    showTitle: {
+      type: Boolean,
+      default: () => true
+    },
+    isManualKmzUpload: {
+      type: Boolean,
+      default: () => false
+    },
     form: {
       type: Object,
       required: true
@@ -323,9 +336,13 @@ export default {
         urls: [],
         tags: [],
         cls: [],
+        // TODO: Change to this configuration
+        // on all the other places where owners is required as well
         owners: [
           {
-            message: 'At least one owner is required'
+            type: 'array',
+            message: 'At least one owner is required',
+            trigger: ['blur', 'change']
           }
         ],
         category: [],
@@ -405,11 +422,14 @@ export default {
     }
   },
   methods: {
+    handleConvertionFailed() {
+      this.$emit('dragger-geojson-upload-failed')
+    },
     removeLitCapacityField(i) {
-      return this.form.litCapacity.splice(i, 1)
+      this.form.litCapacity.splice(i, 1)
     },
     addLitCapacityField() {
-      return this.form.litCapacity.push({
+      this.form.litCapacity.push({
         year: this.currentYear,
         cap: 0
       })
@@ -433,16 +453,14 @@ export default {
       }
     },
     handleFileConverted(fc) {
-      return this.$emit('handle-file-converted', fc)
+      this.$emit('handle-file-converted', fc)
     },
     handleOwnersSelectChange(data) {
       this.form.owners = data
       this.setOwnersEmptyState()
     },
     setOwnersEmptyState() {
-      if (this.form.owners.length <= 0) {
-        this.isOwnersSelectEmpty = true
-      }
+      this.isOwnersSelectEmpty = this.form.owners.length <= 0
     },
     sendData() {
       this.setOwnersEmptyState()
@@ -451,7 +469,7 @@ export default {
       )
     },
     async loadFacsSearch(s) {
-      if (s === '') return
+      if (s.length <= 0) return
       this.isLoadingFacs = true
       const res = await searchFacilities({
         user_id: await this.$auth.getUserID(),
@@ -468,7 +486,7 @@ export default {
       this.isLoadingFacs = false
     },
     async loadOrgsSearch(s) {
-      if (s === '') return
+      if (s.length <= 0) return
       this.isLoadingOrgs = true
       const res = await searchOrganization({
         user_id: await this.$auth.getUserID(),

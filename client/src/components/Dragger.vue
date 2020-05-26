@@ -47,11 +47,10 @@ import {
   kmzLinesToJSON,
   uploadKmz
 } from '../services/api/uploads'
-import LoadingBar from './LoadingBar'
 
 export default {
   components: {
-    LoadingBar
+    LoadingBar: () => import('./LoadingBar')
   },
   data: () => ({
     file: [],
@@ -114,17 +113,25 @@ export default {
         this.loadingText =
           'We are converting your file from kmz to geojson format'
         const fCollection =
-          this.creationType === 'cables'
+          this.creationType == 'cables'
             ? await kmzLinesToJSON({ link: res.data.r[0], user_id })
             : await kmzPointsToJSON({ link: res.data.r[0], user_id })
 
-        if (fCollection && fCollection.data.r) {
+        if (
+          fCollection &&
+          fCollection.data.r &&
+          fCollection.data.r.length > 0
+        ) {
           this.$emit('handle-file-converted', fCollection.data.r)
           this.showAlert = true
         } else {
           this.loadingText = 'The conversion has failed! ... Please try again'
+          this.$emit('dragger-geojson-upload-failed')
         }
         this.isConvertingKMZ = false
+      } else {
+        this.$emit('dragger-geojson-upload-failed')
+        this.$emit('dragger-geojson-upload-failed')
       }
       this.isUploadingKMZ = false
       this.loadingText = ''

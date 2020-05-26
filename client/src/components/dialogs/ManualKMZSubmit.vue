@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     :visible.sync="isVisible"
-    width="74vw"
+    :width="dialogWidth"
     top="12vh"
     :before-close="closeDialog"
     :custom-class="customDialogClass"
@@ -18,33 +18,17 @@
         care of it or contact you with any questions.
       </p>
     </header>
-    <el-form class="pr2 pl2" v-loading="loading">
-      <el-row :gutter="15">
-        <el-col
-          v-for="(field, i) of formFields"
-          :key="i"
-          :md="24"
-          :lg="12"
-          :xl="12"
-        >
-          <el-form-item class="capitalize" :label="field.label + ':'">
-            <div class="inline text-left">
-              <template v-if="typeof field.value != 'string'">
-                <el-tag
-                  v-for="(value, indx) in field.value"
-                  :closable="false"
-                  :key="indx"
-                  class="m0 mt1 mr1"
-                >
-                  {{ value.name ? value.name : value }}
-                </el-tag>
-              </template>
-              <div class="inline text-left" v-else>
-                {{ field.value }}
-              </div>
-            </div>
-          </el-form-item>
-        </el-col>
+    <cables-form
+      :mode="'edit'"
+      :form="formData"
+      :show-title="false"
+      :is-manual-kmz-upload="true"
+      :is-sending-data="isSendingData"
+      @send-data="submitForm"
+    />
+
+    <el-form class="pb6 pt6 pr8 pl8 mt-12">
+      <el-row :gutter="20">
         <el-col :span="24">
           <el-form-item label="File">
             <dragger class="mt12" :is-raw-file="true" @raw-file="setFile" />
@@ -95,11 +79,14 @@
 
 <script>
 import { editElemnt } from '../../services/api/uploads'
-import VueRecaptcha from 'vue-recaptcha'
 import siteKey from '../../config/siteKey'
+import CablesForm from '../../components/userCreationForms/cables'
+import VueRecaptcha from 'vue-recaptcha'
+import { getUserData } from '../../services/api/auth'
 
 export default {
   components: {
+    CablesForm,
     VueRecaptcha,
     Dragger: () => import('../../components/Dragger')
   },
@@ -110,7 +97,7 @@ export default {
     },
     formData: {
       type: Object,
-      default: () => {}
+      required: true
     }
   },
   data: () => ({
@@ -124,6 +111,9 @@ export default {
     }
   }),
   computed: {
+    dialogWidth() {
+      return window.innerWidth < 890 ? '74vw' : '54vw'
+    },
     dark() {
       return this.$store.state.isDark
     },
@@ -157,25 +147,70 @@ export default {
       if (!v) return
       else this.catchaVerified = true
     },
+    async constructInformationString(data) {
+      const keys = Object.keys(data)
+      const formData = { ...data }
+      let final_string = ''
+      let values = ''
+      let user = {}
+      let str = ''
+
+      {
+        let { user_metadata, ...userData } = (await getUserData(
+          await this.$auth.getUserID()
+        )) || {
+          user_metadata: { lastname: '', email: '', name: '' },
+          userData: { name: '', email: '' }
+        }
+
+        user = {
+          name:
+            user_metadata && user_metadata.name
+              ? user_metadata.name
+              : userData.name,
+          email:
+            user_metadata && user_metadata.email
+              ? user_metadata.email
+              : userData.email,
+          lastname:
+            user_metadata && user_metadata.lastname
+              ? user_metadata.lastname
+              : name.split(' ')[1]
+              ? name.split(' ')[1]
+              : ''
+        }
+        str = `The user: ${user.name} ${user.lastname} (${user.email}) couln't upload the following kmz \n`
+      }
+
+      for (let key of keys) {
+        if (key == 'file') continue
+        values =
+          values +
+          ` ${key}: ${
+            !Array.isArray(formData[key])
+              ? formData[key]
+              : formData[key]
+                  .map(item => (typeof item == 'string' ? item : item.name))
+                  .join()
+          } \n`
+      }
+      final_string = str + values
+      return final_string
+    },
     async submitForm() {
       this.isSendingData = true
-      const res = await editElemnt({
+      const information = await this.constructInformationString(this.formData)
+      console.log(this.form.file, information)
+      const { t } = (await editElemnt({
         user_id: await this.$auth.getUserID(),
-        ...this.form
-      })
-      if (res && res.t && res.t != 'error') this.closeDialog()
+        file: this.form.file,
+        information
+      })) || { t: 'error' }
+      if (t != 'error') this.closeDialog()
       this.isSendingData = false
     },
     closeDialog() {
       this.$emit('close')
-      // this.$store.commit(`${TOGGLE_ALERT_DIALOG}`, false)
-      // this.form = {
-      //   email: '',
-      //   phone: {
-      //     num: '',
-      //     valid: null
-      //   }
-      // }
     }
   }
 }

@@ -19,6 +19,7 @@
         @set-selection-onto-map="handleSetSelectionOntoMap"
         @cancel-geom-loading="toggleMapFormLoading(false)"
         @loading-selection-geom="toggleMapFormLoading(true)"
+        @dragger-geojson-upload-failed="handleFileConvertionFailed"
       />
     </div>
     <div class="right w-fit-full">
@@ -277,6 +278,9 @@ export default {
     }
   },
   methods: {
+    handleFileConvertionFailed() {
+      this.isManualUploadDialog = true
+    },
     toggleMapFormLoading(bool) {
       return this.$store.dispatch('editor/toggleMapFormLoading', bool)
     },
