@@ -180,36 +180,45 @@ export default {
               ? name.split(' ')[1]
               : ''
         }
-        str = `The user: ${user.name} ${user.lastname} (${user.email}) couln't upload the following kmz \n`
+        str = `The user: ${user.name} ${user.lastname} (${user.email}) couln't upload their kmz`
       }
 
       for (let key of keys) {
         if (key == 'file') continue
         values =
           values +
-          ` ${key}: ${
+          `
+            <div>
+              <p style="font-size: 14px; margin: .8rem 0;">
+                ${key}: ${
             !Array.isArray(formData[key])
               ? formData[key]
               : formData[key]
-                  .map(item => (typeof item == 'string' ? item : item.name))
+                  .map(function formatItem(item) {
+                    if (typeof item == 'string') return item
+                    else if (item.name) return item.name
+                    else return JSON.stringify(item)
+                  })
                   .join()
-          } \n`
+          }
+              </p>
+            </div>
+          `
       }
       final_string = str + values
       return final_string
     },
     async submitForm() {
       this.isSendingData = true
-      const information = await this.constructInformationString(this.formData)
-
-      console.log(this.form.file, information)
 
       const { t } = (await editElemnt({
+        information: await this.constructInformationString(this.formData),
         t: getSelectionTypeNumber(this.$route.query.id),
         user_id: await this.$auth.getUserID(),
-        file: this.form.file,
-        information
+        element: this.formData._id,
+        file: this.form.file
       })) || { t: 'error' }
+
       if (t != 'error') this.closeDialog()
       this.isSendingData = false
     },
