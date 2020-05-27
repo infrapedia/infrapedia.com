@@ -67,7 +67,7 @@
     <manual-kmz-submit-dialog
       :form-data="manualSubmitFormData"
       :is-visible="isManualUploadDialog"
-      @close="() => (isManualUploadDialog = false)"
+      @close="closeMannualKmzSubmitDialog"
     />
   </div>
 </template>
@@ -105,6 +105,7 @@ import {
 } from '../../../services/api/facs'
 import { viewIXPOwner, editIXP, createIXP } from '../../../services/api/ixps'
 import ManualKMZSubmitDialog from '../../../components/dialogs/ManualKMZSubmit'
+import debounce from '../../../helpers/debounce'
 
 export default {
   name: 'CreateSection',
@@ -278,9 +279,16 @@ export default {
     }
   },
   methods: {
-    handleFileConvertionFailed() {
+    closeMannualKmzSubmitDialog: debounce(function() {
+      this.isManualUploadDialog = false
+      this.$router.replace(`${this.$route.path}?id=${this.$route.query.id}`)
+    }, 320),
+    handleFileConvertionFailed: debounce(function() {
       this.isManualUploadDialog = true
-    },
+      this.$router.replace(
+        `${this.$route.path}?id=${this.$route.query.id}&failedToUploadKMz=true`
+      )
+    }, 320),
     toggleMapFormLoading(bool) {
       return this.$store.dispatch('editor/toggleMapFormLoading', bool)
     },
@@ -620,6 +628,14 @@ export default {
       this.form.owners = ownersData
       this.form.ownersList = ownersData
       this.form.activationDateTime = new Date(this.form.activationDateTime)
+
+      if (
+        data.category == 'null' ||
+        data.category == 'undefined' ||
+        data.category.length <= 0
+      ) {
+        this.form.category = 'unknown'
+      }
     },
     async viewCurrentFacility(_id) {
       const res = await viewFacilityOwner({

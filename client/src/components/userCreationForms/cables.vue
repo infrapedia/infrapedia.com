@@ -317,11 +317,11 @@ export default {
           },
           {
             type: 'string',
-            trigger: 'change',
+            trigger: ['change', 'blur'],
             message: 'Please input a valid name',
             transform: value => value.trim(),
             // eslint-disable-next-line
-            pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.´ \-]+$/
+            pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.0-9()´ \-]+$/
           },
           { min: 3, message: 'Length should be at least 3', trigger: 'change' }
         ],
@@ -400,7 +400,7 @@ export default {
       if (
         this.mode != 'create' &&
         this.creationID == 'subsea' &&
-        !this.isManualKmzUpload
+        !this.$route.query.failedToUploadKMz
       ) {
         await this.getClsListConnectedToCable()
       }
