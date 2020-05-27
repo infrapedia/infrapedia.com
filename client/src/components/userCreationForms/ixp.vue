@@ -227,7 +227,9 @@ export default {
         tags: [],
         owners: [
           {
-            message: 'At least one owner is required'
+            type: 'array',
+            message: 'At least one owner is required',
+            trigger: ['blur', 'change']
           }
         ]
       }

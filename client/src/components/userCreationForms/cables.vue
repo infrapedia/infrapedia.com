@@ -336,8 +336,6 @@ export default {
         urls: [],
         tags: [],
         cls: [],
-        // TODO: Change to this configuration
-        // on all the other places where owners is required as well
         owners: [
           {
             type: 'array',
