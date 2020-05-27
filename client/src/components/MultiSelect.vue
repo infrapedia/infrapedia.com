@@ -169,7 +169,15 @@ export default {
     },
     handleInputConfirm() {
       const inputValue = this.selected
-      const selectedIDs = this.selections.map(opt => opt._id)
+      let selectedIDs = []
+
+      {
+        if (!this.isMultiple) {
+          selectedIDs = this.selections.map(opt => opt._id)
+        } else {
+          selectedIDs = [this.selections._id]
+        }
+      }
 
       if (inputValue) {
         const isTagRepeated = selectedIDs.includes(inputValue._id)
