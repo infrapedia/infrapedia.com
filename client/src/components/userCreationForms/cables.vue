@@ -224,7 +224,7 @@
           />
         </el-select>
       </el-form-item>
-      <template>
+      <template v-if="!isManualKmzUpload">
         <el-form-item>
           <dragger
             @handle-file-converted="handleFileConverted"
