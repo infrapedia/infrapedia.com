@@ -19,6 +19,7 @@ export const createCable = async ({
   category,
   user_id,
   geom,
+  cls,
   litCapacity,
   tags,
   cc
@@ -55,6 +56,12 @@ export const createCable = async ({
         form.append(`owners[${i}]`, c._id ? c._id : c)
       })
     } else form.append('owners', [])
+
+    if (cls.length) {
+      cls.forEach((c, i) => {
+        form.append(`cls[${i}]`, c._id ? c._id : c)
+      })
+    } else form.append('cls', [])
 
     if (urls.length) {
       urls.forEach((url, i) => {
@@ -104,6 +111,7 @@ export const editCable = async ({
   geom,
   tags,
   cc,
+  cls,
   litCapacity
 }) => {
   url = `${apiConfig.url}/auth/cables/edit`
@@ -139,6 +147,12 @@ export const editCable = async ({
         form.append(`owners[${i}]`, c._id ? c._id : c)
       })
     } else form.append('owners', [])
+
+    if (cls.length) {
+      cls.forEach((c, i) => {
+        form.append(`cls[${i}]`, c._id ? c._id : c)
+      })
+    } else form.append('cls', [])
 
     if (urls.length) {
       urls.forEach((url, i) => {

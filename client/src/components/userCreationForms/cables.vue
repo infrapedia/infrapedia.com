@@ -174,6 +174,24 @@
           :value="mode == 'create' ? [] : form.facilities"
         />
       </el-form-item>
+      <el-form-item
+        v-if="creationID == 'subsea'"
+        label="CLS"
+        prop="cls"
+        required
+      >
+        <v-multi-select
+          :mode="mode"
+          :is-required="true"
+          :is-field-empty="isCLSSelectEmpty"
+          :options="clsList"
+          @input="loadCLSSearch"
+          :loading="isLoadingCLS"
+          @values-change="handleCLSSelectionChange"
+          @remove="handleCLSSelectionChange(form.cls)"
+          :value="mode == 'create' ? [] : form.cls"
+        />
+      </el-form-item>
       <el-form-item label="Owners" prop="owners" required>
         <v-multi-select
           :mode="mode"
@@ -206,17 +224,7 @@
           />
         </el-select>
       </el-form-item>
-      <template v-if="!isManualKmzUpload">
-        <el-form-item label="CLS" prop="cls" v-if="mode !== 'create'">
-          <el-button
-            class="inline-block w-fit-full"
-            type="info"
-            :plain="clsSelectedList.length ? false : true"
-            @click="() => (isClsSelectionDialogVisible = true)"
-          >
-            {{ clsSelectedList.length ? 'Edit selected' : 'Select' }} CLS
-          </el-button>
-        </el-form-item>
+      <template>
         <el-form-item>
           <dragger
             @handle-file-converted="handleFileConverted"
@@ -237,13 +245,6 @@
         </el-form-item>
       </template>
     </el-form>
-
-    <select-cls-dialog
-      :is-visible="isClsSelectionDialogVisible"
-      :selected-data="clsSelectedList"
-      @close="() => (isClsSelectionDialogVisible = false)"
-      @selection-change="handleCLSSelectionChange"
-    />
   </div>
 </template>
 
@@ -255,31 +256,33 @@ import validateUrl from '../../helpers/validateUrl'
 import { searchFacilities } from '../../services/api/facs'
 import { searchOrganization } from '../../services/api/organizations'
 import VMultiSelect from '../../components/MultiSelect'
-import SelectClsDialog from '../../components/dialogs/SelectCls'
-import { clsListConnectedToCable } from '../../services/api/cls'
+import { clsListConnectedToCable, searchCls } from '../../services/api/cls'
+import { fCollectionFormat } from '../../helpers/featureCollection'
+import * as events from '../../events/mapForm'
+import { getClsGeoms } from '../../services/api/cls'
 
 export default {
   name: 'CableForm',
   components: {
     Dragger,
-    VMultiSelect,
-    SelectClsDialog
+    VMultiSelect
   },
   data: () => ({
-    clsSelectedList: [],
     tag: '',
     isOwnersSelectEmpty: false,
+    isCLSSelectEmpty: false,
     currentYear: new Date(),
     cableStates,
     facsList: [],
     tagsList: [],
     orgsList: [],
+    clsList: [],
     isURLValid: null,
+    isLoadingCLS: false,
     inputVisible: false,
     isLoadingFacs: false,
     isLoadingOrgs: false,
     warnTagDuplicate: false,
-    isClsSelectionDialogVisible: false,
     litCapacityFields: []
   }),
   props: {
@@ -334,11 +337,19 @@ export default {
         ],
         urls: [],
         tags: [],
-        cls: [],
         owners: [
           {
             type: 'array',
+            required: true,
             message: 'At least one owner is required',
+            trigger: ['blur', 'change']
+          }
+        ],
+        cls: [
+          {
+            type: 'array',
+            required: this.creationID == 'subsea',
+            message: 'At least one cls is required',
             trigger: ['blur', 'change']
           }
         ],
@@ -348,6 +359,9 @@ export default {
         tbpsCapacity: [],
         systemLength: []
       }
+    },
+    getSelectionID() {
+      return t => this.form[t].map(t => (typeof t == 'string' ? t : t._id))
     },
     creationID() {
       return this.$route.query.id
@@ -420,6 +434,24 @@ export default {
     }
   },
   methods: {
+    async handleSetFeatureOntoMap({ selections, removeLoadState }) {
+      const fc = await this.handleGetClsGeom(selections)
+
+      return fc
+        ? this.$emit(`${events.SET_SELECTION_ONTO_MAP}`, {
+            t: 'cls',
+            fc,
+            removeLoadState
+          })
+        : this.$store.dispatch('editor/toggleMapFormLoading', false)
+    },
+    async handleGetClsGeom(ids) {
+      const res = await getClsGeoms({
+        user_id: await this.$auth.getUserID(),
+        ids
+      })
+      return res && res.data && res.data.r ? res.data.r : fCollectionFormat()
+    },
     handleConvertionFailed() {
       this.$emit('dragger-geojson-upload-failed')
     },
@@ -433,7 +465,11 @@ export default {
       })
     },
     handleCLSSelectionChange(data) {
-      this.clsSelectedList = data
+      this.form.cls = data
+      this.handleSetFeatureOntoMap({
+        selections: this.getSelectionID('cls'),
+        removeLoadState: true
+      })
     },
     async getClsListConnectedToCable() {
       const res = await clsListConnectedToCable({
@@ -493,6 +529,23 @@ export default {
       if (res && res.data) {
         this.orgsList = res.data.reduce(
           (acc = Array.from(this.orgsList), item) => {
+            return acc.map(i => i._id).includes(item._id) ? acc : [...acc, item]
+          },
+          []
+        )
+      }
+      this.isLoadingOrgs = false
+    },
+    async loadCLSSearch(s) {
+      if (s.length <= 0) return
+      this.isLoadingOrgs = true
+      const res = await searchCls({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
+      if (res && res.data) {
+        this.clsList = res.data.reduce(
+          (acc = Array.from(this.clsList), item) => {
             return acc.map(i => i._id).includes(item._id) ? acc : [...acc, item]
           },
           []
