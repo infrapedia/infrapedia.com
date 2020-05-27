@@ -83,6 +83,7 @@ import siteKey from '../../config/siteKey'
 import CablesForm from '../../components/userCreationForms/cables'
 import VueRecaptcha from 'vue-recaptcha'
 import { getUserData } from '../../services/api/auth'
+import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
 
 export default {
   components: {
@@ -200,8 +201,11 @@ export default {
     async submitForm() {
       this.isSendingData = true
       const information = await this.constructInformationString(this.formData)
+
       console.log(this.form.file, information)
+
       const { t } = (await editElemnt({
+        t: getSelectionTypeNumber(this.$route.query.id),
         user_id: await this.$auth.getUserID(),
         file: this.form.file,
         information

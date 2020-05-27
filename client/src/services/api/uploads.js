@@ -61,10 +61,11 @@ export const kmzPointsToJSON = async ({ link, user_id }) => {
   return res
 }
 
-export const editElemnt = async ({ file, information, user_id }) => {
+export const editElemnt = async ({ t, file, information, user_id }) => {
   url = `${apiConfig.url}/auth/elements/foredit`
   form = new FormData()
 
+  form.append('t', t)
   form.append('file', file)
   form.append('information', information)
 
