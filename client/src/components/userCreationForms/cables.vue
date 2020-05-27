@@ -182,7 +182,6 @@
           :options="orgsList"
           @input="loadOrgsSearch"
           :loading="isLoadingOrgs"
-          :is-multiple="isCableTypeTerrestrial"
           @values-change="handleOwnersSelectChange"
           :value="mode == 'create' ? [] : form.owners"
         />
@@ -354,12 +353,9 @@ export default {
       return this.$route.query.id
     },
     facilitiesLabel() {
-      return this.creationID === 'subsea'
+      return this.creationID == 'subsea'
         ? 'Facilities (POPs)'
         : 'Facilities (On-net & Off-Net)'
-    },
-    isCableTypeTerrestrial() {
-      return this.creationID == 'subsea'
     },
     title() {
       let t = `${
@@ -401,7 +397,11 @@ export default {
     }
 
     setTimeout(async () => {
-      if (this.mode != 'create' && this.creationID == 'subsea') {
+      if (
+        this.mode != 'create' &&
+        this.creationID == 'subsea' &&
+        !this.isManualKmzUpload
+      ) {
         await this.getClsListConnectedToCable()
       }
     }, 320)
