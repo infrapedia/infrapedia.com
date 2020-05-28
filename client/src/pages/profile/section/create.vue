@@ -85,7 +85,6 @@ import {
   createCable,
   editCable,
   viewCableOwner
-  // viewCableBBoxHMR
 } from '../../../services/api/cables'
 import {
   EDITOR_LOAD_DRAW,
@@ -507,18 +506,15 @@ export default {
       let coordinates = []
       let features = []
 
-      // If if any type of cable I need to get cable bounds
-      // From a hot service
+      // If is any type of cable I only need the coordinates
+      // For the ZoomInto
       {
         if (
           (this.creationType == 'subsea' ||
             this.creationType == 'terrestrial-network') &&
           data.geom.features.length > 0
         ) {
-          const bbox = async () => await import('@turf/bbox')
-          const coords = data.geom.features.map(ft => ft.geometry.coordinates)
-          const bounds = bbox(coords)
-          coordinates = bounds
+          coordinates = data.geom.features.map(ft => ft.geometry.coordinates)
         }
       }
 
