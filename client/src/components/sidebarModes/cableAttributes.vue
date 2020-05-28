@@ -300,11 +300,7 @@ export default {
         .filter(col => col)
 
       if (this.info.category == 'project') {
-<<<<<<< HEAD
-        cols = cols.filter(col => col.label != 'EOL (End of Life)')
-=======
         cols = cols.filter(col => col.label != 'EOL')
->>>>>>> develop
       }
       return cols
     },
