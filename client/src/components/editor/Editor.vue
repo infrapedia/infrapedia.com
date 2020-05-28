@@ -31,7 +31,6 @@ import {
 } from '../../events/editor'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { editorMapConfig } from '../../config/editorMapConfig'
-import getBoundsCoords from '../../helpers/getBoundsCoords'
 
 export default {
   components: {
@@ -149,24 +148,11 @@ export default {
     },
     async handleZoomToFeature(fc) {
       if (fc.features.length <= 0) return
-      let coords = []
-
-      // Need to differentiate between points features
-      // And Lines,Polygons for getting the right bbox coords
-      {
-        let fCollection = Array.from(fc.features)
-        const isPoint = this.type == 'cls' || this.type == 'facilities'
-        if (isPoint) {
-          coords = fCollection[0].geometry.coordinates
-        } else {
-          coords = fCollection.flatMap(ft => ft.geometry.coordinates)
-        }
-      }
-
-      const bbox = getBoundsCoords(coords)
+      const bbox = require('@turf/bbox').default
+      const bounds = bbox(fc)
       const zoomLevel = this.type == 'facilities' ? 16.8 : 4
 
-      await this.map.fitBounds(bbox, {
+      await this.map.fitBounds(bounds, {
         zoom: zoomLevel,
         animate: true,
         speed: 1.75,
