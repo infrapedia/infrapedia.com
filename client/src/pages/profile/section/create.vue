@@ -503,20 +503,7 @@ export default {
           break
       }
 
-      let coordinates = []
       let features = []
-
-      // If is any type of cable I only need the coordinates
-      // For the ZoomInto
-      {
-        if (
-          (this.creationType == 'subsea' ||
-            this.creationType == 'terrestrial-network') &&
-          data.geom.features.length > 0
-        ) {
-          coordinates = data.geom.features.map(ft => ft.geometry.coordinates)
-        }
-      }
 
       // I need to set the proper structure for setting the features list
       // when it's a point feature
@@ -535,15 +522,12 @@ export default {
                   }
                 }
               ]
-            : data.geom.features
+            : [...data.geom.features]
       }
 
       await this.$store.dispatch('editor/setList', features)
       this.form.geom = this.$store.state.editor.scene.features.list
-      await bus.$emit(
-        `${EDITOR_LOAD_DRAW}`,
-        coordinates.length > 0 ? [{ geometry: { coordinates } }] : false
-      )
+      await bus.$emit(`${EDITOR_LOAD_DRAW}`, features)
     },
     handleCLSEditMode(data) {
       if (this.form.state == 'null' || this.form.state == 'undefined') {

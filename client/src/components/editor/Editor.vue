@@ -150,17 +150,22 @@ export default {
       if (fc.features.length <= 0) return
       const bbox = require('@turf/bbox').default
       const bounds = bbox(fc)
-      const zoomLevel = this.type == 'facilities' ? 16.8 : 4
-
-      await this.map.fitBounds(bounds, {
-        zoom: zoomLevel,
+      const boundsConfig = {
         animate: true,
         speed: 1.75,
         padding: 90,
         pan: {
           duration: 25
         }
-      })
+      }
+      const zoomLevels = {
+        facilities: 16.8,
+        ixps: 12.8,
+        cls: 14.52
+      }
+
+      zoomLevels[this.type] ? (boundsConfig.zoom = zoomLevels[this.type]) : null
+      await this.map.fitBounds(bounds, boundsConfig)
     },
     handleDialogData(data) {
       this.dialog.visible = false
@@ -255,7 +260,6 @@ export default {
           this.setFeaturesID(featuresCollection, featuresID)
         )
       }
-
       if (zoomTo) {
         return await this.handleZoomToFeature(
           feats ? fCollectionFormat(feats) : featuresCollection
