@@ -5,7 +5,12 @@
     </header>
     <el-form ref="form" :model="form" :rules="formRules">
       <el-form-item label="Name" prop="name" required>
-        <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
+        <el-input
+          :autofocus="isManualKmzUpload"
+          :class="{ dark }"
+          class="w-fit-full"
+          v-model="form.name"
+        />
       </el-form-item>
       <el-form-item label="Status" prop="category" required>
         <el-select
