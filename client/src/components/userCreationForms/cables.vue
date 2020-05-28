@@ -429,6 +429,14 @@ export default {
       this.orgsList = [...owners]
       delete this.form.ownersList
     },
+    'form.clsList'(cls) {
+      this.clsList = [...cls]
+      this.handleSetFeatureOntoMap({
+        selections: cls.map(cls => cls._id),
+        removeLoadState: true
+      })
+      delete this.form.clsList
+    },
     'form.tags'(tag) {
       this.getTagsList(tag)
     }
