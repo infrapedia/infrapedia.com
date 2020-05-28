@@ -131,6 +131,9 @@
               >
                 <p class="text-bold">{{ info[col.value] }} km</p>
               </el-col>
+              <el-col :span="12" v-else-if="col.value == 'capacityTBPS'">
+                <p class="text-bold">{{ info[col.value] }} tbps</p>
+              </el-col>
               <el-col
                 :span="12"
                 v-else-if="
