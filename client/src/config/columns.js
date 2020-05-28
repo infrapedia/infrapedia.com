@@ -53,6 +53,11 @@ export const cablesColumns = [
     showTable: true
   },
   {
+    label: 'RFS Quarter',
+    value: 'RFS',
+    showSidebar: true
+  },
+  {
     label: 'EOL',
     value: 'activationDateTime',
     showSidebar: true

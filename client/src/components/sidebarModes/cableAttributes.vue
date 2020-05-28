@@ -25,18 +25,15 @@
             v-if="info[col.value] && col.showSidebar && !info.terrestrial"
           >
             <el-col :span="24">
-              <el-collapse v-model="collapse">
-                <el-collapse-item :title="col.label" :name="i">
-                  <el-table :data="info[col.value]">
-                    <el-table-column
-                      label="Year"
-                      prop="year"
-                      :formatter="getYear"
-                    />
-                    <el-table-column label="Capacity in Tbps" prop="cap" />
-                  </el-table>
-                </el-collapse-item>
-              </el-collapse>
+              <p class="label capitalize">{{ col.label }}</p>
+              <el-table :data="info[col.value]">
+                <el-table-column
+                  label="Year"
+                  prop="year"
+                  :formatter="getYear"
+                />
+                <el-table-column label="Capacity in Tbps" prop="cap" />
+              </el-table>
             </el-col>
           </el-row>
         </template>
