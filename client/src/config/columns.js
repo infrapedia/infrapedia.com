@@ -47,23 +47,28 @@ export const cablesColumns = [
     showSidebar: true
   },
   {
-    label: 'RFS (Ready for Service)',
+    label: 'RFS',
     value: 'activationDateTime',
-    showSidebar: true,
     showTable: true
   },
   {
-    label: 'EOL (End of Life)',
+    label: 'RFS',
+    value: 'RFS',
+    showSidebar: true
+  },
+  {
+    label: 'EOL',
     value: 'activationDateTime',
     showSidebar: true
   },
   // 'terrestrial', // (Bool)
   {
-    label: 'Design Capacity (Maximum Tbps of the system)',
-    value: 'capacityTBPS'
+    label: 'Design Capacity',
+    value: 'capacityTBPS',
+    showSidebar: true
   },
   {
-    label: 'FiberPairs',
+    label: 'Fiber Pairs',
     value: 'fiberPairs',
     showSidebar: true
   },
@@ -72,7 +77,7 @@ export const cablesColumns = [
     value: 'litCapacity',
     showSidebar: true
   },
-  { label: 'Notes', value: 'notes' },
+  { label: 'Notes', value: 'notes', showSidebar: true },
   { label: 'Cls', value: 'cls', showSidebar: true },
   {
     label: 'Facilities',

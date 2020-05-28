@@ -45,9 +45,14 @@
           connect and request information and quotes from providers all over the
           world easily.
         </p>
-        <router-link class="el-button el-button--default" to="/contact">
-          Contact us
-        </router-link>
+        <div
+          id="contactUsButtonUnderHeading"
+          class="text-center flex w-fit-full justify-content-center mt12"
+        >
+          <router-link class="el-button el-button--default" to="/contact">
+            Contact Us
+          </router-link>
+        </div>
         <div class="centered-wrapper relative w-fit-full mt24">
           <div class="flex row nowrap with-icon justify-self-center">
             <div
@@ -71,9 +76,9 @@
       </div>
       <router-link
         to="/services"
-        class="text-center w-fit-full inline-block mt12"
+        class="text-center w-fit-full inline-block mt12 underline-hover"
       >
-        Learn more
+        Our Services
         <span class="fs-xsmall font-thin ml1">
           <fa :icon="['fas', 'angle-double-right']" />
         </span>
@@ -86,8 +91,7 @@
           <h3 class="title">Blog</h3>
           <el-carousel
             :interval="7000"
-            height="40vh"
-            type="card"
+            :height="blogHeight"
             indicator-position="outside"
           >
             <el-carousel-item v-for="(post, i) in blogPosts" :key="i">
@@ -117,7 +121,6 @@
           <el-carousel
             :interval="6000"
             height="40vh"
-            type="card"
             indicator-position="outside"
           >
             <el-carousel-item v-for="(img, i) in premium" :key="i">
@@ -197,6 +200,9 @@ export default {
   computed: {
     premium() {
       return this.$store.state.premium
+    },
+    blogHeight() {
+      return window.innerWidth <= 425 ? '40vh' : '28vh'
     }
   },
   async mounted() {

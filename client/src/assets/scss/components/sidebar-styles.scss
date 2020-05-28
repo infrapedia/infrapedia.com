@@ -45,12 +45,13 @@
     #verified-i {
       font-size: 16px;
       position: absolute;
-      top: 3rem;
-      right: 4rem;
+      top: -1.5rem;
+      right: -2rem;
       left: unset;
       color: rgb(112, 112, 112);
       &.is-verified {
         color: $white-full;
+        right: -3rem;
       }
     }
   }

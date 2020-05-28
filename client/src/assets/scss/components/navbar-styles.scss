@@ -25,6 +25,15 @@ $header-color: rgb(37, 95, 185);
     height: 34px;
     width: 120px;
   }
+  .sphere-logo {
+    display: none;
+    @media screen and (max-width: 1180px) {
+      display: block;
+    }
+    @media screen and (max-width: 890px) {
+      display: none;
+    }
+  }
 
   li {
     height: 99%;

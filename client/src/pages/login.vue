@@ -48,12 +48,12 @@ export default {
               })
           } else {
             deleteCookie('auth0.is.authenticated')
-            this.$notify({
-              title: 'Something wrong happened...',
-              message:
-                'There has been an error while trying to validate your current session... We will try to set you online again.',
-              type: 'info'
-            })
+            // this.$notify({
+            //   title: 'Something wrong happened...',
+            //   message:
+            //     'There has been an error while trying to validate your current session... We will try to set you online again.',
+            //   type: 'info'
+            // })
             this.$auth.loginWithRedirect()
           }
         }, 3200)

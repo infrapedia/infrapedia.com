@@ -68,6 +68,7 @@
 import { editElemnt } from '../../services/api/uploads'
 import VueRecaptcha from 'vue-recaptcha'
 import siteKey from '../../config/siteKey'
+import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
 
 export default {
   components: {
@@ -100,6 +101,9 @@ export default {
     dark() {
       return this.$store.state.isDark
     },
+    focus() {
+      return this.$store.state.map.focus
+    },
     isVisible: {
       get() {
         return this.isDialog
@@ -128,11 +132,15 @@ export default {
     },
     async submitForm() {
       this.isSendingData = true
-      const res = await editElemnt({
+
+      const { t } = (await editElemnt({
         user_id: await this.$auth.getUserID(),
-        ...this.form
-      })
-      if (res && res.t && res.t !== 'error') this.closeDialog()
+        ...this.form,
+        element: this.focus.id,
+        t: getSelectionTypeNumber(this.focus.type)
+      })) || { t: 'error' }
+
+      if (t != 'error') this.closeDialog()
       this.isSendingData = false
     },
     closeDialog() {

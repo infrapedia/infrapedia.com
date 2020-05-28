@@ -2,11 +2,7 @@
   <div class="no-overflow">
     <!----------- THE CABLE SELECTED HANDLER COMES FROM --------------->
     <!---------------- THE "dataCollection" MIXIN --------------------->
-    <i-map
-      @drawing="handleIsDrawing"
-      @title-by-selection="title = $event"
-      @cable-selected="handleCableSelected"
-    />
+    <i-map @drawing="handleIsDrawing" @title-by-selection="title = $event" />
     <div
       v-show="isDrawing"
       class="absolute calculation-box truncate w44 h22 p1 text-center"

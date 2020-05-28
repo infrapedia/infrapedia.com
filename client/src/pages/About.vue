@@ -21,7 +21,7 @@
         community's go-to provider for data, maps, and services.
       </p>
 
-      <div>
+      <div class="team-wrapper">
         <h2 class="title">
           Our team
         </h2>
@@ -30,7 +30,7 @@
             <div class="image-wrapper">
               <el-image class="img" lazy :src="p.photo" />
             </div>
-            <div>
+            <div class="text-wrapper">
               <strong class="inline-block mt4">
                 {{ p.name }}
               </strong>

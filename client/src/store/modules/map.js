@@ -45,12 +45,16 @@ const actions = {
     const res = await viewCable(data)
     if (res && res.data.r && res.data.r.length) {
       commit('CURRENT_SELECTION', res.data.r[0])
+    } else {
+      commit('CURRENT_SELECTION', null)
     }
   },
   async getFacilityData({ commit }, data) {
     const res = await viewFacility(data)
     if (res && res.data && res.data.r.length) {
       commit('CURRENT_SELECTION', res.data.r[0])
+    } else {
+      commit('CURRENT_SELECTION', null)
     }
     return res
   },
@@ -58,6 +62,8 @@ const actions = {
     const res = await viewCls(data)
     if (res && res.data && res.data.r.length) {
       commit('CURRENT_SELECTION', res.data.r[0])
+    } else {
+      commit('CURRENT_SELECTION', null)
     }
     return res
   },
@@ -65,6 +71,8 @@ const actions = {
     const res = await viewIxps(data)
     if (res && res.data && res.data.r.length) {
       commit('CURRENT_SELECTION', res.data.r[0])
+    } else {
+      commit('CURRENT_SELECTION', null)
     }
     return res
   }

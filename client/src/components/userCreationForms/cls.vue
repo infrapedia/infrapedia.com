@@ -7,7 +7,23 @@
       <el-form-item label="Name" required prop="name">
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
       </el-form-item>
-      <el-form-item label="Status" prop="state">
+      <el-form-item label="Country" required prop="country">
+        <el-select
+          placeholder="A country is required"
+          class="w-fit-full"
+          :class="{ dark }"
+          filterable
+          v-model="form.country"
+        >
+          <el-option
+            v-for="(country, i) in countries"
+            :key="i"
+            :label="country.name"
+            :value="country.code"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="Status" prop="state" required>
         <el-radio-group :class="{ dark }" v-model="form.state">
           <el-radio label="operational">
             Operational
@@ -36,9 +52,11 @@
           :value="mode == 'create' ? [] : form.cables"
         />
       </el-form-item>
-      <el-form-item label="Owners">
+      <el-form-item label="Owners" prop="owners" required>
         <v-multi-select
           :mode="mode"
+          :is-required="true"
+          :is-field-empty="isOwnersSelectEmpty"
           :options="ownersList"
           @input="loadOwnersSearch"
           :loading="isLoadingOwners"
@@ -95,6 +113,7 @@ import { getTags } from '../../services/api/tags'
 import VMultiSelect from '../../components/MultiSelect'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { searchOrganization } from '../../services/api/organizations'
+import countriesList from '../../config/countriesList'
 
 export default {
   name: 'CLSForm',
@@ -105,19 +124,7 @@ export default {
     cablesList: [],
     loading: false,
     isLoadingCables: false,
-    formRules: {
-      name: [
-        {
-          required: true,
-          message: 'Please input a name',
-          trigger: 'change'
-        },
-        { min: 3, message: 'Length should be at least 3', trigger: 'change' }
-      ],
-      cables: [],
-      slug: [],
-      state: []
-    }
+    isOwnersSelectEmpty: false
   }),
   components: {
     Dragger,
@@ -138,6 +145,69 @@ export default {
     }
   },
   computed: {
+    countries() {
+      const countries = [...countriesList]
+      function once() {
+        // eslint-disable-next-line no-unused-vars
+        let counter = 0
+        return function addNA() {
+          if (counter >= 1) return
+          countries.unshift({ name: 'N.A (Not Available)', code: 'N.A' })
+          counter += 1
+        }
+      }
+      once()()
+      return countries
+    },
+    formRules() {
+      return {
+        name: [
+          {
+            type: 'string',
+            required: true,
+            trigger: 'blur',
+            message: 'Please input a name'
+          },
+          {
+            type: 'string',
+            trigger: 'change',
+            message: 'Please input a valid name',
+            transform: value => value.trim(),
+            // eslint-disable-next-line
+            pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.,0-9()´ \-]+$/
+          },
+          { min: 3, message: 'Length should be at least 3', trigger: 'change' }
+        ],
+        country: [
+          {
+            type: 'string',
+            required: true,
+            trigger: 'blur',
+            message: 'Please select a country'
+          }
+          // {
+          //   required: true,
+          //   type: 'string',
+          //   message:
+          //     'Please input a valid name for the country where the cls is located',
+          //   trigger: 'change',
+          //   transform: value => value.trim(),
+          //   // eslint-disable-next-line
+          //   pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.0-9´ \-]+$/
+          // }
+        ],
+        cables: [],
+        slug: [],
+        state: [],
+        owners: [
+          {
+            type: 'array',
+            message: 'At least one owner is required',
+            trigger: ['blur', 'change']
+          }
+        ]
+      }
+    },
     dark() {
       return this.$store.state.isDark
     },
@@ -179,7 +249,7 @@ export default {
   },
   methods: {
     async loadOwnersSearch(s) {
-      if (s === '') return
+      if (s.length <= 0) return
 
       this.isLoadingOwners = true
       const { data: owners = [] } = (await searchOrganization({
@@ -195,6 +265,7 @@ export default {
     },
     handleOwnersSelectChange(data) {
       this.form.owners = Array.from(data)
+      this.setOwnersEmptyState()
     },
     async handleSubseaCablesSelection(cablesSelected) {
       this.form.cables = cablesSelected
@@ -233,10 +304,18 @@ export default {
     handleFileConverted(fc) {
       return this.$emit('handle-file-converted', fc)
     },
+    setOwnersEmptyState() {
+      if (this.form.owners.length <= 0) {
+        this.isOwnersSelectEmpty = true
+      }
+    },
     sendData() {
-      return this.$refs['form'].validate(isValid =>
-        isValid ? this.$emit('send-data') : false
-      )
+      this.setOwnersEmptyState()
+      return this.$refs['form'].validate(isValid => {
+        return isValid && !this.isOwnersSelectEmpty
+          ? this.$emit('send-data')
+          : false
+      })
     }
   }
 }

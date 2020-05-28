@@ -25,8 +25,8 @@
         >
           <el-row :gutter="20">
             <el-col :sm="24" :lg="12">
-              <el-form-item label="Name" prop="first_name" required>
-                <el-input v-model="form.first_name" />
+              <el-form-item label="First Name" prop="first_name" required>
+                <el-input v-model="form.first_name" autofocus />
               </el-form-item>
             </el-col>
             <el-col :sm="24" :lg="12">
@@ -35,8 +35,8 @@
               </el-form-item>
             </el-col>
             <el-col :sm="24" :lg="12">
-              <el-form-item label="Company" prop="company" required>
-                <el-input v-model="form.company" />
+              <el-form-item label="Company" prop="company">
+                <el-input v-model="form.company" placeholder="optional" />
               </el-form-item>
             </el-col>
             <el-col :sm="24" :lg="12">
@@ -45,7 +45,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="24">
-              <el-form-item label="Message" prop="message">
+              <el-form-item label="Message" prop="message" required>
                 <el-input type="textarea" :rows="4" v-model="form.message" />
               </el-form-item>
             </el-col>
@@ -152,7 +152,18 @@ export default {
             trigger: ['blur', 'change']
           }
         ],
-        message: [],
+        message: [
+          {
+            required: true,
+            message: 'A message is required',
+            trigger: ['change', 'blur']
+          },
+          {
+            min: 15,
+            message: 'Length should be at least 15',
+            trigger: 'blur'
+          }
+        ],
         company: []
       }
     }

@@ -33,27 +33,26 @@
             placement="bottom"
           >
             <h1
-              class="inline-block cursor-pointer title font-bold m0 p1 round dont-break-out fs-large underline"
+              class="inline-block cursor-pointer relative title font-bold m0 p1 round dont-break-out fs-large underline"
               @click.stop="copyToClip"
             >
               {{ currentSelection.name }}
+              <el-button
+                v-if="focus.type.toLowerCase() !== 'owners'"
+                type="text"
+                id="verified-i"
+                @click.stop="handleVerification"
+                class="transparent inline-block cursor-pointer"
+                :class="{ 'is-verified': isVerified }"
+                :title="isVerified ? 'Owner verified' : 'Owner unverified'"
+              >
+                <certificated-icon v-if="isVerified" />
+                <span v-else>
+                  <fa :icon="['fas', 'check-double']" />
+                </span>
+              </el-button>
             </h1>
           </el-tooltip>
-          <span
-            :class="{
-              'is-verified': !prohibitedIDs.includes(currentSelection.uuid)
-            }"
-            id="verified-i"
-            class="ml2 p1 mt-2 inline-block cursor-pointer"
-            :title="
-              !prohibitedIDs.includes(currentSelection.uuid)
-                ? 'Owner verified'
-                : 'Owner unverified'
-            "
-            @click.stop="handleVerification"
-          >
-            <fa :icon="['fas', 'check-double']" />
-          </span>
           <p class="text-bold">{{ currentSelection.segment_name }}</p>
         </header>
         <!---------------------- SIDEBAR MODES ----------------------->
@@ -97,6 +96,7 @@ import { queryCookieName } from '../config/sharedViewCookieName'
 export default {
   name: 'ISidebar',
   components: {
+    CertificatedIcon: () => import('./CertificatedIcon'),
     'i-data-center': () => import('./sidebarModes/dataCenter'),
     'i-cable-attributes': () => import('./sidebarModes/cableAttributes')
   },
@@ -130,6 +130,9 @@ export default {
     isCable() {
       return this.sidebarMode == this.defaultMode
     },
+    isVerified() {
+      return this.prohibitedIDs.includes(this.currentSelection.uuid)
+    },
     currentView() {
       return this.isCable ? 'i-cable-attributes' : 'i-data-center'
     }
@@ -157,11 +160,9 @@ export default {
   beforeMount() {
     window.addEventListener('resize', this.resizeWatcher)
     this.resizeWatcher()
-    this.prohibitedIDs = [
-      process.env.VUE_APP_RESTRICTED_IDS
-        ? process.env.VUE_APP_RESTRICTED_IDS.split(',')
-        : []
-    ]
+    this.prohibitedIDs = process.env.VUE_APP_RESTRICTED_IDS
+      ? process.env.VUE_APP_RESTRICTED_IDS.split(',')
+      : []
   },
   mounted() {
     this.handleColSelectionChange()
@@ -194,13 +195,16 @@ export default {
       }
     },
     toggleActiveClassOnMobile() {
-      this.isSidebarActive = !this.isSidebarActive
-      if (this.isSidebarActive) {
-        setTimeout(() => {
-          this.isSidebarFullActive = true
-        }, 325)
-      } else {
-        this.isSidebarFullActive = false
+      const isMobile = this.resizeWatcher()
+      if (isMobile) {
+        this.isSidebarActive = !this.isSidebarActive
+        if (this.isSidebarActive) {
+          setTimeout(() => {
+            this.isSidebarFullActive = true
+          }, 325)
+        } else {
+          this.isSidebarFullActive = false
+        }
       }
     },
     resizeWatcher() {
@@ -239,7 +243,11 @@ export default {
       return this.$store.commit(`${TOGGLE_VERIFICATION_DIALOG}`, true)
     },
     closeSidebar() {
-      return bus.$emit(`${CLEAR_SELECTION}`)
+      return bus.$emit(
+        `${CLEAR_SELECTION}`,
+        true,
+        this.focus.type.split().join('')
+      )
     }
   }
 }

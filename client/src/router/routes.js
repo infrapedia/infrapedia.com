@@ -25,6 +25,23 @@ import About from '../pages/About.vue'
 import Attributions from '../pages/Attributions.vue'
 import Services from '../pages/Services.vue'
 import Sponsors from '../pages/Sponsors.vue'
+import { getInstance } from '../auth/index'
+
+async function handleAdminOnlyRoutes(next, to) {
+  const $authInstance = getInstance()
+  const isUserAnAdmin = $authInstance.isUserAnAdmin
+  // If the user is not an admin
+  // There's no reason for them to access the creation page of those sections
+  if (to) {
+    const query = to.query.id == 'map' || to.query.id == 'ixps'
+    if (query && !isUserAnAdmin) next('/user')
+    else next()
+  } else if (!isUserAnAdmin) {
+    next('/user')
+  } else {
+    next()
+  }
+}
 
 const routes = [
   { path: '*', component: NotFound },
@@ -121,12 +138,14 @@ const routes = [
   {
     path: '/user/section/ixps',
     name: 'user/ixps-section',
-    component: IxpsSection
+    component: IxpsSection,
+    beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next)
   },
   {
     path: '/user/section/groups',
     name: 'user/groups-section',
-    component: Groups
+    component: Groups,
+    beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next)
   },
   {
     path: '/user/section/issues',
@@ -156,7 +175,8 @@ const routes = [
   {
     path: '/user/section/create',
     name: '/user/create',
-    component: CreateSection
+    component: CreateSection,
+    beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next, to)
   },
   {
     path: '/user/section',

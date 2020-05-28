@@ -19,46 +19,61 @@
         @set-selection-onto-map="handleSetSelectionOntoMap"
         @cancel-geom-loading="toggleMapFormLoading(false)"
         @loading-selection-geom="toggleMapFormLoading(true)"
+        @dragger-geojson-upload-failed="handleFileConvertionFailed"
       />
     </div>
     <div class="right w-fit-full">
-      <editor-map :key="mapKey" :type="creationType" :form="form" />
+      <editor-map
+        :key="mapKey"
+        :type="creationType"
+        :form="form"
+        @error-loading-draw-onto-map="handleFileConvertionFailed"
+      />
     </div>
-    <el-dialog
-      :visible.sync="isLoadingDialog"
-      width="44%"
-      top="12vh"
-      title="Uploading file..."
-      :show-close="false"
-      :custom-class="customDialogClass"
-      :close-on-click-modal="false"
-    >
-      Usually, this takes time when uploading large files... Please be patient.
-    </el-dialog>
-    <el-dialog
-      :visible.sync="isMapFormLoading"
-      width="44%"
-      top="12vh"
-      title="Loading map..."
-      :show-close="false"
-      :custom-class="customDialogClass"
-      :close-on-click-modal="false"
-    >
-      Usually, this takes time when loading a map with lots of data... Please be
-      patient.
-    </el-dialog>
-    <el-dialog
-      :visible.sync="isMapFormSendingData"
-      width="44%"
-      top="12vh"
-      title="Uploading map and creating map files..."
-      :show-close="false"
-      :custom-class="customDialogClass"
-      :close-on-click-modal="false"
-    >
-      Usually, this takes time when uploading a map with lots of data... Please
-      be patient.
-    </el-dialog>
+    <template>
+      <el-dialog
+        :visible.sync="isLoadingDialog"
+        width="44%"
+        top="12vh"
+        title="Uploading file..."
+        :show-close="false"
+        :custom-class="customDialogClass"
+        :close-on-click-modal="false"
+      >
+        Usually, this takes time when uploading large files... Please be
+        patient.
+      </el-dialog>
+      <el-dialog
+        :visible.sync="isMapFormLoading"
+        width="44%"
+        top="12vh"
+        title="Loading map..."
+        :show-close="false"
+        :custom-class="customDialogClass"
+        :close-on-click-modal="false"
+      >
+        Usually, this takes time when loading a map with lots of data... Please
+        be patient.
+      </el-dialog>
+      <el-dialog
+        :visible.sync="isMapFormSendingData"
+        width="44%"
+        top="12vh"
+        title="Uploading map and creating map files..."
+        :show-close="false"
+        :custom-class="customDialogClass"
+        :close-on-click-modal="false"
+      >
+        Usually, this takes time when uploading a map with lots of data...
+        Please be patient.
+      </el-dialog>
+    </template>
+
+    <manual-kmz-submit-dialog
+      :form-data="manualSubmitFormData"
+      :is-visible="isManualUploadDialog"
+      @close="closeMannualKmzSubmitDialog"
+    />
   </div>
 </template>
 
@@ -75,7 +90,6 @@ import {
   createCable,
   editCable,
   viewCableOwner
-  // viewCableBBoxHMR
 } from '../../../services/api/cables'
 import {
   EDITOR_LOAD_DRAW,
@@ -94,13 +108,16 @@ import {
   createFacility
 } from '../../../services/api/facs'
 import { viewIXPOwner, editIXP, createIXP } from '../../../services/api/ixps'
+import ManualKMZSubmitDialog from '../../../components/dialogs/ManualKMZSubmit'
+import debounce from '../../../helpers/debounce'
 
 export default {
   name: 'CreateSection',
   components: {
     'cls-form': CLSForm,
     'editor-map': EditorMap,
-    'cable-form': CableForm
+    'cable-form': CableForm,
+    'manual-kmz-submit-dialog': ManualKMZSubmitDialog
   },
   data() {
     return {
@@ -110,6 +127,7 @@ export default {
       loading: false,
       isSendingData: false,
       isPropertiesDialog: false,
+      isManualUploadDialog: false,
       isLoadingSelectionGeom: false,
       creationType: this.$route.query.id
     }
@@ -136,6 +154,9 @@ export default {
     },
     isMapFormSendingData() {
       return this.isSendingData && this.creationType == 'map'
+    },
+    manualSubmitFormData() {
+      return this.form
     },
     isLoadingDialog() {
       const type =
@@ -250,6 +271,8 @@ export default {
     if (!this.$route.query.id) return this.$router.push('/user')
   },
   async mounted() {
+    // window.toggleDialog = () =>
+    //   (this.isManualUploadDialog = !this.isManualUploadDialog)
     this.creationType = this.$route.query.id
     this.checkCreationType(this.creationType)
 
@@ -260,6 +283,16 @@ export default {
     }
   },
   methods: {
+    closeMannualKmzSubmitDialog: debounce(function() {
+      this.isManualUploadDialog = false
+      this.$router.replace(`${this.$route.path}?id=${this.$route.query.id}`)
+    }, 320),
+    handleFileConvertionFailed: debounce(function() {
+      this.isManualUploadDialog = true
+      this.$router.replace(
+        `${this.$route.path}?id=${this.$route.query.id}&failedToUploadKMz=true`
+      )
+    }, 320),
     toggleMapFormLoading(bool) {
       return this.$store.dispatch('editor/toggleMapFormLoading', bool)
     },
@@ -348,6 +381,7 @@ export default {
           this.form = {
             name: '',
             slug: '',
+            country: '',
             tags: [],
             cables: [],
             owners: [],
@@ -474,23 +508,7 @@ export default {
           break
       }
 
-      let coordinates = []
       let features = []
-
-      // If if any type of cable I need to get cable bounds
-      // From a hot service
-      {
-        if (
-          (this.creationType == 'subsea' ||
-            this.creationType == 'terrestrial-network') &&
-          data.geom.features.length > 0
-        ) {
-          const bbox = async () => await import('@turf/bbox')
-          const coords = data.geom.features.map(ft => ft.geometry.coordinates)
-          const bounds = bbox(coords)
-          coordinates = bounds
-        }
-      }
 
       // I need to set the proper structure for setting the features list
       // when it's a point feature
@@ -509,15 +527,12 @@ export default {
                   }
                 }
               ]
-            : data.geom.features
+            : [...data.geom.features]
       }
 
       await this.$store.dispatch('editor/setList', features)
       this.form.geom = this.$store.state.editor.scene.features.list
-      await bus.$emit(
-        `${EDITOR_LOAD_DRAW}`,
-        coordinates.length > 0 ? [{ geometry: { coordinates } }] : false
-      )
+      await bus.$emit(`${EDITOR_LOAD_DRAW}`, features)
     },
     handleCLSEditMode(data) {
       if (this.form.state == 'null' || this.form.state == 'undefined') {
@@ -591,6 +606,10 @@ export default {
         name: f.label,
         _id: f._id
       }))
+      const clsData = data.cls.map(f => ({
+        name: f.label,
+        _id: f._id
+      }))
 
       this.form.facsList = facsData
       this.form.facilities = facsData
@@ -598,6 +617,16 @@ export default {
       this.form.owners = ownersData
       this.form.ownersList = ownersData
       this.form.activationDateTime = new Date(this.form.activationDateTime)
+      this.form.cls = clsData
+      this.form.clsList = clsData
+
+      if (
+        data.category == 'null' ||
+        data.category == 'undefined' ||
+        data.category.length <= 0
+      ) {
+        this.form.category = 'unknown'
+      }
     },
     async viewCurrentFacility(_id) {
       const res = await viewFacilityOwner({

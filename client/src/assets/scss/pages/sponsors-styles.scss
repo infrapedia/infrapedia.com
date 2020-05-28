@@ -41,8 +41,8 @@
     }
   }
   @media screen and (max-width: $break-xs) {
-    width: 15.8rem;
-    padding: 3rem 1rem;
+    width: 86vw;
+    padding: 3rem 0rem;
   }
 }
 
@@ -81,7 +81,7 @@
     margin-top: 1rem;
   }
   @media screen and (max-width: $break-xs) {
-    font-size: 34px;
+    font-size: 18px;
   }
 }
 
@@ -91,6 +91,9 @@
   font-weight: 400;
   font-size: 20px;
   text-align: justify;
+  @media screen and (max-width: $break-xs) {
+    font-size: 16px;
+  }
 }
 
 .highlight {

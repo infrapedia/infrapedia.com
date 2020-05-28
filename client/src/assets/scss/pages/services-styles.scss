@@ -68,23 +68,25 @@
   }
 
   @media screen and (max-width: $break-sm) {
-    width: 72vw;
-    padding: 2rem;
-  }
-  @media screen and (max-width: $break-xs) {
+    width: 80vw;
     padding: 1rem;
-    .services-wrapper {
-      .inner-wrapper {
+  }
+}
+
+.services-wrapper {
+  @media screen and (max-width: $break-xs) {
+    .inner-wrapper {
+      width: 80vw;
+      .el-card {
+        height: auto;
         padding: 1rem;
-        width: 15.8rem;
-        .el-card {
-          padding: 1rem;
-          min-width: auto;
-          height: auto;
-          .card-inner-wrapper {
-            footer {
-              position: relative;
-            }
+        min-width: auto;
+        &.fix-height {
+          height: 34.2rem;
+        }
+        .card-inner-wrapper {
+          footer {
+            position: relative;
           }
         }
       }
@@ -127,7 +129,7 @@
     margin-top: 1rem;
   }
   @media screen and (max-width: $break-xs) {
-    font-size: 34px;
+    font-size: 20px;
   }
 }
 
@@ -137,4 +139,7 @@ p.text {
   font-weight: 400;
   font-size: 18px;
   text-align: justify;
+  @media screen and (max-width: $break-xs) {
+    font-size: 16px;
+  }
 }

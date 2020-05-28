@@ -60,7 +60,7 @@
               type="primary"
               class="w11 h11"
               circle
-              @click="toggleGooeyMenu"
+              @click.stop="toggleGooeyMenu"
             >
               <fa :icon="['fas', 'share-alt']" />
             </el-button>
@@ -75,7 +75,7 @@
 <script>
 import {
   TOGGLE_THEME,
-  CABLE_SELECTED,
+  // CABLE_SELECTED,
   CLEAR_SELECTION,
   FOCUS_ON,
   FOCUS_ON_CITY
@@ -106,13 +106,16 @@ import { viewNetwork } from '../../services/api/networks'
 import { viewOrganization } from '../../services/api/organizations'
 import handleDraw from './draw'
 import setBoundsCookie from './setBoundsCookie'
-import highlightCurrentCable from './highlightCable'
 import disableCurrentHighlight from './disableHighlight'
 import GooeyMenu from './GooeyMenu'
 import PrintButton from './PrintButton'
+import highlightCurrentSelection from './highlightCurrentSelection'
+import dataCollection from '../../mixins/dataCollection'
+import convertToYear from '../../helpers/convertToYear'
 
 export default {
   name: 'Map',
+  mixins: [dataCollection],
   components: {
     IThemeToggler,
     PrintButton,
@@ -151,7 +154,7 @@ export default {
   mounted() {
     this.map = this.addMapEvents(this.initMapLayers(this.createMap()))
 
-    bus.$on(CLEAR_SELECTION, this.disableCableHighlight)
+    bus.$on(CLEAR_SELECTION, this.disableSelectionHighlight)
     bus.$on(TOGGLE_THEME, this.toggleDarkMode)
     bus.$on(FOCUS_ON, this.handleFocusOn)
     bus.$on(FOCUS_ON_CITY, this.handleCityFocus)
@@ -320,9 +323,14 @@ export default {
      * @param isPoint { Boolean } If the tooltip is for a Point
      */
     showPopup({ e, map, popup, isPoint, type }) {
-      const { name, status, segment } = JSON.parse(
+      const { name, category, segment, activationDateTime } = JSON.parse(
         JSON.stringify(e.features[0].properties)
       )
+
+      const rfs = new Date(activationDateTime)
+      const cableCategoryColor =
+        category == 'active' ? 'green' : category == 'project' ? 'red' : 'black'
+
       // const facsClusters = this.map.queryRenderedFeatures(e.point, {
       //   layers: [mapConfig.facilitiesClusters]
       // })
@@ -337,7 +345,10 @@ export default {
         if (segment) {
           str += `<div class="segment-name dark-color">Segment: ${segment}</div>`
         }
-        str += `<div class="status dark-color"> Status: ${status}</div>`
+        str += `<div class="status dark-color"> Status: <span style="color: ${cableCategoryColor}" class="category capitalize">${category}</span></div>`
+        str += `<div class="rfs dark-color"> RFS: ${convertToYear(
+          rfs.toISOString()
+        )}</div>`
         str += `<div class="details dark-color">Click for more details</div>`
       }
 
@@ -371,17 +382,17 @@ export default {
       map.getCanvas().style.cursor = ''
       popup.remove()
     },
-    /**
-     * @param cable { Object } - Contains the ID of the selected cable
-     */
-    highlightCable(cable) {
-      if (!this.map || !cable) return
+    highlightSelection(id) {
+      if (!this.focus) return
+
       try {
-        return highlightCurrentCable({
-          cable,
+        return highlightCurrentSelection({
+          id,
           map: this.map,
           dark: this.dark,
-          commit: this.$store.commit
+          name: this.focus.name,
+          commit: this.$store.commit,
+          focusType: this.focus.type
         })
       } catch (err) {
         console.error(err)
@@ -408,15 +419,19 @@ export default {
     /**
      * @param closesSidebar { Boolean } - If besides removing cables highlight it also closes the sidebar
      */
-    disableCableHighlight(closesSidebar = true) {
+    disableSelectionHighlight(closesSidebar = true, type) {
       if (!this.map) return
       try {
         return disableCurrentHighlight({
           map: this.map,
           closesSidebar,
-          focus: this.focus,
           commit: this.$store.commit,
-          handleBoundsChange: this.handleBoundsChange
+          handleBoundsChange: this.handleBoundsChange,
+          focusType: type
+            ? type
+            : this.focus
+            ? this.focus.type.split().join('')
+            : false
         })
       } catch (err) {
         console.error(err)
@@ -430,6 +445,12 @@ export default {
       if (this.isDrawing) return
 
       if (this.$auth.isAuthenticated) {
+        if (this.focus) {
+          this.disableSelectionHighlight(
+            false,
+            this.focus.type.split().join('')
+          )
+        }
         if (this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
 
         const cables = this.map.queryRenderedFeatures(e.point, {
@@ -486,7 +507,7 @@ export default {
             mapConfig.clusters
           )
         } else if (cables.length > 0) {
-          await this.handleCablesSelection(Boolean(cables.length), cables)
+          await this.handleCablesSelection(cables.length > 0, cables)
         } else if (
           facilities.length <= 0 &&
           ixps.length <= 0 &&
@@ -500,7 +521,7 @@ export default {
           } catch {
             // Ignore
           } finally {
-            this.disableCableHighlight()
+            this.disableSelectionHighlight()
           }
         }
       } else await this.$auth.loginWithRedirect()
@@ -514,7 +535,7 @@ export default {
         // Change sidebar mode to data_centers mode
         this.changeSidebarMode(1)
         // In case there was a cable selected before
-        await this.disableCableHighlight(false)
+        await this.disableSelectionHighlight(false, 'cable')
         await this.$store.commit(`${CURRENT_SELECTION}`, res.data.r[0])
 
         if (!this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
@@ -541,7 +562,7 @@ export default {
         // Change sidebar mode to data_centers mode
         this.changeSidebarMode(1)
         // In case there was a cable selected before
-        await this.disableCableHighlight(false)
+        await this.disableSelectionHighlight(false, 'cable')
         await this.$store.commit(`${CURRENT_SELECTION}`, res.data.r[0])
 
         if (!this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
@@ -570,12 +591,14 @@ export default {
           // Change sidebar mode back to cable in case is on data_centers mode
           await this.changeSidebarMode(-1)
           // Highlight the nearest clicked cable
-          await this.highlightCable(cables[0].properties)
-          await this.$emit(`${CABLE_SELECTED}`, cables[0].properties)
+          await this.handleCableSelected({
+            _id: cables[0].properties._id,
+            name: cables[0].properties.name
+          }).then(() => this.highlightSelection(cables[0].properties._id))
           break
         default:
           // Remove highlights
-          await this.disableCableHighlight()
+          await this.disableSelectionHighlight()
           // Clear "currentSelection" on store
           await this.$store.commit(`${CURRENT_SELECTION}`, null)
           break
@@ -614,13 +637,14 @@ export default {
         type
       })
 
+      this.highlightSelection(id)
       // Changing the sidebar mode to data_center mode
       this.changeSidebarMode(1)
       // this.$store.commit(`${CURRENT_SELECTION}`, data)
       // Opening the sidebar
       this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
       // Removing cables highlight if any
-      this.disableCableHighlight(false)
+      this.disableSelectionHighlight(false, 'cable')
     },
     async handleClsSelection({ id, type }) {
       const data = await this.getClsData({
@@ -633,13 +657,14 @@ export default {
         type
       })
 
+      this.highlightSelection(id)
       // Changing the sidebar mode to data_center mode
       this.changeSidebarMode(1)
       // this.$store.commit(`${CURRENT_SELECTION}`, data)
       // Opening the sidebar
       this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
       // Removing cables highlight if any
-      this.disableCableHighlight(false)
+      this.disableSelectionHighlight(false, 'cable')
     },
     async handleIxpsSelection({ id, type }) {
       const data = await this.getIxpsData({
@@ -652,13 +677,14 @@ export default {
         type
       })
 
+      this.highlightSelection(id)
       // Changing the sidebar mode to data_center mode
       this.changeSidebarMode(1)
       // this.$store.commit(`${CURRENT_SELECTION}`, data)
       // Opening the sidebar
       this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
       // Removing cables highlight if any
-      this.disableCableHighlight(false)
+      this.disableSelectionHighlight(false, 'cable')
     },
     toggleDarkMode() {
       this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
@@ -924,7 +950,7 @@ export default {
     async handleSubseaToggle(bool) {
       const filter = bool ? mapConfig.filter.subsea : mapConfig.filter.all
 
-      await this.disableCableHighlight()
+      await this.disableSelectionHighlight()
       this.$nextTick(() => {
         this.map.setFilter(mapConfig.cables, filter)
         this.map.setFilter(mapConfig.cablesLabel, filter)
@@ -962,7 +988,7 @@ export default {
         })
       }
 
-      await this.disableCableHighlight()
+      await this.disableSelectionHighlight()
       if (selection == 2) {
         await this.map.setFilter(mapConfig.cables, filter)
       } else {

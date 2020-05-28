@@ -36,7 +36,7 @@
                 advice, software development, project support, operations,
                 marketing consultancy, and more.
               </p>
-              <footer>
+              <!-- <footer>
                 <router-link
                   to="/contact"
                   class="underline-hover inline-block mt12"
@@ -46,12 +46,12 @@
                     <fa :icon="['fas', 'angle-double-right']" />
                   </span>
                 </router-link>
-              </footer>
+              </footer> -->
             </div>
           </el-card>
         </router-link>
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8">
+          <el-card shadow="hover" class="p8 fix-height">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
                 <h2 class="title sm">
@@ -72,7 +72,7 @@
                 software to analyze our database in order to find answers to
                 your specific questions.
               </p>
-              <footer>
+              <!-- <footer>
                 <router-link
                   to="/contact"
                   class="underline-hover inline-block mt12"
@@ -82,12 +82,12 @@
                     <fa :icon="['fas', 'angle-double-right']" />
                   </span>
                 </router-link>
-              </footer>
+              </footer> -->
             </div>
           </el-card>
         </router-link>
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8">
+          <el-card shadow="hover" class="p8 fix-height">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
                 <h2 class="title sm">
@@ -108,7 +108,7 @@
                 third party information for analysis, NOC operations, dedicated
                 maps, and more.
               </p>
-              <footer>
+              <!-- <footer>
                 <router-link
                   to="/contact"
                   class="underline-hover inline-block mt12"
@@ -118,7 +118,7 @@
                     <fa :icon="['fas', 'angle-double-right']" />
                   </span>
                 </router-link>
-              </footer>
+              </footer> -->
             </div>
           </el-card>
         </router-link>
@@ -138,7 +138,7 @@
                 are able to work with you on the development of the software you
                 need to increase your team’s efficiency and profitability.
               </p>
-              <footer>
+              <!-- <footer>
                 <router-link
                   to="/contact"
                   class="underline-hover inline-block mt12"
@@ -148,12 +148,12 @@
                     <fa :icon="['fas', 'angle-double-right']" />
                   </span>
                 </router-link>
-              </footer>
+              </footer> -->
             </div>
           </el-card>
         </router-link>
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8">
+          <el-card shadow="hover" class="p8 fix-height">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
                 <h2 class="title sm">
@@ -173,7 +173,7 @@
                 Representation on events, and overall comprehensive marketing
                 strategies.
               </p>
-              <footer>
+              <!-- <footer>
                 <router-link
                   to="/contact"
                   class="underline-hover inline-block mt12"
@@ -183,7 +183,7 @@
                     <fa :icon="['fas', 'angle-double-right']" />
                   </span>
                 </router-link>
-              </footer>
+              </footer> -->
             </div>
           </el-card>
         </router-link>

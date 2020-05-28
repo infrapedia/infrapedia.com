@@ -11,9 +11,11 @@
           :disabled="isViewMode"
         />
       </el-form-item>
-      <el-form-item label="Owners">
+      <el-form-item label="Owners" prop="owners" required>
         <v-multi-select
           :mode="mode"
+          :is-required="true"
+          :is-field-empty="isOwnersSelectEmpty"
           :options="ownersList"
           @input="loadOwnersSearch"
           :loading="isLoadingOwners"
@@ -146,57 +148,9 @@ export default {
     tag: '',
     inputVisible: false,
     tagsList: [],
+    isOwnersSelectEmpty: false,
     isLoadingOwners: false,
-    ownersList: [],
-    mediaOptions: [
-      {
-        label: 'Ethernet',
-        value: 'ethernet'
-      },
-      {
-        label: 'Multiple',
-        value: 'multiple'
-      }
-    ],
-    formRules: {
-      name: [
-        {
-          required: true,
-          message: 'Please input short IXP name',
-          trigger: 'change'
-        },
-        { min: 1, message: 'Length should be at least 1', trigger: 'change' }
-      ],
-      media: [],
-      nameLong: [
-        {
-          required: true,
-          message: 'Please input long IXP name',
-          trigger: 'change'
-        },
-        { min: 3, message: 'Length should be at least 3', trigger: 'change' }
-      ],
-      techEmail: [
-        {
-          type: 'email',
-          message: 'Please input correct email address',
-          trigger: ['blur', 'change']
-        }
-      ],
-      policyEmail: [
-        {
-          type: 'email',
-          message: 'Please input correct email address',
-          trigger: ['blur', 'change']
-        }
-      ],
-      proto_ipv6: [],
-      proto_unicast: [],
-      proto_multicast: [],
-      techPhone: [],
-      policyPhone: [],
-      tags: []
-    }
+    ownersList: []
   }),
   props: {
     form: {
@@ -213,12 +167,72 @@ export default {
     }
   },
   computed: {
+    mediaOptions() {
+      return [
+        {
+          label: 'Ethernet',
+          value: 'ethernet'
+        },
+        {
+          label: 'Multiple',
+          value: 'multiple'
+        }
+      ]
+    },
     title() {
       return this.mode == 'create'
         ? 'Create'
         : this.mode == 'view'
         ? 'View'
         : 'Edit'
+    },
+    formRules() {
+      return {
+        name: [
+          {
+            required: true,
+            message: 'Please input short IXP name',
+            trigger: 'change'
+          },
+          { min: 1, message: 'Length should be at least 1', trigger: 'change' }
+        ],
+        media: [],
+        nameLong: [
+          {
+            required: true,
+            message: 'Please input long IXP name',
+            trigger: 'change'
+          },
+          { min: 3, message: 'Length should be at least 3', trigger: 'change' }
+        ],
+        techEmail: [
+          {
+            type: 'email',
+            message: 'Please input correct email address',
+            trigger: ['blur', 'change']
+          }
+        ],
+        policyEmail: [
+          {
+            type: 'email',
+            message: 'Please input correct email address',
+            trigger: ['blur', 'change']
+          }
+        ],
+        proto_ipv6: [],
+        proto_unicast: [],
+        proto_multicast: [],
+        techPhone: [],
+        policyPhone: [],
+        tags: [],
+        owners: [
+          {
+            type: 'array',
+            message: 'At least one owner is required',
+            trigger: ['blur', 'change']
+          }
+        ]
+      }
     },
     isViewMode() {
       return this.mode == 'view'
@@ -263,9 +277,16 @@ export default {
       this.form.owners = this.form.owners.filter(item => item._id != _id)
     },
     handleOwnersSelectChange(data) {
-      this.form.owners = Array.from(data)
+      this.form.owners = data
+      this.setOwnersEmptyState()
+    },
+    setOwnersEmptyState() {
+      if (this.form.owners.length <= 0) {
+        this.isOwnersSelectEmpty = true
+      }
     },
     sendData() {
+      this.setOwnersEmptyState()
       return this.$refs['form'].validate(isValid =>
         isValid ? this.$emit('send-data') : false
       )

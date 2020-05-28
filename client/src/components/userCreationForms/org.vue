@@ -180,6 +180,14 @@ export default {
           trigger: ['blur', 'change']
         },
         {
+          type: 'string',
+          trigger: 'change',
+          message: 'Please input a valid name',
+          transform: value => value.trim(),
+          // eslint-disable-next-line
+          pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.,0-9()´ \-]+$/
+        },
+        {
           min: 2,
           message: 'Length should be at least 2',
           trigger: ['blur', 'change']

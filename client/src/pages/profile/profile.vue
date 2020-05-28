@@ -72,6 +72,7 @@
                 <el-input
                   v-model="form.user_metadata.companyname"
                   :class="{ dark }"
+                  clearable
                 />
               </el-form-item>
             </el-col>
@@ -93,7 +94,7 @@
         </el-form>
       </el-card>
     </div>
-    <footer class="mt10 p0">
+    <footer class="mt10 p0" v-if="isEmailProvider">
       <router-link
         exact
         id="changePass"
@@ -166,6 +167,13 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    isEmailProvider() {
+      const provider =
+        this.$auth.user && this.$auth.user.sub
+          ? this.$auth.user.sub.split('|')[0]
+          : false
+      return provider == 'auth0' ? true : false
     }
   },
   beforeCreate() {
