@@ -23,7 +23,12 @@
       />
     </div>
     <div class="right w-fit-full">
-      <editor-map :key="mapKey" :type="creationType" :form="form" />
+      <editor-map
+        :key="mapKey"
+        :type="creationType"
+        :form="form"
+        @error-loading-draw-onto-map="handleFileConvertionFailed"
+      />
     </div>
     <template>
       <el-dialog
