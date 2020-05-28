@@ -132,7 +132,9 @@ export default {
         {
           required: true,
           message: 'Please input your first name',
-          trigger: 'blur'
+          trigger: 'blur',
+          // eslint-disable-next-line
+          pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.,0-9()´ \-]+$/
         }
       ],
       'user_metadata.companyname': [
@@ -151,7 +153,9 @@ export default {
         {
           required: true,
           message: 'Please input your last name',
-          trigger: 'blur'
+          trigger: 'blur',
+          // eslint-disable-next-line
+          pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.,0-9()´ \-]+$/
         }
       ],
       email: [
