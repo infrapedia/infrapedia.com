@@ -33,6 +33,22 @@ export const uploadKmz = async ({ file, user_id }) => {
   return res
 }
 
+export const convertFileToGeojson = async ({ file, user_id }) => {
+  url = `${apiConfig.url}/auth/upload/file`
+  form = new FormData()
+  form.append('file', file[0])
+
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      'Content-Type': 'multipart/form-data',
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
 export const kmzLinesToJSON = async ({ link, user_id }) => {
   url = `${apiConfig.url}/auth/kmz/lines/togeojson`
   form = new FormData()
