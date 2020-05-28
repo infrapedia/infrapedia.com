@@ -324,7 +324,7 @@ export default {
             message: 'Please input a valid name',
             transform: value => value.trim(),
             // eslint-disable-next-line
-            pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.0-9()´ \-]+$/
+            pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.,0-9()´ \-]+$/
           },
           { min: 3, message: 'Length should be at least 3', trigger: 'change' }
         ],
