@@ -38,6 +38,7 @@
             >
               {{ currentSelection.name }}
               <el-button
+                v-if="focus.type.toLowerCase() !== 'owners'"
                 type="text"
                 id="verified-i"
                 @click.stop="handleVerification"

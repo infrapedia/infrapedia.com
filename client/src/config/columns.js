@@ -49,11 +49,10 @@ export const cablesColumns = [
   {
     label: 'RFS',
     value: 'activationDateTime',
-    showSidebar: true,
     showTable: true
   },
   {
-    label: 'RFS Quarter',
+    label: 'RFS',
     value: 'RFS',
     showSidebar: true
   },
