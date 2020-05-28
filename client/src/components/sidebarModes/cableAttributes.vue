@@ -314,7 +314,7 @@ export default {
     },
     getYear: () => row => new Date(row.year).getFullYear(),
     collapseColumns() {
-      return ['org', 'cls', 'networks', 'fac', 'owners']
+      return ['org', 'cls', 'networks', 'facilities', 'owners']
     }
   },
   methods: {
