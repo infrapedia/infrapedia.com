@@ -44,7 +44,7 @@
         required
       >
         <el-date-picker
-          type="year"
+          type="month"
           :class="{ dark }"
           class="w-fit-full-imp"
           v-model="form.activationDateTime"
