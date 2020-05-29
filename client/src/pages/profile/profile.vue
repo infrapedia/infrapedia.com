@@ -18,12 +18,16 @@
         <el-form :model="form" :rules="rules" ref="form">
           <el-row :gutter="20">
             <el-col :sm="24" :md="24" :lg="12">
-              <el-form-item prop="name" label="First name">
+              <el-form-item prop="name" label="First name" required>
                 <el-input v-model="form.name" :class="{ dark }" />
               </el-form-item>
             </el-col>
             <el-col :sm="24" :md="24" :lg="12">
-              <el-form-item prop="user_metadata.lastname" label="Last name">
+              <el-form-item
+                prop="user_metadata.lastname"
+                required
+                label="Last name"
+              >
                 <el-input
                   v-model="form.user_metadata.lastname"
                   :class="{ dark }"
@@ -33,7 +37,7 @@
           </el-row>
           <el-row :gutter="20">
             <el-col :sm="24" :md="24" :lg="12">
-              <el-form-item prop="email" label="Email address">
+              <el-form-item prop="email" label="Email address" reuired>
                 <el-input v-model="form.email" :class="{ dark }" />
               </el-form-item>
             </el-col>
@@ -132,7 +136,11 @@ export default {
         {
           required: true,
           message: 'Please input your first name',
-          trigger: 'blur',
+          trigger: 'blur'
+        },
+        {
+          trigger: 'change',
+          message: "Special characters aren't allowed",
           // eslint-disable-next-line
           pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.,0-9()´ \-]+$/
         }
@@ -152,8 +160,12 @@ export default {
       'user_metadata.lastname': [
         {
           required: true,
-          message: 'Please input your last name',
           trigger: 'blur',
+          message: 'Please input your last name'
+        },
+        {
+          trigger: 'change',
+          message: "Special characters aren't allowed",
           // eslint-disable-next-line
           pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.,0-9()´ \-]+$/
         }
