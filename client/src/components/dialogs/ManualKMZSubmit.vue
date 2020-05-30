@@ -9,7 +9,7 @@
   >
     <header slot="title" class="header p0 no-selectable">
       <h1 class="inline-block font-semibold fs-xlarge">
-        <span class="capitalize">Mannual Submit Form</span>
+        <span class="capitalize">Submit Form</span>
       </h1>
       <el-divider class="m1" />
       <p class="p1 text-justify">
