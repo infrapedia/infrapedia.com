@@ -178,6 +178,17 @@
               </template>
               <p
                 class="text-bold"
+                v-else-if="
+                  !isArrCol(info[col.value]) &&
+                    info[col.value] !== '' &&
+                    info[col.value] == 'null' &&
+                    col.value == 'state'
+                "
+              >
+                Unknown
+              </p>
+              <p
+                class="text-bold"
                 v-else-if="!isArrCol(info[col.value]) && info[col.value] !== ''"
               >
                 {{ info[col.value] }}
