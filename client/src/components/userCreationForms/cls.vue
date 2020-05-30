@@ -52,7 +52,7 @@
           :value="mode == 'create' ? [] : form.cables"
         />
       </el-form-item>
-      <el-form-item label="Owners" prop="owners" required>
+      <el-form-item label="Owners" prop="owners">
         <v-multi-select
           :mode="mode"
           :is-required="true"
@@ -200,11 +200,11 @@ export default {
         slug: [],
         state: [],
         owners: [
-          {
-            type: 'array',
-            message: 'At least one owner is required',
-            trigger: ['blur', 'change']
-          }
+          // {
+          //   type: 'array',
+          //   message: 'At least one owner is required',
+          //   trigger: ['blur', 'change']
+          // }
         ]
       }
     },
@@ -265,7 +265,6 @@ export default {
     },
     handleOwnersSelectChange(data) {
       this.form.owners = Array.from(data)
-      this.setOwnersEmptyState()
     },
     async handleSubseaCablesSelection(cablesSelected) {
       this.form.cables = cablesSelected
@@ -304,13 +303,7 @@ export default {
     handleFileConverted(fc) {
       return this.$emit('handle-file-converted', fc)
     },
-    setOwnersEmptyState() {
-      if (this.form.owners.length <= 0) {
-        this.isOwnersSelectEmpty = true
-      }
-    },
     sendData() {
-      this.setOwnersEmptyState()
       return this.$refs['form'].validate(isValid => {
         return isValid && !this.isOwnersSelectEmpty
           ? this.$emit('send-data')

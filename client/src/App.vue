@@ -47,7 +47,7 @@ export default {
       return this.$store.state.isDark
     },
     title() {
-      return this.mode === 'create' ? 'Create' : 'Edit'
+      return this.mode == 'create' ? 'Create' : 'Edit'
     },
     isAuthenticated() {
       return this.$auth.isAuthenticated

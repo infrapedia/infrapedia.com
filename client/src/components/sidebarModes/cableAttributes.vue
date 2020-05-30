@@ -64,6 +64,9 @@
             >
               <p class="label capitalize">{{ col.label }}</p>
             </el-col>
+            <el-col :span="10" v-else-if="col.value == 'category'">
+              <p class="label capitalize">{{ col.label }}</p>
+            </el-col>
             <el-col
               :span="10"
               v-else-if="
@@ -131,6 +134,18 @@
               >
                 <p class="text-bold">{{ info[col.value] }} km</p>
               </el-col>
+              <el-col :span="12" v-else-if="col.value == 'capacityTBPS'">
+                <p class="text-bold">{{ info[col.value] }} tbps</p>
+              </el-col>
+              <el-col :span="12" v-else-if="col.value == 'category'">
+                <p class="text-bold">
+                  {{
+                    info[col.value] && info[col.value] !== ''
+                      ? info[col.value]
+                      : 'Unknown'
+                  }}
+                </p>
+              </el-col>
               <el-col
                 :span="12"
                 v-else-if="
@@ -141,6 +156,16 @@
               >
                 <p class="text-bold">
                   {{ info[col.value] }}
+                </p>
+              </el-col>
+            </template>
+            <template v-else>
+              <el-col
+                v-if="col.value == 'category' && !info[col.value]"
+                :span="12"
+              >
+                <p class="text-bold">
+                  Unknown
                 </p>
               </el-col>
             </template>
@@ -309,9 +334,6 @@ export default {
       const currentEpoch = Math.round(new Date().getTime() / 1000)
       return !!(date !== null && parseInt(date) > currentEpoch)
     },
-    currentCableStatus() {
-      return this.info.has_outage || this.isFutureState
-    },
     getYear: () => row => new Date(row.year).getFullYear(),
     collapseColumns() {
       return ['org', 'cls', 'networks', 'facilities', 'owners']
@@ -320,9 +342,6 @@ export default {
   methods: {
     isArrCol(item) {
       return Array.isArray(item)
-    },
-    hasLength(arr) {
-      return Boolean(arr.length)
     },
     handleSelection(_id, opt) {
       return this.$emit('selection', {

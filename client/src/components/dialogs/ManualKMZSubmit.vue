@@ -30,7 +30,7 @@
     <el-form class="pb6 pt6 pr8 pl8 mt-12">
       <el-row :gutter="20">
         <el-col :span="24">
-          <el-form-item label="File">
+          <el-form-item label="File" required>
             <dragger class="mt12" :is-raw-file="true" @raw-file="setFile" />
           </el-form-item>
         </el-col>
@@ -62,7 +62,7 @@
           >Cancel</el-button
         >
         <el-button
-          :disabled="!catchaVerified"
+          :disabled="isSendButtonDisabled"
           type="primary"
           class="w28"
           plain
@@ -112,6 +112,18 @@ export default {
     }
   }),
   computed: {
+    isSendButtonDisabled() {
+      let isDisabled = false
+      if (
+        !this.catchaVerified ||
+        this.form.file === '' ||
+        this.formData.cls.length <= 0 ||
+        this.formData.owners.length <= 0
+      ) {
+        isDisabled = true
+      } else isDisabled = false
+      return isDisabled
+    },
     dialogWidth() {
       return window.innerWidth < 890 ? '74vw' : '54vw'
     },
@@ -219,7 +231,10 @@ export default {
         file: this.form.file
       })) || { t: 'error' }
 
-      if (t != 'error') this.closeDialog()
+      if (t != 'error') {
+        this.closeDialog()
+        this.$router.go(-1)
+      }
       this.isSendingData = false
     },
     closeDialog() {
