@@ -470,6 +470,9 @@ export default {
       switch (this.creationType) {
         case 'cls':
           currentElement = await this.viewCurrentCLS(_id)
+          if (!currentElement.country || currentElement.country == 'null') {
+            currentElement.country = ''
+          }
           break
         case 'facilities':
           currentElement = await this.viewCurrentFacility(_id)

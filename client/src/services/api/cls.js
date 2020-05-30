@@ -12,6 +12,7 @@ export const createCls = async ({
   geom,
   state,
   slug,
+  country,
   user_id,
   tags
 }) => {
@@ -19,6 +20,7 @@ export const createCls = async ({
   form = new FormData()
 
   form.append('name', name)
+  form.append('country', country)
   form.append('state', state)
   form.append('slug', slug)
 
@@ -57,6 +59,7 @@ export const editCLS = async ({
   slug,
   user_id,
   _id,
+  country,
   tags
 }) => {
   url = `${apiConfig.url}/auth/cls/edit`
@@ -66,6 +69,7 @@ export const editCLS = async ({
   form.append('name', name)
   form.append('state', state)
   form.append('slug', slug)
+  form.append('country', country)
 
   if (tags && tags.length) {
     tags.forEach((t, i) => {
