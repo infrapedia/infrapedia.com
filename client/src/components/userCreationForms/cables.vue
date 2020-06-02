@@ -160,7 +160,7 @@
           </div>
         </el-form-item>
       </template>
-      <el-form-item label="Fiber Pairs" prop="fiberPairs">
+      <!-- <el-form-item label="Fiber Pairs" prop="fiberPairs">
         <el-input-number
           :min="0"
           :class="{ dark }"
@@ -168,7 +168,7 @@
           controls-position="right"
           v-model="form.fiberPairs"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item :label="facilitiesLabel" prop="facilities">
         <v-multi-select
           :mode="mode"
@@ -374,7 +374,7 @@ export default {
     facilitiesLabel() {
       return this.creationID == 'subsea'
         ? 'Facilities (POPs)'
-        : 'Facilities (On-net & Off-Net)'
+        : 'Facilities (On-net)'
     },
     title() {
       let t = `${
