@@ -19,11 +19,11 @@ const profileLinks = [
     url: '/user/section/issues',
     icon: ['fas', 'bug']
   },
-  {
-    label: 'Messages',
-    url: '/user/section/messages',
-    icon: ['fas', 'envelope']
-  },
+  // {
+  //   label: 'Messages',
+  //   url: '/user/section/messages',
+  //   icon: ['fas', 'envelope']
+  // },
   {
     label: 'Organizations',
     url: '/user/section/orgs',
