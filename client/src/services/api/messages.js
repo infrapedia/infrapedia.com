@@ -5,14 +5,7 @@ import apiConfig from '../../config/apiConfig'
 var url
 var form
 
-export const sendMessage = async ({
-  user_id,
-  t,
-  elemnt,
-  email,
-  phone,
-  message
-}) => {
+export const sendMessage = async ({ user_id, t, elemnt, email, message }) => {
   url = `${apiConfig.url}/auth/message/send`
   form = new FormData()
 
@@ -20,7 +13,6 @@ export const sendMessage = async ({
   form.append('email', email)
   form.append('elemnt', elemnt)
   form.append('message', message)
-  form.append('phone', phone.num)
 
   const res = await $axios.post(url, form, {
     withCredentials: true,

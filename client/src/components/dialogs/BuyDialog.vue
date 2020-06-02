@@ -30,28 +30,6 @@
             <el-input v-model="form.fullname" :class="{ dark }" />
           </el-form-item>
         </el-col>
-        <!-- <el-col :xs="24" :sm="12" :md="24" :lg="12" :xl="8">
-          <el-form-item label="Phone number">
-            <div class="el-input">
-              <i-phone-input
-                inputClasses="el-input__inner issues-dialog"
-                v-model="form.phonenumber.num"
-                @onInput="validatePhoneNumber"
-                class="m0 p0 el-input__inner"
-              />
-            </div>
-            <el-collapse-transition>
-              <el-alert
-                type="error"
-                class="mt2 h8"
-                show-icon
-                title="This phone number is not valid"
-                :closable="false"
-                v-if="form.phonenumber.num && !form.phonenumber.valid"
-              />
-            </el-collapse-transition>
-          </el-form-item>
-        </el-col> -->
       </el-row>
       <el-row :gutter="30">
         <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
@@ -79,53 +57,75 @@
             </el-form-item>
           </el-col>
           <el-col :span="12" v-else>
-            <div class="block">
-              <el-form-item prop="rack">
-                <span slot="label">
-                  <span class="text-red">*</span> Rack total
-                </span>
-                <br />
+            <el-form-item
+              :required="isRackRequired"
+              prop="totalRack"
+              label="Rack total"
+            >
+              <div class="w-fit-full inline-block">
                 <div class="block">
                   <el-slider
                     class="relative"
                     id="rack-slider"
+                    :disabled="isCustomRequest"
                     v-model="form.totalRack"
                     show-input
                     input-size="small"
                   />
                 </div>
-              </el-form-item>
-            </div>
+                <el-checkbox v-model="isCustomRequest" @change="resetRackTotal">
+                  Custom request
+                </el-checkbox>
+              </div>
+            </el-form-item>
           </el-col>
         </template>
         <template v-if="isBackboneSelection">
           <el-col :md="24" :xl="12">
-            <div class="el-form-item is-required">
-              <label for="addressPoinB" class="el-form-item__label">
-                From (A-end)
-              </label>
+            <el-form-item
+              label="From (A-end)"
+              required
+              prop="address.pointA"
+              ref="pointA"
+            >
               <autocomplete-google
                 @place-changed="handleAddressChanged($event, 'a')"
                 size="regular"
                 id="pointA"
               />
-            </div>
+            </el-form-item>
           </el-col>
           <el-col :md="24" :xl="12">
-            <div class="el-form-item is-required">
-              <label for="addressPoinB" class="el-form-item__label">
-                To (Z-end)
-              </label>
+            <el-form-item
+              label="To (Z-end)"
+              required
+              prop="address.pointB"
+              ref="pointB"
+            >
               <autocomplete-google
                 @place-changed="handleAddressChanged($event, 'b')"
                 size="regular"
                 id="pointB"
               />
-            </div>
+            </el-form-item>
           </el-col>
         </template>
         <el-col :span="24">
-          <el-form-item label="Message" prop="message">
+          <el-form-item
+            label="Message"
+            prop="message"
+            :required="
+              isOthersCapacitySelection ||
+                dialogTitle == 'Other' ||
+                isCustomRequest
+            "
+          >
+            <span
+              v-if="isOthersCapacitySelection || isCustomRequest"
+              class="error-message"
+            >
+              - {{ messageWhenRequired }}
+            </span>
             <el-input
               type="textarea"
               rows="4"
@@ -155,7 +155,7 @@
           >Cancel</el-button
         >
         <el-button
-          :disabled="isFormUncomplete"
+          :disabled="!catchaVerified"
           type="primary"
           class="w-fit-content"
           plain
@@ -186,11 +186,12 @@ export default {
     AutocompleteGoogle
   },
   data: () => ({
-    capacities: ['1GB', '10GB', '100GB', 'Others'],
+    capacities: ['1Gbps', '10Gbps', '100Gbps', 'Fiber', 'Other'],
     loading: false,
     siteKey,
     isSendingData: false,
     catchaVerified: null,
+    isCustomRequest: false,
     form: {
       company: '',
       email: '',
@@ -198,20 +199,28 @@ export default {
       capacity: '',
       totalRack: 0,
       message: '',
-      // phonenumber: {
-      //   num: '',
-      //   valid: null
-      // },
       address: {
         pointA: null,
         pointB: null
       }
     },
     formRules: {
-      // phonenumber: [],
       message: [],
-      'address.fromA': [],
-      'address.toB': [],
+      'address.pointA': [
+        {
+          required: true,
+          message: 'Please input an A point',
+          trigger: ['blur', 'change']
+        }
+      ],
+      'address.pointB': [
+        {
+          required: true,
+          message: 'Please input a Z point',
+          trigger: ['blur', 'change']
+        }
+      ],
+      totalRack: [],
       fullname: [
         {
           required: true,
@@ -225,7 +234,11 @@ export default {
         }
       ],
       company: [
-        { required: true, message: 'Company name is required', trigger: 'blur' }
+        {
+          required: true,
+          message: 'Company name is required',
+          trigger: ['blur', 'change']
+        }
       ],
       email: [
         { required: true, message: 'Please input your email', trigger: 'blur' },
@@ -251,6 +264,30 @@ export default {
       dark: state => state.isDark,
       focus: state => state.map.focus
     }),
+    messageWhenRequired() {
+      if (this.dialogTitle === '') return ''
+      else {
+        let message =
+          'Please, describe your Capacity requirement in more detail in the Message field below.'
+        if (this.dialogTitle.trim() == 'Transit') {
+          message =
+            'Please, describe your Transit requirement in more detail in the Message field below.'
+        } else if (
+          this.dialogTitle.trim() == 'Datacenter' &&
+          this.isCustomRequest
+        ) {
+          message =
+            'Please, describe your custom request details in the Message field below.'
+        }
+        return message
+      }
+    },
+    isRackRequired() {
+      return this.isCustomRequest ? false : true
+    },
+    isOthersCapacitySelection() {
+      return this.form.capacity == 'Other'
+    },
     isBackboneSelection() {
       return this.focus && this.dialogTitle.toLowerCase() == 'backbone'
     },
@@ -265,29 +302,24 @@ export default {
     dialogTitle() {
       return this.buyType && this.buyType.title ? this.buyType.title : ''
     },
-    isFormUncomplete() {
-      // TODO: fix this form uncomplete checker for when using & !using: totalRack
-      const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
-      return (emptyFields.length &&
-        this.dialogTitle === 'Datacenter' &&
-        emptyFields.includes('totalRack')) ||
-        !this.catchaVerified ||
-        this.form.address.pointA == null ||
-        this.form.address.pointB == null
-        ? true
-        : false
-    },
     customDialogClass() {
       return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
     }
   },
   watch: {
     isVisible(bool) {
-      if (!bool) return this.$refs.catpcha.reset()
-      return this.setUserData()
+      if (!bool) {
+        this.$refs.catpcha.reset()
+        this.isCustomRequest = false
+      } else this.setUserData()
     }
   },
   methods: {
+    resetRackTotal(bool) {
+      if (bool) {
+        this.form.totalRack = 0
+      }
+    },
     handleCatchaVerification(v) {
       if (!v) return
       else this.catchaVerified = true
@@ -329,9 +361,11 @@ export default {
       switch (inputTarget) {
         case 'b':
           this.form.address.pointB = { ...place }
+          this.$refs.pointB.clearValidate()
           break
         default:
           this.form.address.pointA = { ...place }
+          this.$refs.pointA.clearValidate()
           break
       }
     },
@@ -427,7 +461,6 @@ export default {
 
       const res = await sendMessage({
         email: data.email,
-        phone: data.phonenumber,
         message,
         elemnt: this.focus.id,
         user_id: await this.$auth.getUserID(),
@@ -439,16 +472,6 @@ export default {
       }
       this.isSendingData = false
     },
-    // validatePhoneNumber({ number, isValid }) {
-    //   try {
-    //     this.form.phonenumber = {
-    //       num: number,
-    //       valid: isValid
-    //     }
-    //   } catch {
-    //     // Ignore
-    //   }
-    // },
     submitForm(formRef) {
       this.$refs[formRef].validate(valid => {
         if (valid) this.sendBuyRequest()
@@ -466,10 +489,6 @@ export default {
         fullname: '',
         capacity: '',
         totalRack: 0,
-        // phonenumber: {
-        //   num: '',
-        //   valid: null
-        // },
         address: {
           pointA: null,
           pointB: null
