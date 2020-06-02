@@ -29,8 +29,9 @@
           :rows="4"
         />
       </el-form-item>
-      <el-form-item>
+      <el-form-item label="Logo">
         <el-upload
+          class="w-fit-full inline-block"
           ref="upload"
           accept="image/*.jpg"
           list-type="picture"
@@ -75,7 +76,11 @@
         <el-collapse-transition>
           <el-card v-if="inputVisible" class="p4 w-auto mt4" shadow="never">
             <el-form ref="tagForm" :model="tag" :rules="tagRules">
-              <el-form-item label="Reference" prop="reference" required>
+              <el-form-item
+                label="Reference (e.g: 'HQ', 'Amsterdam Office', 'Sales Department')"
+                prop="reference"
+                required
+              >
                 <el-input
                   name="street"
                   :class="{ dark }"
