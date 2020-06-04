@@ -6,6 +6,24 @@
       <p class="m0 mt1"><strong>Lng:</strong> {{ infoBox.lng }}</p>
       <p class="m0 mt1"><strong>Zoom:</strong> {{ infoBox.zoom }}</p>
     </div>
+    <div
+      class="absolute information-box z-index20 p2 ml5 text-left"
+      :class="{ dark }"
+    >
+      <p class="m0" v-if="oneClickMessage.length == 1">
+        {{ oneClickMessage[0] }}
+      </p>
+      <template v-else-if="oneClickMessage.length == 2">
+        <p class="m0" v-html="oneClickMessage[0]" />
+        <p class="m0 mt1 inline-block" v-html="oneClickMessage[1]" />
+      </template>
+      <p class="m0 mt1" v-if="type != 'facilities'">
+        {{ doubleClickMessage[0] }}
+      </p>
+      <span class="inline-block ml1" v-else>
+        {{ doubleClickMessage[0] }}
+      </span>
+    </div>
     <properties-dialog
       :mode="dialog.mode"
       :type="type"
@@ -73,6 +91,46 @@ export default {
     },
     isCreation() {
       return this.$store.state.editor.creation
+    },
+    oneClickMessage() {
+      let msg = []
+      switch (this.type) {
+        case 'ixps':
+          msg = [
+            'Click once to edit the properties of the IXP or change its position'
+          ]
+          break
+        case 'cls':
+          msg = [
+            'Click once to edit the properties of the CLS or change its position'
+          ]
+          break
+        case 'facilities':
+          msg = [
+            '<strong>Points:</strong> Click once to edit the properties of the Facility or change its position',
+            '<strong>Polygons:</strong> Click once to edit the properties of a segment.'
+          ]
+          break
+        default:
+          msg = ['Click once to edit the properties of a segment.']
+          break
+      }
+      return msg
+    },
+    doubleClickMessage() {
+      let msg = []
+      switch (this.type) {
+        case 'subsea':
+          msg = ['Click twice to edit the shape of a segment.']
+          break
+        case 'terrestrial-network':
+          msg = ['Click twice to edit the shape of a segment.']
+          break
+        default:
+          msg = []
+          break
+      }
+      return msg
     }
   },
   watch: {
@@ -261,7 +319,7 @@ export default {
         )
       }
       if (zoomTo) {
-        return await this.handleZoomToFeature(
+        await this.handleZoomToFeature(
           feats ? fCollectionFormat(feats) : featuresCollection
         )
       }
