@@ -1,5 +1,9 @@
 # Infrapedia Open Source
 
+## Version 2.1.1
+
+- Editor helper messages for the editing elements: IXP, CLS, Facilities, Subsea, Terrestrial Networks.
+
 ## Version 1.0.0
 
 - Alerts page and services
