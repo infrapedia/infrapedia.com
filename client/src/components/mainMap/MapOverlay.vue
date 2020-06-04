@@ -62,9 +62,6 @@ export default {
     next()
   },
   async mounted() {
-    if (this.$store.state.editor.scene.features.list.length) {
-      this.$store.dispatch('editor/setList', [])
-    }
     await this.loadDataIfQueryParamsExist()
     bus.$on(
       `${navbarEvents.TOGGLE_MOBILE_DRAWER}`,

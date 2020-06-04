@@ -201,7 +201,7 @@
           type="primary"
           class="w-fit-full capitalize"
           round
-          :disabled="checkGeomLength"
+          :disabled="isSendDataDisabled"
           :loading="isSendingData"
           @click="sendData"
         >
@@ -266,6 +266,10 @@ export default {
     isSendingData: {
       type: Boolean,
       default: () => false
+    },
+    isSendDataDisabled: {
+      type: Boolean,
+      required: true
     }
   },
   computed: {
@@ -327,9 +331,6 @@ export default {
     },
     autocompleteAddress() {
       return this.tag ? this.tag.fullAddress : ''
-    },
-    checkGeomLength() {
-      return this.$store.state.editor.scene.features.list.length ? false : true
     },
     tagMode() {
       return this.tagOnEdit !== null && this.tag ? 'edit' : 'create'

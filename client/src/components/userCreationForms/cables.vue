@@ -242,7 +242,7 @@
             class="w-fit-full capitalize"
             round
             :loading="isSendingData"
-            :disabled="checkGeomLength"
+            :disabled="isSendDataDisabled"
             @click="sendData"
           >
             {{ saveBtn }}
@@ -310,6 +310,10 @@ export default {
     isSendingData: {
       type: Boolean,
       default: () => false
+    },
+    isSendDataDisabled: {
+      type: Boolean,
+      required: true
     }
   },
   computed: {
@@ -390,9 +394,6 @@ export default {
     },
     dark() {
       return this.$store.state.isDark
-    },
-    checkGeomLength() {
-      return this.$store.state.editor.scene.features.list.length ? false : true
     }
   },
   mounted() {

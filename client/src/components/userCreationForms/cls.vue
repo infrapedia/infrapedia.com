@@ -96,7 +96,7 @@
           class="w-fit-full capitalize"
           round
           :loading="isSendingData"
-          :disabled="checkGeomLength"
+          :disabled="isSendDataDisabled"
           @click="sendData"
         >
           {{ saveBtn }}
@@ -142,6 +142,10 @@ export default {
     isSendingData: {
       type: Boolean,
       default: () => false
+    },
+    isSendDataDisabled: {
+      type: Boolean,
+      required: true
     }
   },
   computed: {
@@ -216,11 +220,6 @@ export default {
     },
     saveBtn() {
       return this.mode == 'create' ? 'Create CLS' : 'Save changes'
-    },
-    checkGeomLength() {
-      return this.$store.state.editor.scene.features.list.length > 0
-        ? false
-        : true
     }
   },
   watch: {

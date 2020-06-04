@@ -45,10 +45,13 @@ import { mapConfig } from '../../config/mapConfig'
 import {
   EDITOR_LOAD_DRAW,
   EDITOR_SET_FEATURES,
-  EDITOR_FILE_CONVERTED
+  EDITOR_FILE_CONVERTED,
+  EDITOR_SET_FEATURES_LIST
 } from '../../events/editor'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { editorMapConfig } from '../../config/editorMapConfig'
+import bbox from '@turf/bbox'
+import debounce from '../../helpers/debounce'
 
 export default {
   components: {
@@ -61,6 +64,14 @@ export default {
       lat: mapConfig.center[1],
       lng: mapConfig.center[0],
       zoom: mapConfig.zoom
+    },
+    scene: {
+      features: {
+        list: [],
+        selected: null
+      },
+      creation: null,
+      edition: null
     },
     controls: null,
     dialog: {
@@ -82,15 +93,6 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
-    },
-    scene() {
-      return this.$store.state.editor.scene
-    },
-    isEdition() {
-      return this.$store.state.editor.edition
-    },
-    isCreation() {
-      return this.$store.state.editor.creation
     },
     oneClickMessage() {
       let msg = []
@@ -142,17 +144,21 @@ export default {
         this.controls.updateControls(newState)
       },
       deep: true
+    },
+    'scene.features.list'(list) {
+      this.$emit('features-list-change', list)
     }
   },
   mounted() {
-    this.map = this.addMapEvents(this.createMap())
+    this.map = this.handleSetMapSources(this.addMapEvents(this.createMap()))
     this.toggleDarkMode(this.dark)
     this.controls.resetScene(false)
-    if (this.scene.features.list.length) {
-      this.handleRecreateDraw()
+
+    if (this.scene.features.list.length > 0) {
+      this.$emit('features-list-change', this.scene.features.list)
     }
 
-    this.handleSetMapSources()
+    bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
     bus.$on(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
@@ -163,17 +169,21 @@ export default {
     }
   },
   methods: {
-    handleSetMapSources() {
+    handleSetFeaturesList(list) {
+      this.scene.features.list = list
+    },
+    handleSetMapSources(map) {
       let vm = this
-      this.map.on('load', function() {
+      map.on('load', function() {
         for (let source of editorMapConfig.sources) {
-          vm.map.addSource(source, {
+          map.addSource(source, {
             type: 'geojson',
             data: fCollectionFormat()
           })
         }
         vm.addMapLayers(vm.map)
       })
+      return map
     },
     addMapLayers(map) {
       for (let layer of editorMapConfig.layers) {
@@ -185,7 +195,7 @@ export default {
 
       await this.draw.set(fc)
       await this.handleZoomToFeature(fc)
-      return await this.$store.dispatch('editor/setList', fc.features)
+      this.scene.features.list = fc
     },
     async handleMapFormFeatureSelection({ t, fc, removeLoadState }) {
       if (!this.map) return
@@ -206,7 +216,7 @@ export default {
     },
     async handleZoomToFeature(fc) {
       if (fc.features.length <= 0) return
-      const bbox = require('@turf/bbox').default
+
       const bounds = bbox(fc)
       const boundsConfig = {
         animate: true,
@@ -268,7 +278,7 @@ export default {
         draw: this.draw,
         type: this.type,
         scene: this.scene,
-        $dispatch: this.$store.dispatch,
+        // $dispatch: this.$store.dispatch,
         handleEditFeatureProperties: feat => {
           this.dialog.mode = 'edit'
           this.dialog.visible = true
@@ -276,7 +286,7 @@ export default {
         },
         handleBeforeFeatureCreation: feat => {
           this.dialog.selectedFeature = feat
-          feat.geometry.type !== 'Point'
+          feat.geometry.type != 'Point'
             ? (this.dialog.visible = true)
             : this.handleDialogData({ name: '' })
         }
@@ -301,8 +311,9 @@ export default {
       })
       return map
     },
-    async handleRecreateDraw(feats, zoomTo = true) {
+    handleRecreateDraw: debounce(async function(feats, zoomTo = true) {
       // Deleting everything in case there's something already drawn that could be repeted
+      // if (this.scene.features.list.length <= 0) return
       await this.draw.trash()
       const featuresCollection = fCollectionFormat(
         JSON.parse(JSON.stringify(this.scene.features.list))
@@ -313,17 +324,18 @@ export default {
         featuresCollection.features.length > 0 &&
         !featuresCollection.features[0].id
       ) {
-        this.$store.dispatch(
-          'editor/setList',
-          this.setFeaturesID(featuresCollection, featuresID)
+        this.scene.features.list = this.setFeaturesID(
+          featuresCollection,
+          featuresID
         )
       }
+
       if (zoomTo) {
         await this.handleZoomToFeature(
           feats ? fCollectionFormat(feats) : featuresCollection
         )
       }
-    },
+    }, 820),
     setFeaturesID(fc, ids = []) {
       return fc.features.map((ft, i) => {
         if (ids.length > 0) {
@@ -335,17 +347,23 @@ export default {
     handleDrawSelectionChange(e) {
       if (e.features.length <= 0) return
       const featureSelected = this.scene.features.list.filter(
-        feat => feat.id === e.features[0].id
+        feat => feat.id == e.features[0].id
       )
-      return this.controls.handleDrawSelectionChange(featureSelected)
+      this.controls.handleDrawSelectionChange(featureSelected)
     },
     handleCreateFeature(feat) {
-      this.$store.dispatch('editor/confirmCreation', feat)
-      return this.controls.resetScene()
+      this.scene.features.list.push(feat)
+      this.controls.resetScene()
     },
-    handleEditFeatProps(feat) {
-      this.$store.dispatch('editor/editFeature', feat)
-      return this.controls.resetScene()
+    handleEditFeatProps(feats) {
+      this.scene.features.list.forEach((feat, i) => {
+        for (let featEdit of feats) {
+          if (feat.id == featEdit.id) {
+            this.scene.features.list[i] = { ...featEdit }
+          }
+        }
+      })
+      this.controls.resetScene()
     },
     toggleDarkMode(dark) {
       return this.map.setStyle(dark ? mapConfig.darkBasemap : mapConfig.default)
