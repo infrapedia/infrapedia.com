@@ -69,6 +69,18 @@
             </el-col>
             <el-col
               :span="10"
+              v-else-if="info[col.value] && col.label == 'Facilities'"
+            >
+              <p class="label capitalize">
+                {{
+                  info.terrestrial
+                    ? `${col.label} (On-Net)`
+                    : `${col.label} (POPs)`
+                }}
+              </p>
+            </el-col>
+            <el-col
+              :span="10"
               v-else-if="
                 info[col.value] &&
                   col.label != 'Latency' &&
