@@ -19,6 +19,23 @@
 
   .header {
     min-height: 3rem;
+    .action-buttons {
+      float: right;
+      top: -2rem;
+      width: 5rem;
+      #verified-i {
+        font-size: 16px;
+        position: absolute;
+        top: 0.5rem;
+        left: 0.4rem;
+        color: rgb(112, 112, 112);
+        &.is-verified {
+          color: $white-full;
+          left: -1rem;
+          top: 0;
+        }
+      }
+    }
   }
 
   .el-card {
@@ -39,19 +56,6 @@
       right: 1rem;
       &:hover {
         background-color: $light-hover;
-      }
-    }
-
-    #verified-i {
-      font-size: 16px;
-      position: absolute;
-      top: -1.5rem;
-      right: -2rem;
-      left: unset;
-      color: rgb(112, 112, 112);
-      &.is-verified {
-        color: $white-full;
-        right: -3rem;
       }
     }
   }
