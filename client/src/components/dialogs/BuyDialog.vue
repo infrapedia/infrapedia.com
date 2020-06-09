@@ -179,6 +179,7 @@ import VueRecaptcha from 'vue-recaptcha'
 import siteKey from '../../config/siteKey'
 import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 import validateEmail from '../../helpers/validateEmail'
+import buyMessageFormatter from '../../helpers/buyMessageFormatter'
 
 export default {
   components: {
@@ -372,98 +373,24 @@ export default {
     async sendBuyRequest() {
       this.isSendingData = true
       const data = {
-        cable: this.$store.state.map.currentSelection.name,
-        type: this.dialogTitle,
+        element: this.$store.state.map.currentSelection.name,
+        type: this.focus.type.toLowerCase(),
+        custom: this.isCustomRequest,
+        buyType: this.dialogTitle,
         ...this.form
       }
 
-      let message
-
-      message =
-        data.message != ''
-          ? `
-            <p style="font-size: 16px; color: #323232;"> Hi, ${
-              data.fullname
-            } (${data.email}) sent you a message: </p>
-            <br />
-            <p style="font-size: 16px; color: #323232; text-transform: capitalize;"> ${
-              data.message
-            } </p>
-            <br />
-            <p style="font-size: 16px; color: #323232;"> AI: asked to buy an amount of ${
-              data.capacity ? data.capacity : data.totalRack + ' rack total'
-            } for ${data.cable}(${data.type}) </p>`
-          : `
-            <p style="font-size: 16px; color: #323232;"> Hi, ${
-              data.fullname
-            } (${data.email}) </p>
-            <br />
-            <p style="font-size: 16px; color: #323232;"> AI: asked to buy an amount of ${
-              data.capacity ? data.capacity : data.totalRack + ' rack total'
-            } for ${data.cable}(${data.type}) </p>`
-
-      if (
-        data.address.pointA &&
-        data.address.pointB &&
-        this.dialogTitle.toLowerCase() == 'backbone'
-      ) {
-        let zipcodeA = ''
-        let zipcodeB = ''
-
-        for (let t of data.address.pointA.address_components) {
-          if (t.types.includes('postal_code')) {
-            zipcodeA = t.short_name
-          }
-        }
-
-        for (let t of data.address.pointB.address_components) {
-          if (t.types.includes('postal_code')) {
-            zipcodeB = t.short_name
-          }
-        }
-
-        message =
-          data.message != ''
-            ? `
-            <p style="font-size: 16px; color: #323232;"> Hi, ${
-              data.fullname
-            } (${data.email}) sent you a message: </p>
-            <br />
-            <p style="font-size: 16px; color: #323232; text-transform: capitalize;"> ${
-              data.message
-            } </p>
-            <br />
-            <p style="font-size: 16px; color: #323232;"> AI: asked to buy an amount of ${
-              data.capacity ? data.capacity : data.totalRack + ' rack total'
-            } for ${data.cable}(${data.type}). From pointA ${
-                data.address.pointA.fullAddress
-              }${
-                zipcodeA && zipcodeA != '' ? '(' + zipcodeA + ')' : ''
-              } to pointB ${data.address.pointB.fullAddress}${
-                zipcodeB && zipcodeB != '' ? '(' + zipcodeB + ')' : ''
-              } </p>`
-            : `
-              <p style="font-size: 16px; color: #323232;"> Hi, ${
-                data.fullname
-              } (${data.email}) </p>
-              <br />
-              <p style="font-size: 16px; color: #323232;"> AI: asked to buy an amount of ${
-                data.capacity ? data.capacity : data.totalRack + ' rack total'
-              } for ${data.cable}(${data.type}). From pointA ${
-                data.address.pointA.fullAddress
-              }${
-                zipcodeA && zipcodeA != '' ? '(' + zipcodeA + ')' : ''
-              } to pointB ${data.address.pointB.fullAddress}${
-                zipcodeB && zipcodeB != '' ? '(' + zipcodeB + ')' : ''
-              }</p>
-              `
-      }
+      const userID = await this.$auth.getUserID()
+      const message = buyMessageFormatter({
+        data,
+        userID
+      })
 
       const res = await sendMessage({
         email: data.email,
         message,
+        user_id: userID,
         elemnt: this.focus.id,
-        user_id: await this.$auth.getUserID(),
         t: getSelectionTypeNumber(this.focus.type)
       })
 

@@ -1,5 +1,9 @@
 # Infrapedia Open Source
 
+## Version 2.1.3
+
+- buyMessageFormatter helper function for different types of buy request
+
 ## Version 2.1.1
 
 - Editor helper messages for the editing elements: IXP, CLS, Facilities, Subsea, Terrestrial Networks.
