@@ -4,6 +4,10 @@
 
 - buyMessageFormatter helper function for different types of buy request
 
+## Version 2.1.2
+
+- Vuex has been removed from the Editor because it was slowing down the system when using it alongside the mapbox "Draw" plugin
+
 ## Version 2.1.1
 
 - Editor helper messages for the editing elements: IXP, CLS, Facilities, Subsea, Terrestrial Networks.
