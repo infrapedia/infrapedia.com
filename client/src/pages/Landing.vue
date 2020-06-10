@@ -1,16 +1,24 @@
 <template>
   <div class="min-height60vh">
     <home-page />
+    <votation-dialog
+      :is-visible="isPoolDialog"
+      @close="() => (isPoolDialog = false)"
+    />
   </div>
 </template>
 
 <script>
 import HomePage from '../components/homepage/HomePage'
 import { checkCookie } from '../helpers/cookies'
+import VotationDialog from '../components/dialogs/VotationDialog'
+import { checkUserVote } from '../services/api/voting'
+import debounce from '../helpers/debounce'
 
 export default {
   components: {
-    HomePage
+    HomePage,
+    VotationDialog
   },
   head: {
     title: 'Global Internet Infrastructure Map | Infrapedia',
@@ -32,8 +40,14 @@ export default {
       }
     ]
   },
+  data: () => ({
+    isPoolDialog: false
+  }),
   beforeCreate() {
     this.$emit('layout', 'landing-layout')
+  },
+  async created() {
+    await this.checkVote()
   },
   beforeRouteEnter(to, from, next) {
     next(async vm => {
@@ -51,6 +65,16 @@ export default {
           })
       }
     })
+  },
+  methods: {
+    checkVote: debounce(async function() {
+      const { t } = (await checkUserVote('')) || {
+        t: 'error'
+      }
+      if (t && t != 'error') {
+        this.isPoolDialog = true
+      }
+    }, 1200)
   }
 }
 </script>
