@@ -4,9 +4,9 @@
       class="votation-pool-wrapper transition-all"
       :class="{ 'no-width': currentStep == 4 }"
     >
-      <h2 class="title fs-xlarge text-center font-medium">
+      <h1 class="title text-center font-medium">
         {{ titles[currentStep] }}
-      </h2>
+      </h1>
       <el-image
         class="mt2 w-fit-full awards-image"
         src="https://cdn1.infrapedia.com/assets/awards.png"
@@ -293,7 +293,7 @@ export default {
           this.$router.replace('/app')
         }, 820)
       }
-    }, 1200),
+    }, 2600),
     handleSelection(currentStep, opt) {
       if (this.selections[this.titles[currentStep]] == opt) {
         this.selections[this.titles[currentStep]] = ''

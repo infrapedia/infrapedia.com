@@ -49,8 +49,10 @@ export default {
   },
   methods: {
     checkVote: debounce(async function() {
-      const { t } = await checkUserVote(await this.$auth.getUserID())
-      if (t != 'error') {
+      const { t } = (await checkUserVote(await this.$auth.getUserID())) || {
+        t: 'error'
+      }
+      if (t && t != 'error') {
         this.isPoolDialog = true
       }
     }, 1200)
