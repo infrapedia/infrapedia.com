@@ -57,7 +57,12 @@
 
               <ul role="group">
                 <li v-for="(key, i) in selectionsKeys" :key="i" class="mt2">
-                  <span v-if="i >= selectionsKeys.length - 1"> And </span>
+                  <!-- <span
+                    v-if="i >= selectionsKeys.length - 1"
+                    class="block w-fit-full"
+                  >
+                    And
+                  </span> -->
                   <strong>
                     {{ selections[key] }}
                   </strong>
@@ -88,21 +93,29 @@
                 fit="scale-down"
               />
             </router-link>
-            <div class="controllers flex row nowrap justify-content-end pr12">
+            <div
+              class="controllers flex row nowrap justify-content-end pr12 mt4"
+            >
               <el-button
                 icon="el-icon-arrow-left"
                 :disabled="isDisabledBackButton"
                 class="mr4"
-                circle
                 @click="handleControllersButton(currentStep, 'previous')"
-              />
+              >
+                Prev. category
+              </el-button>
               <el-button
-                circle
-                icon="el-icon-arrow-right"
                 :disabled="isDisabledNextButton"
                 @click="handleControllersButton(currentStep, 'next')"
-              />
+              >
+                Next. category
+                <i class="el-icon-arrow-right" />
+              </el-button>
             </div>
+            <el-divider />
+            <p class="text-center">
+              {{ subtitle[currentStep] }}
+            </p>
           </header>
           <div class="options-wrapper overflow-y-auto mt4 overflow-x-hidden">
             <el-button
@@ -132,6 +145,12 @@ import { checkUserVote } from '../services/api/voting'
 export default {
   data: () => ({
     sendingData: false,
+    subtitle: [
+      'Choose one subsea cable system below',
+      'Choose one of the Internet Exchanges below',
+      'Choose one of the Telecom Companies below',
+      'Choose one the datacenter companies below'
+    ],
     steps: {
       0: [
         'AEC-1',
@@ -282,7 +301,7 @@ export default {
   },
   async created() {
     this.$emit('layout', 'nothing-layout')
-    await this.checkVote()
+    // await this.checkVote()
   },
   methods: {
     checkVote: debounce(async function() {
