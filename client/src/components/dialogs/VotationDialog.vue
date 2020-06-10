@@ -1,7 +1,7 @@
 <template>
   <transition name="animated slideInUp" mode="out-in">
     <div
-      class="el-dialog absolute transition-all z-index120"
+      class="el-dialog transition-all z-index120"
       :class="{ dark, visible: isVisible }"
     >
       <div>
