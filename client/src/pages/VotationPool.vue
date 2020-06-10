@@ -52,7 +52,7 @@
                 </h2>
               </header>
               <p>
-                You vote:
+                Your votes:
               </p>
 
               <ul role="group">
