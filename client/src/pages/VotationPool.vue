@@ -233,7 +233,7 @@ export default {
         'CenturyLink',
         'NTT',
         'Zayo',
-        'Durand',
+        // 'Durand',
         'Iron Mountain',
         'Flexential',
         'Xfernet'
