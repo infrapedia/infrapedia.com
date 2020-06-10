@@ -301,7 +301,7 @@ export default {
   },
   async created() {
     this.$emit('layout', 'nothing-layout')
-    // await this.checkVote()
+    await this.checkVote()
   },
   methods: {
     checkVote: debounce(async function() {
