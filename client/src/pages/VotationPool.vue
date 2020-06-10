@@ -245,29 +245,23 @@ export default {
       )
     },
     currentImage() {
-      let src =
-        'https://pmiind.com/wp-content/uploads/2015/07/ThinkstockPhotos-178547455.jpg'
+      let src = 'https://cdn1.infrapedia.com/assets/bgs/subsea.jpg'
+
       switch (this.currentStep) {
         case 1:
-          src = 'https://guardian.ng/wp-content/uploads/2017/09/IXPN.jpg'
+          src = 'https://cdn1.infrapedia.com/assets/bgs/ixp.jpg'
           break
         case 2:
-          src =
-            'https://www.5gexpo.net/wp-content/uploads/2019/12/Convergence.jpg'
-          // 'https://lh3.googleusercontent.com/proxy/LII-QvAdKxTMKmUeLYOSDXaqbeY_uJlYEKsvpgmLqDE-ffTVfJPUZG9naUiR8-vBQ8-UYaFCigORLtxUoCce1891IX0XF5yXXXJNRspp3ma-qqYAEK_VUhi9er6hz0VhIWE'
+          src = 'https://cdn1.infrapedia.com/assets/bgs/telecomunication.jpg'
           break
         case 3:
-          src =
-            'https://techinsight.com.vn/wp-content/uploads/2018/03/Untitled-1-26.gif'
-          // 'https://images.squarespace-cdn.com/content/v1/59cac734cf81e0d666427339/1519699440248-4CBSR9QAXYE8N9GHXGZH/ke17ZwdGBToddI8pDm48kKcRVY9umB9R8cjGM3icMg97gQa3H78H3Y0txjaiv_0fDoOvxcdMmMKkDsyUqMSsMWxHk725yiiHCCLfrh8O1z5QPOohDIaIeljMHgDF5CVlOqpeNLcJ80NK65_fV7S1Uf-wI1g1jgQRccHdfXj0wGS2Kn0KFv_ADIi2jEwiLX0TZ4SODUbdTU85jG6Jwp5K1Q/data-centers.jpg?format=2500w'
+          src = 'https://cdn1.infrapedia.com/assets/bgs/server.jpg'
           break
         case 4:
           src = ''
-          // 'https://images.squarespace-cdn.com/content/v1/59cac734cf81e0d666427339/1519699440248-4CBSR9QAXYE8N9GHXGZH/ke17ZwdGBToddI8pDm48kKcRVY9umB9R8cjGM3icMg97gQa3H78H3Y0txjaiv_0fDoOvxcdMmMKkDsyUqMSsMWxHk725yiiHCCLfrh8O1z5QPOohDIaIeljMHgDF5CVlOqpeNLcJ80NK65_fV7S1Uf-wI1g1jgQRccHdfXj0wGS2Kn0KFv_ADIi2jEwiLX0TZ4SODUbdTU85jG6Jwp5K1Q/data-centers.jpg?format=2500w'
           break
         default:
-          src =
-            'https://pmiind.com/wp-content/uploads/2015/07/ThinkstockPhotos-178547455.jpg'
+          src = 'https://cdn1.infrapedia.com/assets/bgs/subsea.jpg'
           break
       }
       return src
