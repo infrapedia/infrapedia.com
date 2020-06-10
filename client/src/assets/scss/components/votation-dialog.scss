@@ -1,0 +1,9 @@
+.el-dialog {
+  bottom: -42rem;
+  left: 2rem;
+  margin: 0 auto;
+  max-width: 24rem;
+  &.visible {
+    bottom: 2rem;
+  }
+}

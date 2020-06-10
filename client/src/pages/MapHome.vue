@@ -1,13 +1,23 @@
 <template>
-  <map-overlay />
+  <div>
+    <map-overlay />
+    <votation-dialog
+      :is-visible="isPoolDialog"
+      @close="() => (isPoolDialog = false)"
+    />
+  </div>
 </template>
 
 <script>
 import MapOverlay from '../components/mainMap/MapOverlay'
+import VotationDialog from '../components/dialogs/VotationDialog'
+import { checkUserVote } from '../services/api/voting'
+import debounce from '../helpers/debounce'
 
 export default {
   components: {
-    MapOverlay
+    MapOverlay,
+    VotationDialog
   },
   head: {
     title: 'Infrapedia | Global Internet Infrastructure Map',
@@ -28,8 +38,22 @@ export default {
       }
     ]
   },
+  data: () => ({
+    isPoolDialog: false
+  }),
   beforeCreate() {
     this.$emit('layout', 'map-app-layout')
+  },
+  async created() {
+    await this.checkVote()
+  },
+  methods: {
+    checkVote: debounce(async function() {
+      const { t } = await checkUserVote(await this.$auth.getUserID())
+      if (t != 'error') {
+        this.isPoolDialog = true
+      }
+    }, 1200)
   }
 }
 </script>

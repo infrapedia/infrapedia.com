@@ -10,8 +10,6 @@ function appErrorHandler(err, vm, info) {
   )
     return
 
-  console.error(err)
-
   return Notification({
     type: 'error',
     message: err.message,
