@@ -173,12 +173,11 @@
           <ul class="list-wrapper" role="group">
             <template v-for="(vote, y) in votesPool[category]">
               <li v-if="y <= 4" :key="category + y" class="mt4">
-                <span> {{ vote._id }} ({{ vote.votes }} votes) </span>
+                <span> {{ vote._id }}</span>
                 <el-progress
                   :stroke-width="12"
-                  :format="() => ''"
-                  :percentage="(vote.votes * 100) / vote.totalVotes"
-                ></el-progress>
+                  :percentage="calculatePercentage(vote)"
+                />
               </li>
             </template>
           </ul>
@@ -255,6 +254,9 @@ export default {
     }
   },
   methods: {
+    calculatePercentage(vote) {
+      return Math.round((vote.votes * 100) / vote.totalVotes)
+    },
     async loadVotesPool() {
       const {
         data: { r: votes = [] }
