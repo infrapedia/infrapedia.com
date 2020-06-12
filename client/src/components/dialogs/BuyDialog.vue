@@ -100,28 +100,32 @@
         </template>
         <template v-if="isBackboneSelection">
           <el-col :md="24" :xl="12">
-            <div class="el-form-item is-required">
-              <label for="addressPoinB" class="el-form-item__label">
-                From (A-end)
-              </label>
+            <el-form-item
+              label="From (A-end)"
+              required
+              prop="address.pointA"
+              ref="pointA"
+            >
               <autocomplete-google
                 @place-changed="handleAddressChanged($event, 'a')"
                 size="regular"
                 id="pointA"
               />
-            </div>
+            </el-form-item>
           </el-col>
           <el-col :md="24" :xl="12">
-            <div class="el-form-item is-required">
-              <label for="addressPoinB" class="el-form-item__label">
-                To (Z-end)
-              </label>
+            <el-form-item
+              label="To (Z-end)"
+              required
+              prop="address.pointB"
+              ref="pointB"
+            >
               <autocomplete-google
                 @place-changed="handleAddressChanged($event, 'b')"
                 size="regular"
                 id="pointB"
               />
-            </div>
+            </el-form-item>
           </el-col>
         </template>
         <el-col :span="24">
@@ -210,8 +214,20 @@ export default {
     formRules: {
       // phonenumber: [],
       message: [],
-      'address.fromA': [],
-      'address.toB': [],
+      'address.pointA': [
+        {
+          required: true,
+          message: 'Please input an A point',
+          trigger: ['blur', 'change']
+        }
+      ],
+      'address.pointB': [
+        {
+          required: true,
+          message: 'Please input a Z point',
+          trigger: ['blur', 'change']
+        }
+      ],
       fullname: [
         {
           required: true,
@@ -269,11 +285,9 @@ export default {
       // TODO: fix this form uncomplete checker for when using & !using: totalRack
       const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
       return (emptyFields.length &&
-        this.dialogTitle === 'Datacenter' &&
+        this.dialogTitle == 'Datacenter' &&
         emptyFields.includes('totalRack')) ||
-        !this.catchaVerified ||
-        this.form.address.pointA == null ||
-        this.form.address.pointB == null
+        !this.catchaVerified
         ? true
         : false
     },
@@ -329,9 +343,11 @@ export default {
       switch (inputTarget) {
         case 'b':
           this.form.address.pointB = { ...place }
+          this.$refs.pointB.clearValidate()
           break
         default:
           this.form.address.pointA = { ...place }
+          this.$refs.pointA.clearValidate()
           break
       }
     },
