@@ -10,6 +10,16 @@
           :class="{ dark }"
           class="w-fit-full"
           v-model="form.name"
+          clearable
+          @input="checkName"
+        />
+        <el-alert
+          v-if="isNameRepeated"
+          class="mt4 p2"
+          type="error"
+          :closable="false"
+          description="This name already exists in our database. Use a different name or
+          consider extending your name."
         />
       </el-form-item>
       <el-form-item label="Status" prop="category" required>
@@ -265,6 +275,8 @@ import { clsListConnectedToCable, searchCls } from '../../services/api/cls'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import * as events from '../../events/mapForm'
 import { getClsGeoms } from '../../services/api/cls'
+import { checkCableNameExistence } from '../../services/api/check_name'
+import debounce from '../../helpers/debounce'
 
 export default {
   name: 'CableForm',
@@ -287,6 +299,7 @@ export default {
     inputVisible: false,
     isLoadingFacs: false,
     isLoadingOrgs: false,
+    isNameRepeated: false,
     warnTagDuplicate: false,
     litCapacityFields: []
   }),
@@ -448,6 +461,21 @@ export default {
     }
   },
   methods: {
+    checkName: debounce(async function(name) {
+      this.isNameRepeated = false
+      const {
+        t,
+        data: { r }
+      } = (await checkCableNameExistence({
+        user_id: this.$auth.getUserID(),
+        name
+      })) || { t: 'error', data: { r: false } }
+      if (t != 'error' && r >= 1) {
+        this.isNameRepeated = true
+      } else {
+        this.isNameRepeated = false
+      }
+    }, 320),
     async handleSetFeatureOntoMap({ selections, removeLoadState }) {
       const fc = await this.handleGetClsGeom(selections)
 

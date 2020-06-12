@@ -9,6 +9,16 @@
           class="w-fit-full"
           v-model="form.name"
           :disabled="isViewMode"
+          clearable
+          @input="checkName"
+        />
+        <el-alert
+          v-if="isNameRepeated"
+          class="mt4 p2"
+          type="error"
+          :closable="false"
+          description="This name already exists in our database. Use a different name or
+          consider extending your name."
         />
       </el-form-item>
       <el-form-item label="Owners" prop="owners" required>
@@ -138,6 +148,8 @@
 <script>
 import { searchOrganization } from '../../services/api/organizations'
 import VMultiSelect from '../../components/MultiSelect'
+import { checkIxpsNameExistence } from '../../services/api/check_name'
+import debounce from '../../helpers/debounce'
 
 export default {
   name: 'FacsForm',
@@ -148,6 +160,7 @@ export default {
     tag: '',
     inputVisible: false,
     tagsList: [],
+    isNameRepeated: false,
     isOwnersSelectEmpty: false,
     isLoadingOwners: false,
     ownersList: []
@@ -262,6 +275,21 @@ export default {
     }
   },
   methods: {
+    checkName: debounce(async function(name) {
+      this.isNameRepeated = false
+      const {
+        t,
+        data: { r }
+      } = (await checkIxpsNameExistence({
+        user_id: this.$auth.getUserID(),
+        name
+      })) || { t: 'error', data: { r: false } }
+      if (t != 'error' && r >= 1) {
+        this.isNameRepeated = true
+      } else {
+        this.isNameRepeated = false
+      }
+    }, 320),
     async loadOwnersSearch(s) {
       if (s === '') return
 

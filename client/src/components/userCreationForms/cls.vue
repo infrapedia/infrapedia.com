@@ -5,7 +5,21 @@
     </header>
     <el-form ref="form" :model="form" :rules="formRules">
       <el-form-item label="Name" required prop="name">
-        <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
+        <el-input
+          :class="{ dark }"
+          class="w-fit-full"
+          v-model="form.name"
+          clearable
+          @input="checkName"
+        />
+        <el-alert
+          v-if="isNameRepeated"
+          class="mt4 p2"
+          type="error"
+          :closable="false"
+          description="This name already exists in our database. Use a different name or
+          consider extending your name."
+        />
       </el-form-item>
       <el-form-item label="Country" required prop="country">
         <el-select
@@ -114,6 +128,8 @@ import VMultiSelect from '../../components/MultiSelect'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { searchOrganization } from '../../services/api/organizations'
 import countriesList from '../../config/countriesList'
+import { checkClsNameExistence } from '../../services/api/check_name'
+import debounce from '../../helpers/debounce'
 
 export default {
   name: 'CLSForm',
@@ -123,6 +139,7 @@ export default {
     ownersList: [],
     cablesList: [],
     loading: false,
+    isNameRepeated: false,
     isLoadingCables: false,
     isOwnersSelectEmpty: false
   }),
@@ -247,6 +264,21 @@ export default {
     }
   },
   methods: {
+    checkName: debounce(async function(name) {
+      this.isNameRepeated = false
+      const {
+        t,
+        data: { r }
+      } = (await checkClsNameExistence({
+        user_id: this.$auth.getUserID(),
+        name
+      })) || { t: 'error', data: { r: false } }
+      if (t != 'error' && r >= 1) {
+        this.isNameRepeated = true
+      } else {
+        this.isNameRepeated = false
+      }
+    }, 320),
     async loadOwnersSearch(s) {
       if (s.length <= 0) return
 

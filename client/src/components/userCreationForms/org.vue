@@ -15,7 +15,21 @@
     </header>
     <el-form ref="orgForm" :model="form" :rules="formRules" class="p2">
       <el-form-item label="Name" prop="name" required>
-        <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
+        <el-input
+          :class="{ dark }"
+          class="w-fit-full"
+          v-model="form.name"
+          clearable
+          @input="checkName"
+        />
+        <el-alert
+          v-if="isNameRepeated"
+          class="mt4 p2"
+          type="error"
+          :closable="false"
+          description="This name already exists in our database. Use a different name or
+          consider extending your name."
+        />
       </el-form-item>
       <el-form-item label="URL" prop="link">
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.link" />
@@ -158,6 +172,8 @@ import apiConfig from '../../config/apiConfig'
 import countriesList from '../../config/countriesList'
 import { uploadOrgLogo } from '../../services/api/uploads'
 import AutocompleteGoogle from '../../components/AutocompleteGoogle'
+import { checkOrganizationNameExistence } from '../../services/api/check_name'
+import debounce from '../../helpers/debounce'
 
 export default {
   name: 'OrgForm',
@@ -167,6 +183,7 @@ export default {
   data: () => ({
     fileList: [],
     countriesList,
+    isNameRepeated: false,
     tag: {
       fullAddress: '',
       reference: '',
@@ -274,6 +291,21 @@ export default {
     }
   },
   methods: {
+    checkName: debounce(async function(name) {
+      this.isNameRepeated = false
+      const {
+        t,
+        data: { r }
+      } = (await checkOrganizationNameExistence({
+        user_id: this.$auth.getUserID(),
+        name
+      })) || { t: 'error', data: { r: false } }
+      if (t != 'error' && r >= 1) {
+        this.isNameRepeated = true
+      } else {
+        this.isNameRepeated = false
+      }
+    }, 320),
     handleFileListRemove() {
       this.form.logo = ''
       this.fileList = []
