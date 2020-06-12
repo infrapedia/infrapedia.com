@@ -1,7 +1,7 @@
 const types = [
   {
     value: 1,
-    t: ['submarine', 'cable']
+    t: ['submarine', 'cable', 'subsea', 'terrestrial-network']
   },
   {
     value: 2,

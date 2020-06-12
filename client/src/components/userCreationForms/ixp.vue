@@ -9,6 +9,29 @@
           class="w-fit-full"
           v-model="form.name"
           :disabled="isViewMode"
+          clearable
+          @input="checkName"
+        />
+        <el-alert
+          v-if="isNameRepeated"
+          class="mt4 p2"
+          type="error"
+          :closable="false"
+          description="This name already exists in our database. Use a different name or
+          consider extending your name."
+        />
+      </el-form-item>
+      <el-form-item label="Owners" prop="owners" required>
+        <v-multi-select
+          :mode="mode"
+          :is-required="true"
+          :is-field-empty="isOwnersSelectEmpty"
+          :options="ownersList"
+          @input="loadOwnersSearch"
+          :loading="isLoadingOwners"
+          :value="mode === 'create' ? [] : form.owners"
+          @values-change="handleOwnersSelectChange"
+          @remove="handleOwnersSelectRemoveItem"
         />
       </el-form-item>
       <el-form-item label="Long name" prop="nameLong">
@@ -111,7 +134,7 @@
           type="primary"
           class="w-fit-full capitalize"
           round
-          :disabled="checkGeomLength"
+          :disabled="isSendDataDisabled"
           :loading="isSendingData"
           @click="sendData"
         >
@@ -123,61 +146,24 @@
 </template>
 
 <script>
+import { searchOrganization } from '../../services/api/organizations'
+import VMultiSelect from '../../components/MultiSelect'
+import { checkIxpsNameExistence } from '../../services/api/check_name'
+import debounce from '../../helpers/debounce'
+
 export default {
   name: 'FacsForm',
+  components: {
+    VMultiSelect
+  },
   data: () => ({
     tag: '',
     inputVisible: false,
     tagsList: [],
-    mediaOptions: [
-      {
-        label: 'Ethernet',
-        value: 'ethernet'
-      },
-      {
-        label: 'Multiple',
-        value: 'multiple'
-      }
-    ],
-    formRules: {
-      name: [
-        {
-          required: true,
-          message: 'Please input short IXP name',
-          trigger: 'change'
-        },
-        { min: 1, message: 'Length should be at least 1', trigger: 'change' }
-      ],
-      media: [],
-      nameLong: [
-        {
-          required: true,
-          message: 'Please input long IXP name',
-          trigger: 'change'
-        },
-        { min: 3, message: 'Length should be at least 3', trigger: 'change' }
-      ],
-      techEmail: [
-        {
-          type: 'email',
-          message: 'Please input correct email address',
-          trigger: ['blur', 'change']
-        }
-      ],
-      policyEmail: [
-        {
-          type: 'email',
-          message: 'Please input correct email address',
-          trigger: ['blur', 'change']
-        }
-      ],
-      proto_ipv6: [],
-      proto_unicast: [],
-      proto_multicast: [],
-      techPhone: [],
-      policyPhone: [],
-      tags: []
-    }
+    isNameRepeated: false,
+    isOwnersSelectEmpty: false,
+    isLoadingOwners: false,
+    ownersList: []
   }),
   props: {
     form: {
@@ -191,9 +177,25 @@ export default {
     isSendingData: {
       type: Boolean,
       default: () => false
+    },
+    isSendDataDisabled: {
+      type: Boolean,
+      required: true
     }
   },
   computed: {
+    mediaOptions() {
+      return [
+        {
+          label: 'Ethernet',
+          value: 'ethernet'
+        },
+        {
+          label: 'Multiple',
+          value: 'multiple'
+        }
+      ]
+    },
     title() {
       return this.mode == 'create'
         ? 'Create'
@@ -201,14 +203,66 @@ export default {
         ? 'View'
         : 'Edit'
     },
+    formRules() {
+      return {
+        name: [
+          {
+            required: true,
+            message: 'Please input short IXP name',
+            trigger: 'change'
+          },
+          { min: 1, message: 'Length should be at least 1', trigger: 'change' }
+        ],
+        media: [],
+        nameLong: [
+          {
+            required: true,
+            message: 'Please input long IXP name',
+            trigger: 'change'
+          },
+          { min: 3, message: 'Length should be at least 3', trigger: 'change' }
+        ],
+        techEmail: [
+          {
+            type: 'email',
+            message: 'Please input correct email address',
+            trigger: ['blur', 'change']
+          }
+        ],
+        policyEmail: [
+          {
+            type: 'email',
+            message: 'Please input correct email address',
+            trigger: ['blur', 'change']
+          }
+        ],
+        proto_ipv6: [],
+        proto_unicast: [],
+        proto_multicast: [],
+        techPhone: [],
+        policyPhone: [],
+        tags: [],
+        owners: [
+          {
+            type: 'array',
+            message: 'At least one owner is required',
+            trigger: ['blur', 'change']
+          }
+        ]
+      }
+    },
     isViewMode() {
       return this.mode == 'view'
     },
-    checkGeomLength() {
-      return this.$store.state.editor.scene.features.list.length ? false : true
-    },
     dark() {
       return this.$store.state.isDark
+    }
+  },
+  watch: {
+    'form.ownersList'(owners) {
+      if (!owners) return
+      this.ownersList = [...owners]
+      delete this.form.ownersList
     }
   },
   mounted() {
@@ -221,7 +275,47 @@ export default {
     }
   },
   methods: {
+    checkName: debounce(async function(name) {
+      this.isNameRepeated = false
+      const {
+        t,
+        data: { r }
+      } = (await checkIxpsNameExistence({
+        user_id: this.$auth.getUserID(),
+        name
+      })) || { t: 'error', data: { r: false } }
+      if (t != 'error' && r >= 1) {
+        this.isNameRepeated = true
+      } else {
+        this.isNameRepeated = false
+      }
+    }, 320),
+    async loadOwnersSearch(s) {
+      if (s === '') return
+
+      this.isLoadingOwners = true
+      const { data: owners = [] } = (await searchOrganization({
+        user_id: await this.$auth.getUserID(),
+        s
+      })) || { owners: [] }
+
+      this.ownersList = owners
+      this.isLoadingOwners = false
+    },
+    handleOwnersSelectRemoveItem(_id) {
+      this.form.owners = this.form.owners.filter(item => item._id != _id)
+    },
+    handleOwnersSelectChange(data) {
+      this.form.owners = data
+      this.setOwnersEmptyState()
+    },
+    setOwnersEmptyState() {
+      if (this.form.owners.length <= 0) {
+        this.isOwnersSelectEmpty = true
+      }
+    },
     sendData() {
+      this.setOwnersEmptyState()
       return this.$refs['form'].validate(isValid =>
         isValid ? this.$emit('send-data') : false
       )

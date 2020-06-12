@@ -67,7 +67,25 @@ export default {
       websites: [],
       facilities: [],
       references: [],
-      organizations: []
+      organizations: [],
+      asn: '',
+      info_ipv6: '',
+      info_multicast: '',
+      prefixes4: '',
+      info_ratio: '',
+      info_scope: '',
+      info_traffic: '',
+      info_type: '',
+      info_unicast: '',
+      irr_as_set: '',
+      looking_glass: '',
+      policy_contrats: '',
+      policy_general: '',
+      policy_locations: '',
+      policy_ratio: '',
+      policy_url: '',
+      route_server: '',
+      created: ''
     },
     columns: [...netColumns].filter(col => col.showTable)
   }),
@@ -76,7 +94,7 @@ export default {
       return this.$store.state.isDark
     },
     checkMode() {
-      return this.mode === 'create' ? this.createNet : this.saveEditedNet
+      return this.mode == 'create' ? this.createNet : this.saveEditedNet
     }
   },
   beforeCreate() {
@@ -188,7 +206,7 @@ export default {
       })
       if (res && res.t !== 'error') {
         this.toggleDialog(true)
-        this.getNetworksList()
+        this.handleNetworkSearch(this.$refs.tableList.getTableSearchValue())
       }
     },
     async saveEditedNet() {
@@ -198,7 +216,7 @@ export default {
       })
       if (res && res.t !== 'error') {
         this.toggleDialog(true)
-        this.getNetworksList()
+        this.handleNetworkSearch(this.$refs.tableList.getTableSearchValue())
       }
     },
     handleNetworkSearch: debounce(async function(s) {

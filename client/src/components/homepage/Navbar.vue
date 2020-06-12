@@ -15,9 +15,10 @@
     <div class="wrapper-right text-right hidden-sm-and-down">
       <template v-for="(link, i) in links">
         <a
+          v-if="link.tab"
           :key="i"
           :href="link.url"
-          v-if="link.tab"
+          target="_blank"
           class="underline-hover mr4"
         >
           {{ link.label }}
@@ -59,7 +60,7 @@ export default {
         tab: true
       },
       {
-        label: 'About us',
+        label: 'About Us',
         url: '/about'
       },
       {
@@ -67,7 +68,7 @@ export default {
         url: '/services'
       },
       {
-        label: 'Contact us',
+        label: 'Contact Us',
         url: '/contact'
       },
       {

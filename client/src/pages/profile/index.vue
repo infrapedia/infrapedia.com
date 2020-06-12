@@ -21,8 +21,11 @@
                 }}
               </strong>
             </p>
-            <p class="mt6 fs-small">
-              {{ userData.company ? userData.company : 'Company: Unknown' }}
+            <p class="fs-regular">
+              {{ userData.email }}
+            </p>
+            <p class="mt6 fs-small" v-if="userData.company">
+              {{ userData.company }}
             </p>
           </div>
           <router-link
@@ -54,7 +57,7 @@
             </el-card>
           </el-col>
           <el-col :md="24" :lg="14">
-            <el-card shadow="never" class="pr8 pl8 h100">
+            <el-card shadow="never" class="map-wrapper pr8 pl8 h100">
               <header class="header p4">
                 <h2 class="title-user-variant m0 color-inherit">
                   Map
@@ -117,8 +120,9 @@ export default {
       if (userID) {
         const userData = await getUserData(userID)
         if (userData) {
-          const { user_metadata } = userData
+          const { email, user_metadata } = userData
           this.userData = {
+            email,
             name:
               user_metadata && user_metadata.name
                 ? user_metadata.name

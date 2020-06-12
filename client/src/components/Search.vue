@@ -61,7 +61,7 @@
     </el-card>
     <div slot="reference" role="search">
       <el-input
-        placeholder="Search"
+        :placeholder="`Search in ${categories.selected}`"
         :class="{ dark }"
         v-model="search"
         @blur="loseFocus"
@@ -70,8 +70,9 @@
       >
         <el-select
           v-model="categories.selected"
+          id="search-select-navbar"
           slot="prepend"
-          class="w28 p0"
+          class="w10 search-navbar-select"
           placeholder
           @change="getQueryData(search)"
         >
@@ -82,12 +83,16 @@
             :value="opt"
           />
         </el-select>
-        <fa slot="prefix" :icon="['fas', 'search']" class="mt3 ml1" />
+        <fa
+          slot="prefix"
+          :icon="['fas', 'search']"
+          class="mt3 ml1 hidden-md-and-down"
+        />
         <fa
           v-if="!isFocused"
           slot="suffix"
           :icon="['fas', 'caret-down']"
-          class="xsm-icon vertical-align mt3 mr3"
+          class="xsm-icon vertical-align mt3 mr3 hidden-md-and-down"
         />
         <fa
           v-else

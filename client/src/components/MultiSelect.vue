@@ -34,7 +34,7 @@
           :label="opt.name"
         >
           <div>
-            <fa :icon="['fas', 'award']" v-if="opt.yours === 1" class="mr1" />
+            <fa :icon="['fas', 'award']" v-if="opt.yours == 1" class="mr1" />
             {{ opt.name }}
           </div>
         </el-option>
@@ -44,11 +44,15 @@
         round
         plain
         class="h8"
+        :class="{ 'border-red-imp': isRequired && isFieldEmpty }"
         size="small"
         @click.stop="toggleInput(true)"
       >
         Add
       </el-button>
+      <!-- <div v-if="isRequired && isFieldEmpty" class="el-form-item__error">
+        This field is required
+      </div> -->
     </div>
     <el-alert
       v-if="isTagRepeated"
@@ -83,6 +87,14 @@ export default {
       default: () => true
     },
     getSelectedId: {
+      type: Boolean,
+      default: () => false
+    },
+    isRequired: {
+      type: Boolean,
+      default: () => false
+    },
+    isFieldEmpty: {
       type: Boolean,
       default: () => false
     },
@@ -145,15 +157,27 @@ export default {
         this.selected = null
       }
     },
-    emitInputValue() {
-      return this.$emit(
-        'values-change',
-        this.getSelectedId ? this.selected._id : this.selections
-      )
+    emitInputValue(multiple) {
+      let value = null
+      {
+        if (multiple || !this.getSelectedId) value = this.selections
+        else if (this.getSelectedId) value = this.selected._id
+      }
+
+      if (multiple) return value
+      else return this.$emit('values-change', value)
     },
     handleInputConfirm() {
       const inputValue = this.selected
-      const selectedIDs = this.selections.map(opt => opt._id)
+      let selectedIDs = []
+
+      {
+        if (!this.isMultiple) {
+          selectedIDs = this.selections.map(opt => opt._id)
+        } else {
+          selectedIDs = [this.selections._id]
+        }
+      }
 
       if (inputValue) {
         const isTagRepeated = selectedIDs.includes(inputValue._id)

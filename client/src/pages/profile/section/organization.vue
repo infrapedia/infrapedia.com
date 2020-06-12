@@ -107,6 +107,7 @@ export default {
 
       const { name, url, notes, address, information, logo } = orgData
       this.form = {
+        _id,
         name,
         logo,
         notes,
@@ -171,7 +172,7 @@ export default {
       })
       if (res && res.data && res.t !== 'error') {
         this.toggleDialog(true)
-        this.getOrganizationsList()
+        this.handleOrgSearch(this.$refs.tableList.getTableSearchValue())
       }
     },
     async saveEditedOrg() {
@@ -181,7 +182,7 @@ export default {
       })
       if (res && res.t !== 'error') {
         this.toggleDialog(true)
-        this.getOrganizationsList()
+        this.handleOrgSearch(this.$refs.tableList.getTableSearchValue())
       }
     },
     handleOrgSearch: debounce(async function(s) {

@@ -4,7 +4,12 @@
     @click.stop="$emit('close')"
     :class="{ active: isActive }"
   >
-    <ul role="group" class="relative regular-transition" id="gooeyList">
+    <ul
+      v-if="isActive"
+      role="group"
+      class="relative regular-transition"
+      id="gooeyList"
+    >
       <li
         role="listitem"
         class="mb1"
@@ -49,19 +54,25 @@ export default {
     }
   },
   computed: {
-    userID() {
-      return this.$auth.user.sub || ''
-    },
     dark() {
       return this.$store.state.isDark
+    },
+    focus() {
+      return this.$store.state.map.focus
     }
   },
   methods: {
     async handleShareLink(funcName) {
-      return await share[funcName](
-        this.userID,
-        window.origin + this.$route.path
+      const url = await share[funcName](
+        await this.$auth.getUserID(),
+        window.origin + this.$route.path,
+        this.focus && this.focus.name
+          ? this.focus.name
+          : 'Share view | Infrapedia'
       )
+      if (funcName != 'shareViewLink') {
+        window.open(url, '_blank')
+      }
     }
   }
 }

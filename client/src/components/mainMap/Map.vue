@@ -60,7 +60,7 @@
               type="primary"
               class="w11 h11"
               circle
-              @click="toggleGooeyMenu"
+              @click.stop="toggleGooeyMenu"
             >
               <fa :icon="['fas', 'share-alt']" />
             </el-button>
@@ -75,7 +75,7 @@
 <script>
 import {
   TOGGLE_THEME,
-  CABLE_SELECTED,
+  // CABLE_SELECTED,
   CLEAR_SELECTION,
   FOCUS_ON,
   FOCUS_ON_CITY
@@ -106,13 +106,16 @@ import { viewNetwork } from '../../services/api/networks'
 import { viewOrganization } from '../../services/api/organizations'
 import handleDraw from './draw'
 import setBoundsCookie from './setBoundsCookie'
-import highlightCurrentCable from './highlightCable'
 import disableCurrentHighlight from './disableHighlight'
 import GooeyMenu from './GooeyMenu'
 import PrintButton from './PrintButton'
+import highlightCurrentSelection from './highlightCurrentSelection'
+import dataCollection from '../../mixins/dataCollection'
+import convertToYear from '../../helpers/convertToYear'
 
 export default {
   name: 'Map',
+  mixins: [dataCollection],
   components: {
     IThemeToggler,
     PrintButton,
@@ -128,7 +131,6 @@ export default {
     is3D: false,
     print: null,
     trackID: null,
-    mapTooltip: {},
     map: undefined,
     isMenuOpen: false,
     isGooeyMenu: false,
@@ -152,7 +154,7 @@ export default {
   mounted() {
     this.map = this.addMapEvents(this.initMapLayers(this.createMap()))
 
-    bus.$on(CLEAR_SELECTION, this.disableCableHighlight)
+    bus.$on(CLEAR_SELECTION, this.disableSelectionHighlight)
     bus.$on(TOGGLE_THEME, this.toggleDarkMode)
     bus.$on(FOCUS_ON, this.handleFocusOn)
     bus.$on(FOCUS_ON_CITY, this.handleCityFocus)
@@ -262,12 +264,18 @@ export default {
         vm.handlePopupVisibilityOn({ e, popup, isPoint: false })
       })
       map.on('mouseenter', mapConfig.ixps, function(e) {
-        vm.handlePopupVisibilityOn({ e, popup, isPoint: true })
+        vm.handlePopupVisibilityOn({ e, popup, isPoint: true, type: 'ixps' })
       })
-
-      map.on('mouseleave', mapConfig.cables, () =>
+      map.on('mouseenter', mapConfig.cls, function(e) {
+        vm.handlePopupVisibilityOn({ e, popup, isPoint: true, type: 'cls' })
+        vm.handleCLSHover(e, true)
+      })
+      map.on('mouseleave', mapConfig.cls, function(e) {
+        vm.handleCLSHover(e, false)
+      })
+      map.on('mouseleave', mapConfig.cables, () => {
         vm.handlePopupVisibilityOff({ popup, map })
-      )
+      })
 
       if (!this.disabled) {
         map.on('click', this.handleMapClick)
@@ -275,7 +283,6 @@ export default {
         map.on('render', this.handleBoundsChange)
       } else {
         const disabledClick = () => this.$emit('clicked-disabled-map')
-
         map.on('click', disabledClick)
         map.on('touchend', disabledClick)
       }
@@ -285,6 +292,24 @@ export default {
       map.on('draw.update', this.handleDrawEvents)
 
       return map
+    },
+    handleCLSHover(e, isHovering) {
+      if (!this.map) return
+      const {
+        features: [
+          {
+            properties: { _id }
+          }
+        ] = [{ properties: { _id: '' } }]
+      } = e
+
+      this.map.setPaintProperty(mapConfig.cls, 'circle-radius', [
+        'match',
+        ['get', '_id'],
+        _id,
+        isHovering ? 7.4 : 3.4,
+        3.4
+      ])
     },
     handleDrawEvents() {
       const data = window.draw.getAll()
@@ -297,14 +322,14 @@ export default {
      * @param map { Object } The map instance
      * @param isPoint { Boolean } If the tooltip is for a Point
      */
-    showPopup(e, map, popup, isPoint) {
-      const prop = JSON.parse(JSON.stringify(e.features[0].properties))
+    showPopup({ e, map, popup, isPoint, type }) {
+      const { name, category, segment, activationDateTime } = JSON.parse(
+        JSON.stringify(e.features[0].properties)
+      )
 
-      this.mapTooltip = {
-        name: prop.name,
-        status: prop.status,
-        segment: prop.segment
-      }
+      const rfs = new Date(activationDateTime)
+      const cableCategoryColor =
+        category == 'active' ? 'green' : category == 'project' ? 'red' : 'black'
 
       // const facsClusters = this.map.queryRenderedFeatures(e.point, {
       //   layers: [mapConfig.facilitiesClusters]
@@ -312,15 +337,18 @@ export default {
 
       // if (facsClusters.length > 0) return
 
-      let str = `<div class="cable-name dark-color"><b>${this.mapTooltip.name}</b></div>`
+      let str = `<div class="cable-name dark-color"><b>${name}</b></div>`
 
       if (isPoint) {
-        str = `<div class="cable-name dark-color"><b>Point name : ${this.mapTooltip.name}</b></div>`
+        str = `<div class="cable-name dark-color"><b>${type} name : ${name}</b></div>`
       } else {
-        if (this.mapTooltip.segment) {
-          str += `<div class="segment-name dark-color">Segment: ${this.mapTooltip.segment}</div>`
+        if (segment) {
+          str += `<div class="segment-name dark-color">Segment: ${segment}</div>`
         }
-        str += `<div class="status dark-color"> Status: ${this.mapTooltip.status}</div>`
+        str += `<div class="status dark-color"> Status: <span style="color: ${cableCategoryColor}" class="category capitalize">${category}</span></div>`
+        str += `<div class="rfs dark-color"> RFS: ${convertToYear(
+          rfs.toISOString()
+        )}</div>`
         str += `<div class="details dark-color">Click for more details</div>`
       }
 
@@ -334,7 +362,7 @@ export default {
      * @param popup { Object } The map popup instance
      * @param isPoint { Boolean } If the tooltip is for a Point
      */
-    handlePopupVisibilityOn({ e, popup, isPoint }) {
+    handlePopupVisibilityOn({ e, popup, isPoint, type = '' }) {
       if (!this.map) return
 
       const clusters = this.map.queryRenderedFeatures(e.point, {
@@ -343,7 +371,7 @@ export default {
 
       if (!clusters.length && e.features.length && !this.isMobile) {
         this.map.getCanvas().style.cursor = 'pointer'
-        this.showPopup(e, this.map, popup, isPoint)
+        this.showPopup({ e, map: this.map, popup, isPoint, type })
       }
     },
     /**
@@ -354,17 +382,17 @@ export default {
       map.getCanvas().style.cursor = ''
       popup.remove()
     },
-    /**
-     * @param cable { Object } - Contains the ID of the selected cable
-     */
-    highlightCable(cable) {
-      if (!this.map || !cable) return
+    highlightSelection(id) {
+      if (!this.focus) return
+
       try {
-        return highlightCurrentCable({
-          cable,
+        return highlightCurrentSelection({
+          id,
           map: this.map,
           dark: this.dark,
-          commit: this.$store.commit
+          name: this.focus.name,
+          commit: this.$store.commit,
+          focusType: this.focus.type
         })
       } catch (err) {
         console.error(err)
@@ -383,22 +411,27 @@ export default {
       return setBoundsCookie({
         pitch,
         bounds,
-        bearing,
         center,
+        bearing,
         focus: this.focus
       })
     },
     /**
      * @param closesSidebar { Boolean } - If besides removing cables highlight it also closes the sidebar
      */
-    disableCableHighlight(closesSidebar = true) {
+    disableSelectionHighlight(closesSidebar = true, type) {
       if (!this.map) return
       try {
         return disableCurrentHighlight({
           map: this.map,
           closesSidebar,
           commit: this.$store.commit,
-          handleBoundsChange: this.handleBoundsChange
+          handleBoundsChange: this.handleBoundsChange,
+          focusType: type
+            ? type
+            : this.focus
+            ? this.focus.type.split().join('')
+            : false
         })
       } catch (err) {
         console.error(err)
@@ -412,6 +445,12 @@ export default {
       if (this.isDrawing) return
 
       if (this.$auth.isAuthenticated) {
+        if (this.focus) {
+          this.disableSelectionHighlight(
+            false,
+            this.focus.type.split().join('')
+          )
+        }
         if (this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
 
         const cables = this.map.queryRenderedFeatures(e.point, {
@@ -437,7 +476,12 @@ export default {
         // If in the region selected there is a point or a building
         // Call the api to retrieve that facility data and open the sidebar
 
-        if (ixps.length > 0) {
+        if (cls.length > 0) {
+          await this.handleClsSelection({
+            id: cls[0].properties._id,
+            type: 'cls'
+          })
+        } else if (ixps.length > 0) {
           await this.handleIxpsSelection({
             id: ixps[0].properties._id,
             type: 'ixps'
@@ -446,11 +490,6 @@ export default {
           await this.handleFacilitySelection({
             id: facilities[0].properties._id,
             type: 'facilities'
-          })
-        } else if (cls.length > 0) {
-          await this.handleClsSelection({
-            id: cls[0].properties._id,
-            type: 'cls'
           })
         }
 
@@ -468,7 +507,7 @@ export default {
             mapConfig.clusters
           )
         } else if (cables.length > 0) {
-          await this.handleCablesSelection(Boolean(cables.length), cables)
+          await this.handleCablesSelection(cables.length > 0, cables)
         } else if (
           facilities.length <= 0 &&
           ixps.length <= 0 &&
@@ -482,7 +521,7 @@ export default {
           } catch {
             // Ignore
           } finally {
-            this.disableCableHighlight()
+            this.disableSelectionHighlight()
           }
         }
       } else await this.$auth.loginWithRedirect()
@@ -496,7 +535,7 @@ export default {
         // Change sidebar mode to data_centers mode
         this.changeSidebarMode(1)
         // In case there was a cable selected before
-        await this.disableCableHighlight(false)
+        await this.disableSelectionHighlight(false, 'cable')
         await this.$store.commit(`${CURRENT_SELECTION}`, res.data.r[0])
 
         if (!this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
@@ -523,7 +562,7 @@ export default {
         // Change sidebar mode to data_centers mode
         this.changeSidebarMode(1)
         // In case there was a cable selected before
-        await this.disableCableHighlight(false)
+        await this.disableSelectionHighlight(false, 'cable')
         await this.$store.commit(`${CURRENT_SELECTION}`, res.data.r[0])
 
         if (!this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
@@ -552,12 +591,14 @@ export default {
           // Change sidebar mode back to cable in case is on data_centers mode
           await this.changeSidebarMode(-1)
           // Highlight the nearest clicked cable
-          await this.highlightCable(cables[0].properties)
-          await this.$emit(`${CABLE_SELECTED}`, cables[0].properties)
+          await this.handleCableSelected({
+            _id: cables[0].properties._id,
+            name: cables[0].properties.name
+          }).then(() => this.highlightSelection(cables[0].properties._id))
           break
         default:
           // Remove highlights
-          await this.disableCableHighlight()
+          await this.disableSelectionHighlight()
           // Clear "currentSelection" on store
           await this.$store.commit(`${CURRENT_SELECTION}`, null)
           break
@@ -596,13 +637,14 @@ export default {
         type
       })
 
+      this.highlightSelection(id)
       // Changing the sidebar mode to data_center mode
       this.changeSidebarMode(1)
       // this.$store.commit(`${CURRENT_SELECTION}`, data)
       // Opening the sidebar
       this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
       // Removing cables highlight if any
-      this.disableCableHighlight(false)
+      this.disableSelectionHighlight(false, 'cable')
     },
     async handleClsSelection({ id, type }) {
       const data = await this.getClsData({
@@ -615,13 +657,14 @@ export default {
         type
       })
 
+      this.highlightSelection(id)
       // Changing the sidebar mode to data_center mode
       this.changeSidebarMode(1)
       // this.$store.commit(`${CURRENT_SELECTION}`, data)
       // Opening the sidebar
       this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
       // Removing cables highlight if any
-      this.disableCableHighlight(false)
+      this.disableSelectionHighlight(false, 'cable')
     },
     async handleIxpsSelection({ id, type }) {
       const data = await this.getIxpsData({
@@ -634,13 +677,14 @@ export default {
         type
       })
 
+      this.highlightSelection(id)
       // Changing the sidebar mode to data_center mode
       this.changeSidebarMode(1)
       // this.$store.commit(`${CURRENT_SELECTION}`, data)
       // Opening the sidebar
       this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
       // Removing cables highlight if any
-      this.disableCableHighlight(false)
+      this.disableSelectionHighlight(false, 'cable')
     },
     toggleDarkMode() {
       this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
@@ -715,7 +759,7 @@ export default {
 
       this.$store.commit(`${MAP_FOCUS_ON}`, {
         id,
-        type: type === 'orgs' ? 'organizations' : type
+        type: type == 'orgs' ? 'organizations' : type
       })
 
       // Clearing clusters source in case there was something previously selected
@@ -768,15 +812,21 @@ export default {
       if (hasToEase) {
         await this.handleFocusOnEasePoints()
       } else if (focus && bounds && bounds.length) {
-        await map.fitBounds(bounds, {
-          padding: isMobile ? 10 : 35,
-          maxZoom: 16.5,
-          animate: true,
-          speed: 1.75,
-          pan: {
-            duration: 25
-          }
-        })
+        try {
+          await map.fitBounds(bounds, {
+            padding: isMobile ? 10 : 35,
+            maxZoom: 16.5,
+            animate: true,
+            speed: 1.75,
+            pan: {
+              duration: 25
+            }
+          })
+        } catch {
+          // Ignore
+          // Even thought that it throws an error
+          // The bounds are been set correctly
+        }
       }
     },
     /**
@@ -784,13 +834,18 @@ export default {
      */
     async handleCableFocus(id) {
       const { map, focus, bounds, hasToEase } = this
-
       if (hasToEase) await this.handleFocusOnEasePoints()
       else if (focus && bounds && bounds.length) {
-        await map.fitBounds(bounds, {
-          padding: 20,
-          zoom: 4
-        })
+        try {
+          await map.fitBounds(bounds, {
+            padding: 20,
+            zoom: 4
+          })
+        } catch {
+          // Ignore
+          // Even thought that it throws an error
+          // The bounds are been set correctly
+        }
       }
 
       await this.handleCablesSelection(true, [{ properties: { _id: id } }])
@@ -803,30 +858,41 @@ export default {
 
       await this.handleFacilitySelection({ id, type })
       if (focus && bounds && bounds.length) {
-        map.fitBounds(bounds, {
-          pan: { duration: 25 },
-          animate: true,
-          padding: 20,
-          speed: 1.1,
-          zoom: 18,
-          pitch: 45
-        })
+        try {
+          map.fitBounds(bounds, {
+            pan: { duration: 25 },
+            animate: true,
+            padding: 20,
+            speed: 1.1,
+            zoom: 18,
+            pitch: 45
+          })
+        } catch {
+          // Ignore
+          // Even thought that it throws an error
+          // The bounds are been set correctly
+        }
       }
     },
     async handleClsFocus({ id, type }) {
       const { map, focus, bounds } = this
 
       await this.handleClsSelection({ id, type })
-
       if (focus && bounds && bounds.length) {
-        map.fitBounds(bounds, {
-          pan: { duration: 25 },
-          animate: true,
-          padding: 20,
-          speed: 1.1,
-          zoom: 12,
-          pitch: 45
-        })
+        try {
+          map.fitBounds([bounds, bounds], {
+            pan: { duration: 25 },
+            animate: true,
+            padding: 20,
+            speed: 1.1,
+            zoom: 12,
+            pitch: 45
+          })
+        } catch {
+          // Ignore
+          // Even thought that it throws an error
+          // The bounds are been set correctly
+        }
       }
     },
     async handleIxpsFocus(data) {
@@ -834,17 +900,23 @@ export default {
 
       await this.handleIxpsSelection(data)
       if (focus && bounds && bounds.length) {
-        map.fitBounds(bounds, {
-          pan: { duration: 25 },
-          animate: true,
-          padding: 20,
-          speed: 1.1,
-          zoom: 18,
-          pitch: 45
-        })
+        try {
+          map.fitBounds([bounds, bounds], {
+            pan: { duration: 25 },
+            animate: true,
+            padding: 20,
+            speed: 1.1,
+            zoom: 18,
+            pitch: 45
+          })
+        } catch {
+          // Ignore
+          // Even thought that it throws an error
+          // The bounds are been set correctly
+        }
       }
     },
-    async handleFocusOnEasePoints() {
+    handleFocusOnEasePoints: debounce(async function() {
       if (!this.hasToEase || !this.easePoint) return
       /**
        * - The ease point is exclusibly use when the user wants to share
@@ -864,13 +936,21 @@ export default {
       })
 
       // Clearing ease point so it wont ease everytime the user comes to the home page
-      this.$store.commit(`${EASE_POINT}`, null)
+      this.$store.commit(`${EASE_POINT}`, false)
       this.$store.commit(`${HAS_TO_EASE_TO}`, false)
-    },
+
+      // Removing view shared bounds data
+      if (window.localStorage.getItem('__easePointData')) {
+        window.localStorage.removeItem('__easePointData')
+      }
+      if (Object.keys(this.$route.query).length > 0) {
+        this.$router.push('/app')
+      }
+    }, 820),
     async handleSubseaToggle(bool) {
       const filter = bool ? mapConfig.filter.subsea : mapConfig.filter.all
 
-      await this.disableCableHighlight()
+      await this.disableSelectionHighlight()
       this.$nextTick(() => {
         this.map.setFilter(mapConfig.cables, filter)
         this.map.setFilter(mapConfig.cablesLabel, filter)
@@ -908,7 +988,7 @@ export default {
         })
       }
 
-      await this.disableCableHighlight()
+      await this.disableSelectionHighlight()
       if (selection == 2) {
         await this.map.setFilter(mapConfig.cables, filter)
       } else {

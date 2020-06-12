@@ -20,12 +20,29 @@
           class="header pt10 pr8 pl8 h-fit-content pb10 relative"
           @click.stop="toggleActiveClassOnMobile"
         >
-          <span
-            class="inline-block w4 h4 icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
-            @click="closeSidebar"
-          >
-            <fa :icon="['fas', 'times']" />
-          </span>
+          <div class="relative action-buttons">
+            <el-button
+              type="text"
+              class="inline-block icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
+              @click="closeSidebar"
+            >
+              <fa :icon="['fas', 'times']" />
+            </el-button>
+            <el-button
+              v-if="focus.type.toLowerCase() !== 'owners'"
+              type="text"
+              id="verified-i"
+              @click.stop="handleVerification"
+              class="transparent inline-block cursor-pointer"
+              :class="{ 'is-verified': isVerified }"
+              :title="isVerified ? 'Owner verified' : 'Owner unverified'"
+            >
+              <certificated-icon v-if="isVerified" />
+              <span v-else>
+                <fa :icon="['fas', 'check-double']" />
+              </span>
+            </el-button>
+          </div>
           <el-tooltip
             effect="dark"
             content="Click to copy link"
@@ -38,21 +55,6 @@
               {{ currentSelection.name }}
             </h1>
           </el-tooltip>
-          <span
-            :class="{
-              'is-verified': !prohibitedIDs.includes(currentSelection.uuid)
-            }"
-            id="verified-i"
-            class="ml2 p1 mt-2 inline-block cursor-pointer"
-            :title="
-              !prohibitedIDs.includes(currentSelection.uuid)
-                ? 'Owner verified'
-                : 'Owner unverified'
-            "
-            @click.stop="handleVerification"
-          >
-            <fa :icon="['fas', 'check-double']" />
-          </span>
           <p class="text-bold">{{ currentSelection.segment_name }}</p>
         </header>
         <!---------------------- SIDEBAR MODES ----------------------->
@@ -81,7 +83,7 @@ import * as modes from '../config/sidebarModes'
 import dataCollection from '../mixins/dataCollection'
 import copyToClipboard from '../helpers/copyToClipboard'
 import { getSelectionCols } from '../helpers/getSelectionCols'
-import { CURRENT_SELECTION, MAP_FOCUS_ON } from '../store/actionTypes/map'
+// import { CURRENT_SELECTION, MAP_FOCUS_ON } from '../store/actionTypes/map'
 import {
   BUY_CAPACITY,
   EDIT_CABLE,
@@ -96,6 +98,7 @@ import { queryCookieName } from '../config/sharedViewCookieName'
 export default {
   name: 'ISidebar',
   components: {
+    CertificatedIcon: () => import('./CertificatedIcon'),
     'i-data-center': () => import('./sidebarModes/dataCenter'),
     'i-cable-attributes': () => import('./sidebarModes/cableAttributes')
   },
@@ -127,7 +130,10 @@ export default {
       return modes.CABLE_MODE
     },
     isCable() {
-      return this.sidebarMode === this.defaultMode
+      return this.sidebarMode == this.defaultMode
+    },
+    isVerified() {
+      return this.prohibitedIDs.includes(this.currentSelection.uuid)
     },
     currentView() {
       return this.isCable ? 'i-cable-attributes' : 'i-data-center'
@@ -156,11 +162,9 @@ export default {
   beforeMount() {
     window.addEventListener('resize', this.resizeWatcher)
     this.resizeWatcher()
-    this.prohibitedIDs = [
-      process.env.VUE_APP_RESTRICTED_IDS
-        ? process.env.VUE_APP_RESTRICTED_IDS.split(',')
-        : []
-    ]
+    this.prohibitedIDs = process.env.VUE_APP_RESTRICTED_IDS
+      ? process.env.VUE_APP_RESTRICTED_IDS.split(',')
+      : []
   },
   mounted() {
     this.handleColSelectionChange()
@@ -193,13 +197,16 @@ export default {
       }
     },
     toggleActiveClassOnMobile() {
-      this.isSidebarActive = !this.isSidebarActive
-      if (this.isSidebarActive) {
-        setTimeout(() => {
-          this.isSidebarFullActive = true
-        }, 325)
-      } else {
-        this.isSidebarFullActive = false
+      const isMobile = this.resizeWatcher()
+      if (isMobile) {
+        this.isSidebarActive = !this.isSidebarActive
+        if (this.isSidebarActive) {
+          setTimeout(() => {
+            this.isSidebarFullActive = true
+          }, 325)
+        } else {
+          this.isSidebarFullActive = false
+        }
       }
     },
     resizeWatcher() {
@@ -238,10 +245,11 @@ export default {
       return this.$store.commit(`${TOGGLE_VERIFICATION_DIALOG}`, true)
     },
     closeSidebar() {
-      bus.$emit(`${CLEAR_SELECTION}`)
-      this.isSidebarActive = false
-      this.$store.commit(`${MAP_FOCUS_ON}`, null)
-      this.$store.commit(`${CURRENT_SELECTION}`, null)
+      return bus.$emit(
+        `${CLEAR_SELECTION}`,
+        true,
+        this.focus.type.split().join('')
+      )
     }
   }
 }

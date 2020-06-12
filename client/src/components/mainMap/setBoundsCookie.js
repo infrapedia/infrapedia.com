@@ -26,23 +26,17 @@ export default async function setBoundsCookie({
     }`
     let daysTillExpiration = 1
 
-    if (!window.localStorage.getItem('__easePointData')) {
-      if (focus) {
-        const { id, type, name = '' } = focus
-
-        if (id && type) {
-          queryString = `
-            ${queryString}&name=${name}&type=${type}&id=${id}
-          `
-        }
-      }
-
-      setCookie(
-        queryCookieName,
-        `${queryString}&sharedView=true`,
-        daysTillExpiration
-      )
+    if (focus && focus.id && focus.type) {
+      queryString = `${queryString}&name=${focus.name ? focus.name : ''}&type=${
+        focus.type
+      }&id=${focus.id}`
     }
+
+    setCookie(
+      queryCookieName,
+      `${queryString}&sharedView=true`,
+      daysTillExpiration
+    )
   } catch (err) {
     console.error('setBoundsCookie.js err', err, JSON.stringify(err))
   }

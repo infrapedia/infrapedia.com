@@ -10,3 +10,14 @@
   border: 3px solid #474646;
   background: rgba(255, 255, 255, 0.75);
 }
+
+.information-box {
+  top: 5rem;
+  left: unset;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.75);
+  &.dark {
+    color: rgb(231, 226, 226);
+    background: rgba(61, 60, 60, 0.75);
+  }
+}

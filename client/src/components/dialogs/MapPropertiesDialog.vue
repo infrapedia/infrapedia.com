@@ -18,7 +18,10 @@
       <el-form-item label="Stroke color">
         <el-color-picker v-model="form.color" :predefine="predefineColors" />
       </el-form-item>
-      <el-form-item label="Line style" v-if="featureType === 'cables'">
+      <el-form-item
+        label="Line style"
+        v-if="featureType == 'terrestrials' || featureType == 'subsea'"
+      >
         <el-radio-group v-model="form['line-style']">
           <el-radio-button label="dashed">
             Dashed
@@ -77,7 +80,7 @@ export default {
   },
   computed: {
     title() {
-      return this.mode === 'create' ? 'Add properties' : 'Edit properties'
+      return this.mode == 'create' ? 'Add properties' : 'Edit properties'
     },
     checkFields() {
       const emptyFields = Object.keys(this.form).filter(key => !this.form[key])

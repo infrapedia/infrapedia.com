@@ -10,7 +10,7 @@
       v-if="visibility"
       shadow="hover"
       :class="{ dark, light: !dark }"
-      class="drawer-wrapper"
+      class="drawer-wrapper overflow-y"
     >
       <header
         class="h14 pr4 pl4 pb2 flex justify-content-space-between align-items-center"
@@ -56,6 +56,16 @@
         <li class="w-fit-full" data-no-outline="true">
           <div class="no-selectable">
             <router-link
+              to="/services"
+              class="no-underline inherit color-inherit p4 mr4 inline-block"
+            >
+              Services
+            </router-link>
+          </div>
+        </li>
+        <li class="w-fit-full" data-no-outline="true">
+          <div class="no-selectable">
+            <router-link
               to="/contact"
               class="no-underline inherit color-inherit p4 mr4 inline-block"
             >
@@ -75,9 +85,9 @@
             role="listitem"
           >
             <div class="list-item" data-no-hover-bg="true">
-              <a href="https://www.catchpoint.com" target="_blank">
+              <a :href="sponsors[0].url" target="_blank">
                 <el-image
-                  src="https://storage.googleapis.com/infrapedia_bucket/sponsors/catchpoint-logo.png"
+                  :src="sponsors[0].src"
                   class="w46 h14"
                   fit="cover"
                   alt="catchpoint logo"
@@ -93,9 +103,9 @@
             role="listitem"
           >
             <div class="list-item" data-no-hover-bg="true">
-              <a href="https://ipv4.global" target="_blank">
+              <a :href="sponsors[1].url" target="_blank">
                 <el-image
-                  src="https://storage.googleapis.com/infrapedia_bucket/sponsors/ipv4global-footer.png"
+                  :src="sponsors[1].src"
                   fit="cover"
                   class="w46 h6"
                   alt="ipv4 logo"
@@ -123,12 +133,13 @@
             </li> -->
         </ul>
       </div>
-      <i-footer class="footer relative m0-imp p0-imp" />
+      <i-footer class="footer relative m0-imp p0-imp" style="width: 96%" />
     </el-card>
   </transition>
 </template>
 
 <script>
+import sponsors from '../config/navbarSponsors'
 import { CLICK_LIST_ITEM } from '../events/mobiledrawer'
 import IFooter from './Footer'
 import IList from './List'
@@ -139,7 +150,8 @@ export default {
     IList
   },
   data: () => ({
-    collapseActive: ''
+    collapseActive: '',
+    sponsors
   }),
   props: {
     visibility: {
@@ -153,8 +165,8 @@ export default {
     },
     imageURL() {
       return this.dark
-        ? 'https://cdn.infrapedia.com/logos/dark-mode-logo.svg'
-        : 'https://cdn.infrapedia.com/logos/light-mode-logo.svg'
+        ? 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo.svg'
+        : 'https://cdn1.infrapedia.com/assets/img/light-mode-logo.svg'
     },
     drawerClass() {
       return this.dark ? 'dark' : 'light'

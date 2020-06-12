@@ -36,8 +36,10 @@ export const setMyMap = async ({
   techPhone,
   saleEmail,
   salePhone,
-  cables,
-  logos,
+  address,
+  subsea,
+  terrestrials,
+  logo,
   draw,
   ixps,
   config,
@@ -46,6 +48,10 @@ export const setMyMap = async ({
   url = `${apiConfig.url}/auth/map/mymap`
   form = new FormData()
 
+  function checkStringID(item) {
+    return typeof item == 'string' ? item : item._id
+  }
+
   form.append('googleID', googleID)
   form.append('subdomain', subdomain)
   form.append('techEmail', techEmail)
@@ -53,33 +59,46 @@ export const setMyMap = async ({
   form.append('saleEmail', saleEmail)
   form.append('salePhone', salePhone)
   form.append('config', JSON.stringify(config))
+  form.append('logos', logo.length > 0 ? logo[0] : '')
   form.append('draw', JSON.stringify(fCollectionFormat(draw)))
 
-  if (facilities && facilities.length) {
-    facilities.forEach((fac, i) => form.append(`facilities[${i}]`, fac))
+  if (facilities && facilities.length > 0) {
+    facilities.forEach((fac, i) =>
+      form.append(`facilities[${i}]`, checkStringID(fac))
+    )
   } else form.append('facilities', [])
 
-  if (owners && owners.length) {
-    owners.forEach((fac, i) => form.append(`owners[${i}]`, fac))
+  if (owners && owners.length > 0) {
+    owners.forEach((owner, i) =>
+      form.append(`owners[${i}]`, checkStringID(owner))
+    )
   } else form.append('owners', [])
 
-  if (ixps && ixps.length) {
-    ixps.forEach((ixp, i) => form.append(`ixps[${i}]`, ixp))
+  if (ixps && ixps.length > 0) {
+    ixps.forEach((ixp, i) => form.append(`ixps[${i}]`, checkStringID(ixp)))
   } else form.append('ixps', [])
 
-  if (cls && cls.length) {
-    cls.forEach((cls, i) => form.append(`cls[${i}]`, cls))
+  if (cls && cls.length > 0) {
+    cls.forEach((cls, i) => form.append(`cls[${i}]`, checkStringID(cls)))
   } else form.append('cls', [])
 
-  if (cables && cables.length) {
-    cables.forEach((cable, i) => form.append(`cables[${i}]`, cable))
-  } else form.append('cables', [])
+  if (subsea && subsea.length > 0) {
+    subsea.forEach((subsea, i) =>
+      form.append(`subsea[${i}]`, checkStringID(subsea))
+    )
+  } else form.append('subsea', [])
 
-  if (logos && logos.length) {
-    logos.forEach((logo, i) => {
-      form.append(`logos[${i}]`, logo)
+  if (terrestrials && terrestrials.length > 0) {
+    terrestrials.forEach((terrestrial, i) =>
+      form.append(`terrestrials[${i}]`, checkStringID(terrestrial))
+    )
+  } else form.append('terrestrials', [])
+
+  if (address && address.length > 0) {
+    address.forEach((address, i) => {
+      form.append(`address[${i}]`, JSON.stringify(address))
     })
-  } else form.append('logos', [])
+  } else form.append('address,', [])
 
   const res = await $axios.post(url, form, {
     withCredentials: true,
@@ -121,14 +140,21 @@ export async function setupMyMapCables(sub) {
   return res
 }
 
+export async function setupMyMapSubdomain(sub) {
+  url = `${apiConfig.url}/map/setinfo/${sub}`
+  const res = await $axios.get(url)
+  return res
+}
+
 export const setupMyMapArchives = async subdomain => {
   url = `${apiConfig.url}/map/ixps/${subdomain}`
   const res = await Promise.all([
-    setupMyMapIxps(subdomain),
     setupMyMapCLS(subdomain),
-    setupMyMapCables(subdomain),
+    setupMyMapIxps(subdomain),
     setupMyMapFacs(subdomain),
-    setupMyMapDraw(subdomain)
+    setupMyMapCables(subdomain),
+    setupMyMapDraw(subdomain),
+    setupMyMapSubdomain(subdomain)
   ])
   return res
 }

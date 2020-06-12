@@ -2,10 +2,25 @@
 import { mapActions } from 'vuex'
 import { bus } from '../helpers/eventBus'
 import { TOGGLE_SIDEBAR, TOGGLE_LOADING } from '../store/actionTypes'
-import { FOCUS_ON } from '../events'
-import { MAP_FOCUS_ON } from '../store/actionTypes/map'
+import { FOCUS_ON, CLEAR_SELECTION } from '../events'
+import { MAP_FOCUS_ON, MAP_BOUNDS } from '../store/actionTypes/map'
 
 export default {
+  data: () => ({
+    sharedViewData: null
+  }),
+  computed: {
+    focus() {
+      return this.$store.state.map.focus
+    }
+  },
+  mounted() {
+    if (window.localStorage.getItem('__easePointData')) {
+      this.sharedViewData = JSON.parse(
+        window.localStorage.getItem('__easePointData')
+      )
+    } else this.sharedViewData = null
+  },
   methods: {
     ...mapActions({
       getPremiumData: 'getPremiumData',
@@ -43,8 +58,23 @@ export default {
         this.$store.commit(`${TOGGLE_LOADING}`, false)
       }
     },
+    setSharedViewBounds() {
+      const bounds = [
+        [this.sharedViewData.neLng, this.sharedViewData.neLat],
+        [this.sharedViewData.swLng, this.sharedViewData.swLat]
+      ]
+      this.$store.commit(`${MAP_BOUNDS}`, bounds)
+    },
     async handleItemListSelection({ option, id }) {
       if (this.$auth.isAuthenticated) {
+        if (this.focus) {
+          bus.$emit(
+            `${CLEAR_SELECTION}`,
+            true,
+            this.focus.type.split().join('')
+          )
+        }
+
         switch (option.toLowerCase().trim()) {
           case 'ixps':
             await this.handleIxpsItemSelected({ id, type: option })
@@ -102,20 +132,28 @@ export default {
         }
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
-      await this.getSubseaCableBoundsData({
-        user_id: await this.$auth.getUserID(),
-        _id: id
-      })
+      if (this.sharedViewData) {
+        this.setSharedViewBounds()
+      } else {
+        await this.getSubseaCableBoundsData({
+          user_id: await this.$auth.getUserID(),
+          _id: id
+        })
+      }
       bus.$emit(`${FOCUS_ON}`, { id, type: 'cable' })
     },
     async handleFacilityItemSelected({ id, type }) {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
-      await this.getFacilityBoundsData({
-        user_id: await this.$auth.getUserID(),
-        _id: id
-      })
+      if (this.sharedViewData) {
+        this.setSharedViewBounds()
+      } else {
+        await this.getFacilityBoundsData({
+          user_id: await this.$auth.getUserID(),
+          _id: id
+        })
+      }
 
       bus.$emit(`${FOCUS_ON}`, { id, type })
     },
@@ -123,10 +161,14 @@ export default {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
-      await this.getIxpsBoundsData({
-        user_id: await this.$auth.getUserID(),
-        _id: id
-      })
+      if (this.sharedViewData) {
+        this.setSharedViewBounds()
+      } else {
+        await this.getIxpsBoundsData({
+          user_id: await this.$auth.getUserID(),
+          _id: id
+        })
+      }
 
       bus.$emit(`${FOCUS_ON}`, { id, type })
     },
@@ -134,10 +176,14 @@ export default {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
-      await this.getClsBoundsData({
-        user_id: await this.$auth.getUserID(),
-        _id: id
-      })
+      if (this.sharedViewData) {
+        this.setSharedViewBounds()
+      } else {
+        await this.getClsBoundsData({
+          user_id: await this.$auth.getUserID(),
+          _id: id
+        })
+      }
 
       bus.$emit(`${FOCUS_ON}`, { id, type })
     },

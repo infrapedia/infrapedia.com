@@ -23,6 +23,19 @@ export const useAuth0 = ({
       popupOpen: false,
       error: null
     }),
+    computed: {
+      userID() {
+        return this.$auth.user && this.$auth.user.sub
+          ? this.$auth.user.sub
+          : this.$auth.getUserID()
+      },
+      isUserAnAdmin() {
+        const admIDs = process.env.VUE_APP_RESTRICTED_IDS
+          ? process.env.VUE_APP_RESTRICTED_IDS.split(',')
+          : []
+        return admIDs.includes(this.userID)
+      }
+    },
     async created() {
       await this.createAuthClient()
     },
@@ -58,9 +71,11 @@ export const useAuth0 = ({
         }
       },
       async getUserID() {
-        if (!this.user.sub) {
+        if (!this.user || (this.user && !this.user.sub)) {
           if (!this.auth0Client) await this.createAuthClient()
           this.user = await this.auth0Client.getUser()
+          if (!this.user) return this.loginWithRedirect()
+          else return this.user.sub
         }
 
         return this.user.sub

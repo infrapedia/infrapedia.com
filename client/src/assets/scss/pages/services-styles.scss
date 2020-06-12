@@ -13,9 +13,9 @@
 
 .card-wrapper {
   width: 76vw;
+  padding: 4rem;
   margin: 0 auto;
   min-height: 60vh;
-  padding: 4rem;
   transform: translateY(-8.6rem);
 
   .services-wrapper {
@@ -25,6 +25,22 @@
     grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
 
     .inner-wrapper {
+      .el-card {
+        height: 24rem;
+        position: relative;
+        .card-inner-wrapper {
+          display: flex;
+          flex-flow: column wrap;
+          p.text:last-child {
+            height: 13rem;
+          }
+          footer {
+            position: absolute;
+            bottom: 2rem;
+          }
+        }
+      }
+
       .inner-wrapper_header {
         display: flex;
         align-items: center;
@@ -52,18 +68,26 @@
   }
 
   @media screen and (max-width: $break-sm) {
-    width: 72vw;
-    padding: 2rem;
-  }
-  @media screen and (max-width: $break-xs) {
+    width: 80vw;
     padding: 1rem;
-    .services-wrapper {
-      .inner-wrapper {
+  }
+}
+
+.services-wrapper {
+  @media screen and (max-width: $break-xs) {
+    .inner-wrapper {
+      width: 80vw;
+      .el-card {
+        height: auto;
         padding: 1rem;
-        width: 12rem;
-        .el-card {
-          padding: 1rem;
-          min-width: auto;
+        min-width: auto;
+        &.fix-height {
+          height: 34.2rem;
+        }
+        .card-inner-wrapper {
+          footer {
+            position: relative;
+          }
         }
       }
     }
@@ -105,7 +129,7 @@
     margin-top: 1rem;
   }
   @media screen and (max-width: $break-xs) {
-    font-size: 34px;
+    font-size: 20px;
   }
 }
 
@@ -115,4 +139,7 @@ p.text {
   font-weight: 400;
   font-size: 18px;
   text-align: justify;
+  @media screen and (max-width: $break-xs) {
+    font-size: 16px;
+  }
 }

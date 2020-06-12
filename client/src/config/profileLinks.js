@@ -19,11 +19,11 @@ const profileLinks = [
     url: '/user/section/issues',
     icon: ['fas', 'bug']
   },
-  {
-    label: 'Messages',
-    url: '/user/section/messages',
-    icon: ['fas', 'envelope']
-  },
+  // {
+  //   label: 'Messages',
+  //   url: '/user/section/messages',
+  //   icon: ['fas', 'envelope']
+  // },
   {
     label: 'Organizations',
     url: '/user/section/orgs',
@@ -32,7 +32,8 @@ const profileLinks = [
   {
     label: 'Groups',
     url: '/user/section/groups',
-    icon: ['fas', 'project-diagram']
+    icon: ['fas', 'project-diagram'],
+    adminOnly: true
   },
   {
     label: 'CLS',
@@ -52,7 +53,8 @@ const profileLinks = [
   {
     label: 'IXPs',
     url: '/user/section/ixps',
-    icon: ['fas', 'dot-circle']
+    icon: ['fas', 'dot-circle'],
+    adminOnly: true
   },
   {
     label: 'Facilities',
@@ -62,7 +64,8 @@ const profileLinks = [
   {
     label: 'Maps',
     icon: ['fas', 'map-marked-alt'],
-    url: '/user/section/create?id=map'
+    url: '/user/section/create?id=map',
+    adminOnly: true
   }
 ]
 

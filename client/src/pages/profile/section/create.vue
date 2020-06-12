@@ -13,52 +13,69 @@
         :is="currentView"
         :form="form"
         :mode="mode"
+        :is-send-data-disabled="checkGeomLength"
         :is-sending-data="isSendingData"
         @send-data="checkType"
         @handle-file-converted="handleFileConverted"
         @set-selection-onto-map="handleSetSelectionOntoMap"
         @cancel-geom-loading="toggleMapFormLoading(false)"
         @loading-selection-geom="toggleMapFormLoading(true)"
+        @dragger-geojson-upload-failed="handleFileConvertionFailed"
       />
     </div>
     <div class="right w-fit-full">
-      <editor-map :key="mapKey" :type="creationType" :form="form" />
+      <editor-map
+        :key="mapKey"
+        :type="creationType"
+        :form="form"
+        @features-list-change="featuresList = $event"
+        @error-loading-draw-onto-map="handleFileConvertionFailed"
+      />
     </div>
-    <el-dialog
-      :visible.sync="isLoadingDialog"
-      width="44%"
-      top="12vh"
-      title="Uploading file..."
-      :show-close="false"
-      :custom-class="customDialogClass"
-      :close-on-click-modal="false"
-    >
-      Usually, this takes time when uploading large files... Please be patient.
-    </el-dialog>
-    <el-dialog
-      :visible.sync="isMapFormLoading"
-      width="44%"
-      top="12vh"
-      title="Loading map..."
-      :show-close="false"
-      :custom-class="customDialogClass"
-      :close-on-click-modal="false"
-    >
-      Usually, this takes time when loading a map with lots of data... Please be
-      patient.
-    </el-dialog>
-    <el-dialog
-      :visible.sync="isMapFormSendingData"
-      width="44%"
-      top="12vh"
-      title="Uploading map and creating map archives..."
-      :show-close="false"
-      :custom-class="customDialogClass"
-      :close-on-click-modal="false"
-    >
-      Usually, this takes time when uploading a map with lots of data... Please
-      be patient.
-    </el-dialog>
+    <template>
+      <el-dialog
+        :visible.sync="isLoadingDialog"
+        width="44%"
+        top="12vh"
+        title="Uploading file..."
+        :show-close="false"
+        :custom-class="customDialogClass"
+        :close-on-click-modal="false"
+      >
+        Usually, this takes time when uploading large files... Please be
+        patient.
+      </el-dialog>
+      <el-dialog
+        :visible.sync="isMapFormLoading"
+        width="44%"
+        top="12vh"
+        title="Loading map..."
+        :show-close="false"
+        :custom-class="customDialogClass"
+        :close-on-click-modal="false"
+      >
+        Usually, this takes time when loading a map with lots of data... Please
+        be patient.
+      </el-dialog>
+      <el-dialog
+        :visible.sync="isMapFormSendingData"
+        width="44%"
+        top="12vh"
+        title="Uploading map and creating map files..."
+        :show-close="false"
+        :custom-class="customDialogClass"
+        :close-on-click-modal="false"
+      >
+        Usually, this takes time when uploading a map with lots of data...
+        Please be patient.
+      </el-dialog>
+    </template>
+
+    <manual-kmz-submit-dialog
+      :form-data="manualSubmitFormData"
+      :is-visible="isManualUploadDialog"
+      @close="closeMannualKmzSubmitDialog"
+    />
   </div>
 </template>
 
@@ -75,12 +92,12 @@ import {
   createCable,
   editCable,
   viewCableOwner
-  // viewCableBBoxHMR
 } from '../../../services/api/cables'
 import {
   EDITOR_LOAD_DRAW,
   EDITOR_FILE_CONVERTED,
-  EDITOR_SET_FEATURES
+  EDITOR_SET_FEATURES,
+  EDITOR_SET_FEATURES_LIST
 } from '../../../events/editor'
 import MapForm from '../../../components/userCreationForms/map'
 import {
@@ -94,13 +111,16 @@ import {
   createFacility
 } from '../../../services/api/facs'
 import { viewIXPOwner, editIXP, createIXP } from '../../../services/api/ixps'
+import ManualKMZSubmitDialog from '../../../components/dialogs/ManualKMZSubmit'
+import debounce from '../../../helpers/debounce'
 
 export default {
   name: 'CreateSection',
   components: {
     'cls-form': CLSForm,
     'editor-map': EditorMap,
-    'cable-form': CableForm
+    'cable-form': CableForm,
+    'manual-kmz-submit-dialog': ManualKMZSubmitDialog
   },
   data() {
     return {
@@ -108,8 +128,10 @@ export default {
       mapKey: 0,
       mode: 'create',
       loading: false,
+      featuresList: [],
       isSendingData: false,
       isPropertiesDialog: false,
+      isManualUploadDialog: false,
       isLoadingSelectionGeom: false,
       creationType: this.$route.query.id
     }
@@ -136,6 +158,9 @@ export default {
     },
     isMapFormSendingData() {
       return this.isSendingData && this.creationType == 'map'
+    },
+    manualSubmitFormData() {
+      return this.form
     },
     isLoadingDialog() {
       const type =
@@ -167,7 +192,7 @@ export default {
       return view
     },
     checkGeomLength() {
-      return this.$store.state.editor.scene.features.list.length ? false : true
+      return this.featuresList.length ? false : true
     },
     isMapFormLoading: {
       get() {
@@ -176,9 +201,6 @@ export default {
       set() {
         return this.$store.dispatch('editor/toggleMapFormLoading', false)
       }
-    },
-    featuresList() {
-      return this.$store.state.editor.scene.features.list
     },
     checkType() {
       let method
@@ -250,6 +272,8 @@ export default {
     if (!this.$route.query.id) return this.$router.push('/user')
   },
   async mounted() {
+    // window.toggleDialog = () =>
+    //   (this.isManualUploadDialog = !this.isManualUploadDialog)
     this.creationType = this.$route.query.id
     this.checkCreationType(this.creationType)
 
@@ -260,23 +284,40 @@ export default {
     }
   },
   methods: {
+    closeMannualKmzSubmitDialog: debounce(function() {
+      this.isManualUploadDialog = false
+      this.$router.replace(`${this.$route.path}?id=${this.$route.query.id}`)
+    }, 320),
+    handleFileConvertionFailed: debounce(function() {
+      this.isManualUploadDialog = true
+      this.$router.replace(
+        `${this.$route.path}?id=${this.$route.query.id}&failedToUploadKMz=true`
+      )
+    }, 320),
     toggleMapFormLoading(bool) {
-      return this.$store.dispatch('editor/toggleMapFormLoading', bool)
+      this.$store.dispatch('editor/toggleMapFormLoading', bool)
     },
     async handleSetSelectionOntoMap(data) {
-      return await bus.$emit(`${EDITOR_SET_FEATURES}`, data)
+      await bus.$emit(`${EDITOR_SET_FEATURES}`, data)
     },
     async checkUserMapExistance() {
       this.loading = true
-      const res = await getMyMap({ user_id: await this.$auth.getUserID() })
-      if (res && res.t !== 'error' && res.data && res.data.r) {
+      const {
+        t,
+        data: { r: mymap = [] }
+      } = (await getMyMap({ user_id: await this.$auth.getUserID() })) || {
+        data: { mymap: [] }
+      }
+
+      if (t != 'error' && mymap.length > 0) {
         this.mode = 'edit'
         const {
           subdomain,
           googleID,
           cls,
           facilities,
-          cables,
+          terrestrials,
+          subsea,
           logos,
           draw,
           ixps,
@@ -287,15 +328,16 @@ export default {
           techPhone,
           saleEmail,
           salePhone
-        } = res.data.r
+        } = mymap[0]
 
         this.form = {
           googleID,
           subdomain,
           ixps: Array.isArray(ixps) ? ixps : [],
           cls: Array.isArray(cls) ? cls : [],
-          logos: Array.isArray(logos) ? logos : [],
-          cables: Array.isArray(cables) ? cables : [],
+          logo: Array.isArray(logos) && logos.length > 0 ? logos[0] : '',
+          subsea: Array.isArray(subsea) ? subsea : [],
+          terrestrials: Array.isArray(terrestrials) ? terrestrials : [],
           facilities: Array.isArray(facilities) ? facilities : [],
           config: typeof config == 'string' ? JSON.parse(config) : config,
           owners: Array.isArray(owners) ? owners : [],
@@ -308,14 +350,14 @@ export default {
 
         const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
         if (fc.features && fc.features.length) {
-          this.$store.dispatch('editor/setList', fc.features)
-          bus.$emit(`${EDITOR_LOAD_DRAW}`)
+          bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, fc.features)
+          bus.$emit(`${EDITOR_LOAD_DRAW}`, null, false)
         }
       }
       this.loading = false
     },
     handleFileConverted(fc) {
-      return bus.$emit(`${EDITOR_FILE_CONVERTED}`, fc)
+      bus.$emit(`${EDITOR_FILE_CONVERTED}`, fc)
     },
     handleDialogVisibility(bool) {
       this.isPropertiesDialog = bool
@@ -329,7 +371,7 @@ export default {
 
       if (t != 'error') {
         this.mode = 'create'
-        await setupMyMapArchives(data.subdomain)
+        await setupMyMapArchives(data.subdomain).catch(console.error)
         await this.checkUserMapExistance()
       }
       this.isSendingData = false
@@ -340,8 +382,10 @@ export default {
           this.form = {
             name: '',
             slug: '',
+            country: '',
             tags: [],
             cables: [],
+            owners: [],
             state: 'unknown',
             geom: this.featuresList
           }
@@ -353,8 +397,9 @@ export default {
             name: '',
             cls: [],
             ixps: [],
-            logos: [],
-            cables: [],
+            logo: '',
+            terrestrials: [],
+            subsea: [],
             owners: [],
             facilities: [],
             address: [],
@@ -368,6 +413,7 @@ export default {
           this.form = {
             name: '',
             tags: [],
+            owners: [],
             geom: this.featuresList,
             nameLong: '',
             media: '',
@@ -425,6 +471,9 @@ export default {
       switch (this.creationType) {
         case 'cls':
           currentElement = await this.viewCurrentCLS(_id)
+          if (!currentElement.country || currentElement.country == 'null') {
+            currentElement.country = ''
+          }
           break
         case 'facilities':
           currentElement = await this.viewCurrentFacility(_id)
@@ -453,12 +502,7 @@ export default {
           this.handleCLSEditMode(data)
           break
         case 'ixps':
-          if (!this.form.media || this.form.media == 'undefined') {
-            this.form.media = ''
-          }
-          if (!this.form.geom || this.form.geom == 'undefined') {
-            this.form.geom = this.featuresList
-          }
+          this.handleIxpsEditMode(data)
           break
         case 'facilities':
           this.handleFacsEditMode(data)
@@ -468,23 +512,7 @@ export default {
           break
       }
 
-      let coordinates = []
       let features = []
-
-      // If if any type of cable I need to get cable bounds
-      // From a hot service
-      {
-        if (
-          (this.creationType == 'subsea' ||
-            this.creationType == 'terrestrial-network') &&
-          data.geom.features.length > 0
-        ) {
-          const bbox = async () => await import('@turf/bbox')
-          const coords = data.geom.features.map(ft => ft.geometry.coordinates)
-          const bounds = bbox(coords)
-          coordinates = bounds
-        }
-      }
 
       // I need to set the proper structure for setting the features list
       // when it's a point feature
@@ -503,25 +531,36 @@ export default {
                   }
                 }
               ]
-            : data.geom.features
+            : [...data.geom.features]
       }
 
-      await this.$store.dispatch('editor/setList', features)
+      bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, features)
       this.form.geom = this.$store.state.editor.scene.features.list
-      await bus.$emit(
-        `${EDITOR_LOAD_DRAW}`,
-        coordinates.length > 0 ? [{ geometry: { coordinates } }] : false
-      )
+      await bus.$emit(`${EDITOR_LOAD_DRAW}`, features)
     },
     handleCLSEditMode(data) {
-      const clsData = data.cables.map(f => ({
-        name: f.label,
-        _id: f._id
-      }))
-      this.form.cables = clsData
-      this.form.cablesList = clsData
       if (this.form.state == 'null' || this.form.state == 'undefined') {
         this.form.state = 'unknown'
+      }
+
+      {
+        let clsData = data.cables.map(f => ({
+          name: f.label,
+          _id: f._id
+        }))
+        this.form.cables = clsData
+        this.form.cablesList = clsData
+      }
+
+      if (data.owners && Array.isArray(data.owners)) {
+        const ownersData = data.owners.map(owner => ({
+          name: owner.label,
+          _id: owner._id
+        }))
+        this.form.owners = ownersData
+        this.form.ownersList = ownersData
+      } else {
+        this.form.owners = []
       }
     },
     handleFacsEditMode(data) {
@@ -543,12 +582,35 @@ export default {
         this.form.ownersList = ownersData
       }
     },
+    handleIxpsEditMode(data) {
+      if (!this.form.media || this.form.media == 'undefined') {
+        this.form.media = ''
+      }
+      if (!this.form.geom || this.form.geom == 'undefined') {
+        this.form.geom = this.featuresList
+      }
+
+      if (data.owners && Array.isArray(data.owners)) {
+        let ownersData = data.owners.map(owner => ({
+          name: owner.label,
+          _id: owner._id
+        }))
+        this.form.owners = ownersData
+        this.form.ownersList = ownersData
+      } else {
+        this.form.owners = []
+      }
+    },
     handleCablesEditMode(data) {
       const facsData = data.facilities.map(f => ({
         name: f.label,
         _id: f._id
       }))
       const ownersData = data.owners.map(f => ({
+        name: f.label,
+        _id: f._id
+      }))
+      const clsData = data.cls.map(f => ({
         name: f.label,
         _id: f._id
       }))
@@ -559,6 +621,16 @@ export default {
       this.form.owners = ownersData
       this.form.ownersList = ownersData
       this.form.activationDateTime = new Date(this.form.activationDateTime)
+      this.form.cls = clsData
+      this.form.clsList = clsData
+
+      if (
+        data.category == 'null' ||
+        data.category == 'undefined' ||
+        data.category.length <= 0
+      ) {
+        this.form.category = 'unknown'
+      }
     },
     async viewCurrentFacility(_id) {
       const res = await viewFacilityOwner({

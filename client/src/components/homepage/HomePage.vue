@@ -45,6 +45,14 @@
           connect and request information and quotes from providers all over the
           world easily.
         </p>
+        <div
+          id="contactUsButtonUnderHeading"
+          class="text-center flex w-fit-full justify-content-center mt12"
+        >
+          <router-link class="el-button el-button--default" to="/contact">
+            Contact Us
+          </router-link>
+        </div>
         <div class="centered-wrapper relative w-fit-full mt24">
           <div class="flex row nowrap with-icon justify-self-center">
             <div
@@ -68,9 +76,9 @@
       </div>
       <router-link
         to="/services"
-        class="text-center w-fit-full inline-block mt12"
+        class="text-center w-fit-full inline-block mt12 underline-hover"
       >
-        Learn more
+        Our Services
         <span class="fs-xsmall font-thin ml1">
           <fa :icon="['fas', 'angle-double-right']" />
         </span>
@@ -78,55 +86,12 @@
     </div>
     <div class="carousel-section">
       <div class="carousel-wrapper p4">
-        <h3 class="title">Trusted by</h3>
-        <el-carousel
-          :interval="5000"
-          height="40vh"
-          indicator-position="outside"
-        >
-          <el-carousel-item v-for="(img, i) in trustedBy" :key="i">
-            <div class="flex row nowrap justify-content-center">
-              <el-image
-                :src="img.logo"
-                fit="scale-down"
-                class="img-sponsor w40 h80 no-selectable"
-              />
-            </div>
-          </el-carousel-item>
-        </el-carousel>
-      </div>
-      <div class="carousel-wrapper p4">
-        <el-divider></el-divider>
-        <div class="mt20">
-          <h3 class="title">Our Partners</h3>
-          <el-carousel
-            :interval="6000"
-            height="40vh"
-            type="card"
-            indicator-position="outside"
-          >
-            <el-carousel-item v-for="(img, i) in premium" :key="i">
-              <div class="flex row nowrap justify-content-center">
-                <el-card shadow="never" class="no-border w40">
-                  <el-image
-                    :src="img.logo"
-                    fit="scale-down"
-                    class="img-sponsor w40 h80 no-selectable"
-                  />
-                </el-card>
-              </div>
-            </el-carousel-item>
-          </el-carousel>
-        </div>
-      </div>
-      <div class="carousel-wrapper p4">
         <el-divider></el-divider>
         <div class="mt20">
           <h3 class="title">Blog</h3>
           <el-carousel
             :interval="7000"
-            height="40vh"
-            type="card"
+            :height="blogHeight"
             indicator-position="outside"
           >
             <el-carousel-item v-for="(post, i) in blogPosts" :key="i">
@@ -148,6 +113,47 @@
             </el-carousel-item>
           </el-carousel>
         </div>
+      </div>
+      <div class="carousel-wrapper p4">
+        <el-divider></el-divider>
+        <div class="mt20">
+          <h3 class="title">Our Partners</h3>
+          <el-carousel
+            :interval="6000"
+            height="40vh"
+            indicator-position="outside"
+          >
+            <el-carousel-item v-for="(img, i) in premium" :key="i">
+              <div class="flex row nowrap justify-content-center">
+                <el-card shadow="never" class="no-border w40">
+                  <el-image
+                    :src="img.logo"
+                    fit="scale-down"
+                    class="img-sponsor w40 h80 no-selectable"
+                  />
+                </el-card>
+              </div>
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+      </div>
+      <div class="carousel-wrapper p4">
+        <h3 class="title">Trusted by</h3>
+        <el-carousel
+          :interval="5000"
+          height="40vh"
+          indicator-position="outside"
+        >
+          <el-carousel-item v-for="(img, i) in trustedBy" :key="i">
+            <div class="flex row nowrap justify-content-center">
+              <el-image
+                :src="img.logo"
+                fit="scale-down"
+                class="img-sponsor w40 h80 no-selectable"
+              />
+            </div>
+          </el-carousel-item>
+        </el-carousel>
       </div>
     </div>
   </div>
@@ -194,6 +200,9 @@ export default {
   computed: {
     premium() {
       return this.$store.state.premium
+    },
+    blogHeight() {
+      return window.innerWidth <= 425 ? '40vh' : '28vh'
     }
   },
   async mounted() {

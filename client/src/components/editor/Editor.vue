@@ -6,6 +6,24 @@
       <p class="m0 mt1"><strong>Lng:</strong> {{ infoBox.lng }}</p>
       <p class="m0 mt1"><strong>Zoom:</strong> {{ infoBox.zoom }}</p>
     </div>
+    <div
+      class="absolute information-box z-index20 p2 ml5 text-left"
+      :class="{ dark }"
+    >
+      <p class="m0" v-if="oneClickMessage.length == 1">
+        {{ oneClickMessage[0] }}
+      </p>
+      <template v-else-if="oneClickMessage.length == 2">
+        <p class="m0" v-html="oneClickMessage[0]" />
+        <p class="m0 mt1 inline-block" v-html="oneClickMessage[1]" />
+      </template>
+      <p class="m0 mt1" v-if="type != 'facilities'">
+        {{ doubleClickMessage[0] }}
+      </p>
+      <span class="inline-block ml1" v-else>
+        {{ doubleClickMessage[0] }}
+      </span>
+    </div>
     <properties-dialog
       :mode="dialog.mode"
       :type="type"
@@ -27,11 +45,13 @@ import { mapConfig } from '../../config/mapConfig'
 import {
   EDITOR_LOAD_DRAW,
   EDITOR_SET_FEATURES,
-  EDITOR_FILE_CONVERTED
+  EDITOR_FILE_CONVERTED,
+  EDITOR_SET_FEATURES_LIST
 } from '../../events/editor'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { editorMapConfig } from '../../config/editorMapConfig'
-import getBoundsCoords from '../../helpers/getBoundsCoords'
+import bbox from '@turf/bbox'
+import debounce from '../../helpers/debounce'
 
 export default {
   components: {
@@ -44,6 +64,14 @@ export default {
       lat: mapConfig.center[1],
       lng: mapConfig.center[0],
       zoom: mapConfig.zoom
+    },
+    scene: {
+      features: {
+        list: [],
+        selected: null
+      },
+      creation: null,
+      edition: null
     },
     controls: null,
     dialog: {
@@ -66,14 +94,45 @@ export default {
     dark() {
       return this.$store.state.isDark
     },
-    scene() {
-      return this.$store.state.editor.scene
+    oneClickMessage() {
+      let msg = []
+      switch (this.type) {
+        case 'ixps':
+          msg = [
+            'Click once to edit the properties of the IXP or change its position'
+          ]
+          break
+        case 'cls':
+          msg = [
+            'Click once to edit the properties of the CLS or change its position'
+          ]
+          break
+        case 'facilities':
+          msg = [
+            '<strong>Points:</strong> Click once to edit the properties of the Facility or change its position',
+            '<strong>Polygons:</strong> Click once to edit the properties of a segment.'
+          ]
+          break
+        default:
+          msg = ['Click once to edit the properties of a segment.']
+          break
+      }
+      return msg
     },
-    isEdition() {
-      return this.$store.state.editor.edition
-    },
-    isCreation() {
-      return this.$store.state.editor.creation
+    doubleClickMessage() {
+      let msg = []
+      switch (this.type) {
+        case 'subsea':
+          msg = ['Click twice to edit the shape of a segment.']
+          break
+        case 'terrestrial-network':
+          msg = ['Click twice to edit the shape of a segment.']
+          break
+        default:
+          msg = []
+          break
+      }
+      return msg
     }
   },
   watch: {
@@ -85,17 +144,21 @@ export default {
         this.controls.updateControls(newState)
       },
       deep: true
+    },
+    'scene.features.list'(list) {
+      this.$emit('features-list-change', list)
     }
   },
   mounted() {
-    this.map = this.addMapEvents(this.createMap())
+    this.map = this.handleSetMapSources(this.addMapEvents(this.createMap()))
     this.toggleDarkMode(this.dark)
     this.controls.resetScene(false)
-    if (this.scene.features.list.length) {
-      this.handleRecreateDraw()
+
+    if (this.scene.features.list.length > 0) {
+      this.$emit('features-list-change', this.scene.features.list)
     }
 
-    this.handleSetMapSources()
+    bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
     bus.$on(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
@@ -106,17 +169,21 @@ export default {
     }
   },
   methods: {
-    handleSetMapSources() {
+    handleSetFeaturesList(list) {
+      this.scene.features.list = list
+    },
+    handleSetMapSources(map) {
       let vm = this
-      this.map.on('load', function() {
+      map.on('load', function() {
         for (let source of editorMapConfig.sources) {
-          vm.map.addSource(source, {
+          map.addSource(source, {
             type: 'geojson',
             data: fCollectionFormat()
           })
         }
         vm.addMapLayers(vm.map)
       })
+      return map
     },
     addMapLayers(map) {
       for (let layer of editorMapConfig.layers) {
@@ -128,33 +195,45 @@ export default {
 
       await this.draw.set(fc)
       await this.handleZoomToFeature(fc)
-      return await this.$store.dispatch('editor/setList', fc.features)
+      this.scene.features.list = fc
     },
     async handleMapFormFeatureSelection({ t, fc, removeLoadState }) {
       if (!this.map) return
       await setTimeout(async () => {
-        const source = this.map.getSource(`${t}-source`)
-        if (source) await source.setData(fc)
+        const source = this.map.getSource(
+          `${t == 'subsea' || t == 'terrestrials' ? 'cables' : t}-source`
+        )
 
+        if (!fc.features) {
+          fc = fCollectionFormat(fc)
+        }
+
+        if (source) await source.setData(fc)
         if (removeLoadState) {
           await this.$store.dispatch('editor/toggleMapFormLoading', false)
         }
       }, 10)
     },
     async handleZoomToFeature(fc) {
-      const coords = fc.features.map(ft => ft.geometry.coordinates)
-      const bbox = getBoundsCoords(coords)
-      const zoomLevel = this.type == 'facilities' ? 16.8 : 4
+      if (fc.features.length <= 0) return
 
-      await this.map.fitBounds(bbox, {
-        zoom: zoomLevel,
+      const bounds = bbox(fc)
+      const boundsConfig = {
         animate: true,
         speed: 1.75,
         padding: 90,
         pan: {
           duration: 25
         }
-      })
+      }
+      const zoomLevels = {
+        facilities: 16.8,
+        ixps: 12.8,
+        cls: 14.52
+      }
+
+      zoomLevels[this.type] ? (boundsConfig.zoom = zoomLevels[this.type]) : null
+      await this.map.fitBounds(bounds, boundsConfig)
     },
     handleDialogData(data) {
       this.dialog.visible = false
@@ -199,7 +278,7 @@ export default {
         draw: this.draw,
         type: this.type,
         scene: this.scene,
-        $dispatch: this.$store.dispatch,
+        // $dispatch: this.$store.dispatch,
         handleEditFeatureProperties: feat => {
           this.dialog.mode = 'edit'
           this.dialog.visible = true
@@ -207,7 +286,7 @@ export default {
         },
         handleBeforeFeatureCreation: feat => {
           this.dialog.selectedFeature = feat
-          feat.geometry.type !== 'Point'
+          feat.geometry.type != 'Point'
             ? (this.dialog.visible = true)
             : this.handleDialogData({ name: '' })
         }
@@ -232,8 +311,9 @@ export default {
       })
       return map
     },
-    async handleRecreateDraw(feats) {
+    handleRecreateDraw: debounce(async function(feats, zoomTo = true) {
       // Deleting everything in case there's something already drawn that could be repeted
+      // if (this.scene.features.list.length <= 0) return
       await this.draw.trash()
       const featuresCollection = fCollectionFormat(
         JSON.parse(JSON.stringify(this.scene.features.list))
@@ -244,16 +324,18 @@ export default {
         featuresCollection.features.length > 0 &&
         !featuresCollection.features[0].id
       ) {
-        this.$store.dispatch(
-          'editor/setList',
-          this.setFeaturesID(featuresCollection, featuresID)
+        this.scene.features.list = this.setFeaturesID(
+          featuresCollection,
+          featuresID
         )
       }
 
-      return await this.handleZoomToFeature(
-        feats ? fCollectionFormat(feats) : featuresCollection
-      )
-    },
+      if (zoomTo) {
+        await this.handleZoomToFeature(
+          feats ? fCollectionFormat(feats) : featuresCollection
+        )
+      }
+    }, 820),
     setFeaturesID(fc, ids = []) {
       return fc.features.map((ft, i) => {
         if (ids.length > 0) {
@@ -265,17 +347,23 @@ export default {
     handleDrawSelectionChange(e) {
       if (e.features.length <= 0) return
       const featureSelected = this.scene.features.list.filter(
-        feat => feat.id === e.features[0].id
+        feat => feat.id == e.features[0].id
       )
-      return this.controls.handleDrawSelectionChange(featureSelected)
+      this.controls.handleDrawSelectionChange(featureSelected)
     },
     handleCreateFeature(feat) {
-      this.$store.dispatch('editor/confirmCreation', feat)
-      return this.controls.resetScene()
+      this.scene.features.list.push(feat)
+      this.controls.resetScene()
     },
-    handleEditFeatProps(feat) {
-      this.$store.dispatch('editor/editFeature', feat)
-      return this.controls.resetScene()
+    handleEditFeatProps(feats) {
+      this.scene.features.list.forEach((feat, i) => {
+        for (let featEdit of feats) {
+          if (feat.id == featEdit.id) {
+            this.scene.features.list[i] = { ...featEdit }
+          }
+        }
+      })
+      this.controls.resetScene()
     },
     toggleDarkMode(dark) {
       return this.map.setStyle(dark ? mapConfig.darkBasemap : mapConfig.default)

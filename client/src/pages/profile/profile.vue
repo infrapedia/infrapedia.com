@@ -18,12 +18,16 @@
         <el-form :model="form" :rules="rules" ref="form">
           <el-row :gutter="20">
             <el-col :sm="24" :md="24" :lg="12">
-              <el-form-item prop="name" label="First name">
+              <el-form-item prop="name" label="First name" required>
                 <el-input v-model="form.name" :class="{ dark }" />
               </el-form-item>
             </el-col>
             <el-col :sm="24" :md="24" :lg="12">
-              <el-form-item prop="user_metadata.lastname" label="Last name">
+              <el-form-item
+                prop="user_metadata.lastname"
+                required
+                label="Last name"
+              >
                 <el-input
                   v-model="form.user_metadata.lastname"
                   :class="{ dark }"
@@ -33,7 +37,7 @@
           </el-row>
           <el-row :gutter="20">
             <el-col :sm="24" :md="24" :lg="12">
-              <el-form-item prop="email" label="Email address">
+              <el-form-item prop="email" label="Email address" reuired>
                 <el-input v-model="form.email" :class="{ dark }" />
               </el-form-item>
             </el-col>
@@ -72,6 +76,7 @@
                 <el-input
                   v-model="form.user_metadata.companyname"
                   :class="{ dark }"
+                  clearable
                 />
               </el-form-item>
             </el-col>
@@ -83,6 +88,7 @@
                 type="warning"
                 class="w22"
                 size="medium"
+                :loading="sendingData"
                 @click="validateForm"
               >
                 Save
@@ -92,7 +98,7 @@
         </el-form>
       </el-card>
     </div>
-    <footer class="mt10 p0">
+    <footer class="mt10 p0" v-if="isEmailProvider">
       <router-link
         exact
         id="changePass"
@@ -112,6 +118,7 @@ export default {
   name: 'profile',
   data: () => ({
     loading: false,
+    sendingData: false,
     form: {
       name: '',
       email: '',
@@ -130,20 +137,37 @@ export default {
           required: true,
           message: 'Please input your first name',
           trigger: 'blur'
+        },
+        {
+          trigger: 'change',
+          message: "Special characters aren't allowed",
+          // eslint-disable-next-line
+          pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.,0-9()´‘'’ \-]+$/
         }
       ],
       'user_metadata.companyname': [
         {
-          required: true,
+          // required: true,
           message: 'Please input your company name',
           trigger: 'blur'
+        },
+        {
+          message: "Special characters aren't allowed",
+          pattern: /^[_A-z0-9]*((-|\s)*[_A-z0-9])*$/g,
+          trigger: 'change'
         }
       ],
       'user_metadata.lastname': [
         {
           required: true,
-          message: 'Please input your last name',
-          trigger: 'blur'
+          trigger: 'blur',
+          message: 'Please input your last name'
+        },
+        {
+          trigger: 'change',
+          message: "Special characters aren't allowed",
+          // eslint-disable-next-line
+          pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.,0-9()´ \-]+$/
         }
       ],
       email: [
@@ -159,6 +183,13 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    isEmailProvider() {
+      const provider =
+        this.$auth.user && this.$auth.user.sub
+          ? this.$auth.user.sub.split('|')[0]
+          : false
+      return provider == 'auth0' ? true : false
     }
   },
   beforeCreate() {
@@ -223,18 +254,27 @@ export default {
       this.$refs.form.validate(valid => (valid ? this.updateUser() : false))
     },
     async updateUser() {
-      const { form, $auth } = this
-      const res = updateUserData(
-        { ...form },
-        { _id: $auth.user.sub, connection: $auth.user.sub.split('|')[0] },
-        false
-      )
-      if (res) {
-        this.$notify({
-          title: 'Success!',
-          message: 'The changes has been saved successfully',
-          type: 'success'
-        })
+      this.sendingData = true
+      try {
+        const res = updateUserData(
+          { ...this.form },
+          {
+            _id: this.$auth.user.sub,
+            connection: this.$auth.user.sub.split('|')[0]
+          },
+          false
+        )
+        if (res) {
+          this.$notify({
+            title: 'Success!',
+            message: 'The changes has been saved successfully',
+            type: 'success'
+          })
+        }
+      } catch {
+        // Ignore
+      } finally {
+        this.sendingData = false
       }
     }
   }

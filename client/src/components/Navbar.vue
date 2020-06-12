@@ -10,6 +10,13 @@
           <router-link :to="checkIfLoggedIn" class="hidden-md-and-down">
             <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
           </router-link>
+          <router-link :to="checkIfLoggedIn" class="sphere-logo">
+            <el-image
+              class="mt2 logo-img"
+              :src="imageURLSphere"
+              fit="scale-down"
+            />
+          </router-link>
           <el-button
             circle
             icon="el-icon-menu"
@@ -43,6 +50,21 @@
                 >
                   Blog
                 </a>
+              </li>
+
+              <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
+
+              <li
+                class="inline-block no-selectable relative hidden-sm-and-down"
+                role="listitem"
+              >
+                <router-link
+                  to="/services"
+                  class="list-item pr4 pl4"
+                  title="Services"
+                >
+                  Services
+                </router-link>
               </li>
 
               <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
@@ -110,9 +132,9 @@
                 role="listitem"
               >
                 <div class="list-item" data-no-hover-bg="true">
-                  <a href="https://www.catchpoint.com" target="_blank">
+                  <a :href="sponsors[0].url" target="_blank">
                     <el-image
-                      src="https://storage.googleapis.com/infrapedia_bucket/sponsors/catchpoint-logo.png"
+                      :src="sponsors[0].src"
                       lazy
                       class="w28 image-sponsor"
                       fit="cover"
@@ -131,10 +153,10 @@
                 role="listitem"
               >
                 <div class="list-item" data-no-hover-bg="true">
-                  <a href="https://ipv4.global" target="_blank">
+                  <a :href="sponsors[1].url" target="_blank">
                     <el-image
                       lazy
-                      src="https://storage.googleapis.com/infrapedia_bucket/sponsors/ipv4global-footer.png"
+                      :src="sponsors[1].src"
                       fit="center"
                       class="w28 image-sponsor ipv4"
                       alt="ipv4 logo"
@@ -224,6 +246,22 @@
                             rel="noopener"
                             class="inline-block w-inherit color-inherit underline-hover"
                           />
+                        </li>
+                        <li class="w-fit-full h6 mb4 link-info">
+                          <router-link
+                            class="inline-block w-inherit color-inherit underline-hover"
+                            to="/privacy-policy"
+                          >
+                            Privacy Policy
+                          </router-link>
+                        </li>
+                        <li class="w-fit-full h6 mb4 link-info">
+                          <router-link
+                            class="inline-block w-inherit color-inherit underline-hover"
+                            to="/terms-and-conditions"
+                          >
+                            Terms & Conditions
+                          </router-link>
                         </li>
                       </ul>
                       <el-divider class="m0" />
@@ -321,7 +359,7 @@
                           Toggle {{ dark ? 'light' : 'dark' }} mode
                         </el-button>
                       </li>
-                      <li class="w-fit-full h10">
+                      <!-- <li class="w-fit-full h10">
                         <el-button
                           type="text"
                           class="inline-block color-inherit"
@@ -333,7 +371,7 @@
                           />
                           Version 1.0
                         </el-button>
-                      </li>
+                      </li> -->
                       <li class="w-fit-full h10" @click="logOutUser">
                         <el-button
                           type="text"
@@ -381,9 +419,9 @@ import FullScreenSearch from './FullScreenSearch.vue'
 import { TOGGLE_DARK } from '../store/actionTypes'
 import * as events from '../events/navbar'
 import { bus } from '../helpers/eventBus'
-import { setCookie, deleteCookie } from '../helpers/cookies'
-
-const c_name = '_v-app_inf'
+import { deleteCookie } from '../helpers/cookies'
+// setCookie
+// const c_name = '_v-app_inf'
 
 export default {
   name: 'INavbar',
@@ -434,8 +472,13 @@ export default {
     },
     imageURL() {
       return this.dark
-        ? 'https://cdn.infrapedia.com/logos/dark-mode-logo.svg'
-        : 'https://cdn.infrapedia.com/logos/light-mode-logo.svg'
+        ? 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo.svg'
+        : 'https://cdn1.infrapedia.com/assets/img/light-mode-logo.svg'
+    },
+    imageURLSphere() {
+      return this.dark
+        ? 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo-sphere.svg'
+        : 'https://cdn1.infrapedia.com/assets/img/light-mode-logo-sphere.svg'
     },
     isProfileRoute() {
       let isProfile = false
@@ -445,11 +488,11 @@ export default {
       return isProfile
     },
     userName() {
-      return this.$auth.user.name
-    },
-    versionOneLink() {
-      return process.env.VUE_APP_VERSION_APP_LINK
+      return this.$auth.user ? this.$auth.user.name : ''
     }
+    // versionOneLink() {
+    //   return process.env.VUE_APP_VERSION_APP_LINK
+    // }
   },
   async mounted() {
     await this.loadPremiumPartners()
@@ -489,16 +532,16 @@ export default {
           ? `${events.TOGGLE_MOBILE_DRAWER_PROFILE}`
           : `${events.TOGGLE_MOBILE_DRAWER}`
       )
-    },
-    goToVersionOne() {
-      setCookie(
-        c_name,
-        this.versionOneLink,
-        process.env.VUE_APP_EXP_DAYS_VERSION_DAYS_NOTICE
-      )
-
-      window.location.replace(this.versionOneLink)
     }
+    // goToVersionOne() {
+    //   setCookie(
+    //     c_name,
+    //     this.versionOneLink,
+    //     process.env.VUE_APP_EXP_DAYS_VERSION_DAYS_NOTICE
+    //   )
+
+    //   window.location.replace(this.versionOneLink)
+    // }
   }
 }
 </script>

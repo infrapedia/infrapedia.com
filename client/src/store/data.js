@@ -41,29 +41,29 @@ export const dataActions = {
 
   async getSubseaCableBoundsData({ commit }, data) {
     const res = await viewCableBBox(data)
-    if (res && res.data && res.data.r && res.data.r.length) {
-      commit(`${MAP_BOUNDS}`, getBoundsCoords(res.data.r[0].coordinates))
+    if (res && res.data && res.data.r && res.data.r.length > 0) {
+      commit(`${MAP_BOUNDS}`, res.data.r)
     }
   },
 
   async getClsBoundsData({ commit }, data) {
     const res = await viewClsBBox(data)
-    if (res && res.data && res.data.r && res.data.r.length) {
-      commit(`${MAP_BOUNDS}`, getBoundsCoords(res.data.r[0].coordinates))
+    if (res && res.data && res.data.r && res.data.r.length > 0) {
+      commit(`${MAP_BOUNDS}`, res.data.r)
     }
   },
 
   async getFacilityBoundsData({ commit }, data) {
     const res = await viewFacilityBBox(data)
-    if (res && res.data && res.data.r && res.data.r.length) {
-      commit(`${MAP_BOUNDS}`, getBoundsCoords(res.data.r[0].coordinates))
+    if (res && res.data && res.data.r && res.data.r.length > 0) {
+      commit(`${MAP_BOUNDS}`, getBoundsCoords(res.data.r))
     }
   },
 
   async getIxpsBoundsData({ commit }, data) {
     const res = await viewIxpsBBox(data)
-    if (res && res.data && res.data.r && res.data.r.length) {
-      commit(`${MAP_BOUNDS}`, getBoundsCoords(res.data.r[0].coordinates))
+    if (res && res.data && res.data.r && res.data.r.length > 0) {
+      commit(`${MAP_BOUNDS}`, res.data.r)
     }
   },
 
@@ -75,7 +75,7 @@ export const dataActions = {
       res.data &&
       res.data.r &&
       res.data.r.features &&
-      res.data.r.features.length
+      res.data.r.features.length > 0
     ) {
       commit(
         `${MAP_BOUNDS}`,
@@ -92,7 +92,7 @@ export const dataActions = {
       res.data &&
       res.data.r &&
       res.data.r.features &&
-      res.data.r.features.length
+      res.data.r.features.length > 0
     ) {
       commit(
         `${MAP_BOUNDS}`,

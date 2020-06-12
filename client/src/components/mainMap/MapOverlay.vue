@@ -2,11 +2,7 @@
   <div class="no-overflow">
     <!----------- THE CABLE SELECTED HANDLER COMES FROM --------------->
     <!---------------- THE "dataCollection" MIXIN --------------------->
-    <i-map
-      @drawing="handleIsDrawing"
-      @title-by-selection="title = $event"
-      @cable-selected="handleCableSelected"
-    />
+    <i-map @drawing="handleIsDrawing" @title-by-selection="title = $event" />
     <div
       v-show="isDrawing"
       class="absolute calculation-box truncate w44 h22 p1 text-center"
@@ -66,9 +62,6 @@ export default {
     next()
   },
   async mounted() {
-    if (this.$store.state.editor.scene.features.list.length) {
-      this.$store.dispatch('editor/setList', [])
-    }
     await this.loadDataIfQueryParamsExist()
     bus.$on(
       `${navbarEvents.TOGGLE_MOBILE_DRAWER}`,
@@ -106,7 +99,7 @@ export default {
             query.centerLng &&
             query.sharedView == 'true'
           ) {
-            this.$store.commit(`${EASE_POINT}`, {
+            const boundsData = {
               center: [
                 [query.neLng, query.neLat],
                 [query.swLng, query.swLat]
@@ -116,7 +109,9 @@ export default {
               pitch: query.pitch,
               zoom: query.zoom,
               hasToEase: true
-            })
+            }
+
+            this.$store.commit(`${EASE_POINT}`, boundsData)
           }
 
           // If there is there is no id or nor type only ease to the coordinates point

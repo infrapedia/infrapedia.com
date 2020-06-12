@@ -3,10 +3,72 @@ const token = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN
 const cablesLabel = 'cables_label'
 const highlightFeatureState = [
   'case',
-  ['==', ['get', 'id'], 0],
+  ['==', ['get', '_id'], 0],
   '#F7D079',
   'rgba(23,23,23, 0.2)'
 ]
+
+const ixpsPaintConfig = {
+  'circle-radius': 10,
+  'circle-stroke-width': 2,
+  'circle-color': '#b10f0f',
+  'circle-stroke-color': '#333333'
+}
+
+const clsPaintConfig = {
+  'circle-radius': 3.4,
+  'circle-color': '#ffffff',
+  'circle-stroke-width': 2,
+  'circle-stroke-color': '#333333'
+}
+
+const facsPaintConfig = {
+  'fill-extrusion-color': [
+    'case',
+    ['==', ['get', 'premium'], true],
+    '#ff9800',
+    ['==', ['get', 'premium'], false],
+    '#666666',
+    '#666666'
+  ],
+  'fill-extrusion-height': [
+    'interpolate',
+    ['linear'],
+    ['zoom'],
+    15,
+    0,
+    15.05,
+    ['get', 'height']
+  ],
+  'fill-extrusion-base': [
+    'interpolate',
+    ['linear'],
+    ['zoom'],
+    15,
+    0,
+    15.05,
+    ['get', 'min_height']
+  ],
+  'fill-extrusion-opacity': 1
+}
+
+const cablesPaintConfig = {
+  'line-width': 1.62,
+  'line-color': [
+    'case',
+    ['==', ['get', 'status'], 0],
+    '#FF0000',
+    ['>', ['get', 'activationDateTime'], (new Date().getTime() / 1000) * 1000],
+    '#af6ec7',
+    ['==', ['get', 'hasoutage'], 'true'],
+    '#7288b0',
+    ['==', ['get', 'haspartial'], 'true'],
+    '#CC591F',
+    ['==', ['get', 'terrestrial'], 'true'],
+    '#7288b0',
+    '#7288b0'
+  ]
+}
 
 const cables = 'cables'
 const cls = 'cls'
@@ -17,7 +79,7 @@ const facilities = 'facilities'
 // const facilitiesSinglePoints = 'facilities-single-points'
 // const facilitiesClusters = 'facilities_clusters'
 const facilitiesLabel = 'facilities_label'
-const currentEpoch = Math.round(new Date().getTime() / 1000)
+const currentEpoch = Math.round(new Date().getTime() / 1000) * 1000
 
 export const mapConfig = {
   mapToken: token,
@@ -32,6 +94,10 @@ export const mapConfig = {
   clusters,
   facilities,
   cablesLabel,
+  clsPaintConfig,
+  ixpsPaintConfig,
+  facsPaintConfig,
+  cablesPaintConfig,
   facilitiesLabel,
   // facilitiesCount,
   // facilitiesClusters,
@@ -99,27 +165,7 @@ export const mapConfig = {
         'source-layer': cables,
         type: 'line',
         maxzoom: 20,
-        paint: {
-          'line-width': 1.62,
-          'line-color': [
-            'case',
-            ['==', ['get', 'status'], 0],
-            '#FF0000',
-            [
-              '>',
-              ['get', 'activationDateTime'],
-              (new Date().getTime() / 1000) * 1000
-            ],
-            '#af6ec7',
-            ['==', ['get', 'hasoutage'], 'true'],
-            '#7288b0',
-            ['==', ['get', 'haspartial'], 'true'],
-            '#CC591F',
-            ['==', ['get', 'terrestrial'], 'true'],
-            '#7288b0',
-            '#7288b0'
-          ]
-        }
+        paint: cablesPaintConfig
       },
       {
         id: cablesLabel,
@@ -144,35 +190,7 @@ export const mapConfig = {
         id: facilities,
         type: 'fill-extrusion',
         source: facilities,
-        paint: {
-          'fill-extrusion-color': [
-            'case',
-            ['==', ['get', 'premium'], true],
-            '#ff9800',
-            ['==', ['get', 'premium'], false],
-            '#666666',
-            '#666666'
-          ],
-          'fill-extrusion-height': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            15,
-            0,
-            15.05,
-            ['get', 'height']
-          ],
-          'fill-extrusion-base': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            15,
-            0,
-            15.05,
-            ['get', 'min_height']
-          ],
-          'fill-extrusion-opacity': 1
-        }
+        paint: facsPaintConfig
       },
       {
         id: facilitiesLabel,
@@ -247,24 +265,14 @@ export const mapConfig = {
         type: 'circle',
         source: ixps,
         minzoom: 15,
-        paint: {
-          'circle-radius': 10,
-          'circle-color': '#b10f0f',
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#333333'
-        }
+        paint: ixpsPaintConfig
       },
       {
         id: cls,
         type: 'circle',
         source: cls,
         minzoom: 3.4,
-        paint: {
-          'circle-radius': 4.8,
-          'circle-color': '#ffffff',
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#333333'
-        }
+        paint: clsPaintConfig
       },
       {
         id: clusters,
@@ -305,11 +313,11 @@ export const mapConfig = {
     activeSubsea: [
       'all',
       ['!=', 'terrestrial', 'true'],
-      ['<', 'activationDateTime', currentEpoch * 1000]
+      ['<', 'activationDateTime', currentEpoch]
     ],
-    active: ['<', ['get', 'activationDateTime'], currentEpoch * 1000],
+    active: ['<', ['get', 'activationDateTime'], currentEpoch],
     all: ['has', '_id'],
-    future: ['>', ['get', 'activationDateTime'], currentEpoch * 1000],
+    future: ['>', ['get', 'activationDateTime'], currentEpoch],
     timemachine: ['>=', ['get', 'activationDateTime'], 0] // We change the 0 value when using the filter component inside the navbar for the sub-sea time machine
   }
 }

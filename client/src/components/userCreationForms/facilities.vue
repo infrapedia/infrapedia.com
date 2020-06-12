@@ -9,7 +9,17 @@
           class="w-fit-full"
           :class="{ dark }"
           v-model="form.name"
+          clearable
+          @input="checkName"
           :disabled="isViewMode"
+        />
+        <el-alert
+          v-if="isNameRepeated"
+          class="mt4 p2"
+          type="error"
+          :closable="false"
+          description="This name already exists in our database. Use a different name or
+          consider extending your name."
         />
       </el-form-item>
       <el-form-item label="Address" class="mt2">
@@ -111,18 +121,20 @@
           :options="ixpsList"
           @input="loadIXpsSearch"
           :loading="isLoadingIXPs"
-          :value="mode === 'create' ? [] : form.ixps"
+          :value="mode == 'create' ? [] : form.ixps"
           @values-change="handleIxpsSelectChange"
           @remove="handleIxpsSelectRemoveItem"
         />
       </el-form-item>
-      <el-form-item label="Owners">
+      <el-form-item label="Owners" prop="owners" required>
         <v-multi-select
           :mode="mode"
+          :is-required="true"
+          :is-field-empty="isOwnersSelectEmpty"
           :options="ownersList"
           @input="loadOwnersSearch"
           :loading="isLoadingOwners"
-          :value="mode === 'create' ? [] : form.owners"
+          :value="mode == 'create' ? [] : form.owners"
           @values-change="handleOwnersSelectChange"
           @remove="handleOwnersSelectRemoveItem"
         />
@@ -143,7 +155,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="Ready For Service (RFS)">
+      <el-form-item label="Ready For Service (RFS)" prop="StartDate" required>
         <el-date-picker
           class="inline-block w-fit-full-imp"
           v-model="form.StartDate"
@@ -199,7 +211,7 @@
           type="primary"
           class="w-fit-full capitalize"
           round
-          :disabled="checkGeomLength"
+          :disabled="isSendDataDisabled"
           :loading="isSendingData"
           @click="sendData"
         >
@@ -221,6 +233,8 @@ import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 import { searchIxps } from '../../services/api/ixps'
 import VMultiSelect from '../../components/MultiSelect'
 import { searchOrganization } from '../../services/api/organizations'
+import { checkFacilityNameExistence } from '../../services/api/check_name'
+import debounce from '../../helpers/debounce'
 
 export default {
   name: 'FacsForm',
@@ -239,6 +253,8 @@ export default {
       state: '',
       zipcode: ''
     },
+    isNameRepeated: false,
+    isOwnersSelectEmpty: false,
     tagOnEdit: null,
     facilitiesTypes,
     facilitiesBuildingTypes,
@@ -249,32 +265,7 @@ export default {
     isLoadingIXPs: false,
     isLoadingOwners: false,
     ixpsList: [],
-    ownersList: [],
-    tagRules: {
-      reference: [
-        {
-          required: true,
-          message: 'Please input a reference name',
-          trigger: ['blur', 'change']
-        },
-        {
-          min: 2,
-          message: 'Length should be at least 2',
-          trigger: ['blur', 'change']
-        }
-      ],
-      address: []
-    },
-    formRules: {
-      name: [
-        {
-          required: true,
-          message: 'Please input facility name',
-          trigger: 'change'
-        },
-        { min: 3, message: 'Length should be at least 3', trigger: 'change' }
-      ]
-    }
+    ownersList: []
   }),
   props: {
     form: {
@@ -288,9 +279,56 @@ export default {
     isSendingData: {
       type: Boolean,
       default: () => false
+    },
+    isSendDataDisabled: {
+      type: Boolean,
+      required: true
     }
   },
   computed: {
+    tagRules() {
+      return {
+        reference: [
+          {
+            required: true,
+            message: 'Please input a reference name',
+            trigger: ['blur', 'change']
+          },
+          {
+            min: 2,
+            message: 'Length should be at least 2',
+            trigger: ['blur', 'change']
+          }
+        ],
+        address: []
+      }
+    },
+    formRules() {
+      return {
+        name: [
+          {
+            required: true,
+            message: 'Please input facility name',
+            trigger: 'change'
+          },
+          { min: 3, message: 'Length should be at least 3', trigger: 'change' }
+        ],
+        StartDate: [
+          {
+            type: 'date',
+            required: true,
+            trigger: ['blur', 'change'],
+            message: 'Please pick a date'
+          }
+        ],
+        owners: [
+          {
+            message: 'At least one owner is required',
+            trigger: ['blur', 'change']
+          }
+        ]
+      }
+    },
     title() {
       return this.mode == 'create'
         ? 'Create'
@@ -306,9 +344,6 @@ export default {
     },
     autocompleteAddress() {
       return this.tag ? this.tag.fullAddress : ''
-    },
-    checkGeomLength() {
-      return this.$store.state.editor.scene.features.list.length ? false : true
     },
     tagMode() {
       return this.tagOnEdit !== null && this.tag ? 'edit' : 'create'
@@ -336,7 +371,33 @@ export default {
     }
   },
   methods: {
+    checkName: debounce(async function(name) {
+      this.isNameRepeated = false
+      const {
+        t,
+        data: { r }
+      } = (await checkFacilityNameExistence({
+        user_id: this.$auth.getUserID(),
+        name
+      })) || { t: 'error', data: { r: false } }
+
+      if (t != 'error' && r >= 1) {
+        this.isNameRepeated = true
+      } else {
+        this.isNameRepeated = false
+      }
+    }, 320),
+    handleOwnersSelectChange(data) {
+      this.form.owners = data
+      this.setOwnersEmptyState()
+    },
+    setOwnersEmptyState() {
+      if (this.form.owners.length <= 0) {
+        this.isOwnersSelectEmpty = true
+      }
+    },
     sendData() {
+      this.setOwnersEmptyState()
       return this.$refs['form'].validate(isValid =>
         isValid ? this.$emit('send-data') : false
       )
@@ -366,9 +427,6 @@ export default {
     },
     handleOwnersSelectRemoveItem(_id) {
       this.form.owners = this.form.owners.filter(item => item._id != _id)
-    },
-    handleOwnersSelectChange(data) {
-      this.form.owners = Array.from(data)
     },
     handleIxpsSelectChange(data) {
       this.form.ixps = Array.from(data)

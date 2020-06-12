@@ -5,9 +5,39 @@
     </header>
     <el-form ref="form" :model="form" :rules="formRules">
       <el-form-item label="Name" required prop="name">
-        <el-input :class="{ dark }" class="w-fit-full" v-model="form.name" />
+        <el-input
+          :class="{ dark }"
+          class="w-fit-full"
+          v-model="form.name"
+          clearable
+          @input="checkName"
+        />
+        <el-alert
+          v-if="isNameRepeated"
+          class="mt4 p2"
+          type="error"
+          :closable="false"
+          description="This name already exists in our database. Use a different name or
+          consider extending your name."
+        />
       </el-form-item>
-      <el-form-item label="Status" prop="state">
+      <el-form-item label="Country" required prop="country">
+        <el-select
+          placeholder="A country is required"
+          class="w-fit-full"
+          :class="{ dark }"
+          filterable
+          v-model="form.country"
+        >
+          <el-option
+            v-for="(country, i) in countries"
+            :key="i"
+            :label="country.name"
+            :value="country.code"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="Status" prop="state" required>
         <el-radio-group :class="{ dark }" v-model="form.state">
           <el-radio label="operational">
             Operational
@@ -34,6 +64,19 @@
           @remove="handleSubseaCablesSelection(form.cables)"
           @values-change="handleSubseaCablesSelection"
           :value="mode == 'create' ? [] : form.cables"
+        />
+      </el-form-item>
+      <el-form-item label="Owners" prop="owners">
+        <v-multi-select
+          :mode="mode"
+          :is-required="true"
+          :is-field-empty="isOwnersSelectEmpty"
+          :options="ownersList"
+          @input="loadOwnersSearch"
+          :loading="isLoadingOwners"
+          :value="mode === 'create' ? [] : form.owners"
+          @values-change="handleOwnersSelectChange"
+          @remove="handleOwnersSelectRemoveItem"
         />
       </el-form-item>
       <el-form-item label="Tags" class="mt2">
@@ -67,7 +110,7 @@
           class="w-fit-full capitalize"
           round
           :loading="isSendingData"
-          :disabled="checkGeomLength"
+          :disabled="isSendDataDisabled"
           @click="sendData"
         >
           {{ saveBtn }}
@@ -83,27 +126,22 @@ import { searchCables, getCablesGeom } from '../../services/api/cables'
 import { getTags } from '../../services/api/tags'
 import VMultiSelect from '../../components/MultiSelect'
 import { fCollectionFormat } from '../../helpers/featureCollection'
+import { searchOrganization } from '../../services/api/organizations'
+import countriesList from '../../config/countriesList'
+import { checkClsNameExistence } from '../../services/api/check_name'
+import debounce from '../../helpers/debounce'
 
 export default {
   name: 'CLSForm',
   data: () => ({
     tagsList: [],
+    isLoadingOwners: false,
+    ownersList: [],
     cablesList: [],
     loading: false,
+    isNameRepeated: false,
     isLoadingCables: false,
-    formRules: {
-      name: [
-        {
-          required: true,
-          message: 'Please input a name',
-          trigger: 'change'
-        },
-        { min: 3, message: 'Length should be at least 3', trigger: 'change' }
-      ],
-      cables: [],
-      slug: [],
-      state: []
-    }
+    isOwnersSelectEmpty: false
   }),
   components: {
     Dragger,
@@ -121,9 +159,76 @@ export default {
     isSendingData: {
       type: Boolean,
       default: () => false
+    },
+    isSendDataDisabled: {
+      type: Boolean,
+      required: true
     }
   },
   computed: {
+    countries() {
+      const countries = [...countriesList]
+      function once() {
+        // eslint-disable-next-line no-unused-vars
+        let counter = 0
+        return function addNA() {
+          if (counter >= 1) return
+          countries.unshift({ name: 'N.A (Not Available)', code: 'N.A' })
+          counter += 1
+        }
+      }
+      once()()
+      return countries
+    },
+    formRules() {
+      return {
+        name: [
+          {
+            type: 'string',
+            required: true,
+            trigger: 'blur',
+            message: 'Please input a name'
+          },
+          {
+            type: 'string',
+            trigger: 'change',
+            message: 'Please input a valid name',
+            transform: value => value.trim(),
+            // eslint-disable-next-line
+            pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.,0-9()´‘'’ \-]+$/
+          },
+          { min: 3, message: 'Length should be at least 3', trigger: 'change' }
+        ],
+        country: [
+          {
+            type: 'string',
+            required: true,
+            trigger: 'blur',
+            message: 'Please select a country'
+          }
+          // {
+          //   required: true,
+          //   type: 'string',
+          //   message:
+          //     'Please input a valid name for the country where the cls is located',
+          //   trigger: 'change',
+          //   transform: value => value.trim(),
+          //   // eslint-disable-next-line
+          //   pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.0-9´ \-]+$/
+          // }
+        ],
+        cables: [],
+        slug: [],
+        state: [],
+        owners: [
+          // {
+          //   type: 'array',
+          //   message: 'At least one owner is required',
+          //   trigger: ['blur', 'change']
+          // }
+        ]
+      }
+    },
     dark() {
       return this.$store.state.isDark
     },
@@ -132,11 +237,6 @@ export default {
     },
     saveBtn() {
       return this.mode == 'create' ? 'Create CLS' : 'Save changes'
-    },
-    checkGeomLength() {
-      return this.$store.state.editor.scene.features.list.length > 0
-        ? false
-        : true
     }
   },
   watch: {
@@ -144,6 +244,11 @@ export default {
       this.cablesList = [...cables]
       this.handleSubseaCablesSelection(cables)
       delete this.form.cablesList
+    },
+    'form.ownersList'(owners) {
+      if (!owners) return
+      this.ownersList = [...owners]
+      delete this.form.ownersList
     },
     'form.tags'(tag) {
       this.getTagsList(tag)
@@ -159,6 +264,39 @@ export default {
     }
   },
   methods: {
+    checkName: debounce(async function(name) {
+      this.isNameRepeated = false
+      const {
+        t,
+        data: { r }
+      } = (await checkClsNameExistence({
+        user_id: this.$auth.getUserID(),
+        name
+      })) || { t: 'error', data: { r: false } }
+      if (t != 'error' && r >= 1) {
+        this.isNameRepeated = true
+      } else {
+        this.isNameRepeated = false
+      }
+    }, 320),
+    async loadOwnersSearch(s) {
+      if (s.length <= 0) return
+
+      this.isLoadingOwners = true
+      const { data: owners = [] } = (await searchOrganization({
+        user_id: await this.$auth.getUserID(),
+        s
+      })) || { owners: [] }
+
+      this.ownersList = owners
+      this.isLoadingOwners = false
+    },
+    handleOwnersSelectRemoveItem(_id) {
+      this.form.owners = this.form.owners.filter(item => item._id != _id)
+    },
+    handleOwnersSelectChange(data) {
+      this.form.owners = Array.from(data)
+    },
     async handleSubseaCablesSelection(cablesSelected) {
       this.form.cables = cablesSelected
       const {
@@ -197,9 +335,11 @@ export default {
       return this.$emit('handle-file-converted', fc)
     },
     sendData() {
-      return this.$refs['form'].validate(isValid =>
-        isValid ? this.$emit('send-data') : false
-      )
+      return this.$refs['form'].validate(isValid => {
+        return isValid && !this.isOwnersSelectEmpty
+          ? this.$emit('send-data')
+          : false
+      })
     }
   }
 }

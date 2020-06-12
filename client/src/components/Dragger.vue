@@ -43,15 +43,15 @@
 
 <script>
 import {
-  kmzPointsToJSON,
-  kmzLinesToJSON,
-  uploadKmz
+  //   kmzPointsToJSON,
+  //   kmzLinesToJSON,
+  convertFileToGeojson
 } from '../services/api/uploads'
-import LoadingBar from './LoadingBar'
+import { fCollectionFormat } from '../helpers/featureCollection'
 
 export default {
   components: {
-    LoadingBar
+    LoadingBar: () => import('./LoadingBar')
   },
   data: () => ({
     file: [],
@@ -71,7 +71,7 @@ export default {
     },
     helpText: {
       type: String,
-      default: () => 'Upload kmz'
+      default: () => 'Upload kmz/kml'
     }
   },
   methods: {
@@ -108,26 +108,33 @@ export default {
       }
 
       const user_id = await this.$auth.getUserID()
-      const res = await uploadKmz({ file: this.file, user_id })
+      const {
+        data: { r: fCollection }
+      } = (await convertFileToGeojson({ file: this.file, user_id })) || {
+        data: { fCollection: fCollectionFormat() }
+      }
 
-      if (res && res.data && res.data.r && res.data.r.length) {
-        this.loadingText =
-          'We are converting your file from kmz to geojson format'
-        const fCollection =
-          this.creationType === 'cables'
-            ? await kmzLinesToJSON({ link: res.data.r[0], user_id })
-            : await kmzPointsToJSON({ link: res.data.r[0], user_id })
+      this.loadingText =
+        'We are converting your file from kmz to geojson format'
 
-        if (fCollection && fCollection.data.r) {
-          this.$emit('handle-file-converted', fCollection.data.r)
-          this.showAlert = true
-        } else {
-          this.loadingText = 'The conversion has failed! ... Please try again'
-        }
-        this.isConvertingKMZ = false
+      if (
+        fCollection &&
+        fCollection.features &&
+        fCollection.features.length > 0
+      ) {
+        this.$emit('handle-file-converted', fCollection)
+        this.showAlert = true
+        this.showAlert = false
+      } else {
+        this.loadingText = 'The conversion has failed! ... Please try again'
+        this.$emit('dragger-geojson-upload-failed')
       }
       this.isUploadingKMZ = false
-      this.loadingText = ''
+      this.isConvertingKMZ = false
+      setTimeout(() => {
+        this.loadingText = ''
+        this.showAlert = false
+      }, 2000)
     }
   }
 }

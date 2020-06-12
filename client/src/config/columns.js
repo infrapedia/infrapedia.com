@@ -1,6 +1,6 @@
 export const clsColumns = [
   { label: 'Name', value: 'name', showSidebar: true, showTable: true },
-  { label: 'State', value: 'state', showSidebar: true },
+  { label: 'Status', value: 'state', showSidebar: true },
   { label: 'Slug', value: 'slug', showSidebar: true },
   { label: 'Geom', value: 'geom' },
   {
@@ -35,29 +35,40 @@ export const cablesColumns = [
     showTable: true,
     sortable: true
   },
+  { label: 'Status', value: 'category', showSidebar: true },
   {
     label: 'Latency',
     value: 'systemLength',
     showSidebar: true
   },
   {
-    label: 'RFS (Ready for Service)',
+    label: 'Length',
+    value: 'systemLength',
+    showSidebar: true
+  },
+  {
+    label: 'RFS',
     value: 'activationDateTime',
-    showSidebar: true,
     showTable: true
   },
   {
-    label: 'EOL (End of Life)',
+    label: 'RFS',
+    value: 'RFS',
+    showSidebar: true
+  },
+  {
+    label: 'EOL',
     value: 'activationDateTime',
     showSidebar: true
   },
   // 'terrestrial', // (Bool)
   {
-    label: 'Design Capacity (Maximum Tbps of the system)',
-    value: 'capacityTBPS'
+    label: 'Design Capacity',
+    value: 'capacityTBPS',
+    showSidebar: true
   },
   {
-    label: 'FiberPairs',
+    label: 'Fiber Pairs',
     value: 'fiberPairs',
     showSidebar: true
   },
@@ -66,7 +77,7 @@ export const cablesColumns = [
     value: 'litCapacity',
     showSidebar: true
   },
-  { label: 'Notes', value: 'notes' },
+  { label: 'Notes', value: 'notes', showSidebar: true },
   { label: 'Cls', value: 'cls', showSidebar: true },
   {
     label: 'Facilities',
@@ -225,6 +236,11 @@ export const netColumns = [
     showTable: true
   },
   {
+    label: 'Creation date',
+    value: 'created',
+    showSidebar: true
+  },
+  {
     label: 'Facilities',
     value: 'facilities',
     showSidebar: true
@@ -255,7 +271,40 @@ export const netColumns = [
     label: 'Configured alerts',
     value: 'alerts',
     showTable: true
-  }
+  },
+  { label: 'asn', value: 'asn', showSidebar: true },
+  { label: 'info ipv6', value: 'info_ipv6', showSidebar: true },
+  {
+    label: 'info multicast',
+    value: 'info_multicast',
+    showSidebar: true
+  },
+  { label: 'prefixes4', value: 'prefixes4', showSidebar: true },
+  { label: 'info ratio', value: 'info_ratio', showSidebar: true },
+  { label: 'info scope', value: 'info_scope', showSidebar: true },
+  { label: 'info traffic', value: 'info_traffic', showSidebar: true },
+  { label: 'info type', value: 'info_type', showSidebar: true },
+  { label: 'info unicast', value: 'info_unicast', showSidebar: true },
+  { label: 'irr as_set', value: 'irr_as_set', showSidebar: true },
+  { label: 'looking glass', value: 'looking_glass', showSidebar: true },
+  {
+    label: 'policy contrats',
+    value: 'policy_contrats',
+    showSidebar: true
+  },
+  {
+    label: 'policy general',
+    value: 'policy_general',
+    showSidebar: true
+  },
+  {
+    label: 'policy locations',
+    value: 'policy_locations',
+    showSidebar: true
+  },
+  { label: 'policy ratio', value: 'policy_ratio', showSidebar: true },
+  { label: 'policy url', value: 'policy_url', showSidebar: true },
+  { label: 'route server', value: 'route_server', showSidebar: true }
 ]
 
 export const orgsColumns = [

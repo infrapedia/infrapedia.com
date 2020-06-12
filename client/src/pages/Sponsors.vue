@@ -50,13 +50,14 @@
       <el-divider class="transparent" />
       <div class="el-card is-always-shadow inner-wrapper table-wrapper mb20">
         <h2 class="title">Packages</h2>
-        <el-table :data="sponsorsFeatures" stripe border class="mt20 mb20">
-          <el-table-column label="Features" prop="feature" />
+        <el-table :data="sponsorsFeatures" stripe border class="mb20">
+          <el-table-column label="Features" prop="feature" width="376" />
           <el-table-column label="Partner" prop="partner" width="200" />
           <el-table-column label="Premium Partner" prop="premium" width="200" />
           <el-table-column
             label="Exclusive Sponsor - Three Exclusive Spots Available"
             prop="exclusive"
+            width="320"
           />
         </el-table>
       </div>
@@ -64,15 +65,19 @@
       <el-divider class="transparent" />
       <div class="el-card is-always-shadow inner-wrapper table-wrapper mb20">
         <h2 class="title">Pricing</h2>
-        <el-table :data="pricing" stripe border class="mt20 mb20">
-          <el-table-column label="Recurrence time" prop="recurrence" />
+        <el-table :data="pricing" stripe border class="mb20">
+          <el-table-column
+            label="Recurrence time"
+            prop="recurrence"
+            width="306"
+          />
           <el-table-column label="Partner" prop="partner" width="200" />
           <el-table-column label="Premium Partner" prop="premium" width="200" />
           <el-table-column
             label="Exclusive Sponsor - Three Exclusive Spots Available"
           >
             <template slot-scope="scope">
-              <router-link to="/contact">
+              <router-link to="/contact" class="underline-hover">
                 {{ scope.row.exclusive }}
               </router-link>
             </template>
@@ -83,8 +88,8 @@
       <el-divider class="transparent" />
       <div class="el-card is-always-shadow inner-wrapper table-wrapper mb20">
         <h2 class="title">Ads</h2>
-        <el-table :data="ads" stripe border class="mt20 mb20">
-          <el-table-column label="Ads" prop="ad" />
+        <el-table :data="ads" stripe border class="mb20">
+          <el-table-column label="Ads" prop="ad" width="280" />
           <el-table-column label="Max Amount" prop="max" />
           <el-table-column label="Monthly" prop="monthly" />
           <el-table-column label="Yearly" prop="yearly" />

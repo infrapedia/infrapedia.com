@@ -1,0 +1,19 @@
+@import '../base/variables';
+
+.certificate-icon {
+  display: grid;
+  align-items: center;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr;
+  color: $dark-blue;
+  font-size: 40px;
+  span {
+    grid-row: 1;
+    grid-column: 1;
+  }
+  .check {
+    z-index: 1;
+    font-size: 14px;
+    color: whitesmoke;
+  }
+}

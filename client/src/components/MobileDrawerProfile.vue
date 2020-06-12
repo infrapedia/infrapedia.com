@@ -27,7 +27,7 @@
           <fa :icon="['fas', 'times']" />
         </span>
       </header>
-      <ul role="group" class="p0 w-fit-full h-fit-full">
+      <ul role="group" class="p0 w-fit-full h-fit-full overflow-y-auto mb12">
         <li
           role="listitem"
           class="h18"
@@ -72,8 +72,8 @@ export default {
     },
     imageURL() {
       return this.dark
-        ? 'https://cdn.infrapedia.com/logos/dark-mode-logo.svg'
-        : 'https://cdn.infrapedia.com/logos/light-mode-logo.svg'
+        ? 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo.svg'
+        : 'https://cdn1.infrapedia.com/assets/img/light-mode-logo.svg'
     },
     drawerClass() {
       return this.dark ? 'profile-drawer dark' : 'profile-drawer light'

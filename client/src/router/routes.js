@@ -18,13 +18,30 @@ import MyIssuesSection from '../pages/profile/section/myissues.vue'
 import FacilitiesSection from '../pages/profile/section/facilities.vue'
 import EmailProviders from '../pages/profile/email-providers.vue'
 import MarketPlace from '../pages/marketplace'
-import MessagesSection from '../pages/profile/section/messages.vue'
-import MyMessagesSection from '../pages/profile/section/mymessages.vue'
+// import MessagesSection from '../pages/profile/section/messages.vue'
+// import MyMessagesSection from '../pages/profile/section/mymessages.vue'
 import Contact from '../pages/Contact.vue'
 import About from '../pages/About.vue'
 import Attributions from '../pages/Attributions.vue'
 import Services from '../pages/Services.vue'
 import Sponsors from '../pages/Sponsors.vue'
+import { getInstance } from '../auth/index'
+
+async function handleAdminOnlyRoutes(next, to) {
+  const $authInstance = getInstance()
+  const isUserAnAdmin = $authInstance.isUserAnAdmin
+  // If the user is not an admin
+  // There's no reason for them to access the creation page of those sections
+  if (to) {
+    const query = to.query.id == 'map' || to.query.id == 'ixps'
+    if (query && !isUserAnAdmin) next('/user')
+    else next()
+  } else if (!isUserAnAdmin) {
+    next('/user')
+  } else {
+    next()
+  }
+}
 
 const routes = [
   { path: '*', component: NotFound },
@@ -121,12 +138,14 @@ const routes = [
   {
     path: '/user/section/ixps',
     name: 'user/ixps-section',
-    component: IxpsSection
+    component: IxpsSection,
+    beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next)
   },
   {
     path: '/user/section/groups',
     name: 'user/groups-section',
-    component: Groups
+    component: Groups,
+    beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next)
   },
   {
     path: '/user/section/issues',
@@ -138,16 +157,16 @@ const routes = [
     name: 'user/issues-reported',
     component: MyIssuesSection
   },
-  {
-    path: '/user/section/my-messages',
-    name: 'user/my-messages',
-    component: MyMessagesSection
-  },
-  {
-    path: '/user/section/messages',
-    name: 'user/messages',
-    component: MessagesSection
-  },
+  // {
+  //   path: '/user/section/my-messages',
+  //   name: 'user/my-messages',
+  //   component: MyMessagesSection
+  // },
+  // {
+  //   path: '/user/section/messages',
+  //   name: 'user/messages',
+  //   component: MessagesSection
+  // },
   {
     path: '/user/section/alerts',
     name: 'user/alerts-section',
@@ -156,7 +175,8 @@ const routes = [
   {
     path: '/user/section/create',
     name: '/user/create',
-    component: CreateSection
+    component: CreateSection,
+    beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next, to)
   },
   {
     path: '/user/section',
