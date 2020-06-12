@@ -28,3 +28,8 @@ export const vote = async ({ user_id, votes }) => {
 
   return res
 }
+
+export const getVotes = async () => {
+  const res = await $axios.get(`${apiConfig.url}/votes`)
+  return res
+}

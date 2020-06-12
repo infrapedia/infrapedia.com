@@ -183,3 +183,44 @@
     background-color: $white-full;
   }
 }
+
+.votation-pool {
+  .pool-wrapper {
+    width: 80vw;
+    display: grid;
+    gap: 2rem;
+    margin: 1rem auto;
+    justify-items: center;
+    grid-template-columns: repeat(4, 1fr);
+    .pool_inner-wrapper {
+      width: 80%;
+    }
+    h2 {
+      max-width: 16rem;
+    }
+    li span {
+      display: inline-block;
+      max-width: 12rem;
+    }
+    @media screen and (max-width: $break-md) {
+      grid-template-columns: repeat(2, 1fr);
+      h2 {
+        font-size: 20px;
+        font-weight: 500;
+      }
+      .pool_inner-wrapper {
+        width: 80%;
+      }
+    }
+    @media screen and (max-width: $break-xs) {
+      margin: 0;
+      width: 100vw;
+      padding-left: 1rem;
+      grid-template-columns: 1fr;
+      h2 {
+        font-size: 17.6px;
+        font-weight: 500;
+      }
+    }
+  }
+}
