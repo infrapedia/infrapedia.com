@@ -221,7 +221,6 @@ export default {
           trigger: ['blur', 'change']
         }
       ],
-      totalRack: [],
       fullname: [
         {
           required: true,
