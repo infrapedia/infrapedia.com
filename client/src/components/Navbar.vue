@@ -247,6 +247,14 @@
                             class="inline-block w-inherit color-inherit underline-hover"
                           />
                         </li>
+                        <li class="w-fit-full h6 mb8 link-info">
+                          <router-link
+                            class="inline-block w-inherit color-inherit underline-hover text-left"
+                            to="/votes-results"
+                          >
+                            Infrapedia Infraestructure Awards
+                          </router-link>
+                        </li>
                         <li class="w-fit-full h6 mb4 link-info">
                           <router-link
                             class="inline-block w-inherit color-inherit underline-hover"

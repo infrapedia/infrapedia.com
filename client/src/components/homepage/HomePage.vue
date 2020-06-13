@@ -159,11 +159,19 @@
     <div class="votation-pool">
       <h2 class="title text-center">
         Infrapedia Infrastructure Awards
+        <el-button
+          icon="el-icon-refresh-right"
+          circle
+          size="mini"
+          id="refresh-btn"
+          title="Load votes results"
+          @click="loadVotesPool"
+        />
       </h2>
       <el-divider class="transparent mt12 mb12" />
       <div class="pool-wrapper">
         <div
-          class="pool_inner-wrapper"
+          class="pool_inner-wrapper el-card p4"
           v-for="(category, i) in categories"
           :key="i"
         >
@@ -222,10 +230,10 @@ export default {
         }
       ]
     },
-    formatDate,
     votesPool: {},
     trustedBy: [],
     blogPosts: [],
+    loadingVotes: false,
     categories: [
       'Best Subsea Cable System',
       'Best Internet Exchange',
@@ -234,6 +242,11 @@ export default {
     ]
   }),
   computed: {
+    formatDate() {
+      return function(date) {
+        return formatDate(date)
+      }
+    },
     premium() {
       return this.$store.state.premium
     },
@@ -258,31 +271,40 @@ export default {
       return Math.round((vote.votes * 100) / vote.totalVotes)
     },
     async loadVotesPool() {
-      const {
-        data: { r: votes = [] }
-      } = (await getVotes()) || { data: { votes: [] } }
+      try {
+        this.loadingVotes = true
+        const {
+          data: { r: votes = [] }
+        } = (await getVotes()) || {
+          data: {
+            votes: []
+          }
+        }
+        const votesPerCategory = {}
 
-      const votesPerCategory = {}
+        for (let category of this.categories) {
+          const filteredCategories = votes
+            .map(vote => {
+              if (vote.category == category) {
+                return vote
+              } else return false
+            })
+            .filter(vote => vote)
+            .sort((a, b) => b.votes - a.votes)
 
-      for (let category of this.categories) {
-        const filteredCategories = votes
-          .map(vote => {
-            if (vote.category == category) {
-              return vote
-            } else return false
-          })
-          .filter(vote => vote)
-          .sort((a, b) => b.votes - a.votes)
+          votesPerCategory[category] = filteredCategories
+            .map((item, i) => (i <= 4 ? item : false))
+            .filter(item => item)
+            .sort((a, b) => {
+              return a._id[0] > b._id[0]
+            })
+        }
 
-        votesPerCategory[category] = filteredCategories
-          .map((item, i) => (i <= 4 ? item : false))
-          .filter(item => item)
-          .sort((a, b) => {
-            return a._id[0] > b._id[0]
-          })
+        this.loadingVotes = false
+        this.votesPool = votesPerCategory
+      } catch {
+        // Ignore
       }
-
-      this.votesPool = votesPerCategory
     },
     async loadTrustedBy() {
       const {
