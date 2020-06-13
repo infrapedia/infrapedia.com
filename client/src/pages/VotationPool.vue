@@ -84,7 +84,7 @@
     </template>
     <template v-else>
       <transition name="fade" mode="out-in">
-        <div>
+        <div style="width: 50vw">
           <header class="header">
             <router-link to="/app">
               <el-image
@@ -93,33 +93,53 @@
                 fit="scale-down"
               />
             </router-link>
-            <div
-              class="controllers flex row nowrap justify-content-end pr12 mt4"
-            >
-              <el-button
-                icon="el-icon-arrow-left"
-                :disabled="isDisabledBackButton"
-                class="mr4"
-                @click="handleControllersButton(currentStep, 'previous')"
+            <template>
+              <div
+                class="controllers flex row nowrap justify-content-end pr12 mt4"
               >
-                Prev. category
-              </el-button>
-              <el-button
-                :disabled="isDisabledNextButton"
-                @click="handleControllersButton(currentStep, 'next')"
-              >
-                Next. category
-                <i class="el-icon-arrow-right" />
-              </el-button>
-            </div>
+                <el-button
+                  icon="el-icon-arrow-left"
+                  :disabled="isDisabledBackButton"
+                  class="mr4"
+                  @click="handleControllersButton(currentStep, 'previous')"
+                >
+                  Prev. category
+                </el-button>
+                <el-button
+                  :disabled="isDisabledNextButton"
+                  @click="handleControllersButton(currentStep, 'next')"
+                >
+                  Next. category
+                  <i class="el-icon-arrow-right" />
+                </el-button>
+              </div>
+            </template>
             <el-divider />
             <p class="text-center">
               {{ subtitle[currentStep] }}
             </p>
           </header>
-          <div class="options-wrapper overflow-y-auto mt4 overflow-x-hidden">
+          <div class="search-wrapper">
+            <el-form class="p4">
+              <el-form-item :label="searchLabel">
+                <el-input
+                  placeholder
+                  :autofocus="true"
+                  v-model="search"
+                  @input="searchElement"
+                />
+              </el-form-item>
+            </el-form>
+          </div>
+          <div
+            v-if="isSearching"
+            class="options-wrapper overflow-y-auto mt4 overflow-x-hidden"
+          >
             <el-button
-              v-for="(opt, i) in steps[currentStep]"
+              v-for="(opt, i) in steps[currentStep].filter(
+                data =>
+                  !search || data.toLowerCase().includes(search.toLowerCase())
+              )"
               :key="i"
               class="votation-button capitalize p4 transition-all"
               type="text"
@@ -140,104 +160,20 @@
 <script>
 import debounce from '../helpers/debounce'
 import { vote } from '../services/api/voting'
+import { steps } from '../config/votingSteps'
 import { checkUserVote } from '../services/api/voting'
 
 export default {
   data: () => ({
+    isSearching: false,
     sendingData: false,
+    search: '',
     subtitle: [
       'Choose one subsea cable system below',
       'Choose one of the Internet Exchanges below',
       'Choose one of the Telecom Companies below',
       'Choose one the datacenter companies below'
     ],
-    steps: {
-      0: [
-        'AEC-1',
-        'Asia Pacific Gateway (APG)',
-        'BRUSA',
-        'Bay of Bengal Gateway (BBG)',
-        'Crosslake-Fibre',
-        'FASTER',
-        'GTT Express',
-        'Hawaiki',
-        'INDIGO-Central',
-        'INDIGO-West',
-        'JUNIOR',
-        'MAREA',
-        'Monet',
-        'New Cross Pacific (NCP) Cable System',
-        'Pacific Caribbean Cable System (PCCS)',
-        'South Atlantic Cable System (SACS)',
-        'South Atlantic Inter Link (SAIL)',
-        'SEA-US',
-        'Seabras-1',
-        'SMW-5/SeaMeWe-5',
-        'Tannat'
-      ],
-      1: [
-        'Amsterdam Internet Exchange (AMS-IX)',
-        'Brazil Internet Exchange (IX.br)',
-        'BBIX',
-        'Coresite Any2 Los Angeles',
-        'Deutscher Commercial Internet Exchange (DE-CIX)',
-        'Equinix Exchange',
-        'France-IX',
-        'FL-IX',
-        'Hong Kong Internet eXchange (HKIX)',
-        'Japan Network Access Point (JPNAP)',
-        'JPIX',
-        'London Internet Exchange (LINX)',
-        'MKS-IX',
-        'NetIX',
-        'Neutral Internet Exchange (NL-ix)',
-        'Netnod Internet Exchange in Sweden (Netnod)',
-        'PITChile',
-        'Seattle Internet Exchange (SIX)',
-        'SFMIX',
-        'Toronto Internet Exchange (TorIX)'
-      ],
-      2: [
-        'America Movil',
-        'AT&T',
-        'BT',
-        'Colt',
-        'C&W Networks',
-        'China Telecom',
-        'Deutsche Telecom',
-        'EUNetworks',
-        'Global Cloud Exchange',
-        'KDDI',
-        'Level 3',
-        'NTT',
-        'Orange',
-        'PCCW',
-        'Softbank Telecom',
-        'Tata Communications',
-        'Telstra',
-        'Turk Telekom',
-        'Vodafone',
-        'Verizon',
-        'Zayo Group'
-      ],
-      3: [
-        'Coresite',
-        'Cyxtera',
-        'CenturyLink',
-        'Digital Realty',
-        'Equinix',
-        'Flexential',
-        'Global Switch',
-        'Interxion',
-        'Iron Mountain',
-        'Macquarie Data Centers',
-        'NTT',
-        'QTS',
-        'ST Telemedia Global Data Centres (STT GDC)',
-        'Xfernet',
-        'Zayo'
-      ]
-    },
     titles: [
       'Best Subsea Cable System',
       'Best Internet Exchange',
@@ -253,8 +189,32 @@ export default {
     currentStep: 0
   }),
   computed: {
+    steps() {
+      return steps
+    },
     isDisabledBackButton() {
       return this.currentStep == 0
+    },
+    searchLabel() {
+      let label = 'Search for any subsea cable you like'
+      switch (this.currentStep) {
+        case 1:
+          label = 'Search for any Internet Exchanges you like'
+          break
+        case 2:
+          label = 'Search for any Telecom companies you like'
+          break
+        case 3:
+          label = 'Search for any datacenter you like'
+          break
+        case 4:
+          label = ''
+          break
+        default:
+          label = 'Search for any subsea cable you like'
+          break
+      }
+      return label
     },
     isDisabledNextButton() {
       return (
@@ -300,9 +260,12 @@ export default {
   },
   async created() {
     this.$emit('layout', 'nothing-layout')
-    await this.checkVote()
+    // await this.checkVote()
   },
   methods: {
+    searchElement(s) {
+      this.isSearching = Boolean(s)
+    },
     checkVote: debounce(async function() {
       const { t } = await checkUserVote(await this.$auth.getUserID())
       if (t == 'error') {
@@ -323,10 +286,19 @@ export default {
       let forwardPositionTo = currentStep
       if (btn == 'next') {
         if (currentStep < 4) {
+          if (this.selections[this.titles[this.currentStep + 1]] != '') {
+            this.search = this.selections[this.titles[this.currentStep + 1]]
+            this.isSearching = true
+          } else {
+            this.search = ''
+            this.isSearching = false
+          }
           forwardPositionTo += 1
         }
       } else if (btn == 'previous') {
         if (!currentStep <= 5 && currentStep > 0) {
+          this.search = this.selections[this.titles[this.currentStep - 1]]
+          this.isSearching = true
           forwardPositionTo -= 1
         }
       }
