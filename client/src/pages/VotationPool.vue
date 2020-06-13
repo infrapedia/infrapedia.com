@@ -189,12 +189,13 @@ export default {
         'JPIX',
         'London Internet Exchange (LINX)',
         'MKS-IX',
+        'NetIX',
         'Neutral Internet Exchange (NL-ix)',
         'Netnod Internet Exchange in Sweden (Netnod)',
         'PITChile',
         'Seattle Internet Exchange (SIX)',
         'SFMIX',
-        'Toronto Internet Exchange ( TorIX )'
+        'Toronto Internet Exchange (TorIX)'
       ],
       2: [
         'America Movil',
@@ -206,7 +207,6 @@ export default {
         'Deutsche Telecom',
         'EUNetworks',
         'Global Cloud Exchange',
-        'GTT',
         'KDDI',
         'Level 3',
         'NTT',
