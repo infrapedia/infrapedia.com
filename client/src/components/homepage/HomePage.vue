@@ -172,7 +172,7 @@
           </h2>
           <ul class="list-wrapper" role="group">
             <template v-for="(vote, y) in votesPool[category]">
-              <li v-if="y <= 4" :key="category + y" class="mt4">
+              <li :key="category + y" class="mt4">
                 <span> {{ vote._id }}</span>
                 <el-progress
                   :stroke-width="12"
@@ -273,7 +273,13 @@ export default {
           })
           .filter(vote => vote)
           .sort((a, b) => b.votes - a.votes)
+
         votesPerCategory[category] = filteredCategories
+          .map((item, i) => (i <= 4 ? item : false))
+          .filter(item => item)
+          .sort((a, b) => {
+            return a._id[0] > b._id[0]
+          })
       }
 
       this.votesPool = votesPerCategory
