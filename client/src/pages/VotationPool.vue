@@ -260,7 +260,7 @@ export default {
   },
   async created() {
     this.$emit('layout', 'nothing-layout')
-    // await this.checkVote()
+    await this.checkVote()
   },
   methods: {
     searchElement(s) {
