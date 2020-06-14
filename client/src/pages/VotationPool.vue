@@ -132,7 +132,7 @@
             </el-form>
           </div>
           <div
-            v-if="isSearching"
+            v-if="isSearching || currentStep != 0"
             class="options-wrapper overflow-y-auto mt4 overflow-x-hidden"
           >
             <el-button
@@ -267,7 +267,9 @@ export default {
       this.isSearching = Boolean(s)
     },
     checkVote: debounce(async function() {
-      const { t } = await checkUserVote(await this.$auth.getUserID())
+      const { t } = (await checkUserVote(await this.$auth.getUserID())) || {
+        t: 'error'
+      }
       if (t == 'error') {
         this.$message('You already have a vote')
         setTimeout(() => {
