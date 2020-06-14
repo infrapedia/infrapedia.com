@@ -1,5 +1,5 @@
 <template>
-  <div class="votation-pool">
+  <div class="votation-pool" v-loading="isCheckingVote">
     <header class="flex justify-content-center column">
       <h2 class="title text-center">
         Infrapedia Infrastructure Awards
@@ -41,11 +41,12 @@
 </template>
 
 <script>
-import { getVotes } from '../services/api/voting'
+import { checkUserVote, getVotes } from '../services/api/voting'
 
 export default {
   data: () => ({
     votesPool: {},
+    isCheckingVote: true,
     loadingVotes: false,
     categories: [
       'Best Subsea Cable System',
@@ -54,13 +55,28 @@ export default {
       'Best Datacenter Company'
     ]
   }),
-  created() {
+  async created() {
     this.$emit('layout', 'default')
+    await this.checkVote()
   },
   async mounted() {
     await this.loadVotesPool()
   },
   methods: {
+    async checkVote() {
+      this.isCheckingVote = true
+      const { t } = (await checkUserVote(await this.$auth.getUserID())) || {
+        t: 'error'
+      }
+
+      this.isCheckingVote = false
+      if (t != 'error') {
+        this.$message(
+          'You have not voted yet. For seeing the results, you first have to vote'
+        )
+        setTimeout(() => this.$router.replace('/app'), 320)
+      }
+    },
     calculatePercentage(vote) {
       return Math.round((vote.votes * 100) / vote.totalVotes)
     },

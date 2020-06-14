@@ -272,9 +272,7 @@ export default {
       }
       if (t == 'error') {
         this.$message('You already have a vote')
-        setTimeout(() => {
-          this.$router.replace('/app')
-        }, 820)
+        setTimeout(() => this.$router.replace('/votes-results'), 320)
       }
     }, 2600),
     handleSelection(currentStep, opt) {
