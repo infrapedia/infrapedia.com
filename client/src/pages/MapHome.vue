@@ -9,9 +9,10 @@
 </template>
 
 <script>
-import MapOverlay from '../components/mainMap/MapOverlay'
 import VotationDialog from '../components/dialogs/VotationDialog'
+import MapOverlay from '../components/mainMap/MapOverlay'
 import { checkUserVote } from '../services/api/voting'
+import { IS_DRAWING } from '../store/actionTypes'
 import debounce from '../helpers/debounce'
 
 export default {
@@ -46,6 +47,12 @@ export default {
   },
   async created() {
     await this.checkVote()
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.$store.state.isDrawing) {
+      this.$store.commit(`${IS_DRAWING}`, false)
+    }
+    next()
   },
   methods: {
     checkVote: debounce(async function() {

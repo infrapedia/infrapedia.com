@@ -5,7 +5,7 @@ const teamMembers = [
     position: 'President'
   },
   {
-    name: 'Hubert Soisa',
+    name: 'Hubert Souisa',
     photo: 'https://cdn1.infrapedia.com/assets/team/hubert.jpeg',
     position: 'Director of Operations'
   },
