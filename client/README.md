@@ -4,6 +4,7 @@
 
 - BuyDialog component points field is now using custom api and mapbox places api
 - buyMessageFormatter helper function needed to be updated
+- Doesn't make sense to have fiberPairs on the sidebar so we removed it
 
 ## Version 2.1.3
 
