@@ -27,6 +27,7 @@ import Services from '../pages/Services.vue'
 import Sponsors from '../pages/Sponsors.vue'
 import VotationPool from '../pages/VotationPool.vue'
 import { getInstance } from '../auth/index'
+import VotesResults from '../pages/VotesResults.vue'
 
 async function handleAdminOnlyRoutes(next, to) {
   const $authInstance = getInstance()
@@ -55,6 +56,11 @@ const routes = [
     path: '/vote',
     name: 'votation-pool',
     component: VotationPool
+  },
+  {
+    path: '/votes-results',
+    name: 'votes-results',
+    component: VotesResults
   },
   {
     path: '/',

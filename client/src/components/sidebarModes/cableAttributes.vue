@@ -189,90 +189,114 @@
     </div>
     <!---- FOOTER SECTION STARTS ----->
     <footer class="pr8 pl8 pb8">
-      <el-divider class="mt0" />
-      <el-row :gutter="20">
-        <el-col :xs="24" :sm="12" :md="24" :lg="12">
-          <el-popover
-            placement="bottom"
-            width="100"
-            popper-class="buy-capacity-popper"
-            :visible-arrow="false"
-            trigger="manual"
-            v-model="isMenuOpen"
-          >
-            <el-card shadow="never" class>
-              <ul role="list" class="pt2 pb2">
-                <li
-                  tabindex="1"
-                  role="listitem"
-                  class="p4 no-selectable transition cursor-pointer seamless-hoverbg no-outline"
-                  :class="{ dark, light: !dark }"
-                  @click="emitEvent"
+      <template>
+        <el-divider class="mt0" />
+        <el-row :gutter="20">
+          <el-col :xs="24" :sm="12" :md="24" :lg="12">
+            <el-popover
+              placement="bottom"
+              width="100"
+              popper-class="buy-capacity-popper"
+              :visible-arrow="false"
+              trigger="manual"
+              v-model="isMenuOpen"
+            >
+              <el-card shadow="never" class>
+                <ul role="list" class="pt2 pb2">
+                  <li
+                    tabindex="1"
+                    role="listitem"
+                    class="p4 no-selectable transition cursor-pointer seamless-hoverbg no-outline"
+                    :class="{ dark, light: !dark }"
+                    @click="emitEvent"
+                  >
+                    Backbone
+                  </li>
+                </ul>
+              </el-card>
+              <div
+                slot="reference"
+                @click="toggleMenu"
+                class="cursor-pointer no-outline no-selectable"
+              >
+                <el-button
+                  type="warning"
+                  circle
+                  class="mr1 w9 h9 vertical-align"
                 >
-                  Backbone
-                </li>
-              </ul>
-            </el-card>
+                  <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
+                </el-button>
+                <span class="cursor-pointer fs-regular label"
+                  >Buy capacity</span
+                >
+              </div>
+            </el-popover>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="24" :lg="12">
             <div
-              slot="reference"
-              @click="toggleMenu"
-              class="cursor-pointer no-outline no-selectable"
+              class="cursor-pointer no-selectable"
+              @click="$emit(CREATE_ALERT)"
+            >
+              <el-button
+                :type="info.alert !== 1 ? 'info' : 'warning'"
+                circle
+                class="mr1 w9 h9 vertical-align"
+              >
+                <fa :icon="['fas', 'bell']" class="sm-icon mt-1" />
+              </el-button>
+              <span class="cursor-pointer fs-regular label"
+                >Receive alerts</span
+              >
+            </div>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20" class="mt8">
+          <el-col :xs="24" :sm="12" :md="24" :lg="12">
+            <div
+              class="cursor-pointer no-selectable"
+              @click="
+                $emit(`${EDIT_CABLE}`, {
+                  _id: info._id,
+                  owner: info.uuid,
+                  terrestrial: info.terrestrial
+                })
+              "
             >
               <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
-                <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
+                <fa :icon="['fas', 'pen']" class="sm-icon mt-1" />
               </el-button>
-              <span class="cursor-pointer fs-regular label">Buy capacity</span>
+              <span class="fs-regular label">{{
+                info.terrestrial ? 'Edit Network' : 'Edit this cable'
+              }}</span>
             </div>
-          </el-popover>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="24" :lg="12">
-          <div
-            class="cursor-pointer no-selectable"
-            @click="$emit(CREATE_ALERT)"
-          >
-            <el-button
-              :type="info.alert !== 1 ? 'info' : 'warning'"
-              circle
-              class="mr1 w9 h9 vertical-align"
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="24" :lg="12">
+            <div
+              class="cursor-pointer no-selectable"
+              @click="$emit(REPORT_ISSUE)"
             >
-              <fa :icon="['fas', 'bell']" class="sm-icon mt-1" />
-            </el-button>
-            <span class="cursor-pointer fs-regular label">Receive alerts</span>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20" class="mt8">
-        <el-col :xs="24" :sm="12" :md="24" :lg="12">
-          <div
-            class="cursor-pointer no-selectable"
-            @click="
-              $emit(`${EDIT_CABLE}`, {
-                _id: info._id,
-                owner: info.uuid,
-                terrestrial: info.terrestrial
-              })
-            "
-          >
-            <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
-              <fa :icon="['fas', 'pen']" class="sm-icon mt-1" />
-            </el-button>
-            <span class="fs-regular label">{{
-              info.terrestrial ? 'Edit Network' : 'Edit this cable'
-            }}</span>
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="24" :lg="12">
-          <div
-            class="cursor-pointer no-selectable"
-            @click="$emit(REPORT_ISSUE)"
-          >
-            <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
-              <fa :icon="['fas', 'exclamation-circle']" class="sm-icon mt-1" />
-            </el-button>
-            <span class="cursor-pointer fs-regular label">Report issue</span>
-          </div>
-        </el-col>
-      </el-row>
+              <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
+                <fa
+                  :icon="['fas', 'exclamation-circle']"
+                  class="sm-icon mt-1"
+                />
+              </el-button>
+              <span class="cursor-pointer fs-regular label">Report issue</span>
+            </div>
+          </el-col>
+        </el-row>
+      </template>
+      <div class="flex justify-content-center mt8">
+        <router-link
+          to="/vote"
+          title="Vote for Infrapedia's 2020 Infrastructure Awards"
+        >
+          <el-image
+            src="https://cdn1.infrapedia.com/assets/vote2020.png"
+            fit="contain"
+          />
+        </router-link>
+      </div>
     </footer>
     <!---- FOOTER SECTION END ----->
   </div>

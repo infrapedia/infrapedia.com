@@ -156,34 +156,6 @@
         </el-carousel>
       </div>
     </div>
-    <div class="votation-pool">
-      <h2 class="title text-center">
-        Infrapedia Infrastructure Awards
-      </h2>
-      <el-divider class="transparent mt12 mb12" />
-      <div class="pool-wrapper">
-        <div
-          class="pool_inner-wrapper"
-          v-for="(category, i) in categories"
-          :key="i"
-        >
-          <h2 class="text-left">
-            {{ category }}
-          </h2>
-          <ul class="list-wrapper" role="group">
-            <template v-for="(vote, y) in votesPool[category]">
-              <li v-if="y <= 4" :key="category + y" class="mt4">
-                <span> {{ vote._id }}</span>
-                <el-progress
-                  :stroke-width="12"
-                  :percentage="calculatePercentage(vote)"
-                />
-              </li>
-            </template>
-          </ul>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -192,7 +164,6 @@ import Map from '../mainMap/Map'
 import getBlogPosts from '../../services/api/blog'
 import { getTrustedBy } from '../../services/api/organizations'
 import { formatDate } from '../../helpers/formatDate'
-import { getVotes } from '../../services/api/voting'
 
 export default {
   name: 'HomePage',
@@ -222,18 +193,16 @@ export default {
         }
       ]
     },
-    formatDate,
-    votesPool: {},
     trustedBy: [],
     blogPosts: [],
-    categories: [
-      'Best Subsea Cable System',
-      'Best Internet Exchange',
-      'Best International Telecommunications Company',
-      'Best Datacenter Company'
-    ]
+    loadingVotes: false
   }),
   computed: {
+    formatDate() {
+      return function(date) {
+        return formatDate(date)
+      }
+    },
     premium() {
       return this.$store.state.premium
     },
@@ -243,7 +212,6 @@ export default {
   },
   async mounted() {
     try {
-      await this.loadVotesPool()
       await Promise.all([
         this.loadTrustedBy(),
         this.loadBlogPosts(),
@@ -254,30 +222,6 @@ export default {
     }
   },
   methods: {
-    calculatePercentage(vote) {
-      return Math.round((vote.votes * 100) / vote.totalVotes)
-    },
-    async loadVotesPool() {
-      const {
-        data: { r: votes = [] }
-      } = (await getVotes()) || { data: { votes: [] } }
-
-      const votesPerCategory = {}
-
-      for (let category of this.categories) {
-        const filteredCategories = votes
-          .map(vote => {
-            if (vote.category == category) {
-              return vote
-            } else return false
-          })
-          .filter(vote => vote)
-          .sort((a, b) => b.votes - a.votes)
-        votesPerCategory[category] = filteredCategories
-      }
-
-      this.votesPool = votesPerCategory
-    },
     async loadTrustedBy() {
       const {
         data: { r = [] }
