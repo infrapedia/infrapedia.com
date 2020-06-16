@@ -88,9 +88,8 @@
               prop="address.pointA"
               ref="pointA"
             >
-              <autocomplete-google
+              <point-field
                 @place-changed="handleAddressChanged($event, 'a')"
-                size="regular"
                 id="pointA"
               />
             </el-form-item>
@@ -102,9 +101,8 @@
               prop="address.pointB"
               ref="pointB"
             >
-              <autocomplete-google
+              <point-field
                 @place-changed="handleAddressChanged($event, 'b')"
-                size="regular"
                 id="pointB"
               />
             </el-form-item>
@@ -177,14 +175,14 @@ import { TOGGLE_BUY_DIALOG, BUY_TYPE } from '../../store/actionTypes'
 import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
 import VueRecaptcha from 'vue-recaptcha'
 import siteKey from '../../config/siteKey'
-import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 import validateEmail from '../../helpers/validateEmail'
 import buyMessageFormatter from '../../helpers/buyMessageFormatter'
+import PointBuyDialogSearchVue from '../PointBuyDialogSearch.vue'
 
 export default {
   components: {
     VueRecaptcha,
-    AutocompleteGoogle
+    'point-field': PointBuyDialogSearchVue
   },
   data: () => ({
     capacities: ['1Gbps', '10Gbps', '100Gbps', 'Fiber', 'Other'],
@@ -360,11 +358,11 @@ export default {
     handleAddressChanged(place, inputTarget) {
       switch (inputTarget) {
         case 'b':
-          this.form.address.pointB = { ...place }
+          this.form.address.pointB = place
           this.$refs.pointB.clearValidate()
           break
         default:
-          this.form.address.pointA = { ...place }
+          this.form.address.pointA = place
           this.$refs.pointA.clearValidate()
           break
       }
