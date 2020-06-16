@@ -3,6 +3,7 @@
 ## Version 2.1.4
 
 - BuyDialog component points field is now using custom api and mapbox places api
+- buyMessageFormatter helper function needed to be updated
 
 ## Version 2.1.3
 

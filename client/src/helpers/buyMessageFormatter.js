@@ -75,8 +75,8 @@ function createMessage({ data, format, userID }) {
     data.address.pointA &&
     data.address.pointB
   ) {
-    pointA = data.address.pointA.fullAddress
-    pointB = data.address.pointB.fullAddress
+    pointA = data.address.pointA
+    pointB = data.address.pointB
   }
 
   for (let formatKey in format) {
