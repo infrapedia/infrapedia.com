@@ -147,6 +147,9 @@ export default {
         this.creationType = q.id
         this.mapKey += 1
       }
+    },
+    featuresList(list) {
+      this.form.geom = list
     }
   },
   computed: {
@@ -535,7 +538,6 @@ export default {
       }
 
       bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, features)
-      this.form.geom = this.$store.state.editor.scene.features.list
       await bus.$emit(`${EDITOR_LOAD_DRAW}`, features)
     },
     handleCLSEditMode(data) {
@@ -694,7 +696,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async editCLS() {
       this.isSendingData = true
@@ -710,7 +712,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async createCable() {
       this.isSendingData = true
@@ -743,7 +745,7 @@ export default {
       })) || { t: 'error' }
 
       this.isSendingData = false
-      if (t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async createIXP() {
       this.isSendingData = true
@@ -758,7 +760,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async editIXP() {
       this.isSendingData = true
@@ -774,7 +776,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async createFacility() {
       this.isSendingData = true
@@ -785,7 +787,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async editFacility() {
       this.isSendingData = true
@@ -797,7 +799,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     }
   }
 }
