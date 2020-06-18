@@ -571,6 +571,7 @@ export const steps = {
     'Deutsche Telecom',
     'EUNetworks',
     'Global Cloud Exchange',
+    'GTT',
     'KDDI',
     'Level 3',
     'NTT',
