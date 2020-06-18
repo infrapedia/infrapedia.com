@@ -22,6 +22,7 @@
       :mode="'edit'"
       :form="formData"
       :show-title="false"
+      :is-send-data-disabled="true"
       :is-manual-kmz-upload="true"
       :is-sending-data="isSendingData"
       @send-data="submitForm"

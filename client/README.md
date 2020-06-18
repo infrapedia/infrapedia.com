@@ -6,6 +6,7 @@
 - buyMessageFormatter helper function needed to be updated
 - Doesn't make sense to have fiberPairs on the sidebar so we removed it
 - Blog link on navbar doesn't have to open on a new tab
+- Create section was not unlocking submit button
 
 ## Version 2.1.3
 

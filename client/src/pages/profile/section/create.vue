@@ -72,7 +72,7 @@
     </template>
 
     <manual-kmz-submit-dialog
-      :form-data="manualSubmitFormData"
+      :form-data="form"
       :is-visible="isManualUploadDialog"
       @close="closeMannualKmzSubmitDialog"
     />
@@ -161,9 +161,6 @@ export default {
     },
     isMapFormSendingData() {
       return this.isSendingData && this.creationType == 'map'
-    },
-    manualSubmitFormData() {
-      return this.form
     },
     isLoadingDialog() {
       const type =

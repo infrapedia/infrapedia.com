@@ -189,24 +189,21 @@
           :value="mode == 'create' ? [] : form.facilities"
         />
       </el-form-item>
-      <el-form-item
-        v-if="creationID == 'subsea'"
-        label="CLS"
-        prop="cls"
-        required
-      >
-        <v-multi-select
-          :mode="mode"
-          :is-required="true"
-          :is-field-empty="isCLSSelectEmpty"
-          :options="clsList"
-          @input="loadCLSSearch"
-          :loading="isLoadingCLS"
-          @values-change="handleCLSSelectionChange"
-          @remove="handleCLSSelectionChange(form.cls)"
-          :value="mode == 'create' ? [] : form.cls"
-        />
-      </el-form-item>
+      <template v-if="creationID == 'subsea'">
+        <el-form-item label="CLS" prop="cls" required>
+          <v-multi-select
+            :mode="mode"
+            :is-required="true"
+            :is-field-empty="isCLSSelectEmpty"
+            :options="clsList"
+            @input="loadCLSSearch"
+            :loading="isLoadingCLS"
+            @values-change="handleCLSSelectionChange"
+            @remove="handleCLSSelectionChange(form.cls)"
+            :value="mode == 'create' ? [] : form.cls"
+          />
+        </el-form-item>
+      </template>
       <el-form-item label="Owners" prop="owners" required>
         <v-multi-select
           :mode="mode"
@@ -508,6 +505,7 @@ export default {
     },
     handleCLSSelectionChange(data) {
       this.form.cls = data
+      this.setCLSEmptyState()
       this.handleSetFeatureOntoMap({
         selections: this.getSelectionID('cls'),
         removeLoadState: true
@@ -538,8 +536,12 @@ export default {
     setOwnersEmptyState() {
       this.isOwnersSelectEmpty = this.form.owners.length <= 0
     },
+    setCLSEmptyState() {
+      this.isCLSSelectEmpty = this.form.cls.length <= 0
+    },
     sendData() {
       this.setOwnersEmptyState()
+      this.setCLSEmptyState()
       return this.$refs['form'].validate(isValid =>
         isValid && !this.isOwnersSelectEmpty ? this.$emit('send-data') : false
       )

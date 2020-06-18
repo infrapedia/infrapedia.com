@@ -198,9 +198,20 @@ export default {
     async handleFileConverted(fc) {
       if (!fc.features.length) return
 
-      await this.draw.set(fc)
-      await this.handleZoomToFeature(fc)
-      this.scene.features.list = fc
+      try {
+        const fc_final = fCollectionFormat([
+          ...fc.features,
+          ...this.scene.features.list
+        ])
+        this.draw.set(fc_final)
+        this.scene.features.list = [
+          ...this.draw.getAll().features,
+          ...this.scene.features.list
+        ]
+        await this.handleZoomToFeature(fc_final)
+      } catch (err) {
+        console.error(err)
+      }
     },
     async handleMapFormFeatureSelection({ t, fc, removeLoadState }) {
       if (!this.map) return
@@ -354,6 +365,7 @@ export default {
       const featureSelected = this.scene.features.list.filter(
         feat => feat.id == e.features[0].id
       )
+      this.scene.edition = true
       this.controls.handleDrawSelectionChange(featureSelected)
     },
     handleCreateFeature(feat) {

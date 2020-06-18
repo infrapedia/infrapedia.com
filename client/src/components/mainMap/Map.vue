@@ -346,7 +346,7 @@ export default {
           str += `<div class="segment-name dark-color">Segment: ${segment}</div>`
         }
         str += `<div class="status dark-color"> Status: <span style="color: ${cableCategoryColor}" class="category capitalize">${
-          category ? category : ' Unknown'
+          category && category !== '' ? category : ' Unknown'
         }</span></div>`
         str += `<div class="rfs dark-color"> RFS: ${convertToYear(
           rfs.toISOString()
