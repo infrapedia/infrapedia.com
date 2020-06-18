@@ -197,6 +197,7 @@
                 <template v-if="Array.isArray(info[col.value])">
                   <a
                     class="text-bold underline dont-break-out mt3 inline-block"
+                    style="max-width: 10.4rem"
                     v-for="(url, i) in info[col.value]"
                     :href="
                       url.includes('http://') || url.includes('https://')
@@ -210,6 +211,7 @@
                 </template>
                 <a
                   v-else
+                  style="max-width: 10.4rem"
                   class="text-bold underline dont-break-out mt3 inline-block"
                   :href="
                     info[col.value].includes('http://') ||

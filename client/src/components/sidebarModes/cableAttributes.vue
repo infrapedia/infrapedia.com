@@ -103,6 +103,7 @@
                 <a
                   class="underline dont-break-out fs-regular mr2 inline-block"
                   v-for="(url, i) in info[col.value]"
+                  style="max-width: 10.4rem"
                   :href="
                     url.includes('http://') || url.includes('https://')
                       ? url
