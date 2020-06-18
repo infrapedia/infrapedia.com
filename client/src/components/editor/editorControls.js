@@ -43,7 +43,6 @@ class EditorControls {
             : false,
         eventListener: () => {
           this.scene.creation = true
-          console.log(this.scene)
           this.draw.changeMode(this.draw.modes.DRAW_LINE_STRING)
         }
       }),
