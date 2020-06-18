@@ -45,6 +45,7 @@ import { mapConfig } from '../../config/mapConfig'
 import {
   EDITOR_LOAD_DRAW,
   EDITOR_SET_FEATURES,
+  EDITOR_GET_FEATURES,
   EDITOR_FILE_CONVERTED,
   EDITOR_SET_FEATURES_LIST
 } from '../../events/editor'
@@ -155,12 +156,13 @@ export default {
     this.controls.resetScene(false)
 
     if (this.scene.features.list.length > 0) {
-      this.$emit('features-list-change', this.scene.features.list)
+      this.handleGetFeatures()
     }
 
     bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
     bus.$on(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
+    bus.$on(`${EDITOR_GET_FEATURES}`, this.handleGetFeatures)
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
   },
   beforeDestroy() {
@@ -169,6 +171,9 @@ export default {
     }
   },
   methods: {
+    handleGetFeatures() {
+      this.$emit('features-list-change', this.scene.features.list)
+    },
     handleSetFeaturesList(list) {
       this.scene.features.list = list
     },
