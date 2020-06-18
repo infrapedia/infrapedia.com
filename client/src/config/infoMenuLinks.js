@@ -20,7 +20,11 @@ const infoMenuLinks = {
     },
     {
       label: 'Attributions',
-      url: '/attributions',
+      url: '/attributions'
+    },
+    {
+      label: 'Advisory board',
+      url: '/advisory-board',
       router: true
     }
   ],

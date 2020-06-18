@@ -130,6 +130,10 @@ export default {
       {
         label: 'Sponsorships',
         url: '/sponsors'
+      },
+      {
+        label: 'Advisory board',
+        url: '/advisory-board'
       }
     ]
   }),

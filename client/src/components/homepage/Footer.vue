@@ -80,6 +80,14 @@
           </li>
           <li class="list-item mb6">
             <router-link
+              class="underline-hover  color-inherit"
+              to="/advisory-board"
+            >
+              Advisory Board
+            </router-link>
+          </li>
+          <li class="list-item mb6">
+            <router-link
               class="underline-hover color-inherit"
               to="/terms-and-conditions"
             >

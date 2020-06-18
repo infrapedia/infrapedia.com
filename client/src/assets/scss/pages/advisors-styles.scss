@@ -1,0 +1,21 @@
+@import '../base/variables';
+
+.main-wrapper {
+  border-top: 1px solid #ccc;
+}
+
+.list-wrapper {
+  display: grid;
+  width: 100%;
+  gap: 1rem;
+  grid-auto-flow: dense;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  .el-card {
+    min-width: auto;
+  }
+  .link--wrapper {
+    &:hover {
+      color: $dark-blue;
+    }
+  }
+}
