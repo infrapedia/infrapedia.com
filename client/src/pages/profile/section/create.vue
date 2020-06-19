@@ -735,14 +735,14 @@ export default {
     },
     async editCable() {
       this.isSendingData = true
-      const { t } = (await editCable({
+      await editCable({
         ...this.form,
         user_id: await this.$auth.getUserID(),
         _id: this.$route.query.item
-      })) || { t: 'error' }
+      })
 
       this.isSendingData = false
-      if (t != 'error') return this.handleReturningRoute(this.creationType)
+      // if (t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async createIXP() {
       this.isSendingData = true
