@@ -59,7 +59,8 @@ const profileLinks = [
   {
     label: 'Facilities',
     url: '/user/section/facilities',
-    icon: ['fas', 'building']
+    icon: ['fas', 'building'],
+    adminOnly: true
   },
   {
     label: 'Maps',

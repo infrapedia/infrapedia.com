@@ -35,7 +35,10 @@ async function handleAdminOnlyRoutes(next, to) {
   // If the user is not an admin
   // There's no reason for them to access the creation page of those sections
   if (to) {
-    const query = to.query.id == 'map' || to.query.id == 'ixps'
+    const query =
+      to.query.id == 'map' ||
+      to.query.id == 'ixps' ||
+      to.query.id == 'facilities'
     if (query && !isUserAnAdmin) next('/user')
     else next()
   } else if (!isUserAnAdmin) {
@@ -145,7 +148,8 @@ const routes = [
   {
     path: '/user/section/facilities',
     name: 'user/facs-section',
-    component: FacilitiesSection
+    component: FacilitiesSection,
+    beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next, to)
   },
   {
     path: '/user/section/ixps',
