@@ -122,7 +122,7 @@
 
 <script>
 import Dragger from '../../components/Dragger'
-import { searchCables, getCablesGeom } from '../../services/api/cables'
+import { getSearchByCablesS, getCablesGeom } from '../../services/api/cables'
 import { getTags } from '../../services/api/tags'
 import VMultiSelect from '../../components/MultiSelect'
 import { fCollectionFormat } from '../../helpers/featureCollection'
@@ -169,7 +169,6 @@ export default {
     countries() {
       const countries = [...countriesList]
       function once() {
-        // eslint-disable-next-line no-unused-vars
         let counter = 0
         return function addNA() {
           if (counter >= 1) return
@@ -324,7 +323,7 @@ export default {
     async loadCablesSearch(s) {
       if (s === '') return
       this.isLoadingCables = true
-      const { data = [] } = (await searchCables({
+      const { data = [] } = (await getSearchByCablesS({
         user_id: await this.$auth.getUserID(),
         s
       })) || { data: [] }
