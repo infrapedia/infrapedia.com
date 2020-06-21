@@ -60,11 +60,17 @@
             </el-col>
             <el-col
               :span="10"
-              v-else-if="col.value == 'systemLength' && !info.terrestrial"
+              v-else-if="col.value == 'capacityTBPS' && !info.terrestrial"
             >
               <p class="label capitalize">{{ col.label }}</p>
             </el-col>
             <el-col :span="10" v-else-if="col.value == 'category'">
+              <p class="label capitalize">{{ col.label }}</p>
+            </el-col>
+            <el-col
+              :span="10"
+              v-else-if="col.value == 'systemLength' && col.label != 'Latency'"
+            >
               <p class="label capitalize">{{ col.label }}</p>
             </el-col>
             <el-col
@@ -84,7 +90,8 @@
               v-else-if="
                 info[col.value] &&
                   col.label != 'Latency' &&
-                  col.value != 'systemLength'
+                  col.value != 'systemLength' &&
+                  col.value != 'capacityTBPS'
               "
             >
               <p class="label capitalize">{{ col.label }}</p>
@@ -143,12 +150,17 @@
               </el-col>
               <el-col
                 :span="12"
-                v-else-if="col.value == 'systemLength' && !info.terrestrial"
+                v-else-if="
+                  col.value == 'systemLength' && col.label != 'Latency'
+                "
               >
                 <p class="text-bold">{{ info[col.value] }} km</p>
               </el-col>
-              <el-col :span="12" v-else-if="col.value == 'capacityTBPS'">
-                <p class="text-bold">{{ info[col.value] }} tbps</p>
+              <el-col
+                :span="12"
+                v-else-if="col.value == 'capacityTBPS' && !info.terrestrial"
+              >
+                <p class="text-bold">{{ info[col.value] }}</p>
               </el-col>
               <el-col :span="12" v-else-if="col.value == 'category'">
                 <p class="text-bold">
@@ -164,7 +176,8 @@
                 v-else-if="
                   !isArrCol(info[col.value]) &&
                     col.label != 'Latency' &&
-                    col.value != 'systemLength'
+                    col.value != 'systemLength' &&
+                    col.value != 'capacityTBPS'
                 "
               >
                 <p class="text-bold">
