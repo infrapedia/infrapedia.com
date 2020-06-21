@@ -30,6 +30,7 @@ const transitFormat = {
   small_two: 'The user has the following request:',
   Element: ['element', ''],
   Type: ['type', ''],
+  'IP Transit': ['transitIP', ''],
   'Transit Capacity': ['capacity', 0],
   Message: ['message', '']
 }

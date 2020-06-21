@@ -108,6 +108,22 @@
             </el-form-item>
           </el-col>
         </template>
+        <template v-else-if="isTransitSelection">
+          <el-col :xl="24">
+            <el-form-item label="IP transit" prop="transitIP" ref="transitIP">
+              <v-multi-select
+                mode="create"
+                :options="facsList"
+                :is-required="true"
+                :is-multiple="false"
+                :loading="isLoadingFacs"
+                :is-field-empty="isTransitIpEmpty"
+                @values-change="handleTransitIPChange"
+                @input="loadFacsSearch"
+              />
+            </el-form-item>
+          </el-col>
+        </template>
         <el-col :span="24">
           <el-form-item
             label="Message"
@@ -178,19 +194,24 @@ import siteKey from '../../config/siteKey'
 import validateEmail from '../../helpers/validateEmail'
 import buyMessageFormatter from '../../helpers/buyMessageFormatter'
 import PointBuyDialogSearchVue from '../PointBuyDialogSearch.vue'
+import { searchFacilities } from '../../services/api/facs'
+import VMultiSelect from '../../components/MultiSelect'
 
 export default {
   components: {
     VueRecaptcha,
+    VMultiSelect,
     'point-field': PointBuyDialogSearchVue
   },
   data: () => ({
     capacities: ['1Gbps', '10Gbps', '100Gbps', 'Fiber', 'Other'],
     loading: false,
-    siteKey,
+    facsList: [],
     isSendingData: false,
     catchaVerified: null,
     isCustomRequest: false,
+    isLoadingFacs: false,
+    isTransitIpEmpty: false,
     form: {
       company: '',
       email: '',
@@ -198,6 +219,7 @@ export default {
       capacity: '',
       totalRack: 0,
       message: '',
+      transitIP: '',
       address: {
         pointA: null,
         pointB: null
@@ -239,7 +261,11 @@ export default {
         }
       ],
       email: [
-        { required: true, message: 'Please input your email', trigger: 'blur' },
+        {
+          required: true,
+          message: 'Please input your email',
+          trigger: 'blur'
+        },
         {
           type: 'email',
           required: true,
@@ -253,7 +279,8 @@ export default {
           message: 'Please select the desired capacity',
           trigger: 'change'
         }
-      ]
+      ],
+      transitIP: []
     }
   }),
   computed: {
@@ -262,6 +289,9 @@ export default {
       dark: state => state.isDark,
       focus: state => state.map.focus
     }),
+    siteKey() {
+      return siteKey
+    },
     messageWhenRequired() {
       if (this.dialogTitle === '') return ''
       else {
@@ -289,6 +319,9 @@ export default {
     isBackboneSelection() {
       return this.focus && this.dialogTitle.toLowerCase() == 'backbone'
     },
+    isTransitSelection() {
+      return this.focus && this.dialogTitle.toLowerCase() == 'transit'
+    },
     isVisible: {
       get() {
         return this.$store.state.isBuyDialog
@@ -309,10 +342,41 @@ export default {
       if (!bool) {
         this.$refs.catpcha.reset()
         this.isCustomRequest = false
-      } else this.setUserData()
+      } else {
+        this.setUserData()
+        this.formRules.transitIP[0] = {
+          required: this.isTransitSelection,
+          message: 'Please input an IP point',
+          trigger: ['blur', 'change']
+        }
+      }
     }
   },
   methods: {
+    handleTransitIPChange(value) {
+      const isEmpty = value === '' || !value
+
+      this.isTransitIpEmpty = isEmpty
+      this.form.transitIP = value[0].name
+      if (!isEmpty) this.$refs.transitIP.clearValidate()
+    },
+    async loadFacsSearch(s) {
+      if (s.length <= 0) return
+      this.isLoadingFacs = true
+      const res = await searchFacilities({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
+      if (res && res.data) {
+        this.facsList = res.data.reduce(
+          (acc = Array.from(this.facsList), item) => {
+            return acc.map(i => i._id).includes(item._id) ? acc : [...acc, item]
+          },
+          []
+        )
+      }
+      this.isLoadingFacs = false
+    },
     resetRackTotal(bool) {
       if (bool) {
         this.form.totalRack = 0
