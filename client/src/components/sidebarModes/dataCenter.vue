@@ -1,55 +1,170 @@
 <template>
   <div class="no-overflow-x">
     <div class="pr8 pl8 pt2 pb4 columns-wrapper no-overflow-x overflow-y-auto">
-      <div v-for="(col, i) in facColumns" :key="i">
+      <div v-for="(col, i) in dataCenterColumns" :key="i">
         <!---- COLLAPSE SECTION STARTS---->
         <template v-if="collapseColumns.includes(col.value.toLowerCase())">
-          <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
-            <el-col :span="24">
-              <template v-if="!col.label.toLowerCase().includes('address')">
-                <template
-                  v-if="
-                    col.value == 'cables' && col.filter(info[col.value]).length
-                  "
-                >
-                  <p class="label capitalize">{{ col.label }}</p>
-                  <el-tag
-                    v-for="(item, index) in col.filter(info[col.value])"
-                    :key="index + item.name"
-                    @click="handleSelection(item._id, col.label)"
-                    class="mr2 cursor-pointer"
-                    size="mini"
+          <template v-if="focusType.includes('org')">
+            <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
+              <el-col :span="24">
+                <template v-if="!col.label.toLowerCase().includes('address')">
+                  <template
+                    v-if="
+                      col.value == 'cables' &&
+                        col.filter(info[col.value]).length
+                    "
                   >
-                    {{ item.name }}
-                  </el-tag>
+                    <template v-if="info[col.value].length > 1">
+                      <el-collapse
+                        v-model="orgCollapse"
+                        :ref="`el-collapse_${i}`"
+                        class="mb4"
+                      >
+                        <el-collapse-item :name="i" :title="col.label">
+                          <el-tag
+                            v-for="(item, index) in col.filter(info[col.value])"
+                            :key="index + item.name"
+                            @click="handleSelection(item._id, col.label)"
+                            class="mr2 cursor-pointer"
+                            size="mini"
+                          >
+                            {{ item.name }}
+                          </el-tag>
+                        </el-collapse-item>
+                      </el-collapse>
+                    </template>
+                    <template v-else>
+                      <p class="label capitalize">{{ col.label }}</p>
+                      <el-tag
+                        v-for="(item, index) in col.filter(info[col.value])"
+                        :key="index + item.name"
+                        @click="handleSelection(item._id, col.label)"
+                        class="mr2 cursor-pointer"
+                        size="mini"
+                      >
+                        {{ item.name }}
+                      </el-tag>
+                    </template>
+                  </template>
+                  <template v-else-if="col.value != 'cables'">
+                    <template v-if="info[col.value].length > 1">
+                      <el-collapse
+                        v-model="orgCollapse"
+                        :ref="`el-collapse_${i}`"
+                        class="mb4"
+                      >
+                        <el-collapse-item :name="i" :title="col.label">
+                          <el-tag
+                            v-for="(item, index) in info[col.value]"
+                            :key="index + item.name"
+                            @click="handleSelection(item._id, col.label)"
+                            class="mr2 cursor-pointer"
+                            size="mini"
+                          >
+                            {{ item.name }}
+                          </el-tag>
+                        </el-collapse-item>
+                      </el-collapse>
+                    </template>
+                    <template v-else>
+                      <p class="label capitalize">{{ col.label }}</p>
+                      <el-tag
+                        v-for="(item, index) in info[col.value]"
+                        :key="index + item.name"
+                        @click="handleSelection(item._id, col.label)"
+                        class="mr2 cursor-pointer"
+                        size="mini"
+                      >
+                        {{ item.name }}
+                      </el-tag>
+                    </template>
+                  </template>
                 </template>
-                <template v-else-if="col.value != 'cables'">
+                <template v-else>
+                  <template v-if="info[col.value].length > 1">
+                    <el-collapse
+                      v-model="orgCollapse"
+                      :ref="`el-collapse_${i}`"
+                      class="mb4"
+                    >
+                      <el-collapse-item :name="i" :title="col.label">
+                        <p
+                          v-for="(item, index) in info[col.value]"
+                          :key="index + item"
+                          class="text-bold"
+                        >
+                          {{ item.street }} {{ item.city ? item.city : '' }},
+                          {{ item.state ? item.state + ', ' : '' }}
+                          {{ item.country ? item.country : '' }}.
+                        </p>
+                      </el-collapse-item>
+                    </el-collapse>
+                  </template>
+                  <template v-else>
+                    <p class="label capitalize">{{ col.label }}</p>
+                    <p
+                      v-for="(item, index) in info[col.value]"
+                      :key="index + item"
+                      class="text-bold"
+                    >
+                      {{ item.street }} {{ item.city ? item.city : '' }},
+                      {{ item.state ? item.state + ', ' : '' }}
+                      {{ item.country ? item.country : '' }}.
+                    </p>
+                  </template>
+                </template>
+              </el-col>
+            </el-row>
+          </template>
+          <template v-else>
+            <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
+              <el-col :span="24">
+                <template v-if="!col.label.toLowerCase().includes('address')">
+                  <template
+                    v-if="
+                      col.value == 'cables' &&
+                        col.filter(info[col.value]).length
+                    "
+                  >
+                    <p class="label capitalize">{{ col.label }}</p>
+                    <el-tag
+                      v-for="(item, index) in col.filter(info[col.value])"
+                      :key="index + item.name"
+                      @click="handleSelection(item._id, col.label)"
+                      class="mr2 cursor-pointer"
+                      size="mini"
+                    >
+                      {{ item.name }}
+                    </el-tag>
+                  </template>
+                  <template v-else-if="col.value != 'cables'">
+                    <p class="label capitalize">{{ col.label }}</p>
+                    <el-tag
+                      v-for="(item, index) in info[col.value]"
+                      :key="index + item.name"
+                      @click="handleSelection(item._id, col.label)"
+                      class="mr2 cursor-pointer"
+                      size="mini"
+                    >
+                      {{ item.name }}
+                    </el-tag>
+                  </template>
+                </template>
+                <template v-else>
                   <p class="label capitalize">{{ col.label }}</p>
-                  <el-tag
+                  <p
                     v-for="(item, index) in info[col.value]"
-                    :key="index + item.name"
-                    @click="handleSelection(item._id, col.label)"
-                    class="mr2 cursor-pointer"
-                    size="mini"
+                    :key="index + item"
+                    class="text-bold"
                   >
-                    {{ item.name }}
-                  </el-tag>
+                    {{ item.street }} {{ item.city ? item.city : '' }},
+                    {{ item.state ? item.state + ', ' : '' }}
+                    {{ item.country ? item.country : '' }}.
+                  </p>
                 </template>
-              </template>
-              <template v-else>
-                <p class="label capitalize">{{ col.label }}</p>
-                <p
-                  v-for="(item, index) in info[col.value]"
-                  :key="index + item"
-                  class="text-bold"
-                >
-                  {{ item.street }} {{ item.city ? item.city : '' }},
-                  {{ item.state ? item.state + ', ' : '' }}
-                  {{ item.country ? item.country : '' }}.
-                </p>
-              </template>
-            </el-col>
-          </el-row>
+              </el-col>
+            </el-row>
+          </template>
         </template>
         <!---- COLLAPSE SECTION END --->
 
@@ -82,6 +197,7 @@
                 <template v-if="Array.isArray(info[col.value])">
                   <a
                     class="text-bold underline dont-break-out mt3 inline-block"
+                    style="max-width: 10.4rem"
                     v-for="(url, i) in info[col.value]"
                     :href="
                       url.includes('http://') || url.includes('https://')
@@ -95,6 +211,7 @@
                 </template>
                 <a
                   v-else
+                  style="max-width: 10.4rem"
                   class="text-bold underline dont-break-out mt3 inline-block"
                   :href="
                     info[col.value].includes('http://') ||
@@ -324,7 +441,7 @@ export default {
     REPORT_ISSUE,
     CREATE_ALERT,
     convertToYear,
-    collapse: [],
+    orgCollapse: [],
     buyOptions: ['Transit', 'Backbone', 'Datacenter', 'Other'],
     isMenuOpen: false
   }),
@@ -341,7 +458,7 @@ export default {
     collapseColumns() {
       return ['org', 'networks', 'cables', 'cls', 'address', 'facilities']
     },
-    facColumns() {
+    dataCenterColumns() {
       const cols = [...this.columns]
         .map(col => {
           if (
@@ -363,12 +480,14 @@ export default {
     }
   },
   mounted() {
-    try {
-      for (let collapse in this.$refs) {
-        this.collapse.push(Number(collapse.split('_')[1]))
+    if (this.focusType.includes('org')) {
+      try {
+        for (let collapse in this.$refs) {
+          this.orgCollapse.push(Number(collapse.split('_')[1]))
+        }
+      } catch {
+        // Ignore
       }
-    } catch {
-      // Ignore
     }
   },
   methods: {

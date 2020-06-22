@@ -13,6 +13,7 @@
         :is="currentView"
         :form="form"
         :mode="mode"
+        :is-send-data-disabled="checkGeomLength"
         :is-sending-data="isSendingData"
         @send-data="checkType"
         @handle-file-converted="handleFileConverted"
@@ -27,6 +28,7 @@
         :key="mapKey"
         :type="creationType"
         :form="form"
+        @features-list-change="featuresList = $event"
         @error-loading-draw-onto-map="handleFileConvertionFailed"
       />
     </div>
@@ -70,7 +72,7 @@
     </template>
 
     <manual-kmz-submit-dialog
-      :form-data="manualSubmitFormData"
+      :form-data="form"
       :is-visible="isManualUploadDialog"
       @close="closeMannualKmzSubmitDialog"
     />
@@ -94,7 +96,8 @@ import {
 import {
   EDITOR_LOAD_DRAW,
   EDITOR_FILE_CONVERTED,
-  EDITOR_SET_FEATURES
+  EDITOR_SET_FEATURES,
+  EDITOR_SET_FEATURES_LIST
 } from '../../../events/editor'
 import MapForm from '../../../components/userCreationForms/map'
 import {
@@ -125,6 +128,7 @@ export default {
       mapKey: 0,
       mode: 'create',
       loading: false,
+      featuresList: [],
       isSendingData: false,
       isPropertiesDialog: false,
       isManualUploadDialog: false,
@@ -143,6 +147,9 @@ export default {
         this.creationType = q.id
         this.mapKey += 1
       }
+    },
+    featuresList(list) {
+      this.form.geom = list
     }
   },
   computed: {
@@ -154,9 +161,6 @@ export default {
     },
     isMapFormSendingData() {
       return this.isSendingData && this.creationType == 'map'
-    },
-    manualSubmitFormData() {
-      return this.form
     },
     isLoadingDialog() {
       const type =
@@ -188,7 +192,7 @@ export default {
       return view
     },
     checkGeomLength() {
-      return this.$store.state.editor.scene.features.list.length ? false : true
+      return this.featuresList.length ? false : true
     },
     isMapFormLoading: {
       get() {
@@ -197,9 +201,6 @@ export default {
       set() {
         return this.$store.dispatch('editor/toggleMapFormLoading', false)
       }
-    },
-    featuresList() {
-      return this.$store.state.editor.scene.features.list
     },
     checkType() {
       let method
@@ -294,10 +295,10 @@ export default {
       )
     }, 320),
     toggleMapFormLoading(bool) {
-      return this.$store.dispatch('editor/toggleMapFormLoading', bool)
+      this.$store.dispatch('editor/toggleMapFormLoading', bool)
     },
     async handleSetSelectionOntoMap(data) {
-      return await bus.$emit(`${EDITOR_SET_FEATURES}`, data)
+      await bus.$emit(`${EDITOR_SET_FEATURES}`, data)
     },
     async checkUserMapExistance() {
       this.loading = true
@@ -349,14 +350,14 @@ export default {
 
         const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
         if (fc.features && fc.features.length) {
-          this.$store.dispatch('editor/setList', fc.features)
+          bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, fc.features)
           bus.$emit(`${EDITOR_LOAD_DRAW}`, null, false)
         }
       }
       this.loading = false
     },
     handleFileConverted(fc) {
-      return bus.$emit(`${EDITOR_FILE_CONVERTED}`, fc)
+      bus.$emit(`${EDITOR_FILE_CONVERTED}`, fc)
     },
     handleDialogVisibility(bool) {
       this.isPropertiesDialog = bool
@@ -533,8 +534,7 @@ export default {
             : [...data.geom.features]
       }
 
-      await this.$store.dispatch('editor/setList', features)
-      this.form.geom = this.$store.state.editor.scene.features.list
+      bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, features)
       await bus.$emit(`${EDITOR_LOAD_DRAW}`, features)
     },
     handleCLSEditMode(data) {
@@ -693,7 +693,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async editCLS() {
       this.isSendingData = true
@@ -709,7 +709,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async createCable() {
       this.isSendingData = true
@@ -735,14 +735,14 @@ export default {
     },
     async editCable() {
       this.isSendingData = true
-      const { t } = (await editCable({
+      await editCable({
         ...this.form,
         user_id: await this.$auth.getUserID(),
         _id: this.$route.query.item
-      })) || { t: 'error' }
+      })
 
       this.isSendingData = false
-      if (t !== 'error') return this.handleReturningRoute(this.creationType)
+      // if (t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async createIXP() {
       this.isSendingData = true
@@ -757,7 +757,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async editIXP() {
       this.isSendingData = true
@@ -773,7 +773,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async createFacility() {
       this.isSendingData = true
@@ -784,7 +784,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async editFacility() {
       this.isSendingData = true
@@ -796,7 +796,7 @@ export default {
       })
 
       this.isSendingData = false
-      if (res.t !== 'error') return this.handleReturningRoute(this.creationType)
+      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     }
   }
 }

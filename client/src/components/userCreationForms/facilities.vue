@@ -9,7 +9,17 @@
           class="w-fit-full"
           :class="{ dark }"
           v-model="form.name"
+          clearable
+          @input="checkName"
           :disabled="isViewMode"
+        />
+        <el-alert
+          v-if="isNameRepeated"
+          class="mt4 p2"
+          type="error"
+          :closable="false"
+          description="This name already exists in our database. Use a different name or
+          consider extending your name."
         />
       </el-form-item>
       <el-form-item label="Address" class="mt2">
@@ -201,7 +211,7 @@
           type="primary"
           class="w-fit-full capitalize"
           round
-          :disabled="checkGeomLength"
+          :disabled="isSendDataDisabled"
           :loading="isSendingData"
           @click="sendData"
         >
@@ -223,6 +233,8 @@ import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 import { searchIxps } from '../../services/api/ixps'
 import VMultiSelect from '../../components/MultiSelect'
 import { searchOrganization } from '../../services/api/organizations'
+import { checkFacilityNameExistence } from '../../services/api/check_name'
+import debounce from '../../helpers/debounce'
 
 export default {
   name: 'FacsForm',
@@ -241,6 +253,7 @@ export default {
       state: '',
       zipcode: ''
     },
+    isNameRepeated: false,
     isOwnersSelectEmpty: false,
     tagOnEdit: null,
     facilitiesTypes,
@@ -266,6 +279,10 @@ export default {
     isSendingData: {
       type: Boolean,
       default: () => false
+    },
+    isSendDataDisabled: {
+      type: Boolean,
+      required: true
     }
   },
   computed: {
@@ -328,9 +345,6 @@ export default {
     autocompleteAddress() {
       return this.tag ? this.tag.fullAddress : ''
     },
-    checkGeomLength() {
-      return this.$store.state.editor.scene.features.list.length ? false : true
-    },
     tagMode() {
       return this.tagOnEdit !== null && this.tag ? 'edit' : 'create'
     }
@@ -357,6 +371,22 @@ export default {
     }
   },
   methods: {
+    checkName: debounce(async function(name) {
+      this.isNameRepeated = false
+      const {
+        t,
+        data: { r }
+      } = (await checkFacilityNameExistence({
+        user_id: this.$auth.getUserID(),
+        name
+      })) || { t: 'error', data: { r: false } }
+
+      if (t != 'error' && r >= 1) {
+        this.isNameRepeated = true
+      } else {
+        this.isNameRepeated = false
+      }
+    }, 320),
     handleOwnersSelectChange(data) {
       this.form.owners = data
       this.setOwnersEmptyState()

@@ -349,6 +349,10 @@ export default {
     isSendingData: {
       type: Boolean,
       default: () => false
+    },
+    isSendDataDisabled: {
+      type: Boolean,
+      required: true
     }
   },
   computed: {
@@ -374,9 +378,7 @@ export default {
       let disabled
 
       if (this.$route.query.id != 'map') {
-        disabled = this.$store.state.editor.scene.features.list.length
-          ? false
-          : true
+        disabled = this.isSendDataDisabled
       } else {
         disabled = this.form.subdomain ? false : true
       }

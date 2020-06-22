@@ -5,14 +5,12 @@ class EditorControls {
     draw,
     type,
     scene,
-    $dispatch,
     handleEditFeatureProperties,
     handleBeforeFeatureCreation
   }) {
     this.type = type
     this.draw = draw
     this.scene = scene
-    this.$dispatch = $dispatch
     this.resetScene = this.resetScene
     this.updateControls = this.updateControls
     this.handleBeforeFeatureCreation = handleBeforeFeatureCreation
@@ -44,7 +42,7 @@ class EditorControls {
             ? true
             : false,
         eventListener: () => {
-          this.$dispatch('editor/beginCreation')
+          this.scene.creation = true
           this.draw.changeMode(this.draw.modes.DRAW_LINE_STRING)
         }
       }),
@@ -61,7 +59,7 @@ class EditorControls {
             ? true
             : false,
         eventListener: () => {
-          this.$dispatch('editor/beginCreation')
+          this.scene.creation = true
           this.draw.changeMode(this.draw.modes.DRAW_POINT)
         }
       }),
@@ -73,7 +71,7 @@ class EditorControls {
         visible:
           this.type === 'map' || this.type === 'facilities' ? true : false,
         eventListener: () => {
-          this.$dispatch('editor/beginCreation')
+          this.scene.creation = true
           this.draw.changeMode(this.draw.modes.DRAW_POLYGON)
         }
       }),
@@ -90,8 +88,8 @@ class EditorControls {
         className: 'editor-ctrl editor-trash',
         title: 'Delete',
         eventListener: () => {
-          this.$dispatch('editor/selectionChange', this.draw.getSelected())
-          this.featureDeleted()
+          this.scene.features.selected = this.draw.getSelected()
+          this.deleteFeature()
         }
       }),
 
@@ -101,7 +99,7 @@ class EditorControls {
         title: 'Accept',
         eventListener: () => {
           try {
-            return this.scene.creation
+            this.scene.creation
               ? this.handleFeatureCreation()
               : this.handleFeatureEdition()
           } catch (err) {
@@ -123,17 +121,24 @@ class EditorControls {
    * @param { boolean } isResetList - A boolean indicating if it should reset the list of features saved too
    */
   resetScene(isResetList) {
-    this.$dispatch('editor/resetScene')
+    this.scene.edition = null
+    this.scene.creation = null
+    this.scene.features.selected = null
     this.draw.changeMode(this.draw.modes.SIMPLE_SELECT)
-    if (isResetList) this.$dispatch('editor/resetList')
+    if (isResetList) {
+      this.scene.features.list = []
+    }
   }
 
-  featureDeleted() {
-    const { selected } = this.scene.features
-    if (selected && selected.length) {
-      for (let feat of selected) {
-        this.draw.delete(feat.id)
-        this.$dispatch('editor/deleteFeature', feat.id)
+  deleteFeature() {
+    const selected = this.draw.getSelected()
+
+    if (selected && selected.features.length > 0) {
+      for (let featureSelected of selected.features) {
+        this.scene.features.list = this.scene.features.list.filter(
+          feat => feat.id != featureSelected.id
+        )
+        this.draw.delete(featureSelected.id)
       }
       this.resetScene()
     }
@@ -185,7 +190,7 @@ class EditorControls {
   }
 
   handleCancel() {
-    this.$dispatch('editor/selectionChange', this.draw.getSelected())
+    this.scene.features.selected = this.draw.getSelected()
     const creations = this.draw.getAll()
     const savedFeats = Array.from(this.scene.features.list).map(feat => feat.id)
     const { selected } = this.scene.features
@@ -226,16 +231,16 @@ class EditorControls {
    */
   handleDrawSelectionChange(features) {
     if (!this.scene.edition && !this.scene.creation && features.length) {
-      this.$dispatch('editor/beginEdition')
-      this.$dispatch('editor/selectionChange', { features })
+      this.scene.edition = true
+      this.scene.features.selected = { features }
     }
   }
 
   async handleFeatureCreation() {
-    this.$dispatch('editor/selectionChange', this.draw.getSelected())
-    const { features } = this.scene
+    this.scene.features.selected = this.draw.getSelected()
+    const { selected } = this.scene.features
 
-    if (features && features.selected.length) {
+    if (selected && selected.features.length > 0) {
       const onlyOneFeatureAllowed = ['cls', 'ixps']
       if (
         onlyOneFeatureAllowed.includes(this.type) &&
@@ -244,10 +249,10 @@ class EditorControls {
         return
       }
 
-      return await this.handleBeforeFeatureCreation({
-        ...features.selected[0]
+      await this.handleBeforeFeatureCreation({
+        ...selected.features[0]
       })
-    } else return
+    }
   }
   /**
    *
@@ -256,11 +261,11 @@ class EditorControls {
   handleFeatureEdition() {
     const currentFeature = this.draw.getSelected()
 
-    if (currentFeature.features.length) {
+    if (currentFeature.features.length > 0) {
       const feat = JSON.parse(
         JSON.stringify(
           this.scene.features.list.filter(
-            f => f.id === currentFeature.features[0].id
+            f => f.id == currentFeature.features[0].id
           )[0]
         )
       )
@@ -268,17 +273,28 @@ class EditorControls {
       feat.geometry.coordinates =
         currentFeature.features[0].geometry.coordinates
 
-      this.$dispatch('editor/editFeature', [feat])
-      return this.resetScene()
+      this.scene.features.list.forEach((feature, i) => {
+        for (let featEdit of [feat]) {
+          if (feature.id == featEdit.id) {
+            this.scene.features.list[i] = { ...featEdit }
+          }
+        }
+      })
+      this.resetScene()
     }
   }
 
   async handleEditFeatureProps() {
-    const featureId = this.scene.features.selected[0].id
-    const features = this.scene.features.list.filter(f => f.id === featureId)
-    await this.handleEditFeatureProperties(
-      features.length ? JSON.parse(JSON.stringify(features[0])) : null
-    )
+    const featuresSelected = this.draw.getSelected()
+
+    if (featuresSelected && featuresSelected.features.length > 0) {
+      const features = this.scene.features.list.filter(
+        f => f.id == featuresSelected.features[0].id
+      )
+      await this.handleEditFeatureProperties(
+        features.length ? JSON.parse(JSON.stringify(features[0])) : null
+      )
+    }
   }
 }
 

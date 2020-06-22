@@ -30,28 +30,6 @@
             <el-input v-model="form.fullname" :class="{ dark }" />
           </el-form-item>
         </el-col>
-        <!-- <el-col :xs="24" :sm="12" :md="24" :lg="12" :xl="8">
-          <el-form-item label="Phone number">
-            <div class="el-input">
-              <i-phone-input
-                inputClasses="el-input__inner issues-dialog"
-                v-model="form.phonenumber.num"
-                @onInput="validatePhoneNumber"
-                class="m0 p0 el-input__inner"
-              />
-            </div>
-            <el-collapse-transition>
-              <el-alert
-                type="error"
-                class="mt2 h8"
-                show-icon
-                title="This phone number is not valid"
-                :closable="false"
-                v-if="form.phonenumber.num && !form.phonenumber.valid"
-              />
-            </el-collapse-transition>
-          </el-form-item>
-        </el-col> -->
       </el-row>
       <el-row :gutter="30">
         <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
@@ -79,23 +57,27 @@
             </el-form-item>
           </el-col>
           <el-col :span="12" v-else>
-            <div class="block">
-              <el-form-item prop="rack">
-                <span slot="label">
-                  <span class="text-red">*</span> Rack total
-                </span>
-                <br />
+            <el-form-item
+              :required="isRackRequired"
+              prop="totalRack"
+              label="Rack total"
+            >
+              <div class="w-fit-full inline-block">
                 <div class="block">
                   <el-slider
                     class="relative"
                     id="rack-slider"
+                    :disabled="isCustomRequest"
                     v-model="form.totalRack"
                     show-input
                     input-size="small"
                   />
                 </div>
-              </el-form-item>
-            </div>
+                <el-checkbox v-model="isCustomRequest" @change="resetRackTotal">
+                  Custom request
+                </el-checkbox>
+              </div>
+            </el-form-item>
           </el-col>
         </template>
         <template v-if="isBackboneSelection">
@@ -106,9 +88,8 @@
               prop="address.pointA"
               ref="pointA"
             >
-              <autocomplete-google
+              <point-field
                 @place-changed="handleAddressChanged($event, 'a')"
-                size="regular"
                 id="pointA"
               />
             </el-form-item>
@@ -120,16 +101,45 @@
               prop="address.pointB"
               ref="pointB"
             >
-              <autocomplete-google
+              <point-field
                 @place-changed="handleAddressChanged($event, 'b')"
-                size="regular"
                 id="pointB"
               />
             </el-form-item>
           </el-col>
         </template>
+        <template v-else-if="isTransitSelection">
+          <el-col :xl="24">
+            <el-form-item label="IP transit" prop="transitIP" ref="transitIP">
+              <v-multi-select
+                mode="create"
+                :options="facsList"
+                :is-required="true"
+                :is-multiple="false"
+                :loading="isLoadingFacs"
+                :is-field-empty="isTransitIpEmpty"
+                @values-change="handleTransitIPChange"
+                @input="loadFacsSearch"
+              />
+            </el-form-item>
+          </el-col>
+        </template>
         <el-col :span="24">
-          <el-form-item label="Message" prop="message">
+          <el-form-item
+            label="Message"
+            prop="message"
+            :required="
+              isOthersCapacitySelection ||
+                dialogTitle == 'Other' ||
+                isCustomRequest
+            "
+          >
+            <span
+              v-if="isOthersCapacitySelection || isCustomRequest"
+              class="error-message"
+            >
+              - {{ messageWhenRequired }}
+            </span>
             <el-input
               type="textarea"
               rows="4"
@@ -159,7 +169,7 @@
           >Cancel</el-button
         >
         <el-button
-          :disabled="isFormUncomplete"
+          :disabled="!catchaVerified"
           type="primary"
           class="w-fit-content"
           plain
@@ -181,20 +191,27 @@ import { TOGGLE_BUY_DIALOG, BUY_TYPE } from '../../store/actionTypes'
 import { getSelectionTypeNumber } from '../../helpers/getSelectionTypeNumber'
 import VueRecaptcha from 'vue-recaptcha'
 import siteKey from '../../config/siteKey'
-import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 import validateEmail from '../../helpers/validateEmail'
+import buyMessageFormatter from '../../helpers/buyMessageFormatter'
+import PointBuyDialogSearchVue from '../PointBuyDialogSearch.vue'
+import { searchFacilities } from '../../services/api/facs'
+import VMultiSelect from '../../components/MultiSelect'
 
 export default {
   components: {
     VueRecaptcha,
-    AutocompleteGoogle
+    VMultiSelect,
+    'point-field': PointBuyDialogSearchVue
   },
   data: () => ({
-    capacities: ['1GB', '10GB', '100GB', 'Others'],
+    capacities: ['1Gbps', '10Gbps', '100Gbps', 'Fiber', 'Other'],
     loading: false,
-    siteKey,
+    facsList: [],
     isSendingData: false,
     catchaVerified: null,
+    isCustomRequest: false,
+    isLoadingFacs: false,
+    isTransitIpEmpty: false,
     form: {
       company: '',
       email: '',
@@ -202,17 +219,13 @@ export default {
       capacity: '',
       totalRack: 0,
       message: '',
-      // phonenumber: {
-      //   num: '',
-      //   valid: null
-      // },
+      transitIP: '',
       address: {
         pointA: null,
         pointB: null
       }
     },
     formRules: {
-      // phonenumber: [],
       message: [],
       'address.pointA': [
         {
@@ -241,10 +254,18 @@ export default {
         }
       ],
       company: [
-        { required: true, message: 'Company name is required', trigger: 'blur' }
+        {
+          required: true,
+          message: 'Company name is required',
+          trigger: ['blur', 'change']
+        }
       ],
       email: [
-        { required: true, message: 'Please input your email', trigger: 'blur' },
+        {
+          required: true,
+          message: 'Please input your email',
+          trigger: 'blur'
+        },
         {
           type: 'email',
           required: true,
@@ -258,7 +279,8 @@ export default {
           message: 'Please select the desired capacity',
           trigger: 'change'
         }
-      ]
+      ],
+      transitIP: []
     }
   }),
   computed: {
@@ -267,8 +289,38 @@ export default {
       dark: state => state.isDark,
       focus: state => state.map.focus
     }),
+    siteKey() {
+      return siteKey
+    },
+    messageWhenRequired() {
+      if (this.dialogTitle === '') return ''
+      else {
+        let message =
+          'Please, describe your Capacity requirement in more detail in the Message field below.'
+        if (this.dialogTitle.trim() == 'Transit') {
+          message =
+            'Please, describe your Transit requirement in more detail in the Message field below.'
+        } else if (
+          this.dialogTitle.trim() == 'Datacenter' &&
+          this.isCustomRequest
+        ) {
+          message =
+            'Please, describe your custom request details in the Message field below.'
+        }
+        return message
+      }
+    },
+    isRackRequired() {
+      return this.isCustomRequest ? false : true
+    },
+    isOthersCapacitySelection() {
+      return this.form.capacity == 'Other'
+    },
     isBackboneSelection() {
       return this.focus && this.dialogTitle.toLowerCase() == 'backbone'
+    },
+    isTransitSelection() {
+      return this.focus && this.dialogTitle.toLowerCase() == 'transit'
     },
     isVisible: {
       get() {
@@ -281,27 +333,55 @@ export default {
     dialogTitle() {
       return this.buyType && this.buyType.title ? this.buyType.title : ''
     },
-    isFormUncomplete() {
-      // TODO: fix this form uncomplete checker for when using & !using: totalRack
-      const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
-      return (emptyFields.length &&
-        this.dialogTitle == 'Datacenter' &&
-        emptyFields.includes('totalRack')) ||
-        !this.catchaVerified
-        ? true
-        : false
-    },
     customDialogClass() {
       return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
     }
   },
   watch: {
     isVisible(bool) {
-      if (!bool) return this.$refs.catpcha.reset()
-      return this.setUserData()
+      if (!bool) {
+        this.$refs.catpcha.reset()
+        this.isCustomRequest = false
+      } else {
+        this.setUserData()
+        this.formRules.transitIP[0] = {
+          required: this.isTransitSelection,
+          message: 'Please input an IP point',
+          trigger: ['blur', 'change']
+        }
+      }
     }
   },
   methods: {
+    handleTransitIPChange(value) {
+      const isEmpty = value === '' || !value
+
+      this.isTransitIpEmpty = isEmpty
+      this.form.transitIP = value[0].name
+      if (!isEmpty) this.$refs.transitIP.clearValidate()
+    },
+    async loadFacsSearch(s) {
+      if (s.length <= 0) return
+      this.isLoadingFacs = true
+      const res = await searchFacilities({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
+      if (res && res.data) {
+        this.facsList = res.data.reduce(
+          (acc = Array.from(this.facsList), item) => {
+            return acc.map(i => i._id).includes(item._id) ? acc : [...acc, item]
+          },
+          []
+        )
+      }
+      this.isLoadingFacs = false
+    },
+    resetRackTotal(bool) {
+      if (bool) {
+        this.form.totalRack = 0
+      }
+    },
     handleCatchaVerification(v) {
       if (!v) return
       else this.catchaVerified = true
@@ -342,11 +422,11 @@ export default {
     handleAddressChanged(place, inputTarget) {
       switch (inputTarget) {
         case 'b':
-          this.form.address.pointB = { ...place }
+          this.form.address.pointB = place
           this.$refs.pointB.clearValidate()
           break
         default:
-          this.form.address.pointA = { ...place }
+          this.form.address.pointA = place
           this.$refs.pointA.clearValidate()
           break
       }
@@ -354,99 +434,24 @@ export default {
     async sendBuyRequest() {
       this.isSendingData = true
       const data = {
-        cable: this.$store.state.map.currentSelection.name,
-        type: this.dialogTitle,
+        element: this.$store.state.map.currentSelection.name,
+        type: this.focus.type.toLowerCase(),
+        custom: this.isCustomRequest,
+        buyType: this.dialogTitle,
         ...this.form
       }
 
-      let message
-
-      message =
-        data.message != ''
-          ? `
-            <p style="font-size: 16px; color: #323232;"> Hi, ${
-              data.fullname
-            } (${data.email}) sent you a message: </p>
-            <br />
-            <p style="font-size: 16px; color: #323232; text-transform: capitalize;"> ${
-              data.message
-            } </p>
-            <br />
-            <p style="font-size: 16px; color: #323232;"> AI: asked to buy an amount of ${
-              data.capacity ? data.capacity : data.totalRack + ' rack total'
-            } for ${data.cable}(${data.type}) </p>`
-          : `
-            <p style="font-size: 16px; color: #323232;"> Hi, ${
-              data.fullname
-            } (${data.email}) </p>
-            <br />
-            <p style="font-size: 16px; color: #323232;"> AI: asked to buy an amount of ${
-              data.capacity ? data.capacity : data.totalRack + ' rack total'
-            } for ${data.cable}(${data.type}) </p>`
-
-      if (
-        data.address.pointA &&
-        data.address.pointB &&
-        this.dialogTitle.toLowerCase() == 'backbone'
-      ) {
-        let zipcodeA = ''
-        let zipcodeB = ''
-
-        for (let t of data.address.pointA.address_components) {
-          if (t.types.includes('postal_code')) {
-            zipcodeA = t.short_name
-          }
-        }
-
-        for (let t of data.address.pointB.address_components) {
-          if (t.types.includes('postal_code')) {
-            zipcodeB = t.short_name
-          }
-        }
-
-        message =
-          data.message != ''
-            ? `
-            <p style="font-size: 16px; color: #323232;"> Hi, ${
-              data.fullname
-            } (${data.email}) sent you a message: </p>
-            <br />
-            <p style="font-size: 16px; color: #323232; text-transform: capitalize;"> ${
-              data.message
-            } </p>
-            <br />
-            <p style="font-size: 16px; color: #323232;"> AI: asked to buy an amount of ${
-              data.capacity ? data.capacity : data.totalRack + ' rack total'
-            } for ${data.cable}(${data.type}). From pointA ${
-                data.address.pointA.fullAddress
-              }${
-                zipcodeA && zipcodeA != '' ? '(' + zipcodeA + ')' : ''
-              } to pointB ${data.address.pointB.fullAddress}${
-                zipcodeB && zipcodeB != '' ? '(' + zipcodeB + ')' : ''
-              } </p>`
-            : `
-              <p style="font-size: 16px; color: #323232;"> Hi, ${
-                data.fullname
-              } (${data.email}) </p>
-              <br />
-              <p style="font-size: 16px; color: #323232;"> AI: asked to buy an amount of ${
-                data.capacity ? data.capacity : data.totalRack + ' rack total'
-              } for ${data.cable}(${data.type}). From pointA ${
-                data.address.pointA.fullAddress
-              }${
-                zipcodeA && zipcodeA != '' ? '(' + zipcodeA + ')' : ''
-              } to pointB ${data.address.pointB.fullAddress}${
-                zipcodeB && zipcodeB != '' ? '(' + zipcodeB + ')' : ''
-              }</p>
-              `
-      }
+      const userID = await this.$auth.getUserID()
+      const message = buyMessageFormatter({
+        data,
+        userID
+      })
 
       const res = await sendMessage({
         email: data.email,
-        phone: data.phonenumber,
         message,
+        user_id: userID,
         elemnt: this.focus.id,
-        user_id: await this.$auth.getUserID(),
         t: getSelectionTypeNumber(this.focus.type)
       })
 
@@ -455,16 +460,6 @@ export default {
       }
       this.isSendingData = false
     },
-    // validatePhoneNumber({ number, isValid }) {
-    //   try {
-    //     this.form.phonenumber = {
-    //       num: number,
-    //       valid: isValid
-    //     }
-    //   } catch {
-    //     // Ignore
-    //   }
-    // },
     submitForm(formRef) {
       this.$refs[formRef].validate(valid => {
         if (valid) this.sendBuyRequest()
@@ -482,10 +477,6 @@ export default {
         fullname: '',
         capacity: '',
         totalRack: 0,
-        // phonenumber: {
-        //   num: '',
-        //   valid: null
-        // },
         address: {
           pointA: null,
           pointB: null

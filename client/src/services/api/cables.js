@@ -257,7 +257,7 @@ export const viewCableBBox = async ({ user_id, _id }) => {
 }
 
 export const searchCables = async ({ user_id, s }) => {
-  url = `${apiConfig.url}/cables/search?s=${s}`
+  url = `${apiConfig.url}/cables/search/?s=${s}`
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {

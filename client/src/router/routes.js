@@ -18,8 +18,8 @@ import MyIssuesSection from '../pages/profile/section/myissues.vue'
 import FacilitiesSection from '../pages/profile/section/facilities.vue'
 import EmailProviders from '../pages/profile/email-providers.vue'
 import MarketPlace from '../pages/marketplace'
-import MessagesSection from '../pages/profile/section/messages.vue'
-import MyMessagesSection from '../pages/profile/section/mymessages.vue'
+// import MessagesSection from '../pages/profile/section/messages.vue'
+// import MyMessagesSection from '../pages/profile/section/mymessages.vue'
 import Contact from '../pages/Contact.vue'
 import About from '../pages/About.vue'
 import Attributions from '../pages/Attributions.vue'
@@ -36,7 +36,10 @@ async function handleAdminOnlyRoutes(next, to) {
   // If the user is not an admin
   // There's no reason for them to access the creation page of those sections
   if (to) {
-    const query = to.query.id == 'map' || to.query.id == 'ixps'
+    const query =
+      to.query.id == 'map' ||
+      to.query.id == 'ixps' ||
+      to.query.id == 'facilities'
     if (query && !isUserAnAdmin) next('/user')
     else next()
   } else if (!isUserAnAdmin) {
@@ -151,7 +154,8 @@ const routes = [
   {
     path: '/user/section/facilities',
     name: 'user/facs-section',
-    component: FacilitiesSection
+    component: FacilitiesSection,
+    beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next, to)
   },
   {
     path: '/user/section/ixps',
@@ -175,16 +179,16 @@ const routes = [
     name: 'user/issues-reported',
     component: MyIssuesSection
   },
-  {
-    path: '/user/section/my-messages',
-    name: 'user/my-messages',
-    component: MyMessagesSection
-  },
-  {
-    path: '/user/section/messages',
-    name: 'user/messages',
-    component: MessagesSection
-  },
+  // {
+  //   path: '/user/section/my-messages',
+  //   name: 'user/my-messages',
+  //   component: MyMessagesSection
+  // },
+  // {
+  //   path: '/user/section/messages',
+  //   name: 'user/messages',
+  //   component: MessagesSection
+  // },
   {
     path: '/user/section/alerts',
     name: 'user/alerts-section',

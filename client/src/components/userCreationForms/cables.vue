@@ -10,6 +10,16 @@
           :class="{ dark }"
           class="w-fit-full"
           v-model="form.name"
+          clearable
+          @input="checkName"
+        />
+        <el-alert
+          v-if="isNameRepeated"
+          class="mt4 p2"
+          type="error"
+          :closable="false"
+          description="This name already exists in our database. Use a different name or
+          consider extending your name."
         />
       </el-form-item>
       <el-form-item label="Status" prop="category" required>
@@ -160,7 +170,7 @@
           </div>
         </el-form-item>
       </template>
-      <el-form-item label="Fiber Pairs" prop="fiberPairs">
+      <!-- <el-form-item label="Fiber Pairs" prop="fiberPairs">
         <el-input-number
           :min="0"
           :class="{ dark }"
@@ -168,7 +178,7 @@
           controls-position="right"
           v-model="form.fiberPairs"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item :label="facilitiesLabel" prop="facilities">
         <v-multi-select
           :mode="mode"
@@ -179,24 +189,21 @@
           :value="mode == 'create' ? [] : form.facilities"
         />
       </el-form-item>
-      <el-form-item
-        v-if="creationID == 'subsea'"
-        label="CLS"
-        prop="cls"
-        required
-      >
-        <v-multi-select
-          :mode="mode"
-          :is-required="true"
-          :is-field-empty="isCLSSelectEmpty"
-          :options="clsList"
-          @input="loadCLSSearch"
-          :loading="isLoadingCLS"
-          @values-change="handleCLSSelectionChange"
-          @remove="handleCLSSelectionChange(form.cls)"
-          :value="mode == 'create' ? [] : form.cls"
-        />
-      </el-form-item>
+      <template v-if="creationID == 'subsea'">
+        <el-form-item label="CLS" prop="cls" required>
+          <v-multi-select
+            :mode="mode"
+            :is-required="true"
+            :is-field-empty="isCLSSelectEmpty"
+            :options="clsList"
+            @input="loadCLSSearch"
+            :loading="isLoadingCLS"
+            @values-change="handleCLSSelectionChange"
+            @remove="handleCLSSelectionChange(form.cls)"
+            :value="mode == 'create' ? [] : form.cls"
+          />
+        </el-form-item>
+      </template>
       <el-form-item label="Owners" prop="owners" required>
         <v-multi-select
           :mode="mode"
@@ -242,7 +249,7 @@
             class="w-fit-full capitalize"
             round
             :loading="isSendingData"
-            :disabled="checkGeomLength"
+            :disabled="isSendDataDisabled"
             @click="sendData"
           >
             {{ saveBtn }}
@@ -265,6 +272,8 @@ import { clsListConnectedToCable, searchCls } from '../../services/api/cls'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import * as events from '../../events/mapForm'
 import { getClsGeoms } from '../../services/api/cls'
+import { checkCableNameExistence } from '../../services/api/check_name'
+import debounce from '../../helpers/debounce'
 
 export default {
   name: 'CableForm',
@@ -287,6 +296,7 @@ export default {
     inputVisible: false,
     isLoadingFacs: false,
     isLoadingOrgs: false,
+    isNameRepeated: false,
     warnTagDuplicate: false,
     litCapacityFields: []
   }),
@@ -310,6 +320,10 @@ export default {
     isSendingData: {
       type: Boolean,
       default: () => false
+    },
+    isSendDataDisabled: {
+      type: Boolean,
+      required: true
     }
   },
   computed: {
@@ -374,7 +388,7 @@ export default {
     facilitiesLabel() {
       return this.creationID == 'subsea'
         ? 'Facilities (POPs)'
-        : 'Facilities (On-net & Off-Net)'
+        : 'Facilities (On-net)'
     },
     title() {
       let t = `${
@@ -390,9 +404,6 @@ export default {
     },
     dark() {
       return this.$store.state.isDark
-    },
-    checkGeomLength() {
-      return this.$store.state.editor.scene.features.list.length ? false : true
     }
   },
   mounted() {
@@ -447,6 +458,21 @@ export default {
     }
   },
   methods: {
+    checkName: debounce(async function(name) {
+      this.isNameRepeated = false
+      const {
+        t,
+        data: { r }
+      } = (await checkCableNameExistence({
+        user_id: this.$auth.getUserID(),
+        name
+      })) || { t: 'error', data: { r: false } }
+      if (t != 'error' && r >= 1) {
+        this.isNameRepeated = true
+      } else {
+        this.isNameRepeated = false
+      }
+    }, 320),
     async handleSetFeatureOntoMap({ selections, removeLoadState }) {
       const fc = await this.handleGetClsGeom(selections)
 
@@ -479,6 +505,7 @@ export default {
     },
     handleCLSSelectionChange(data) {
       this.form.cls = data
+      this.setCLSEmptyState()
       this.handleSetFeatureOntoMap({
         selections: this.getSelectionID('cls'),
         removeLoadState: true
@@ -509,8 +536,12 @@ export default {
     setOwnersEmptyState() {
       this.isOwnersSelectEmpty = this.form.owners.length <= 0
     },
+    setCLSEmptyState() {
+      this.isCLSSelectEmpty = this.form.cls.length <= 0
+    },
     sendData() {
       this.setOwnersEmptyState()
+      this.setCLSEmptyState()
       return this.$refs['form'].validate(isValid =>
         isValid && !this.isOwnersSelectEmpty ? this.$emit('send-data') : false
       )

@@ -20,37 +20,39 @@
           class="header pt10 pr8 pl8 h-fit-content pb10 relative"
           @click.stop="toggleActiveClassOnMobile"
         >
-          <el-button
-            type="text"
-            class="inline-block icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
-            @click="closeSidebar"
-          >
-            <fa :icon="['fas', 'times']" />
-          </el-button>
+          <div class="relative action-buttons">
+            <el-button
+              type="text"
+              class="inline-block icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
+              @click="closeSidebar"
+            >
+              <fa :icon="['fas', 'times']" />
+            </el-button>
+            <el-button
+              v-if="focus.type.toLowerCase() !== 'owners'"
+              type="text"
+              id="verified-i"
+              @click.stop="handleVerification"
+              class="transparent inline-block cursor-pointer"
+              :class="{ 'is-verified': isVerified }"
+              :title="isVerified ? 'Owner verified' : 'Owner unverified'"
+            >
+              <certificated-icon v-if="isVerified" />
+              <span v-else>
+                <fa :icon="['fas', 'check-double']" />
+              </span>
+            </el-button>
+          </div>
           <el-tooltip
             effect="dark"
             content="Click to copy link"
             placement="bottom"
           >
             <h1
-              class="inline-block cursor-pointer relative title font-bold m0 p1 round dont-break-out fs-large underline"
+              class="inline-block cursor-pointer title font-bold m0 p1 round dont-break-out fs-large underline"
               @click.stop="copyToClip"
             >
               {{ currentSelection.name }}
-              <el-button
-                v-if="focus.type.toLowerCase() !== 'owners'"
-                type="text"
-                id="verified-i"
-                @click.stop="handleVerification"
-                class="transparent inline-block cursor-pointer"
-                :class="{ 'is-verified': isVerified }"
-                :title="isVerified ? 'Owner verified' : 'Owner unverified'"
-              >
-                <certificated-icon v-if="isVerified" />
-                <span v-else>
-                  <fa :icon="['fas', 'check-double']" />
-                </span>
-              </el-button>
             </h1>
           </el-tooltip>
           <p class="text-bold">{{ currentSelection.segment_name }}</p>
