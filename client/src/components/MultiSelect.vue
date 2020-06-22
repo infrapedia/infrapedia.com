@@ -133,7 +133,7 @@ export default {
   },
   methods: {
     handleInputChange: debounce(function(s) {
-      if (s.length <= 3) return
+      if (s.length < 2) return
       else return this.$emit('input', s)
     }, 320),
     handleRemovedItem(tag) {

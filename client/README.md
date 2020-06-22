@@ -7,6 +7,7 @@
 - Doesn't make sense to have fiberPairs on the sidebar so we removed it
 - Blog link on navbar doesn't have to open on a new tab
 - Create section was not unlocking submit button
+- BuyDialog Transit has new field, and Fiber option should be removed on Transit buy
 
 ## Version 2.1.3
 

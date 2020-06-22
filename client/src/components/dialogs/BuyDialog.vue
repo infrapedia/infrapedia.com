@@ -110,7 +110,7 @@
         </template>
         <template v-else-if="isTransitSelection">
           <el-col :xl="24">
-            <el-form-item label="IP transit" prop="transitIP" ref="transitIP">
+            <el-form-item label="Location(s)" prop="transitIP" ref="transitIP">
               <v-multi-select
                 mode="create"
                 :options="facsList"
@@ -344,10 +344,16 @@ export default {
         this.isCustomRequest = false
       } else {
         this.setUserData()
-        this.formRules.transitIP[0] = {
-          required: this.isTransitSelection,
-          message: 'Please input an IP point',
-          trigger: ['blur', 'change']
+        if (this.isTransitSelection) {
+          this.formRules.transitIP[0] = {
+            required: this.isTransitSelection,
+            message: 'Please input an IP point',
+            trigger: ['blur', 'change']
+          }
+          this.capacities = ['1Gbps', '10Gbps', '100Gbps', 'Other']
+        } else {
+          this.formRules.transitIP = []
+          this.capacities = ['1Gbps', '10Gbps', '100Gbps', 'Fiber', 'Other']
         }
       }
     }
