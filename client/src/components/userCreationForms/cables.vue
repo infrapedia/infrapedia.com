@@ -170,15 +170,17 @@
           </div>
         </el-form-item>
       </template>
-      <!-- <el-form-item label="Fiber Pairs" prop="fiberPairs">
-        <el-input-number
-          :min="0"
-          :class="{ dark }"
-          class="w-fit-full"
-          controls-position="right"
-          v-model="form.fiberPairs"
-        />
-      </el-form-item> -->
+      <template v-if="creationID == 'subsea'">
+        <el-form-item label="Fiber Pairs" prop="fiberPairs">
+          <el-input-number
+            :min="0"
+            :class="{ dark }"
+            class="w-fit-full"
+            controls-position="right"
+            v-model="form.fiberPairs"
+          />
+        </el-form-item>
+      </template>
       <el-form-item :label="facilitiesLabel" prop="facilities">
         <v-multi-select
           :mode="mode"
@@ -343,7 +345,7 @@ export default {
             message: 'Please input a valid name',
             transform: value => value.trim(),
             // eslint-disable-next-line
-            pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.,0-9()´‘'’ \-]+$/
+            pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.,0-9()´‘'’ /\-]+$/
           },
           { min: 3, message: 'Length should be at least 3', trigger: 'change' }
         ],
