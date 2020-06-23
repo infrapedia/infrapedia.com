@@ -1,10 +1,6 @@
 @import '../../base/variables';
 @import '../../helpers/atomic-classes';
 
-.main-wrapper {
-  font-family: 'helveticaregular';
-}
-
 .hero-wrapper {
   border-top: 1px solid $grey-ligthen-3;
   .inner-wrapper-text {
@@ -21,11 +17,15 @@
       filter: blur(2px);
     }
     .overlay-inner {
-      opacity: 1;
-      cursor: pointer;
-      background-color: rgba($color: #0000, $alpha: 0.8);
+      @extend .visible-from-start;
     }
   }
+}
+
+.visible-from-start {
+  opacity: 1 !important;
+  cursor: pointer;
+  background-color: rgba($color: #0000, $alpha: 0.8);
 }
 
 .overlay-inner {
@@ -43,17 +43,13 @@
 }
 
 .title {
-  font-family: 'helveticabold';
   line-height: 1.2;
   font-weight: auto;
-  font-size: 40px;
   color: rgb(15, 50, 86);
   text-align: center;
   &.md {
-    font-size: 28px;
     text-align: left;
     color: $dark-charcoal;
-    @extend .no-selectable;
     text-transform: capitalize;
     @media screen and (max-width: $break-xs) {
       font-size: 24px;
@@ -62,8 +58,6 @@
   &.sm {
     text-align: left;
     color: $dark-charcoal;
-    font-size: 24px;
-    @extend .no-selectable;
     text-transform: capitalize;
     @media screen and (max-width: $break-xs) {
       font-size: 18px;
@@ -77,7 +71,6 @@
     font-size: 14px;
     margin-top: 1rem;
     color: #bdc4ca;
-    font-family: 'helveticaregular';
   }
   @media screen and (max-width: $break-xs) {
     font-size: 20px;
@@ -87,11 +80,9 @@
 .information-section {
   .inner-wrapper {
     .text {
-      font-family: 'helveticaregular';
       margin: 0;
-      padding: 1rem;
-      font-size: 2rem;
-      line-height: 1.8;
+      font-size: 1rem;
+      line-height: 1.5;
       color: $light-charcoal;
       @extend .dont-break-out;
       &.heading {
@@ -100,10 +91,8 @@
         @media screen and (max-width: $break-md) {
           max-width: 41.4rem;
           min-width: 18rem;
-          font-size: 30px;
         }
         @media screen and (max-width: $break-xs) {
-          font-size: 17px;
           max-width: unset;
           min-width: unset;
           padding: 2rem;
@@ -114,12 +103,10 @@
         margin-top: 1rem;
         @media screen and (max-width: $break-md) {
           max-width: 41.4rem;
-          font-size: 30px;
         }
 
         @media screen and (max-width: $break-xs) {
           margin-top: -2rem;
-          font-size: 17px;
           padding: 2rem;
         }
       }
@@ -175,53 +162,35 @@
 }
 
 .carousel-section {
-  .carousel-wrapper {
+  .section-wrapper {
     margin: 0 auto;
     width: 80vw;
   }
-  .el-carousel__item {
-    background-color: $white-full;
-  }
 }
 
-.votation-pool {
-  .pool-wrapper {
-    width: 80vw;
+.no-gray-filter {
+  filter: grayscale(0);
+}
+
+.section-wrapper {
+  .boxes-wrapper {
     display: grid;
+    width: 100%;
     gap: 2rem;
-    margin: 1rem auto;
-    justify-items: center;
-    grid-template-columns: repeat(4, 1fr);
-    .pool_inner-wrapper {
-      width: 80%;
-    }
-    h2 {
-      max-width: 16rem;
-    }
-    li span {
-      display: inline-block;
-      max-width: 12rem;
-    }
-    @media screen and (max-width: $break-md) {
-      grid-template-columns: repeat(2, 1fr);
-      h2 {
-        font-size: 20px;
-        font-weight: 500;
+    grid-auto-flow: dense;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    .box {
+      @extend .transition-all;
+      width: 6rem;
+      height: 6rem;
+      filter: grayscale(100%);
+      color: whitesmoke;
+      &.no-gray-filter {
+        @extend .no-gray-filter;
       }
-      .pool_inner-wrapper {
-        width: 80%;
-      }
-    }
-    @media screen and (max-width: $break-xs) {
-      margin: 0;
-      width: 100vw;
-      grid-template-columns: 1fr;
-      h2 {
-        font-size: 17.6px;
-        font-weight: 500;
-      }
-      .pool_inner-wrapper {
-        width: 78%;
+      &:hover {
+        @extend .no-gray-filter;
+        transform: scale(1.02);
       }
     }
   }
