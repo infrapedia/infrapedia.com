@@ -8,6 +8,8 @@
 - Blog link on navbar doesn't have to open on a new tab
 - Create section was not unlocking submit button
 - BuyDialog Transit has new field, and Fiber option should be removed on Transit buy
+- Fiber pairs needed to be displayed on subsea cables dashboard edit/create section
+- Elements names need to accept /
 
 ## Version 2.1.3
 

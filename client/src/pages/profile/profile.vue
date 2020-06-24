@@ -142,7 +142,7 @@ export default {
           trigger: 'change',
           message: "Special characters aren't allowed",
           // eslint-disable-next-line
-          pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.,0-9()´‘'’ \-]+$/
+          pattern: /^[\A-Za-zÀ-ÖØ-öø-ÿ&.,0-9()´‘'’ /\-]+$/
         }
       ],
       'user_metadata.companyname': [
