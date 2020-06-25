@@ -45,8 +45,8 @@ import { mapConfig } from '../../config/mapConfig'
 import {
   EDITOR_LOAD_DRAW,
   EDITOR_SET_FEATURES,
-  EDITOR_GET_FEATURES,
   EDITOR_FILE_CONVERTED,
+  EDITOR_GET_FEATURES_LIST,
   EDITOR_SET_FEATURES_LIST
 } from '../../events/editor'
 import { fCollectionFormat } from '../../helpers/featureCollection'
@@ -162,8 +162,8 @@ export default {
     bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
     bus.$on(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
-    bus.$on(`${EDITOR_GET_FEATURES}`, this.handleGetFeatures)
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
+    bus.$on(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
   },
   beforeDestroy() {
     if (this.scene.features.list.length) {
