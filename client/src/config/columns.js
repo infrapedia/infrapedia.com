@@ -67,11 +67,11 @@ export const cablesColumns = [
     value: 'capacityTBPS',
     showSidebar: true
   },
-  // {
-  //   label: 'Fiber Pairs',
-  //   value: 'fiberPairs',
-  //   showSidebar: true
-  // },
+  {
+    label: 'Fiber Pairs',
+    value: 'fiberPairs',
+    showSidebar: true
+  },
   {
     label: 'Lit Capacity',
     value: 'litCapacity',
