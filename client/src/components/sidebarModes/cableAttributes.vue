@@ -89,9 +89,20 @@
               :span="10"
               v-else-if="
                 info[col.value] &&
+                  col.value == 'fiberPairs' &&
+                  !info.terrestrial
+              "
+            >
+              <p class="label capitalize">{{ col.label }}</p>
+            </el-col>
+            <el-col
+              :span="10"
+              v-else-if="
+                info[col.value] &&
                   col.label != 'Latency' &&
                   col.value != 'systemLength' &&
-                  col.value != 'capacityTBPS'
+                  col.value != 'capacityTBPS' &&
+                  col.value != 'fiberPairs'
               "
             >
               <p class="label capitalize">{{ col.label }}</p>
@@ -173,11 +184,20 @@
               </el-col>
               <el-col
                 :span="12"
+                v-else-if="col.value == 'fiberPairs' && !info.terrestrial"
+              >
+                <p class="text-bold">
+                  {{ info[col.value] }}
+                </p>
+              </el-col>
+              <el-col
+                :span="12"
                 v-else-if="
                   !isArrCol(info[col.value]) &&
                     col.label != 'Latency' &&
                     col.value != 'systemLength' &&
-                    col.value != 'capacityTBPS'
+                    col.value != 'capacityTBPS' &&
+                    col.value != 'fiberPairs'
                 "
               >
                 <p class="text-bold">
