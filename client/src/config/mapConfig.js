@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon'
+
 const token = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN
 
 const cablesLabel = 'cables_label'
@@ -52,18 +54,33 @@ const facsPaintConfig = {
   'fill-extrusion-opacity': 1
 }
 
+function getDate() {
+  return new Date()
+}
+
+const activationDateTime =
+  DateTime.fromMillis(getDate().getTime())
+    .plus({
+      years: 25
+    })
+    .toMillis() / 1000
+
 const cablesPaintConfig = {
   'line-width': 1.62,
   'line-color': [
     'case',
-    ['==', ['get', 'status'], 0],
-    '#FF0000',
-    ['>', ['get', 'activationDateTime'], (new Date().getTime() / 1000) * 1000],
-    '#af6ec7',
-    ['==', ['get', 'hasoutage'], 'true'],
-    '#7288b0',
     ['==', ['get', 'haspartial'], 'true'],
     '#CC591F',
+    ['==', ['get', 'hasoutage'], 'true'],
+    '#FF0000',
+    ['==', ['get', 'category'], 'project'],
+    '#af6ec7',
+    ['==', ['get', 'category'], 'decommissioned'],
+    '#BFADA3',
+    ['==', ['get', 'active'], 0],
+    '#af6ec7',
+    ['>', ['get', 'eol'], activationDateTime],
+    '#af6ec7',
     ['==', ['get', 'terrestrial'], 'true'],
     '#7288b0',
     '#7288b0'
@@ -79,7 +96,7 @@ const facilities = 'facilities'
 // const facilitiesSinglePoints = 'facilities-single-points'
 // const facilitiesClusters = 'facilities_clusters'
 const facilitiesLabel = 'facilities_label'
-const currentEpoch = Math.round(new Date().getTime() / 1000) * 1000
+const currentEpoch = Math.round(new Date().getTime() / 1000)
 
 export const mapConfig = {
   mapToken: token,
@@ -313,11 +330,13 @@ export const mapConfig = {
     activeSubsea: [
       'all',
       ['!=', 'terrestrial', 'true'],
-      ['<', 'activationDateTime', currentEpoch]
+      ['<', 'activationDateTime', activationDateTime]
     ],
-    active: ['<', ['get', 'activationDateTime'], currentEpoch],
+    futureSubsea: ['all', ['!=', 'terrestrial', 'true'], ['>=', 'eol', 0]],
+    active: ['!=', ['get', 'active'], 0],
+    //  active: ['<=', ['get', 'status'], currentEpoch],
     all: ['has', '_id'],
     future: ['>', ['get', 'activationDateTime'], currentEpoch],
-    timemachine: ['>=', ['get', 'activationDateTime'], 0] // We change the 0 value when using the filter component inside the navbar for the sub-sea time machine
+    timemachine: ['>=', ['get', 'eol'], 0] // We change the 0 value when using the filter component inside the navbar for the sub-sea time machine
   }
 }

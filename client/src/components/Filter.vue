@@ -38,7 +38,7 @@
           <li class="flex justify-content-space-between pt10 pb10 pr4 pl4">
             <div class="flex column">
               <label for="activeonly">Active only</label>
-              <label for="futureonly" class="mt8">Future only</label>
+              <label for="futureonly" class="mt8">Future only (RFS)</label>
             </div>
             <div
               class="el-checkbox-group flex column radio"
@@ -67,7 +67,7 @@
           <el-divider class="m0" />
           <li class="p4">
             <header class="flex justify-content-space-between pb14 pr4 pl-1">
-              <label for="timemachine">Subsea time machine</label>
+              <label for="timemachine">Subsea time machine (EOL)</label>
               <el-checkbox
                 name="timemachine"
                 v-model="filters.isTimeMachineActive"
