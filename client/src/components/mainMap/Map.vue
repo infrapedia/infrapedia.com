@@ -330,12 +330,9 @@ export default {
       )
 
       // const rfs = new Date(activationDateTime * 1000)
-      // console.log(rfs, DateTime)
-      const date = DateTime.fromMillis(activationDateTime * 1000)
-        .minus({
-          years: 25
-        })
-        .toLocaleString({ year: 'numeric' })
+      const date = DateTime.fromMillis(
+        activationDateTime * 1000
+      ).toLocaleString({ year: 'numeric' })
       const cableCategoryColor =
         category == 'active' ? 'green' : category == 'project' ? 'red' : 'black'
 
@@ -970,20 +967,19 @@ export default {
      */
     async handleFilterSelection(selection) {
       let filter
-      const filters = mapConfig.filter
 
       switch (selection) {
         case -1:
-          filter = filters.all
+          filter = mapConfig.filter.all
           break
         case 0:
-          filter = filters.active
+          filter = mapConfig.filter.active
           break
         case 1:
-          filter = filters.future
+          filter = mapConfig.filter.future
           break
         case 2:
-          filter = filters.activeSubsea
+          filter = mapConfig.filter.activeSubsea
           break
         case 3:
           filter = 3
@@ -1012,23 +1008,22 @@ export default {
     async handleUpdateTimeMachine({ year, target, isActive }) {
       // The epoch is the time arbitrarily selected as a point of reference for the specification of celestial coordinates. In this case, is used for denoting the existence of future cables
       const epoch = new Date(`${year}-02-02`).getTime() / 1000
-      let filter = mapConfig.filter.timemachine
+      let filter = mapConfig.filter.futureSubsea
 
       if (target == 'checkbox') {
         if (isActive) {
-          await this.map.setFilter(mapConfig.cables, mapConfig.filter.subsea)
-
-          filter[2] = epoch
-          await this.map.setFilter(mapConfig.cables, filter)
+          filter[2][2] = epoch
+          this.map.setFilter(mapConfig.cables, filter)
+          this.map.setFilter(mapConfig.cablesLabel, filter.subsea)
         } else {
           filter = mapConfig.filter.all
-          await this.map.setFilter(mapConfig.cables, filter)
-          await this.map.setFilter(mapConfig.cablesLabel, filter)
+          this.map.setFilter(mapConfig.cables, filter)
+          this.map.setFilter(mapConfig.cablesLabel, filter)
         }
       } else if (target == 'slider') {
-        filter[2] = epoch
-        await this.map.setFilter(mapConfig.cables, filter)
-        await this.map.setFilter(mapConfig.cablesLabel, filter)
+        filter[2][2] = epoch
+        this.map.setFilter(mapConfig.cables, filter)
+        this.map.setFilter(mapConfig.cablesLabel, filter)
       }
 
       await this.$store.commit(`${CURRENT_MAP_FILTER}`, filter)

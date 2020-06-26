@@ -77,9 +77,9 @@ const cablesPaintConfig = {
     '#af6ec7',
     ['==', ['get', 'category'], 'decommissioned'],
     '#BFADA3',
-    ['==', ['get', 'status'], 0],
-    '#FF0000',
-    ['>', ['get', 'activationDateTime'], activationDateTime],
+    ['==', ['get', 'active'], 0],
+    '#af6ec7',
+    ['>', ['get', 'eol'], activationDateTime],
     '#af6ec7',
     ['==', ['get', 'terrestrial'], 'true'],
     '#7288b0',
@@ -96,7 +96,7 @@ const facilities = 'facilities'
 // const facilitiesSinglePoints = 'facilities-single-points'
 // const facilitiesClusters = 'facilities_clusters'
 const facilitiesLabel = 'facilities_label'
-// const currentEpoch = Math.round(new Date().getTime() / 1000)
+const currentEpoch = Math.round(new Date().getTime() / 1000)
 
 export const mapConfig = {
   mapToken: token,
@@ -332,10 +332,11 @@ export const mapConfig = {
       ['!=', 'terrestrial', 'true'],
       ['<', 'activationDateTime', activationDateTime]
     ],
-    active: ['!=', ['get', 'status'], 0],
+    futureSubsea: ['all', ['!=', 'terrestrial', 'true'], ['>=', 'eol', 0]],
+    active: ['!=', ['get', 'active'], 0],
     //  active: ['<=', ['get', 'status'], currentEpoch],
     all: ['has', '_id'],
-    future: ['>', ['get', 'activationDateTime'], activationDateTime],
-    timemachine: ['>=', ['get', 'activationDateTime'], 0] // We change the 0 value when using the filter component inside the navbar for the sub-sea time machine
+    future: ['>', ['get', 'activationDateTime'], currentEpoch],
+    timemachine: ['>=', ['get', 'eol'], 0] // We change the 0 value when using the filter component inside the navbar for the sub-sea time machine
   }
 }
