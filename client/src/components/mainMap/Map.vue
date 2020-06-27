@@ -111,7 +111,9 @@ import GooeyMenu from './GooeyMenu'
 import PrintButton from './PrintButton'
 import highlightCurrentSelection from './highlightCurrentSelection'
 import dataCollection from '../../mixins/dataCollection'
-import convertToYear from '../../helpers/convertToYear'
+// import convertToYear from '../../helpers/convertToYear'
+// eslint-disable-next-line
+import { DateTime } from 'luxon'
 
 export default {
   name: 'Map',
@@ -327,7 +329,10 @@ export default {
         JSON.stringify(e.features[0].properties)
       )
 
-      const rfs = new Date(activationDateTime)
+      // const rfs = new Date(activationDateTime * 1000)
+      const date = DateTime.fromMillis(
+        activationDateTime * 1000
+      ).toLocaleString({ year: 'numeric' })
       const cableCategoryColor =
         category == 'active' ? 'green' : category == 'project' ? 'red' : 'black'
 
@@ -348,9 +353,7 @@ export default {
         str += `<div class="status dark-color"> Status: <span style="color: ${cableCategoryColor}" class="category capitalize">${
           category && category !== '' ? category : ' Unknown'
         }</span></div>`
-        str += `<div class="rfs dark-color"> RFS: ${convertToYear(
-          rfs.toISOString()
-        )}</div>`
+        str += `<div class="rfs dark-color"> RFS: ${date}</div>`
         str += `<div class="details dark-color">Click for more details</div>`
       }
 
@@ -458,6 +461,7 @@ export default {
         const cables = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.cables]
         })
+
         const facilities = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.facilities]
         })
@@ -963,20 +967,19 @@ export default {
      */
     async handleFilterSelection(selection) {
       let filter
-      const filters = mapConfig.filter
 
       switch (selection) {
         case -1:
-          filter = filters.all
+          filter = mapConfig.filter.all
           break
         case 0:
-          filter = filters.active
+          filter = mapConfig.filter.active
           break
         case 1:
-          filter = filters.future
+          filter = mapConfig.filter.future
           break
         case 2:
-          filter = filters.activeSubsea
+          filter = mapConfig.filter.activeSubsea
           break
         case 3:
           filter = 3
@@ -1003,26 +1006,24 @@ export default {
      * @param isActive { Bool } - Indicates if the isActive filter is currently active or not
      */
     async handleUpdateTimeMachine({ year, target, isActive }) {
-      const { map } = this
       // The epoch is the time arbitrarily selected as a point of reference for the specification of celestial coordinates. In this case, is used for denoting the existence of future cables
-      const epoch = (new Date(`${year}-02-02`).getTime() / 1000) * 1000
-      let filter = mapConfig.filter.timemachine
+      const epoch = new Date(`${year}-02-02`).getTime() / 1000
+      let filter = mapConfig.filter.futureSubsea
 
-      if (target === 'checkbox') {
+      if (target == 'checkbox') {
         if (isActive) {
-          await map.setFilter(mapConfig.cables, mapConfig.filter.subsea)
-
-          filter[2] = epoch
-          await map.setFilter(mapConfig.cables, filter)
+          filter[2][2] = epoch
+          this.map.setFilter(mapConfig.cables, filter)
+          this.map.setFilter(mapConfig.cablesLabel, filter.subsea)
         } else {
           filter = mapConfig.filter.all
-          await map.setFilter(mapConfig.cables, filter)
-          await map.setFilter(mapConfig.cablesLabel, filter)
+          this.map.setFilter(mapConfig.cables, filter)
+          this.map.setFilter(mapConfig.cablesLabel, filter)
         }
-      } else if (target === 'slider') {
-        filter[2] = epoch
-        await map.setFilter(mapConfig.cables, filter)
-        await map.setFilter(mapConfig.cablesLabel, filter)
+      } else if (target == 'slider') {
+        filter[2][2] = epoch
+        this.map.setFilter(mapConfig.cables, filter)
+        this.map.setFilter(mapConfig.cablesLabel, filter)
       }
 
       await this.$store.commit(`${CURRENT_MAP_FILTER}`, filter)
