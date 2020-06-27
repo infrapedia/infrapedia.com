@@ -1,5 +1,5 @@
 <template>
-  <div class="main-wrapper pb20 no-overflow-x">
+  <div class="main-wrapper no-overflow-x">
     <div class="hero-wrapper relative">
       <div
         class="absolute z-index20 cubic-transition overlay-inner w-fit-full h-fit-full flex column nowrap justify-content-center align-items-center"
@@ -24,37 +24,58 @@
         </div>
       </div>
       <div class="map-wrapper cubic-transition">
-        <i-map :disabled="true" @clicked-disabled-map="askToRegister" />
+        <i-map :disabled="true" />
       </div>
     </div>
-    <div class="information-section mt20 mb20">
-      <h1 class="text-center title">
-        What is Infrapedia?
-      </h1>
-      <div
-        class="inner-wrapper mt24 flex justify-content-center column wrap align-items-center"
-      >
-        <p class="text heading">
-          Infrapedia is more than just the world’s largest crowd-sourced
-          real-time global internet infrastructure map. We are one of the most
-          versatile and useful tools you can use to discover new internet routes
-          and improve their resiliency and stability.
-        </p>
-        <p class="text sub">
-          Most importantly, we provide you with a community where you can
-          connect and request information and quotes from providers all over the
-          world easily.
-        </p>
-        <div
-          id="contactUsButtonUnderHeading"
-          class="text-center flex w-fit-full justify-content-center mt12"
-        >
-          <router-link class="el-button el-button--default" to="/contact">
-            Contact Us
-          </router-link>
+    <div class="main-wrapper_after-hero">
+      <div class="p4">
+        <div class="mt20">
+          <h2 class="title mb20 text-center diff">Our Partners</h2>
+          <div class="boxes-wrapper">
+            <div
+              class="el-card box p4"
+              :class="{ 'no-gray-filter': isMobile }"
+              v-for="(partner, i) in premium"
+              :key="i"
+            >
+              <el-image fit="contain" :src="partner.logo" />
+            </div>
+          </div>
         </div>
-        <div class="centered-wrapper relative w-fit-full mt24">
-          <div class="flex row nowrap with-icon justify-self-center">
+      </div>
+      <div class="information-section mt20 mb20">
+        <div class="flex row wrap p4">
+          <div class="inner-wrapper">
+            <h1 class="title mb8">
+              Infrastructure Atlas
+            </h1>
+            <p class="text heading">
+              Infrapedia is more than just the world’s largest crowd-sourced
+              real-time global internet infrastructure map. We are one of the
+              most versatile and useful tools you can use to discover new
+              internet routes and improve their resiliency and stability.
+            </p>
+            <p class="text sub mt4">
+              Most importantly, we provide you with a community where you can
+              connect and request information and quotes from providers all over
+              the world easily.
+            </p>
+            <router-link
+              class="fs-large el-link underline-hover mt6"
+              to="/contact"
+            >
+              Contact Us
+              <span class="fs-xsmall font-thin ml1">
+                <fa :icon="['fas', 'angle-double-right']" />
+              </span>
+            </router-link>
+          </div>
+          <div class="inner-wrapper">
+            box
+          </div>
+        </div>
+        <div class="services-inf relative  mt24">
+          <div class="services-inf_box-wrapper">
             <div
               class="inner-wrapper"
               v-for="(item, i) in texts.withIcon"
@@ -72,73 +93,76 @@
               <i class="fas fa-people-arrows"></i>
             </div>
           </div>
+          <router-link to="/services" class=" mt12 underline-hover">
+            Our Services
+            <span class="fs-xsmall font-thin ml1">
+              <fa :icon="['fas', 'angle-double-right']" />
+            </span>
+          </router-link>
         </div>
       </div>
-      <router-link
-        to="/services"
-        class="text-center w-fit-full inline-block mt12 underline-hover"
-      >
-        Our Services
-        <span class="fs-xsmall font-thin ml1">
-          <fa :icon="['fas', 'angle-double-right']" />
-        </span>
-      </router-link>
-    </div>
-    <div class="carousel-section pb20">
-      <div class="carousel-wrapper p4">
-        <el-divider></el-divider>
-        <div class="mt20">
-          <h2 class="title">Blog</h2>
-          <el-carousel
-            :interval="7000"
-            :height="blogHeight"
-            indicator-position="outside"
-          >
-            <el-carousel-item v-for="(post, i) in blogPosts" :key="i">
-              <div class="flex row nowrap justify-content-center">
-                <a :href="post.link" target="_blank">
-                  <el-card shadow="never" class="p8">
-                    <div>
-                      <small>
-                        {{ formatDate(post.modified_gmt) }}
-                      </small>
-                      <h3 class="title sm">
-                        {{ post.title.rendered }}
-                      </h3>
-                      <p v-html="post.excerpt.rendered" />
-                    </div>
-                  </el-card>
-                </a>
-              </div>
-            </el-carousel-item>
-          </el-carousel>
-        </div>
-      </div>
-      <div class="section-wrapper p4">
-        <el-divider></el-divider>
-        <div class="mt20">
-          <h2 class="title mb20">Our Partners</h2>
-          <div class="boxes-wrapper">
-            <div
-              class="el-card box p4"
-              :class="{ 'no-gray-filter': isMobile }"
-              v-for="(partner, i) in premium"
-              :key="i"
-            >
-              <el-image fit="contain" :src="partner.logo" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="section-wrapper p4">
-        <el-divider></el-divider>
-        <h2 class="title mb20">Trusted by</h2>
+      <div class="p4 ">
+        <h2 class="title mb20 text-center diff">Trusted by</h2>
         <div class="boxes-wrapper">
-          <div class="box p4 el-card" v-for="(partner, i) in 12" :key="i">
+          <div class="box p2 el-card" v-for="(partner, i) in 12" :key="i">
             <!-- <el-image fit="contain" lazy :src="partner" /> -->
             {{ partner }}
           </div>
         </div>
+      </div>
+      <div class="pb20">
+        <!-- <div class="carousel-wrapper p4">
+          <el-divider></el-divider>
+          <div class="mt20">
+            <h2 class="title">Blog</h2>
+            <el-carousel
+              :interval="7000"
+              :height="blogHeight"
+              indicator-position="outside"
+            >
+              <el-carousel-item v-for="(post, i) in blogPosts" :key="i">
+                <div class="flex row nowrap justify-content-center">
+                  <a :href="post.link" target="_blank">
+                    <el-card shadow="never" class="p8">
+                      <div>
+                        <small>
+                          {{ formatDate(post.modified_gmt) }}
+                        </small>
+                        <h3 class="title sm">
+                          {{ post.title.rendered }}
+                        </h3>
+                        <p v-html="post.excerpt.rendered" />
+                      </div>
+                    </el-card>
+                  </a>
+                </div>
+              </el-carousel-item>
+            </el-carousel>
+          </div>
+        </div> -->
+      </div>
+      <div class="bottom-banner el-card flex row nowrap align-items-center">
+        <div class="p4">
+          <h2 class="font-medium">
+            Ready to get started?
+          </h2>
+          <h2 class="font-thin title diff">
+            Create an account or talk to our experts.
+          </h2>
+          <div class="call-to-action">
+            <el-button plain round @click="askToRegister" type="info">
+              Start mapping
+            </el-button>
+            <router-link to="/contact" class="el-button is-round">
+              Contact us
+            </router-link>
+          </div>
+        </div>
+        <el-image
+          class="w-fit-full h120"
+          fit="cover"
+          src="https://i.dlpng.com/static/png/5851670-vector-library-library-crack-texture-png-for-free-download-crack-texture-png-820_505_preview.png"
+        />
       </div>
     </div>
   </div>

@@ -2,6 +2,7 @@
 
 .logo-title {
   margin-top: -0.05rem;
+  margin-left: -0.5rem;
 }
 
 .logo-img {
@@ -9,8 +10,19 @@
   width: 120px;
 }
 
+.header {
+  width: 75vw;
+  margin: 0 auto;
+}
+
 .wrapper-right {
   min-width: 28rem;
+  a {
+    margin-right: 1rem;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 }
 
 @media screen and (max-width: $break-md) {

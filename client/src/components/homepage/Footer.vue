@@ -1,6 +1,6 @@
 <template>
-  <el-footer height="100%" class="footer p0 pt20 pb20">
-    <div class="inner-wrapper">
+  <el-footer height="100%" class="footer pt20 pb20">
+    <div class="inner-wrapper p4">
       <div class="logo-wrapper">
         <h1 class="logo-title inline-block">
           <router-link to="/">
@@ -21,98 +21,86 @@
       </div>
       <!-- <el-divider class="transparent w80 hidden-md-and-down"></el-divider> -->
       <div class="links-wrapper">
-        <h3 class="title-link m0 mb8">Explore</h3>
-        <ul role="group">
-          <li class="list-item mb6" v-for="(link, i) in exploreLinks" :key="i">
-            <a
-              v-if="link.tab"
-              :href="link.url"
-              target="_blank"
-              class="underline-hover color-inherit"
+        <div class="link-list">
+          <h3 class="title-link m0 mb8">Explore</h3>
+          <ul role="group">
+            <li
+              class="list-item mb6"
+              v-for="(link, i) in exploreLinks"
+              :key="i"
             >
-              {{ link.label }}
-            </a>
-            <template v-else>
-              <router-link
-                v-if="i === 0"
-                :key="i"
-                :to="checkIfLoggedIn"
-                class="underline-hover color-inherit"
-              >
-                {{ link.label }}
-              </router-link>
-              <router-link
-                v-else
-                :key="i"
-                :to="link.url"
-                class="underline-hover color-inherit"
-              >
-                {{ link.label }}
-              </router-link>
-            </template>
-          </li>
-        </ul>
-      </div>
-      <div class="links-wrapper">
-        <h3 class="title-link m0 mb8">Company</h3>
-        <ul role="group">
-          <li
-            class="list-item mb6"
-            v-for="(link, i) in infoMenuLinks.info"
-            :key="i"
-          >
-            <template v-if="link.footer">
               <a
-                v-if="link.openTab"
+                v-if="link.tab"
                 :href="link.url"
                 target="_blank"
                 class="underline-hover color-inherit"
               >
                 {{ link.label }}
               </a>
+              <template v-else>
+                <router-link
+                  v-if="i === 0"
+                  :key="i"
+                  :to="checkIfLoggedIn"
+                  class="underline-hover color-inherit"
+                >
+                  {{ link.label }}
+                </router-link>
+                <router-link
+                  v-else
+                  :key="i"
+                  :to="link.url"
+                  class="underline-hover color-inherit"
+                >
+                  {{ link.label }}
+                </router-link>
+              </template>
+            </li>
+          </ul>
+        </div>
+        <div class="link-list">
+          <h3 class="title-link m0 mb8">Company</h3>
+          <ul role="group">
+            <li
+              class="list-item mb6"
+              v-for="(link, i) in infoMenuLinks.info"
+              :key="i"
+            >
+              <template v-if="link.footer">
+                <a
+                  v-if="link.openTab"
+                  :href="link.url"
+                  target="_blank"
+                  class="underline-hover color-inherit"
+                >
+                  {{ link.label }}
+                </a>
+                <router-link
+                  v-else
+                  :to="link.url"
+                  class="underline-hover color-inherit"
+                  v-text="link.label"
+                />
+              </template>
+            </li>
+            <li class="list-item mb6">
               <router-link
-                v-else
-                :to="link.url"
                 class="underline-hover color-inherit"
-                v-text="link.label"
-              />
-            </template>
-          </li>
-          <li class="list-item mb6">
-            <router-link
-              class="underline-hover color-inherit"
-              to="/terms-and-conditions"
-            >
-              Terms & Conditions
-            </router-link>
-          </li>
-          <li class="list-item mb6">
-            <router-link
-              class="underline-hover  color-inherit"
-              to="/privacy-policy"
-            >
-              Privacy Policy
-            </router-link>
-          </li>
-        </ul>
-      </div>
-      <div class="links-wrapper">
-        <h3 class="title-link m0 mb8">Social</h3>
-        <ul role="group">
-          <li
-            class="list-item mb6"
-            v-for="(link, i) in infoMenuLinks.social"
-            :key="i"
-          >
-            <a
-              :href="link.url"
-              target="_blank"
-              class="underline-hover color-inherit"
-            >
-              {{ link.label }}
-            </a>
-          </li>
-        </ul>
+                to="/terms-and-conditions"
+              >
+                Terms & Conditions
+              </router-link>
+            </li>
+            <li class="list-item mb6">
+              <router-link
+                class="underline-hover  color-inherit"
+                to="/privacy-policy"
+              >
+                Privacy Policy
+              </router-link>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </el-footer>

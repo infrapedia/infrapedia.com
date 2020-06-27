@@ -4,7 +4,7 @@
 .hero-wrapper {
   border-top: 1px solid $grey-ligthen-3;
   .inner-wrapper-text {
-    width: 30rem;
+    width: 18rem;
     @media screen and (max-width: $break-sm) {
       width: 24rem;
     }
@@ -24,7 +24,6 @@
 
 .visible-from-start {
   opacity: 1 !important;
-  cursor: pointer;
   background-color: rgba($color: #0000, $alpha: 0.8);
 }
 
@@ -35,21 +34,17 @@
   height: 100%;
 }
 
-#contactUsButtonUnderHeading {
-  margin-left: -2rem;
-  @media screen and (max-width: $break-xs) {
-    margin-left: 0;
-  }
+.main-wrapper_after-hero {
+  width: 75vw;
+  margin: 0 auto;
 }
 
 .title {
   line-height: 1.2;
   font-weight: auto;
-  color: rgb(15, 50, 86);
-  text-align: center;
+  color: #485160;
   &.md {
     text-align: left;
-    color: $dark-charcoal;
     text-transform: capitalize;
     @media screen and (max-width: $break-xs) {
       font-size: 24px;
@@ -57,11 +52,13 @@
   }
   &.sm {
     text-align: left;
-    color: $dark-charcoal;
     text-transform: capitalize;
     @media screen and (max-width: $break-xs) {
       font-size: 18px;
     }
+  }
+  &.diff {
+    color: #bdc4ca;
   }
   &.white {
     line-height: 1.2;
@@ -77,94 +74,74 @@
   }
 }
 
-.information-section {
-  .inner-wrapper {
-    .text {
-      margin: 0;
-      font-size: 1rem;
-      line-height: 1.5;
-      color: $light-charcoal;
-      @extend .dont-break-out;
-      &.heading {
-        max-width: 60.4rem;
-        min-width: 24rem;
-        @media screen and (max-width: $break-md) {
-          max-width: 41.4rem;
-          min-width: 18rem;
-        }
-        @media screen and (max-width: $break-xs) {
-          max-width: unset;
-          min-width: unset;
-          padding: 2rem;
-        }
-      }
-      &.sub {
-        max-width: 60.4rem;
-        margin-top: 1rem;
-        @media screen and (max-width: $break-md) {
-          max-width: 41.4rem;
-        }
-
-        @media screen and (max-width: $break-xs) {
-          margin-top: -2rem;
-          padding: 2rem;
-        }
-      }
-    }
-    .centered-wrapper {
-      display: grid;
-      padding: 0 2rem;
-      height: fit-content;
-      background-color: rgba(233, 246, 255, 1);
-      @media screen and (max-width: $break-xs) {
-        padding: 0;
-      }
-    }
-    .with-icon {
-      width: 60%;
-      .inner-wrapper {
-        width: 24rem;
-        .text {
-          font-size: 16px;
-          line-height: 1.4;
-        }
-        .xl-icon {
-          color: $light-charcoal;
-          background-color: $white-full;
-        }
-      }
-      @media screen and (max-width: $break-md) {
-        width: 94%;
-        padding: 1rem;
-        justify-self: center;
-      }
-      @media screen and (max-width: 1056px) {
-        width: 87%;
-        justify-self: start;
-      }
-      @media screen and (max-width: 972px) {
-        width: 78%;
-        justify-self: start;
-      }
-      @media screen and (max-width: $break-sm) {
-        flex-wrap: wrap;
-        .inner-wrapper {
-          width: 100%;
-          padding: 1rem;
-        }
-      }
-    }
-
-    @media screen and (max-width: $break-xs) {
-      margin-top: 2rem;
-    }
+.services-inf {
+  display: grid;
+  padding: 0 2rem;
+  height: fit-content;
+  @media screen and (max-width: $break-xs) {
+    padding: 0;
   }
 }
 
-.carousel-section {
-  .section-wrapper {
-    margin: 0 auto;
-    width: 80vw;
+.text {
+  margin-bottom: 0;
+  max-width: 72%;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.8em;
+  color: #8a989e;
+  @extend .dont-break-out;
+}
+
+.information-section {
+  display: flex;
+  flex-flow: row wrap;
+  .flex .inner-wrapper {
+    &:first-child {
+      width: 61%;
+    }
+    &:nth-child(2) {
+      width: 38%;
+      border: 1px solid #ccc;
+    }
+  }
+  // .with-icon {
+  //   width: 60%;
+  //   .inner-wrapper {
+  //     width: 24rem;
+  //     .text {
+  //       font-size: 16px;
+  //       line-height: 1.4;
+  //     }
+  //     .xl-icon {
+  //       color: $light-charcoal;
+  //       background-color: $white-full;
+  //     }
+  //   }
+  //   @media screen and (max-width: $break-md) {
+  //     width: 94%;
+  //     padding: 1rem;
+  //     justify-self: center;
+  //   }
+  //   @media screen and (max-width: 1056px) {
+  //     width: 87%;
+  //     justify-self: start;
+  //   }
+  //   @media screen and (max-width: 972px) {
+  //     width: 78%;
+  //     justify-self: start;
+  //   }
+  //   @media screen and (max-width: $break-sm) {
+  //     flex-wrap: wrap;
+  //     .inner-wrapper {
+  //       width: 100%;
+  //       padding: 1rem;
+  //     }
+  //   }
+  // }
+
+  @media screen and (max-width: $break-xs) {
+    margin-top: 2rem;
   }
 }
 
@@ -172,26 +149,34 @@
   filter: grayscale(0);
 }
 
-.section-wrapper {
-  .boxes-wrapper {
-    display: grid;
-    width: 100%;
-    gap: 2rem;
-    grid-auto-flow: dense;
-    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
-    .box {
-      @extend .transition-all;
-      width: 6rem;
-      height: 6rem;
-      filter: grayscale(100%);
-      color: whitesmoke;
-      &.no-gray-filter {
-        @extend .no-gray-filter;
-      }
-      &:hover {
-        @extend .no-gray-filter;
-        transform: scale(1.02);
-      }
+.boxes-wrapper {
+  display: grid;
+  width: 100%;
+  gap: 1.2rem;
+  grid-auto-flow: dense;
+  grid-template-columns: repeat(auto-fit, minmax(3.6rem, 1fr));
+  .box {
+    @extend .transition-all;
+    width: 4rem;
+    height: 4rem;
+    filter: grayscale(100%);
+    color: whitesmoke;
+    &.no-gray-filter {
+      @extend .no-gray-filter;
+    }
+    &:hover {
+      @extend .no-gray-filter;
+      transform: scale(1.02);
+    }
+  }
+}
+
+.bottom-banner {
+  text-align: center;
+  margin-bottom: 2rem;
+  .call-to-action {
+    button.el-button {
+      margin-right: 0.4rem;
     }
   }
 }
