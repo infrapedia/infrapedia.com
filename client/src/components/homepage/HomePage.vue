@@ -8,7 +8,7 @@
         <div class="inner-wrapper-text flex justify-content-center row wrap">
           <h1 class="title white mb12">
             Create your free account today and begin to explore.
-            <small class="block">
+            <small class="block text-center">
               Take advantage of all the features Infrapedia has for you.
             </small>
           </h1>
@@ -26,9 +26,16 @@
       <div class="map-wrapper cubic-transition">
         <i-map :disabled="true" />
       </div>
+      <a
+        size="small"
+        class="transparent no-border vertical-align animated slow bounce four delay-3s"
+        id="moreBelowBtn"
+      >
+        <fa :icon="['fas', 'angle-down']" />
+      </a>
     </div>
     <div class="main-wrapper_after-hero">
-      <div class="p4">
+      <div class="p4" id="partnersSection">
         <div class="mt20">
           <h2 class="title mb20 text-center diff">Our Partners</h2>
           <div class="boxes-wrapper">
@@ -43,10 +50,10 @@
           </div>
         </div>
       </div>
-      <div class="information-section mt20 mb20">
-        <div class="flex row wrap p4">
+      <div class="information-section mt20" id="servicesSection">
+        <div class="description flex row wrap p4">
           <div class="inner-wrapper">
-            <h1 class="title mb8">
+            <h1 class="title mb8 mt4">
               Infrastructure Atlas
             </h1>
             <p class="text heading">
@@ -71,37 +78,39 @@
             </router-link>
           </div>
           <div class="inner-wrapper">
-            box
+            <el-image
+              src="https://cdn1.infrapedia.com/assets/img/footer.png"
+              fit="cover"
+              class="h80"
+            />
           </div>
         </div>
-        <div class="services-inf relative  mt24">
-          <div class="services-inf_box-wrapper">
+        <div class="p4 services-wrapper">
+          <h2 class="title md w80 mt20 mb8">
+            Our Services
+          </h2>
+          <div class="boxes-wrapper row wrap justify-content-space-between">
             <div
-              class="inner-wrapper"
+              class="box el-card p4"
               v-for="(item, i) in texts.withIcon"
               :key="i"
             >
-              <h2 class="title md">
-                <span
-                  class="xl-icon mr4 bottom-shadow circle p4 vertical-align"
-                >
-                  <fa :icon="item.icon" />
-                </span>
+              <h3 class="title sm">
                 {{ item.title }}
-              </h2>
+              </h3>
               <p class="text" v-text="item.text" />
               <i class="fas fa-people-arrows"></i>
             </div>
           </div>
-          <router-link to="/services" class=" mt12 underline-hover">
+          <!-- <router-link to="/services" class=" mt12 underline-hover">
             Our Services
             <span class="fs-xsmall font-thin ml1">
               <fa :icon="['fas', 'angle-double-right']" />
             </span>
-          </router-link>
+          </router-link> -->
         </div>
       </div>
-      <div class="p4 ">
+      <div class="p4 mb20" id="trustedBySection">
         <h2 class="title mb20 text-center diff">Trusted by</h2>
         <div class="boxes-wrapper">
           <div class="box p2 el-card" v-for="(partner, i) in 12" :key="i">
@@ -110,7 +119,7 @@
           </div>
         </div>
       </div>
-      <div class="pb20">
+      <div class="p0" id="blogSection">
         <!-- <div class="carousel-wrapper p4">
           <el-divider></el-divider>
           <div class="mt20">
@@ -141,7 +150,9 @@
           </div>
         </div> -->
       </div>
-      <div class="bottom-banner el-card flex row nowrap align-items-center">
+      <div
+        class="bottom-banner el-card flex row nowrap align-items-center mb20"
+      >
         <div class="p4">
           <h2 class="font-medium">
             Ready to get started?
@@ -151,7 +162,7 @@
           </h2>
           <div class="call-to-action">
             <el-button plain round @click="askToRegister" type="info">
-              Start mapping
+              Join now
             </el-button>
             <router-link to="/contact" class="el-button is-round">
               Contact us
@@ -189,22 +200,28 @@ export default {
       return {
         withIcon: [
           {
-            title: 'Versatile',
-            icon: ['fas', 'people-arrows'],
+            title: 'Data Analysis',
             text:
-              'This is an extremely useful feature, especially during times when attending conferences and in-person meetings is a challenge.'
+              'Access our team of experts and gain deep insight into our infrastructure database.'
           },
           {
-            title: 'Discover',
-            icon: ['fas', 'globe-americas'],
-            text:
-              'We bring more visibility to all routes including submarine and terrestrial networks in detail, plus other critical structures, including data centers.'
+            title: 'Custom Maps & GIS Engineering',
+            text: 'GIS and Custom Map development.'
           },
           {
-            title: 'Connect',
-            icon: ['fas', 'headset'],
+            title: 'Software Development',
             text:
-              'The technical details we provide will help your team build more resilient networks. Our team is a direct funnel to connect you with sales teams to acquire capacity without commissions.'
+              'Our skilled engineers work with you to develop the software you need.'
+          },
+          {
+            title: 'Marketing & Communications',
+            text:
+              'Get a team of experts be your right hand with branding and marketing.'
+          },
+          {
+            title: 'Infrastructure Procurement',
+            text:
+              'Connect with the provider you need and get quotes directly from them.'
           }
         ]
       }

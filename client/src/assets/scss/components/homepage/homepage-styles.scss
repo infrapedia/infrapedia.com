@@ -1,44 +1,6 @@
 @import '../../base/variables';
 @import '../../helpers/atomic-classes';
 
-.hero-wrapper {
-  border-top: 1px solid $grey-ligthen-3;
-  .inner-wrapper-text {
-    width: 18rem;
-    @media screen and (max-width: $break-sm) {
-      width: 24rem;
-    }
-    @media screen and (max-width: $break-xs) {
-      width: 18rem;
-    }
-  }
-  &:hover {
-    .map-wrapper {
-      filter: blur(2px);
-    }
-    .overlay-inner {
-      @extend .visible-from-start;
-    }
-  }
-}
-
-.visible-from-start {
-  opacity: 1 !important;
-  background-color: rgba($color: #0000, $alpha: 0.8);
-}
-
-.overlay-inner {
-  top: 0;
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.main-wrapper_after-hero {
-  width: 75vw;
-  margin: 0 auto;
-}
-
 .title {
   line-height: 1.2;
   font-weight: auto;
@@ -73,16 +35,6 @@
     font-size: 20px;
   }
 }
-
-.services-inf {
-  display: grid;
-  padding: 0 2rem;
-  height: fit-content;
-  @media screen and (max-width: $break-xs) {
-    padding: 0;
-  }
-}
-
 .text {
   margin-bottom: 0;
   max-width: 72%;
@@ -92,73 +44,94 @@
   color: #8a989e;
   @extend .dont-break-out;
 }
+.no-gray-filter {
+  filter: grayscale(0);
+}
+
+.hero-wrapper {
+  border-top: 1px solid $grey-ligthen-3;
+  .inner-wrapper-text {
+    width: 40vw;
+    @media screen and (max-width: $break-xs) {
+      width: 67vw;
+      text-align: center;
+    }
+  }
+  &:hover {
+    .map-wrapper {
+      filter: blur(2px);
+    }
+    .overlay-inner {
+      @extend .visible-from-start;
+    }
+  }
+}
+
+#moreBelowBtn {
+  position: absolute;
+  bottom: 4rem;
+  left: 48vw;
+  width: 3rem;
+  height: 3rem;
+  font-size: 40px;
+  z-index: 2000;
+  cursor: pointer;
+  transition: all 320 ease-in-out;
+  &:hover {
+    transform: translateY(1.2rem);
+  }
+}
+
+.visible-from-start {
+  opacity: 1 !important;
+  background-color: rgba($color: #0000, $alpha: 0.8);
+}
+
+.overlay-inner {
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.main-wrapper_after-hero {
+  width: 75vw;
+  margin: 0 auto;
+}
 
 .information-section {
   display: flex;
   flex-flow: row wrap;
-  .flex .inner-wrapper {
+  .description .inner-wrapper {
     &:first-child {
-      width: 61%;
+      width: 61.4%;
     }
     &:nth-child(2) {
       width: 38%;
-      border: 1px solid #ccc;
+      height: 20rem;
+      box-shadow: 2px 2px 12px 2px #ccc;
+      transform: perspective(720px) rotateX(0deg) rotateY(2deg);
     }
   }
-  // .with-icon {
-  //   width: 60%;
-  //   .inner-wrapper {
-  //     width: 24rem;
-  //     .text {
-  //       font-size: 16px;
-  //       line-height: 1.4;
-  //     }
-  //     .xl-icon {
-  //       color: $light-charcoal;
-  //       background-color: $white-full;
-  //     }
-  //   }
-  //   @media screen and (max-width: $break-md) {
-  //     width: 94%;
-  //     padding: 1rem;
-  //     justify-self: center;
-  //   }
-  //   @media screen and (max-width: 1056px) {
-  //     width: 87%;
-  //     justify-self: start;
-  //   }
-  //   @media screen and (max-width: 972px) {
-  //     width: 78%;
-  //     justify-self: start;
-  //   }
-  //   @media screen and (max-width: $break-sm) {
-  //     flex-wrap: wrap;
-  //     .inner-wrapper {
-  //       width: 100%;
-  //       padding: 1rem;
-  //     }
-  //   }
-  // }
 
   @media screen and (max-width: $break-xs) {
     margin-top: 2rem;
   }
 }
 
-.no-gray-filter {
-  filter: grayscale(0);
-}
-
-.boxes-wrapper {
+#trustedBySection .boxes-wrapper,
+#partnersSection .boxes-wrapper,
+#blogSection .boxes-wrapper {
   display: grid;
   width: 100%;
-  gap: 1.2rem;
+  gap: 0.4rem;
+  margin-bottom: 2rem;
   grid-auto-flow: dense;
-  grid-template-columns: repeat(auto-fit, minmax(3.6rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(7.8rem, 1fr));
   .box {
     @extend .transition-all;
-    width: 4rem;
-    height: 4rem;
+    width: 5.2rem;
+    height: 5.2rem;
     filter: grayscale(100%);
     color: whitesmoke;
     &.no-gray-filter {
@@ -171,9 +144,25 @@
   }
 }
 
+.services-wrapper {
+  .boxes-wrapper {
+    display: grid;
+    width: 100%;
+    gap: 0.4rem;
+    margin-bottom: 2rem;
+    grid-auto-flow: dense;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    .box {
+      width: 12re;
+    }
+  }
+  @media screen and (max-width: $break-xs) {
+    padding: 0;
+  }
+}
+
 .bottom-banner {
   text-align: center;
-  margin-bottom: 2rem;
   .call-to-action {
     button.el-button {
       margin-right: 0.4rem;

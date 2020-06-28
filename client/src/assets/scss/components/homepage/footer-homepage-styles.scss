@@ -2,7 +2,8 @@
 @import '../../helpers/atomic-classes';
 
 .footer {
-  background-color: $dark-blue;
+  background: linear-gradient(20deg, $dark-blue 0%, #1b4e9b 100%);
+  // background: #1b4e9b;
   color: $white-partial;
 }
 
@@ -23,24 +24,55 @@
 }
 
 .links-wrapper {
-  display: flex;
   width: 30vw;
-  justify-content: flex-end;
-  align-items: flex-end;
-  flex-flow: row wrap;
+  .inner {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+  }
+  .social-links {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+    margin-right: 0.5rem;
+
+    a {
+      margin-right: 1.2rem;
+      @extend .transition-all;
+      &:last-child {
+        margin-right: 0;
+      }
+      &:hover {
+        color: darken(#6ebfff, 8%);
+      }
+    }
+  }
+  @media screen and (max-width: $break-sm) {
+    width: 35vw;
+    .social-links {
+      justify-content: flex-start;
+    }
+  }
 }
 
 .link-list {
   max-width: 30%;
+  text-align: right;
+  margin-right: 0.5rem;
   .title-link {
     margin-top: 5px;
     font-size: 16px;
     font-weight: 500;
     line-height: 1.8;
     color: #6ebfff;
+    text-align: inherit;
   }
   .list-item {
     font-size: 14px;
+    text-align: inherit;
+  }
+  @media screen and (max-width: $break-sm) {
+    text-align: left;
   }
 }
 
