@@ -13,7 +13,7 @@
       </header>
       <el-card class="form-wrapper p8 round">
         <header class="mb4">
-          <h2 class="title sm">
+          <h2 class="title md">
             Send us a Message
           </h2>
         </header>
@@ -79,12 +79,12 @@
         </el-form>
         <footer>
           <el-divider></el-divider>
-          <p class="text sm">
+          <p class="text">
             If you’re enjoying our blog,
             <el-button
               type="text"
               @click="toggleNewsletterDialog"
-              class="cursor-pointer underline-hover"
+              class="cursor-pointer fs-regular underline-hover"
               >subscribe</el-button
             >
             to our Newsletter and never miss a thing.

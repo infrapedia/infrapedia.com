@@ -26,13 +26,13 @@
       <div class="map-wrapper cubic-transition">
         <i-map :disabled="true" />
       </div>
-      <a
+      <!-- <a
         size="small"
         class="transparent no-border vertical-align animated slow bounce four delay-3s"
         id="moreBelowBtn"
       >
         <fa :icon="['fas', 'angle-down']" />
-      </a>
+      </a> -->
     </div>
     <div class="main-wrapper_after-hero">
       <div class="p4" id="partnersSection">
@@ -77,9 +77,9 @@
               </span>
             </router-link>
           </div>
-          <div class="inner-wrapper">
+          <div class="inner-wrapper hidden-sm-and-down">
             <el-image
-              src="https://cdn1.infrapedia.com/assets/img/footer.png"
+              src="https://cdn1.infrapedia.com/assets/img/description-top.png"
               fit="cover"
               class="h80"
             />
@@ -110,7 +110,7 @@
           </router-link> -->
         </div>
       </div>
-      <div class="p4 mb20" id="trustedBySection">
+      <div class="p4 mb8" id="trustedBySection">
         <h2 class="title mb20 text-center diff">Trusted by</h2>
         <div class="boxes-wrapper">
           <div class="box p2 el-card" v-for="(partner, i) in 12" :key="i">
@@ -170,9 +170,9 @@
           </div>
         </div>
         <el-image
-          class="w-fit-full h120"
+          class="w-fit-full h120 hidden-sm-and-down banner-image"
           fit="cover"
-          src="https://i.dlpng.com/static/png/5851670-vector-library-library-crack-texture-png-for-free-download-crack-texture-png-820_505_preview.png"
+          src="https://cdn1.infrapedia.com/assets/img/call-to-action.jpg"
         />
       </div>
     </div>

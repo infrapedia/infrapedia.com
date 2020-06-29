@@ -22,6 +22,9 @@
   &.diff {
     color: #bdc4ca;
   }
+  &.shadow {
+    text-shadow: 1px 0 0 rgb(49, 49, 49);
+  }
   &.white {
     line-height: 1.2;
     color: $white-full;
@@ -43,6 +46,9 @@
   line-height: 1.8em;
   color: #8a989e;
   @extend .dont-break-out;
+  @media screen and (max-width: $break-xs) {
+    max-width: 100%;
+  }
 }
 .no-gray-filter {
   filter: grayscale(0);
@@ -105,12 +111,22 @@
   .description .inner-wrapper {
     &:first-child {
       width: 61.4%;
+      @media screen and (max-width: $break-md) {
+        // width: 100%;
+        shape-outside: url('https://cdn1.infrapedia.com/assets/img/footer.png');
+      }
+      @media screen and (max-width: $break-sm) {
+        width: 100%;
+      }
     }
     &:nth-child(2) {
       width: 38%;
       height: 20rem;
       box-shadow: 2px 2px 12px 2px #ccc;
       transform: perspective(720px) rotateX(0deg) rotateY(2deg);
+      @media screen and (max-width: $break-md) {
+        margin-top: 5.2rem;
+      }
     }
   }
 
@@ -142,9 +158,17 @@
       transform: scale(1.02);
     }
   }
+  @media screen and (max-width: $break-xs) {
+    .box {
+      width: 3.2rem;
+      height: 3.2rem;
+    }
+    grid-template-columns: repeat(auto-fit, minmax(5.2rem, 1fr));
+  }
 }
 
 .services-wrapper {
+  width: 60vw;
   .boxes-wrapper {
     display: grid;
     width: 100%;
@@ -153,19 +177,28 @@
     grid-auto-flow: dense;
     grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
     .box {
-      width: 12re;
+      width: 12rem;
     }
   }
   @media screen and (max-width: $break-xs) {
     padding: 0;
+    width: 80vw;
   }
 }
 
 .bottom-banner {
   text-align: center;
+  @media screen and (max-width: $break-md) {
+    div.p4 {
+      width: 100%;
+    }
+  }
   .call-to-action {
     button.el-button {
       margin-right: 0.4rem;
     }
+  }
+  .banner-image {
+    filter: grayscale(10%) saturate(60%) invert(22%);
   }
 }

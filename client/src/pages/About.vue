@@ -1,6 +1,8 @@
 <template>
-  <div class="flex column wrap justify-content-center no-overflow-x">
-    <div class="banner-wrapper">
+  <div
+    class="main-wrapper flex column wrap justify-content-center no-overflow-x"
+  >
+    <div class="banner-wrapper mb8">
       <el-image
         lazy
         fit="cover"
@@ -10,15 +12,20 @@
     </div>
     <div class="gallery-wrapper">
       <header class="w-fit-full text-center">
-        <h2 class="title">
+        <h1 class="title mb8">
           About us
-        </h2>
+        </h1>
       </header>
       <p class="content">
-        Infrapedia is your team for the world’s largest internet infrastructure
-        map access, plus services and data to help you improve your connectivity
-        and engage directly with a global network of providers. We are the
-        community's go-to provider for data, maps, and services.
+        Infrapedia is a crowd-sourced near real-time map of the global internet
+        infrastructure detailing the world’s submarine and terrestrials
+        networks. You can add networks to the map and update listings with more
+        accurate information, track outages and explore possible areas of
+        expansion. We're a community that seeks to give engineers an operational
+        global view of the internet infrastructure. We connect network
+        procurement professionals directly with infrastructure owners. We have
+        more than 3,500 datacenters, 15,000 networks, and hundreds of submarine
+        and terrestrial network providers.
       </p>
 
       <div class="team-wrapper">
@@ -35,7 +42,7 @@
                 {{ p.name }}
               </strong>
               <br />
-              <p>{{ p.position }}</p>
+              <p class="title sm diff">{{ p.position }}</p>
             </div>
           </div>
         </div>
