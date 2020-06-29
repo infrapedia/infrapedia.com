@@ -177,6 +177,26 @@ export const mapConfig = {
     ],
     layers: [
       {
+        id: facilities,
+        type: 'fill-extrusion',
+        source: facilities,
+        paint: facsPaintConfig
+      },
+      {
+        id: ixps,
+        type: 'circle',
+        source: ixps,
+        minzoom: 15,
+        paint: ixpsPaintConfig
+      },
+      {
+        id: cls,
+        type: 'circle',
+        source: cls,
+        minzoom: 3.4,
+        paint: clsPaintConfig
+      },
+      {
         id: cables,
         source: cables,
         'source-layer': cables,
@@ -202,12 +222,6 @@ export const mapConfig = {
         paint: {
           'text-color': '#485E69'
         }
-      },
-      {
-        id: facilities,
-        type: 'fill-extrusion',
-        source: facilities,
-        paint: facsPaintConfig
       },
       {
         id: facilitiesLabel,
@@ -276,20 +290,6 @@ export const mapConfig = {
           'circle-color': '#2196f3',
           'circle-radius': 10
         }
-      },
-      {
-        id: ixps,
-        type: 'circle',
-        source: ixps,
-        minzoom: 15,
-        paint: ixpsPaintConfig
-      },
-      {
-        id: cls,
-        type: 'circle',
-        source: cls,
-        minzoom: 3.4,
-        paint: clsPaintConfig
       },
       {
         id: clusters,

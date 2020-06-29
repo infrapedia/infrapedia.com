@@ -128,46 +128,52 @@
           />
         </el-form-item>
         <el-form-item label="Lit Capacity" prop="litCapacity">
-          <div class="inline-block">
-            <div
-              v-for="(field, i) in form.litCapacity"
-              :key="i"
-              class="relative mt4"
-            >
-              <div class="capacity-field p4 el-card shadow--never">
-                <el-date-picker
-                  size="small"
-                  class="date-picker mr1"
-                  v-model="field.year"
-                  type="year"
-                  placeholder
-                />
-                <el-input-number
-                  size="small"
-                  :min="0"
-                  controls-position="right"
-                  v-model="field.cap"
-                />
+          <el-button
+            class="inline-block"
+            size="small"
+            @click="addLitCapacityField"
+          >
+            Add lit capacity
+          </el-button>
+          <el-collapse v-model="collapseItem" class="mt1">
+            <el-collapse-item :name="1">
+              <div class="inline-block">
+                <transition-group name="fade" mode="in-out" appear tag="div">
+                  <div
+                    v-for="(field, i) in form.litCapacity"
+                    :key="i + 'field'"
+                    class="relative mt12"
+                  >
+                    <div class="capacity-field p4 el-card shadow--never">
+                      <el-date-picker
+                        size="small"
+                        class="date-picker mr1"
+                        v-model="field.year"
+                        type="year"
+                        placeholder
+                      />
+                      <el-input-number
+                        size="small"
+                        :min="0"
+                        controls-position="right"
+                        v-model="field.cap"
+                      />
+                    </div>
+                    <span
+                      class="absolute z-index2 circle remove transition-all vertical-align"
+                    >
+                      <small
+                        class="underline-hover"
+                        @click="removeLitCapacityField(i)"
+                      >
+                        Remove
+                      </small>
+                    </span>
+                  </div>
+                </transition-group>
               </div>
-              <span
-                class="absolute z-index2 circle remove transition-all vertical-align"
-              >
-                <small
-                  class="underline-hover"
-                  @click="removeLitCapacityField(i)"
-                >
-                  Remove
-                </small>
-              </span>
-            </div>
-            <el-button
-              class="inline-block"
-              size="small"
-              @click="addLitCapacityField"
-            >
-              Add lit capacity
-            </el-button>
-          </div>
+            </el-collapse-item>
+          </el-collapse>
         </el-form-item>
       </template>
       <template v-if="creationID == 'subsea'">
@@ -285,6 +291,7 @@ export default {
   },
   data: () => ({
     tag: '',
+    collapseItem: [],
     isOwnersSelectEmpty: false,
     isCLSSelectEmpty: false,
     currentYear: new Date(),
@@ -498,12 +505,16 @@ export default {
     },
     removeLitCapacityField(i) {
       this.form.litCapacity.splice(i, 1)
+      if (this.form.litCapacity.length <= 0) {
+        this.collapseItem = []
+      }
     },
     addLitCapacityField() {
       this.form.litCapacity.push({
         year: this.currentYear,
         cap: 0
       })
+      this.collapseItem = [1]
     },
     handleCLSSelectionChange(data) {
       this.form.cls = data

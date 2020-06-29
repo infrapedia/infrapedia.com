@@ -171,7 +171,7 @@
                 :span="12"
                 v-else-if="col.value == 'capacityTBPS' && !info.terrestrial"
               >
-                <p class="text-bold">{{ info[col.value] }}</p>
+                <p class="text-bold">{{ info[col.value] }} Tbps</p>
               </el-col>
               <el-col :span="12" v-else-if="col.value == 'category'">
                 <p class="text-bold">
