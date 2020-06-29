@@ -35,21 +35,6 @@
       </a> -->
     </div>
     <div class="main-wrapper_after-hero">
-      <div class="p4" id="partnersSection">
-        <div class="mt20">
-          <h2 class="title mb20 text-center diff">Our Partners</h2>
-          <div class="boxes-wrapper">
-            <div
-              class="el-card box p4"
-              :class="{ 'no-gray-filter': isMobile }"
-              v-for="(partner, i) in premium"
-              :key="i"
-            >
-              <el-image fit="contain" :src="partner.logo" />
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="information-section mt20" id="servicesSection">
         <div class="description flex row wrap p4">
           <div class="inner-wrapper">
@@ -85,30 +70,45 @@
             />
           </div>
         </div>
-        <div class="p4 services-wrapper">
-          <h2 class="title md w80 mt20 mb8">
-            Our Services
-          </h2>
-          <div class="boxes-wrapper row wrap justify-content-space-between">
-            <div
-              class="box el-card p4"
-              v-for="(item, i) in texts.withIcon"
-              :key="i"
-            >
-              <h3 class="title sm">
-                {{ item.title }}
-              </h3>
-              <p class="text" v-text="item.text" />
-              <i class="fas fa-people-arrows"></i>
+        <div class="p4 w-fit-full" id="partnersSection">
+          <div class="mt20">
+            <h2 class="title mb20 text-center diff">Our Partners</h2>
+            <div class="boxes-wrapper">
+              <div
+                class="el-card box p4"
+                :class="{ 'no-gray-filter': isMobile }"
+                v-for="(partner, i) in premium"
+                :key="i"
+              >
+                <el-image fit="contain" :src="partner.logo" />
+              </div>
             </div>
           </div>
-          <!-- <router-link to="/services" class=" mt12 underline-hover">
+        </div>
+      </div>
+      <div class="p4 services-wrapper">
+        <h2 class="title md w80 mt20 mb8">
+          Our Services
+        </h2>
+        <div class="boxes-wrapper row wrap justify-content-space-between">
+          <div
+            class="box el-card p4"
+            v-for="(item, i) in texts.withIcon"
+            :key="i"
+          >
+            <h3 class="title sm">
+              {{ item.title }}
+            </h3>
+            <p class="text" style="max-width: 100%;" v-text="item.text" />
+            <i class="fas fa-people-arrows"></i>
+          </div>
+        </div>
+        <!-- <router-link to="/services" class=" mt12 underline-hover">
             Our Services
             <span class="fs-xsmall font-thin ml1">
               <fa :icon="['fas', 'angle-double-right']" />
             </span>
           </router-link> -->
-        </div>
       </div>
       <div class="p4 mb8" id="trustedBySection">
         <h2 class="title mb20 text-center diff">Trusted by</h2>
