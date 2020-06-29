@@ -10,6 +10,7 @@
 - BuyDialog Transit has new field, and Fiber option should be removed on Transit buy
 - Fiber pairs needed to be displayed on subsea cables dashboard edit/create section
 - Elements names need to accept /
+- Enable facilities clusters
 
 ## Version 2.1.3
 

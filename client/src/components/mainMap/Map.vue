@@ -336,11 +336,11 @@ export default {
       const cableCategoryColor =
         category == 'active' ? 'green' : category == 'project' ? 'red' : 'black'
 
-      // const facsClusters = this.map.queryRenderedFeatures(e.point, {
-      //   layers: [mapConfig.facilitiesClusters]
-      // })
+      const facsClusters = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.facilitiesClusters]
+      })
 
-      // if (facsClusters.length > 0) return
+      if (facsClusters.length > 0) return
 
       let str = `<div class="cable-name dark-color"><b>${name}</b></div>`
 
@@ -475,9 +475,9 @@ export default {
           layers: [mapConfig.clusters]
         })
 
-        // const facsClusters = this.map.queryRenderedFeatures(e.point, {
-        //   layers: [mapConfig.facilitiesClusters]
-        // })
+        const facsClusters = this.map.queryRenderedFeatures(e.point, {
+          layers: [mapConfig.facilitiesClusters]
+        })
 
         // If in the region selected there is a point or a building
         // Call the api to retrieve that facility data and open the sidebar
@@ -499,19 +499,14 @@ export default {
           })
         }
 
-        // || facsClusters.length > 0
-        if (clusters.length > 0) {
-          // let data = clusters.length > 0 ? clusters : facsClusters
-          // let sourceName =
-          //   clusters.length > 0
-          //     ? mapConfig.clusters
-          //     : mapConfig.facilitiesClusters
+        if (clusters.length > 0 || facsClusters.length > 0) {
+          let data = clusters.length > 0 ? clusters : facsClusters
+          let sourceName =
+            clusters.length > 0
+              ? mapConfig.clusters
+              : mapConfig.facilitiesClusters
 
-          return await this.handleClustersSelection(
-            clusters,
-            this.map,
-            mapConfig.clusters
-          )
+          return await this.handleClustersSelection(data, this.map, sourceName)
         } else if (cables.length > 0) {
           await this.handleCablesSelection(cables.length > 0, cables)
         } else if (
