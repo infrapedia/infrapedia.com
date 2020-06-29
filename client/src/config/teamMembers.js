@@ -23,11 +23,6 @@ const teamMembers = [
     name: 'Manuel Blanco',
     photo: 'https://cdn1.infrapedia.com/assets/team/mb1.jpg',
     position: 'Front End Engineer'
-  },
-  {
-    name: 'Diego Garzon',
-    photo: 'https://cdn1.infrapedia.com/assets/team/diego.jpeg',
-    position: 'Director of Marketing'
   }
 ]
 export default teamMembers
