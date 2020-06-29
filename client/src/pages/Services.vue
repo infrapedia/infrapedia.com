@@ -153,41 +153,6 @@
             </div>
           </div>
         </router-link>
-        <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <div class="p4">
-            <div class="card-inner-wrapper">
-              <header class="inner-wrapper_header">
-                <h2 class="title sm">
-                  <span class="md-icon">
-                    <fa :icon="['fas', 'bullhorn']" />
-                  </span>
-                  Marketing and Communications
-                </h2>
-              </header>
-              <p class="text">
-                Need help with marketing or communications for your organization
-                or project? Our platform and our sales and marketing department
-                are continuously in contact with people in the
-                telecommunications and Internet market and are able to help you
-                with Content Development (blogs, articles, presentations, white
-                papers, case studies), Online marketing, branding, Client
-                Representation on events, and overall comprehensive marketing
-                strategies.
-              </p>
-              <!-- <footer>
-                <router-link
-                  to="/contact"
-                  class="underline-hover inline-block mt12"
-                >
-                  Learn more
-                  <span class="fs-xsmall font-thin ml1">
-                    <fa :icon="['fas', 'angle-double-right']" />
-                  </span>
-                </router-link>
-              </footer> -->
-            </div>
-          </div>
-        </router-link>
       </div>
       <footer class="mt8 pt4 pb4">
         <el-divider />
