@@ -8,6 +8,7 @@
 - Blog link on navbar doesn't have to open on a new tab
 - Create section was not unlocking submit button
 - BuyDialog Transit has new field, and Fiber option should be removed on Transit buy
+- Enable facilities clusters
 
 ## Version 2.1.3
 
