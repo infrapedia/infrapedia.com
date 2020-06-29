@@ -141,7 +141,7 @@
                 <transition-group name="fade" mode="in-out" appear tag="div">
                   <div
                     v-for="(field, i) in form.litCapacity"
-                    :key="i"
+                    :key="i + 'field'"
                     class="relative mt12"
                   >
                     <div class="capacity-field p4 el-card shadow--never">
