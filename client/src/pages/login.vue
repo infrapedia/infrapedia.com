@@ -1,18 +1,22 @@
 <template>
   <div class="flex justify-content-center align-items-center w-full h-fit-full">
     <el-card class="p8">
-      <h3 class="subheading">
-        <template v-if="isUserBlock">
-          <p>
-            Please contact
-            <a href="mailto:admin@infrapedia.com">admin@infrapedia.com</a> to
-            enable your access
-          </p>
-        </template>
-        <template v-else>
-          <p class="font-medium fs-large">Hold on. We're redirecting you</p>
-        </template>
-      </h3>
+      <div class="flex justify-content-center mb4 animate">
+        <el-image
+          fit="contain"
+          src="https://cdn1.infrapedia.com/assets/img/light-mode-logo-sphere.svg"
+        />
+      </div>
+      <template v-if="isUserBlock">
+        <p>
+          Please contact
+          <a href="mailto:admin@infrapedia.com">admin@infrapedia.com</a> to
+          enable your access
+        </p>
+      </template>
+      <template v-else>
+        <p class="fs-large">Hold on. We're redirecting you</p>
+      </template>
     </el-card>
   </div>
 </template>

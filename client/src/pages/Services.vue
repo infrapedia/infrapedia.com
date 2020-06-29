@@ -1,31 +1,32 @@
 <template>
-  <div class="flex column wrap justify-content-center no-overflow-x mb20">
-    <div class="banner-wrapper">
+  <div
+    class="main-wrapper flex column wrap justify-content-center no-overflow-x mb20"
+  >
+    <!-- <div class="banner-wrapper">
       <el-image
         lazy
         fit="cover"
         src="https://cdn1.infrapedia.com/bgs/b2.jpg"
         class="banner-img"
       />
-    </div>
-    <el-card class="card-wrapper">
+    </div> -->
+    <div class="card-wrapper mt20 mb20">
       <header class="w-fit-full text-center">
-        <h2 class="title">
+        <h1 class="title mb12">
           Services & Consulting
-        </h2>
-        <el-divider />
+        </h1>
       </header>
       <div class="services-wrapper">
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8">
+          <div class="p4">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
                 <h2 class="title sm">
+                  <span class="md-icon">
+                    <fa :icon="['fas', 'chalkboard-teacher']" />
+                  </span>
                   Consultancy
                 </h2>
-                <span class="md-icon">
-                  <fa :icon="['fas', 'chalkboard-teacher']" />
-                </span>
               </header>
               <p class="text">
                 Our team consists of industry leaders that are always eager to
@@ -48,18 +49,18 @@
                 </router-link>
               </footer> -->
             </div>
-          </el-card>
+          </div>
         </router-link>
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8 fix-height">
+          <div class="p4">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
                 <h2 class="title sm">
+                  <span class="md-icon">
+                    <fa :icon="['fas', 'chart-area']" />
+                  </span>
                   Data analysis
                 </h2>
-                <span class="md-icon">
-                  <fa :icon="['fas', 'chart-area']" />
-                </span>
               </header>
               <p class="text">
                 Our Data Analysis services give you access to our team of
@@ -84,18 +85,18 @@
                 </router-link>
               </footer> -->
             </div>
-          </el-card>
+          </div>
         </router-link>
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8 fix-height">
+          <div class="p4">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
                 <h2 class="title sm">
+                  <span class="md-icon">
+                    <fa :icon="['fas', 'map']" />
+                  </span>
                   Custom Maps and GIS engineering
                 </h2>
-                <span class="md-icon">
-                  <fa :icon="['fas', 'map']" />
-                </span>
               </header>
               <p class="text">
                 At Infrapedia we have extensive knowledge about developing
@@ -120,18 +121,18 @@
                 </router-link>
               </footer> -->
             </div>
-          </el-card>
+          </div>
         </router-link>
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8">
+          <div class="p4">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
                 <h2 class="title sm">
+                  <span class="md-icon">
+                    <fa :icon="['fas', 'code']" />
+                  </span>
                   Software Development
                 </h2>
-                <span class="md-icon">
-                  <fa :icon="['fas', 'code']" />
-                </span>
               </header>
               <p class="text">
                 Our Infrapedia team consists of skilled software engineers who
@@ -150,18 +151,18 @@
                 </router-link>
               </footer> -->
             </div>
-          </el-card>
+          </div>
         </router-link>
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8 fix-height">
+          <div class="p4">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
                 <h2 class="title sm">
+                  <span class="md-icon">
+                    <fa :icon="['fas', 'bullhorn']" />
+                  </span>
                   Marketing and Communications
                 </h2>
-                <span class="md-icon">
-                  <fa :icon="['fas', 'bullhorn']" />
-                </span>
               </header>
               <p class="text">
                 Need help with marketing or communications for your organization
@@ -185,10 +186,10 @@
                 </router-link>
               </footer> -->
             </div>
-          </el-card>
+          </div>
         </router-link>
       </div>
-      <footer class="mt8">
+      <footer class="mt8 pt4 pb4">
         <el-divider />
         <router-link to="/contact" class="underline-hover cursor-pointer">
           Contact us</router-link
@@ -202,7 +203,7 @@
         >
         to our newsletter
       </footer>
-    </el-card>
+    </div>
     <newsletter-dialog
       :visibility="isNewsLetterDialog"
       @close="toggleNewsletterDialog"

@@ -1,5 +1,5 @@
 <template>
-  <el-header class="fs-small p4 vertical-align pr45 pl48 header">
+  <el-header class="fs-small p4 vertical-align header">
     <h1 class="logo-title inline-block">
       <router-link :to="checkIfLoggedIn" class="hidden-sm-and-down">
         <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
@@ -19,25 +19,20 @@
           :key="i"
           :href="link.url"
           target="_blank"
-          class="underline-hover mr4"
+          class="underline-hover"
         >
           {{ link.label }}
         </a>
         <template v-else>
           <router-link
-            v-if="i === 0"
+            v-if="i == 0"
             :key="i"
             :to="checkIfLoggedIn"
-            class="mr4 underline-hover"
+            class=" underline-hover"
           >
             {{ link.label }}
           </router-link>
-          <router-link
-            v-else
-            :key="i"
-            :to="link.url"
-            class="mr4 underline-hover"
-          >
+          <router-link v-else :key="i" :to="link.url" class="underline-hover">
             {{ link.label }}
           </router-link>
         </template>

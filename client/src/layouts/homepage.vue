@@ -4,7 +4,7 @@
     <h-mobile-drawer
       class="hidden-md-and-up"
       :visibility="isMobileDrawer"
-      @close="toggleDrawerVisibility"
+      @close="closeDrawer"
     />
     <h-navbar @toggle-mobile-drawer="toggleDrawerVisibility" />
     <transition
@@ -41,9 +41,16 @@ export default {
     }
   }),
   methods: {
-    toggleDrawerVisibility() {
+    closeDrawer() {
+      this.isMobileDrawer = false
+
       const body = document.querySelector('body')
+      body.className = this.isMobileDrawer ? 'no-overflow' : 'overflow-y-scroll'
+    },
+    toggleDrawerVisibility() {
       this.isMobileDrawer = !this.isMobileDrawer
+
+      const body = document.querySelector('body')
       body.className = this.isMobileDrawer ? 'no-overflow' : 'overflow-y-scroll'
     }
   }

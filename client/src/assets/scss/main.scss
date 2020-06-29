@@ -1,18 +1,18 @@
 @import '../../../node_modules/normalize.css/normalize';
 @import 'helpers/atomic-classes';
-@import 'base/fonts.scss';
 @import 'helpers/animations.scss';
 @import 'base/variables';
 @import './node_modules/vue-cookieconsent-component/src/scss/cookie-consent-transition';
 @import './node_modules/vue-cookieconsent-component/src/scss/cookie-consent-bottom';
 @import './node_modules/vue-cookieconsent-component/src/scss/cookie-consent';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500;700&display=swap');
 
 $border-top-white: 1px solid white;
 
 body,
 html,
 .application {
-  font-family: 'helvetica';
+  font-family: 'Roboto', sans-serif;
 }
 
 .el-form-item__label {
@@ -20,9 +20,9 @@ html,
 }
 
 ::selection {
-  background-color: #b3d4fc;
-  text-shadow: none;
-  color: #000;
+  background-color: #255fb9;
+  color: white;
+  padding: 1rem;
 }
 
 a {
@@ -331,7 +331,6 @@ input.issues-dialog {
 .error-message {
   color: #b10f0f;
 }
-
 
 // -----------------------------------------------------
 // -----------------------------------------------------
