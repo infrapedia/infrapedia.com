@@ -136,8 +136,7 @@
 }
 
 #trustedBySection .boxes-wrapper,
-#partnersSection .boxes-wrapper,
-#blogSection .boxes-wrapper {
+#partnersSection .boxes-wrapper {
   display: grid;
   width: 100%;
   gap: 0.4rem;
@@ -163,12 +162,26 @@
       width: 3.2rem;
       height: 3.2rem;
     }
-    grid-template-columns: repeat(auto-fit, minmax(5.2rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(4.2rem, 1fr));
+  }
+}
+
+#blogSection {
+  width: 72.8vw;
+  .flex {
+    min-height: 20vh;
+  }
+  .el-card {
+    width: 12rem;
+    margin-bottom: 1rem;
+    &:last-child {
+      margin-right: 0;
+    }
   }
 }
 
 .services-wrapper {
-  width: 60vw;
+  width: 72.6vw;
   .boxes-wrapper {
     display: grid;
     width: 100%;
@@ -177,19 +190,26 @@
     grid-auto-flow: dense;
     grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
     .box {
-      width: 12rem;
+      width: 17rem;
     }
   }
   @media screen and (max-width: $break-xs) {
-    padding: 0;
-    width: 80vw;
+    width: 100%;
+    .el-card {
+      width: 14rem;
+      padding: 1rem;
+      .box {
+        width: 100%;
+        padding: 0;
+      }
+    }
   }
 }
 
 .bottom-banner {
   text-align: center;
   @media screen and (max-width: $break-md) {
-    div.p4 {
+    div.p2 {
       width: 100%;
     }
   }
@@ -199,6 +219,6 @@
     }
   }
   .banner-image {
-    filter: grayscale(10%) saturate(60%) invert(22%);
+    filter: grayscale(20%);
   }
 }

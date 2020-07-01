@@ -181,6 +181,7 @@ export default {
         zoom: mapConfig.zoom,
         maxZoom: 17.8,
         minZoom: 2,
+        pitch: this.disabled ? 45 : 0,
         center: mapConfig.center,
         style: mapConfig.default
       })
