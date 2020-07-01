@@ -63,11 +63,10 @@
             </router-link>
           </div>
           <div class="inner-wrapper hidden-sm-and-down">
-            <video
-              style="width: 100%; height: 100%"
-              src="https://cdn1.infrapedia.com/assets/top.mp4"
-              loop
-              autoplay
+            <el-image
+              class="w-fit-full"
+              src="https://cdn1.infrapedia.com/assets/top-gif.gif"
+              fit="contain"
             />
           </div>
         </div>

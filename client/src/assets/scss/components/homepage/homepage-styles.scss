@@ -112,8 +112,7 @@
     &:first-child {
       width: 61.4%;
       @media screen and (max-width: $break-md) {
-        // width: 100%;
-        shape-outside: url('https://cdn1.infrapedia.com/assets/img/footer.png');
+        shape-outside: url('https://cdn1.infrapedia.com/assets/top-gif.gif');
       }
       @media screen and (max-width: $break-sm) {
         width: 100%;
@@ -121,9 +120,11 @@
     }
     &:nth-child(2) {
       width: 38%;
-      height: 20rem;
+      height: fit-content;
       box-shadow: 2px 2px 12px 2px #ccc;
-      transform: perspective(720px) rotateX(0deg) rotateY(2deg);
+      border-radius: 20px;
+      overflow: hidden;
+      transform: perspective(1020px) rotateX(-4deg) rotateY(-24deg);
       @media screen and (max-width: $break-md) {
         margin-top: 5.2rem;
       }
