@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { checkUserVote, getVotes } from '../services/api/voting'
+import { getVotes } from '../services/api/voting'
 
 export default {
   data: () => ({
@@ -57,26 +57,26 @@ export default {
   }),
   async created() {
     this.$emit('layout', 'default')
-    await this.checkVote()
+    // await this.checkVote()
   },
   async mounted() {
     await this.loadVotesPool()
   },
   methods: {
-    async checkVote() {
-      this.isCheckingVote = true
-      const { t } = (await checkUserVote(await this.$auth.getUserID())) || {
-        t: 'error'
-      }
+    // async checkVote() {
+    //   this.isCheckingVote = true
+    //   const { t } = (await checkUserVote(await this.$auth.getUserID())) || {
+    //     t: 'error'
+    //   }
 
-      this.isCheckingVote = false
-      if (t != 'error') {
-        this.$message(
-          'You have not voted yet. For seeing the results, you first have to vote'
-        )
-        setTimeout(() => this.$router.replace('/app'), 320)
-      }
-    },
+    //   this.isCheckingVote = false
+    //   if (t != 'error') {
+    //     this.$message(
+    //       'You have not voted yet. For seeing the results, you first have to vote'
+    //     )
+    //     setTimeout(() => this.$router.replace('/app'), 320)
+    //   }
+    // },
     calculatePercentage(vote) {
       return Math.round((vote.votes * 100) / vote.totalVotes)
     },

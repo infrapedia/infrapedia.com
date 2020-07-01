@@ -1,24 +1,24 @@
 <template>
   <div class="min-height60vh">
     <home-page />
-    <votation-dialog
+    <!-- <votation-dialog
       :is-visible="isPoolDialog"
       @close="() => (isPoolDialog = false)"
-    />
+    /> -->
   </div>
 </template>
 
 <script>
 import HomePage from '../components/homepage/HomePage'
 import { checkCookie } from '../helpers/cookies'
-import VotationDialog from '../components/dialogs/VotationDialog'
-import { checkUserVote } from '../services/api/voting'
-import debounce from '../helpers/debounce'
+// import VotationDialog from '../components/dialogs/VotationDialog'
+// import { checkUserVote } from '../services/api/voting'
+// import debounce from '../helpers/debounce'
 
 export default {
   components: {
-    HomePage,
-    VotationDialog
+    HomePage
+    // VotationDialog
   },
   head: {
     title: 'Global Internet Infrastructure Map | Infrapedia',
@@ -46,9 +46,9 @@ export default {
   beforeCreate() {
     this.$emit('layout', 'landing-layout')
   },
-  async created() {
-    await this.checkVote()
-  },
+  // async created() {
+  //   await this.checkVote()
+  // },
   beforeRouteEnter(to, from, next) {
     next(async vm => {
       if (
@@ -65,16 +65,16 @@ export default {
           })
       }
     })
-  },
-  methods: {
-    checkVote: debounce(async function() {
-      const { t } = (await checkUserVote('')) || {
-        t: 'error'
-      }
-      if (t && t != 'error') {
-        this.isPoolDialog = true
-      }
-    }, 1200)
   }
+  // methods: {
+  //   checkVote: debounce(async function() {
+  //     const { t } = (await checkUserVote('')) || {
+  //       t: 'error'
+  //     }
+  //     if (t && t != 'error') {
+  //       this.isPoolDialog = true
+  //     }
+  //   }, 1200)
+  // }
 }
 </script>

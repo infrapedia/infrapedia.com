@@ -1,24 +1,24 @@
 <template>
   <div>
     <map-overlay />
-    <votation-dialog
+    <!-- <votation-dialog
       :is-visible="isPoolDialog"
       @close="() => (isPoolDialog = false)"
-    />
+    /> -->
   </div>
 </template>
 
 <script>
-import VotationDialog from '../components/dialogs/VotationDialog'
+// import VotationDialog from '../components/dialogs/VotationDialog'
 import MapOverlay from '../components/mainMap/MapOverlay'
-import { checkUserVote } from '../services/api/voting'
+// import { checkUserVote } from '../services/api/voting'
 import { IS_DRAWING } from '../store/actionTypes'
-import debounce from '../helpers/debounce'
+// import debounce from '../helpers/debounce'
 
 export default {
   components: {
-    MapOverlay,
-    VotationDialog
+    MapOverlay
+    // VotationDialog
   },
   head: {
     title: 'Infrapedia | Global Internet Infrastructure Map',
@@ -45,24 +45,24 @@ export default {
   beforeCreate() {
     this.$emit('layout', 'map-app-layout')
   },
-  async created() {
-    await this.checkVote()
-  },
+  // async created() {
+  //   await this.checkVote()
+  // },
   beforeRouteLeave(to, from, next) {
     if (this.$store.state.isDrawing) {
       this.$store.commit(`${IS_DRAWING}`, false)
     }
     next()
-  },
-  methods: {
-    checkVote: debounce(async function() {
-      const { t } = (await checkUserVote(await this.$auth.getUserID())) || {
-        t: 'error'
-      }
-      if (t && t != 'error') {
-        this.isPoolDialog = true
-      }
-    }, 1200)
   }
+  // methods: {
+  // checkVote: debounce(async function() {
+  //   const { t } = (await checkUserVote(await this.$auth.getUserID())) || {
+  //     t: 'error'
+  //   }
+  //   if (t && t != 'error') {
+  //     this.isPoolDialog = true
+  //   }
+  // }, 1200)
+  // }
 }
 </script>
