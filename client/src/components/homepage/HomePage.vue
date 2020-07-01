@@ -119,7 +119,7 @@
             shadow="never"
             class="p8"
             v-for="(post, i) in blogPosts"
-            :key="i"
+            :key="`${i + post.id}_${post.date}`"
           >
             <small>
               {{ formatDate(post.modified_gmt) }}
