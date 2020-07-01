@@ -25,7 +25,7 @@ import About from '../pages/About.vue'
 import Attributions from '../pages/Attributions.vue'
 import Services from '../pages/Services.vue'
 import Sponsors from '../pages/Sponsors.vue'
-import VotationPool from '../pages/VotationPool.vue'
+// import VotationPool from '../pages/VotationPool.vue'
 import { getInstance } from '../auth/index'
 import VotesResults from '../pages/VotesResults.vue'
 
@@ -55,11 +55,11 @@ const routes = [
     name: 'map-app',
     component: MapHome
   },
-  {
-    path: '/vote',
-    name: 'votation-pool',
-    component: VotationPool
-  },
+  // {
+  //   path: '/vote',
+  //   name: 'votation-pool',
+  //   component: VotationPool
+  // },
   {
     path: '/votes-results',
     name: 'votes-results',
