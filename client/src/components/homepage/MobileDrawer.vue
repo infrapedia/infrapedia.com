@@ -32,17 +32,16 @@
         <ul role="list">
           <li v-for="(link, i) in links" :key="i" role="listitem">
             <a
+              v-if="link.tab"
               :key="i"
               :href="link.url"
-              v-if="link.tab"
-              target="_blank"
               class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
             >
               {{ link.label }}
             </a>
             <template v-else>
               <router-link
-                v-if="i === 0"
+                v-if="i == 0"
                 :key="i"
                 :to="checkIfLoggedIn"
                 class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
@@ -126,6 +125,10 @@ export default {
       {
         label: 'Services',
         url: '/services'
+      },
+      {
+        label: 'Contact us',
+        url: '/contact'
       },
       {
         label: 'Sponsorships',

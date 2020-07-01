@@ -214,11 +214,6 @@ export default {
               'Our skilled engineers work with you to develop the software you need.'
           },
           {
-            title: 'Marketing & Communications',
-            text:
-              'Get a team of experts be your right hand with branding and marketing.'
-          },
-          {
             title: 'Infrastructure Procurement',
             text:
               'Connect with the provider you need and get quotes directly from them.'

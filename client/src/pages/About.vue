@@ -28,7 +28,7 @@
         and terrestrial network providers.
       </p>
 
-      <div class="team-wrapper">
+      <div class="team-wrapper mb20">
         <h2 class="title">
           Our team
         </h2>
@@ -46,7 +46,7 @@
             </div>
           </div>
         </div>
-        <p class="content mb20">
+        <p class="content">
           We are focused on network and data center infrastructures. We scour
           the Internet and maintain close relationships with key market players,
           industry specialists, and Internet resources to find infrastructure

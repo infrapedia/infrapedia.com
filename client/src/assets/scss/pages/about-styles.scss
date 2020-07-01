@@ -17,10 +17,11 @@
 }
 
 .gallery-wrapper {
-  width: 80vw;
+  width: 100%;
   display: flex;
   flex-flow: row wrap;
   .team-wrapper {
+    width: 100%;
     .boxes-wrapper {
       display: grid;
       width: 100%;
@@ -43,22 +44,19 @@
         margin-bottom: 0;
       }
     }
-    p.content {
-      color: $dark-charcoal;
-      line-height: 1.2;
-      font-weight: 400;
-      text-align: justify;
-      @media screen and (max-width: $break-xs) {
-        font-size: 16px;
-        padding: 0 1rem;
-      }
-    }
 
     @media screen and (max-width: $break-xs) {
       margin-left: 0;
       padding: 0;
     }
   }
+}
+
+p.content {
+  color: $dark-charcoal;
+  line-height: 1.2;
+  font-weight: 400;
+  text-align: justify;
 }
 
 .title {
