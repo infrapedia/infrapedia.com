@@ -1,5 +1,5 @@
 <template>
-  <div class="votation-pool" v-loading="isCheckingVote">
+  <div class="votation-pool">
     <header class="flex justify-content-center column">
       <h2 class="title text-center">
         Infrapedia Infrastructure Awards
@@ -46,7 +46,6 @@ import { getVotes } from '../services/api/voting'
 export default {
   data: () => ({
     votesPool: {},
-    isCheckingVote: true,
     loadingVotes: false,
     categories: [
       'Best Subsea Cable System',
