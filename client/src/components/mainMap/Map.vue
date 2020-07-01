@@ -1,6 +1,15 @@
 <template>
   <div id="map">
     <template v-if="!disabled">
+      <transition name="animate fast pulse infinite" mode="out-in">
+        <div
+          v-if="lastMileTool.active"
+          class="z-index120 text-white font-bold fs-large circle p2 vertical-align"
+          style="position: fixed; top: 4rem; left: 2.4rem; background: darkblue;"
+        >
+          <fa :icon="['fas', 'wave-square']" />
+        </div>
+      </transition>
       <el-button
         id="ThreeD"
         type="text"
@@ -38,34 +47,42 @@
         />
         <fa :icon="['fas', 'times']" class="icon fs-medium" v-else />
 
-        <ul
-          v-if="isMenuOpen"
-          role="group"
-          class="absolute flex justify-content-space-around align-items-center"
-          :class="{ active: isMenuOpen }"
-        >
-          <li role="listitem">
-            <print-button :map="map" />
-          </li>
-          <li role="listitem">
-            <i-theme-toggler
-              id="toggleTheme"
-              title="Toggle dark mode"
-              @click="toggleDarkMode"
-            />
-          </li>
-          <li role="listitem">
-            <el-button
-              title="Share menu"
-              type="primary"
-              class="w11 h11"
-              circle
-              @click.stop="toggleGooeyMenu"
-            >
-              <fa :icon="['fas', 'share-alt']" />
-            </el-button>
-          </li>
-        </ul>
+        <template>
+          <ul
+            v-if="isMenuOpen"
+            role="group"
+            class="absolute flex justify-content-space-around align-items-center"
+            :class="{ active: isMenuOpen }"
+          >
+            <li role="listitem">
+              <print-button :map="map" />
+            </li>
+            <li role="listitem">
+              <last-mile-button
+                :map="map"
+                @activate-gri-tool="handleLastMileToolActivation"
+              />
+            </li>
+            <li role="listitem">
+              <i-theme-toggler
+                id="toggleTheme"
+                title="Toggle dark mode"
+                @click="toggleDarkMode"
+              />
+            </li>
+            <li role="listitem">
+              <el-button
+                title="Share menu"
+                type="primary"
+                class="w11 h11"
+                circle
+                @click.stop="toggleGooeyMenu"
+              >
+                <fa :icon="['fas', 'share-alt']" />
+              </el-button>
+            </li>
+          </ul>
+        </template>
       </el-button>
       <gooey-menu :is-active="isGooeyMenu" @close="toggleGooeyMenu" />
     </template>
@@ -112,6 +129,8 @@ import PrintButton from './PrintButton'
 import highlightCurrentSelection from './highlightCurrentSelection'
 import dataCollection from '../../mixins/dataCollection'
 import convertToYear from '../../helpers/convertToYear'
+import LastMileButton from './LastMileButton'
+import { LastMileToolLayers } from './gri-tool'
 
 export default {
   name: 'Map',
@@ -119,7 +138,8 @@ export default {
   components: {
     IThemeToggler,
     PrintButton,
-    GooeyMenu
+    GooeyMenu,
+    LastMileButton
   },
   props: {
     disabled: {
@@ -134,7 +154,11 @@ export default {
     map: undefined,
     isMenuOpen: false,
     isGooeyMenu: false,
-    isLocationZoomIn: true
+    isLocationZoomIn: true,
+    lastMileTool: {
+      active: false,
+      reference: null
+    }
   }),
   computed: {
     ...mapState({
@@ -247,6 +271,7 @@ export default {
       for (let layer of mapConfig.data.layers) {
         map.addLayer(layer)
       }
+      LastMileToolLayers(map)
       map.setFilter(mapConfig.cables, mapConfig.filter.all)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
     },
@@ -1025,7 +1050,11 @@ export default {
     },
     handlePreviouslySelected: debounce(function() {
       if (this.map.loaded()) this.handleFocusOn(this.focus)
-    }, 1200)
+    }, 1200),
+    handleLastMileToolActivation(ref) {
+      this.lastMileTool.active = true
+      this.lastMileTool.reference = ref
+    }
   }
 }
 </script>
