@@ -17,7 +17,9 @@
       transform: translateY(1.2rem);
     }
     @media screen and (max-width: $break-lg) {
-      width: auto;
+      width: 100%;
+      padding: 0 0.8rem;
+      margin-bottom: 0.9rem;
       transform: translateY(0);
     }
   }

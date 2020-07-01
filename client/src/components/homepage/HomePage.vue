@@ -64,9 +64,9 @@
           </div>
           <div class="inner-wrapper hidden-sm-and-down">
             <el-image
-              src="https://cdn1.infrapedia.com/assets/img/description-top.png"
-              fit="cover"
-              class="h80"
+              class="w-fit-full"
+              src="https://cdn1.infrapedia.com/assets/top-gif.gif"
+              fit="contain"
             />
           </div>
         </div>
@@ -90,25 +90,46 @@
         <h2 class="title md w80 mt20 mb8">
           Our Services
         </h2>
-        <div class="boxes-wrapper row wrap justify-content-space-between">
-          <div
-            class="box el-card p4"
-            v-for="(item, i) in texts.withIcon"
-            :key="i"
-          >
+        <div
+          class="boxes-wrapper el-card row wrap justify-content-space-between"
+        >
+          <div class="box p4" v-for="(item, i) in texts.withIcon" :key="i">
             <h3 class="title sm">
-              {{ item.title }}
+              <router-link to="/services" class="underline-hover">
+                {{ item.title }}
+              </router-link>
             </h3>
             <p class="text" style="max-width: 100%;" v-text="item.text" />
-            <i class="fas fa-people-arrows"></i>
           </div>
         </div>
-        <!-- <router-link to="/services" class=" mt12 underline-hover">
-            Our Services
-            <span class="fs-xsmall font-thin ml1">
-              <fa :icon="['fas', 'angle-double-right']" />
-            </span>
-          </router-link> -->
+      </div>
+      <div class="p4" id="blogSection">
+        <h2 class="title md w80 font-medium mb8">
+          Latest News
+        </h2>
+        <transition-group
+          name="fade"
+          appear
+          mode="out-in"
+          tag="div"
+          v-loading="blogPosts.length <= 0"
+          class="flex row wrap justify-content-space-between"
+        >
+          <el-card
+            shadow="never"
+            class="p8"
+            v-for="(post, i) in blogPosts"
+            :key="`${i + post.id}_${post.date}`"
+          >
+            <small>
+              {{ formatDate(post.modified_gmt) }}
+            </small>
+            <h3 class="title sm">
+              {{ post.title.rendered }}
+            </h3>
+            <p v-html="post.excerpt.rendered" />
+          </el-card>
+        </transition-group>
       </div>
       <div class="p4 mb8" id="trustedBySection">
         <h2 class="title mb20 text-center diff">Trusted by</h2>
@@ -119,48 +140,17 @@
           </div>
         </div>
       </div>
-      <div class="p0" id="blogSection">
-        <!-- <div class="carousel-wrapper p4">
-          <el-divider></el-divider>
-          <div class="mt20">
-            <h2 class="title">Blog</h2>
-            <el-carousel
-              :interval="7000"
-              :height="blogHeight"
-              indicator-position="outside"
-            >
-              <el-carousel-item v-for="(post, i) in blogPosts" :key="i">
-                <div class="flex row nowrap justify-content-center">
-                  <a :href="post.link" target="_blank">
-                    <el-card shadow="never" class="p8">
-                      <div>
-                        <small>
-                          {{ formatDate(post.modified_gmt) }}
-                        </small>
-                        <h3 class="title sm">
-                          {{ post.title.rendered }}
-                        </h3>
-                        <p v-html="post.excerpt.rendered" />
-                      </div>
-                    </el-card>
-                  </a>
-                </div>
-              </el-carousel-item>
-            </el-carousel>
-          </div>
-        </div> -->
-      </div>
       <div
         class="bottom-banner el-card flex row nowrap align-items-center mb20"
       >
-        <div class="p4">
+        <div class="p2">
           <h2 class="font-medium">
             Ready to get started?
           </h2>
           <h2 class="font-thin title diff">
             Create an account or talk to our experts.
           </h2>
-          <div class="call-to-action">
+          <div class="call-to-action mb8">
             <el-button plain round @click="askToRegister" type="info">
               Join now
             </el-button>
@@ -169,11 +159,13 @@
             </router-link>
           </div>
         </div>
-        <el-image
-          class="w-fit-full h120 hidden-sm-and-down banner-image"
-          fit="cover"
-          src="https://cdn1.infrapedia.com/assets/img/call-to-action.jpg"
-        />
+        <div class="banner-image hidden-sm-and-down w-fit-full">
+          <el-image
+            class="w-fit-full h90 hidden-sm-and-down banner-image"
+            fit="cover"
+            src="https://cdn1.infrapedia.com/assets/footer3.png"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -212,11 +204,6 @@ export default {
             title: 'Software Development',
             text:
               'Our skilled engineers work with you to develop the software you need.'
-          },
-          {
-            title: 'Marketing & Communications',
-            text:
-              'Get a team of experts be your right hand with branding and marketing.'
           },
           {
             title: 'Infrastructure Procurement',
@@ -263,7 +250,12 @@ export default {
     },
     async loadBlogPosts() {
       const posts = (await getBlogPosts()) || []
+      let length = this.isMobile ? 1 : 5
       this.blogPosts = posts
+        .map((item, i) => {
+          return i < length ? item : false
+        })
+        .filter(t => t)
     },
     askToRegister() {
       this.$parent.$emit('layout', 'nothing-layout')
