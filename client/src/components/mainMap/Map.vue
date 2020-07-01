@@ -1,14 +1,24 @@
 <template>
   <div id="map">
     <template v-if="!disabled">
-      <transition name="animate fast pulse infinite" mode="out-in">
-        <div
+      <transition
+        name="animated faster delay-1s"
+        enter-active-class="slideInLeft"
+        leave-active-class="slideOutLeft"
+        mode="out-in"
+      >
+        <el-button
           v-if="lastMileTool.active"
-          class="z-index120 text-white font-bold fs-large circle p2 vertical-align"
-          style="position: fixed; top: 4rem; left: 2.4rem; background: darkblue;"
+          type="primary"
+          plain
+          size="mini"
+          title="Turn off Last Mile Tool"
+          class="z-index120 text-white font-bold fs-medium circle p2 vertical-align"
+          style="position: fixed; top: 4rem; left: 2.4rem;"
+          @click="disableLastMileTool"
         >
           <fa :icon="['fas', 'wave-square']" />
-        </div>
+        </el-button>
       </transition>
       <el-button
         id="ThreeD"
@@ -58,10 +68,7 @@
               <print-button :map="map" />
             </li>
             <li role="listitem">
-              <last-mile-button
-                :map="map"
-                @activate-gri-tool="handleLastMileToolActivation"
-              />
+              <last-mile-button @click="handleLastMileToolActivation" />
             </li>
             <li role="listitem">
               <i-theme-toggler
@@ -130,7 +137,7 @@ import highlightCurrentSelection from './highlightCurrentSelection'
 import dataCollection from '../../mixins/dataCollection'
 import convertToYear from '../../helpers/convertToYear'
 import LastMileButton from './LastMileButton'
-import { LastMileToolLayers } from './gri-tool'
+import lastMileTool, { lastMileToolLayers } from './gri-tool'
 
 export default {
   name: 'Map',
@@ -242,6 +249,7 @@ export default {
         mbCtrl.appendChild(document.getElementById('FScreen'))
 
         window.draw = draw
+        this.lastMileTool.reference = new lastMileTool({ map })
       }
 
       window.mapboxgl = mapboxgl
@@ -271,7 +279,7 @@ export default {
       for (let layer of mapConfig.data.layers) {
         map.addLayer(layer)
       }
-      LastMileToolLayers(map)
+      lastMileToolLayers(map)
       map.setFilter(mapConfig.cables, mapConfig.filter.all)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
     },
@@ -307,6 +315,7 @@ export default {
         map.on('click', this.handleMapClick)
         map.on('touchend', this.handleMapClick)
         map.on('render', this.handleBoundsChange)
+        this.lastMileTool.reference.registerMapIddle()
       } else {
         const disabledClick = () => this.$emit('clicked-disabled-map')
         map.on('click', disabledClick)
@@ -480,6 +489,11 @@ export default {
           )
         }
         if (this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
+
+        if (this.lastMileTool.active) {
+          this.handleLastMileToolCoordsChange(e)
+          return
+        }
 
         const cables = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.cables]
@@ -1051,9 +1065,17 @@ export default {
     handlePreviouslySelected: debounce(function() {
       if (this.map.loaded()) this.handleFocusOn(this.focus)
     }, 1200),
-    handleLastMileToolActivation(ref) {
+    handleLastMileToolActivation() {
       this.lastMileTool.active = true
-      this.lastMileTool.reference = ref
+      this.lastMileTool.reference.initService()
+      this.map.setFilter(mapConfig.facilitiesClusters, ['!=', 'act', 'red'])
+    },
+    disableLastMileTool() {
+      this.lastMileTool.active = false
+      document.getElementById('googlemap').remove()
+    },
+    handleLastMileToolCoordsChange(e) {
+      this.lastMileTool.reference.find(e.lngLat)
     }
   }
 }

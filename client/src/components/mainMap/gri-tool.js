@@ -2,7 +2,7 @@ import { fCollectionFormat } from '../../helpers/featureCollection'
 import { mapConfig } from '../../config/mapConfig.js'
 import turf from '@turf/turf'
 
-export function LastMileToolLayers(map) {
+export function lastMileToolLayers(map) {
   const fc = fCollectionFormat()
 
   map.addSource('lines', {
@@ -76,6 +76,7 @@ export function LastMileToolLayers(map) {
     },
     filter: ['==', '$type', 'Point']
   })
+  return map
 }
 
 export default class lastMileTool {
@@ -91,14 +92,22 @@ export default class lastMileTool {
   find(e) {
     this.latlng = e
     this.map.setCenter(e)
-    this.map.on('idle', function(f) {
+  }
+
+  registerMapIddle() {
+    let vm = this
+    const map = this.map
+
+    map.on('idle', function(f) {
+      if (!vm.latlng) return
+
       const distances = [500, 750, 1000, 1500, 2000, 2500, 3000]
-      const point = this.map.project(this.latlng)
+      const point = map.project(vm.latlng)
       const x = point.x
       const y = point.y
       let features = []
       for (let dist of distances) {
-        features = this.map.queryRenderedFeatures(
+        features = map.queryRenderedFeatures(
           // bbox
           [
             [x - dist, y - dist],
@@ -114,24 +123,18 @@ export default class lastMileTool {
       }
 
       if (features.length == 0) {
-        var zoom = this.map.getZoom()
-        this.map.setZoom(zoom - 1)
+        var zoom = map.getZoom()
+        map.setZoom(zoom - 1)
       } else {
         f.target._listeners.idle = []
-        let geojson = fCollectionFormat()
-        const lastFeatures = []
-        features.map(function(feature) {
-          let geojson2 = feature.toJSON()
-          lastFeatures.push(geojson2)
-        })
-        if (lastFeatures.length > 0) {
-          geojson.features = lastFeatures
-        }
+        let geojson = fCollectionFormat(
+          features.map(feature => feature.toJSON())
+        )
 
         const nearestPoints = []
         const pt = turf.point([this.latlng[0], this.latlng[1]])
         if (geojson.features.length > 0) {
-          geojson.features.map(function(feature) {
+          geojson.features.forEach(function(feature) {
             const snapped = turf.nearestPointOnLine(feature, pt, {
               units: 'kilometers'
             })
@@ -146,7 +149,7 @@ export default class lastMileTool {
         if (sortList.length > this.limit) {
           sortList = sortList.splice(0, this.limit)
         }
-        this.map.getSource('finishpoint').setData(sortList[0].point)
+        map.getSource('finishpoint').setData(sortList[0].point)
         if (sortList.length > 0) {
           const shortestGoogleLines = []
           // eslint-disable-next-line no-inner-declarations
@@ -163,8 +166,8 @@ export default class lastMileTool {
                 (a, b) => a.properties.len - b.properties.len
               )
               const shortPath = this.findIntersects(sortGoogleList, geojson)
-              this.map.getSource('lines').setData(shortPath.line)
-              this.map.getSource('finishpoint').setData(shortPath.point)
+              map.getSource('lines').setData(shortPath.line)
+              map.getSource('finishpoint').setData(shortPath.point)
             }
           }
           findGooglePath(0)
@@ -172,6 +175,7 @@ export default class lastMileTool {
       }
     })
   }
+
   findIntersects(roads, cables) {
     const shortest = []
     const start = turf.point(this.latlng)
@@ -186,21 +190,39 @@ export default class lastMileTool {
           for (let stop of intersects.features) {
             let sliced = turf.lineSlice(start, stop, road)
             length = turf.length(sliced, { units: 'meters' })
-            shortest.push({ lastpoint: stop, len: length, line: sliced })
+            shortest.push({
+              lastpoint: stop,
+              len: length,
+              line: sliced
+            })
           }
         } else {
           length = turf.length(road, { units: 'meters' })
-          shortest.push({ lastpoint: last, len: length, line: road })
+          shortest.push({
+            lastpoint: last,
+            len: length,
+            line: road
+          })
         }
       })
     })
     const shortestList = shortest.sort((a, b) => a.len - b.len)
-    return { line: shortestList[0].line, point: shortestList[0].lastpoint }
+    return {
+      line: shortestList[0].line,
+      point: shortestList[0].lastpoint
+    }
   }
   initGoogleServices() {
+    const id = 'googlemap'
+    if (!document.getElementById('googlemap')) {
+      let div = document.createElement('div')
+      div.id = id
+      const app = document.querySelector('.application')
+      app.appendChild(div)
+    }
     // eslint-disable-next-line
-    this.googlemap = new google.maps.Map(document.getElementById('googlemap'), {
-      center: { lat: -34.397, lng: 150.644 },
+    this.googlemap = new google.maps.Map(document.getElementById(id), {
+      center: { lat: mapConfig.center[1], lng: mapConfig.center[0] },
       zoom: 8
     })
     // eslint-disable-next-line
@@ -230,21 +252,32 @@ export default class lastMileTool {
           var distanceval = result.routes[0].legs[0].distance.value
           route = {
             type: 'Feature',
-            properties: { distance: distancetext, len: distanceval },
-            geometry: { type: 'LineString', coordinates: waypointsArr }
+            properties: {
+              distance: distancetext,
+              len: distanceval
+            },
+            geometry: {
+              type: 'LineString',
+              coordinates: waypointsArr
+            }
           }
           callback(route)
         } else {
           route = {
             type: 'Feature',
             properties: { distance: 0, len: 0 },
-            geometry: { type: 'LineString', coordinates: [start, finish] }
+            geometry: {
+              type: 'LineString',
+              coordinates: [start, finish]
+            }
           }
           var lenn = turf.length(route, { units: 'meters' })
           lenn = turf.round(lenn, 3)
           route.properties.len = lenn
           if (lenn >= 1000) {
-            var lennkm = turf.length(route, { units: 'kilometers' })
+            var lennkm = turf.length(route, {
+              units: 'kilometers'
+            })
             lennkm = turf.round(lennkm, 3)
             route.properties.distance = lennkm + 'km'
           } else {
@@ -282,7 +315,10 @@ export default class lastMileTool {
     const routes = data.routes[0]
     const distance = turf.round(routes.distance, 3)
     const ll = this.googlePointDecode(routes.geometry)
-    const line = turf.lineString(ll, { distance: distance, len: distance })
+    const line = turf.lineString(ll, {
+      distance: distance,
+      len: distance
+    })
     return line
   }
   googlePointDecode(encoded) {
@@ -322,5 +358,8 @@ export default class lastMileTool {
       pointArray.push([lng, lat])
     })
     return pointArray
+  }
+  initService() {
+    this.initGoogleServices()
   }
 }
