@@ -160,26 +160,6 @@ export const mapConfig = {
     ],
     layers: [
       {
-        id: facilities,
-        type: 'fill-extrusion',
-        source: facilities,
-        paint: facsPaintConfig
-      },
-      {
-        id: ixps,
-        type: 'circle',
-        source: ixps,
-        minzoom: 15,
-        paint: ixpsPaintConfig
-      },
-      {
-        id: cls,
-        type: 'circle',
-        source: cls,
-        minzoom: 3.4,
-        paint: clsPaintConfig
-      },
-      {
         id: cables,
         source: cables,
         'source-layer': cables,
@@ -205,6 +185,26 @@ export const mapConfig = {
         paint: {
           'text-color': '#485E69'
         }
+      },
+      {
+        id: cls,
+        type: 'circle',
+        source: cls,
+        minzoom: 3.4,
+        paint: clsPaintConfig
+      },
+      {
+        id: facilities,
+        type: 'fill-extrusion',
+        source: facilities,
+        paint: facsPaintConfig
+      },
+      {
+        id: ixps,
+        type: 'circle',
+        source: ixps,
+        minzoom: 15,
+        paint: ixpsPaintConfig
       },
       {
         id: facilitiesLabel,

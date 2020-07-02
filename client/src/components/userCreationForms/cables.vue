@@ -196,7 +196,11 @@
         />
       </el-form-item>
       <!-- <template v-if="creationID == 'subsea'"> -->
-      <el-form-item label="CLS" prop="cls" :required="creationID == 'subsea'">
+      <el-form-item
+        :label="CLSLabel"
+        prop="cls"
+        :required="creationID == 'subsea'"
+      >
         <v-multi-select
           :mode="mode"
           :is-required="creationID == 'subsea'"
@@ -334,6 +338,9 @@ export default {
     }
   },
   computed: {
+    CLSLabel() {
+      return this.creationID == 'subsea' ? 'CLS' : 'Connected CLS'
+    },
     formRules() {
       const creationID = this.creationID
       return {
