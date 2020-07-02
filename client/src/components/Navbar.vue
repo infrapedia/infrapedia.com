@@ -42,14 +42,9 @@
                 class="inline-block no-selectable relative hidden-sm-and-down"
                 role="listitem"
               >
-                <a
-                  href="https://blog.infrapedia.com"
-                  target="_blank"
-                  class="list-item pr4 pl4"
-                  title="Blog"
-                >
-                  Blog
-                </a>
+                <div class="list-item pr4 pl4 no-selectable">
+                  <market-place />
+                </div>
               </li>
 
               <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
@@ -433,6 +428,7 @@ export default {
     IFilter: () => import('./Filter'),
     ISearch: () => import('./Search'),
     BottomSheet: () => import('./BottomSheet'),
+    MarketPlace: () => import('../components/MartketPlace'),
     PremiumPartnersButton: () => import('./PremiumPartners'),
     IFullScreenSearch: FullScreenSearch
   },

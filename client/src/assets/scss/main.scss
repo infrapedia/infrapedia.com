@@ -286,6 +286,8 @@ input.issues-dialog {
     .logo-img {
       width: 40px;
     }
+  }
+  @media screen and (max-width: 1024px), (max-width: 1280px) {
     .image-sponsor {
       width: 5rem;
     }
@@ -299,21 +301,18 @@ input.issues-dialog {
   }
 
   .el-input-group__prepend {
-    @media screen and (max-width: 1024px) {
+    @media screen and (max-width: 1024px), (max-width: 1280px) {
       width: 0.2rem;
       padding: 0;
       color: transparent;
     }
   }
   .search-navbar-select {
-    @media screen and (max-width: $break-lg) {
+    @media screen and (max-width: $break-lg), (max-width: 1280px) {
       width: 7rem;
     }
-    @media screen and (max-width: 1024px) {
+    @media screen and (max-width: 1024px), (max-width: 1280px) {
       width: 4rem;
-      .el-input {
-        // width: 4rem;
-      }
       .el-input--suffix {
         width: 3rem;
       }
@@ -321,7 +320,7 @@ input.issues-dialog {
   }
 
   #search-select-navbar {
-    @media screen and (max-width: 1024px) {
+    @media screen and (max-width: 1024px), (max-width: 1280px) {
       height: 0.4rem;
       width: 2.4rem;
     }
@@ -332,6 +331,17 @@ input.issues-dialog {
   color: #b10f0f;
 }
 
+#marketplace-banner-table {
+  div.cell p {
+    margin: 0;
+  }
+  // tr.warning-row {
+  //   background: #aaaaaa;
+  // }
+  // tr.success-row {
+  //   background: #f0f9eb;
+  // }
+}
 
 // -----------------------------------------------------
 // -----------------------------------------------------

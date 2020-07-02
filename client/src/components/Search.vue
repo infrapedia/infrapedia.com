@@ -86,7 +86,7 @@
         <fa
           slot="prefix"
           :icon="['fas', 'search']"
-          class="mt3 ml1 hidden-md-and-down"
+          class="mt3 ml1 hidden-lg-and-down"
         />
         <fa
           v-if="!isFocused"

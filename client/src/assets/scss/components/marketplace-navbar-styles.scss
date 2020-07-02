@@ -1,0 +1,27 @@
+@import '../helpers/atomic-classes';
+@import '../base/variables';
+
+.title {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.8;
+  color: $dark-charcoal;
+  letter-spacing: 0.02em;
+}
+
+div.wrapper {
+  user-select: text;
+  width: 98vw;
+  height: 90vh;
+  overflow: auto !important;
+  z-index: 3;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+  position: fixed;
+  top: 3rem;
+  left: 0;
+  .cell p {
+    margin: 0;
+  }
+}
