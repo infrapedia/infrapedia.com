@@ -195,21 +195,21 @@
           :value="mode == 'create' ? [] : form.facilities"
         />
       </el-form-item>
-      <template v-if="creationID == 'subsea'">
-        <el-form-item label="CLS" prop="cls" required>
-          <v-multi-select
-            :mode="mode"
-            :is-required="true"
-            :is-field-empty="isCLSSelectEmpty"
-            :options="clsList"
-            @input="loadCLSSearch"
-            :loading="isLoadingCLS"
-            @values-change="handleCLSSelectionChange"
-            @remove="handleCLSSelectionChange(form.cls)"
-            :value="mode == 'create' ? [] : form.cls"
-          />
-        </el-form-item>
-      </template>
+      <!-- <template v-if="creationID == 'subsea'"> -->
+      <el-form-item label="CLS" prop="cls" :required="creationID == 'subsea'">
+        <v-multi-select
+          :mode="mode"
+          :is-required="creationID == 'subsea'"
+          :is-field-empty="isCLSSelectEmpty"
+          :options="clsList"
+          @input="loadCLSSearch"
+          :loading="isLoadingCLS"
+          @values-change="handleCLSSelectionChange"
+          @remove="handleCLSSelectionChange(form.cls)"
+          :value="mode == 'create' ? [] : form.cls"
+        />
+      </el-form-item>
+      <!-- </template> -->
       <el-form-item label="Owners" prop="owners" required>
         <v-multi-select
           :mode="mode"
@@ -335,6 +335,7 @@ export default {
   },
   computed: {
     formRules() {
+      const creationID = this.creationID
       return {
         activationDateTime: [],
         litCapacity: [],
@@ -374,7 +375,7 @@ export default {
         cls: [
           {
             type: 'array',
-            required: this.creationID == 'subsea',
+            required: creationID == 'subsea',
             message: 'At least one cls is required',
             trigger: ['blur', 'change']
           }
