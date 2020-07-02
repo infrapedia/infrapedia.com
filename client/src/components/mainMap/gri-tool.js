@@ -93,7 +93,7 @@ export default class lastMileTool {
     this.map = map
     this.latlng = null
     this.googlemap = null
-    this.requestType = 'google'
+    this.requestType = 'mapbox'
     this.directionsService = null
   }
 
@@ -132,12 +132,13 @@ export default class lastMileTool {
 
       if (water.length > 0) {
         f.target._listeners.idle = []
-        alert('You cant use this skill on the water')
+        // alert('You cant use this skill on the water')
         return false
       }
 
       features = features.filter(function(a) {
-        if (a.properties.isterrestrial == 'true') {
+        console.log(a.properties)
+        if (a.properties.terrestrial == 'true') {
           return true
         }
       })
