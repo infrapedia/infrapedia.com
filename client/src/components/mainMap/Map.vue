@@ -549,16 +549,19 @@ export default {
             id: cls[0].properties._id,
             type: 'cls'
           })
+          return
         } else if (ixps.length > 0) {
           await this.handleIxpsSelection({
             id: ixps[0].properties._id,
             type: 'ixps'
           })
+          return
         } else if (facilities.length > 0) {
           await this.handleFacilitySelection({
             id: facilities[0].properties._id,
             type: 'facilities'
           })
+          return
         }
 
         if (clusters.length > 0 || facsClusters.length > 0) {
@@ -1128,6 +1131,7 @@ export default {
         'visibility',
         'visible'
       )
+      this.map.getCanvas().style.cursor = 'pointer'
       document.getElementById('googlemap').remove()
     },
     handleLastMileToolCoordsChange(e) {

@@ -212,7 +212,7 @@ export const mapConfig = {
         source: facilities,
         minzoom: 10.89,
         layout: {
-          'text-field': ['to-string', ['get', 'address']],
+          'text-field': ['to-string', ['get', 'name']],
           'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Regular'],
           'text-size': 13,
           'text-anchor': 'bottom',
