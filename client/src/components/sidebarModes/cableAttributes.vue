@@ -320,17 +320,6 @@
           </el-col>
         </el-row>
       </template>
-      <div class="flex justify-content-center mt8">
-        <router-link
-          to="/vote"
-          title="Vote for Infrapedia's 2020 Infrastructure Awards"
-        >
-          <el-image
-            src="https://cdn1.infrapedia.com/assets/vote2020.png"
-            fit="contain"
-          />
-        </router-link>
-      </div>
     </footer>
     <!---- FOOTER SECTION END ----->
   </div>
