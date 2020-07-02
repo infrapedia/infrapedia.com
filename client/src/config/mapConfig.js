@@ -210,7 +210,7 @@ export const mapConfig = {
         id: facilitiesLabel,
         type: 'symbol',
         source: facilities,
-        minzoom: 13.89,
+        minzoom: 10.89,
         layout: {
           'text-field': ['to-string', ['get', 'address']],
           'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Regular'],

@@ -7,18 +7,32 @@
         leave-active-class="slideOutLeft"
         mode="out-in"
       >
-        <el-button
+        <el-card
           v-if="lastMileTool.active"
-          type="primary"
-          plain
-          size="mini"
-          title="Turn off Last Mile Tool"
-          class="z-index120 text-white font-bold fs-medium circle p2 vertical-align"
+          class="z-index120 w40 h40 p4"
           style="position: fixed; top: 4rem; left: 2.4rem;"
-          @click="disableLastMileTool"
         >
-          <fa :icon="['fas', 'wave-square']" />
-        </el-button>
+          <el-form>
+            <el-form-item label="Quality">
+              <el-slider
+                :max="5"
+                :min="1"
+                v-model="lastMileTool.quality"
+                class="inline-block w-fit-full"
+              />
+            </el-form-item>
+            <el-button
+              type="primary"
+              plain
+              size="mini"
+              class="w-fit-full"
+              title="Turn off Last Mile Tool"
+              @click="disableLastMileTool"
+            >
+              Turn off
+            </el-button>
+          </el-form>
+        </el-card>
       </transition>
       <el-button
         id="ThreeD"
@@ -164,7 +178,8 @@ export default {
     isLocationZoomIn: true,
     lastMileTool: {
       active: false,
-      reference: null
+      reference: null,
+      quality: 1
     }
   }),
   computed: {
@@ -315,7 +330,7 @@ export default {
         map.on('click', this.handleMapClick)
         map.on('touchend', this.handleMapClick)
         map.on('render', this.handleBoundsChange)
-        this.lastMileTool.reference.registerMapIddle()
+        this.lastMileTool.reference.registerEvents()
       } else {
         const disabledClick = () => this.$emit('clicked-disabled-map')
         map.on('click', disabledClick)
@@ -329,7 +344,7 @@ export default {
       return map
     },
     handleCLSHover(e, isHovering) {
-      if (!this.map) return
+      if (!this.map || this.lastMileTool.active) return
       const {
         features: [
           {
@@ -406,9 +421,16 @@ export default {
         layers: [mapConfig.clusters]
       })
 
-      if (!clusters.length && e.features.length && !this.isMobile) {
+      if (
+        !clusters.length &&
+        e.features.length &&
+        !this.isMobile &&
+        !this.lastMileTool.active
+      ) {
         this.map.getCanvas().style.cursor = 'pointer'
         this.showPopup({ e, map: this.map, popup, isPoint, type })
+      } else {
+        this.map.getCanvas().style.cursor = 'crosshair'
       }
     },
     /**
@@ -416,7 +438,11 @@ export default {
      * @param map { Object } The map instance
      */
     handlePopupVisibilityOff({ popup, map }) {
-      map.getCanvas().style.cursor = ''
+      if (!this.lastMileTool.active) {
+        map.getCanvas().style.cursor = ''
+      } else {
+        map.getCanvas().style.cursor = 'crosshair'
+      }
       popup.remove()
     },
     highlightSelection(id) {
@@ -1068,10 +1094,40 @@ export default {
     handleLastMileToolActivation() {
       this.lastMileTool.active = true
       this.lastMileTool.reference.initService()
-      this.map.setFilter(mapConfig.facilitiesClusters, ['!=', 'act', 'red'])
+      this.map.getCanvas().style.cursor = 'crosshair'
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesClusters,
+        'visibility',
+        'none'
+      )
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesCount,
+        'visibility',
+        'none'
+      )
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesSinglePoints,
+        'visibility',
+        'none'
+      )
     },
     disableLastMileTool() {
       this.lastMileTool.active = false
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesClusters,
+        'visibility',
+        'visible'
+      )
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesCount,
+        'visibility',
+        'visible'
+      )
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesSinglePoints,
+        'visibility',
+        'visible'
+      )
       document.getElementById('googlemap').remove()
     },
     handleLastMileToolCoordsChange(e) {

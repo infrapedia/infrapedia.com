@@ -102,88 +102,109 @@ export default class lastMileTool {
     this.map.setCenter(e)
   }
 
-  registerMapIddle() {
-    let vm = this
-    const map = this.map
-
-    map.on('idle', function(f) {
-      if (!vm.latlng) return
-
-      const distances = [500, 750, 1000, 1500, 2000, 2500, 3000]
-      const ppoint = map.project(vm.latlng)
-      const x = ppoint.x
-      const y = ppoint.y
-      let features = []
-      for (let dist of distances) {
-        features = map.queryRenderedFeatures(
-          // bbox
-          [
-            [x - dist, y - dist],
-            [x + dist, y + dist]
-          ],
-          {
-            layers: [mapConfig.cables]
-          }
-        )
-        if (features.length > 0) {
-          break
-        }
-      }
-
-      if (features.length == 0) {
-        var zoom = map.getZoom()
-        map.setZoom(zoom - 1)
-      } else {
-        f.target._listeners.idle = []
-        let geojson = fCollectionFormat(
-          features.map(feature => feature.toJSON())
-        )
-
-        const nearestPoints = []
-        const pt = point([vm.latlng[0], vm.latlng[1]])
-        if (geojson.features.length > 0) {
-          geojson.features.forEach(function(feature) {
-            const snapped = nearestPointOnLine(feature, pt, {
-              units: 'kilometers'
-            })
-            console.log(snapped)
-            nearestPoints.push({
-              feature: feature,
-              distance: snapped.properties.dist,
-              point: snapped
-            })
-          })
-        }
-        let sortList = nearestPoints.sort((a, b) => a.distance - b.distance)
-        if (sortList.length > this.limit) {
-          sortList = sortList.splice(0, vm.limit)
-        }
-        map.getSource('finishpoint').setData(sortList[0].point)
-        if (sortList.length > 0) {
-          const shortestGoogleLines = []
-          // eslint-disable-next-line no-inner-declarations
-          function findGooglePath(i) {
-            if (i < sortList.length) {
-              const pnt = sortList[i].point.geometry.coordinates
-              console.log(pnt, vm.latlng)
-              vm.calcRoute(vm.latlng, pnt, function(path) {
-                shortestGoogleLines.push(path)
-                i++
-                findGooglePath(i)
-              })
-            } else {
-              const sortGoogleList = shortestGoogleLines.sort(
-                (a, b) => a.properties.len - b.properties.len
-              )
-              const shortPath = vm.findIntersects(sortGoogleList, geojson)
-              map.getSource('lines').setData(shortPath.line)
-              map.getSource('finishpoint').setData(shortPath.point)
-            }
-          }
-          findGooglePath(0)
-        }
-      }
+  registerEvents() {
+    const vm = this
+    this.map.on('idle', function(f) {
+      vm.handleIdle(f)
     })
+  }
+
+  handleIdle(f) {
+    if (!this.latlng) return
+
+    var dist = [500, 750, 1000, 1500, 2000, 2500, 3000]
+    var point = this.map.project(this.latlng)
+    var x = point.x
+    var y = point.y
+    for (var i = 0; i < dist.length; i++) {
+      var bbox = [
+        [x - dist[i], y - dist[i]],
+        [x + dist[i], y + dist[i]]
+      ]
+
+      var features = this.map.queryRenderedFeatures(bbox, {
+        layers: [mapConfig.cables]
+      })
+
+      var water = this.map.queryRenderedFeatures(point, {
+        layers: ['water']
+      })
+
+      if (water.length > 0) {
+        f.target._listeners.idle = []
+        alert('You cant use this skill on the water')
+        return false
+      }
+
+      features = features.filter(function(a) {
+        if (a.properties.isterrestrial == 'true') {
+          return true
+        }
+      })
+
+      if (features.length > 0) {
+        break
+      }
+    }
+
+    if (features.length == 0) {
+      var zoom = this.map.getZoom()
+      this.map.setZoom(zoom - 1)
+    } else {
+      f.target._listeners.idle = []
+      var geojson = { type: 'FeatureCollection', features: [] }
+      var lastFeatures = []
+      features.map(function(feature) {
+        var geojson2 = feature.toJSON()
+        lastFeatures.push(geojson2)
+      })
+      if (lastFeatures.length > 0) {
+        geojson.features = lastFeatures
+      }
+
+      var nearestPoints = []
+      var pt = point([...this.latlng])
+      if (geojson.features.length > 0) {
+        geojson.features.map(function(feature) {
+          var snapped = nearestPointOnLine(feature, pt, {
+            units: 'kilometers'
+          })
+          nearestPoints.push({
+            feature: feature,
+            distance: snapped.properties.dist,
+            point: snapped
+          })
+        })
+      }
+      var sortList = nearestPoints.sort((a, b) => a.distance - b.distance)
+      if (sortList.length > this.limit) {
+        sortList = sortList.splice(0, this.limit)
+      }
+      this.map.getSource('finishpoint').setData(sortList[0].point)
+      if (sortList.length > 0) {
+        var shortestGoogleLines = []
+
+        // eslint-disable-next-line no-inner-declarations
+        function findGooglePath(i) {
+          if (i < sortList.length) {
+            var pnt = sortList[i].point.geometry.coordinates
+            this.calcRoute(this.latlng, pnt, function(way) {
+              shortestGoogleLines.push(way)
+              i++
+              findGooglePath(i)
+            })
+          } else {
+            var sortGoogleList = shortestGoogleLines.sort(
+              (a, b) => a.properties.len - b.properties.len
+            )
+            var shortWay = this.findIntersects(sortGoogleList, geojson)
+            this.map.getSource('lines').setData(shortWay.line)
+            this.map.getSource('finishpoint').setData(shortWay.point)
+          }
+        }
+        findGooglePath(0)
+      }
+    }
   }
 
   findIntersects(roads, cables) {
@@ -232,7 +253,10 @@ export default class lastMileTool {
     }
     // eslint-disable-next-line
     this.googlemap = new google.maps.Map(document.getElementById(id), {
-      center: { lat: mapConfig.center[1], lng: mapConfig.center[0] },
+      center: {
+        lat: mapConfig.center[1],
+        lng: mapConfig.center[0]
+      },
       zoom: 8
     })
     // eslint-disable-next-line
