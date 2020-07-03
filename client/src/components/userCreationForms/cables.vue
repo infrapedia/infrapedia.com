@@ -477,7 +477,6 @@ export default {
       delete this.form.ownersList
     },
     'form.knownUsersList'(knownUsers) {
-      console.log(knownUsers)
       this.knownUsers = [...knownUsers]
       delete this.form.knownUsersList
     },
