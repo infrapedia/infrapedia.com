@@ -167,6 +167,7 @@
     </el-card>
     <div v-if="pagination" class="w-fit-full flex justify-content-center mt8">
       <el-pagination
+        v-if="!tableSearch"
         layout="prev, next"
         :current-page.sync="paginationPage"
         @current-change="$emit('page-change', $event)"
