@@ -449,6 +449,7 @@ export default {
             name: '',
             notes: '',
             // cc: '',
+            knownUsers: [],
             facilities: [],
             fiberPairs: '',
             systemLength: 0,
@@ -613,15 +614,24 @@ export default {
         name: f.label,
         _id: f._id
       }))
+      const knownUsersData = data.knownUsers.map(f => ({
+        name: f.label,
+        _id: f._id
+      }))
+
+      this.form.activationDateTime = new Date(this.form.activationDateTime)
 
       this.form.facsList = facsData
       this.form.facilities = facsData
 
       this.form.owners = ownersData
       this.form.ownersList = ownersData
-      this.form.activationDateTime = new Date(this.form.activationDateTime)
+
       this.form.cls = clsData
       this.form.clsList = clsData
+
+      this.form.knownUsers = knownUsersData
+      this.form.knownUsersList = knownUsersData
 
       if (
         data.category == 'null' ||

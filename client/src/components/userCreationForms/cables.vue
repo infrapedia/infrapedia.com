@@ -131,6 +131,7 @@
           <el-button
             class="inline-block"
             size="small"
+            :class="{ dark }"
             @click="addLitCapacityField"
           >
             Add lit capacity
@@ -226,6 +227,18 @@
           :value="mode == 'create' ? [] : form.owners"
         />
       </el-form-item>
+      <template v-if="creationID == 'subsea'">
+        <el-form-item label="Known Users" prop="knownUsers">
+          <v-multi-select
+            :mode="mode"
+            :options="knownUsers"
+            @input="loadKnownUsersSearch"
+            :loading="isLoadingKnownUsers"
+            @values-change="handleKnownUsersSelectChange"
+            :value="mode == 'create' ? [] : form.knownUsers"
+          />
+        </el-form-item>
+      </template>
       <el-form-item label="Tags" class="mt2" prop="tags">
         <el-select
           v-model="form.tags"
@@ -301,12 +314,14 @@ export default {
     facsList: [],
     tagsList: [],
     orgsList: [],
+    knownUsers: [],
     clsList: [],
     isURLValid: null,
     isLoadingCLS: false,
     inputVisible: false,
     isLoadingFacs: false,
     isLoadingOrgs: false,
+    isLoadingKnownUsers: false,
     isNameRepeated: false,
     warnTagDuplicate: false,
     litCapacityFields: []
@@ -379,6 +394,7 @@ export default {
             trigger: ['blur', 'change']
           }
         ],
+        knownUsers: [],
         cls: [
           {
             type: 'array',
@@ -459,6 +475,11 @@ export default {
     'form.ownersList'(owners) {
       this.orgsList = [...owners]
       delete this.form.ownersList
+    },
+    'form.knownUsersList'(knownUsers) {
+      console.log(knownUsers)
+      this.knownUsers = [...knownUsers]
+      delete this.form.knownUsersList
     },
     'form.clsList'(cls) {
       this.clsList = [...cls]
@@ -552,6 +573,9 @@ export default {
       this.form.owners = data
       this.setOwnersEmptyState()
     },
+    handleKnownUsersSelectChange(data) {
+      this.form.knownUsers = data
+    },
     setOwnersEmptyState() {
       this.isOwnersSelectEmpty = this.form.owners.length <= 0
     },
@@ -582,20 +606,28 @@ export default {
       }
       this.isLoadingFacs = false
     },
-    async loadOrgsSearch(s) {
+    async loadKnownUsersSearch(s) {
+      this.isLoadingKnownUsers = true
+      this.knownUsers = (await this.loadOrgsSearch(s, true)) || []
+      this.isLoadingKnownUsers = false
+    },
+    async loadOrgsSearch(s, returnData) {
       if (s.length <= 0) return
-      this.isLoadingOrgs = true
+
+      if (!returnData) this.isLoadingOrgs = true
       const res = await searchOrganization({
         user_id: await this.$auth.getUserID(),
         s
       })
       if (res && res.data) {
-        this.orgsList = res.data.reduce(
+        const result = res.data.reduce(
           (acc = Array.from(this.orgsList), item) => {
             return acc.map(i => i._id).includes(item._id) ? acc : [...acc, item]
           },
           []
         )
+        if (!returnData) this.orgsList = result
+        else return result
       }
       this.isLoadingOrgs = false
     },
@@ -647,6 +679,3 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-@import '../../assets/scss/components/cables-form-styles.scss';
-</style>
