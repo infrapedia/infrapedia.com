@@ -61,11 +61,17 @@
               </div>
             </template>
             <el-image
-              v-if="col.value === 'logo'"
+              v-else-if="col.value == 'logo'"
               fit="cover"
               :src="scope.row[col.value]"
               class="w12 h12 circle"
             />
+            <div v-else-if="col.value == 'name'">
+              {{ scope.row[col.value] }}
+              <el-tag v-if="scope.row.deleted" type="danger" size="mini">
+                Deleted
+              </el-tag>
+            </div>
             <template v-else-if="col.value == 'alerts'">
               <span v-if="!scope.row[col.value]">
                 0
@@ -137,7 +143,7 @@
                 <fa :icon="['fas', 'eye']" />
               </el-button>
               <el-button
-                v-if="canDelete"
+                v-if="canDelete && !scope.row.deleted"
                 type="danger"
                 class="p2 fs-regular"
                 size="small"
@@ -161,6 +167,7 @@
     </el-card>
     <div v-if="pagination" class="w-fit-full flex justify-content-center mt8">
       <el-pagination
+        v-if="!tableSearch"
         layout="prev, next"
         :current-page.sync="paginationPage"
         @current-change="$emit('page-change', $event)"

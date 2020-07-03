@@ -343,6 +343,14 @@ input.issues-dialog {
   // }
 }
 
+.multi-select {
+  .el-icon-close {
+    padding: 0.7rem 0.7rem 0.7rem 0.4rem;
+    border-radius: 0 !important;
+    right: -12px !important;
+  }
+}
+
 // -----------------------------------------------------
 // -----------------------------------------------------
 // -----------------------------------------------------
@@ -478,6 +486,12 @@ input.issues-dialog {
 }
 
 .application.dark {
+  .multi-select {
+    .el-icon-close {
+      background-color: $light-charcoal;
+    }
+  }
+
   .multiselect__tags {
     &:hover {
       border-color: darken($light-charcoal, 10%);

@@ -177,26 +177,6 @@ export const mapConfig = {
     ],
     layers: [
       {
-        id: facilities,
-        type: 'fill-extrusion',
-        source: facilities,
-        paint: facsPaintConfig
-      },
-      {
-        id: ixps,
-        type: 'circle',
-        source: ixps,
-        minzoom: 15,
-        paint: ixpsPaintConfig
-      },
-      {
-        id: cls,
-        type: 'circle',
-        source: cls,
-        minzoom: 3.4,
-        paint: clsPaintConfig
-      },
-      {
         id: cables,
         source: cables,
         'source-layer': cables,
@@ -224,12 +204,32 @@ export const mapConfig = {
         }
       },
       {
+        id: cls,
+        type: 'circle',
+        source: cls,
+        minzoom: 3.4,
+        paint: clsPaintConfig
+      },
+      {
+        id: facilities,
+        type: 'fill-extrusion',
+        source: facilities,
+        paint: facsPaintConfig
+      },
+      {
+        id: ixps,
+        type: 'circle',
+        source: ixps,
+        minzoom: 15,
+        paint: ixpsPaintConfig
+      },
+      {
         id: facilitiesLabel,
         type: 'symbol',
         source: facilities,
-        minzoom: 13.89,
+        minzoom: 10.89,
         layout: {
-          'text-field': ['to-string', ['get', 'address']],
+          'text-field': ['to-string', ['get', 'name']],
           'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Regular'],
           'text-size': 13,
           'text-anchor': 'bottom',
@@ -253,9 +253,9 @@ export const mapConfig = {
             ['get', 'point_count'],
             '#51bbd6',
             100,
-            '#f1f075',
+            '#51bbd6',
             750,
-            '#f28cb1'
+            '#51bbd6'
           ],
           'circle-radius': [
             'step',
@@ -283,7 +283,7 @@ export const mapConfig = {
       {
         id: facilitiesSinglePoints,
         type: 'circle',
-        maxzoom: 14,
+        // maxzoom: 14,
         source: facilitiesClusters,
         filter: ['!', ['has', 'point_count']],
         paint: {

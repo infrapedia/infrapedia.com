@@ -13,6 +13,7 @@ import {
   faMap,
   faDizzy,
   faCaretDown,
+  faWaveSquare,
   faCaretUp,
   faSearch,
   faFilter,
@@ -141,6 +142,7 @@ library.add(
   faShareAlt,
   faHeart,
   faTrash,
+  faWaveSquare,
   faCloudUploadAlt,
   faExclamationCircle
 )

@@ -21,7 +21,8 @@ export const createCable = async ({
   geom,
   cls,
   litCapacity,
-  tags
+  tags,
+  knownUsers
 }) => {
   url = `${apiConfig.url}/auth/cables/add`
   form = new URLSearchParams()
@@ -69,9 +70,15 @@ export const createCable = async ({
 
     if (facilities.length) {
       facilities.forEach((fac, i) => {
-        form.append(`facilities[${i}]`, fac._id)
+        form.append(`facilities[${i}]`, fac._id ? fac._id : fac)
       })
     } else form.append('facilities', [])
+
+    if (knownUsers.length) {
+      knownUsers.forEach((usr, i) => {
+        form.append(`knownUsers[${i}]`, usr._id ? usr._id : usr)
+      })
+    } else form.append('knownUsers', [])
 
     if (geom) {
       form.append('geom', JSON.stringify(fCollectionFormat(geom)))
@@ -109,6 +116,7 @@ export const editCable = async ({
   geom,
   tags,
   cls,
+  knownUsers,
   litCapacity
 }) => {
   url = `${apiConfig.url}/auth/cables/edit`
@@ -161,6 +169,12 @@ export const editCable = async ({
         form.append(`facilities[${i}]`, fac._id ? fac._id : fac)
       })
     } else form.append('facilities', [])
+
+    if (knownUsers.length) {
+      knownUsers.forEach((usr, i) => {
+        form.append(`knownUsers[${i}]`, usr._id ? usr._id : usr)
+      })
+    } else form.append('knownUsers', [])
 
     if (geom) {
       form.append('geom', JSON.stringify(fCollectionFormat(geom)))

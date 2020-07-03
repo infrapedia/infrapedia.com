@@ -1,16 +1,24 @@
 <template>
   <div class="inline-block w-fit-full multi-select">
-    <div class="flex row wrap">
+    <div class="flex row wrap w-fit-full">
       <el-tag
         v-for="(tag, i) in selections"
         :key="i"
         closable
-        class="mr1 mb4"
+        style="max-width: 16rem;"
+        class="mr1 mb4 p2 no-overflow-x vertical-align"
         :title="tag.name"
+        :effect="dark ? 'dark' : 'light'"
+        :type="dark ? 'info' : ''"
         :disable-transitions="true"
         @close="handleRemovedItem(tag)"
       >
-        {{ tag.name }}
+        <span
+          class="inline-block h7 p0 no-overflow-x truncate"
+          style="max-width: 12rem;"
+        >
+          {{ tag.name }}
+        </span>
       </el-tag>
       <el-select
         v-if="isInputVisible"
@@ -20,6 +28,7 @@
         size="medium"
         :class="{ dark }"
         remote
+        class="w-fit-full"
         :remote-method="handleInputChange"
         placeholder
         :loading="loading"
@@ -50,13 +59,11 @@
       >
         Add
       </el-button>
-      <!-- <div v-if="isRequired && isFieldEmpty" class="el-form-item__error">
-        This field is required
-      </div> -->
     </div>
     <el-alert
       v-if="isTagRepeated"
       center
+      type="danger"
       title="This selection is already included on the list"
       class="h20 text-center w-fit-full pr2 pl2 pt2 pb2 mb4"
       :closable="false"
@@ -173,9 +180,9 @@ export default {
 
       {
         if (!this.isMultiple) {
-          selectedIDs = this.selections.map(opt => opt._id)
-        } else {
           selectedIDs = [this.selections._id]
+        } else {
+          selectedIDs = this.selections.map(opt => opt._id)
         }
       }
 

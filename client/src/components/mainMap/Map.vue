@@ -1,6 +1,39 @@
 <template>
   <div id="map">
     <template v-if="!disabled">
+      <transition
+        name="animated faster delay-1s"
+        enter-active-class="slideInLeft"
+        leave-active-class="slideOutLeft"
+        mode="out-in"
+      >
+        <el-card
+          v-if="lastMileTool.active"
+          class="z-index120 w40 h40 p4"
+          style="position: fixed; top: 4rem; left: 2.4rem;"
+        >
+          <el-form>
+            <el-form-item label="Quality">
+              <el-slider
+                :max="5"
+                :min="1"
+                v-model="lastMileTool.quality"
+                class="inline-block w-fit-full"
+              />
+            </el-form-item>
+            <el-button
+              type="primary"
+              plain
+              size="mini"
+              class="w-fit-full"
+              title="Turn off Last Mile Tool"
+              @click="disableLastMileTool"
+            >
+              Turn off
+            </el-button>
+          </el-form>
+        </el-card>
+      </transition>
       <el-button
         id="ThreeD"
         type="text"
@@ -38,34 +71,39 @@
         />
         <fa :icon="['fas', 'times']" class="icon fs-medium" v-else />
 
-        <ul
-          v-if="isMenuOpen"
-          role="group"
-          class="absolute flex justify-content-space-around align-items-center"
-          :class="{ active: isMenuOpen }"
-        >
-          <li role="listitem">
-            <print-button :map="map" />
-          </li>
-          <li role="listitem">
-            <i-theme-toggler
-              id="toggleTheme"
-              title="Toggle dark mode"
-              @click="toggleDarkMode"
-            />
-          </li>
-          <li role="listitem">
-            <el-button
-              title="Share menu"
-              type="primary"
-              class="w11 h11"
-              circle
-              @click.stop="toggleGooeyMenu"
-            >
-              <fa :icon="['fas', 'share-alt']" />
-            </el-button>
-          </li>
-        </ul>
+        <template>
+          <ul
+            v-if="isMenuOpen"
+            role="group"
+            class="absolute flex justify-content-space-around align-items-center"
+            :class="{ active: isMenuOpen }"
+          >
+            <li role="listitem">
+              <print-button :map="map" />
+            </li>
+            <li role="listitem">
+              <last-mile-button @click="handleLastMileToolActivation" />
+            </li>
+            <li role="listitem">
+              <i-theme-toggler
+                id="toggleTheme"
+                title="Toggle dark mode"
+                @click="toggleDarkMode"
+              />
+            </li>
+            <li role="listitem">
+              <el-button
+                title="Share menu"
+                type="primary"
+                class="w11 h11"
+                circle
+                @click.stop="toggleGooeyMenu"
+              >
+                <fa :icon="['fas', 'share-alt']" />
+              </el-button>
+            </li>
+          </ul>
+        </template>
       </el-button>
       <gooey-menu :is-active="isGooeyMenu" @close="toggleGooeyMenu" />
     </template>
@@ -114,6 +152,10 @@ import dataCollection from '../../mixins/dataCollection'
 // import convertToYear from '../../helpers/convertToYear'
 // eslint-disable-next-line
 import { DateTime } from 'luxon'
+import LastMileButton from './LastMileButton'
+import lastMileTool, { lastMileToolLayers } from './gri-tool'
+import bbox from '@turf/bbox'
+import { fCollectionFormat } from '../../helpers/featureCollection'
 
 export default {
   name: 'Map',
@@ -121,7 +163,8 @@ export default {
   components: {
     IThemeToggler,
     PrintButton,
-    GooeyMenu
+    GooeyMenu,
+    LastMileButton
   },
   props: {
     disabled: {
@@ -136,7 +179,12 @@ export default {
     map: undefined,
     isMenuOpen: false,
     isGooeyMenu: false,
-    isLocationZoomIn: true
+    isLocationZoomIn: true,
+    lastMileTool: {
+      active: false,
+      reference: null,
+      quality: 1
+    }
   }),
   computed: {
     ...mapState({
@@ -220,6 +268,7 @@ export default {
         mbCtrl.appendChild(document.getElementById('FScreen'))
 
         window.draw = draw
+        this.lastMileTool.reference = new lastMileTool({ map })
       }
 
       window.mapboxgl = mapboxgl
@@ -249,6 +298,7 @@ export default {
       for (let layer of mapConfig.data.layers) {
         map.addLayer(layer)
       }
+      lastMileToolLayers(map)
       map.setFilter(mapConfig.cables, mapConfig.filter.all)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
     },
@@ -284,6 +334,7 @@ export default {
         map.on('click', this.handleMapClick)
         map.on('touchend', this.handleMapClick)
         map.on('render', this.handleBoundsChange)
+        this.lastMileTool.reference.registerEvents()
       } else {
         const disabledClick = () => this.$emit('clicked-disabled-map')
         map.on('click', disabledClick)
@@ -297,7 +348,7 @@ export default {
       return map
     },
     handleCLSHover(e, isHovering) {
-      if (!this.map) return
+      if (!this.map || this.lastMileTool.active) return
       const {
         features: [
           {
@@ -375,9 +426,16 @@ export default {
         layers: [mapConfig.clusters]
       })
 
-      if (!clusters.length && e.features.length && !this.isMobile) {
+      if (
+        !clusters.length &&
+        e.features.length &&
+        !this.isMobile &&
+        !this.lastMileTool.active
+      ) {
         this.map.getCanvas().style.cursor = 'pointer'
         this.showPopup({ e, map: this.map, popup, isPoint, type })
+      } else {
+        this.map.getCanvas().style.cursor = 'crosshair'
       }
     },
     /**
@@ -385,7 +443,11 @@ export default {
      * @param map { Object } The map instance
      */
     handlePopupVisibilityOff({ popup, map }) {
-      map.getCanvas().style.cursor = ''
+      if (!this.lastMileTool.active) {
+        map.getCanvas().style.cursor = ''
+      } else {
+        map.getCanvas().style.cursor = 'crosshair'
+      }
       popup.remove()
     },
     highlightSelection(id) {
@@ -459,6 +521,11 @@ export default {
         }
         if (this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
 
+        if (this.lastMileTool.active) {
+          this.handleLastMileToolCoordsChange(e)
+          return
+        }
+
         const cables = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.cables]
         })
@@ -480,10 +547,32 @@ export default {
           layers: [mapConfig.facilitiesClusters]
         })
 
+        const facsClustersSinglePoints = this.map.queryRenderedFeatures(
+          e.point,
+          {
+            layers: [mapConfig.facilitiesSinglePoints]
+          }
+        )
+
         // If in the region selected there is a point or a building
         // Call the api to retrieve that facility data and open the sidebar
+        if (facsClustersSinglePoints.length > 0) {
+          this.map.fitBounds(
+            bbox(fCollectionFormat(facsClustersSinglePoints)),
+            {
+              ease: true,
+              zoom: 16.4
+            }
+          )
+        } else if (clusters.length > 0 || facsClusters.length > 0) {
+          let data = clusters.length > 0 ? clusters : facsClusters
+          let sourceName =
+            clusters.length > 0
+              ? mapConfig.clusters
+              : mapConfig.facilitiesClusters
 
-        if (cls.length > 0) {
+          await this.handleClustersSelection(data, this.map, sourceName)
+        } else if (cls.length > 0) {
           await this.handleClsSelection({
             id: cls[0].properties._id,
             type: 'cls'
@@ -498,16 +587,6 @@ export default {
             id: facilities[0].properties._id,
             type: 'facilities'
           })
-        }
-
-        if (clusters.length > 0 || facsClusters.length > 0) {
-          let data = clusters.length > 0 ? clusters : facsClusters
-          let sourceName =
-            clusters.length > 0
-              ? mapConfig.clusters
-              : mapConfig.facilitiesClusters
-
-          return await this.handleClustersSelection(data, this.map, sourceName)
         } else if (cables.length > 0) {
           await this.handleCablesSelection(cables.length > 0, cables)
         } else if (
@@ -621,7 +700,7 @@ export default {
 
           map.easeTo({
             center: clusters[0].geometry.coordinates,
-            zoom
+            zoom: zoom + 1
           })
         })
     },
@@ -1026,7 +1105,50 @@ export default {
     },
     handlePreviouslySelected: debounce(function() {
       if (this.map.loaded()) this.handleFocusOn(this.focus)
-    }, 1200)
+    }, 1200),
+    handleLastMileToolActivation() {
+      this.lastMileTool.active = true
+      this.lastMileTool.reference.initService()
+      this.map.getCanvas().style.cursor = 'crosshair'
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesClusters,
+        'visibility',
+        'none'
+      )
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesCount,
+        'visibility',
+        'none'
+      )
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesSinglePoints,
+        'visibility',
+        'none'
+      )
+    },
+    disableLastMileTool() {
+      this.lastMileTool.active = false
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesClusters,
+        'visibility',
+        'visible'
+      )
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesCount,
+        'visibility',
+        'visible'
+      )
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesSinglePoints,
+        'visibility',
+        'visible'
+      )
+      this.map.getCanvas().style.cursor = 'pointer'
+      document.getElementById('googlemap').remove()
+    },
+    handleLastMileToolCoordsChange(e) {
+      this.lastMileTool.reference.find(e.lngLat)
+    }
   }
 }
 </script>
