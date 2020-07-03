@@ -9,6 +9,7 @@
       >
         <el-card
           v-if="lastMileTool.active"
+          :class="{ dark }"
           class="z-index120 w40 h40 p4"
           style="position: fixed; top: 4rem; left: 2.4rem;"
         >
@@ -17,6 +18,7 @@
               <el-slider
                 :max="5"
                 :min="1"
+                :class="{ dark }"
                 v-model="lastMileTool.quality"
                 class="inline-block w-fit-full"
               />
@@ -24,6 +26,7 @@
             <el-button
               type="primary"
               plain
+              :class="{ dark }"
               size="mini"
               class="w-fit-full"
               title="Turn off Last Mile Tool"
