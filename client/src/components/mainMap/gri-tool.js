@@ -13,15 +13,15 @@ import {
 export function lastMileToolLayers(map) {
   const fc = fCollectionFormat()
 
-  map.addSource('lines', {
+  map.addSource('shortestroads', {
     type: 'geojson',
     data: fc
   })
 
   map.addLayer({
-    id: 'line',
+    id: 'shortestroad',
     type: 'line',
-    source: 'lines',
+    source: 'shortestroads',
     paint: {
       'line-color': '#FF0000',
       'line-width': 2
@@ -30,9 +30,9 @@ export function lastMileToolLayers(map) {
   })
 
   map.addLayer({
-    id: 'line-label',
-    source: 'lines',
-    name: 'Production Backbone',
+    id: 'shortestroad-label',
+    source: 'shortestroads',
+    name: 'shortest road',
     type: 'symbol',
     layout: {
       'text-field': ['get', 'distance'],
@@ -48,15 +48,15 @@ export function lastMileToolLayers(map) {
     }
   })
 
-  map.addSource('points', {
+  map.addSource('startpoints', {
     type: 'geojson',
     data: fc
   })
 
   map.addLayer({
-    id: 'point',
+    id: 'startpoint',
     type: 'circle',
-    source: 'points',
+    source: 'startpoints',
     paint: {
       'circle-radius': 5,
       'circle-color': '#35af6d',
@@ -67,15 +67,15 @@ export function lastMileToolLayers(map) {
   })
 
   //finish layer
-  map.addSource('finishpoint', {
+  map.addSource('finishpoints', {
     type: 'geojson',
     data: fc
   })
 
   map.addLayer({
-    id: 'finish',
+    id: 'finishpoint',
     type: 'circle',
-    source: 'finishpoint',
+    source: 'finishpoints',
     paint: {
       'circle-radius': 5,
       'circle-color': '#FF00C4',
@@ -93,13 +93,14 @@ export default class lastMileTool {
     this.map = map
     this.latlng = null
     this.googlemap = null
-    this.requestType = 'mapbox'
+    this.requestType = 'google'
     this.directionsService = null
   }
 
   find(e) {
-    this.latlng = [e.lat, e.lng]
+    this.latlng = [e.lng, e.lat]
     this.map.setCenter(e)
+    this.map.getSource('startpoints').setData(point(this.latlng))
   }
 
   registerEvents() {
@@ -111,11 +112,10 @@ export default class lastMileTool {
 
   handleIdle(f) {
     if (!this.latlng) return
-
     var dist = [500, 750, 1000, 1500, 2000, 2500, 3000]
-    var point = this.map.project(this.latlng)
-    var x = point.x
-    var y = point.y
+    var mypoint = this.map.project(this.latlng)
+    var x = mypoint.x
+    var y = mypoint.y
     for (var i = 0; i < dist.length; i++) {
       var bbox = [
         [x - dist[i], y - dist[i]],
@@ -126,18 +126,17 @@ export default class lastMileTool {
         layers: [mapConfig.cables]
       })
 
-      var water = this.map.queryRenderedFeatures(point, {
+      var water = this.map.queryRenderedFeatures(mypoint, {
         layers: ['water']
       })
 
       if (water.length > 0) {
         f.target._listeners.idle = []
-        // alert('You cant use this skill on the water')
+        alert('You cant use this skill on the water')
         return false
       }
 
       features = features.filter(function(a) {
-        console.log(a.properties)
         if (a.properties.terrestrial == 'true') {
           return true
         }
@@ -164,7 +163,7 @@ export default class lastMileTool {
       }
 
       var nearestPoints = []
-      var pt = point([...this.latlng])
+      var pt = point(this.latlng)
       if (geojson.features.length > 0) {
         geojson.features.map(function(feature) {
           var snapped = nearestPointOnLine(feature, pt, {
@@ -181,29 +180,31 @@ export default class lastMileTool {
       if (sortList.length > this.limit) {
         sortList = sortList.splice(0, this.limit)
       }
-      this.map.getSource('finishpoint').setData(sortList[0].point)
+      this.map.getSource('finishpoints').setData(sortList[0].point)
       if (sortList.length > 0) {
         var shortestGoogleLines = []
 
         // eslint-disable-next-line no-inner-declarations
-        function findGooglePath(i) {
+        function findGooglePath(i, that) {
           if (i < sortList.length) {
             var pnt = sortList[i].point.geometry.coordinates
-            this.calcRoute(this.latlng, pnt, function(way) {
+            that.calcRoute(that.latlng, pnt, function(way) {
               shortestGoogleLines.push(way)
               i++
-              findGooglePath(i)
+              findGooglePath(i, that)
             })
           } else {
             var sortGoogleList = shortestGoogleLines.sort(
               (a, b) => a.properties.len - b.properties.len
             )
-            var shortWay = this.findIntersects(sortGoogleList, geojson)
-            this.map.getSource('lines').setData(shortWay.line)
-            this.map.getSource('finishpoint').setData(shortWay.point)
+
+            var shortWay = that.findIntersects(sortGoogleList, geojson)
+            that.map.getSource('shortestroads').setData(shortWay.line)
+            that.map.getSource('finishpoints').setData(shortWay.point)
           }
         }
-        findGooglePath(0)
+
+        findGooglePath(0, this)
       }
     }
   }
