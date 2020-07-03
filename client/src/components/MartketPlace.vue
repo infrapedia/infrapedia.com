@@ -87,7 +87,7 @@ export default {
           }`,
           request: `${
             customRequest
-              ? 'Custom configuration'
+              ? 'Data Center space: Custom requirements'
               : request
               ? `<p>${request.split('</p>')[0]}`
               : 'None'
