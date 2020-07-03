@@ -152,6 +152,8 @@ import dataCollection from '../../mixins/dataCollection'
 import convertToYear from '../../helpers/convertToYear'
 import LastMileButton from './LastMileButton'
 import lastMileTool, { lastMileToolLayers } from './gri-tool'
+import bbox from '@turf/bbox'
+import { fCollectionFormat } from '../../helpers/featureCollection'
 
 export default {
   name: 'Map',
@@ -541,37 +543,46 @@ export default {
           layers: [mapConfig.facilitiesClusters]
         })
 
+        const facsClustersSinglePoints = this.map.queryRenderedFeatures(
+          e.point,
+          {
+            layers: [mapConfig.facilitiesSinglePoints]
+          }
+        )
+
         // If in the region selected there is a point or a building
         // Call the api to retrieve that facility data and open the sidebar
-
-        if (cls.length > 0) {
-          await this.handleClsSelection({
-            id: cls[0].properties._id,
-            type: 'cls'
-          })
-          return
-        } else if (ixps.length > 0) {
-          await this.handleIxpsSelection({
-            id: ixps[0].properties._id,
-            type: 'ixps'
-          })
-          return
-        } else if (facilities.length > 0) {
-          await this.handleFacilitySelection({
-            id: facilities[0].properties._id,
-            type: 'facilities'
-          })
-          return
-        }
-
-        if (clusters.length > 0 || facsClusters.length > 0) {
+        if (facsClustersSinglePoints.length > 0) {
+          this.map.fitBounds(
+            bbox(fCollectionFormat(facsClustersSinglePoints)),
+            {
+              ease: true,
+              zoom: 16.4
+            }
+          )
+        } else if (clusters.length > 0 || facsClusters.length > 0) {
           let data = clusters.length > 0 ? clusters : facsClusters
           let sourceName =
             clusters.length > 0
               ? mapConfig.clusters
               : mapConfig.facilitiesClusters
 
-          return await this.handleClustersSelection(data, this.map, sourceName)
+          await this.handleClustersSelection(data, this.map, sourceName)
+        } else if (cls.length > 0) {
+          await this.handleClsSelection({
+            id: cls[0].properties._id,
+            type: 'cls'
+          })
+        } else if (ixps.length > 0) {
+          await this.handleIxpsSelection({
+            id: ixps[0].properties._id,
+            type: 'ixps'
+          })
+        } else if (facilities.length > 0) {
+          await this.handleFacilitySelection({
+            id: facilities[0].properties._id,
+            type: 'facilities'
+          })
         } else if (cables.length > 0) {
           await this.handleCablesSelection(cables.length > 0, cables)
         } else if (
@@ -685,7 +696,7 @@ export default {
 
           map.easeTo({
             center: clusters[0].geometry.coordinates,
-            zoom
+            zoom: zoom + 1
           })
         })
     },

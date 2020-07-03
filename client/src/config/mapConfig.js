@@ -236,9 +236,9 @@ export const mapConfig = {
             ['get', 'point_count'],
             '#51bbd6',
             100,
-            '#f1f075',
+            '#51bbd6',
             750,
-            '#f28cb1'
+            '#51bbd6'
           ],
           'circle-radius': [
             'step',
@@ -266,7 +266,7 @@ export const mapConfig = {
       {
         id: facilitiesSinglePoints,
         type: 'circle',
-        maxzoom: 14,
+        // maxzoom: 14,
         source: facilitiesClusters,
         filter: ['!', ['has', 'point_count']],
         paint: {
