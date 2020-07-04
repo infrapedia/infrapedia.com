@@ -69,38 +69,42 @@ export default {
     async getMarketPlace() {
       const res = await getMarketPlaceList()
       if (res && res.data && res.data.r) {
-        this.marketplaceData = res.data.r.map(this.formatMarketPlaceData)
+        this.marketplaceData = res.data.r
+          .map(this.formatMarketPlaceData)
+          .filter(t => t)
       }
     },
     formatDate(_, __, value) {
       return formatDate(value)
     },
     formatMarketPlaceData(item) {
-      let request = this.formatMessage(item.message)
-        .split('Type:')[1]
-        .split('<p style="font-size: 14px">')[1]
-      let customRequest = item.message.includes('Custom Request: true')
+      if (this.formatMessage(item.message)) {
+        let request = this.formatMessage(item.message)
+          .split('Type:')[1]
+          .split('<p style="font-size: 14px">')[1]
+        let customRequest = item.message.includes('Custom Request: true')
 
-      return {
-        rgDate: item.rgDate,
-        status: item.status ? 'Open' : 'Closed',
-        item: `${
-          this.formatMessage(item.message)
-            .split('Element:')[1]
-            .split('<p style')[0]
-        }`,
-        request: `${
-          customRequest
-            ? 'Data Center space: Custom requirements'
-            : request
-            ? `<p>${request.split('</p>')[0]}`
-            : 'None'
-        }`
-      }
+        return {
+          rgDate: item.rgDate,
+          status: item.status ? 'Open' : 'Closed',
+          item: `${
+            this.formatMessage(item.message)
+              .split('Element:')[1]
+              .split('<p style')[0]
+          }`,
+          request: `${
+            customRequest
+              ? 'Data Center space: Custom requirements'
+              : request
+              ? `<p>${request.split('</p>')[0]}`
+              : 'None'
+          }`
+        }
+      } else return false
     },
     formatMessage(value) {
       const v = value.split('The user has the following request:</p>')
-      return v[1]
+      return v.length > 1 ? v[1] : false
     },
     toggleVisibility() {
       this.isOpen = !this.isOpen
