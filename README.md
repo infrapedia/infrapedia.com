@@ -1,5 +1,9 @@
 # Infrapedia Open Source
 
+## Version 2.1.5
+
+- Community Market Place
+
 ## Version 2.1.4
 
 - BuyDialog component points field is now using custom api and mapbox places api
