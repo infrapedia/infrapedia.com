@@ -18,7 +18,7 @@ ul[role='list'] {
 .el-input {
   min-width: 8rem;
   width: 20rem;
-  @media screen and (max-width: $break-md) {
+  @media screen and (max-width: $break-md), (max-width: 1280px) {
     width: 12rem;
   }
 }
