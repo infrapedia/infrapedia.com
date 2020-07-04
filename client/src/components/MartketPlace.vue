@@ -41,7 +41,6 @@
             </template>
           </el-table-column>
           <el-table-column prop="status" label="Status" />
-          <!-- :formatter="formatStatus" -->
         </el-table>
       </div>
     </transition>
@@ -60,60 +59,55 @@ export default {
   }),
   mounted() {
     this.getMarketPlace()
-    window.addEventListener('click', this.handleCloseSheet)
     bus.$on('close-marketplace', this.handleCloseSheet)
+    window.addEventListener('click', this.handleCloseSheet)
   },
   beforeDestroy() {
     window.removeEventListener('click', this.handleCloseSheet)
   },
   methods: {
     async getMarketPlace() {
-      const {
-        data: { r = [] }
-      } = (await getMarketPlaceList()) || { data: { r: [] } }
-      this.marketplaceData = r.map(item => {
-        let request = this.formatMessage(item.message)
-          .split('Type:')[1]
-          .split('<p style="font-size: 14px">')[1]
-        let customRequest = item.message.includes('Custom Request: true')
-
-        return {
-          rgDate: item.rgDate,
-          status: item.status ? 'Open' : 'Closed',
-          item: `${
-            this.formatMessage(item.message)
-              .split('Element:')[1]
-              .split('<p style')[0]
-          }`,
-          request: `${
-            customRequest
-              ? 'Custom configuration'
-              : request
-              ? `<p>${request.split('</p>')[0]}`
-              : 'None'
-          }`
-        }
-      })
+      const res = await getMarketPlaceList()
+      if (res && res.data && res.data.r) {
+        this.marketplaceData = res.data.r.map(this.formatMarketPlaceData)
+      }
     },
     formatDate(_, __, value) {
       return formatDate(value)
+    },
+    formatMarketPlaceData(item) {
+      let request = this.formatMessage(item.message)
+        .split('Type:')[1]
+        .split('<p style="font-size: 14px">')[1]
+      let customRequest = item.message.includes('Custom Request: true')
+
+      return {
+        rgDate: item.rgDate,
+        status: item.status ? 'Open' : 'Closed',
+        item: `${
+          this.formatMessage(item.message)
+            .split('Element:')[1]
+            .split('<p style')[0]
+        }`,
+        request: `${
+          customRequest
+            ? 'Data Center space: Custom requirements'
+            : request
+            ? `<p>${request.split('</p>')[0]}`
+            : 'None'
+        }`
+      }
     },
     formatMessage(value) {
       const v = value.split('The user has the following request:</p>')
       return v[1]
     },
-    // formatStatus(_, __, value) {
-    //   return value ? 'Open' : 'Closed'
-    // },
     toggleVisibility() {
       this.isOpen = !this.isOpen
     },
     handleCloseSheet() {
       this.isOpen = false
     }
-    // tableRowClassName({ row }) {
-    //   return row.status ? 'success-row' : 'warning-row'
-    // },
   }
 }
 </script>
