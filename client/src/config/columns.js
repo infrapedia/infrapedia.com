@@ -95,6 +95,11 @@ export const cablesColumns = [
     showSidebar: true
   },
   {
+    label: 'Known Users',
+    value: 'knownUsers',
+    showSidebar: true
+  },
+  {
     label: 'Organizations',
     value: 'organizations',
     showSidebar: true
