@@ -108,7 +108,7 @@
             </el-form-item>
           </el-col>
         </template>
-        <template v-else-if="isTransitSelection">
+        <!-- <template v-else-if="isTransitSelection">
           <el-col :xl="24">
             <el-form-item label="Location(s)" prop="transitIP" ref="transitIP">
               <v-multi-select
@@ -123,7 +123,7 @@
               />
             </el-form-item>
           </el-col>
-        </template>
+        </template> -->
         <el-col :span="24">
           <el-form-item
             label="Message"
@@ -195,12 +195,12 @@ import validateEmail from '../../helpers/validateEmail'
 import buyMessageFormatter from '../../helpers/buyMessageFormatter'
 import PointBuyDialogSearchVue from '../PointBuyDialogSearch.vue'
 import { searchFacilities } from '../../services/api/facs'
-import VMultiSelect from '../../components/MultiSelect'
+// import VMultiSelect from '../../components/MultiSelect'
 
 export default {
   components: {
     VueRecaptcha,
-    VMultiSelect,
+    // VMultiSelect,
     'point-field': PointBuyDialogSearchVue
   },
   data: () => ({
@@ -211,7 +211,7 @@ export default {
     catchaVerified: null,
     isCustomRequest: false,
     isLoadingFacs: false,
-    isTransitIpEmpty: false,
+    // isTransitIpEmpty: false,
     form: {
       company: '',
       email: '',
@@ -345,27 +345,27 @@ export default {
       } else {
         this.setUserData()
         if (this.isTransitSelection) {
-          this.formRules.transitIP[0] = {
-            required: this.isTransitSelection,
-            message: 'Please input an IP point',
-            trigger: ['blur', 'change']
-          }
+          // this.formRules.transitIP[0] = {
+          //   required: this.isTransitSelection,
+          //   message: 'Please input an IP point',
+          //   trigger: ['blur', 'change']
+          // }
           this.capacities = ['1Gbps', '10Gbps', '100Gbps', 'Other']
         } else {
-          this.formRules.transitIP = []
+          // this.formRules.transitIP = []
           this.capacities = ['1Gbps', '10Gbps', '100Gbps', 'Fiber', 'Other']
         }
       }
     }
   },
   methods: {
-    handleTransitIPChange(value) {
-      const isEmpty = value === '' || !value
+    // handleTransitIPChange(value) {
+    //   const isEmpty =
 
-      this.isTransitIpEmpty = isEmpty
-      this.form.transitIP = value[0].name
-      if (!isEmpty) this.$refs.transitIP.clearValidate()
-    },
+    //   this.isTransitIpEmpty = isEmpty
+    //   this.form.transitIP = value[0].name
+    //   if (!isEmpty) this.$refs.transitIP.clearValidate()
+    // },
     async loadFacsSearch(s) {
       if (s.length <= 0) return
       this.isLoadingFacs = true
