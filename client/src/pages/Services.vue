@@ -37,17 +37,6 @@
                 advice, software development, project support, operations,
                 marketing consultancy, and more.
               </p>
-              <!-- <footer>
-                <router-link
-                  to="/contact"
-                  class="underline-hover inline-block mt12"
-                >
-                  Learn more
-                  <span class="fs-xsmall font-thin ml1">
-                    <fa :icon="['fas', 'angle-double-right']" />
-                  </span>
-                </router-link>
-              </footer> -->
             </div>
           </div>
         </router-link>
@@ -73,17 +62,6 @@
                 software to analyze our database in order to find answers to
                 your specific questions.
               </p>
-              <!-- <footer>
-                <router-link
-                  to="/contact"
-                  class="underline-hover inline-block mt12"
-                >
-                  Learn more
-                  <span class="fs-xsmall font-thin ml1">
-                    <fa :icon="['fas', 'angle-double-right']" />
-                  </span>
-                </router-link>
-              </footer> -->
             </div>
           </div>
         </router-link>
@@ -109,17 +87,6 @@
                 third party information for analysis, NOC operations, dedicated
                 maps, and more.
               </p>
-              <!-- <footer>
-                <router-link
-                  to="/contact"
-                  class="underline-hover inline-block mt12"
-                >
-                  Learn more
-                  <span class="fs-xsmall font-thin ml1">
-                    <fa :icon="['fas', 'angle-double-right']" />
-                  </span>
-                </router-link>
-              </footer> -->
             </div>
           </div>
         </router-link>
@@ -139,17 +106,6 @@
                 are able to work with you on the development of the software you
                 need to increase your team’s efficiency and profitability.
               </p>
-              <!-- <footer>
-                <router-link
-                  to="/contact"
-                  class="underline-hover inline-block mt12"
-                >
-                  Learn more
-                  <span class="fs-xsmall font-thin ml1">
-                    <fa :icon="['fas', 'angle-double-right']" />
-                  </span>
-                </router-link>
-              </footer> -->
             </div>
           </div>
         </router-link>

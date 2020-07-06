@@ -179,12 +179,6 @@ $header-color: rgb(37, 95, 185);
     }
   }
 
-  .sm-icon,
-  .list-item,
-  .link {
-    color: $white-full;
-  }
-
   #sponsorsBtn,
   .list-item:not([data-no-hover-bg='true']) {
     &:focus,

@@ -77,3 +77,19 @@ p.text {
     max-width: 100%;
   }
 }
+
+.application .dark {
+  color: $white-full;
+  .title {
+    color: inherit;
+  }
+  p {
+    @extend .text-white--hsl;
+  }
+}
+
+.el-divider.dark,
+.el-card.dark {
+  border-color: $light-charcoal;
+  background-color: $dark-charcoal;
+}

@@ -702,6 +702,9 @@ input.issues-dialog {
   .el-pagination .btn-next,
   .el-loading-mask,
   .el-input-group__prepend,
+  .el-table tr,
+  .el-table th,
+  .el-table__body-wrapper,
   .el-table__body tr.hover-row > td,
   .el-table__body tr.hover-row.current-row > td,
   .el-table__body tr.hover-row.el-table__row--striped > td,
@@ -721,8 +724,19 @@ input.issues-dialog {
     }
   }
 
+  .el-table tr,
+  .el-table th,
   .el-input-group__prepend {
     border-color: $dark-charcoal;
+  }
+
+  .el-table--group,
+  .el-table--border {
+    border-color: $light-charcoal;
+    &::after,
+    &::before {
+      background-color: $light-charcoal;
+    }
   }
 
   .el-collapse-item__content,

@@ -218,6 +218,15 @@ export default {
     if (this.dark) this.map.setStyle(mapConfig.darkBasemap)
     if (this.currentSelection && this.focus) this.handlePreviouslySelected()
   },
+  beforeDestroy() {
+    bus.$off(CLEAR_SELECTION, this.disableSelectionHighlight)
+    bus.$off(TOGGLE_THEME, this.toggleDarkMode)
+    bus.$off(FOCUS_ON, this.handleFocusOn)
+    bus.$off(FOCUS_ON_CITY, this.handleCityFocus)
+    bus.$off(UPDATE_TIME_MACHINE, this.handleUpdateTimeMachine)
+    bus.$off(TOGGLE_FILTER_SELECTION, this.handleFilterSelection)
+    bus.$off(SUBSEA_FILTER, this.handleSubseaToggle)
+  },
   methods: {
     ...mapActions({
       getFacilityData: 'map/getFacilityData',

@@ -1,12 +1,18 @@
 <template>
   <div
+    aria-haspopup="true"
     class="text-center h-fit-full flex align-items-center"
-    @click.stop="toggleVisibility"
+    v-click-outside="closeSheet"
   >
-    <span class="drawer-opener">
+    <el-button
+      type="text"
+      :class="{ 'text-white--hsl': dark }"
+      class="drawer-opener fs-small font-regular mt-1"
+      @click="toggleVisibility"
+    >
       Market Place
       <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon" />
-    </span>
+    </el-button>
     <transition
       tag="div"
       enter-active-class="animated faster slideInDown"
@@ -16,12 +22,16 @@
       <div
         v-if="isOpen"
         class="wrapper flex column bg-white pr6 pl6 pt12"
-        @click.stop
+        :class="{
+          'bg-white': !dark,
+          'bg-charcoal': dark
+        }"
       >
         <h1 class="title w-fit-full mb8">Community Market Place</h1>
         <el-table
           :data="marketplaceData"
           class="w-fit-full"
+          :class="{ dark }"
           id="marketplace-banner-table"
           :height="120"
           border
@@ -49,51 +59,51 @@
 </template>
 
 <script>
-import { bus } from '../helpers/eventBus'
-import { formatDate } from '../helpers/formatDate'
-import { getMarketPlaceList } from '../services/api/marketplace'
+import { formatDate } from '../../helpers/formatDate'
+import { getMarketPlaceList } from '../../services/api/marketplace'
+import ClickOutside from 'vue-click-outside'
 
 export default {
   data: () => ({
     marketplaceData: [],
     isOpen: false
   }),
-  mounted() {
-    this.getMarketPlace()
-    window.addEventListener('click', this.handleCloseSheet)
-    bus.$on('close-marketplace', this.handleCloseSheet)
+  computed: {
+    dark() {
+      return this.$store.state.isDark
+    }
   },
-  beforeDestroy() {
-    window.removeEventListener('click', this.handleCloseSheet)
+  async mounted() {
+    await this.getMarketPlace()
   },
   methods: {
     async getMarketPlace() {
-      const {
-        data: { r = [] }
-      } = (await getMarketPlaceList()) || { data: { r: [] } }
-      this.marketplaceData = r.map(item => {
-        let request = this.formatMessage(item.message)
-          .split('Type:')[1]
-          .split('<p style="font-size: 14px">')[1]
-        let customRequest = item.message.includes('Custom Request: true')
+      const res = await getMarketPlaceList()
+      if (res && res.data && res.data.r) {
+        this.marketplaceData = res.data.r.map(item => {
+          let request = this.formatMessage(item.message)
+            .split('Type:')[1]
+            .split('<p style="font-size: 14px">')[1]
+          let customRequest = item.message.includes('Custom Request: true')
 
-        return {
-          rgDate: item.rgDate,
-          status: item.status ? 'Open' : 'Closed',
-          item: `${
-            this.formatMessage(item.message)
-              .split('Element:')[1]
-              .split('<p style')[0]
-          }`,
-          request: `${
-            customRequest
-              ? 'Data Center space: Custom requirements'
-              : request
-              ? `<p>${request.split('</p>')[0]}`
-              : 'None'
-          }`
-        }
-      })
+          return {
+            rgDate: item.rgDate,
+            status: item.status ? 'Open' : 'Closed',
+            item: `${
+              this.formatMessage(item.message)
+                .split('Element:')[1]
+                .split('<p style')[0]
+            }`,
+            request: `${
+              customRequest
+                ? 'Data Center space: Custom requirements'
+                : request
+                ? `<p>${request.split('</p>')[0]}`
+                : 'None'
+            }`
+          }
+        })
+      }
     },
     formatDate(_, __, value) {
       return formatDate(value)
@@ -102,22 +112,19 @@ export default {
       const v = value.split('The user has the following request:</p>')
       return v[1]
     },
-    // formatStatus(_, __, value) {
-    //   return value ? 'Open' : 'Closed'
-    // },
     toggleVisibility() {
       this.isOpen = !this.isOpen
     },
-    handleCloseSheet() {
+    closeSheet() {
       this.isOpen = false
     }
-    // tableRowClassName({ row }) {
-    //   return row.status ? 'success-row' : 'warning-row'
-    // },
+  },
+  directives: {
+    ClickOutside
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/scss/components/marketplace-navbar-styles.scss';
+@import '../../assets/scss/components/marketplace-navbar-styles.scss';
 </style>

@@ -4,6 +4,7 @@
       :visible-arrow="false"
       placement="bottom-end"
       width="320"
+      v-click-outside="closeFilter"
       trigger="manual"
       transition="el-zoom-in-top"
       v-model="isMenuFilter"
@@ -19,7 +20,7 @@
           </span>
           <span
             class="fs-mdlarge cursor-pointer"
-            @click="toggleFilterVisiblity"
+            @click="toggleFilterVisiblity(false)"
           >
             <fa :icon="['fas', 'times']" />
           </span>
@@ -93,7 +94,7 @@
         type="warning"
         slot="reference"
         class="circle w7 h7 p0 vertical-align"
-        @click.stop="toggleFilterVisiblity"
+        @click="toggleFilterVisiblity(!isMenuFilter)"
       >
         <fa :icon="['fas', 'filter']" class="xsm-icon" />
       </el-button>
@@ -102,13 +103,14 @@
 </template>
 
 <script>
-import { bus } from '../helpers/eventBus'
+import { bus } from '../../helpers/eventBus'
 import {
   TOGGLE_FILTER_SELECTION,
   UPDATE_TIME_MACHINE,
   SUBSEA_FILTER
-} from '../events/filter'
-import currentYear from '../helpers/currentYear'
+} from '../../events/filter'
+import currentYear from '../../helpers/currentYear'
+import ClickOutside from 'vue-click-outside'
 
 export default {
   name: 'IFilter',
@@ -136,19 +138,12 @@ export default {
       return currentYear() + estimateMaxYearsUntilNoCables
     }
   },
-  async mounted() {
-    document.addEventListener('click', this.closeMenu)
-  },
-  beforeDestroy() {
-    document.removeEventListener('click', this.closeMenu)
-  },
   methods: {
-    closeMenu() {
-      this.isMenuFilter = false
+    closeFilter() {
+      this.toggleFilterVisiblity(false)
     },
-    toggleFilterVisiblity() {
-      this.isMenuFilter = !this.isMenuFilter
-      if (this.isMenuFilter) this.$emit('open')
+    toggleFilterVisiblity(bool) {
+      this.isMenuFilter = bool
     },
     /**
      * @param isSubseaOnly { Boolean }
@@ -219,10 +214,13 @@ export default {
     emitTimeMachineYear(year) {
       return bus.$emit(`${UPDATE_TIME_MACHINE}`, { year, target: 'slider' })
     }
+  },
+  directives: {
+    ClickOutside
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/scss/components/filter-styles.scss';
+@import '../../assets/scss/components/filter-styles.scss';
 </style>
