@@ -2,7 +2,7 @@
   <el-popover
     :visible-arrow="false"
     placement="bottom-end"
-    width="280"
+    width="220"
     v-click-outside="closeMenu"
     transition="el-zoom-in-top"
     trigger="manual"
@@ -70,10 +70,12 @@
           class="el-button pl4 pr4 el-button--text inline-block w-inherit color-inherit underline-hover text-left pl4 pr4"
         />
       </li>
-      <li class="w-fit-full h10">
+      <li class="h10 dont-break-out">
         <router-link
-          class="el-button pl4 pr4 el-button--text inline-block w-inherit color-inherit underline-hover text-left pl4 pr4"
+          class="el-button pl4 pr4 el-button--text no-overflow inline-block color-inherit underline-hover text-left pl4 pr4 truncate"
+          style="max-width: 13.5rem"
           to="/votes-results"
+          title="Infrapedia Infraestructure Awards"
         >
           Infrapedia Infraestructure Awards
         </router-link>
@@ -99,13 +101,14 @@
         </li>
       </ul>
       <el-divider class="mt2 mb2" />
-      <li class="w-fit-full h10" @click="logOutUser">
+      <li class="w-fit-full h10">
         <el-button
           type="text"
           class="inline-block w-fit-full text-left pl4 pr4 color-inherit"
+          @click="logOutUser"
         >
           <strong>Sign out</strong>
-          <fa :icon="['fas', 'sign-out-alt']" class="ml4" />
+          <!-- <fa :icon="['fas', 'sign-out-alt']" class="ml4" /> -->
         </el-button>
       </li>
     </ul>
