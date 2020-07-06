@@ -8,16 +8,16 @@
         class="banner-img"
       />
     </div>
-    <el-card class="card-wrapper">
+    <el-card class="card-wrapper" :class="{ dark }">
       <header class="w-fit-full text-center">
         <h2 class="title">
           Services & Consulting
         </h2>
-        <el-divider />
+        <el-divider :class="{ dark }" />
       </header>
       <div class="services-wrapper">
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8">
+          <el-card shadow="hover" class="p8" :class="{ dark }">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
                 <h2 class="title sm">
@@ -51,7 +51,7 @@
           </el-card>
         </router-link>
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8 fix-height">
+          <el-card shadow="hover" class="p8 fix-height" :class="{ dark }">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
                 <h2 class="title sm">
@@ -87,7 +87,7 @@
           </el-card>
         </router-link>
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8 fix-height">
+          <el-card shadow="hover" class="p8 fix-height" :class="{ dark }">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
                 <h2 class="title sm">
@@ -123,7 +123,7 @@
           </el-card>
         </router-link>
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8">
+          <el-card shadow="hover" class="p8" :class="{ dark }">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
                 <h2 class="title sm">
@@ -154,7 +154,7 @@
         </router-link>
       </div>
       <footer class="mt8">
-        <el-divider />
+        <el-divider :class="{ dark }" />
         <router-link to="/contact" class="underline-hover cursor-pointer">
           Contact us</router-link
         >
@@ -204,6 +204,11 @@ export default {
   },
   beforeCreate() {
     this.$emit('layout', 'landing-layout')
+  },
+  computed: {
+    dark() {
+      return this.$store.state.isDark
+    }
   },
   methods: {
     toggleNewsletterDialog() {

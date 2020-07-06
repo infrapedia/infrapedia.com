@@ -4,6 +4,7 @@
     width="420"
     transition="el-zoom-in-top"
     trigger="manual"
+    v-click-outside="close"
     :value.sync="isResultsVisible"
   >
     <el-card class="p0 no-border" shadow="never">
@@ -112,11 +113,12 @@
 </template>
 
 <script>
-import { bus } from '../helpers/eventBus'
-import debounce from '../helpers/debounce'
-import { MAP_BOUNDS } from '../store/actionTypes/map'
-import { FOCUS_ON, SEARCH_SELECTION } from '../events'
-import searchCategories from '../config/searchCategories'
+import { bus } from '../../helpers/eventBus'
+import debounce from '../../helpers/debounce'
+import { MAP_BOUNDS } from '../../store/actionTypes/map'
+import { FOCUS_ON, SEARCH_SELECTION } from '../../events'
+import searchCategories from '../../config/searchCategories'
+import ClickOutside from 'vue-click-outside'
 
 export default {
   data: () => ({
@@ -136,12 +138,6 @@ export default {
     dark() {
       return this.$store.state.isDark
     }
-  },
-  mounted() {
-    document.addEventListener('click', this.close)
-  },
-  beforeDestroy() {
-    document.removeEventListener('click', this.close)
   },
   methods: {
     getQueryData: debounce(async function(search) {
@@ -219,10 +215,13 @@ export default {
 
       this.close()
     }
+  },
+  directives: {
+    ClickOutside
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/scss/components/search-styles.scss';
+@import '../../assets/scss/components/search-styles.scss';
 </style>

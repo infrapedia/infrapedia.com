@@ -325,6 +325,12 @@
 .text-white {
   color: #fff;
 }
+.text-white--imp {
+  color: #fff !important;
+}
+.text-white--hsl {
+  color: $white-hsl;
+}
 .seamless-hoverbg {
   @extend .transition-all;
   &.light {
@@ -402,6 +408,10 @@
 
 .min-height60vh {
   min-height: 60vh;
+}
+
+.bg-charcoal {
+  background-color: $dark-charcoal;
 }
 
 @for $i from 1 through 120 {

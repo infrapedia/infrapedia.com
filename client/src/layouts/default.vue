@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import INavbar from '@/components/Navbar'
-import IFooter from '@/components/Footer'
+import IFooter from '../components/Footer'
+import INavbar from '../components/navbar/Navbar'
 import { BUY_CAPACITY, EDIT_CABLE } from '../events/sidebar'
 import {
   BUY_TYPE,

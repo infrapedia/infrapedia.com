@@ -1,5 +1,8 @@
 <template>
-  <div class="cursor-pointer circle p2 w4 h4 vertical-align hidden-md-and-up">
+  <div
+    aria-haspopup="true"
+    class="cursor-pointer circle p2 w4 h4 vertical-align hidden-md-and-up"
+  >
     <span class="sm-icon" @click="toggleVisibility">
       <fa :icon="['fas', 'search']" />
     </span>
@@ -86,10 +89,10 @@
 </template>
 
 <script>
-import { bus } from '../helpers/eventBus'
-import debounce from '../helpers/debounce'
-import { MAP_BOUNDS } from '../store/actionTypes/map'
-import { FOCUS_ON, SEARCH_SELECTION } from '../events'
+import { bus } from '../../helpers/eventBus'
+import debounce from '../../helpers/debounce'
+import { MAP_BOUNDS } from '../../store/actionTypes/map'
+import { FOCUS_ON, SEARCH_SELECTION } from '../../events'
 
 export default {
   name: 'IFullScreenSearch',
@@ -110,7 +113,7 @@ export default {
       return this.$store.state.isDark
     }
   },
-  mounted() {
+  created() {
     document.querySelector('body').addEventListener('keydown', this.handleClose)
   },
   beforeDestroy() {
@@ -181,5 +184,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/scss/components/full-screen-search-styles.scss';
+@import '../../assets/scss/components/full-screen-search-styles.scss';
 </style>

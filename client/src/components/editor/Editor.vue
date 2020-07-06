@@ -169,6 +169,11 @@ export default {
     if (this.scene.features.list.length) {
       this.controls.resetScene(true)
     }
+    bus.$off(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
+    bus.$off(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
+    bus.$off(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
+    bus.$off(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
+    bus.$off(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
   },
   methods: {
     handleGetFeatures() {

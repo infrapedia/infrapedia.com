@@ -20,6 +20,7 @@
           :href="link.url"
           target="_blank"
           class="underline-hover mr4"
+          :class="{ 'text-white--hsl': dark }"
         >
           {{ link.label }}
         </a>
@@ -28,6 +29,7 @@
             v-if="i === 0"
             :key="i"
             :to="checkIfLoggedIn"
+            :class="{ 'text-white--hsl': dark }"
             class="mr4 underline-hover"
           >
             {{ link.label }}
@@ -35,6 +37,7 @@
           <router-link
             v-else
             :key="i"
+            :class="{ 'text-white--hsl': dark }"
             :to="link.url"
             class="mr4 underline-hover"
           >

@@ -143,3 +143,19 @@ p.text {
     font-size: 16px;
   }
 }
+
+.application .dark {
+  color: $white-full;
+  .title {
+    color: inherit;
+  }
+  p {
+    @extend .text-white--hsl;
+  }
+}
+
+.el-divider.dark,
+.el-card.dark {
+  border-color: $light-charcoal;
+  background-color: $dark-charcoal;
+}

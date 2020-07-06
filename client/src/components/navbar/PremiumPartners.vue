@@ -2,20 +2,32 @@
   <div
     aria-haspopup="true"
     class="list-item pr4 pl4 no-selectable"
-    @click.stop="toggleVisibility"
+    v-click-outside="closeSheet"
   >
-    <div class="flex align-items-center">
+    <el-button
+      class="drawer-opener fs-small"
+      type="text"
+      :class="{ 'text-white--hsl': dark }"
+      @click="toggleVisibility"
+    >
       Our Partners
       <i aria-hidden="true" class="el-icon-arrow-down icon sm-icon ml1" />
-    </div>
+    </el-button>
     <transition
       tag="div"
       enter-active-class="animated faster slideInDown"
       leave-active-class="animated faster slideOutUp"
       mode="out-in"
     >
-      <div v-if="isOpen" class="bg-white wrapper pr12 pl12 cursor-regular">
-        <h2 class="title">
+      <div
+        v-if="isOpen"
+        class="wrapper pr12 pl12 cursor-regular"
+        :class="{
+          'bg-white': !dark,
+          'bg-charcoal': dark
+        }"
+      >
+        <h2 class="title" :class="{ 'text-white--imp': dark }">
           Our Partners
         </h2>
         <div class="sponsors-wrapper">
@@ -35,7 +47,7 @@
 </template>
 
 <script>
-import { bus } from '../helpers/eventBus'
+import ClickOutside from 'vue-click-outside'
 
 export default {
   name: 'PremiumPartnersButton',
@@ -45,29 +57,29 @@ export default {
   computed: {
     premium() {
       return this.$store.state.premium
+    },
+    dark() {
+      return this.$store.state.isDark
     }
-  },
-  mounted() {
-    window.addEventListener('click', this.handleCloseSheet)
-  },
-  beforeDestroy() {
-    window.removeEventListener('click', this.handleCloseSheet)
   },
   methods: {
     toggleVisibility() {
       this.isOpen = !this.isOpen
     },
-    handleCloseSheet() {
+    closeSheet() {
       this.isOpen = false
     },
     setActiveCable(data) {
-      bus.$emit('close-trustedby')
-      return this.$emit('item-selected', data)
+      this.closeSheet()
+      this.$emit('item-selected', data)
     }
+  },
+  directives: {
+    ClickOutside
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/scss/components/premium-partners-styles.scss';
+@import '../../assets/scss/components/premium-partners-styles.scss';
 </style>

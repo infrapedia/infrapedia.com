@@ -63,7 +63,15 @@ export default {
   },
   async mounted() {
     await this.loadDataIfQueryParamsExist()
+  },
+  created() {
     bus.$on(
+      `${navbarEvents.TOGGLE_MOBILE_DRAWER}`,
+      this.handleToggleDrawerVisibility
+    )
+  },
+  beforeDestroy() {
+    bus.$off(
       `${navbarEvents.TOGGLE_MOBILE_DRAWER}`,
       this.handleToggleDrawerVisibility
     )
