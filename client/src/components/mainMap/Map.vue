@@ -1,7 +1,7 @@
 <template>
   <div id="map">
     <template v-if="!disabled">
-      <!-- <transition
+      <transition
         name="animated faster delay-1s"
         enter-active-class="slideInLeft"
         leave-active-class="slideOutLeft"
@@ -36,7 +36,7 @@
             </el-button>
           </el-form>
         </el-card>
-      </transition> -->
+      </transition>
       <el-button
         id="ThreeD"
         type="text"
@@ -84,9 +84,9 @@
             <li role="listitem">
               <print-button :map="map" />
             </li>
-            <!-- <li role="listitem">
+            <li role="listitem">
               <last-mile-button @click="handleLastMileToolActivation" />
-            </li> -->
+            </li>
             <li role="listitem">
               <i-theme-toggler
                 id="toggleTheme"
@@ -155,8 +155,8 @@ import dataCollection from '../../mixins/dataCollection'
 // import convertToYear from '../../helpers/convertToYear'
 // eslint-disable-next-line
 import { DateTime } from 'luxon'
-// import LastMileButton from './LastMileButton'
-// import lastMileTool, { lastMileToolLayers } from './gri-tool'
+import LastMileButton from './LastMileButton'
+import lastMileTool, { lastMileToolLayers } from './gri-tool'
 // import bbox from '@turf/bbox'
 // import { fCollectionFormat } from '../../helpers/featureCollection'
 
@@ -166,8 +166,8 @@ export default {
   components: {
     IThemeToggler,
     PrintButton,
-    GooeyMenu
-    // LastMileButton
+    GooeyMenu,
+    LastMileButton
   },
   props: {
     disabled: {
@@ -182,12 +182,12 @@ export default {
     map: undefined,
     isMenuOpen: false,
     isGooeyMenu: false,
-    isLocationZoomIn: true
-    // lastMileTool: {
-    //   active: false,
-    //   reference: null,
-    //   quality: 1
-    // }
+    isLocationZoomIn: true,
+    lastMileTool: {
+      active: false,
+      reference: null,
+      quality: 1
+    }
   }),
   computed: {
     ...mapState({
@@ -271,7 +271,7 @@ export default {
         mbCtrl.appendChild(document.getElementById('FScreen'))
 
         window.draw = draw
-        // this.lastMileTool.reference = new lastMileTool({ map })
+        this.lastMileTool.reference = new lastMileTool({ map })
       }
 
       window.mapboxgl = mapboxgl
@@ -301,7 +301,7 @@ export default {
       for (let layer of mapConfig.data.layers) {
         map.addLayer(layer)
       }
-      // lastMileToolLayers(map)
+      lastMileToolLayers(map)
       map.setFilter(mapConfig.cables, mapConfig.filter.all)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
     },
@@ -337,7 +337,7 @@ export default {
         map.on('click', this.handleMapClick)
         map.on('touchend', this.handleMapClick)
         map.on('render', this.handleBoundsChange)
-        // this.lastMileTool.reference.registerEvents()
+        this.lastMileTool.reference.registerEvents()
       } else {
         const disabledClick = () => this.$emit('clicked-disabled-map')
         map.on('click', disabledClick)
@@ -351,8 +351,7 @@ export default {
       return map
     },
     handleCLSHover(e, isHovering) {
-      // this.lastMileTool.active
-      if (!this.map) return
+      if (!this.map || this.lastMileTool.active) return
       const {
         features: [
           {
@@ -385,7 +384,6 @@ export default {
         JSON.stringify(e.features[0].properties)
       )
 
-      // const rfs = new Date(activationDateTime * 1000)
       const date = DateTime.fromMillis(
         activationDateTime * 1000
       ).toLocaleString({ year: 'numeric' })
@@ -433,26 +431,25 @@ export default {
       if (
         !clusters.length &&
         e.features.length &&
-        !this.isMobile
-        // !this.lastMileTool.active
+        !this.isMobile &&
+        !this.lastMileTool.active
       ) {
         this.map.getCanvas().style.cursor = 'pointer'
         this.showPopup({ e, map: this.map, popup, isPoint, type })
+      } else {
+        this.map.getCanvas().style.cursor = 'crosshair'
       }
-      // else {
-      //   this.map.getCanvas().style.cursor = 'crosshair'
-      // }
     },
     /**
      * @param popup { Object } The map popup instance
      * @param map { Object } The map instance
      */
     handlePopupVisibilityOff({ popup, map }) {
-      // if (!this.lastMileTool.active) {
-      map.getCanvas().style.cursor = ''
-      // } else {
-      // map.getCanvas().style.cursor = 'crosshair'
-      // }
+      if (!this.lastMileTool.active) {
+        map.getCanvas().style.cursor = 'crosshair'
+      } else {
+        map.getCanvas().style.cursor = ''
+      }
       popup.remove()
     },
     highlightSelection(id) {
@@ -526,10 +523,10 @@ export default {
         }
         if (this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
 
-        // if (this.lastMileTool.active) {
-        //   this.handleLastMileToolCoordsChange(e)
-        //   return
-        // }
+        if (this.lastMileTool.active) {
+          this.handleLastMileToolCoordsChange(e)
+          return
+        }
 
         const cables = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.cables]
@@ -1115,50 +1112,50 @@ export default {
     },
     handlePreviouslySelected: debounce(function() {
       if (this.map.loaded()) this.handleFocusOn(this.focus)
-    }, 1200)
-    // handleLastMileToolActivation() {
-    //   this.lastMileTool.active = true
-    //   this.lastMileTool.reference.initService()
-    //   this.map.getCanvas().style.cursor = 'crosshair'
-    //   this.map.setLayoutProperty(
-    //     mapConfig.facilitiesClusters,
-    //     'visibility',
-    //     'none'
-    //   )
-    //   this.map.setLayoutProperty(
-    //     mapConfig.facilitiesCount,
-    //     'visibility',
-    //     'none'
-    //   )
-    //   this.map.setLayoutProperty(
-    //     mapConfig.facilitiesSinglePoints,
-    //     'visibility',
-    //     'none'
-    //   )
-    // },
-    // disableLastMileTool() {
-    //   this.lastMileTool.active = false
-    //   this.map.setLayoutProperty(
-    //     mapConfig.facilitiesClusters,
-    //     'visibility',
-    //     'visible'
-    //   )
-    //   this.map.setLayoutProperty(
-    //     mapConfig.facilitiesCount,
-    //     'visibility',
-    //     'visible'
-    //   )
-    //   this.map.setLayoutProperty(
-    //     mapConfig.facilitiesSinglePoints,
-    //     'visibility',
-    //     'visible'
-    //   )
-    //   this.map.getCanvas().style.cursor = 'pointer'
-    //   document.getElementById('googlemap').remove()
-    // },
-    // handleLastMileToolCoordsChange(e) {
-    //   this.lastMileTool.reference.find(e.lngLat)
-    // }
+    }, 1200),
+    handleLastMileToolActivation() {
+      this.lastMileTool.active = true
+      this.lastMileTool.reference.initService()
+      this.map.getCanvas().style.cursor = 'crosshair'
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesClusters,
+        'visibility',
+        'none'
+      )
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesCount,
+        'visibility',
+        'none'
+      )
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesSinglePoints,
+        'visibility',
+        'none'
+      )
+    },
+    disableLastMileTool() {
+      this.lastMileTool.active = false
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesClusters,
+        'visibility',
+        'visible'
+      )
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesCount,
+        'visibility',
+        'visible'
+      )
+      this.map.setLayoutProperty(
+        mapConfig.facilitiesSinglePoints,
+        'visibility',
+        'visible'
+      )
+      this.map.getCanvas().style.cursor = 'pointer'
+      document.getElementById('googlemap').remove()
+    },
+    handleLastMileToolCoordsChange(e) {
+      this.lastMileTool.reference.find(e.lngLat)
+    }
   }
 }
 </script>

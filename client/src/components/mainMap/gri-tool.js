@@ -93,14 +93,15 @@ export default class lastMileTool {
     this.map = map
     this.latlng = null
     this.googlemap = null
-    this.requestType = 'google'
+    this.requestType = 'mapbox'
     this.directionsService = null
   }
 
   find(e) {
     this.latlng = [e.lng, e.lat]
     this.map.setCenter(e)
-    this.map.getSource('startpoints').setData(point(this.latlng))
+    var pnt = point(this.latlng)
+    this.map.getSource('startpoints').setData(pnt)
   }
 
   registerEvents() {
@@ -330,12 +331,10 @@ export default class lastMileTool {
         ',' +
         finish[1] +
         '.json?geometries=polyline&steps=true&overview=full&language=en&access_token=' +
-        this.config.mapboxglAccessToken
+        mapConfig.mapToken
       fetch(url)
         .then(res => res.json())
-        .then(function(result) {
-          callback(this.getMapboxRoad(result))
-        })
+        .then(this.getMapboxRoad)
     }
   }
   changeLimit(e) {
