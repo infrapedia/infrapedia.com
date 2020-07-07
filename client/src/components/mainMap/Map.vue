@@ -455,9 +455,9 @@ export default {
      */
     handlePopupVisibilityOff({ popup, map }) {
       if (!this.lastMileTool.active) {
-        map.getCanvas().style.cursor = 'crosshair'
-      } else {
         map.getCanvas().style.cursor = ''
+      } else {
+        map.getCanvas().style.cursor = 'crosshair'
       }
       popup.remove()
     },
@@ -1126,39 +1126,39 @@ export default {
       this.lastMileTool.active = true
       this.lastMileTool.reference.initService()
       this.map.getCanvas().style.cursor = 'crosshair'
-      this.map.setLayoutProperty(
-        mapConfig.facilitiesClusters,
-        'visibility',
-        'none'
-      )
-      this.map.setLayoutProperty(
-        mapConfig.facilitiesCount,
-        'visibility',
-        'none'
-      )
-      this.map.setLayoutProperty(
-        mapConfig.facilitiesSinglePoints,
-        'visibility',
-        'none'
-      )
+      // this.map.setLayoutProperty(
+      //   mapConfig.facilitiesClusters,
+      //   'visibility',
+      //   'none'
+      // )
+      // this.map.setLayoutProperty(
+      //   mapConfig.facilitiesCount,
+      //   'visibility',
+      //   'none'
+      // )
+      // this.map.setLayoutProperty(
+      //   mapConfig.facilitiesSinglePoints,
+      //   'visibility',
+      //   'none'
+      // )
     },
     disableLastMileTool() {
       this.lastMileTool.active = false
-      this.map.setLayoutProperty(
-        mapConfig.facilitiesClusters,
-        'visibility',
-        'visible'
-      )
-      this.map.setLayoutProperty(
-        mapConfig.facilitiesCount,
-        'visibility',
-        'visible'
-      )
-      this.map.setLayoutProperty(
-        mapConfig.facilitiesSinglePoints,
-        'visibility',
-        'visible'
-      )
+      // this.map.setLayoutProperty(
+      //   mapConfig.facilitiesClusters,
+      //   'visibility',
+      //   'visible'
+      // )
+      // this.map.setLayoutProperty(
+      //   mapConfig.facilitiesCount,
+      //   'visibility',
+      //   'visible'
+      // )
+      // this.map.setLayoutProperty(
+      //   mapConfig.facilitiesSinglePoints,
+      //   'visibility',
+      //   'visible'
+      // )
       this.map.getCanvas().style.cursor = 'pointer'
       document.getElementById('googlemap').remove()
     },

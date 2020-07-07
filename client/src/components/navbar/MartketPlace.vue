@@ -7,7 +7,7 @@
       <el-button
         type="text"
         :class="{ 'text-white--hsl': dark }"
-        class="drawer-opener fs-small"
+        class="drawer-opener fs-small font-regular mt-1"
         @click="toggleVisibility"
       >
         Market Place
