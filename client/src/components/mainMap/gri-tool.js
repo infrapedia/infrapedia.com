@@ -12,7 +12,7 @@ import {
   bbox,
   polygonToLine
 } from '@turf/turf'
-import $axios from '../'
+import $axios from '../../services/axios'
 
 export function lastMileToolLayers(map) {
   const fc = fCollectionFormat()
@@ -308,8 +308,12 @@ export default class lastMileTool {
       mapConfig.mapToken
 
     const vm = this
-    const res = await $axios.get(url)
-    callback(vm.getMapboxRoad(res))
+    try {
+      const res = await $axios.get(url)
+      callback(vm.getMapboxRoad(res))
+    } catch (err) {
+      console.error(err)
+    }
   }
   changeLimit(e) {
     this.limit = e.value

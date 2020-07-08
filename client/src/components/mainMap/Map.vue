@@ -1083,7 +1083,7 @@ export default {
       const epoch = (new Date(`${year}-02-02`).getTime() / 1000) * 1000
       let filter = mapConfig.filter.timemachine
 
-      if (target === 'checkbox') {
+      if (target == 'checkbox') {
         if (isActive) {
           await map.setFilter(mapConfig.cables, mapConfig.filter.subsea)
 
@@ -1094,7 +1094,7 @@ export default {
           await map.setFilter(mapConfig.cables, filter)
           await map.setFilter(mapConfig.cablesLabel, filter)
         }
-      } else if (target === 'slider') {
+      } else if (target == 'slider') {
         filter[2] = epoch
         await map.setFilter(mapConfig.cables, filter)
         await map.setFilter(mapConfig.cablesLabel, filter)
@@ -1107,7 +1107,7 @@ export default {
     }, 1200),
     handleLastMileToolActivation() {
       this.lastMileTool.active = true
-      this.lastMileTool.reference.initService()
+      // this.lastMileTool.reference.initService()
       this.map.getCanvas().style.cursor = 'crosshair'
       this.map.setLayoutProperty(
         mapConfig.facilitiesClusters,
