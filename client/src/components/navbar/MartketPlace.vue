@@ -200,7 +200,7 @@ export default {
       if (res) {
         this.dialog.form.email = res.email
         this.dialog.form.name = res.name
-        if (res.user_metadata.lastname) {
+        if (res.user_metadata && res.user_metadata.lastname) {
           this.dialog.form.name =
             this.dialog.form.name + ' ' + res.user_metadata.lastname
         }
