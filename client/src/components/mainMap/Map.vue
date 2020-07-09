@@ -1143,7 +1143,7 @@ export default {
         'visible'
       )
       this.map.getCanvas().style.cursor = 'pointer'
-      document.getElementById('googlemap').remove()
+      // document.getElementById('googlemap').remove()
     },
     handleLastMileToolCoordsChange(e) {
       this.lastMileTool.reference.find(e.lngLat)
