@@ -1,27 +1,62 @@
 const infoMenuLinks = {
   info: [
-    { label: 'About us', url: '/about', router: true, footer: true },
-    { label: 'Blog', url: 'https://blog.infrapedia.com', openTab: true },
+    {
+      label: 'About us',
+      url: '/about',
+      router: true,
+      footer: true,
+      menu: {
+        order: 1
+      }
+    },
+    {
+      label: 'Blog',
+      url: 'https://blog.infrapedia.com',
+      openTab: true,
+      menu: {
+        order: 3
+      }
+    },
     {
       label: 'Services',
       url: '/services',
-      router: true
+      router: true,
+      menu: {
+        order: 2
+      }
     },
     {
       label: 'Sponsorships',
       url: '/sponsors',
-      router: true
+      router: true,
+      menu: {
+        order: 4
+      }
     },
     {
       label: 'Contact us',
       url: '/contact',
       router: true,
-      footer: true
+      footer: true,
+      menu: {
+        order: 7
+      }
     },
     {
       label: 'Attributions',
       url: '/attributions',
-      router: true
+      router: true,
+      menu: {
+        order: 6
+      }
+    },
+    {
+      label: 'Advisory Board',
+      url: '/advisory-board',
+      router: true,
+      menu: {
+        order: 5
+      }
     }
   ],
   social: [

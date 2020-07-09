@@ -46,40 +46,39 @@
           class="inline-block capitalize w-fit-full text-left pl4 pr4 color-inherit"
           @click="toggleDarkMode"
         >
-          Toggle {{ dark ? 'light' : 'dark' }} mode
+          <span class="mode-label dark" :class="{ active: dark }">
+            Dark Mode
+          </span>
+          /
+          <span class="mode-label light" :class="{ active: !dark }"
+            >Light Mode
+          </span>
         </el-button>
       </li>
       <el-divider class="mt2 mb2" />
-      <li
-        v-for="(link, i) in infoMenuLinks.info"
-        :key="i"
-        class="w-fit-full h10"
-      >
-        <router-link
-          v-if="link.router"
-          :to="link.url"
-          v-text="link.label"
-          class="el-button pl4 pr4 el-button--text inline-block w-inherit color-inherit underline-hover text-left pl4 pr4"
-        />
-        <a
-          v-else
-          :href="link.url"
-          v-text="link.label"
-          target="_blank"
-          rel="noopener"
-          class="el-button pl4 pr4 el-button--text inline-block w-inherit color-inherit underline-hover text-left pl4 pr4"
-        />
-      </li>
-      <li class="h10 dont-break-out">
-        <router-link
-          class="el-button pl4 pr4 el-button--text no-overflow inline-block color-inherit underline-hover text-left pl4 pr4 truncate"
-          style="max-width: 13.5rem"
-          to="/votes-results"
-          title="Infrapedia Infraestructure Awards"
+      <div class="list-wrapper flex column">
+        <li
+          v-for="(link, i) in infoMenuLinks.info"
+          :key="i"
+          :data-index-link="link.menu.order"
+          class="w-fit-full h10"
         >
-          Infrapedia Infraestructure Awards
-        </router-link>
-      </li>
+          <router-link
+            v-if="link.router"
+            :to="link.url"
+            v-text="link.label"
+            class="el-button pl4 pr4 el-button--text inline-block w-inherit color-inherit underline-hover text-left pl4 pr4"
+          />
+          <a
+            v-else
+            :href="link.url"
+            v-text="link.label"
+            target="_blank"
+            rel="noopener"
+            class="el-button pl4 pr4 el-button--text inline-block w-inherit color-inherit underline-hover text-left pl4 pr4"
+          />
+        </li>
+      </div>
       <el-divider class="mt2 mb2" />
       <ul
         class="flex justify-content-space-around pt2 p2"
