@@ -33,7 +33,19 @@
               v-for="dropdownItem in link.dropdown"
               :key="dropdownItem.url"
             >
-              <router-link :to="dropdownItem.url" class="underline-hover">
+              <a
+                v-if="dropdownItem.tab"
+                :href="dropdownItem.url"
+                target="_blank"
+                class="underline-hover"
+              >
+                {{ dropdownItem.label }}
+              </a>
+              <router-link
+                v-else
+                :to="dropdownItem.url"
+                class="underline-hover"
+              >
                 {{ dropdownItem.label }}
               </router-link>
             </el-dropdown-item>

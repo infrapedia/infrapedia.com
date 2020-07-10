@@ -103,6 +103,14 @@ export const navbarLinks = [
     url: '/app'
   },
   {
+    label: 'Services',
+    url: '/services'
+  },
+  {
+    label: 'Sponsorships',
+    url: '/sponsors'
+  },
+  {
     label: 'Blog',
     url: 'https://blog.infrapedia.com',
     tab: true
@@ -117,16 +125,17 @@ export const navbarLinks = [
       {
         label: 'Advisory Board',
         url: '/advisory-board'
+      },
+      {
+        label: 'Attributions',
+        url: '/attributions'
+      },
+      {
+        label: 'Github',
+        url: 'https://github.com/infrapedia',
+        tab: true
       }
     ]
-  },
-  {
-    label: 'Services',
-    url: '/services'
-  },
-  {
-    label: 'Sponsorships',
-    url: '/sponsors'
   },
   {
     label: 'Contact Us',

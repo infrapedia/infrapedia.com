@@ -45,8 +45,12 @@
         </el-collapse-item>
       </el-collapse>
       <ul class="links-wrapper mb12" :class="{ dark }">
-        <li class="p4 fs-regular" v-for="(link, i) in links" :key="i">
-          <a v-if="link.tab" :href="link.url" class="underline-hover mr4">
+        <li
+          class="pr4 pl4 pt2 pb2 fs-regular"
+          v-for="(link, i) in links"
+          :key="i"
+        >
+          <a v-if="link.tab" :href="link.url" class="block underline-hover mr4">
             {{ link.label }}
           </a>
           <el-collapse v-else-if="link.dropdown">
@@ -54,25 +58,40 @@
               <span class="el-link fs-regular font-regular" slot="title">
                 {{ link.label }}
               </span>
-              <router-link
-                v-for="dropdownItem in link.dropdown"
-                :key="dropdownItem.url"
-                :to="dropdownItem.url"
-                class="underline-hover p4 block"
-              >
-                {{ dropdownItem.label }}
-              </router-link>
+              <template v-for="dropdownItem in link.dropdown">
+                <a
+                  v-if="dropdownItem.tab"
+                  :href="dropdownItem.url"
+                  target="_blank"
+                  :key="dropdownItem.url"
+                  class="underline-hover block pr4 pl4 pt2 pb2"
+                >
+                  {{ dropdownItem.label }}
+                </a>
+                <router-link
+                  v-else
+                  :key="dropdownItem.url"
+                  :to="dropdownItem.url"
+                  class="underline-hover block pr4 pl4 pt2 pb2"
+                >
+                  {{ dropdownItem.label }}
+                </router-link>
+              </template>
             </el-collapse-item>
           </el-collapse>
           <template v-else>
             <router-link
               v-if="i == 0"
               :to="checkIfLoggedIn"
-              class="mr4 underline-hover"
+              class="mr4 underline-hover block"
             >
               {{ link.label }}
             </router-link>
-            <router-link v-else :to="link.url" class="mr4 underline-hover">
+            <router-link
+              v-else
+              :to="link.url"
+              class="mr4 underline-hover block"
+            >
               {{ link.label }}
             </router-link>
           </template>
