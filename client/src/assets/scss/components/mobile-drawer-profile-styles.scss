@@ -5,7 +5,7 @@
   background: $white-full;
   position: absolute;
   width: 100vw;
-  height: 100vh;
+  height: 102vh;
   z-index: 2002 !important;
   left: 0;
   top: 0;
@@ -57,6 +57,9 @@ header {
     &.dark {
       color: $white-partial;
     }
+    &:focus,
+    &:focus-visible,
+    &:focus-within,
     &:active {
       background-color: $light-hover;
     }

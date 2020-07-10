@@ -28,6 +28,15 @@
   }
 }
 
+.application.dark {
+  .wrapper-right {
+    a,
+    .el-link {
+      color: $white-hsl;
+    }
+  }
+}
+
 @media screen and (max-width: $break-md) {
   .header {
     padding-left: 0.4rem;

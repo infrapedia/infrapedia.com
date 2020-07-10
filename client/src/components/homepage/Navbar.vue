@@ -6,6 +6,7 @@
       </router-link>
       <el-button
         circle
+        :class="{ dark }"
         icon="el-icon-menu"
         class="no-border hidden-md-and-up color-inherit mt1"
         @click.stop="toggleMobileDrawer"
@@ -20,15 +21,11 @@
           :href="link.url"
           target="_blank"
           class="underline-hover mr4"
-          :class="{ 'text-white--hsl': dark }"
         >
           {{ link.label }}
         </a>
         <el-dropdown v-else-if="link.dropdown" :key="i">
-          <span
-            class="el-link mr4 font-regular fs-small"
-            :class="{ 'text-white--hsl': dark }"
-          >
+          <span class="el-link mr4 font-regular fs-small">
             {{ link.label }}
             <i aria-hidden="true" class="el-icon-arrow-down ml1 fs-small" />
           </span>
@@ -48,7 +45,6 @@
             v-if="i == 0"
             :key="i"
             :to="checkIfLoggedIn"
-            :class="{ 'text-white--hsl': dark }"
             class="mr4 underline-hover"
           >
             {{ link.label }}
@@ -56,7 +52,6 @@
           <router-link
             v-else
             :key="i"
-            :class="{ 'text-white--hsl': dark }"
             :to="link.url"
             class="mr4 underline-hover"
           >

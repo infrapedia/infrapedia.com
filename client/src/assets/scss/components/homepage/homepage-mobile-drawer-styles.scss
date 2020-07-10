@@ -5,7 +5,7 @@
   position: absolute;
   width: auto;
   max-width: 42rem;
-  height: 100vh;
+  height: 102vh;
   z-index: 2000 !important;
   left: 0;
   top: -5px;
@@ -83,29 +83,6 @@ header {
  * Theme variants
 */
 
-#html-wrapper.dark {
-  header {
-    .icon {
-      color: $white-full;
-    }
-  }
-  .el-card {
-    background-color: $dark-charcoal;
-    border-radius: 0;
-    h2,
-    .el-button {
-      color: $white-partial;
-    }
-  }
-}
-
-.links-wrapper.dark {
-  a {
-    color: $white-partial;
-    border-bottom: 1px solid $light-charcoal;
-  }
-}
-
 .application.light {
   .header {
     color: $white-full;
@@ -114,8 +91,20 @@ header {
 }
 
 .application.dark {
+  header {
+    color: $white-full;
+    background-color: $dark-charcoal;
+  }
   .el-card {
     background-color: $light-charcoal;
+    h2,
+    .el-button {
+      color: $white-partial;
+      background-color: $light-charcoal;
+    }
+    .el-button {
+      text-decoration: underline;
+    }
   }
   .header {
     color: $white-partial;

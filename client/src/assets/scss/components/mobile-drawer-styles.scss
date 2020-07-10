@@ -5,7 +5,7 @@
   position: absolute;
   width: 52%;
   max-width: 42rem;
-  height: 100vh;
+  height: 102vh;
   z-index: 2002 !important;
   left: 0;
   top: 48px;
@@ -118,17 +118,19 @@ header.dark {
 }
 
 .application.dark {
-  .el-card {
-    background-color: $light-charcoal;
-    .text-center {
-      color: white;
-    }
-    .icon {
-      color: $white-full;
+  .links-wrapper {
+    a {
+      color: $white-partial;
+      text-decoration: underline;
     }
   }
-  .header {
-    color: $white-partial;
-    background-color: $gray;
+  .el-card {
+    background-color: $dark-charcoal;
+    .text-center {
+      color: $white-partial;
+    }
+    .icon {
+      color: $white-partial;
+    }
   }
 }

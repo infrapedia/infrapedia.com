@@ -29,11 +29,12 @@
             <fa :icon="['fas', 'times']" />
           </span>
         </header>
-        <ul role="list">
+        <ul role="list" class="mt4">
           <li v-for="(link, i) in links" :key="i" role="listitem">
             <a
               v-if="link.tab"
               :key="i"
+              :class="{ dark }"
               :href="link.url"
               class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
             >
@@ -43,6 +44,7 @@
               <router-link
                 v-if="i == 0"
                 :key="i"
+                :class="{ dark }"
                 :to="checkIfLoggedIn"
                 class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
               >
@@ -51,6 +53,7 @@
               <router-link
                 v-else
                 :key="i"
+                :class="{ dark }"
                 :to="link.url"
                 class="el-button no-border w-fit-full text-left transparent p4 underline-hover"
               >

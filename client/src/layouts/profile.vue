@@ -1,5 +1,10 @@
 <template>
-  <el-container class="vph-full no-overflow">
+  <el-container
+    class="vph-full"
+    :class="{
+      'no-overflow': isMobileProfileDrawer
+    }"
+  >
     <i-navbar role="navigation" :is-user-navbar="true" />
 
     <el-aside class="mt12 oveflow-y-auto no-overflow-x hidden-md-and-down">

@@ -12,16 +12,16 @@
     </div> -->
     <div class="card-wrapper mt20 mb20">
       <header class="w-fit-full text-center">
-        <h1 class="title mb12">
+        <h1 class="title mb12" :class="{ dark }">
           Services & Consulting
         </h1>
       </header>
-      <div class="services-wrapper">
+      <div class="services-wrapper" :class="{ dark }">
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
           <div class="p4">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
-                <h2 class="title sm">
+                <h2 class="title sm" :class="{ dark }">
                   <span class="md-icon">
                     <fa :icon="['fas', 'chalkboard-teacher']" />
                   </span>
@@ -44,7 +44,7 @@
           <div class="p4">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
-                <h2 class="title sm">
+                <h2 class="title sm" :class="{ dark }">
                   <span class="md-icon">
                     <fa :icon="['fas', 'chart-area']" />
                   </span>
@@ -69,7 +69,7 @@
           <div class="p4">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
-                <h2 class="title sm">
+                <h2 class="title sm" :class="{ dark }">
                   <span class="md-icon">
                     <fa :icon="['fas', 'map']" />
                   </span>
@@ -94,7 +94,7 @@
           <div class="p4">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
-                <h2 class="title sm">
+                <h2 class="title sm" :class="{ dark }">
                   <span class="md-icon">
                     <fa :icon="['fas', 'code']" />
                   </span>
@@ -111,15 +111,20 @@
         </router-link>
       </div>
       <footer class="mt8 pt4 pb4">
-        <el-divider />
-        <router-link to="/contact" class="underline-hover cursor-pointer">
+        <el-divider :class="{ dark }" />
+        <router-link
+          to="/contact"
+          class="el-button transparent no-border p0 underline cursor-pointer"
+          :class="{ dark }"
+        >
           Contact us</router-link
         >
         or
         <el-button
           type="text"
+          :class="{ dark }"
           @click="toggleNewsletterDialog"
-          class="cursor-pointer fs-medium underline-hover"
+          class="cursor-pointer fs-medium underline"
           >subscribe</el-button
         >
         to our newsletter
@@ -158,6 +163,11 @@ export default {
           'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
       }
     ]
+  },
+  computed: {
+    dark() {
+      return this.$store.state.isDark
+    }
   },
   beforeCreate() {
     this.$emit('layout', 'landing-layout')

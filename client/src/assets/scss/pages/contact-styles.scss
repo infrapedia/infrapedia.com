@@ -104,3 +104,10 @@
     max-width: 100%;
   }
 }
+
+.application.dark {
+  .title,
+  .text {
+    color: $white-partial;
+  }
+}

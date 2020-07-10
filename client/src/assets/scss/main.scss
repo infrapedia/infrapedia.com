@@ -548,6 +548,7 @@ input.issues-dialog {
 }
 
 #html-wrapper.dark {
+  .el-popper,
   .pac-container,
   .el-pagination button,
   div[role='tooltip'],
@@ -580,6 +581,15 @@ input.issues-dialog {
     }
     .pac-item-query {
       color: whitesmoke;
+    }
+  }
+  .el-popper {
+    a {
+      color: $white-hsl;
+    }
+    .el-dropdown-menu__item:not(.is-disabled):hover,
+    .el-dropdown-menu__item:focus {
+      background-color: $light-charcoal;
     }
   }
 }
@@ -706,6 +716,7 @@ input.issues-dialog {
   .el-input-group__prepend,
   .el-table tr,
   .el-table th,
+  .el-table--striped .el-table__body tr.el-table__row--striped td,
   .el-table__body-wrapper,
   .el-table__body tr.hover-row > td,
   .el-table__body tr.hover-row.current-row > td,

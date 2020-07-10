@@ -26,27 +26,40 @@
           <el-row :gutter="20">
             <el-col :sm="24" :lg="12">
               <el-form-item label="First Name" prop="first_name" required>
-                <el-input v-model="form.first_name" autofocus />
+                <el-input
+                  v-model="form.first_name"
+                  autofocus
+                  :class="{ dark }"
+                />
               </el-form-item>
             </el-col>
             <el-col :sm="24" :lg="12">
               <el-form-item label="Last name" prop="last_name" required>
-                <el-input v-model="form.last_name" />
+                <el-input v-model="form.last_name" :class="{ dark }" />
               </el-form-item>
             </el-col>
             <el-col :sm="24" :lg="12">
               <el-form-item label="Company" prop="company">
-                <el-input v-model="form.company" placeholder="optional" />
+                <el-input
+                  v-model="form.company"
+                  placeholder="optional"
+                  :class="{ dark }"
+                />
               </el-form-item>
             </el-col>
             <el-col :sm="24" :lg="12">
               <el-form-item label="Email" prop="email" required>
-                <el-input v-model="form.email" />
+                <el-input v-model="form.email" :class="{ dark }" />
               </el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="Message" prop="message" required>
-                <el-input type="textarea" :rows="4" v-model="form.message" />
+                <el-input
+                  type="textarea"
+                  :rows="4"
+                  v-model="form.message"
+                  :class="{ dark }"
+                />
               </el-form-item>
             </el-col>
             <el-col :span="24">
@@ -83,8 +96,9 @@
             If you’re enjoying our blog,
             <el-button
               type="text"
+              :class="{ dark }"
               @click="toggleNewsletterDialog"
-              class="cursor-pointer fs-regular underline-hover"
+              class="cursor-pointer fs-medium underline transparent no-border"
               >subscribe</el-button
             >
             to our Newsletter and never miss a thing.
@@ -128,6 +142,9 @@ export default {
   computed: {
     siteKey() {
       return siteKey
+    },
+    dark() {
+      return this.$store.state.isDark
     },
     formRules() {
       return {

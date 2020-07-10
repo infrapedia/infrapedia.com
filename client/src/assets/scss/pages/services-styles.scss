@@ -28,7 +28,6 @@
     }
   }
 }
-
 .title {
   line-height: 1.2;
   font-weight: auto;
@@ -78,18 +77,22 @@ p.text {
   }
 }
 
-.application .dark {
+.application.dark {
   color: $white-full;
   .title {
-    color: inherit;
+    color: $white-full;
   }
-  p {
-    @extend .text-white--hsl;
+  p.text {
+    color: $white-hsl;
+  }
+  .inner-wrapper {
+    border-color: $light-charcoal;
   }
 }
 
 .el-divider.dark,
-.el-card.dark {
+.card-.card-wrapper {
+  color: $white-partial;
   border-color: $light-charcoal;
   background-color: $dark-charcoal;
 }

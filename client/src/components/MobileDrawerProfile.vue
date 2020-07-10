@@ -19,13 +19,14 @@
         <router-link to="/">
           <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
         </router-link>
-        <span
-          class="inline-block w4 h4 icon mt2 fs-medium p2 transition-all circle vertical-align cursor-pointer"
-          :class="{ dark, light: !dark }"
+        <el-button
           @click="toggleVisibility"
+          type="text"
+          circle
+          :class="{ dark }"
         >
           <fa :icon="['fas', 'times']" />
-        </span>
+        </el-button>
       </header>
       <ul role="group" class="p0 w-fit-full h-fit-full overflow-y-auto mb12">
         <li
