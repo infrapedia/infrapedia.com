@@ -24,6 +24,8 @@ import {
   faEllipsisV,
   faChevronUp,
   faCertificate,
+  faTasks,
+  faMoneyCheckAlt,
   faSignOutAlt,
   faExclamationCircle,
   faShareAlt,
@@ -142,6 +144,8 @@ library.add(
   faShareAlt,
   faHeart,
   faTrash,
+  faTasks,
+  faMoneyCheckAlt,
   faWaveSquare,
   faCloudUploadAlt,
   faExclamationCircle

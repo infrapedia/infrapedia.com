@@ -26,67 +26,76 @@
       <div class="map-wrapper cubic-transition">
         <i-map :disabled="true" />
       </div>
-      <!-- <a
-        size="small"
-        class="transparent no-border vertical-align animated slow bounce four delay-3s"
-        id="moreBelowBtn"
-      >
-        <fa :icon="['fas', 'angle-down']" />
-      </a> -->
     </div>
     <div class="main-wrapper_after-hero">
-      <div class="information-section mt20" id="servicesSection">
-        <div class="description flex row wrap p4">
-          <div class="inner-wrapper">
-            <h1 class="title mb8 mt4">
-              Infrastructure Atlas
-            </h1>
-            <p class="text heading">
-              Infrapedia is more than just the world’s largest crowd-sourced
-              real-time global internet infrastructure map. We are one of the
-              most versatile and useful tools you can use to discover new
-              internet routes and improve their resiliency and stability.
-            </p>
-            <p class="text sub mt4">
-              Most importantly, we provide you with a community where you can
-              connect and request information and quotes from providers all over
-              the world easily.
-            </p>
-            <router-link
-              class="fs-large el-link underline-hover mt6"
-              to="/contact"
-            >
+      <div class="introduction mt20 p4 flex row wrap">
+        <div class="left">
+          <h1 class="title mb8 mt4">
+            The Infrastructure Map
+          </h1>
+          <p class="text heading">
+            Infrapedia is the most complete and versatile
+            <br class="hidden-md-and-up hidden-xs-only" />
+            interactive
+            <br class="hidden-md-and-down" />
+            infrastructure map of the Internet. It is the community’s best and
+            <br class="hidden-md-and-down" />
+            freely <br class="hidden-sm-and-up" />
+            accessible tool that allows engineers, carriers, data center
+            <br class="hidden-xs-only" />
+            operators, business development executives and other
+            <br class="hidden-md-and-down" />
+            stakeholders to navigate the Internet’s
+            <br class="hidden-md-and-up hidden-xs-only" />
+            collection of networks
+            <br class="hidden-md-and-down" />
+            and data centers.
+          </p>
+          <p class="text sub mt4">
+            Most importantly, Infrapedia is open source
+            <br class="hidden-md-and-up hidden-xs-only" />
+            and a community where you can connect and get
+            <br class="hidden-sm-and-up" />
+            assistance from professionals or Infrapedia’s team of industry
+            experts.
+          </p>
+          <p class="text mt4">
+            Joining is easy, no fees needed to register and use the interactive
+            map.
+          </p>
+          <div class="mt8">
+            <el-button @click="askToRegister" type="primary" round class="mr4">
+              Join now
+            </el-button>
+            <router-link class="el-button is-round p4 el-link" to="/contact">
               Contact Us
-              <span class="fs-xsmall font-thin ml1">
-                <fa :icon="['fas', 'angle-double-right']" />
-              </span>
             </router-link>
           </div>
-          <div class="inner-wrapper hidden-sm-and-down">
-            <el-image
-              class="w-fit-full"
-              src="https://cdn1.infrapedia.com/assets/top-gif.gif"
-              fit="contain"
-            />
-          </div>
         </div>
-        <div class="p4 w-fit-full" id="partnersSection">
-          <div class="mt20">
-            <h2 class="title mb20 text-center diff">Our Partners</h2>
-            <div class="boxes-wrapper">
-              <div
-                class="el-card box p4"
-                :class="{ 'no-gray-filter': isMobile }"
-                v-for="(partner, i) in premium"
-                :key="i"
-              >
-                <el-image fit="contain" :src="partner.logo" />
-              </div>
+        <div class="right hidden-sm-and-down">
+          <el-image
+            src="https://cdn1.infrapedia.com/assets/top_new_gif.gif"
+            fit="contain"
+            lazy
+          />
+        </div>
+      </div>
+      <div class="p4 w-fit-full" id="partnersSection">
+        <div class="mt20">
+          <h2 class="title mb20 text-center diff">Our Partners</h2>
+          <div class="boxes-wrapper">
+            <div
+              class="el-card box p4"
+              :class="{ 'no-gray-filter': isMobile }"
+              v-for="(partner, i) in premium"
+              :key="i"
+            >
+              <el-image fit="contain" :src="partner.logo" />
             </div>
           </div>
         </div>
       </div>
-      <div class="p4 services-wrapper">
+      <!-- <div class="p4 services-wrapper">
         <h2 class="title md w80 mt20 mb8">
           Our Services
         </h2>
@@ -102,8 +111,80 @@
             <p class="text" style="max-width: 100%;" v-text="item.text" />
           </div>
         </div>
+      </div> -->
+      <div class="phrases mb8 p4 flex row wrap">
+        <div class="left">
+          <div class="flex mt8 column wrap">
+            <div class="icon-wrapper">
+              <span class="icon w12 h12 inline-block vertical-align">
+                <fa :icon="['fas', 'globe-americas']" />
+              </span>
+              discover
+            </div>
+            <div class="icon-wrapper">
+              <span class="icon w12 h12 inline-block vertical-align">
+                <fa :icon="['fas', 'tasks']" />
+              </span>
+              plan
+            </div>
+            <div class="icon-wrapper">
+              <span class="icon w12 h12 inline-block vertical-align">
+                <fa :icon="['fas', 'headset']" />
+              </span>
+              connect
+            </div>
+            <div class="icon-wrapper">
+              <span class="icon w12 h12 inline-block vertical-align">
+                <fa :icon="['fas', 'money-check-alt']" />
+              </span>
+              buy
+            </div>
+          </div>
+        </div>
+        <div class="right">
+          <p class="text">
+            Our focus is to show the layer 1 structure of the global network.
+          </p>
+          <ul class="list-wrapper">
+            <li>
+              View information about key internet infrastructures including
+              fiber optic submarine cable <br />
+              systems, terrestrial fiber networks, internet exchange points and
+              data center facilities.
+            </li>
+            <li>
+              See near-real time operational status of networks, especially
+              subsea cable systems.
+            </li>
+            <li>
+              Find new routes and get technical details to help network planning
+              teams to build more <br />
+              resilient networks.
+            </li>
+            <li>
+              Find and connect with sales teams to acquire capacity without
+              paying commissions to middle parties.
+            </li>
+          </ul>
+          <p class="text">
+            Like PeeringDB, Infrapedia is a crowd-sourced platform. Users can
+            add and update information about their networks and data center
+            facilities on the map as well as help update listings with more
+            accurate information to keep an <br />
+            updated and usable tool for the entire Internet community.
+          </p>
+        </div>
       </div>
-      <div class="p4" id="blogSection">
+      <div class="p4" id="trustedBySection">
+        <h2 class="title mb20 text-center diff">Trusted by</h2>
+        <div class="boxes-wrapper">
+          <div class="box p2 el-card" v-for="(partner, i) in 12" :key="i">
+            <!-- <el-image fit="contain" lazy :src="partner" /> -->
+            {{ partner }}
+          </div>
+        </div>
+      </div>
+      <div class="p4 mb8" id="blogSection">
         <h2 class="title md w80 font-medium mb8">
           Latest News
         </h2>
@@ -131,13 +212,23 @@
           </el-card>
         </transition-group>
       </div>
-      <div class="p4 mb8" id="trustedBySection">
-        <h2 class="title mb20 text-center diff">Trusted by</h2>
-        <div class="boxes-wrapper">
-          <div class="box p2 el-card" v-for="(partner, i) in 12" :key="i">
-            <!-- <el-image fit="contain" lazy :src="partner" /> -->
-            {{ partner }}
-          </div>
+      <div
+        class="blockquote p12 mb12 el-card transparent no-border mt4 flex row wrap"
+      >
+        <div class="left">
+          <el-image :src="founder.photo" class="circle founder-image" />
+        </div>
+        <div class="right">
+          <p class="text">
+            “My goal is to give people real-time visibility and connect buyers
+            and sellers directly to get Internet infrastructure at the best
+            value and help connect billions of people to the internet cheaper
+            and faster.”
+            <br />
+            <strong class="inline-block mt4">
+              - Mehmet Akcin Founder & President
+            </strong>
+          </p>
         </div>
       </div>
       <div
@@ -151,7 +242,7 @@
             Create an account or talk to our experts.
           </h2>
           <div class="call-to-action mb8">
-            <el-button plain round @click="askToRegister" type="info">
+            <el-button round @click="askToRegister" type="primary">
               Join now
             </el-button>
             <router-link to="/contact" class="el-button is-round">
@@ -176,6 +267,7 @@ import Map from '../mainMap/Map'
 import getBlogPosts from '../../services/api/blog'
 import { getTrustedBy } from '../../services/api/organizations'
 import { formatDate } from '../../helpers/formatDate'
+import teamMembers from '../../config/teamMembers.js'
 
 export default {
   name: 'HomePage',
@@ -212,6 +304,10 @@ export default {
           }
         ]
       }
+    },
+    founder() {
+      const founder = teamMembers.filter(t => t.position == 'President')[0]
+      return founder
     },
     formatDate() {
       return function(date) {
