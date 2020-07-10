@@ -24,6 +24,25 @@
         >
           {{ link.label }}
         </a>
+        <el-dropdown v-else-if="link.dropdown" :key="i">
+          <span
+            class="el-link mr4 font-regular fs-small"
+            :class="{ 'text-white--hsl': dark }"
+          >
+            {{ link.label }}
+            <i aria-hidden="true" class="el-icon-arrow-down ml1 fs-small" />
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item
+              v-for="dropdownItem in link.dropdown"
+              :key="dropdownItem.url"
+            >
+              <router-link :to="dropdownItem.url" class="underline-hover">
+                {{ dropdownItem.label }}
+              </router-link>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <template v-else>
           <router-link
             v-if="i == 0"
@@ -58,25 +77,38 @@ export default {
         url: '/'
       },
       {
+        label: 'Map',
+        url: '/app'
+      },
+      {
         label: 'Blog',
         url: 'https://blog.infrapedia.com',
         tab: true
       },
       {
-        label: 'About Us',
-        url: '/about'
+        label: 'About',
+        dropdown: [
+          {
+            label: 'Our team',
+            url: '/about'
+          },
+          {
+            label: 'Advisory Board',
+            url: '/advisory-board'
+          }
+        ]
       },
       {
         label: 'Services',
         url: '/services'
       },
       {
-        label: 'Contact Us',
-        url: '/contact'
-      },
-      {
         label: 'Sponsorships',
         url: '/sponsors'
+      },
+      {
+        label: 'Contact Us',
+        url: '/contact'
       }
     ]
   }),

@@ -39,7 +39,7 @@
                 </a>
                 <template v-else>
                   <router-link
-                    v-if="i === 0"
+                    v-if="i == 0 && $auth.isAuthenticated"
                     :key="i"
                     :to="checkIfLoggedIn"
                     class="underline-hover color-inherit"
@@ -47,7 +47,7 @@
                     {{ link.label }}
                   </router-link>
                   <router-link
-                    v-else
+                    v-else-if="i != 0"
                     :key="i"
                     :to="link.url"
                     class="underline-hover color-inherit"
@@ -61,44 +61,48 @@
           <div class="link-list">
             <h3 class="title-link m0 mb8">Company</h3>
             <ul role="group">
-              <li
-                class="list-item mb6"
-                v-for="(link, i) in infoMenuLinks.info"
-                :key="i"
-              >
-                <template v-if="link.footer">
-                  <a
-                    v-if="link.openTab"
-                    :href="link.url"
-                    target="_blank"
-                    class="underline-hover color-inherit"
+              <div class="flex column">
+                <template v-for="(link, i) in infoMenuLinks.info">
+                  <li class="list-item mb6" :key="i" v-if="link.openTab">
+                    <a
+                      v-if="link.openTab"
+                      :href="link.url"
+                      target="_blank"
+                      class="underline-hover color-inherit"
+                    >
+                      {{ link.label }}
+                    </a>
+                  </li>
+                  <li
+                    class="list-item mb6"
+                    :key="i"
+                    v-else-if="link.footer"
+                    :data-index-link="link.footer.order"
                   >
-                    {{ link.label }}
-                  </a>
-                  <router-link
-                    v-else
-                    :to="link.url"
-                    class="underline-hover color-inherit"
-                    v-text="link.label"
-                  />
+                    <router-link
+                      :to="link.url"
+                      class="underline-hover color-inherit"
+                      v-text="link.label"
+                    />
+                  </li>
                 </template>
-              </li>
-              <li class="list-item mb6">
-                <router-link
-                  class="underline-hover  color-inherit"
-                  to="/privacy-policy"
-                >
-                  Privacy Policy
-                </router-link>
-              </li>
-              <li class="list-item mb6">
-                <router-link
-                  class="underline-hover color-inherit"
-                  to="/terms-and-conditions"
-                >
-                  Terms & Conditions
-                </router-link>
-              </li>
+                <li class="list-item mb6" data-index-link="4">
+                  <router-link
+                    class="underline-hover  color-inherit"
+                    to="/privacy-policy"
+                  >
+                    Privacy Policy
+                  </router-link>
+                </li>
+                <li class="list-item mb6" data-index-link="6">
+                  <router-link
+                    class="underline-hover color-inherit"
+                    to="/terms-and-conditions"
+                  >
+                    Terms & Conditions
+                  </router-link>
+                </li>
+              </div>
             </ul>
           </div>
         </div>
@@ -130,6 +134,10 @@ export default {
       {
         label: 'Home',
         url: '/'
+      },
+      {
+        label: 'Map',
+        url: '/app'
       },
       {
         label: 'Blog',

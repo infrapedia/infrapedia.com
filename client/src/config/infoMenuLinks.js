@@ -4,7 +4,9 @@ const infoMenuLinks = {
       label: 'About us',
       url: '/about',
       router: true,
-      footer: true,
+      footer: {
+        order: 0
+      },
       menu: {
         order: 1
       }
@@ -37,7 +39,9 @@ const infoMenuLinks = {
       label: 'Contact us',
       url: '/contact',
       router: true,
-      footer: true,
+      footer: {
+        order: 0
+      },
       menu: {
         order: 7
       }
@@ -54,6 +58,9 @@ const infoMenuLinks = {
       label: 'Advisory Board',
       url: '/advisory-board',
       router: true,
+      footer: {
+        order: 5
+      },
       menu: {
         order: 5
       }

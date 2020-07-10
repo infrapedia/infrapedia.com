@@ -17,6 +17,9 @@
 
 .wrapper-right {
   min-width: 28rem;
+  .el-link {
+    color: $dark-blue;
+  }
   a {
     margin-right: 1rem;
     &:last-child {

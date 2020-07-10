@@ -23,6 +23,12 @@
   width: 120px;
 }
 
+@for $i from -1 through 6 {
+  li[data-index-link='#{$i}'] {
+    order: #{$i};
+  }
+}
+
 .links-wrapper {
   width: 30vw;
   .inner {
