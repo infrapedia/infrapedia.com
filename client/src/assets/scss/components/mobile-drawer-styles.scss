@@ -1,4 +1,7 @@
 @import '../base/variables';
+@import '../helpers/atomic-classes';
+
+$header-color: rgb(37, 95, 185);
 
 .drawer-wrapper {
   background: $white-full;
@@ -13,7 +16,7 @@
   display: flex;
   flex-flow: row nowrap;
   border-color: transparent;
-  transition: all $regular-transition;
+  @extend .transition-all;
 
   @media screen and (max-width: $break-sm) {
     width: 48%;
@@ -38,9 +41,6 @@
     overflow-x: hidden;
     background: $white-full;
 
-    h1.title {
-      max-width: 18rem;
-    }
     .icon.absolute {
       top: 0.5rem;
       right: 1rem;
@@ -74,40 +74,23 @@ header {
   }
 }
 
-.footer {
-  width: 100%;
-  margin: 0;
-  padding: 1rem;
-  margin-top: 14rem;
-}
-
 .links-wrapper {
-  margin-bottom: 1rem;
-  a {
-    width: 90.4%;
-    outline: 0;
-    color: #333;
-    border-bottom: 1px solid #ebeef5;
+  display: flex;
+  flex-flow: column nowrap;
+  a,
+  span {
+    color: $header-color;
   }
 }
 
 .links-wrapper.dark {
   a {
     color: $white-partial;
-    background-color: #303030;
-    border-bottom: none;
-    border-top: 1px solid $light-charcoal;
   }
 }
 
-.el-collapse.dark,
 header.dark {
   background-color: $dark-charcoal;
-}
-
-.el-collapse.dark {
-  border-top-color: $light-charcoal;
-  border-bottom-color: $dark-charcoal;
 }
 
 .application.light {
@@ -119,6 +102,7 @@ header.dark {
 
 .application.dark {
   .links-wrapper {
+    span,
     a {
       color: $white-partial;
       text-decoration: underline;

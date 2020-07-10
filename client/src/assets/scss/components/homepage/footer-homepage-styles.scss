@@ -23,7 +23,7 @@
   width: 120px;
 }
 
-@for $i from -1 through 6 {
+@for $i from -20 through 6 {
   li[data-index-link='#{$i}'] {
     order: #{$i};
   }
@@ -88,5 +88,6 @@
   @media screen and (max-width: $break-sm) {
     width: 100%;
     max-width: unset;
+    margin-bottom: 1rem;
   }
 }

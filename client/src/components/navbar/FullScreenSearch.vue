@@ -18,6 +18,7 @@
           <el-image :src="imageURL" class="w30" fit="scale-down" lazy />
           <el-button
             type="text"
+            :class="{ 'text-white--hsl': dark }"
             @click="handleClose({ keyCode: 4 })"
             class="underline"
           >

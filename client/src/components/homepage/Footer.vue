@@ -22,10 +22,10 @@
       <div class="links-wrapper">
         <div class="inner">
           <div class="link-list">
-            <h3 class="title-link m0 mb8">Explore</h3>
+            <h3 class="title-link m0 mb4">Explore</h3>
             <ul role="group">
               <li
-                class="list-item mb6"
+                class="list-item mb3"
                 v-for="(link, i) in exploreLinks"
                 :key="i"
               >
@@ -59,22 +59,22 @@
             </ul>
           </div>
           <div class="link-list">
-            <h3 class="title-link m0 mb8">Company</h3>
+            <h3 class="title-link m0 mb4">Company</h3>
             <ul role="group">
               <div class="flex column">
                 <template v-for="(link, i) in infoMenuLinks.info">
-                  <li class="list-item mb6" :key="i" v-if="link.openTab">
-                    <a
-                      v-if="link.openTab"
-                      :href="link.url"
-                      target="_blank"
-                      class="underline-hover color-inherit"
-                    >
+                  <li
+                    class="list-item mb3"
+                    :key="i"
+                    v-if="link.openTab && link.footer"
+                    :data-index-link="link.footer.order"
+                  >
+                    <a :href="link.url" class="underline-hover color-inherit">
                       {{ link.label }}
                     </a>
                   </li>
                   <li
-                    class="list-item mb6"
+                    class="list-item mb3"
                     :key="i"
                     v-else-if="link.footer"
                     :data-index-link="link.footer.order"
@@ -86,7 +86,7 @@
                     />
                   </li>
                 </template>
-                <li class="list-item mb6" data-index-link="4">
+                <li class="list-item mb4" data-index-link="6">
                   <router-link
                     class="underline-hover  color-inherit"
                     to="/privacy-policy"
@@ -94,7 +94,7 @@
                     Privacy Policy
                   </router-link>
                 </li>
-                <li class="list-item mb6" data-index-link="6">
+                <li class="list-item mb4" data-index-link="5">
                   <router-link
                     class="underline-hover color-inherit"
                     to="/terms-and-conditions"
@@ -138,11 +138,6 @@ export default {
       {
         label: 'Map',
         url: '/app'
-      },
-      {
-        label: 'Blog',
-        url: 'https://blog.infrapedia.com',
-        tab: true
       },
       {
         label: 'Services',

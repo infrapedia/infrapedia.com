@@ -3,6 +3,7 @@
     <cookie-consent :message="cc.message" :href="cc.href" />
     <h-mobile-drawer
       class="hidden-md-and-up"
+      :is-homepage-drawer="true"
       :visibility="isMobileDrawer"
       @close="closeDrawer"
     />
@@ -22,7 +23,7 @@
 <script>
 import HFooter from '../components/homepage/Footer'
 import HNavbar from '../components/homepage/Navbar'
-import HMobileDrawer from '../components/homepage/MobileDrawer'
+import HMobileDrawer from '../components/MobileDrawer'
 
 export default {
   name: 'homepage',

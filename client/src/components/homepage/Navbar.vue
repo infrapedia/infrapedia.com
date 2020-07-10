@@ -19,7 +19,6 @@
           v-if="link.tab"
           :key="i"
           :href="link.url"
-          target="_blank"
           class="underline-hover mr4"
         >
           {{ link.label }}
@@ -64,52 +63,15 @@
 </template>
 
 <script>
+import { navbarLinks } from '../../config/infoMenuLinks'
+
 export default {
-  data: () => ({
-    links: [
-      {
-        label: 'Home',
-        url: '/'
-      },
-      {
-        label: 'Map',
-        url: '/app'
-      },
-      {
-        label: 'Blog',
-        url: 'https://blog.infrapedia.com',
-        tab: true
-      },
-      {
-        label: 'About',
-        dropdown: [
-          {
-            label: 'Our team',
-            url: '/about'
-          },
-          {
-            label: 'Advisory Board',
-            url: '/advisory-board'
-          }
-        ]
-      },
-      {
-        label: 'Services',
-        url: '/services'
-      },
-      {
-        label: 'Sponsorships',
-        url: '/sponsors'
-      },
-      {
-        label: 'Contact Us',
-        url: '/contact'
-      }
-    ]
-  }),
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    links() {
+      return navbarLinks
     },
     checkIfLoggedIn() {
       return this.$auth.isAuthenticated ? '/app' : '/'

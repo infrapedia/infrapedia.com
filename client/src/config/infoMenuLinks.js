@@ -15,8 +15,11 @@ const infoMenuLinks = {
       label: 'Blog',
       url: 'https://blog.infrapedia.com',
       openTab: true,
+      footer: {
+        order: 2
+      },
       menu: {
-        order: 3
+        order: 2
       }
     },
     {
@@ -40,7 +43,7 @@ const infoMenuLinks = {
       url: '/contact',
       router: true,
       footer: {
-        order: 0
+        order: 1
       },
       menu: {
         order: 7
@@ -89,5 +92,46 @@ const infoMenuLinks = {
     }
   ]
 }
+
+export const navbarLinks = [
+  {
+    label: 'Home',
+    url: '/'
+  },
+  {
+    label: 'Map',
+    url: '/app'
+  },
+  {
+    label: 'Blog',
+    url: 'https://blog.infrapedia.com',
+    tab: true
+  },
+  {
+    label: 'About',
+    dropdown: [
+      {
+        label: 'Our team',
+        url: '/about'
+      },
+      {
+        label: 'Advisory Board',
+        url: '/advisory-board'
+      }
+    ]
+  },
+  {
+    label: 'Services',
+    url: '/services'
+  },
+  {
+    label: 'Sponsorships',
+    url: '/sponsors'
+  },
+  {
+    label: 'Contact Us',
+    url: '/contact'
+  }
+]
 
 export default infoMenuLinks

@@ -29,12 +29,13 @@
         </el-button>
       </header>
       <el-collapse
+        v-if="!isHomepageDrawer"
         accordion
         v-model="collapseActive"
         :class="{ dark, light: !dark }"
       >
         <el-collapse-item name="partners" class="pr4 pl4">
-          <p slot="title">Our Partners</p>
+          <span slot="title" class="underline">Our Partners</span>
           <i-list
             class="w-fit-full-imp overflow-y-auto no-overflow-x"
             option="partners"
@@ -43,106 +44,51 @@
           />
         </el-collapse-item>
       </el-collapse>
-      <ul class="links-wrapper m0 mb4 p0" :class="{ dark }">
-        <li class="w-fit-full" data-no-outline="true">
-          <div class="no-selectable">
-            <a
-              href="https://blog.infrapedia.com"
-              target="_blank"
-              class="no-underline inherit color-inherit p4 mr4 inline-block"
-            >
-              Blog
-            </a>
-          </div>
-        </li>
-        <li class="w-fit-full" data-no-outline="true">
-          <div class="no-selectable">
+      <ul class="links-wrapper mb12" :class="{ dark }">
+        <li class="p4 fs-regular" v-for="(link, i) in links" :key="i">
+          <a v-if="link.tab" :href="link.url" class="underline-hover mr4">
+            {{ link.label }}
+          </a>
+          <el-collapse v-else-if="link.dropdown">
+            <el-collapse-item>
+              <span class="el-link fs-regular font-regular" slot="title">
+                {{ link.label }}
+              </span>
+              <router-link
+                v-for="dropdownItem in link.dropdown"
+                :key="dropdownItem.url"
+                :to="dropdownItem.url"
+                class="underline-hover p4 block"
+              >
+                {{ dropdownItem.label }}
+              </router-link>
+            </el-collapse-item>
+          </el-collapse>
+          <template v-else>
             <router-link
-              to="/services"
-              class="no-underline inherit color-inherit p4 mr4 inline-block"
+              v-if="i == 0"
+              :to="checkIfLoggedIn"
+              class="mr4 underline-hover"
             >
-              Services
+              {{ link.label }}
             </router-link>
-          </div>
-        </li>
-        <li class="w-fit-full" data-no-outline="true">
-          <div class="no-selectable">
-            <router-link
-              to="/contact"
-              class="no-underline inherit color-inherit p4 mr4 inline-block"
-            >
-              Contact us
+            <router-link v-else :to="link.url" class="mr4 underline-hover">
+              {{ link.label }}
             </router-link>
-          </div>
+          </template>
         </li>
       </ul>
-      <div class="text-center">
-        <h2 class="mb10 mt6">
-          Sponsors
-        </h2>
-        <ul class="flex column wrap">
-          <li
-            class="inline-block relative"
-            data-no-outline="true"
-            role="listitem"
-          >
-            <div class="list-item" data-no-hover-bg="true">
-              <a :href="sponsors[0].url" target="_blank">
-                <el-image
-                  :src="sponsors[0].src"
-                  class="w46 h14"
-                  fit="cover"
-                  alt="catchpoint logo"
-                  referrer-policy="strict-origin-when-cross-origin"
-                />
-              </a>
-            </div>
-          </li>
-
-          <li
-            class="inline-block relative mt8"
-            data-no-outline="true"
-            role="listitem"
-          >
-            <div class="list-item" data-no-hover-bg="true">
-              <a :href="sponsors[1].url" target="_blank">
-                <el-image
-                  :src="sponsors[1].src"
-                  fit="cover"
-                  class="w46 h6"
-                  alt="ipv4 logo"
-                  referrer-policy="strict-origin-when-cross-origin"
-                />
-              </a>
-            </div>
-          </li>
-          <!-- <li
-              class="inline-block relative mt8"
-              data-no-outline="true"
-              role="listitem"
-            >
-              <div class="list-item" data-no-hover-bg="true">
-                <a href="https://aptelecom.com/" target="_blank">
-                  <el-image
-                    src="https://cdn.infrapedia.com/sponsors/aptelecom_logo.png"
-                    fit="center"
-                    class="w46 h18 image-sponsor"
-                    alt="aptelecom logo"
-                    referrer-policy="strict-origin-when-cross-origin"
-                  />
-                </a>
-              </div>
-            </li> -->
-        </ul>
-      </div>
-      <i-footer class="footer relative m0-imp p0-imp" style="width: 96%" />
+      <i-footer
+        class="footer relative"
+        style="width: 90%; margin: 0; padding: 0;"
+      />
     </el-card>
   </transition>
 </template>
 
 <script>
-import sponsors from '../config/navbarSponsors'
 import { CLICK_LIST_ITEM } from '../events/mobiledrawer'
+import { navbarLinks } from '../config/infoMenuLinks'
 import IFooter from './Footer'
 import IList from './List'
 
@@ -152,18 +98,27 @@ export default {
     IList
   },
   data: () => ({
-    collapseActive: '',
-    sponsors
+    collapseActive: ''
   }),
   props: {
     visibility: {
       type: Boolean,
       required: true
+    },
+    isHomepageDrawer: {
+      type: Boolean,
+      default: () => false
     }
   },
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    links() {
+      return navbarLinks
+    },
+    checkIfLoggedIn() {
+      return this.$auth.isAuthenticated ? '/app' : '/'
     },
     imageURL() {
       return this.dark
@@ -181,7 +136,7 @@ export default {
       this.collapseActive = ''
     },
     toggleVisibility() {
-      return this.$emit('close')
+      this.$emit('close')
     }
   }
 }
