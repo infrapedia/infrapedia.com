@@ -93,7 +93,10 @@
                 aria-haspopup="true"
                 data-no-hover-bg="true"
               >
-                <i-search @search-selection="handleItemListSelection" />
+                <i-search
+                  @search-selection="handleItemListSelection"
+                  id="vw-laptop-search"
+                />
               </div>
             </li>
 
