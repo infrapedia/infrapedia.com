@@ -3,7 +3,7 @@
     <header slot="header" class="w-fit-full mb8" v-if="showTitle">
       <h1 class="title capitalize">{{ title }}</h1>
     </header>
-    <el-form ref="form" :model="form" :rules="formRules">
+    <el-form ref="form" :model="form" :rules="formRules" id="cablesForm">
       <el-form-item label="Name" prop="name" required>
         <el-input
           :autofocus="isManualKmzUpload"
@@ -67,10 +67,18 @@
               :key="tag"
               v-for="tag in form.urls"
               closable
+              style="max-width: 16rem;"
+              :title="tag"
+              class="mr1 mb4 p2 no-overflow-x vertical-align"
               :disable-transitions="false"
               @close="handleClose(tag)"
             >
-              {{ tag }}
+              <span
+                class="inline-block h7 p0 no-overflow-x truncate"
+                style="max-width: 12rem;"
+              >
+                {{ tag }}
+              </span>
             </el-tag>
           </div>
           <template v-if="inputVisible">
