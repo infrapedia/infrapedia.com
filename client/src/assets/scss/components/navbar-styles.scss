@@ -77,6 +77,15 @@ $header-color: rgb(37, 95, 185);
       }
     }
   }
+
+  @media screen and (max-width: $break-sm) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    .links-wrapper {
+      display: grid;
+      justify-content: end;
+    }
+  }
 }
 
 .list-item {

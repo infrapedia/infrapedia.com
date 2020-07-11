@@ -4,7 +4,7 @@
       class="header-inner-wrapper w-full flex relative h-fit-full bottom-shadow"
     >
       <div
-        class="flex no-padding navbar-wrapper w-full justify-content-space-between pr1 pl1"
+        class="flex no-padding navbar-wrapper w-full nowrap justify-content-space-between pr1 pl1"
       >
         <h1 class="logo-title">
           <router-link :to="checkIfLoggedIn" class="hidden-md-and-down">
@@ -24,6 +24,12 @@
             @click="toggleMobileDrawer"
           />
         </h1>
+
+        <el-image
+          class="mt2 h8 ml-4 hidden-md-and-up"
+          :src="imageURL"
+          fit="scale-down"
+        />
 
         <div aria-labelledby="rightnavheading" class="links-wrapper">
           <ul
