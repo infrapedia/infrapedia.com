@@ -64,6 +64,112 @@ const otherFormat = {
   Type: ['type', ''],
   Message: ['message', '']
 }
+
+function decomposeBuyMessage(msg, splitter) {
+  const v = msg.split(splitter)
+  return v[1]
+}
+
+function decomposeOldMessageFormat(item, format) {
+  let data = decomposeBuyMessage(item.message, format).split(
+    '<p style="font-size: 16px; color: #323232; text-transform: capitalize;">'
+  )
+  let data_type = data[1].split('asked to buy an amount')[1].split('for')
+  let amount = data_type[0].split('of')[1]
+  let type = data_type[1].split('.')[0].split('(')
+  let locations = data[1].split('From pointA')
+  let request = ''
+
+  if (type.length >= 3) {
+    type = type[2].split(')')[0]
+  } else if (type.length == 2) {
+    type = type[1].split(')')[0]
+  }
+
+  type = type.toLowerCase()
+
+  if (type == 'backbone') {
+    let points = locations[1].split('to')
+    request = `<strong>Capacity requirement:</strong> ${amount}<p><strong>From:</strong> ${points[1].replace(
+      'pointB',
+      ''
+    )}</p> <p> <strong>To:</strong> ${points[0].replace('to', '')}</p>`
+  } else if (type == 'datacenter') {
+    let facility = locations[0]
+      .split('for')[1]
+      .split('</p>')[0]
+      .split('(')[0]
+
+    request = `<strong>Data Center Space</strong> <br> <strong>Facility:</strong> ${facility} <br> <strong> Rack total: </strong> ${
+      amount.split('rack total')[0]
+    }`
+  }
+  return {
+    rgDate: item.rgDate,
+    status: item.status,
+    request
+  }
+}
+
+function decomposeNewMessageFormat(item, format) {
+  let data = decomposeBuyMessage(item.message, format)
+  let customRequest = item.message.includes('Custom Request: true')
+  let request = data.split('Type:')[1].split('<p style="font-size: 14px">')[1]
+  let element = decomposeBuyMessage(item.message, format)
+    .split('Element:')[1]
+    .split('<p style')[0]
+  let type = item.message
+    .split('Buy Request')[0]
+    .split('">')[1]
+    .trim()
+    .replace(' ', '')
+    .toLowerCase()
+
+  if (type == 'datacenter') {
+    if (customRequest) {
+      request = `<strong>Data Center Space </strong> <br> <strong> Facility: </strong> ${element} <br> This request has custom requirements. <br> Contact Infrapedia's team for further assistance`
+    } else {
+      request = `<strong>Data Center Space</strong> <br> <strong> Facility: </strong> ${element} <strong>Rack Total: </strong> ${request
+        .split(':')[1]
+        .replace('</p>', '')}`
+    }
+  } else if (type == 'capacity') {
+    let from = item.message.split('From: ')[1].split('</p>')[0]
+    let to = item.message.split('To: ')[1].split('</p>')[0]
+
+    request = `<strong>Capacity requirement:</strong> ${request
+      .split(':')[1]
+      .replace(
+        '</p>',
+        ''
+      )}<p><strong>From:</strong> ${from}</p> <p> <strong>To:</strong> ${to}</p>`
+  } else if (type == 'transit') {
+    let cap = item.message.split('Transit Capacity: ')[1].split('</p>')[0]
+    request = `<strong>IP Transit Capacity: </strong> ${cap} <br> <strong> Facility: </strong> ${element}`
+  } else if (type == 'general') {
+    request = `<strong> This a general request for: </strong> ${element} <br> Contact Infrapedia's team for further assistance`
+  } else return false
+
+  return {
+    rgDate: item.rgDate,
+    status: item.status,
+    request
+  }
+}
+
+export function formatMarketPlaceData(item) {
+  const formats = {
+    old: 'sent you a message: </p>',
+    new: 'The user has the following request:</p>'
+  }
+
+  if (decomposeBuyMessage(item.message, formats.new)) {
+    return decomposeNewMessageFormat(item, formats.new)
+  } else if (decomposeBuyMessage(item.message, formats.old)) {
+    return decomposeOldMessageFormat(item, formats.old)
+  } else return false
+}
+
 // eslint-disable-next-line
 function createMessage({ data, format, userID }) {
   const date = formatDate(DateTime.local())

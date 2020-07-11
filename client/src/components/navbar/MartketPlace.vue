@@ -35,6 +35,7 @@
             id="marketplace-banner-table"
             :height="120"
             border
+            v-loading="loading"
             size="small"
             max-height="620px"
             stripe
@@ -146,6 +147,7 @@ import siteKey from '../../config/siteKey'
 import ClickOutside from 'vue-click-outside'
 import { formatDate } from '../../helpers/formatDate'
 import { getUserData } from '../../services/api/auth'
+import { formatMarketPlaceData } from '../../helpers/buyMessageFormatter'
 import { getMarketPlaceList, makeAnOffer } from '../../services/api/marketplace'
 
 export default {
@@ -157,6 +159,7 @@ export default {
     isSendingData: false,
     catchaVerified: null,
     isOpen: false,
+    loading: false,
     dialog: {
       isVisible: false,
       rawMessage: null,
@@ -256,33 +259,14 @@ export default {
       return res
     },
     async getMarketPlace() {
+      this.loading = true
       const res = await getMarketPlaceList()
       if (res && res.data && res.data.r) {
-        this.marketplaceData = res.data.r.map(item => {
-          let request = this.formatMessage(item.message)
-            .split('Type:')[1]
-            .split('<p style="font-size: 14px">')[1]
-          let customRequest = item.message.includes('Custom Request: true')
-
-          return {
-            raw: item.message,
-            rgDate: item.rgDate,
-            status: item.status,
-            item: `${
-              this.formatMessage(item.message)
-                .split('Element:')[1]
-                .split('<p style')[0]
-            }`,
-            request: `${
-              customRequest
-                ? 'Data Center space: Custom requirements'
-                : request
-                ? `<p>${request.split('</p>')[0]}`
-                : 'None'
-            }`
-          }
-        })
+        this.marketplaceData = res.data.r
+          .map(formatMarketPlaceData)
+          .filter(t => t)
       }
+      this.loading = false
     },
     validateForm() {
       return this.$refs.dialogForm.validate(valid => {
@@ -331,10 +315,6 @@ export default {
     },
     formatDate(_, __, value) {
       return formatDate(value)
-    },
-    formatMessage(value) {
-      const v = value.split('The user has the following request:</p>')
-      return v[1]
     },
     toggleVisibility() {
       this.isOpen = !this.isOpen
