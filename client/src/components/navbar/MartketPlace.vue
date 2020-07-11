@@ -111,7 +111,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="24" v-if="dialog.isVisible" class="mb4">
+          <el-col :span="24" class="mb4">
             <vue-recaptcha
               ref="catpcha"
               :sitekey="siteKey"
@@ -292,15 +292,11 @@ export default {
     },
     async toggleDialog(data) {
       this.dialog.isVisible = true
-      this.dialog.form.subject = `Want to make an offer for this request: ${
-        data.item.split('</p>')[0]
-      } - ${
-        data.request.split('<p>')[1]
-          ? data.request.split('<p>')[1]
-          : data.request
-      }`
-      this.dialog.rawMessage = data.raw
-
+      this.dialog.rawMessage = data.request
+      this.dialog.form.subject = `Want to make an offer for this request: ${data.subject.replace(
+        '</p>',
+        ''
+      )}`
       setTimeout(() => {
         this.$refs.textareaInput.focus()
       }, 320)
@@ -308,13 +304,13 @@ export default {
     closeDialog() {
       this.dialog.isVisible = false
 
+      this.dialog.rawMessage = null
       this.dialog.form.message = ''
       this.dialog.form.subject = ''
       this.dialog.form.organization = ''
-      this.dialog.rawMessage = null
     },
-    formatDate(_, __, value) {
-      return formatDate(value)
+    formatDate(_, __, date) {
+      return formatDate(date)
     },
     toggleVisibility() {
       this.isOpen = !this.isOpen

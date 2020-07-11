@@ -105,9 +105,13 @@ function decomposeOldMessageFormat(item, format) {
     }`
   }
   return {
+    request,
     rgDate: item.rgDate,
     status: item.status,
-    request
+    message: item.message,
+    subject: `${decomposeBuyMessage(item.message, format)
+      .split('AI: asked to buy an amount of')[1]
+      .split(').')[0] + ')'}`
   }
 }
 
@@ -115,6 +119,7 @@ function decomposeNewMessageFormat(item, format) {
   let data = decomposeBuyMessage(item.message, format)
   let customRequest = item.message.includes('Custom Request: true')
   let request = data.split('Type:')[1].split('<p style="font-size: 14px">')[1]
+  let rawR = data.split('Type:')[1].split('<p style="font-size: 14px">')[1]
   let element = decomposeBuyMessage(item.message, format)
     .split('Element:')[1]
     .split('<p style')[0]
@@ -128,10 +133,14 @@ function decomposeNewMessageFormat(item, format) {
   if (type == 'datacenter') {
     if (customRequest) {
       request = `<strong>Data Center Space </strong> <br> <strong> Facility: </strong> ${element} <br> This request has custom requirements. <br> Contact Infrapedia's team for further assistance`
+      rawR = `Data Center Space Custom Request for ${element.trim()}`
     } else {
       request = `<strong>Data Center Space</strong> <br> <strong> Facility: </strong> ${element} <strong>Rack Total: </strong> ${request
         .split(':')[1]
         .replace('</p>', '')}`
+      rawR = `${rawR
+        .split(':')[1]
+        .replace('</p>', '')} racks total for ${element.trim()}`
     }
   } else if (type == 'capacity') {
     let from = item.message.split('From: ')[1].split('</p>')[0]
@@ -143,17 +152,29 @@ function decomposeNewMessageFormat(item, format) {
         '</p>',
         ''
       )}<p><strong>From:</strong> ${from}</p> <p> <strong>To:</strong> ${to}</p>`
+
+    rawR = `${rawR.split(':')[1].replace('</p>', '')} for ${element.trim()}`
   } else if (type == 'transit') {
     let cap = item.message.split('Transit Capacity: ')[1].split('</p>')[0]
     request = `<strong>IP Transit Capacity: </strong> ${cap} <br> <strong> Facility: </strong> ${element}`
+
+    rawR = `${cap} for  ${decomposeBuyMessage(item.message, format)
+      .split('Element:')[1]
+      .split('<p style')[0]
+      .replace('</p>', '')
+      .trim()}`
   } else if (type == 'general') {
     request = `<strong> This a general request for: </strong> ${element} <br> Contact Infrapedia's team for further assistance`
+
+    rawR = `General request for ${element.trim()}`
   } else return false
 
   return {
+    request,
+    subject: rawR,
     rgDate: item.rgDate,
     status: item.status,
-    request
+    message: item.message
   }
 }
 
