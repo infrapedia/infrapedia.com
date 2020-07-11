@@ -44,11 +44,6 @@
               prop="rgDate"
               :formatter="formatDate"
             />
-            <el-table-column label="Item">
-              <template slot-scope="scope">
-                <div v-html="scope.row.item" />
-              </template>
-            </el-table-column>
             <el-table-column label="Request">
               <template slot-scope="scope">
                 <div v-html="scope.row.request" />
@@ -96,12 +91,17 @@
             </el-form-item>
           </el-col>
           <el-col :lg="24">
-            <el-form-item label="Subject" prop="subject">
-              <el-input v-model="dialog.form.subject" />
+            <el-form-item label="Organization" prop="organization">
+              <el-input v-model="dialog.form.organization" />
             </el-form-item>
           </el-col>
           <el-col :lg="24">
-            <el-form-item label="Message" prop="message">
+            <el-form-item label="Subject" prop="subject">
+              <el-input v-model="dialog.form.subject" disabled />
+            </el-form-item>
+          </el-col>
+          <el-col :lg="24">
+            <el-form-item label="Message" prop="message" required>
               <el-input
                 ref="textareaInput"
                 v-model="dialog.form.message"
@@ -109,6 +109,16 @@
                 rows="4"
               />
             </el-form-item>
+          </el-col>
+          <el-col :span="24" v-if="dialog.isVisible" class="mb4">
+            <vue-recaptcha
+              ref="catpcha"
+              :sitekey="siteKey"
+              :loadRecaptchaScript="true"
+              @verify="handleCatchaVerification"
+              @error="() => (catchaVerified = false)"
+              @expired="() => (catchaVerified = false)"
+            />
           </el-col>
         </el-row>
       </el-form>
@@ -121,7 +131,8 @@
         <el-button @click.stop="closeDialog" class="mr4">Cancel</el-button>
         <el-button
           type="primary"
-          @click.stop="sendOffer"
+          @click.stop="validateForm"
+          :disabled="!catchaVerified"
           :loading="isSendingData"
           >Confirm</el-button
         >
@@ -131,15 +142,20 @@
 </template>
 
 <script>
+import siteKey from '../../config/siteKey'
 import ClickOutside from 'vue-click-outside'
 import { formatDate } from '../../helpers/formatDate'
 import { getUserData } from '../../services/api/auth'
 import { getMarketPlaceList, makeAnOffer } from '../../services/api/marketplace'
 
 export default {
+  components: {
+    VueRecaptcha: () => import('vue-recaptcha')
+  },
   data: () => ({
     marketplaceData: [],
     isSendingData: false,
+    catchaVerified: null,
     isOpen: false,
     dialog: {
       isVisible: false,
@@ -148,7 +164,8 @@ export default {
         name: '',
         email: '',
         subject: '',
-        message: ''
+        message: '',
+        organization: ''
       }
     }
   }),
@@ -156,12 +173,27 @@ export default {
     dark() {
       return this.$store.state.isDark
     },
+    siteKey() {
+      return siteKey
+    },
     dialogFormRules() {
       return {
         name: [
           {
             required: true,
             message: 'Please input your full name',
+            trigger: 'blur'
+          },
+          {
+            max: 50,
+            message: 'Length should be max 50',
+            trigger: ['change', 'blur']
+          }
+        ],
+        organization: [
+          {
+            required: true,
+            message: 'Please input your organization name',
             trigger: 'blur'
           },
           {
@@ -184,15 +216,31 @@ export default {
           }
         ],
         subject: [],
-        message: []
+        message: [
+          {
+            required: true,
+            message: 'A Message is required',
+            trigger: 'blur'
+          }
+        ]
+      }
+    }
+  },
+  watch: {
+    isOpen(bool) {
+      if (bool) {
+        this.getMarketPlace()
       }
     }
   },
   async mounted() {
-    await this.getMarketPlace()
     await this.getUserData()
   },
   methods: {
+    handleCatchaVerification(v) {
+      if (!v) return
+      else this.catchaVerified = true
+    },
     async getUserData() {
       if (this.dialog.form.email !== '' || this.dialog.form.name !== '') return
 
@@ -219,7 +267,7 @@ export default {
           return {
             raw: item.message,
             rgDate: item.rgDate,
-            status: item.status ? 'Open' : 'Closed',
+            status: item.status,
             item: `${
               this.formatMessage(item.message)
                 .split('Element:')[1]
@@ -235,6 +283,12 @@ export default {
           }
         })
       }
+    },
+    validateForm() {
+      return this.$refs.dialogForm.validate(valid => {
+        if (valid && this.catchaVerified) this.sendOffer()
+        else return false
+      })
     },
     async sendOffer() {
       try {
@@ -272,6 +326,7 @@ export default {
 
       this.dialog.form.message = ''
       this.dialog.form.subject = ''
+      this.dialog.form.organization = ''
       this.dialog.rawMessage = null
     },
     formatDate(_, __, value) {
