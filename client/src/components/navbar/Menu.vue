@@ -73,7 +73,6 @@
             v-else
             :href="link.url"
             v-text="link.label"
-            target="_blank"
             rel="noopener"
             class="el-button pl4 pr4 el-button--text inline-block w-inherit color-inherit underline-hover text-left pl4 pr4"
           />

@@ -84,11 +84,11 @@ export default {
     goToRoute(link) {
       this.toggleVisibility()
       if (this.$route.path !== link) {
-        return this.$router.push(link)
+        this.$router.push(link)
       }
     },
     toggleVisibility() {
-      return this.$emit('close')
+      this.$emit('close')
     }
   }
 }

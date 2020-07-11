@@ -68,32 +68,41 @@
                 >
                   {{ dropdownItem.label }}
                 </a>
-                <router-link
+                <el-button
                   v-else
+                  plain
+                  type="text"
                   :key="dropdownItem.url"
-                  :to="dropdownItem.url"
-                  class="underline-hover block pr4 pl4 pt2 pb2"
+                  class="inline-flex no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline pr4 pl4 pt2 pb2"
+                  @click="goToRoute(link.url)"
+                  :class="{ dark, light: !dark }"
                 >
                   {{ dropdownItem.label }}
-                </router-link>
+                </el-button>
               </template>
             </el-collapse-item>
           </el-collapse>
           <template v-else>
-            <router-link
+            <el-button
               v-if="i == 0"
-              :to="checkIfLoggedIn"
-              class="mr4 underline-hover block"
+              plain
+              type="text"
+              class="inline-flex no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline"
+              @click="goToRoute(link.url)"
+              :class="{ dark, light: !dark }"
             >
               {{ link.label }}
-            </router-link>
-            <router-link
+            </el-button>
+            <el-button
               v-else
-              :to="link.url"
-              class="mr4 underline-hover block"
+              plain
+              type="text"
+              class="inline-flex no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline"
+              @click="goToRoute(link.url)"
+              :class="{ dark, light: !dark }"
             >
               {{ link.label }}
-            </router-link>
+            </el-button>
           </template>
         </li>
       </ul>
@@ -153,6 +162,10 @@ export default {
       this.$emit(CLICK_LIST_ITEM, selected)
       this.toggleVisibility()
       this.collapseActive = ''
+    },
+    goToRoute(link) {
+      this.toggleVisibility()
+      if (this.$route.path != link) this.$router.push(link)
     },
     toggleVisibility() {
       this.$emit('close')

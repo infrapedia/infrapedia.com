@@ -78,14 +78,19 @@ header {
   display: flex;
   flex-flow: column nowrap;
   a,
-  span {
+  span,
+  .el-button {
     color: $header-color;
+    font-weight: 400;
   }
 }
 
 .links-wrapper.dark {
-  a {
+  a,
+  span,
+  .el-button {
     color: $white-partial;
+    @extend .underline;
   }
 }
 
