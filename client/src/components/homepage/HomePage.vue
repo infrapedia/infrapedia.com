@@ -160,9 +160,12 @@
           Trusted by
         </h2>
         <div class="boxes-wrapper">
-          <div class="box p2 el-card" v-for="(partner, i) in 12" :key="i">
-            <!-- <el-image fit="contain" lazy :src="partner" /> -->
-            {{ partner }}
+          <div
+            class="el-card box p2"
+            v-for="(partner, i) in trustedBy"
+            :key="i"
+          >
+            <el-image fit="contain" :src="partner.logo" />
           </div>
         </div>
       </div>
