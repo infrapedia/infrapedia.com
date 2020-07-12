@@ -84,9 +84,9 @@
             <li role="listitem">
               <print-button :map="map" />
             </li>
-            <li role="listitem">
+            <!-- <li role="listitem">
               <last-mile-button @click="handleLastMileToolActivation" />
-            </li>
+            </li> -->
             <li role="listitem">
               <i-theme-toggler
                 id="toggleTheme"
@@ -155,7 +155,7 @@ import dataCollection from '../../mixins/dataCollection'
 // import convertToYear from '../../helpers/convertToYear'
 // eslint-disable-next-line
 import { DateTime } from 'luxon'
-import LastMileButton from './LastMileButton'
+// import LastMileButton from './LastMileButton'
 import lastMileTool, { lastMileToolLayers } from './gri-tool'
 // import bbox from '@turf/bbox'
 // import { fCollectionFormat } from '../../helpers/featureCollection'
@@ -166,8 +166,8 @@ export default {
   components: {
     IThemeToggler,
     PrintButton,
-    GooeyMenu,
-    LastMileButton
+    GooeyMenu
+    // LastMileButton
   },
   props: {
     disabled: {
