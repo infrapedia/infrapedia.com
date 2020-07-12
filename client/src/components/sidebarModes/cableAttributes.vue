@@ -4,7 +4,11 @@
       <div v-for="(col, i) in cableColumns" :key="i">
         <!---- COLLAPSE SECTION STARTS---->
         <template v-if="collapseColumns.includes(col.value.toLowerCase())">
-          <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
+          <el-row
+            :gutter="20"
+            v-if="info[col.value] && col.showSidebar"
+            class="pb2"
+          >
             <el-col :span="24">
               <p class="label capitalize">{{ col.label }}</p>
               <el-tag
@@ -171,10 +175,10 @@
                 :span="12"
                 v-else-if="col.value == 'capacityTBPS' && !info.terrestrial"
               >
-                <p class="text-bold">{{ info[col.value] }}</p>
+                <p class="text-bold">{{ info[col.value] }} Tbps</p>
               </el-col>
               <el-col :span="12" v-else-if="col.value == 'category'">
-                <p class="text-bold">
+                <p class="text-bold capitalize">
                   {{
                     info[col.value] && info[col.value] !== ''
                       ? info[col.value]
@@ -395,7 +399,7 @@ export default {
     },
     getYear: () => row => new Date(row.year).getFullYear(),
     collapseColumns() {
-      return ['org', 'cls', 'networks', 'facilities', 'owners']
+      return ['org', 'cls', 'networks', 'facilities', 'owners', 'knownusers']
     }
   },
   methods: {

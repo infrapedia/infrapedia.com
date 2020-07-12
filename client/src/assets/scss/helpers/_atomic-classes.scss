@@ -58,6 +58,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.font-regular {
+  font-weight: 400;
+}
 .font-semibold {
   font-weight: 500;
 }
@@ -325,6 +328,12 @@
 .text-white {
   color: #fff;
 }
+.text-white--imp {
+  color: #fff !important;
+}
+.text-white--hsl {
+  color: $white-hsl;
+}
 .seamless-hoverbg {
   @extend .transition-all;
   &.light {
@@ -402,6 +411,57 @@
 
 .min-height60vh {
   min-height: 60vh;
+}
+
+.bg-charcoal {
+  background-color: $dark-charcoal;
+}
+
+.title--homepage-variant {
+  line-height: 1.2;
+  color: #424c5e;
+  &.md {
+    text-align: left;
+    text-transform: capitalize;
+    @media screen and (max-width: $break-xs) {
+      font-size: 24px;
+    }
+  }
+  &.sm {
+    text-align: left;
+    text-transform: capitalize;
+    @media screen and (max-width: $break-xs) {
+      font-size: 18px;
+    }
+  }
+  &.shadow {
+    text-shadow: 1px 0 0 rgb(49, 49, 49);
+  }
+  &.white {
+    line-height: 1.2;
+    color: $white-full;
+  }
+  small {
+    font-size: 14px;
+    margin-top: 1rem;
+    color: #bdc4ca;
+  }
+  @media screen and (max-width: $break-xs) {
+    font-size: 20px;
+  }
+}
+
+.text--homepage-variant {
+  margin-bottom: 0;
+  max-width: 72%;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.8em;
+  color: #485160;
+  @extend .dont-break-out;
+  @media screen and (max-width: $break-xs) {
+    max-width: 100%;
+  }
 }
 
 @for $i from 1 through 120 {

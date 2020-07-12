@@ -1,6 +1,6 @@
 <template>
   <div
-    class="main-wrapper w-fit-full mt12 pt8 vph-full pl4 pr4 flex column wrap align-items-start"
+    class="main-wrapper w-fit-full mt12 pt8 vph-full pl4 pr4 flex column align-items-start"
     :class="{ dark, light: !dark }"
   >
     <header

@@ -1,11 +1,14 @@
 @import '../base/variables';
+@import '../helpers/atomic-classes';
+
+$header-color: rgb(37, 95, 185);
 
 .drawer-wrapper {
   background: $white-full;
   position: absolute;
   width: 52%;
   max-width: 42rem;
-  height: 100vh;
+  height: 102vh;
   z-index: 2002 !important;
   left: 0;
   top: 48px;
@@ -13,7 +16,7 @@
   display: flex;
   flex-flow: row nowrap;
   border-color: transparent;
-  transition: all $regular-transition;
+  @extend .transition-all;
 
   @media screen and (max-width: $break-sm) {
     width: 48%;
@@ -38,9 +41,6 @@
     overflow-x: hidden;
     background: $white-full;
 
-    h1.title {
-      max-width: 18rem;
-    }
     .icon.absolute {
       top: 0.5rem;
       right: 1rem;
@@ -74,40 +74,28 @@ header {
   }
 }
 
-.footer {
-  width: 100%;
-  margin: 0;
-  padding: 1rem;
-  margin-top: 14rem;
-}
-
 .links-wrapper {
-  margin-bottom: 1rem;
-  a {
-    width: 90.4%;
-    outline: 0;
-    color: #333;
-    border-bottom: 1px solid #ebeef5;
+  display: flex;
+  flex-flow: column nowrap;
+  a,
+  span,
+  .el-button {
+    color: $header-color;
+    font-weight: 400;
   }
 }
 
 .links-wrapper.dark {
-  a {
+  a,
+  span,
+  .el-button {
     color: $white-partial;
-    background-color: #303030;
-    border-bottom: none;
-    border-top: 1px solid $light-charcoal;
+    @extend .underline;
   }
 }
 
-.el-collapse.dark,
 header.dark {
   background-color: $dark-charcoal;
-}
-
-.el-collapse.dark {
-  border-top-color: $light-charcoal;
-  border-bottom-color: $dark-charcoal;
 }
 
 .application.light {
@@ -118,17 +106,20 @@ header.dark {
 }
 
 .application.dark {
-  .el-card {
-    background-color: $light-charcoal;
-    .text-center {
-      color: white;
-    }
-    .icon {
-      color: $white-full;
+  .links-wrapper {
+    span,
+    a {
+      color: $white-partial;
+      text-decoration: underline;
     }
   }
-  .header {
-    color: $white-partial;
-    background-color: $gray;
+  .el-card {
+    background-color: $dark-charcoal;
+    .text-center {
+      color: $white-partial;
+    }
+    .icon {
+      color: $white-partial;
+    }
   }
 }

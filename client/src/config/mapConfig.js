@@ -92,7 +92,7 @@ const cls = 'cls'
 const ixps = 'ixps'
 const clusters = 'clusters'
 const facilities = 'facilities'
-// const facilitiesCount = 'facilities-count'
+const facilitiesCount = 'facilities-count'
 // const facilitiesSinglePoints = 'facilities-single-points'
 // const facilitiesClusters = 'facilities_clusters'
 const facilitiesLabel = 'facilities_label'
@@ -116,7 +116,7 @@ export const mapConfig = {
   facsPaintConfig,
   cablesPaintConfig,
   facilitiesLabel,
-  // facilitiesCount,
+  facilitiesCount,
   // facilitiesClusters,
   // facilitiesSinglePoints,
   highlightFeatureState,
@@ -204,25 +204,39 @@ export const mapConfig = {
         }
       },
       {
+        id: cls,
+        type: 'circle',
+        source: cls,
+        minzoom: 3.4,
+        paint: clsPaintConfig
+      },
+      {
         id: facilities,
         type: 'fill-extrusion',
         source: facilities,
         paint: facsPaintConfig
       },
       {
+        id: ixps,
+        type: 'circle',
+        source: ixps,
+        minzoom: 15,
+        paint: ixpsPaintConfig
+      },
+      {
         id: facilitiesLabel,
         type: 'symbol',
         source: facilities,
-        minzoom: 13.89,
+        minzoom: 10.89,
         layout: {
-          'text-field': ['to-string', ['get', 'address']],
+          'text-field': ['to-string', ['get', 'name']],
           'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Regular'],
           'text-size': 13,
           'text-anchor': 'bottom',
           'text-offset': [0, -1]
         },
         paint: {
-          'text-color': '#666666',
+          'text-color': '#303030',
           'text-halo-color': '#ffffff',
           'text-halo-width': 0.75
         }
@@ -239,9 +253,9 @@ export const mapConfig = {
       //       ['get', 'point_count'],
       //       '#51bbd6',
       //       100,
-      //       '#f1f075',
+      //       '#51bbd6',
       //       750,
-      //       '#f28cb1'
+      //       '#51bbd6'
       //     ],
       //     'circle-radius': [
       //       'step',
@@ -269,7 +283,7 @@ export const mapConfig = {
       // {
       //   id: facilitiesSinglePoints,
       //   type: 'circle',
-      //   maxzoom: 14,
+      //   // maxzoom: 14,
       //   source: facilitiesClusters,
       //   filter: ['!', ['has', 'point_count']],
       //   paint: {
@@ -277,20 +291,6 @@ export const mapConfig = {
       //     'circle-radius': 10
       //   }
       // },
-      {
-        id: ixps,
-        type: 'circle',
-        source: ixps,
-        minzoom: 15,
-        paint: ixpsPaintConfig
-      },
-      {
-        id: cls,
-        type: 'circle',
-        source: cls,
-        minzoom: 3.4,
-        paint: clsPaintConfig
-      },
       {
         id: clusters,
         source: clusters,

@@ -1,10 +1,12 @@
 @import '../base/variables';
 @import '../helpers/atomic-classes';
 
+.main-wrapper {
+  width: 76vw;
+  margin: 0 auto;
+}
 .banner-wrapper {
   display: grid;
-  margin: 0 auto;
-  width: 80vw;
   height: 62vh;
   grid-template-columns: repeat(4, 1fr);
   overflow: hidden;
@@ -15,12 +17,11 @@
 }
 
 .gallery-wrapper {
-  margin: 0 auto;
-  width: 80vw;
-  padding: 2rem 0;
+  width: 100%;
   display: flex;
   flex-flow: row wrap;
   .team-wrapper {
+    width: 100%;
     .boxes-wrapper {
       display: grid;
       width: 100%;
@@ -43,17 +44,6 @@
         margin-bottom: 0;
       }
     }
-    p.content {
-      color: $dark-charcoal;
-      line-height: 1.2;
-      font-weight: 400;
-      font-size: 20px;
-      text-align: justify;
-      @media screen and (max-width: $break-xs) {
-        font-size: 16px;
-        padding: 0 1rem;
-      }
-    }
 
     @media screen and (max-width: $break-xs) {
       margin-left: 0;
@@ -62,17 +52,19 @@
   }
 }
 
+p.content {
+  color: $dark-charcoal;
+  line-height: 1.2;
+  font-weight: 400;
+  text-align: justify;
+}
+
 .title {
-  line-height: 1.3;
-  font-weight: 500;
-  font-size: 40px;
-  color: rgb(15, 50, 86);
-  text-align: center;
+  line-height: 1.2;
+  font-weight: auto;
+  color: #485160;
   &.md {
     text-align: left;
-    color: $dark-charcoal;
-    font-size: 30px;
-    @extend .no-selectable;
     text-transform: capitalize;
     @media screen and (max-width: $break-xs) {
       font-size: 24px;
@@ -80,13 +72,16 @@
   }
   &.sm {
     text-align: left;
-    color: $dark-charcoal;
-    font-size: 24px;
-    @extend .no-selectable;
     text-transform: capitalize;
     @media screen and (max-width: $break-xs) {
       font-size: 18px;
     }
+  }
+  &.diff {
+    color: #bdc4ca;
+  }
+  &.shadow {
+    text-shadow: 1px 0 0 rgb(49, 49, 49);
   }
   &.white {
     line-height: 1.2;
@@ -95,8 +90,20 @@
   small {
     font-size: 14px;
     margin-top: 1rem;
+    color: #bdc4ca;
   }
   @media screen and (max-width: $break-xs) {
-    font-size: 34px;
+    font-size: 20px;
+  }
+}
+
+.application.dark {
+  .title {
+    color: $white-partial;
+    text-align: center;
+    margin-bottom: 0;
+  }
+  .content {
+    color: $white-hsl;
   }
 }

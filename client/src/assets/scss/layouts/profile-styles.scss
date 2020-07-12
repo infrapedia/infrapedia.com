@@ -9,6 +9,12 @@
   }
 }
 
+.vph-full {
+  @media screen and (max-width: $break-sm) {
+    overflow-y: scroll;
+  }
+}
+
 /*
 *  THEME VARIANT'S
 */

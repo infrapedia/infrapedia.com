@@ -19,20 +19,23 @@
         <router-link to="/">
           <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
         </router-link>
-        <span
-          class="inline-block w4 h4 icon mt2 fs-medium p2 transition-all circle vertical-align cursor-pointer"
+        <el-button
           @click="toggleVisibility"
+          type="text"
+          circle
+          :class="{ dark }"
         >
           <fa :icon="['fas', 'times']" />
-        </span>
+        </el-button>
       </header>
       <el-collapse
+        v-if="!isHomepageDrawer"
         accordion
         v-model="collapseActive"
         :class="{ dark, light: !dark }"
       >
         <el-collapse-item name="partners" class="pr4 pl4">
-          <p slot="title">Our Partners</p>
+          <span slot="title" class="underline">Our Partners</span>
           <i-list
             class="w-fit-full-imp overflow-y-auto no-overflow-x"
             option="partners"
@@ -41,106 +44,79 @@
           />
         </el-collapse-item>
       </el-collapse>
-      <ul class="links-wrapper m0 mb4 p0" :class="{ dark }">
-        <li class="w-fit-full" data-no-outline="true">
-          <div class="no-selectable">
-            <a
-              href="https://blog.infrapedia.com"
-              target="_blank"
-              class="no-underline inherit color-inherit p4 mr4 inline-block"
+      <ul class="links-wrapper mb12" :class="{ dark }">
+        <li
+          class="pr4 pl4 pt2 pb2 fs-regular"
+          v-for="(link, i) in links"
+          :key="i"
+        >
+          <a v-if="link.tab" :href="link.url" class="block underline-hover mr4">
+            {{ link.label }}
+          </a>
+          <el-collapse v-else-if="link.dropdown">
+            <el-collapse-item>
+              <span class="el-link fs-regular font-regular" slot="title">
+                {{ link.label }}
+              </span>
+              <template v-for="dropdownItem in link.dropdown">
+                <a
+                  v-if="dropdownItem.tab"
+                  :href="dropdownItem.url"
+                  target="_blank"
+                  :key="dropdownItem.url"
+                  class="underline-hover block pr4 pl4 pt2 pb2"
+                >
+                  {{ dropdownItem.label }}
+                </a>
+                <el-button
+                  v-else
+                  plain
+                  type="text"
+                  :key="dropdownItem.url"
+                  class="inline-flex no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline pr4 pl4 pt2 pb2"
+                  @click="goToRoute(link.url)"
+                  :class="{ dark, light: !dark }"
+                >
+                  {{ dropdownItem.label }}
+                </el-button>
+              </template>
+            </el-collapse-item>
+          </el-collapse>
+          <template v-else>
+            <el-button
+              v-if="i == 0"
+              plain
+              type="text"
+              class="inline-flex no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline"
+              @click="goToRoute(link.url)"
+              :class="{ dark, light: !dark }"
             >
-              Blog
-            </a>
-          </div>
-        </li>
-        <li class="w-fit-full" data-no-outline="true">
-          <div class="no-selectable">
-            <router-link
-              to="/services"
-              class="no-underline inherit color-inherit p4 mr4 inline-block"
+              {{ link.label }}
+            </el-button>
+            <el-button
+              v-else
+              plain
+              type="text"
+              class="inline-flex no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline"
+              @click="goToRoute(link.url)"
+              :class="{ dark, light: !dark }"
             >
-              Services
-            </router-link>
-          </div>
-        </li>
-        <li class="w-fit-full" data-no-outline="true">
-          <div class="no-selectable">
-            <router-link
-              to="/contact"
-              class="no-underline inherit color-inherit p4 mr4 inline-block"
-            >
-              Contact us
-            </router-link>
-          </div>
+              {{ link.label }}
+            </el-button>
+          </template>
         </li>
       </ul>
-      <div class="text-center">
-        <h2 class="mb10 mt6">
-          Sponsors
-        </h2>
-        <ul class="flex column wrap">
-          <li
-            class="inline-block relative"
-            data-no-outline="true"
-            role="listitem"
-          >
-            <div class="list-item" data-no-hover-bg="true">
-              <a :href="sponsors[0].url" target="_blank">
-                <el-image
-                  :src="sponsors[0].src"
-                  class="w46 h14"
-                  fit="cover"
-                  alt="catchpoint logo"
-                  referrer-policy="strict-origin-when-cross-origin"
-                />
-              </a>
-            </div>
-          </li>
-
-          <li
-            class="inline-block relative mt8"
-            data-no-outline="true"
-            role="listitem"
-          >
-            <div class="list-item" data-no-hover-bg="true">
-              <a :href="sponsors[1].url" target="_blank">
-                <el-image
-                  :src="sponsors[1].src"
-                  fit="cover"
-                  class="w46 h6"
-                  alt="ipv4 logo"
-                  referrer-policy="strict-origin-when-cross-origin"
-                />
-              </a>
-            </div>
-          </li>
-          <!-- <li
-              class="inline-block relative mt8"
-              data-no-outline="true"
-              role="listitem"
-            >
-              <div class="list-item" data-no-hover-bg="true">
-                <a href="https://aptelecom.com/" target="_blank">
-                  <el-image
-                    src="https://cdn.infrapedia.com/sponsors/aptelecom_logo.png"
-                    fit="center"
-                    class="w46 h18 image-sponsor"
-                    alt="aptelecom logo"
-                    referrer-policy="strict-origin-when-cross-origin"
-                  />
-                </a>
-              </div>
-            </li> -->
-        </ul>
-      </div>
-      <i-footer class="footer relative m0-imp p0-imp" style="width: 96%" />
+      <i-footer
+        class="footer relative"
+        style="width: 90%; margin: 0; padding: 0;"
+      />
     </el-card>
   </transition>
 </template>
 
 <script>
-import sponsors from '../config/navbarSponsors'
 import { CLICK_LIST_ITEM } from '../events/mobiledrawer'
+import { navbarLinks } from '../config/infoMenuLinks'
 import IFooter from './Footer'
 import IList from './List'
 
@@ -150,18 +126,27 @@ export default {
     IList
   },
   data: () => ({
-    collapseActive: '',
-    sponsors
+    collapseActive: ''
   }),
   props: {
     visibility: {
       type: Boolean,
       required: true
+    },
+    isHomepageDrawer: {
+      type: Boolean,
+      default: () => false
     }
   },
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    links() {
+      return navbarLinks
+    },
+    checkIfLoggedIn() {
+      return this.$auth.isAuthenticated ? '/app' : '/'
     },
     imageURL() {
       return this.dark
@@ -178,8 +163,12 @@ export default {
       this.toggleVisibility()
       this.collapseActive = ''
     },
+    goToRoute(link) {
+      this.toggleVisibility()
+      if (this.$route.path != link) this.$router.push(link)
+    },
     toggleVisibility() {
-      return this.$emit('close')
+      this.$emit('close')
     }
   }
 }

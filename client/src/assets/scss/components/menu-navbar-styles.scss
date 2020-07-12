@@ -1,0 +1,65 @@
+@import '../helpers/atomic-classes';
+@import '../base/variables';
+
+$hover-blue: lighten($dark-blue, 50%);
+$header-color: rgb(37, 95, 185);
+
+.header {
+  color: $white-full;
+  background-color: $header-color;
+}
+/*
+*   THEME VARIANT'S
+*/
+
+.list-wrapper {
+  a {
+    width: 100%;
+  }
+  @for $i from 1 through 7 {
+    li[data-index-link='#{$i}'] {
+      order: #{$i};
+    }
+  }
+}
+
+.header.light {
+  & + ul.light {
+    background: $white-full;
+    li {
+      .mode-label.light.active {
+        color: $dark-blue;
+        font-weight: bold;
+      }
+      &:hover {
+        background-color: lighten($dark-charcoal, 78%);
+      }
+    }
+  }
+}
+
+.header.dark {
+  background-color: $light-yellow;
+  color: $dark-charcoal;
+  & + ul.dark {
+    background: $light-charcoal;
+    color: $white-partial;
+    li {
+      color: inherit;
+      @extend .transition-all;
+
+      .mode-label.dark.active {
+        color: $light-yellow;
+      }
+
+      &:hover {
+        background-color: darken($white-hsl, 52%);
+      }
+      &.link-info.social {
+        &:hover {
+          background-color: darken($white-hsl, 52%);
+        }
+      }
+    }
+  }
+}

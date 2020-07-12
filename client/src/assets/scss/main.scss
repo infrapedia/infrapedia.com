@@ -1,18 +1,18 @@
 @import '../../../node_modules/normalize.css/normalize';
 @import 'helpers/atomic-classes';
-@import 'base/fonts.scss';
 @import 'helpers/animations.scss';
 @import 'base/variables';
 @import './node_modules/vue-cookieconsent-component/src/scss/cookie-consent-transition';
 @import './node_modules/vue-cookieconsent-component/src/scss/cookie-consent-bottom';
 @import './node_modules/vue-cookieconsent-component/src/scss/cookie-consent';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500;700&display=swap');
 
 $border-top-white: 1px solid white;
 
 body,
 html,
 .application {
-  font-family: 'helvetica';
+  font-family: 'Roboto', sans-serif;
 }
 
 .el-form-item__label {
@@ -20,9 +20,9 @@ html,
 }
 
 ::selection {
-  background-color: #b3d4fc;
-  text-shadow: none;
-  color: #000;
+  background-color: #255fb9;
+  color: white;
+  padding: 1rem;
 }
 
 a {
@@ -282,47 +282,49 @@ input.issues-dialog {
 }
 
 .header-inner-wrapper .navbar-wrapper {
-  @media screen and (max-width: 1024px) {
-    .logo-img {
-      width: 40px;
-    }
-  }
-  @media screen and (max-width: 1024px), (max-width: 1280px) {
-    .image-sponsor {
-      width: 5rem;
-    }
-    .el-input {
-      width: 4rem;
-      .el-input__inner {
-        width: 9.8rem;
-        padding: 0 0 0 0.4rem;
+  #vw-laptop-search {
+    @media screen and (max-width: 1024px) {
+      .logo-img {
+        width: 40px;
       }
     }
-  }
-
-  .el-input-group__prepend {
     @media screen and (max-width: 1024px), (max-width: 1280px) {
-      width: 0.2rem;
-      padding: 0;
-      color: transparent;
-    }
-  }
-  .search-navbar-select {
-    @media screen and (max-width: $break-lg), (max-width: 1280px) {
-      width: 7rem;
-    }
-    @media screen and (max-width: 1024px), (max-width: 1280px) {
-      width: 4rem;
-      .el-input--suffix {
-        width: 3rem;
+      .image-sponsor {
+        width: 5rem;
+      }
+      .el-input {
+        width: 4rem;
+        .el-input__inner {
+          width: 9.8rem;
+          padding: 0 0 0 0.4rem;
+        }
       }
     }
-  }
 
-  #search-select-navbar {
-    @media screen and (max-width: 1024px), (max-width: 1280px) {
-      height: 0.4rem;
-      width: 2.4rem;
+    .el-input-group__prepend {
+      @media screen and (max-width: 1024px), (max-width: 1280px) {
+        width: 0.2rem;
+        padding: 0;
+        color: transparent;
+      }
+    }
+    .search-navbar-select {
+      @media screen and (max-width: $break-lg), (max-width: 1280px) {
+        width: 7rem;
+      }
+      @media screen and (max-width: 1024px), (max-width: 1280px) {
+        width: 4rem;
+        .el-input--suffix {
+          width: 3rem;
+        }
+      }
+    }
+
+    #search-select-navbar {
+      @media screen and (max-width: 1024px), (max-width: 1280px) {
+        height: 0.4rem;
+        width: 2.4rem;
+      }
     }
   }
 }
@@ -341,6 +343,15 @@ input.issues-dialog {
   // tr.success-row {
   //   background: #f0f9eb;
   // }
+}
+
+#cablesForm,
+.multi-select {
+  .el-icon-close {
+    padding: 0.7rem 0.7rem 0.7rem 0.4rem;
+    border-radius: 0 !important;
+    right: -12px !important;
+  }
 }
 
 // -----------------------------------------------------
@@ -478,6 +489,12 @@ input.issues-dialog {
 }
 
 .application.dark {
+  .multi-select {
+    .el-icon-close {
+      background-color: $light-charcoal;
+    }
+  }
+
   .multiselect__tags {
     &:hover {
       border-color: darken($light-charcoal, 10%);
@@ -532,6 +549,7 @@ input.issues-dialog {
 }
 
 #html-wrapper.dark {
+  .el-popper,
   .pac-container,
   .el-pagination button,
   div[role='tooltip'],
@@ -564,6 +582,15 @@ input.issues-dialog {
     }
     .pac-item-query {
       color: whitesmoke;
+    }
+  }
+  .el-popper {
+    a {
+      color: $white-hsl;
+    }
+    .el-dropdown-menu__item:not(.is-disabled):hover,
+    .el-dropdown-menu__item:focus {
+      background-color: $light-charcoal;
     }
   }
 }
@@ -688,6 +715,10 @@ input.issues-dialog {
   .el-pagination .btn-next,
   .el-loading-mask,
   .el-input-group__prepend,
+  .el-table tr,
+  .el-table th,
+  .el-table--striped .el-table__body tr.el-table__row--striped td,
+  .el-table__body-wrapper,
   .el-table__body tr.hover-row > td,
   .el-table__body tr.hover-row.current-row > td,
   .el-table__body tr.hover-row.el-table__row--striped > td,
@@ -707,8 +738,19 @@ input.issues-dialog {
     }
   }
 
+  .el-table tr,
+  .el-table th,
   .el-input-group__prepend {
     border-color: $dark-charcoal;
+  }
+
+  .el-table--group,
+  .el-table--border {
+    border-color: $light-charcoal;
+    &::after,
+    &::before {
+      background-color: $light-charcoal;
+    }
   }
 
   .el-collapse-item__content,

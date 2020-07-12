@@ -100,3 +100,25 @@
   background-color: yellow;
   padding: 0.2rem;
 }
+
+.application.dark {
+  color: $white-full;
+  .title {
+    color: inherit;
+    @extend .text-white--hsl;
+  }
+  p.content {
+    color: inherit;
+    @extend .text-white--hsl;
+  }
+  .highlight {
+    color: #323232;
+  }
+}
+
+.el-divider.dark,
+.el-card.dark {
+  @extend .text-white--hsl;
+  border-color: $light-charcoal;
+  background-color: $dark-charcoal;
+}

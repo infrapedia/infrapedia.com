@@ -3,8 +3,9 @@
     <cookie-consent :message="cc.message" :href="cc.href" />
     <h-mobile-drawer
       class="hidden-md-and-up"
+      :is-homepage-drawer="true"
       :visibility="isMobileDrawer"
-      @close="toggleDrawerVisibility"
+      @close="closeDrawer"
     />
     <h-navbar @toggle-mobile-drawer="toggleDrawerVisibility" />
     <transition
@@ -22,7 +23,7 @@
 <script>
 import HFooter from '../components/homepage/Footer'
 import HNavbar from '../components/homepage/Navbar'
-import HMobileDrawer from '../components/homepage/MobileDrawer'
+import HMobileDrawer from '../components/MobileDrawer'
 
 export default {
   name: 'homepage',
@@ -41,9 +42,16 @@ export default {
     }
   }),
   methods: {
-    toggleDrawerVisibility() {
+    closeDrawer() {
+      this.isMobileDrawer = false
+
       const body = document.querySelector('body')
+      body.className = this.isMobileDrawer ? 'no-overflow' : 'overflow-y-scroll'
+    },
+    toggleDrawerVisibility() {
       this.isMobileDrawer = !this.isMobileDrawer
+
+      const body = document.querySelector('body')
       body.className = this.isMobileDrawer ? 'no-overflow' : 'overflow-y-scroll'
     }
   }

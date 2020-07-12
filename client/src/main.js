@@ -63,13 +63,19 @@ const app = new Vue({
   vueTelInput,
   cockieconsent,
   render: h => h(App),
-  async created() {
+  created() {
     window.addEventListener
-      ? await window.addEventListener('load', initiateCall, !1)
-      : await window.attachEvent('load', initiateCall, !1)
-  },
-  mounted() {
+      ? window.addEventListener('load', initiateCall, !1)
+      : window.attachEvent('load', initiateCall, !1)
+
     bus.$on(`${AUTH_USER}`, this.handleSetUserData)
+  },
+  beforeDestroy() {
+    window.removeEventListener
+      ? window.addEventListener('load', initiateCall, !1)
+      : window.attachEvent('load', initiateCall, !1)
+
+    bus.$off(`${AUTH_USER}`, this.handleSetUserData)
   },
   methods: {
     async handleSetUserData() {

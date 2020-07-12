@@ -35,7 +35,8 @@ ul[role='group'] {
   top: 0;
 
   &.active {
-    width: 10.2rem;
+    // width: 10.2rem;
+    width: 12.2rem;
   }
 
   #toggleTheme {
@@ -52,6 +53,7 @@ ul[role='group'] {
 */
 
 .application.dark {
+  .el-card,
   #menuOpener {
     color: $white-partial;
     background: $dark-charcoal;

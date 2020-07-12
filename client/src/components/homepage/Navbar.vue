@@ -1,11 +1,12 @@
 <template>
-  <el-header class="fs-small p4 vertical-align pr45 pl48 header">
+  <el-header class="fs-small p4 vertical-align header">
     <h1 class="logo-title inline-block">
       <router-link :to="checkIfLoggedIn" class="hidden-sm-and-down">
         <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
       </router-link>
       <el-button
         circle
+        :class="{ dark }"
         icon="el-icon-menu"
         class="no-border hidden-md-and-up color-inherit mt1"
         @click.stop="toggleMobileDrawer"
@@ -18,14 +19,41 @@
           v-if="link.tab"
           :key="i"
           :href="link.url"
-          target="_blank"
           class="underline-hover mr4"
         >
           {{ link.label }}
         </a>
+        <el-dropdown v-else-if="link.dropdown" :key="i">
+          <span class="el-link mr4 font-regular fs-small">
+            {{ link.label }}
+            <i aria-hidden="true" class="el-icon-arrow-down ml1 fs-small" />
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item
+              v-for="dropdownItem in link.dropdown"
+              :key="dropdownItem.url"
+            >
+              <a
+                v-if="dropdownItem.tab"
+                :href="dropdownItem.url"
+                target="_blank"
+                class="underline-hover"
+              >
+                {{ dropdownItem.label }}
+              </a>
+              <router-link
+                v-else
+                :to="dropdownItem.url"
+                class="underline-hover"
+              >
+                {{ dropdownItem.label }}
+              </router-link>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <template v-else>
           <router-link
-            v-if="i === 0"
+            v-if="i == 0"
             :key="i"
             :to="checkIfLoggedIn"
             class="mr4 underline-hover"
@@ -47,43 +75,15 @@
 </template>
 
 <script>
+import { navbarLinks } from '../../config/infoMenuLinks'
+
 export default {
-  data: () => ({
-    links: [
-      {
-        label: 'Home',
-        url: '/'
-      },
-      {
-        label: 'Blog',
-        url: 'https://blog.infrapedia.com',
-        tab: true
-      },
-      {
-        label: 'About Us',
-        url: '/about'
-      },
-      {
-        label: 'Services',
-        url: '/services'
-      },
-      {
-        label: 'Contact Us',
-        url: '/contact'
-      },
-      {
-        label: 'Sponsorships',
-        url: '/sponsors'
-      },
-      {
-        label: 'Advisory board',
-        url: '/advisory-board'
-      }
-    ]
-  }),
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    links() {
+      return navbarLinks
     },
     checkIfLoggedIn() {
       return this.$auth.isAuthenticated ? '/app' : '/'

@@ -2,6 +2,7 @@
 
 .logo-title {
   margin-top: -0.05rem;
+  margin-left: -0.5rem;
 }
 
 .logo-img {
@@ -9,8 +10,31 @@
   width: 120px;
 }
 
+.header {
+  width: 75vw;
+  margin: 0 auto;
+}
+
 .wrapper-right {
-  min-width: 40rem;
+  min-width: 28rem;
+  .el-link {
+    color: $dark-blue;
+  }
+  a {
+    margin-right: 1rem;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.application.dark {
+  .wrapper-right {
+    a,
+    .el-link {
+      color: $white-hsl;
+    }
+  }
 }
 
 @media screen and (max-width: $break-md) {

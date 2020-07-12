@@ -1,5 +1,10 @@
 <template>
-  <el-container class="vph-full no-overflow">
+  <el-container
+    class="vph-full"
+    :class="{
+      'no-overflow': isMobileProfileDrawer
+    }"
+  >
     <i-navbar role="navigation" :is-user-navbar="true" />
 
     <el-aside class="mt12 oveflow-y-auto no-overflow-x hidden-md-and-down">
@@ -101,8 +106,8 @@ const TOUR_DONE_KEY = '__is-profile-tour-done'
 
 export default {
   components: {
-    INavbar: () => import('../components/Navbar'),
     IFooter: () => import('../components/Footer'),
+    INavbar: () => import('../components/navbar/Navbar'),
     IMessageDialog: () => import('../components/dialogs/MessageDialog'),
     IMobileProfileDrawer: () => import('../components/MobileDrawerProfile')
   },
@@ -128,8 +133,15 @@ export default {
   async mounted() {
     this.handleTourStart()
     await this.setToken()
-
+  },
+  created() {
     bus.$on(
+      `${navbarEvents.TOGGLE_MOBILE_DRAWER_PROFILE}`,
+      this.handleToggleMobileProfileDrawer
+    )
+  },
+  beforeDestroy() {
+    bus.$off(
       `${navbarEvents.TOGGLE_MOBILE_DRAWER_PROFILE}`,
       this.handleToggleMobileProfileDrawer
     )

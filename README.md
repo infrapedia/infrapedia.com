@@ -1,5 +1,12 @@
 # Infrapedia Open Source
 
+## Version 2.1.6
+
+- Community Market Place adjustments
+- Homepage new layout
+- Mobile Drawer links matching Homepage Navbar links
+- Full screen search bar component style adjustments
+
 ## Version 2.1.5
 
 - Community Market Place

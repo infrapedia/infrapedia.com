@@ -38,8 +38,8 @@ export const cablesColumns = [
   { label: 'Status', value: 'category', showSidebar: true },
   {
     label: 'Latency',
-    value: 'systemLength',
-    showSidebar: true
+    value: 'systemLength'
+    // showSidebar: true
   },
   {
     label: 'Length',
@@ -92,6 +92,11 @@ export const cablesColumns = [
   {
     label: 'Owners',
     value: 'owners',
+    showSidebar: true
+  },
+  {
+    label: 'Known Users',
+    value: 'knownUsers',
     showSidebar: true
   },
   {
