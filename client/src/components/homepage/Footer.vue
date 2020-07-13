@@ -1,5 +1,5 @@
 <template>
-  <el-footer height="100%" class="footer pt20 pb20">
+  <el-footer height="100%" class="footer pt10 pb10">
     <div class="inner-wrapper p4">
       <div class="logo-wrapper">
         <h1 class="logo-title inline-block">
