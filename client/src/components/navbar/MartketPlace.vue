@@ -178,59 +178,59 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
-    },
+    }
     // siteKey() {
     //   return siteKey
     // },
-    dialogFormRules() {
-      return {
-        name: [
-          {
-            required: true,
-            message: 'Please input your full name',
-            trigger: 'blur'
-          },
-          {
-            max: 50,
-            message: 'Length should be max 50',
-            trigger: ['change', 'blur']
-          }
-        ],
-        organization: [
-          {
-            required: true,
-            message: 'Please input your organization name',
-            trigger: 'blur'
-          },
-          {
-            max: 50,
-            message: 'Length should be max 50',
-            trigger: ['change', 'blur']
-          }
-        ],
-        email: [
-          {
-            required: true,
-            message: 'Please input your email',
-            trigger: 'blur'
-          },
-          {
-            type: 'email',
-            required: true,
-            message: 'Please input a valid email',
-            trigger: 'change'
-          }
-        ],
-        subject: [],
-        message: [
-          {
-            required: true,
-            message: 'A Message is required',
-            trigger: 'blur'
-          }
-        ]
-      }
-    }
+    // dialogFormRules() {
+    //   return {
+    //     name: [
+    //       {
+    //         required: true,
+    //         message: 'Please input your full name',
+    //         trigger: 'blur'
+    //       },
+    //       {
+    //         max: 50,
+    //         message: 'Length should be max 50',
+    //         trigger: ['change', 'blur']
+    //       }
+    //     ],
+    //     organization: [
+    //       {
+    //         required: true,
+    //         message: 'Please input your organization name',
+    //         trigger: 'blur'
+    //       },
+    //       {
+    //         max: 50,
+    //         message: 'Length should be max 50',
+    //         trigger: ['change', 'blur']
+    //       }
+    //     ],
+    //     email: [
+    //       {
+    //         required: true,
+    //         message: 'Please input your email',
+    //         trigger: 'blur'
+    //       },
+    //       {
+    //         type: 'email',
+    //         required: true,
+    //         message: 'Please input a valid email',
+    //         trigger: 'change'
+    //       }
+    //     ],
+    //     subject: [],
+    //     message: [
+    //       {
+    //         required: true,
+    //         message: 'A Message is required',
+    //         trigger: 'blur'
+    //       }
+    //     ]
+    //   }
+    // }
   },
   watch: {
     isOpen(bool) {
@@ -293,25 +293,25 @@ export default {
     //     this.isSendingData = false
     //   }
     // },
-    async toggleDialog(data) {
-      this.dialog.isVisible = true
-      this.dialog.rawMessage = data.request
-      this.dialog.form.subject = `Want to make an offer for this request: ${data.subject.replace(
-        '</p>',
-        ''
-      )}`
-      setTimeout(() => {
-        this.$refs.textareaInput.focus()
-      }, 320)
-    },
-    closeDialog() {
-      this.dialog.isVisible = false
+    // async toggleDialog(data) {
+    //   this.dialog.isVisible = true
+    //   this.dialog.rawMessage = data.request
+    //   this.dialog.form.subject = `Want to make an offer for this request: ${data.subject.replace(
+    //     '</p>',
+    //     ''
+    //   )}`
+    //   setTimeout(() => {
+    //     this.$refs.textareaInput.focus()
+    //   }, 320)
+    // },
+    // closeDialog() {
+    //   this.dialog.isVisible = false
 
-      this.dialog.rawMessage = null
-      this.dialog.form.message = ''
-      this.dialog.form.subject = ''
-      this.dialog.form.organization = ''
-    },
+    //   this.dialog.rawMessage = null
+    //   this.dialog.form.message = ''
+    //   this.dialog.form.subject = ''
+    //   this.dialog.form.organization = ''
+    // },
     formatDate(_, __, date) {
       return formatDate(date)
     },
