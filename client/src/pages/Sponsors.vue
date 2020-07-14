@@ -61,7 +61,7 @@
           />
         </el-table>
       </div>
-      <el-divider class="transparent" />
+      <!-- <el-divider class="transparent" />
       <el-divider class="transparent" />
       <div class="el-card is-always-shadow inner-wrapper table-wrapper mb20">
         <h2 class="title">Pricing</h2>
@@ -94,21 +94,21 @@
           <el-table-column label="Monthly" prop="monthly" />
           <el-table-column label="Yearly" prop="yearly" />
         </el-table>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
-import { sponsorsFeatures, ads, pricing } from '../config/sponsorships'
+import { sponsorsFeatures } from '../config/sponsorships'
 
 export default {
   name: 'SponsorsPage',
-  data: () => ({
-    sponsorsFeatures,
-    pricing,
-    ads
-  }),
+  computed: {
+    sponsorsFeatures() {
+      return sponsorsFeatures
+    }
+  },
   head: {
     title:
       'Infrapedia | Exclusive Sponsorships | Global Internet Infrastructure Map',

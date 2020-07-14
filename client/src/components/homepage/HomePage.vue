@@ -61,7 +61,6 @@
           <el-image
             src="https://cdn1.infrapedia.com/assets/top_new_gif.gif"
             fit="contain"
-            lazy
           />
         </div>
       </div>
