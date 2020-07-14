@@ -1,11 +1,15 @@
 # Infrapedia Open Source
 
+## Version 2.1.7
+
+- Mobile Drawer links matching Homepage Navbar links
+- Full screen search bar component style adjustments
+- Known users field hidden for now, as well as cls field for Terrestrial networks
+
 ## Version 2.1.6
 
 - Community Market Place adjustments
 - Homepage new layout
-- Mobile Drawer links matching Homepage Navbar links
-- Full screen search bar component style adjustments
 
 ## Version 2.1.5
 

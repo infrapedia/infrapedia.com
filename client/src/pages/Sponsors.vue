@@ -100,13 +100,15 @@
 </template>
 
 <script>
-import {
-  sponsorsFeatures
-  // ads, pricing
-} from '../config/sponsorships'
+import { sponsorsFeatures } from '../config/sponsorships'
 
 export default {
   name: 'SponsorsPage',
+  computed: {
+    sponsorsFeatures() {
+      return sponsorsFeatures
+    }
+  },
   head: {
     title:
       'Infrapedia | Exclusive Sponsorships | Global Internet Infrastructure Map',
@@ -127,11 +129,6 @@ export default {
           'custom maps, fiber optics maps, internet infrastructure map, live map, consulting, data center, sponsorship, ads, telecommunications'
       }
     ]
-  },
-  computed: {
-    sponsorsFeatures() {
-      return sponsorsFeatures
-    }
   },
   beforeCreate() {
     this.$emit('layout', 'landing-layout')

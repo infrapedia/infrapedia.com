@@ -1,7 +1,7 @@
 <template>
   <div id="map">
     <template v-if="!disabled">
-      <transition
+      <!-- <transition
         name="animated faster delay-1s"
         enter-active-class="slideInLeft"
         leave-active-class="slideOutLeft"
@@ -36,7 +36,7 @@
             </el-button>
           </el-form>
         </el-card>
-      </transition>
+      </transition> -->
       <el-button
         id="ThreeD"
         type="text"
