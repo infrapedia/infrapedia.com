@@ -9,27 +9,42 @@
       >
         <el-card
           v-if="lastMileTool.active"
-          class="z-index120 w40 h40 p4"
+          class="z-index120 w50 h50 p4"
           style="position: fixed; top: 4rem; left: 2.4rem;"
         >
           <el-form>
-            <el-form-item label="Quality">
-              <el-slider
-                :max="5"
-                :min="1"
-                v-model="lastMileTool.quality"
-                class="inline-block w-fit-full"
-              />
-            </el-form-item>
+            <h2>Last Mile Tool Panel</h2>
+            <b>Network : </b>
+            <span>{{ lastMileTool.networkName }}</span
+            ><br />
+            <b>Length : </b>
+            <span>{{ lastMileTool.len }}</span
+            ><br />
+            <ul>
+              <b>Close Network List :</b>
+              <li v-for="(item, i) in lastMileTool.networks" :key="i + item">
+                {{ i + 1 }} - {{ item }}
+              </li>
+            </ul>
+            <br />
+            <el-button
+              type="success"
+              plain
+              size="mini"
+              class="m1"
+              title="Add New Point"
+              @click="disableLastMileTool"
+            >
+              Add New Point
+            </el-button>
             <el-button
               type="primary"
               plain
               size="mini"
-              class="w-fit-full"
-              title="Turn off Last Mile Tool"
+              title="Close"
               @click="disableLastMileTool"
             >
-              Turn off
+              Close
             </el-button>
           </el-form>
         </el-card>
@@ -181,7 +196,10 @@ export default {
     lastMileTool: {
       active: false,
       reference: null,
-      quality: 1
+      quality: 1,
+      networkName: '',
+      networks: [],
+      len: ''
     }
   }),
   computed: {
@@ -1107,7 +1125,7 @@ export default {
     }, 1200),
     handleLastMileToolActivation() {
       this.lastMileTool.active = true
-      // this.lastMileTool.reference.initService()
+      this.lastMileTool.reference.initService()
       this.map.getCanvas().style.cursor = 'crosshair'
       this.map.setLayoutProperty(
         mapConfig.facilitiesClusters,

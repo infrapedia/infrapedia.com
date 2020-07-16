@@ -292,6 +292,7 @@ export default {
 
       this.controls = new EditorControls({
         draw: this.draw,
+        map: this.map,
         type: this.type,
         scene: this.scene,
         // $dispatch: this.$store.dispatch,

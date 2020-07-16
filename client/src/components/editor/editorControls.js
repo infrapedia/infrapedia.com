@@ -1,7 +1,10 @@
 import createControlButton from './createControlButton'
+import GL from '../mainMap/GL'
+import { point, booleanEqual, featureCollection, lineSlice } from '@turf/turf'
 
 class EditorControls {
   constructor({
+    map,
     draw,
     type,
     scene,
@@ -9,6 +12,8 @@ class EditorControls {
     handleBeforeFeatureCreation
   }) {
     this.type = type
+    this.map = map
+    GL.setMap(this.map)
     this.draw = draw
     this.scene = scene
     this.resetScene = this.resetScene
@@ -22,6 +27,7 @@ class EditorControls {
     this.controlGroup = document.createElement('div')
     this.controlGroup.className = 'mapboxgl-ctrl-group mapboxgl-ctrl'
     this.buttons = this.createButtons()
+
     return this.controlGroup
   }
 
@@ -42,11 +48,98 @@ class EditorControls {
             ? true
             : false,
         eventListener: () => {
+          debugger
           this.scene.creation = true
           this.draw.changeMode(this.draw.modes.DRAW_LINE_STRING)
         }
       }),
+      cut: createControlButton('cut', {
+        container: this.controlGroup,
+        className:
+          'editor-ctrl el-button m0 p0 el-button--text el-button--small',
+        title: 'Cut Lines',
+        icon: 'el-icon-scissors',
+        visible:
+          this.type == 'map' ||
+          this.type == 'subsea' ||
+          this.type == 'terrestrial-network'
+            ? true
+            : false,
+        eventListener: () => {
+          debugger
+          var Draw = this.draw
+          var mypoint = Draw.getSelectedPoints()
+          var line = Draw.getSelected()
+          var len = line.features[0].geometry.coordinates.length
+          var id = line.features[0].id
+          var all = Draw.getAll()
+          var newlist = featureCollection([])
+          if (mypoint.features.length > 0 && line.features.length > 0) {
+            var start = point(line.features[0].geometry.coordinates[0])
+            var stop = point(mypoint.features[0].geometry.coordinates)
+            var finish = point(line.features[0].geometry.coordinates[len - 1])
 
+            var slicedFirst = lineSlice(start, stop, line.features[0])
+            var slicedSecond = lineSlice(stop, finish, line.features[0])
+            slicedFirst.id = id + '_old'
+            slicedFirst.geometry.coordinates.pop()
+            slicedSecond.id = id + '_new'
+
+            all.features.map(function(a) {
+              if (a.id !== id) {
+                newlist.features.push(a)
+              } else {
+                newlist.features.push(slicedFirst)
+                newlist.features.push(slicedSecond)
+              }
+            })
+            Draw.set(newlist)
+          } else {
+            alert('Please Select a geometry and a point')
+          }
+        }
+      }),
+      vertexdelete: createControlButton('vertexdelete', {
+        container: this.controlGroup,
+        className:
+          'editor-ctrl el-button m0 p0 el-button--text el-button--small',
+        title: 'Vertex Deleting',
+        icon: 'el-icon-delete-location',
+        visible:
+          this.type == 'map' ||
+          this.type == 'subsea' ||
+          this.type == 'terrestrial-network'
+            ? true
+            : false,
+        eventListener: () => {
+          debugger
+          var Draw = this.draw
+          var mypoint = Draw.getSelectedPoints()
+          var pt1 = mypoint.features[0]
+          var line = Draw.getSelected()
+
+          if (mypoint.features.length > 0 && line.features.length > 0) {
+            var id = line.features[0].id
+            var newCoords = []
+            var all = Draw.getAll()
+            line.features[0].geometry.coordinates.map(function(a) {
+              var pt2 = point(a)
+              var status = booleanEqual(pt1, pt2)
+              if (status == false) {
+                newCoords.push(a)
+              }
+            })
+            all.features.map(function(a) {
+              if (a.id == id) {
+                a.geometry.coordinates = newCoords
+              }
+            })
+            Draw.set(all)
+          } else {
+            alert('Please Select a geometry and a point')
+          }
+        }
+      }),
       point: createControlButton('point', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-point',
@@ -59,6 +152,7 @@ class EditorControls {
             ? true
             : false,
         eventListener: () => {
+          debugger
           this.scene.creation = true
           this.draw.changeMode(this.draw.modes.DRAW_POINT)
         }
