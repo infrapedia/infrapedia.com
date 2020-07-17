@@ -1127,39 +1127,48 @@ export default {
       this.lastMileTool.active = true
       this.lastMileTool.reference.initService()
       this.map.getCanvas().style.cursor = 'crosshair'
-      this.map.setLayoutProperty(
-        mapConfig.facilitiesClusters,
-        'visibility',
-        'none'
-      )
-      this.map.setLayoutProperty(
-        mapConfig.facilitiesCount,
-        'visibility',
-        'none'
-      )
-      this.map.setLayoutProperty(
-        mapConfig.facilitiesSinglePoints,
-        'visibility',
-        'none'
-      )
+      // this.map.setLayoutProperty(
+      //   mapConfig.facilitiesClusters,
+      //   'visibility',
+      //   'none'
+      // )
+      // this.map.setLayoutProperty(
+      //   mapConfig.facilitiesCount,
+      //   'visibility',
+      //   'none'
+      // )
+      // this.map.setLayoutProperty(
+      //   mapConfig.facilitiesSinglePoints,
+      //   'visibility',
+      //   'none'
+      // )
     },
     disableLastMileTool() {
       this.lastMileTool.active = false
-      this.map.setLayoutProperty(
-        mapConfig.facilitiesClusters,
-        'visibility',
-        'visible'
-      )
-      this.map.setLayoutProperty(
-        mapConfig.facilitiesCount,
-        'visibility',
-        'visible'
-      )
-      this.map.setLayoutProperty(
-        mapConfig.facilitiesSinglePoints,
-        'visibility',
-        'visible'
-      )
+      // this.map.setLayoutProperty(
+      //   mapConfig.facilitiesClusters,
+      //   'visibility',
+      //   'visible'
+      // )
+      // this.map.setLayoutProperty(
+      //   mapConfig.facilitiesCount,
+      //   'visibility',
+      //   'visible'
+      // )
+      // this.map.setLayoutProperty(
+      //   mapConfig.facilitiesSinglePoints,
+      //   'visibility',
+      //   'visible'
+      // )
+      const sources = [
+        'startpoints',
+        'finishpoints',
+        'shortestroads',
+        'finishpoints'
+      ]
+      for (let src of sources) {
+        this.map.getSource(src).setData(fCollectionFormat())
+      }
       this.map.getCanvas().style.cursor = 'pointer'
       // document.getElementById('googlemap').remove()
     },
