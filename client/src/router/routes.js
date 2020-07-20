@@ -28,7 +28,8 @@ import Sponsors from '../pages/Sponsors.vue'
 // import VotationPool from '../pages/VotationPool.vue'
 import { getInstance } from '../auth/index'
 import VotesResults from '../pages/VotesResults.vue'
-import Advisors from '../pages/Advisors.vue'
+import PrivacyPolicy from '../pages/PrivacyPolicy.vue'
+import TermsAndConditions from '../pages/TermsAndConditions.vue'
 
 async function handleAdminOnlyRoutes(next, to) {
   const $authInstance = getInstance()
@@ -62,11 +63,6 @@ const routes = [
   //   component: VotationPool
   // },
   {
-    path: '/advisory-board',
-    name: 'advisory-board',
-    component: Advisors
-  },
-  {
     path: '/votes-results',
     name: 'votes-results',
     component: VotesResults
@@ -85,6 +81,16 @@ const routes = [
     path: '/services',
     name: 'services',
     component: Services
+  },
+  {
+    path: '/privacy-policy',
+    name: 'privacy-policy',
+    component: PrivacyPolicy
+  },
+  {
+    path: '/terms-and-conditions',
+    name: 'terms-and-conditions',
+    component: TermsAndConditions
   },
   {
     path: '/sponsors',
