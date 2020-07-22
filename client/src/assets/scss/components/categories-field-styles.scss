@@ -1,0 +1,14 @@
+@import '../base/variables';
+
+div.el-card .empty-text {
+  color: #909399;
+  background-color: #fafafa;
+  &.dark {
+    color: $white-partial;
+    background-color: $dark-charcoal;
+  }
+}
+
+.category_name {
+  flex-basis: 40%;
+}

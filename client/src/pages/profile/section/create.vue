@@ -302,59 +302,65 @@ export default {
     },
     async checkUserMapExistance() {
       this.loading = true
-      const {
-        t,
-        data: { r: mymap = [] }
-      } = (await getMyMap({ user_id: await this.$auth.getUserID() })) || {
-        data: { mymap: [] }
-      }
-
-      if (t != 'error' && mymap.length > 0) {
-        this.mode = 'edit'
+      try {
         const {
-          subdomain,
-          googleID,
-          cls,
-          facilities,
-          terrestrials,
-          subsea,
-          logos,
-          draw,
-          ixps,
-          config,
-          owners,
-          address,
-          techEmail,
-          techPhone,
-          saleEmail,
-          salePhone
-        } = mymap[0]
-
-        this.form = {
-          googleID,
-          subdomain,
-          ixps: Array.isArray(ixps) ? ixps : [],
-          cls: Array.isArray(cls) ? cls : [],
-          logo: Array.isArray(logos) && logos.length > 0 ? logos[0] : '',
-          subsea: Array.isArray(subsea) ? subsea : [],
-          terrestrials: Array.isArray(terrestrials) ? terrestrials : [],
-          facilities: Array.isArray(facilities) ? facilities : [],
-          config: typeof config == 'string' ? JSON.parse(config) : config,
-          owners: Array.isArray(owners) ? owners : [],
-          address: Array.isArray(address) ? address : [],
-          techEmail: techEmail ? techEmail : '',
-          techPhone: techPhone ? techPhone : '',
-          saleEmail: saleEmail ? saleEmail : '',
-          salePhone: salePhone ? salePhone : ''
+          t,
+          data: { r: mymap = [] }
+        } = (await getMyMap({ user_id: await this.$auth.getUserID() })) || {
+          data: { mymap: [] },
+          t: 'error'
         }
 
-        const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
-        if (fc.features && fc.features.length) {
-          bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, fc.features)
-          bus.$emit(`${EDITOR_LOAD_DRAW}`, null, false)
+        if (t != 'error' && mymap.length > 0) {
+          this.mode = 'edit'
+          const {
+            subdomain,
+            googleID,
+            cls,
+            facilities,
+            terrestrials,
+            subsea,
+            logos,
+            draw,
+            ixps,
+            config,
+            owners,
+            address,
+            techEmail,
+            techPhone,
+            saleEmail,
+            salePhone
+          } = mymap[0]
+
+          this.form = {
+            googleID,
+            subdomain,
+            ixps: Array.isArray(ixps) ? ixps : [],
+            cls: Array.isArray(cls) ? cls : [],
+            logo: Array.isArray(logos) && logos.length > 0 ? logos[0] : '',
+            subsea: Array.isArray(subsea) ? subsea : [],
+            terrestrials: Array.isArray(terrestrials) ? terrestrials : [],
+            facilities: Array.isArray(facilities) ? facilities : [],
+            config: typeof config == 'string' ? JSON.parse(config) : config,
+            owners: Array.isArray(owners) ? owners : [],
+            address: Array.isArray(address) ? address : [],
+            techEmail: techEmail ? techEmail : '',
+            techPhone: techPhone ? techPhone : '',
+            saleEmail: saleEmail ? saleEmail : '',
+            salePhone: salePhone ? salePhone : ''
+          }
+
+          const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
+          if (fc.features && fc.features.length) {
+            bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, fc.features)
+            bus.$emit(`${EDITOR_LOAD_DRAW}`, null, false)
+          }
         }
+      } catch {
+        // Ignore
+      } finally {
+        this.loading = false
       }
-      this.loading = false
     },
     handleFileConverted(fc) {
       bus.$emit(`${EDITOR_FILE_CONVERTED}`, fc)

@@ -125,7 +125,7 @@
         />
       </el-form-item>
       <el-divider :class="{ dark }" />
-      <el-form-item label="Owners">
+      <!-- <el-form-item label="Owners">
         <v-multi-select
           :mode="mode"
           :options="owners"
@@ -135,7 +135,7 @@
           @values-change="handleSelectionChange('owners', $event)"
           :value="mode == 'create' ? [] : [...form.owners]"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="Facilities">
         <v-multi-select
           ref="facilities-MultiSelect"
@@ -201,6 +201,8 @@
           :value="mode == 'create' ? [] : [...form.ixps]"
         />
       </el-form-item>
+      <el-divider :class="{ dark }" />
+      <categories-field class="mb12" />
       <el-form-item label="Logo(s)">
         <br />
         <div class="block w-fit-full">
@@ -265,14 +267,16 @@ import apiConfig from '../../config/apiConfig'
 import * as events from '../../events/mapForm'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import AutocompleteGoogle from '../../components/AutocompleteGoogle'
-import { searchOrganization } from '../../services/api/organizations'
+// import { searchOrganization } from '../../services/api/organizations'
 import VMultiSelect from '../../components/MultiSelect'
 import { uploadOrgLogo } from '../../services/api/uploads'
+import CategoriesField from './fields/categories.vue'
 
 export default {
   name: 'MapForm',
   components: {
     VMultiSelect,
+    CategoriesField,
     AutocompleteGoogle,
     IMapPropertiesDialog: () => import('../dialogs/MapPropertiesDialog')
   },
@@ -282,7 +286,7 @@ export default {
     terrestrials: [],
     cls: [],
     ixps: [],
-    owners: [],
+    // owners: [],
     feature: {},
     fileList: [],
     featureType: '',
@@ -312,7 +316,7 @@ export default {
       ixps: [],
       subsea: [],
       terrestrials: [],
-      owners: [],
+      // owners: [],
       facilities: []
     },
     uploadLogo: {
@@ -463,8 +467,8 @@ export default {
         'terrestrials',
         'subsea',
         'cls',
-        'ixps',
-        'owners'
+        'ixps'
+        // 'owners'
       ]
 
       const multiSelectFormat = arr =>
@@ -572,18 +576,18 @@ export default {
     /**
      * @param s { String } - search queried from cables select input
      */
-    async loadOwnersSearch(s) {
-      if (s === '') return
-      this.isLoadingOwners = true
-      const res = await searchOrganization({
-        user_id: await this.$auth.getUserID(),
-        s
-      })
-      if (res && res.data) {
-        this.owners = res.data
-      }
-      this.isLoadingOwners = false
-    },
+    // async loadOwnersSearch(s) {
+    //   if (s === '') return
+    //   this.isLoadingOwners = true
+    //   const res = await searchOrganization({
+    //     user_id: await this.$auth.getUserID(),
+    //     s
+    //   })
+    //   if (res && res.data) {
+    //     this.owners = res.data
+    //   }
+    //   this.isLoadingOwners = false
+    // },
     /**
      * @param s { String } - search queried from cables select input
      */
