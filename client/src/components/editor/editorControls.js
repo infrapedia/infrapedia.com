@@ -1,4 +1,5 @@
 import createControlButton from './createControlButton'
+import { fCollectionFormat } from '../../helpers/featureCollection'
 
 class EditorControls {
   constructor({
@@ -90,6 +91,19 @@ class EditorControls {
         eventListener: () => {
           this.scene.features.selected = this.draw.getSelected()
           this.deleteFeature()
+        }
+      }),
+
+      deleteAll: createControlButton('delete-all', {
+        container: this.controlGroup,
+        className: 'editor-ctrl editor-delete-all',
+        title: 'Delete All',
+        visible: true,
+        eventListener: async () => {
+          if (this.scene.features.list.length <= 0) return
+
+          this.scene.features.list = []
+          await this.draw.set(fCollectionFormat())
         }
       }),
 
