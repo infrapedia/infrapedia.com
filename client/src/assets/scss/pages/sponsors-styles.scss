@@ -1,6 +1,10 @@
 @import '../base/variables';
 @import '../helpers/atomic-classes';
 
+.no-gray-filter {
+  filter: grayscale(0);
+}
+
 .main-wrapper {
   border-top: 1px solid $grey-ligthen-3;
   .inner-wrapper {
@@ -58,9 +62,33 @@ p {
   }
 }
 
-.highlight {
-  background-color: yellow;
-  padding: 0.2rem;
+#partnersSection .boxes-wrapper {
+  display: grid;
+  width: 100%;
+  gap: 0.4rem;
+  grid-auto-flow: dense;
+  grid-template-columns: repeat(auto-fit, minmax(7.8rem, 1fr));
+  .box {
+    @extend .transition-all;
+    width: 5.2rem;
+    height: 5.2rem;
+    filter: grayscale(100%);
+    color: whitesmoke;
+    &:hover {
+      @extend .no-gray-filter;
+      transform: scale(1.02);
+    }
+    @media screen and (max-width: $break-sm) {
+      filter: grayscale(0);
+    }
+  }
+  @media screen and (max-width: $break-xs) {
+    .box {
+      width: 3.2rem;
+      height: 3.2rem;
+    }
+    grid-template-columns: repeat(auto-fit, minmax(4.2rem, 1fr));
+  }
 }
 
 .application.dark {
