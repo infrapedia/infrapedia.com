@@ -17,7 +17,7 @@ import OrgsSection from '../pages/profile/section/organization.vue'
 import MyIssuesSection from '../pages/profile/section/myissues.vue'
 import FacilitiesSection from '../pages/profile/section/facilities.vue'
 import EmailProviders from '../pages/profile/email-providers.vue'
-import MarketPlace from '../pages/marketplace'
+// import MarketPlace from '../pages/marketplace'
 // import MessagesSection from '../pages/profile/section/messages.vue'
 // import MyMessagesSection from '../pages/profile/section/mymessages.vue'
 import Contact from '../pages/Contact.vue'
@@ -85,11 +85,11 @@ const routes = [
     name: 'sponsors',
     component: Sponsors
   },
-  {
-    path: '/marketplace',
-    name: 'marketplace',
-    component: MarketPlace
-  },
+  // {
+  //   path: '/marketplace',
+  //   name: 'marketplace',
+  //   component: MarketPlace
+  // },
   {
     path: '/contact',
     name: 'contact',
