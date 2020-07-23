@@ -7,7 +7,7 @@ var url
 var form
 
 export const searchIxps = async ({ s, user_id, psz }) => {
-  url = `${apiConfig.url}/auth/ixps/search?s=${s}`
+  url = `${apiConfig.url}/ixps/search?s=${s}`
   if (psz) {
     url = url + '&psz=1'
   }
