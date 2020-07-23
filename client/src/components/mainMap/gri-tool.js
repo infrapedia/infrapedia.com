@@ -1,5 +1,6 @@
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { mapConfig } from '../../config/mapConfig.js'
+import { lastMTVue } from '../../helpers/lastMileToolVue'
 import {
   length,
   lineSlice,
@@ -227,6 +228,7 @@ export default class lastMileTool {
               that.len = length(sortGoogleList[0], { units: 'kilometers' })
               that.len = round(that.len, 3) + ' km'
             }
+            lastMTVue.$emit('list-mile-tool-data', that)
           }
         }
 
@@ -272,7 +274,6 @@ export default class lastMileTool {
     }
   }
   initGoogleServices() {
-    debugger
     const id = 'googlemap'
     if (!document.getElementById('googlemap')) {
       let div = document.createElement('div')
@@ -316,7 +317,7 @@ export default class lastMileTool {
     })
     features.map(function(a) {
       var b = a.toJSON()
-      if (result.indexOf() == -1) {
+      if (result.indexOf(b.properties.name) == -1) {
         result.push(b.properties.name)
       }
     })
@@ -404,7 +405,6 @@ export default class lastMileTool {
     this.requestType = e.value
   }
   getMapboxRoad(data, start, finish) {
-    debugger
     if (data.routes !== undefined) {
       const routes = data.routes[0]
       const distance = round(routes.distance, 3)

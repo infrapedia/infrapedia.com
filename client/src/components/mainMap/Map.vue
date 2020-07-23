@@ -9,10 +9,10 @@
       >
         <el-card
           v-if="lastMileTool.active"
-          class="z-index120 w50 h50 p4"
+          class="z-index120 w50 p4"
           style="position: fixed; top: 4rem; left: 2.4rem;"
         >
-          <el-form>
+          <el-form @list-mile-tool-data="changeLastMileData">
             <h2>Last Mile Tool Panel</h2>
             <b>Network : </b>
             <span>{{ lastMileTool.networkName }}</span
@@ -33,7 +33,7 @@
               size="mini"
               class="m1"
               title="Add New Point"
-              @click="disableLastMileTool"
+              @click="findNewLastMile"
             >
               Add New Point
             </el-button>
@@ -151,6 +151,7 @@ import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../../config/mapConfig'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import { bus } from '../../helpers/eventBus'
+import { lastMTVue } from '../../helpers/lastMileToolVue'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapState, mapActions } from 'vuex'
 import currentYear from '../../helpers/currentYear'
@@ -227,6 +228,7 @@ export default {
     bus.$on(UPDATE_TIME_MACHINE, this.handleUpdateTimeMachine)
     bus.$on(TOGGLE_FILTER_SELECTION, this.handleFilterSelection)
     bus.$on(SUBSEA_FILTER, this.handleSubseaToggle)
+    lastMTVue.$on('list-mile-tool-data', this.changeLastMileData)
 
     if (this.dark) this.map.setStyle(mapConfig.darkBasemap)
     if (this.currentSelection && this.focus) this.handlePreviouslySelected()
@@ -1171,9 +1173,27 @@ export default {
       }
       this.map.getCanvas().style.cursor = 'pointer'
       // document.getElementById('googlemap').remove()
+      this.lastMileTool.networks = []
+      this.lastMileTool.networkName = ''
+      this.lastMileTool.len = ''
     },
     handleLastMileToolCoordsChange(e) {
       this.lastMileTool.reference.find(e.lngLat)
+    },
+    changeLastMileData(data) {
+      this.lastMileTool.networks = data.networks
+      this.lastMileTool.networkName = data.networkName
+      this.lastMileTool.len = data.len
+    },
+    findNewLastMile() {
+      this.lastMileTool.networks = []
+      this.lastMileTool.networkName = ''
+      this.lastMileTool.len = ''
+      var emptyGeo = { type: 'FeatureCollection', features: [] }
+      this.map.getSource('startpoints').setData(emptyGeo)
+      this.map.getSource('finishpoints').setData(emptyGeo)
+      this.map.getSource('shortestroads').setData(emptyGeo)
+      this.lastMileTool.reference = new lastMileTool({ map: this.map })
     }
   }
 }

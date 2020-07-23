@@ -48,7 +48,6 @@ class EditorControls {
             ? true
             : false,
         eventListener: () => {
-          debugger
           this.scene.creation = true
           this.draw.changeMode(this.draw.modes.DRAW_LINE_STRING)
         }
@@ -66,7 +65,6 @@ class EditorControls {
             ? true
             : false,
         eventListener: () => {
-          debugger
           var Draw = this.draw
           var mypoint = Draw.getSelectedPoints()
           var line = Draw.getSelected()
@@ -112,7 +110,6 @@ class EditorControls {
             ? true
             : false,
         eventListener: () => {
-          debugger
           var Draw = this.draw
           var mypoint = Draw.getSelectedPoints()
           var pt1 = mypoint.features[0]
@@ -152,7 +149,6 @@ class EditorControls {
             ? true
             : false,
         eventListener: () => {
-          debugger
           this.scene.creation = true
           this.draw.changeMode(this.draw.modes.DRAW_POINT)
         }
