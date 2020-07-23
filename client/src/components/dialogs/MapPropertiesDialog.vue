@@ -30,7 +30,7 @@
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" :disabled="checkFields" @click="handleClose">
+      <el-button type="primary" @click="handleClose">
         Save
       </el-button>
     </span>
@@ -88,15 +88,10 @@ export default {
     dark() {
       return this.$store.state.isDark
     },
-    checkFields() {
-      const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
-      return emptyFields.length ? true : false
-    },
     categoriesList() {
       const featureType = this.featureType !== '' ? this.featureType : false
       let availableCategories = []
       let args = { t: null, categories: this.categories }
-      console.log(featureType)
 
       if (featureType && this.categories.length > 0) {
         args.t = featureType

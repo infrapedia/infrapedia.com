@@ -284,7 +284,7 @@ export default {
       return [
         'cls',
         'ixps',
-        'facility',
+        'facilities',
         'subsea cables',
         'terrestrial networks',
         'custom lines',
