@@ -13,27 +13,24 @@
     </h2>
     <el-form>
       <el-form-item label="Category">
-        <el-input v-model="form.category" />
-      </el-form-item>
-      <el-form-item label="Stroke color">
-        <el-color-picker v-model="form.color" :predefine="predefineColors" />
-      </el-form-item>
-      <el-form-item
-        label="Line style"
-        v-if="featureType == 'terrestrials' || featureType == 'subsea'"
-      >
-        <el-radio-group v-model="form['line-style']">
-          <el-radio-button label="dashed">
-            Dashed
-          </el-radio-button>
-          <el-radio-button label="normal">
-            Normal
-          </el-radio-button>
-        </el-radio-group>
+        <el-select
+          v-model="form.category"
+          placeholder
+          class="w-fit-full"
+          :class="{ dark }"
+        >
+          <el-option
+            v-for="(cat, i) in categoriesList"
+            :key="i"
+            :value="cat.name"
+            :label="cat.name"
+            class="capitalize"
+          />
+        </el-select>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" :disabled="checkFields" @click="handleClose">
+      <el-button type="primary" @click="handleClose">
         Save
       </el-button>
     </span>
@@ -41,6 +38,8 @@
 </template>
 
 <script>
+import { getCategoriesByType } from '../../helpers'
+
 export default {
   name: 'MapPropertiesDialog',
   data: () => ({
@@ -63,6 +62,10 @@ export default {
       type: String,
       default: () => ''
     },
+    categories: {
+      type: Array,
+      required: true
+    },
     mode: {
       type: String,
       required: true
@@ -82,9 +85,20 @@ export default {
     title() {
       return this.mode == 'create' ? 'Add properties' : 'Edit properties'
     },
-    checkFields() {
-      const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
-      return emptyFields.length ? true : false
+    dark() {
+      return this.$store.state.isDark
+    },
+    categoriesList() {
+      const featureType = this.featureType !== '' ? this.featureType : false
+      let availableCategories = []
+      let args = { t: null, categories: this.categories }
+
+      if (featureType && this.categories.length > 0) {
+        args.t = featureType
+        availableCategories = getCategoriesByType(args)
+      }
+
+      return availableCategories
     }
   },
   methods: {
