@@ -13,6 +13,22 @@
       {{ title }}
     </h2>
     <el-form>
+      <el-form-item label="Category">
+        <el-select
+          v-model="form.category"
+          placeholder
+          class="w-fit-full"
+          :class="{ dark }"
+        >
+          <el-option
+            v-for="(cat, i) in categoriesList"
+            :key="i"
+            :value="cat"
+            :label="cat.name"
+            class="capitalize"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="Name">
         <el-input v-model="form.name" />
       </el-form-item>
@@ -35,32 +51,6 @@
             v-model="form.height"
           />
         </el-form-item>
-        <el-form-item label="Stroke color">
-          <el-color-picker v-model="form.stroke" :predefine="predefineColors">
-          </el-color-picker>
-        </el-form-item>
-        <el-form-item
-          label="Stroke width"
-          v-if="feature.geometry.type == 'LineString'"
-        >
-          <el-input-number
-            v-model="form['stroke-width']"
-            class="w-fit-full"
-            :step="0.1"
-            :min="0"
-          />
-        </el-form-item>
-        <el-form-item
-          label="Stroke opacity"
-          v-if="feature.geometry.type == 'LineString'"
-        >
-          <el-input-number
-            v-model="form['stroke-opacity']"
-            class="w-fit-full"
-            :step="0.1"
-            :min="0"
-          />
-        </el-form-item>
       </template>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -72,6 +62,8 @@
 </template>
 
 <script>
+import { getCategoriesByType } from '../../helpers'
+
 export default {
   name: 'PropertiesDialog',
   data: () => ({
@@ -92,6 +84,10 @@ export default {
     },
     mode: {
       type: String,
+      required: true
+    },
+    categories: {
+      type: Array,
       required: true
     },
     type: {
@@ -126,17 +122,13 @@ export default {
             this.form = {
               name: '',
               height: 0,
-              status: true,
-              stroke: '#cccccc'
+              status: true
             }
             break
           default:
             this.form = {
               name: '',
-              status: true,
-              stroke: '#cccccc',
-              'stroke-width': 0.4,
-              'stroke-opacity': 1
+              status: true
             }
             break
         }
@@ -178,6 +170,32 @@ export default {
       return emptyFields.length && !emptyFields.includes('status')
         ? true
         : false
+    },
+    dark() {
+      return this.$store.state.isDark
+    },
+    categoriesList() {
+      const featureType =
+        this.feature && this.feature.geometry && this.feature.geometry.type
+          ? this.feature.geometry.type.toLowerCase()
+          : false
+      let availableCategories = []
+      let args = { t: null, categories: this.categories }
+
+      if (featureType && this.categories.length > 0) {
+        switch (featureType) {
+          case 'point':
+            args.t = 'custom points'
+            availableCategories = getCategoriesByType(args)
+            break
+          default:
+            args.t = 'custom lines'
+            availableCategories = getCategoriesByType(args)
+            break
+        }
+      }
+
+      return availableCategories
     }
   },
   methods: {

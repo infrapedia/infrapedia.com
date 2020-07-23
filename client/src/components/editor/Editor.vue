@@ -29,6 +29,7 @@
       :type="type"
       :creation-form="form"
       :is-visible="dialog.visible"
+      :categories="categories"
       :feature="dialog.selectedFeature"
       @close="handleDialogData"
     />
@@ -75,6 +76,7 @@ export default {
       edition: null
     },
     controls: null,
+    categories: [],
     dialog: {
       visible: false,
       mode: 'create',
@@ -150,6 +152,14 @@ export default {
       this.$emit('features-list-change', list)
     }
   },
+  created() {
+    bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
+    bus.$on(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
+    bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
+    bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
+    bus.$on(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
+    bus.$on('categories-field-values-change', this.handleCategoriesChange)
+  },
   mounted() {
     this.map = this.handleSetMapSources(this.addMapEvents(this.createMap()))
     this.toggleDarkMode(this.dark)
@@ -158,12 +168,6 @@ export default {
     if (this.scene.features.list.length > 0) {
       this.handleGetFeatures()
     }
-
-    bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
-    bus.$on(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
-    bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
-    bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
-    bus.$on(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
   },
   beforeDestroy() {
     if (this.scene.features.list.length) {
@@ -174,8 +178,12 @@ export default {
     bus.$off(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$off(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
     bus.$off(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
+    bus.$off('categories-field-values-change', this.handleCategoriesChange)
   },
   methods: {
+    handleCategoriesChange(list) {
+      this.categories = list
+    },
     handleGetFeatures() {
       this.$emit('features-list-change', this.scene.features.list)
     },

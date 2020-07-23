@@ -125,6 +125,10 @@
         />
       </el-form-item>
       <el-divider :class="{ dark }" />
+      <!-- CATEGORIES FIELD START -->
+      <categories-field class="mb12" @values-change="updateCategoriesList" />
+      <!-- CATEGORIES FIELD END -->
+      <el-divider :class="{ dark }" />
       <!-- <el-form-item label="Owners">
         <v-multi-select
           :mode="mode"
@@ -201,8 +205,6 @@
           :value="mode == 'create' ? [] : [...form.ixps]"
         />
       </el-form-item>
-      <el-divider :class="{ dark }" />
-      <categories-field class="mb12" />
       <el-form-item label="Logo(s)">
         <br />
         <div class="block w-fit-full">
@@ -245,10 +247,11 @@
     </el-form>
     <!------------------------->
     <i-map-properties-dialog
-      :mode="dialogMode"
-      :feature="feature"
-      :feature-type="featureType"
+      :categories="mapCreationData.categories"
       :is-visible="isPropertiesDialog"
+      :feature-type="featureType"
+      :feature="feature"
+      :mode="dialogMode"
       @close="handleDialogClose"
     />
   </div>
@@ -271,6 +274,7 @@ import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 import VMultiSelect from '../../components/MultiSelect'
 import { uploadOrgLogo } from '../../services/api/uploads'
 import CategoriesField from './fields/categories.vue'
+import { bus } from '../../helpers/eventBus'
 
 export default {
   name: 'MapForm',
@@ -317,7 +321,8 @@ export default {
       subsea: [],
       terrestrials: [],
       // owners: [],
-      facilities: []
+      facilities: [],
+      categories: []
     },
     uploadLogo: {
       text: '',
@@ -396,6 +401,9 @@ export default {
       this.setLogoUrl()
     }
   },
+  created() {
+    bus.$on('categories-field-values-change', this.updateCategoriesList)
+  },
   async mounted() {
     if (this.mode == 'edit') {
       await this.handleEditModeScenario()
@@ -403,6 +411,9 @@ export default {
     }
   },
   methods: {
+    updateCategoriesList(list) {
+      this.mapCreationData.categories = list
+    },
     async handleRemoveFeature(t) {
       this.form[t] = this.$refs[`${t}-MultiSelect`].emitInputValue(true)
       const ids = this.getSelectionID(t)

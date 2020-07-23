@@ -18,7 +18,8 @@
           Add
         </el-button>
       </header>
-      <transition name="fade" mode="out-in" tag="div">
+      <!-- CREATION FORM START -->
+      <el-collapse-transition>
         <div class="mt4" v-if="isInputVisible">
           <header
             class="flex align-items-center justify-content-space-between nowrap text-left mb2 ml1"
@@ -26,7 +27,12 @@
             <span class="capitalize fs-small">
               {{ mode == 'create' ? 'Add' : 'Edit' }} category settings
             </span>
-            <el-button class="w14 h4 vertical-align" round type="text">
+            <el-button
+              class="w14 h4 vertical-align"
+              round
+              type="text"
+              @click="toggleInput(false)"
+            >
               Cancel
             </el-button>
           </header>
@@ -51,6 +57,7 @@
                     <el-form-item label="color" class="capitalize" size="mini">
                       <el-color-picker
                         size="small"
+                        :class="{ dark }"
                         v-model="field.color"
                         :predefine="predefineColors"
                       />
@@ -65,6 +72,7 @@
                       <el-input-number
                         class="w14"
                         :controls="false"
+                        :class="{ dark }"
                         size="small"
                         v-model="field['stroke-width']"
                         :min="0.1"
@@ -81,6 +89,7 @@
                       <el-radio-group
                         v-model="field['stroke-style']"
                         size="small"
+                        :class="{ dark }"
                       >
                         <el-radio-button label="normal" class="capitalize" />
                         <el-radio-button label="dashed" class="capitalize" />
@@ -124,6 +133,7 @@
                 :class="{ dark }"
                 size="mini"
                 round
+                :plain="dark"
                 @click="back"
               >
                 back
@@ -141,9 +151,11 @@
             </footer>
           </el-card>
         </div>
-      </transition>
+      </el-collapse-transition>
+      <!-- CREATION FORM END -->
     </div>
     <template>
+      <!-- EMPTY LIST START -->
       <div
         v-if="!isInputVisible && !categories.length"
         class="el-card empty-text text-center p8 no-border"
@@ -153,48 +165,95 @@
           Categories will be shown here once you add them.
         </span>
       </div>
+      <!-- EMPTY LIST END -->
+
+      <!-------------------->
+      <!-------------------->
+
+      <!-- CATEGORIES ITEMS START -->
       <div v-else>
         <div
-          class="el-card round pt2 pb2 pr4 pl4 mb4 flex nowrap justify-content-space-between align-items-center"
+          class="el-card round pt2 pb2 pr4 pl4 mb2"
           v-for="(cat, i) in categories"
           :key="i"
         >
-          <div class="flex nowrap align-items-center category_name">
-            <div
-              :style="{ backgroundColor: cat.color }"
-              class="w6 h6 circle inline-block"
-            />
-            <span class="capitalize ml2 font-medium fs-small">
-              {{ cat.name }}
-            </span>
+          <div
+            class="flex nowrap justify-content-space-between align-items-center category-box_inner-wrapper"
+          >
+            <div class="flex nowrap align-items-center category_name">
+              <div
+                :style="{ backgroundColor: cat.color }"
+                class="w6 h6 circle inline-block"
+              />
+              <span class="capitalize ml2 font-medium fs-small">
+                {{ cat.name }}
+              </span>
+            </div>
+            <div class="buttons-wrapper">
+              <el-button
+                icon="el-icon-view"
+                circle
+                size="mini"
+                :class="{ dark }"
+                :type="isViewing(cat.name) ? 'primary' : ''"
+                @click="determineView(cat.name)"
+              />
+              <el-button
+                icon="el-icon-edit-outline"
+                circle
+                size="mini"
+                :class="{ dark }"
+                @click="setEditMode(cat, i)"
+              />
+              <el-button
+                icon="el-icon-delete"
+                circle
+                size="mini"
+                :class="{ dark }"
+                @click="removeCategory(i)"
+              />
+            </div>
           </div>
-          <div>
-            <el-button
-              icon="el-icon-edit"
-              circle
-              size="mini"
-              class="mr1"
-              @click="setEditMode(cat, i)"
-            />
-            <el-button
-              icon="el-icon-delete"
-              circle
-              size="mini"
-              @click="removeCategory(i)"
-            />
-          </div>
+          <el-collapse-transition>
+            <div class="details-wrapper" v-if="isViewing(cat.name)">
+              <el-divider :class="{ dark }" class="mt2 mb4" />
+              <div
+                class="flex nowrap justify-content-space-between mb4 pr4 pl4"
+              >
+                <div class="fs-small">
+                  <strong>Stroke style: </strong>
+                  {{ cat['stroke-style'] }}
+                </div>
+                <div class=" inline-block fs-small">
+                  <strong>
+                    Opacity:
+                  </strong>
+                  {{ cat['stroke-opacity'] }}
+                </div>
+              </div>
+              <div class="flex row flex-start pl4 pr4 pb4 tags-wrapper">
+                <el-tag v-for="t in cat.types" :key="t" size="mini">
+                  {{ t }}
+                </el-tag>
+              </div>
+            </div>
+          </el-collapse-transition>
         </div>
       </div>
+      <!-- CATEGORIES ITEMS END -->
     </template>
   </div>
 </template>
 
 <script>
+import { bus } from '../../../helpers/eventBus'
+
 export default {
   name: 'CategoriesField',
   data: () => ({
     isInputVisible: false,
     categories: [],
+    viewing: [],
     mode: 'create',
     step: 1,
     field: {
@@ -239,6 +298,21 @@ export default {
         : this.mode == 'create'
         ? this.addCategory
         : this.saveEdit
+    },
+    determineView() {
+      return name => {
+        return this.viewing.includes(name)
+          ? this.removeViewing(name)
+          : this.setViewing(name)
+      }
+    },
+    isViewing() {
+      return name => this.viewing.includes(name)
+    }
+  },
+  watch: {
+    categories(arr) {
+      bus.$emit('categories-field-values-change', arr)
     }
   },
   methods: {
@@ -260,6 +334,12 @@ export default {
         'stroke-opacity': 1,
         'stroke-style': 'normal'
       }
+    },
+    setViewing(categoryName) {
+      this.viewing.push(categoryName)
+    },
+    removeViewing(name) {
+      this.viewing = this.viewing.filter(n => n != name)
     },
     setEditMode(category, i) {
       this.field = { ...category, idx: i }
