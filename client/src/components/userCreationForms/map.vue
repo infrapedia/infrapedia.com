@@ -17,6 +17,35 @@
           </template>
         </el-input>
       </el-form-item>
+      <template name="Logo">
+        <el-form-item label="Logo(s)">
+          <br />
+          <div class="block flex flex-start">
+            <el-upload
+              ref="upload"
+              :multiple="false"
+              accept="image/*.jpg"
+              :action="uploadURL"
+              :auto-upload="false"
+              :file-list="fileList"
+              list-type="picture-card"
+              :on-remove="handleFileListRemove"
+              :on-change="handleFileListChange"
+              :http-request="handleUserLogoUpload"
+            >
+              <i class="el-icon-plus" />
+            </el-upload>
+          </div>
+        </el-form-item>
+        <el-collapse-transition>
+          <el-alert
+            v-show="uploadLogo.show"
+            :closable="false"
+            :type="uploadLogo.type"
+            :title="uploadLogo.text"
+          />
+        </el-collapse-transition>
+      </template>
       <el-form-item label="Google Analytics ID">
         <el-input
           :class="{ dark }"
@@ -128,7 +157,6 @@
       <!-- CATEGORIES FIELD START -->
       <categories-field class="mb12" @values-change="updateCategoriesList" />
       <!-- CATEGORIES FIELD END -->
-      <el-divider :class="{ dark }" />
       <!-- <el-form-item label="Owners">
         <v-multi-select
           :mode="mode"
@@ -205,33 +233,6 @@
           :value="mode == 'create' ? [] : [...form.ixps]"
         />
       </el-form-item>
-      <el-form-item label="Logo(s)">
-        <br />
-        <div class="block w-fit-full">
-          <el-upload
-            ref="upload"
-            :multiple="false"
-            accept="image/*.jpg"
-            :action="uploadURL"
-            :auto-upload="false"
-            :file-list="fileList"
-            list-type="picture-card"
-            :on-remove="handleFileListRemove"
-            :on-change="handleFileListChange"
-            :http-request="handleUserLogoUpload"
-          >
-            <i class="el-icon-plus" />
-          </el-upload>
-        </div>
-      </el-form-item>
-      <el-collapse-transition>
-        <el-alert
-          v-show="uploadLogo.show"
-          :closable="false"
-          :type="uploadLogo.type"
-          :title="uploadLogo.text"
-        />
-      </el-collapse-transition>
       <el-form-item class="mt12">
         <el-button
           type="primary"
@@ -650,7 +651,7 @@ export default {
      */
     async loadFacSearch(s) {
       if (s === '') return
-      this.isLoadingCls = true
+      this.isLoadingFacs = true
       const res = await searchFacilities({
         user_id: await this.$auth.getUserID(),
         s
@@ -658,7 +659,7 @@ export default {
       if (res && res.data) {
         this.facilities = res.data
       }
-      this.isLoadingCls = false
+      this.isLoadingFacs = false
     },
     sendData() {
       return this.$emit(`${events.SEND_DATA}`, {

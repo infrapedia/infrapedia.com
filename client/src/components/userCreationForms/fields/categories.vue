@@ -1,10 +1,10 @@
 <template>
-  <div class="main-wrapper no-selectable">
+  <div class="main-wrapper">
     <div class="el-form-item" :class="{ dark }">
       <header
         class="flex row nowrap justify-content-space-between align-items-center"
       >
-        <span class="el-form-item_label fs-regular">
+        <span class="el-form-item_label fs-regular no-selectable">
           Categories
         </span>
         <el-button
@@ -154,7 +154,11 @@
       </el-collapse-transition>
       <!-- CREATION FORM END -->
     </div>
-    <template>
+    <!-------------------------->
+    <!-------------------------->
+    <!-------------------------->
+    <!-- CATEGORIES ITEMS START -->
+    <template name="categories-items">
       <!-- EMPTY LIST START -->
       <div
         v-if="!isInputVisible && !categories.length"
@@ -170,7 +174,6 @@
       <!-------------------->
       <!-------------------->
 
-      <!-- CATEGORIES ITEMS START -->
       <div v-else>
         <div
           class="el-card round pt2 pb2 pr4 pl4 mb2"
@@ -231,7 +234,7 @@
                   {{ cat['stroke-opacity'] }}
                 </div>
               </div>
-              <div class="flex row flex-start pl4 pr4 pb4 tags-wrapper">
+              <div class="flex row wrap flex-start pl4 pr4 pb4 tags-wrapper">
                 <el-tag v-for="t in cat.types" :key="t" size="mini">
                   {{ t }}
                 </el-tag>
@@ -240,20 +243,121 @@
           </el-collapse-transition>
         </div>
       </div>
-      <!-- CATEGORIES ITEMS END -->
     </template>
+    <!-- CATEGORIES ITEMS END -->
+    <!-------------------------->
+    <!-------------------------->
+    <!-------------------------->
+    <!-- TYPES SELECTION DIALOG START -->
+    <el-dialog
+      top="28vh"
+      :visible.sync="typesDialog.visible"
+      :close-on-click-modal="false"
+      :custom-class="customDialogClass"
+    >
+      <header slot="title">
+        <h2 class="title-user-variant  fs-medium text-left">
+          Select the elements you want for this category
+        </h2>
+      </header>
+      <el-form>
+        <el-form-item
+          v-if="field.types.includes('facilities')"
+          label="Facilities"
+        >
+          <v-multi-select
+            ref="facilities-MultiSelect"
+            :mode="mode"
+            :options="typesData.facilities"
+            @input="loadFacSearch"
+            :loading="typesData.isLoadingFacs"
+            @values-change="handleTypeSelectionChange('facilities', $event)"
+            :value="mode == 'create' ? [] : [...field.data.facilities]"
+          />
+        </el-form-item>
+        <el-form-item
+          v-if="field.types.includes('terrestrial networks')"
+          label="Terrestrial Networks"
+        >
+          <v-multi-select
+            ref="terrestrials-MultiSelect"
+            :mode="mode"
+            :options="typesData.terrestrials"
+            @input="loadCablesSearch($event, 'terrestrials')"
+            :loading="typesData.isLoadingCables"
+            @values-change="handleTypeSelectionChange('terrestrials', $event)"
+            :value="mode == 'create' ? [] : [...field.data.terrestrials]"
+          />
+        </el-form-item>
+        <el-form-item
+          v-if="field.types.includes('subsea cables')"
+          label="Subsea Cables"
+        >
+          <v-multi-select
+            ref="subsea-MultiSelect"
+            :mode="mode"
+            :options="typesData.subsea"
+            @input="loadCablesSearch($event)"
+            :loading="typesData.isLoadingCables"
+            @values-change="handleTypeSelectionChange('subsea cables', $event)"
+            :value="mode == 'create' ? [] : [...field.data['subsea cables']]"
+          />
+        </el-form-item>
+        <el-form-item v-if="field.types.includes('cls')" label="CLS">
+          <v-multi-select
+            ref="cls-MultiSelect"
+            :mode="mode"
+            :options="typesData.cls"
+            @input="loadClsSearch"
+            :loading="typesData.isLoadingCls"
+            @values-change="handleTypeSelectionChange('cls', $event)"
+            :value="mode == 'create' ? [] : [...field.data.cls]"
+          />
+        </el-form-item>
+        <el-form-item v-if="field.types.includes('ixps')" label="Ixps">
+          <v-multi-select
+            ref="ixps-MultiSelect"
+            :mode="mode"
+            :options="typesData.ixps"
+            @input="loadIxpsSearch"
+            :loading="typesData.isLoadingIxps"
+            @values-change="handleTypeSelectionChange('ixps', $event)"
+            :value="mode == 'create' ? [] : [...field.data.ixps]"
+          />
+        </el-form-item>
+      </el-form>
+      <footer slot="footer">
+        <el-button round type="primary" @click="() => $emit('save-types')">
+          Save
+        </el-button>
+      </footer>
+    </el-dialog>
+    <!-- TYPES SELECTION DIALOG END -->
   </div>
 </template>
 
 <script>
 import { bus } from '../../../helpers/eventBus'
+import { searchFacilities } from '../../../services/api/facs'
+import {
+  getSearchByCablesT,
+  getSearchByCablesS
+} from '../../../services/api/cables'
+import { searchIxps } from '../../../services/api/ixps'
+import { searchCls } from '../../../services/api/cls'
 
 export default {
   name: 'CategoriesField',
+  components: {
+    VMultiSelect: () => import('../../../components/MultiSelect')
+  },
   data: () => ({
     isInputVisible: false,
     categories: [],
     viewing: [],
+    typesDialog: {
+      visible: false
+    },
     mode: 'create',
     step: 1,
     field: {
@@ -262,12 +366,36 @@ export default {
       color: '#409EFF',
       'stroke-width': 1,
       'stroke-opacity': 1,
-      'stroke-style': 'normal'
+      'stroke-style': 'normal',
+      data: {
+        cls: [],
+        ixps: [],
+        facilities: [],
+        'custom lines': [],
+        'subsea cables': [],
+        'custom points': [],
+        'custom polygons': [],
+        'terrestrial networks': []
+      }
+    },
+    typesData: {
+      cls: [],
+      ixps: [],
+      subsea: [],
+      facilities: [],
+      terrestrials: [],
+      isLoadingCls: false,
+      isLoadingIxps: false,
+      isLoadingFacs: false,
+      isLoadingCables: false
     }
   }),
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    customDialogClass() {
+      return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
     },
     predefineColors() {
       return [
@@ -296,7 +424,7 @@ export default {
       return this.step == 1
         ? this.nextStep
         : this.mode == 'create'
-        ? this.addCategory
+        ? this.beforeAddCategoryAddTypesSelections
         : this.saveEdit
     },
     determineView() {
@@ -316,6 +444,70 @@ export default {
     }
   },
   methods: {
+    /**
+     * @param s { String } - search queried from facilities select input
+     */
+    async loadFacSearch(s) {
+      if (s === '') return
+      this.typesData.isLoadingFacs = true
+      const res = await searchFacilities({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
+      if (res && res.data) {
+        this.typesData.facilities = res.data
+      }
+      this.typesData.isLoadingFacs = false
+    },
+    /**
+     * @param s { String } - search queried from cables select input
+     */
+    async loadCablesSearch(s, type) {
+      if (s === '') return
+      this.typesData.isLoadingCables = true
+      let method = () => {}
+      switch (type) {
+        case 'terrestrials':
+          method = getSearchByCablesT
+          break
+        default:
+          method = getSearchByCablesS
+          break
+      }
+      const { data = [] } = (await method({
+        user_id: await this.$auth.getUserID(),
+        s
+      })) || { data: [] }
+
+      if (type == 'terrestrials') this.typesData.terrestrials = data
+      else this.typesData.subsea = data
+
+      this.typesData.isLoadingCables = false
+    },
+    /**
+     * @param s { String } - search queried from cls select input
+     */
+    async loadClsSearch(s) {
+      if (s === '') return
+      this.typesData.isLoadingCls = true
+      const res = await searchCls({ user_id: await this.$auth.getUserID(), s })
+      if (res && res.data) {
+        this.typesData.cls = res.data
+      }
+      this.typesData.isLoadingCls = false
+    },
+    async loadIxpsSearch(s) {
+      if (s === '') return
+      this.typesData.isLoadingIxps = true
+      const res = await searchIxps({ user_id: await this.$auth.getUserID(), s })
+      if (res && res.data) {
+        this.typesData.ixps = res.data
+      }
+      this.typesData.isLoadingIxps = false
+    },
+    handleTypeSelectionChange(t, data) {
+      this.field.data[t] = data
+    },
     nextStep() {
       this.step += 1
     },
@@ -332,7 +524,17 @@ export default {
         color: '#409EFF',
         'stroke-width': 1,
         'stroke-opacity': 1,
-        'stroke-style': 'normal'
+        'stroke-style': 'normal',
+        data: {
+          cls: [],
+          ixps: [],
+          facilities: [],
+          'custom lines': [],
+          'subsea cables': [],
+          'custom points': [],
+          'custom polygons': [],
+          'terrestrial networks': []
+        }
       }
     },
     setViewing(categoryName) {
@@ -353,6 +555,15 @@ export default {
     toggleInput(bool) {
       this.isInputVisible = bool
       this.resetField()
+    },
+    async beforeAddCategoryAddTypesSelections() {
+      return new Promise(res => {
+        this.typesDialog.visible = true
+        this.$on('save-types', function() {
+          this.typesDialog.visible = false
+          res()
+        })
+      }).then(this.addCategory)
     },
     addCategory() {
       this.categories.push({ ...this.field })
