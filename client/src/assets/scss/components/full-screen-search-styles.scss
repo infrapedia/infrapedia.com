@@ -7,9 +7,11 @@
     background-color: $light-hover;
   }
 }
-
-.full-screen {
+.fs-screen-btn {
   color: $dark-charcoal;
+}
+.full-screen {
+  color: $dark-charcoal !important;
   overflow-y: scroll;
   height: 100vh;
   width: 100vw;

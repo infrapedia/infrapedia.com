@@ -3,9 +3,14 @@
     aria-haspopup="true"
     class="cursor-pointer circle p2 w4 h4 vertical-align hidden-md-and-up"
   >
-    <span class="sm-icon" @click="toggleVisibility">
+    <el-button
+      class="sm-icon fs-screen-btn transparent-imp no-border p0"
+      :class="{ dark }"
+      type="text"
+      @click="toggleVisibility"
+    >
       <fa :icon="['fas', 'search']" />
-    </span>
+    </el-button>
     <transition name="fade" mode="out-in">
       <div
         v-if="isFullScreen"
