@@ -1,6 +1,5 @@
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { mapConfig } from '../../config/mapConfig.js'
-import { lastMTVue } from '../../helpers/lastMileToolVue'
 import {
   length,
   lineSlice,
@@ -96,6 +95,7 @@ export default class lastMileTool {
     this.limit = 1
     this.map = map
     this.latlng = null
+    this.setCenterStatus = false
     this.googlemap = null
     this.requestType = 'mapbox'
     this.directionsService = null
@@ -104,15 +104,36 @@ export default class lastMileTool {
     this.len = ''
   }
 
+  clearLastMileTool() {
+    this.networks = []
+    this.networkName = ''
+    this.len = ''
+    var emptyGeo = { type: 'FeatureCollection', features: [] }
+    this.map.getSource('startpoints').setData(emptyGeo)
+    this.map.getSource('finishpoints').setData(emptyGeo)
+    this.map.getSource('shortestroads').setData(emptyGeo)
+    this.latlng = null
+    this.setCenterStatus = true
+  }
+
+  closeLastMileTool() {
+    this.clearLastMileTool()
+    this.setCenterStatus = false
+  }
+
   find(e) {
-    this.latlng = [e.lng, e.lat]
-    this.map.setCenter(e)
-    var pnt = point(this.latlng)
-    this.map.getSource('startpoints').setData(pnt)
+    if (this.setCenterStatus) {
+      this.latlng = [e.lng, e.lat]
+      var pnt = point(this.latlng)
+      this.setCenterStatus = true
+      this.map.getSource('startpoints').setData(pnt)
+      this.map.setCenter(e)
+    }
   }
 
   registerEvents() {
     const vm = this
+    this.setCenterStatus = true
     this.map.on('idle', function(f) {
       vm.handleIdle(f)
     })
@@ -228,7 +249,7 @@ export default class lastMileTool {
               that.len = length(sortGoogleList[0], { units: 'kilometers' })
               that.len = round(that.len, 3) + ' km'
             }
-            lastMTVue.$emit('list-mile-tool-data', that)
+            that.setCenterStatus = false
           }
         }
 

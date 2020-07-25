@@ -12,17 +12,20 @@
           class="z-index120 w50 p4"
           style="position: fixed; top: 4rem; left: 2.4rem;"
         >
-          <el-form @list-mile-tool-data="changeLastMileData">
+          <el-form>
             <h2>Last Mile Tool Panel</h2>
             <b>Network : </b>
-            <span>{{ lastMileTool.networkName }}</span
+            <span>{{ lastMileTool.reference.networkName }}</span
             ><br />
             <b>Length : </b>
-            <span>{{ lastMileTool.len }}</span
+            <span>{{ lastMileTool.reference.len }}</span
             ><br />
             <ul>
               <b>Close Network List :</b>
-              <li v-for="(item, i) in lastMileTool.networks" :key="i + item">
+              <li
+                v-for="(item, i) in lastMileTool.reference.networks"
+                :key="i + item"
+              >
                 {{ i + 1 }} - {{ item }}
               </li>
             </ul>
@@ -151,7 +154,6 @@ import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../../config/mapConfig'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import { bus } from '../../helpers/eventBus'
-import { lastMTVue } from '../../helpers/lastMileToolVue'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapState, mapActions } from 'vuex'
 import currentYear from '../../helpers/currentYear'
@@ -228,7 +230,6 @@ export default {
     bus.$on(UPDATE_TIME_MACHINE, this.handleUpdateTimeMachine)
     bus.$on(TOGGLE_FILTER_SELECTION, this.handleFilterSelection)
     bus.$on(SUBSEA_FILTER, this.handleSubseaToggle)
-    lastMTVue.$on('list-mile-tool-data', this.changeLastMileData)
 
     if (this.dark) this.map.setStyle(mapConfig.darkBasemap)
     if (this.currentSelection && this.focus) this.handlePreviouslySelected()
@@ -1128,6 +1129,7 @@ export default {
     handleLastMileToolActivation() {
       this.lastMileTool.active = true
       this.lastMileTool.reference.initService()
+      this.lastMileTool.reference.registerEvents()
       this.map.getCanvas().style.cursor = 'crosshair'
       // this.map.setLayoutProperty(
       //   mapConfig.facilitiesClusters,
@@ -1147,45 +1149,14 @@ export default {
     },
     disableLastMileTool() {
       this.lastMileTool.active = false
-      // this.map.setLayoutProperty(
-      //   mapConfig.facilitiesClusters,
-      //   'visibility',
-      //   'visible'
-      // )
-      // this.map.setLayoutProperty(
-      //   mapConfig.facilitiesCount,
-      //   'visibility',
-      //   'visible'
-      // )
-      // this.map.setLayoutProperty(
-      //   mapConfig.facilitiesSinglePoints,
-      //   'visibility',
-      //   'visible'
-      // )
-      const sources = [
-        'startpoints',
-        'finishpoints',
-        'shortestroads',
-        'finishpoints'
-      ]
-      for (let src of sources) {
-        this.map.getSource(src).setData(fCollectionFormat())
-      }
+      this.lastMileTool.reference.closeLastMileTool()
       this.map.getCanvas().style.cursor = 'pointer'
-      // document.getElementById('googlemap').remove()
-      this.lastMileTool.networks = []
-      this.lastMileTool.networkName = ''
-      this.lastMileTool.len = ''
     },
     handleLastMileToolCoordsChange(e) {
       this.lastMileTool.reference.find(e.lngLat)
     },
-    changeLastMileData(data) {
-      this.lastMileTool.networks = data.networks
-      this.lastMileTool.networkName = data.networkName
-      this.lastMileTool.len = data.len
-    },
     findNewLastMile() {
+      this.lastMileTool.reference.clearLastMileTool()
       this.lastMileTool.networks = []
       this.lastMileTool.networkName = ''
       this.lastMileTool.len = ''
@@ -1193,7 +1164,8 @@ export default {
       this.map.getSource('startpoints').setData(emptyGeo)
       this.map.getSource('finishpoints').setData(emptyGeo)
       this.map.getSource('shortestroads').setData(emptyGeo)
-      this.lastMileTool.reference = new lastMileTool({ map: this.map })
+      this.lastMileTool.reference.latlng = null
+      this.lastMileTool.reference.registerEvents()
     }
   }
 }
