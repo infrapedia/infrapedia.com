@@ -146,6 +146,10 @@ export default {
       {
         label: 'Sponsorships',
         url: '/sponsors'
+      },
+      {
+        label: 'FAQ',
+        url: '/faq'
       }
     ]
   }),
