@@ -21,7 +21,7 @@ const teamMembers = [
   },
   {
     name: 'Manuel Blanco',
-    photo: 'https://cdn1.infrapedia.com/assets/team/mb1.jpg',
+    photo: 'https://cdn1.infrapedia.com/assets/team/mb.jpg',
     position: 'Front End Engineer'
   }
 ]

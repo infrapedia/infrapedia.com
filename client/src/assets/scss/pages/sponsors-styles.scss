@@ -10,6 +10,12 @@
   .inner-wrapper {
     width: 60vw;
     margin: 0 auto;
+    @media screen and (max-width: $break-sm) {
+      width: 80vw;
+      .el-card {
+        border: 0 none;
+      }
+    }
   }
 }
 
