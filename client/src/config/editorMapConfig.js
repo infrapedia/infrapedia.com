@@ -114,3 +114,57 @@ export const editorMapConfig = {
     }
   ]
 }
+
+export const customMapLayerTypes = {
+  cables: {
+    id: 'default-layer',
+    source: 'default-source',
+    type: 'line',
+    paint: {
+      'line-width': 1.5,
+      'line-color': '#7288b0'
+    },
+    filter: ['==', '$type', 'LineString']
+  },
+  label: {
+    id: 'default-label-layer',
+    source: 'default-source',
+    type: 'symbol',
+    layout: {
+      'text-field': '{name}',
+      'symbol-placement': 'line',
+      'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+      'text-size': 10,
+      'text-justify': 'right',
+      'text-anchor': 'bottom',
+      'text-offset': [0, -0.1]
+    },
+    paint: {
+      'text-color': '#485E69'
+    }
+  },
+  points: {
+    id: 'default-layer',
+    type: 'circle',
+    source: 'default-source',
+    paint: {
+      'circle-radius': 5.42,
+      'circle-color': '#f78682',
+      'circle-stroke-width': 1,
+      'circle-stroke-color': '#333333'
+    },
+    filter: ['==', '$type', 'Point']
+  },
+  buildings: {
+    id: 'default-layer',
+    type: 'fill-extrusion',
+    source: 'default-source',
+    minzoom: 14,
+    layout: {},
+    filter: ['==', '$type', 'Polygon'],
+    paint: {
+      'fill-extrusion-color': '#666666',
+      'fill-extrusion-height': ['/', ['get', 'height'], 1.25]
+    }
+  }
+}

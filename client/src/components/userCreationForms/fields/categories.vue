@@ -198,13 +198,23 @@
                 circle
                 size="mini"
                 :class="{ dark }"
+                title="View"
                 :type="isViewing(cat.name) ? 'primary' : ''"
                 @click="determineView(cat.name)"
+              />
+              <el-button
+                icon="el-icon-set-up"
+                circle
+                size="mini"
+                :class="{ dark }"
+                title="Edit items"
+                @click="editCategoryTypesSelections(cat, i)"
               />
               <el-button
                 icon="el-icon-edit-outline"
                 circle
                 size="mini"
+                title="Edit"
                 :class="{ dark }"
                 @click="setEditMode(cat, i)"
               />
@@ -212,6 +222,7 @@
                 icon="el-icon-delete"
                 circle
                 size="mini"
+                title="Delete"
                 :class="{ dark }"
                 @click="removeCategory(i)"
               />
@@ -257,7 +268,7 @@
     >
       <header slot="title">
         <h2 class="title-user-variant  fs-medium text-left">
-          Select the elements you want for this category
+          Select the elements you want to include in this category
         </h2>
       </header>
       <el-form>
@@ -556,7 +567,7 @@ export default {
       this.isInputVisible = bool
       this.resetField()
     },
-    async beforeAddCategoryAddTypesSelections() {
+    beforeAddCategoryAddTypesSelections() {
       return new Promise(res => {
         this.typesDialog.visible = true
         this.$on('save-types', function() {
@@ -565,9 +576,19 @@ export default {
         })
       }).then(this.addCategory)
     },
-    addCategory() {
+    editCategoryTypesSelections(...args) {
+      return new Promise(res => {
+        this.setEditMode(...args)
+        this.typesDialog.visible = true
+        this.$on('save-types', function() {
+          this.typesDialog.visible = false
+          res()
+        })
+      }).then(this.saveEdit)
+    },
+    async addCategory() {
       this.categories.push({ ...this.field })
-      this.toggleInput(false)
+      await this.toggleInput(false)
     },
     removeCategory(i) {
       this.categories.splice(i, 1)

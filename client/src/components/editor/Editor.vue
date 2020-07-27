@@ -51,9 +51,13 @@ import {
   EDITOR_SET_FEATURES_LIST
 } from '../../events/editor'
 import { fCollectionFormat } from '../../helpers/featureCollection'
-import { editorMapConfig } from '../../config/editorMapConfig'
+import {
+  editorMapConfig,
+  customMapLayerTypes
+} from '../../config/editorMapConfig'
 import bbox from '@turf/bbox'
 import debounce from '../../helpers/debounce'
+import { getGeometries } from '../../helpers/getGeoms'
 
 export default {
   components: {
@@ -181,8 +185,80 @@ export default {
     bus.$off('categories-field-values-change', this.handleCategoriesChange)
   },
   methods: {
-    handleCategoriesChange(list) {
+    async handleCategoriesChange(list) {
       this.categories = list
+      // Agregando la data de features collection primero
+      // Y luego llamar a setCategoryLayers para crear los layers por color de categoria
+      if (list.length) {
+        const dataKeys = Object.keys(list[0].data)
+        let data = fCollectionFormat()
+        for (let category of list) {
+          for (let key of dataKeys) {
+            if (!category.data[key].length) continue
+            let dat = await getGeometries(
+              key,
+              category.data[key].map(item => item._id),
+              await this.$auth.getUserID()
+            ).features
+            data.features.push(dat)
+            console.log(dat)
+          }
+
+          console.log(data)
+          await this.handleSetCategorySource({
+            color: category.color,
+            name: category.name,
+            data: { type: data.type, features: data.data.flat() }
+          })
+          data.features = []
+        }
+      }
+    },
+    async handleSetCategorySource(category) {
+      const sourceName = `${category.name}-source`
+
+      if (!this.map.getSource(sourceName)) {
+        this.map.addSource(sourceName, {
+          type: 'geojson',
+          data: category.data
+        })
+      } else {
+        this.map.getSource(sourceName).setData(category.data)
+      }
+    },
+
+    async handleSetCategoryLayers(category) {
+      let type = ''
+      let colorProp = ''
+      const layerName = `${category.name}-layer`
+
+      switch (category.t) {
+        case 'cls':
+          type = 'points'
+          colorProp = 'circle-color'
+          break
+        case 'ixps':
+          type = 'points'
+          colorProp = 'circle-color'
+          break
+        case 'facilities':
+          type = 'buildings'
+          colorProp = 'fill-extrusion-color'
+          break
+        default:
+          type = 'cables'
+          colorProp = 'line-color'
+          break
+      }
+      const layer = { ...customMapLayerTypes[type] }
+
+      layer.id = layerName
+      layer.source = layerName.replace('layer', 'source')
+      layer.paint[colorProp] = category.color
+
+      if (!this.map.getLayer(layerName)) {
+        this.map.addLayer(layer)
+      }
     },
     handleGetFeatures() {
       this.$emit('features-list-change', this.scene.features.list)
@@ -226,22 +302,40 @@ export default {
         console.error(err)
       }
     },
-    async handleMapFormFeatureSelection({ t, fc, removeLoadState }) {
+    // I have to create a source layer for each category
+    // And then ask for the featureCollection
+    async handleMapFormFeatureSelection({ t, fc, categoryColor }) {
       if (!this.map) return
-      await setTimeout(async () => {
-        const source = this.map.getSource(
-          `${t == 'subsea' || t == 'terrestrials' ? 'cables' : t}-source`
-        )
 
-        if (!fc.features) {
-          fc = fCollectionFormat(fc)
-        }
+      const sourceName = `${
+        t == 'subsea cables' || t == 'terrestrials' ? 'cables' : t
+      }-source`
+      const sourceLayer = sourceName.replace('source', 'layer')
+      const source = this.map.getSource(sourceName)
 
-        if (source) await source.setData(fc)
-        if (removeLoadState) {
-          await this.$store.dispatch('editor/toggleMapFormLoading', false)
+      console.log(fc, sourceName, source, t, categoryColor)
+
+      if (!fc.features) fc = fCollectionFormat(fc)
+      {
+        let circles = ['ixps', 'cls']
+        let cables = ['subsea cables', 'terrestrials']
+
+        if (circles.includes(t)) {
+          this.map.setPaintProperty(sourceLayer, 'circle-color', categoryColor)
+        } else if (cables.includes(t)) {
+          this.map.setPaintProperty(sourceLayer, 'line-color', categoryColor)
+        } else {
+          this.map.setPaintProperty(
+            sourceLayer,
+            'fill-extrusion-color',
+            categoryColor
+          )
         }
-      }, 10)
+      }
+
+      // this.map.setPaintProperty(sourceName, '')
+      source.setData(fc)
+      this.$store.dispatch('editor/toggleMapFormLoading', false)
     },
     async handleZoomToFeature(fc) {
       if (fc.features.length <= 0) return
