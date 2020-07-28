@@ -13,7 +13,7 @@
           size="small"
           class="w14 h8"
           :class="{ dark }"
-          @click="toggleInput(true)"
+          @click="handleBeforeCreateCategory"
         >
           Add
         </el-button>
@@ -47,6 +47,7 @@
                       size="mini"
                     >
                       <el-input
+                        ref="categoryNameInput"
                         v-model="field.name"
                         :class="{ dark }"
                         size="small"
@@ -481,6 +482,15 @@ export default {
     }
   },
   methods: {
+    handleBeforeCreateCategory() {
+      this.toggleInput(true)
+      setTimeout(() => {
+        document
+          .getElementById('mapFormWrapper')
+          .scrollIntoView({ behavior: 'smooth', block: 'end' })
+        this.$refs.categoryNameInput.focus()
+      }, 320)
+    },
     /**
      * @param s { String } - search queried from facilities select input
      */

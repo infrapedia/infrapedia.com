@@ -1,5 +1,5 @@
 <template>
-  <div class="pb6 pt6 pr8 pl8">
+  <div class="pb6 pt6 pr8 pl8" id="mapFormWrapper">
     <header slot="header" class="w-fit-full mb8">
       <h1 class="title capitalize">{{ title }} map</h1>
     </header>
