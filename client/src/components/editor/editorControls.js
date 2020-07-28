@@ -1,5 +1,6 @@
 import createControlButton from './createControlButton'
 import GL from '../mainMap/GL'
+import Snaping from './snaping'
 import { point, booleanEqual, featureCollection, lineSlice } from '@turf/turf'
 
 class EditorControls {
@@ -14,8 +15,17 @@ class EditorControls {
     this.type = type
     this.map = map
     GL.setMap(this.map)
+    GL.editor = this
     this.draw = draw
     this.scene = scene
+    this.snaping = new Snaping({
+      map: map,
+      draw: draw,
+      pixel: 8,
+      scene: scene,
+      snapLayers: ['testpoint', 'testlines', 'testpolygons']
+    })
+    this.snapMode = false
     this.resetScene = this.resetScene
     this.updateControls = this.updateControls
     this.handleBeforeFeatureCreation = handleBeforeFeatureCreation
@@ -27,6 +37,9 @@ class EditorControls {
     this.controlGroup = document.createElement('div')
     this.controlGroup.className = 'mapboxgl-ctrl-group mapboxgl-ctrl'
     this.buttons = this.createButtons()
+    /*
+    this.map.on('mousemove', this.snapControl)
+    this.map.on('click', this.snapClickControl)*/
 
     return this.controlGroup
   }
@@ -34,6 +47,89 @@ class EditorControls {
   onRemove() {
     this.controlGroup.parentNode.removeChild(this.controlGroup)
   }
+
+  /*snapControl(e, isClick) {
+    var map = GL.map
+    var that = GL.editor
+    var coords = e.lngLat
+    var features = []
+    if (e.point !== undefined) {
+      features = map.queryRenderedFeatures(e.point, {
+        layers: []
+      })
+      if (features.length > 0) {
+        that.scene.snappoint = features[0].toJSON()
+      } else {
+        that.scene.snappoint = 0
+      }
+    }
+
+    if (that.scene.snappoint !== null || features.length > 0) {
+      var snappedPoint = that.scene.snappoint
+      var drawMode = that.draw.getMode()
+      if (
+        (that.scene.creation || that.scene.edition) &&
+        (drawMode == 'draw_line_string' || drawMode == 'direct_select')
+      ) {
+        var fcolPoint = { type: 'FeatureCollection', features: [snappedPoint] }
+        map.getSource('snappoint').setData(fcolPoint)
+        if (drawMode == 'draw_line_string') {
+          setTimeout(function() {
+            var lines = that.draw.getAll()
+            var line = lines.features[0]
+            line.geometry.coordinates.pop()
+            if (isClick) {
+              line.geometry.coordinates.pop()
+            }
+            line.geometry.coordinates.push(snappedPoint.geometry.coordinates)
+            lines.features[0] = line
+            that.draw.set(lines)
+          }, 1)
+        }
+        if (drawMode == 'direct_select') {
+          if (isClick == false) {
+            setTimeout(function() {
+              debugger
+              var mypoint = GL.editor.draw.getSelectedPoints()
+              var lines = GL.editor.draw.getSelected()
+
+              if (mypoint.features.length > 0 && lines.features.length > 0) {
+                var line = lines.features[0]
+                var id = line.id
+                var newcoords = []
+                var selectLat = mypoint.features[0].geometry.coordinates[1]
+                var selectLng = mypoint.features[0].geometry.coordinates[0]
+                line.geometry.coordinates.map(function(c) {
+                  if (selectLat == c[1] && selectLng == c[0]) {
+                    newcoords.push(snappedPoint.geometry.coordinates)
+                  } else {
+                    newcoords.push(c)
+                  }
+                })
+              }
+              var newLine = lineString(newcoords)
+              newLine.id = id
+              var fcol = { type: 'FeatureCollection', features: [newLine] }
+              that.draw.set(fcol)
+            }, 1)
+          }
+        }
+      }
+    } else {
+      map
+        .getSource('snappoint')
+        .setData({ type: 'FeatureCollection', features: [] })
+      that.scene.snappoint = null
+    }
+
+    return { a: coords, b: features }
+  }
+
+  snapClickControl(e) {
+    debugger
+    var that = GL.editor
+    that.snapControl(e, true)
+  }*/
 
   createButtons() {
     return {
@@ -52,6 +148,33 @@ class EditorControls {
           this.draw.changeMode(this.draw.modes.DRAW_LINE_STRING)
         }
       }),
+      /*snap: createControlButton('snap', {
+        container: this.controlGroup,
+        className:
+          'editor-ctrl el-button m0 p0 el-button--text el-button--small',
+        title: 'Active Snaping',
+        icon: 'el-icon-s-help',
+        visible: true,
+        eventListener: () => {
+          debugger
+          if (vm.snapMode == false) {
+            vm.snapMode = true
+            if (vm.snaping == false) {
+              vm.snaping = new Snaping({
+                map: vm.map,
+                draw: vm.draw,
+                pixel: 8,
+                snapLayers: ['testpoint', 'testlines']
+              })
+            } else {
+              vm.snaping.setActive()
+            }
+          } else {
+            vm.snapMode = false
+            vm.snaping.setPassive()
+          }
+        }
+      }),*/
       cut: createControlButton('cut', {
         container: this.controlGroup,
         className:
@@ -65,6 +188,7 @@ class EditorControls {
             ? true
             : false,
         eventListener: () => {
+          debugger
           var Draw = this.draw
           var mypoint = Draw.getSelectedPoints()
           var line = Draw.getSelected()
@@ -214,6 +338,7 @@ class EditorControls {
     this.scene.edition = null
     this.scene.creation = null
     this.scene.features.selected = null
+    this.scene.snappoint = null
     this.draw.changeMode(this.draw.modes.SIMPLE_SELECT)
     if (isResetList) {
       this.scene.features.list = []

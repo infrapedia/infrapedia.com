@@ -100,13 +100,13 @@ export default class lastMileTool {
     this.requestType = 'mapbox'
     this.directionsService = null
     this.networks = []
-    this.networkname = ''
+    //this.networkname = ''
     this.len = ''
   }
 
   clearLastMileTool() {
     this.networks = []
-    this.networkName = ''
+    //this.networkName = ''
     this.len = ''
     var emptyGeo = { type: 'FeatureCollection', features: [] }
     this.map.getSource('startpoints').setData(emptyGeo)
@@ -207,9 +207,9 @@ export default class lastMileTool {
       }
       var sortList = nearestPoints.sort((a, b) => a.distance - b.distance)
       var resultinfo = {
-        networkName: sortList[0].feature.properties.name,
+        //networkName: sortList[0].feature.properties.name,
         len: 0,
-        networks: []
+        networks: [sortList[0].feature.properties.name]
       }
       if (sortList.length > this.limit) {
         sortList = sortList.splice(0, this.limit)
@@ -233,14 +233,14 @@ export default class lastMileTool {
             )
 
             var shortWay = that.findIntersects(sortGoogleList, geojson)
-            that.map.getSource('shortestroads').setData(shortWay.line)
+
             that.map.getSource('finishpoints').setData(shortWay.point)
             var resultNear = that.findNearNetworks(
               shortWay.point.geometry.coordinates
             )
             resultinfo.networks = resultNear.networks
             that.networks = resultNear.networks
-            that.networkName = resultinfo.networkName
+            //that.networkName = resultinfo.networkName
             that.len = length(sortGoogleList[0], { units: 'meters' })
 
             if (that.len < 1000) {
@@ -250,6 +250,8 @@ export default class lastMileTool {
               that.len = round(that.len, 3) + ' km'
             }
             that.setCenterStatus = false
+            shortWay.line.properties.distance = that.len
+            that.map.getSource('shortestroads').setData(shortWay.line)
           }
         }
 

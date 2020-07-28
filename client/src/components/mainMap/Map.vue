@@ -14,14 +14,11 @@
         >
           <el-form>
             <h2>Last Mile Tool Panel</h2>
-            <b>Network : </b>
-            <span>{{ lastMileTool.reference.networkName }}</span
-            ><br />
             <b>Length : </b>
             <span>{{ lastMileTool.reference.len }}</span
             ><br />
             <ul>
-              <b>Close Network List :</b>
+              <b>Available Networks :</b>
               <li
                 v-for="(item, i) in lastMileTool.reference.networks"
                 :key="i + item"
@@ -35,10 +32,10 @@
               plain
               size="mini"
               class="m1"
-              title="Add New Point"
+              title="Select Point"
               @click="findNewLastMile"
             >
-              Add New Point
+              Select Point
             </el-button>
             <el-button
               type="primary"
@@ -200,7 +197,6 @@ export default {
       active: false,
       reference: null,
       quality: 1,
-      networkName: '',
       networks: [],
       len: ''
     }
@@ -1158,7 +1154,6 @@ export default {
     findNewLastMile() {
       this.lastMileTool.reference.clearLastMileTool()
       this.lastMileTool.networks = []
-      this.lastMileTool.networkName = ''
       this.lastMileTool.len = ''
       var emptyGeo = { type: 'FeatureCollection', features: [] }
       this.map.getSource('startpoints').setData(emptyGeo)

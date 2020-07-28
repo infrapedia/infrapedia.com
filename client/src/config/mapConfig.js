@@ -22,6 +22,13 @@ const clsPaintConfig = {
   'circle-stroke-color': '#333333'
 }
 
+const snapPaintConfig = {
+  'circle-radius': 3.4,
+  'circle-color': '#FF0000',
+  'circle-stroke-width': 2,
+  'circle-stroke-color': '#333333'
+}
+
 const facsPaintConfig = {
   'fill-extrusion-color': [
     'case',
@@ -95,6 +102,7 @@ export const mapConfig = {
   facilities,
   cablesLabel,
   clsPaintConfig,
+  snapPaintConfig,
   ixpsPaintConfig,
   facsPaintConfig,
   cablesPaintConfig,
@@ -119,6 +127,7 @@ export const mapConfig = {
           data: `${process.env.VUE_APP_TILES_IXPS}`
         }
       },
+
       {
         name: facilities,
         opts: {
