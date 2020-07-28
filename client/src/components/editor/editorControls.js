@@ -24,10 +24,10 @@ class EditorControls {
       pixel: 8,
       scene: scene,
       snapLayers: [
-        'cls-source',
-        'ixps-source',
-        'cables-source',
-        'facilities-source'
+        'cls-layer',
+        'ixps-layer',
+        'cables-layer',
+        'facilities-layer'
       ]
     })
     this.snapMode = false
@@ -108,6 +108,8 @@ class EditorControls {
               }
             })
             Draw.set(newlist)
+
+            //this.scene.features.list = Draw.getAll().features
           } else {
             alert('Please Select a geometry and a point')
           }
