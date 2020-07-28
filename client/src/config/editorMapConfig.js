@@ -123,8 +123,9 @@ export const customMapLayerTypes = {
     paint: {
       'line-width': 1.5,
       'line-color': '#7288b0'
-    },
-    filter: ['==', '$type', 'LineString']
+    }
+    // filter: ['==', '$type', 'LineString']
+    // filter: ['==', ['$type', 'LineString']]
   },
   label: {
     id: 'default-label-layer',

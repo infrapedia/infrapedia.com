@@ -591,6 +591,7 @@ export default {
       await this.toggleInput(false)
     },
     removeCategory(i) {
+      bus.$emit('category-removed', { ...this.categories[i] })
       this.categories.splice(i, 1)
     }
   }

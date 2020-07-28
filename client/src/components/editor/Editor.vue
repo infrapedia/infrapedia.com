@@ -163,6 +163,7 @@ export default {
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
     bus.$on(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
     bus.$on('categories-field-values-change', this.handleCategoriesChange)
+    bus.$on('category-removed', this.handleCategoryRemoved)
   },
   mounted() {
     this.map = this.handleSetMapSources(this.addMapEvents(this.createMap()))
@@ -183,15 +184,31 @@ export default {
     bus.$off(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
     bus.$off(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
     bus.$off('categories-field-values-change', this.handleCategoriesChange)
+    bus.$off('category-removed', this.handleCategoryRemoved)
   },
   methods: {
+    async handleCategoryRemoved(category) {
+      // for (let type of category.types) {
+      //   let layerName = `${category.name}-layer-${
+      //     type == 'subsea cables' || type == 'terrestrials' ? 'cables' : type
+      //   }`
+      //   if (this.map.getLayer(layerName)) {
+      //     console.warn('ASDKFSKDFH349U5394')
+      //     this.map.removeLayer(layerName)
+      //   }
+      // }
+      const sourceName = `${category.name}-source`
+      if (this.map.getSource(sourceName)) {
+        this.map.getSource(sourceName).setData(fCollectionFormat())
+      }
+    },
     async handleCategoriesChange(list) {
       this.categories = list
       // Agregando la data de features collection primero
       // Y luego llamar a setCategoryLayers para crear los layers por color de categoria
       if (list.length) {
         const dataKeys = Object.keys(list[0].data)
-        let data = fCollectionFormat()
+        const data = fCollectionFormat()
         for (let category of list) {
           for (let key of dataKeys) {
             if (!category.data[key].length) continue
@@ -199,18 +216,23 @@ export default {
               key,
               category.data[key].map(item => item._id),
               await this.$auth.getUserID()
-            ).features
-            data.features.push(dat)
-            console.log(dat)
+            )
+            data.features.push(dat.features)
+            console.log(data, 1)
           }
 
-          console.log(data)
           await this.handleSetCategorySource({
-            color: category.color,
             name: category.name,
-            data: { type: data.type, features: data.data.flat() }
+            color: category.color,
+            data: { type: data.type, features: data.features.flat() }
           })
+          console.log(JSON.stringify(data.features.flat()))
           data.features = []
+
+          category.types.forEach(type => {
+            if (!category.data[type].length) return
+            this.handleSetCategoryLayers({ ...category, t: type })
+          })
         }
       }
     },
@@ -230,30 +252,38 @@ export default {
     async handleSetCategoryLayers(category) {
       let type = ''
       let colorProp = ''
-      const layerName = `${category.name}-layer`
+      let layerName = `${category.name}-layer`
+      const sourceName = layerName.replace('layer', 'source')
 
+      if (category.t == 'subsea cables') {
+        category.t = 'subsea_cables'
+      }
       switch (category.t) {
         case 'cls':
           type = 'points'
           colorProp = 'circle-color'
+          layerName = layerName + '-' + type
           break
         case 'ixps':
           type = 'points'
           colorProp = 'circle-color'
+          layerName = layerName + '-' + type
           break
         case 'facilities':
           type = 'buildings'
           colorProp = 'fill-extrusion-color'
+          layerName = layerName + '-' + type
           break
         default:
           type = 'cables'
           colorProp = 'line-color'
+          layerName = layerName + '-' + type
           break
       }
       const layer = { ...customMapLayerTypes[type] }
 
       layer.id = layerName
-      layer.source = layerName.replace('layer', 'source')
+      layer.source = sourceName
       layer.paint[colorProp] = category.color
 
       if (!this.map.getLayer(layerName)) {
