@@ -482,14 +482,17 @@ export default {
     }
   },
   methods: {
-    handleBeforeCreateCategory() {
-      this.toggleInput(true)
+    scrollIntoView() {
       setTimeout(() => {
         document
           .getElementById('mapFormWrapper')
           .scrollIntoView({ behavior: 'smooth', block: 'end' })
         this.$refs.categoryNameInput.focus()
-      }, 320)
+      }, 270)
+    },
+    handleBeforeCreateCategory() {
+      this.toggleInput(true)
+      this.scrollIntoView()
     },
     /**
      * @param s { String } - search queried from facilities select input
@@ -605,6 +608,7 @@ export default {
       this.field = { ...JSON.parse(JSON.stringify(category)), idx: i }
       this.mode = 'edit'
       this.isInputVisible = true
+      this.scrollIntoView()
     },
     saveEdit() {
       this.categories[this.field.idx] = { ...this.field }

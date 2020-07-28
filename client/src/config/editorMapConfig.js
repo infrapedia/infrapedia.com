@@ -116,17 +116,6 @@ export const editorMapConfig = {
 }
 
 export const customMapLayerTypes = {
-  cables: {
-    id: 'default-layer',
-    source: 'default-source',
-    type: 'line',
-    paint: {
-      'line-width': 1.5,
-      'line-color': '#7288b0'
-    }
-    // filter: ['==', '$type', 'LineString']
-    // filter: ['==', ['$type', 'LineString']]
-  },
   label: {
     id: 'default-label-layer',
     source: 'default-source',
@@ -144,6 +133,17 @@ export const customMapLayerTypes = {
       'text-color': '#485E69'
     }
   },
+  cables: {
+    id: 'default-layer',
+    source: 'default-source',
+    type: 'line',
+    paint: {
+      'line-width': 1.5,
+      'line-color': '#7288b0'
+    }
+    // filter: ['==', '$type', 'LineString']
+    // filter: ['==', ['$type', 'LineString']]
+  },
   points: {
     id: 'default-layer',
     type: 'circle',
@@ -160,12 +160,12 @@ export const customMapLayerTypes = {
     id: 'default-layer',
     type: 'fill-extrusion',
     source: 'default-source',
-    minzoom: 14,
     layout: {},
-    filter: ['==', '$type', 'Polygon'],
+    // filter: ['==', '$type', 'Polygon'],
     paint: {
+      'fill-extrusion-opacity': 1,
       'fill-extrusion-color': '#666666',
-      'fill-extrusion-height': ['/', ['get', 'height'], 1.25]
+      'fill-extrusion-height': ['get', 'height']
     }
   }
 }
