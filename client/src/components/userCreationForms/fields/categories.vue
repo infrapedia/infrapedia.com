@@ -470,6 +470,12 @@ export default {
     }
   },
   watch: {
+    // eslint-disable-next-line
+    dark(theme) {
+      this.$nextTick(() => {
+        bus.$emit('categories-field-values-change', this.categories)
+      })
+    },
     categories(list) {
       bus.$emit('categories-field-values-change', list)
     }

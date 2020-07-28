@@ -144,7 +144,7 @@ export default {
   },
   watch: {
     dark(bool) {
-      return this.toggleDarkMode(bool)
+      this.toggleDarkMode(bool)
     },
     scene: {
       handler(newState) {
@@ -199,10 +199,6 @@ export default {
       // Y luego llamar a setCategoryLayers para crear los layers por color de categoria
       if (list.length > 0) {
         this.$store.dispatch('editor/toggleMapFormLoading', true)
-
-        // TODO: When adding subsea & terrestrials, one or the other are missing
-        // I assume is because they are separated but aren't in diferent sources
-        // So one overrides the other
         const dataKeys = Object.keys(list[0].data)
         const data = fCollectionFormat()
         for (let category of list) {
@@ -223,17 +219,16 @@ export default {
           })
           data.features = []
 
-          category.types.forEach(type => {
-            if (!category.data[type].length) return
+          for (let type of category.types) {
+            if (!category.data[type].length) continue
             this.handleSetCategoryLayers({ ...category, t: type })
-          })
+          }
         }
         this.$store.dispatch('editor/toggleMapFormLoading', false)
       }
     },
     async handleSetCategorySource(category) {
       const sourceName = `${category.name}-source`
-
       if (!this.map.getSource(sourceName)) {
         this.map.addSource(sourceName, {
           type: 'geojson',
@@ -511,7 +506,7 @@ export default {
       this.controls.resetScene()
     },
     toggleDarkMode(dark) {
-      return this.map.setStyle(dark ? mapConfig.darkBasemap : mapConfig.default)
+      this.map.setStyle(dark ? mapConfig.darkBasemap : mapConfig.default)
     }
   }
 }
