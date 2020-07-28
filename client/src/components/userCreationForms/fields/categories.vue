@@ -265,6 +265,7 @@
       :visible.sync="typesDialog.visible"
       :close-on-click-modal="false"
       :custom-class="customDialogClass"
+      :before-close="() => $emit('cancel-types-selection')"
     >
       <header slot="title">
         <h2 class="title-user-variant  fs-medium text-left">
@@ -282,6 +283,7 @@
             :options="typesData.facilities"
             @input="loadFacSearch"
             :loading="typesData.isLoadingFacs"
+            @remove="handleRemoveTypeChange('facilities', $event)"
             @values-change="handleTypeSelectionChange('facilities', $event)"
             :value="mode == 'create' ? [] : [...field.data.facilities]"
           />
@@ -296,6 +298,7 @@
             :options="typesData.terrestrials"
             @input="loadCablesSearch($event, 'terrestrials')"
             :loading="typesData.isLoadingCables"
+            @remove="handleRemoveTypeChange('terrestrials', $event)"
             @values-change="handleTypeSelectionChange('terrestrials', $event)"
             :value="mode == 'create' ? [] : [...field.data.terrestrials]"
           />
@@ -310,6 +313,7 @@
             :options="typesData.subsea"
             @input="loadCablesSearch($event)"
             :loading="typesData.isLoadingCables"
+            @remove="handleRemoveTypeChange('subsea cables', $event)"
             @values-change="handleTypeSelectionChange('subsea cables', $event)"
             :value="mode == 'create' ? [] : [...field.data['subsea cables']]"
           />
@@ -321,6 +325,7 @@
             :options="typesData.cls"
             @input="loadClsSearch"
             :loading="typesData.isLoadingCls"
+            @remove="handleRemoveTypeChange('cls', $event)"
             @values-change="handleTypeSelectionChange('cls', $event)"
             :value="mode == 'create' ? [] : [...field.data.cls]"
           />
@@ -332,12 +337,21 @@
             :options="typesData.ixps"
             @input="loadIxpsSearch"
             :loading="typesData.isLoadingIxps"
+            @remove="handleRemoveTypeChange('ixps', $event)"
             @values-change="handleTypeSelectionChange('ixps', $event)"
             :value="mode == 'create' ? [] : [...field.data.ixps]"
           />
         </el-form-item>
       </el-form>
       <footer slot="footer">
+        <el-button
+          round
+          plain
+          class="mr2"
+          @click="() => $emit('cancel-types-selection')"
+        >
+          Cancel
+        </el-button>
         <el-button round type="primary" @click="() => $emit('save-types')">
           Save
         </el-button>
@@ -361,6 +375,12 @@ export default {
   name: 'CategoriesField',
   components: {
     VMultiSelect: () => import('../../../components/MultiSelect')
+  },
+  props: {
+    value: {
+      type: [Array, Boolean],
+      default: () => false
+    }
   },
   data: () => ({
     isInputVisible: false,
@@ -450,8 +470,8 @@ export default {
     }
   },
   watch: {
-    categories(arr) {
-      bus.$emit('categories-field-values-change', arr)
+    categories(list) {
+      bus.$emit('categories-field-values-change', list)
     }
   },
   methods: {
@@ -516,8 +536,19 @@ export default {
       }
       this.typesData.isLoadingIxps = false
     },
+    /**
+     * @param t { String } - selection type
+     * @param _id { String } - ID of item removed
+     */
+    handleRemoveTypeChange(t, _id) {
+      this.field.data[t] = this.field.data[t].filter(item => item._id != _id)
+    },
+    /**
+     * @param t { String } - selection type
+     * @param data { String } - Elements selected
+     */
     handleTypeSelectionChange(t, data) {
-      this.field.data[t] = data
+      this.field.data[t] = [...data]
     },
     nextStep() {
       this.step += 1
@@ -555,7 +586,7 @@ export default {
       this.viewing = this.viewing.filter(n => n != name)
     },
     setEditMode(category, i) {
-      this.field = { ...category, idx: i }
+      this.field = { ...JSON.parse(JSON.stringify(category)), idx: i }
       this.mode = 'edit'
       this.isInputVisible = true
     },
@@ -568,26 +599,52 @@ export default {
       this.resetField()
     },
     beforeAddCategoryAddTypesSelections() {
-      return new Promise(res => {
+      return new Promise((res, rej) => {
         this.typesDialog.visible = true
         this.$on('save-types', function() {
+          if (this.mode != 'create') return
           this.typesDialog.visible = false
           res()
         })
-      }).then(this.addCategory)
+        this.$on('cancel-types-selection', function() {
+          if (this.mode != 'create') return
+          this.typesDialog.visible = false
+          rej()
+        })
+      })
+        .then(this.addCategory)
+        .catch(() => {})
     },
+    /**
+     * @param args { Array } - Array of args same as setEditMode
+     */
     editCategoryTypesSelections(...args) {
-      return new Promise(res => {
+      return new Promise((res, rej) => {
         this.setEditMode(...args)
+        this.nextStep()
         this.typesDialog.visible = true
         this.$on('save-types', function() {
+          if (this.mode == 'create') return
           this.typesDialog.visible = false
           res()
         })
-      }).then(this.saveEdit)
+        this.$on('cancel-types-selection', function() {
+          if (this.mode == 'create') return
+          this.toggleInput(false)
+          this.typesDialog.visible = false
+          rej()
+        })
+      })
+        .then(() => {
+          this.saveEdit()
+          bus.$emit('categories-field-values-change', this.categories)
+        })
+        .catch(() => {})
     },
     async addCategory() {
-      this.categories.push({ ...this.field })
+      if (this.field.name && this.field.name !== '') {
+        this.categories.push({ ...this.field })
+      }
       await this.toggleInput(false)
     },
     removeCategory(i) {

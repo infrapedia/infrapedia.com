@@ -188,15 +188,6 @@ export default {
   },
   methods: {
     async handleCategoryRemoved(category) {
-      // for (let type of category.types) {
-      //   let layerName = `${category.name}-layer-${
-      //     type == 'subsea cables' || type == 'terrestrials' ? 'cables' : type
-      //   }`
-      //   if (this.map.getLayer(layerName)) {
-      //     console.warn('ASDKFSKDFH349U5394')
-      //     this.map.removeLayer(layerName)
-      //   }
-      // }
       const sourceName = `${category.name}-source`
       if (this.map.getSource(sourceName)) {
         this.map.getSource(sourceName).setData(fCollectionFormat())
@@ -206,7 +197,12 @@ export default {
       this.categories = list
       // Agregando la data de features collection primero
       // Y luego llamar a setCategoryLayers para crear los layers por color de categoria
-      if (list.length) {
+      if (list.length > 0) {
+        this.$store.dispatch('editor/toggleMapFormLoading', true)
+
+        // TODO: When adding subsea & terrestrials, one or the other are missing
+        // I assume is because they are separated but aren't in diferent sources
+        // So one overrides the other
         const dataKeys = Object.keys(list[0].data)
         const data = fCollectionFormat()
         for (let category of list) {
@@ -218,7 +214,6 @@ export default {
               await this.$auth.getUserID()
             )
             data.features.push(dat.features)
-            console.log(data, 1)
           }
 
           await this.handleSetCategorySource({
@@ -226,7 +221,6 @@ export default {
             color: category.color,
             data: { type: data.type, features: data.features.flat() }
           })
-          console.log(JSON.stringify(data.features.flat()))
           data.features = []
 
           category.types.forEach(type => {
@@ -234,6 +228,7 @@ export default {
             this.handleSetCategoryLayers({ ...category, t: type })
           })
         }
+        this.$store.dispatch('editor/toggleMapFormLoading', false)
       }
     },
     async handleSetCategorySource(category) {
@@ -248,7 +243,6 @@ export default {
         this.map.getSource(sourceName).setData(category.data)
       }
     },
-
     async handleSetCategoryLayers(category) {
       let type = ''
       let colorProp = ''
@@ -343,8 +337,6 @@ export default {
       const sourceLayer = sourceName.replace('source', 'layer')
       const source = this.map.getSource(sourceName)
 
-      console.log(fc, sourceName, source, t, categoryColor)
-
       if (!fc.features) fc = fCollectionFormat(fc)
       {
         let circles = ['ixps', 'cls']
@@ -363,7 +355,6 @@ export default {
         }
       }
 
-      // this.map.setPaintProperty(sourceName, '')
       source.setData(fc)
       this.$store.dispatch('editor/toggleMapFormLoading', false)
     },

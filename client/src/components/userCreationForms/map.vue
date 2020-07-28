@@ -155,7 +155,11 @@
       </el-form-item>
       <el-divider :class="{ dark }" />
       <!-- CATEGORIES FIELD START -->
-      <categories-field class="mb24" @values-change="updateCategoriesList" />
+      <categories-field
+        class="mb24"
+        :value="mapCreationData.categories"
+        @values-change="updateCategoriesList"
+      />
       <!-- CATEGORIES FIELD END -->
       <!-- <el-form-item label="Owners">
         <v-multi-select
