@@ -390,6 +390,10 @@ export default {
       if (this.info.category == 'project') {
         cols = cols.filter(col => col.label != 'EOL')
       }
+
+      if (this.info.terrestrial) {
+        cols = cols.filter(col => col.value != 'RFS')
+      }
       return cols
     },
     isFutureState() {
