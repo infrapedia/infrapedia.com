@@ -43,7 +43,7 @@
         </p>
       </template>
 
-      <div class="team-wrapper w-fit-full mb20">
+      <div class="team-wrapper w-fit-full mb20 mt20">
         <h2 class="title">
           Our team
         </h2>

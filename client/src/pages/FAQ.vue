@@ -5,12 +5,10 @@
         Frequently Ask Questions
       </h1>
       <el-collapse v-model="collapse" accordion :class="{ dark }">
-        <el-collapse-item
-          v-for="(item, i) in faqList"
-          :title="item.title"
-          :key="i"
-          :name="i"
-        >
+        <el-collapse-item v-for="(item, i) in faqList" :key="i" :name="i">
+          <div slot="title" class="pb4">
+            <p class="text strong">{{ item.title }}</p>
+          </div>
           <div v-if="item.html">
             <p class="text" v-html="item.content" />
           </div>

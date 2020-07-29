@@ -6,7 +6,7 @@
       <h1 class="text-center title-variant">
         Premium Partners & Sponsors
       </h1>
-      <el-card :class="{ dark }" shadow="never" class="p4 mt12">
+      <el-card :class="{ dark }" shadow="never" class="p4 mt12 no-border">
         <p>
           Premium Partners and Sponsors are valued by us because they allow
           Infrapedia to stay committed to continuously work on new tools for the
