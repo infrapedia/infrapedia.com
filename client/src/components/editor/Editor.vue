@@ -288,11 +288,13 @@ export default {
       map.addControl(scaleCtrl, 'top-left')
       map.addControl(new mapboxgl.NavigationControl())
       map.addControl(new mapboxgl.FullscreenControl())
-      this.draw = new MapboxDraw({ displayControlsDefault: false })
+      this.draw = new MapboxDraw({
+        displayControlsDefault: false
+      })
 
       this.controls = new EditorControls({
         draw: this.draw,
-        map: this.map,
+        map: map,
         type: this.type,
         scene: this.scene,
         // $dispatch: this.$store.dispatch,

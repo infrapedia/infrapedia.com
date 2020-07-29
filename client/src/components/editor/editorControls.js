@@ -1,5 +1,6 @@
 import createControlButton from './createControlButton'
 import GL from '../mainMap/GL'
+import Snaping from './snaping'
 import { point, booleanEqual, featureCollection, lineSlice } from '@turf/turf'
 
 class EditorControls {
@@ -14,8 +15,22 @@ class EditorControls {
     this.type = type
     this.map = map
     GL.setMap(this.map)
+    GL.editor = this
     this.draw = draw
     this.scene = scene
+    this.snaping = new Snaping({
+      map: map,
+      draw: draw,
+      pixel: 8,
+      scene: scene,
+      snapLayers: [
+        'cls-layer',
+        'ixps-layer',
+        'cables-layer',
+        'facilities-layer'
+      ]
+    })
+    this.snapMode = false
     this.resetScene = this.resetScene
     this.updateControls = this.updateControls
     this.handleBeforeFeatureCreation = handleBeforeFeatureCreation
@@ -27,7 +42,6 @@ class EditorControls {
     this.controlGroup = document.createElement('div')
     this.controlGroup.className = 'mapboxgl-ctrl-group mapboxgl-ctrl'
     this.buttons = this.createButtons()
-
     return this.controlGroup
   }
 
@@ -52,6 +66,7 @@ class EditorControls {
           this.draw.changeMode(this.draw.modes.DRAW_LINE_STRING)
         }
       }),
+
       cut: createControlButton('cut', {
         container: this.controlGroup,
         className:
@@ -65,6 +80,7 @@ class EditorControls {
             ? true
             : false,
         eventListener: () => {
+          debugger
           var Draw = this.draw
           var mypoint = Draw.getSelectedPoints()
           var line = Draw.getSelected()
@@ -92,6 +108,8 @@ class EditorControls {
               }
             })
             Draw.set(newlist)
+
+            //this.scene.features.list = Draw.getAll().features
           } else {
             alert('Please Select a geometry and a point')
           }
@@ -214,6 +232,7 @@ class EditorControls {
     this.scene.edition = null
     this.scene.creation = null
     this.scene.features.selected = null
+    this.scene.snappoint = null
     this.draw.changeMode(this.draw.modes.SIMPLE_SELECT)
     if (isResetList) {
       this.scene.features.list = []

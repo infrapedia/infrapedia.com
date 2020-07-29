@@ -1,6 +1,5 @@
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { mapConfig } from '../../config/mapConfig.js'
-import { lastMTVue } from '../../helpers/lastMileToolVue'
 import {
   length,
   lineSlice,
@@ -96,23 +95,45 @@ export default class lastMileTool {
     this.limit = 1
     this.map = map
     this.latlng = null
+    this.setCenterStatus = false
     this.googlemap = null
     this.requestType = 'mapbox'
     this.directionsService = null
     this.networks = []
-    this.networkname = ''
+    //this.networkname = ''
     this.len = ''
   }
 
+  clearLastMileTool() {
+    this.networks = []
+    //this.networkName = ''
+    this.len = ''
+    var emptyGeo = { type: 'FeatureCollection', features: [] }
+    this.map.getSource('startpoints').setData(emptyGeo)
+    this.map.getSource('finishpoints').setData(emptyGeo)
+    this.map.getSource('shortestroads').setData(emptyGeo)
+    this.latlng = null
+    this.setCenterStatus = true
+  }
+
+  closeLastMileTool() {
+    this.clearLastMileTool()
+    this.setCenterStatus = false
+  }
+
   find(e) {
-    this.latlng = [e.lng, e.lat]
-    this.map.setCenter(e)
-    var pnt = point(this.latlng)
-    this.map.getSource('startpoints').setData(pnt)
+    if (this.setCenterStatus) {
+      this.latlng = [e.lng, e.lat]
+      var pnt = point(this.latlng)
+      this.setCenterStatus = true
+      this.map.getSource('startpoints').setData(pnt)
+      this.map.setCenter(e)
+    }
   }
 
   registerEvents() {
     const vm = this
+    this.setCenterStatus = true
     this.map.on('idle', function(f) {
       vm.handleIdle(f)
     })
@@ -186,9 +207,9 @@ export default class lastMileTool {
       }
       var sortList = nearestPoints.sort((a, b) => a.distance - b.distance)
       var resultinfo = {
-        networkName: sortList[0].feature.properties.name,
+        //networkName: sortList[0].feature.properties.name,
         len: 0,
-        networks: []
+        networks: [sortList[0].feature.properties.name]
       }
       if (sortList.length > this.limit) {
         sortList = sortList.splice(0, this.limit)
@@ -212,14 +233,14 @@ export default class lastMileTool {
             )
 
             var shortWay = that.findIntersects(sortGoogleList, geojson)
-            that.map.getSource('shortestroads').setData(shortWay.line)
+
             that.map.getSource('finishpoints').setData(shortWay.point)
             var resultNear = that.findNearNetworks(
               shortWay.point.geometry.coordinates
             )
             resultinfo.networks = resultNear.networks
             that.networks = resultNear.networks
-            that.networkName = resultinfo.networkName
+            //that.networkName = resultinfo.networkName
             that.len = length(sortGoogleList[0], { units: 'meters' })
 
             if (that.len < 1000) {
@@ -228,7 +249,9 @@ export default class lastMileTool {
               that.len = length(sortGoogleList[0], { units: 'kilometers' })
               that.len = round(that.len, 3) + ' km'
             }
-            lastMTVue.$emit('list-mile-tool-data', that)
+            that.setCenterStatus = false
+            shortWay.line.properties.distance = that.len
+            that.map.getSource('shortestroads').setData(shortWay.line)
           }
         }
 

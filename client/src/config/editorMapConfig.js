@@ -1,5 +1,11 @@
 export const editorMapConfig = {
-  sources: ['cls-source', 'ixps-source', 'cables-source', 'facilities-source'],
+  sources: [
+    'cls-source',
+    'ixps-source',
+    'cables-source',
+    'facilities-source',
+    'snappoint'
+  ],
   layers: [
     {
       id: 'cables-layer',
@@ -19,6 +25,17 @@ export const editorMapConfig = {
       paint: {
         'circle-radius': 5.42,
         'circle-color': '#f78682',
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#333333'
+      }
+    },
+    {
+      id: 'snappoint',
+      type: 'circle',
+      source: 'snappoint',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': ['get', 'color'],
         'circle-stroke-width': 1,
         'circle-stroke-color': '#333333'
       }
