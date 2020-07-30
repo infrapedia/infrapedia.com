@@ -18,24 +18,24 @@
       </span>
     </header>
     <ul class="p1 h-fit" :class="{ dark, light: !dark }">
-      <li class="w-fit-full h10">
+      <li class="w-fit-full">
         <el-button
           type="text"
-          class="inline-block color-inherit pl4 pr4 w-fit-full"
+          class="inline-block color-inherit w-fit-full p0"
           @click="toggleVisibility(false)"
         >
           <router-link
             :to="currentRoute.to"
-            class="color-inherit w-fit-full text-left inline-block underline-hover"
+            class="color-inherit pl4 pr4 inline-block underline-hover h8 flex align-items-center"
           >
             {{ currentRoute.label }}
           </router-link>
         </el-button>
       </li>
-      <li class="w-fit-full h10" v-if="currentRoute.to != '/app'">
+      <li class="w-fit-full" v-if="currentRoute.to != '/app'">
         <router-link
           to="/user/profile"
-          class="el-button pl4 pr4 el-button--text color-inherit w-fit-full text-left inline-block underline-hover"
+          class="el-button h10 pl4 pr4 el-button--text color-inherit w-fit-full text-left inline-block underline-hover"
         >
           Profile
         </router-link>
