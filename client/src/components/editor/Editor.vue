@@ -275,9 +275,9 @@ export default {
       layer.source = sourceName
       layer.paint[colorProp] = category.color
 
-      if (!this.map.getLayer(layerName)) {
-        this.map.addLayer(layer)
-      }
+      !this.map.getLayer(layerName)
+        ? this.map.addLayer(layer)
+        : this.map.setPaintProperty(layerName, colorProp, category.color)
     },
     handleGetFeatures() {
       this.$emit('features-list-change', this.scene.features.list)

@@ -612,6 +612,7 @@ export default {
     },
     saveEdit() {
       this.categories[this.field.idx] = { ...this.field }
+      bus.$emit('categories-field-values-change', this.categories)
       this.toggleInput(false)
     },
     toggleInput(bool) {
