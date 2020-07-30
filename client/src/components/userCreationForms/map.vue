@@ -604,8 +604,7 @@ export default {
     sendData() {
       return this.$emit(`${events.SEND_DATA}`, {
         ...this.form,
-        config: this.mapCreationData,
-        draw: Array.from(this.scene.features.list, item => ({ ...item }))
+        config: this.mapCreationData
       })
     },
     /**

@@ -728,6 +728,7 @@ export default {
       if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async createCable() {
+      debugger
       this.isSendingData = true
       const {
         t,

@@ -9,30 +9,43 @@
       >
         <el-card
           v-if="lastMileTool.active"
-          :class="{ dark }"
-          class="z-index120 w40 h40 p4"
+          class="z-index120 w50 p4"
           style="position: fixed; top: 4rem; left: 2.4rem;"
         >
           <el-form>
-            <el-form-item label="Quality">
-              <el-slider
-                :max="5"
-                :min="1"
-                :class="{ dark }"
-                v-model="lastMileTool.quality"
-                class="inline-block w-fit-full"
-              />
-            </el-form-item>
+            <h2>Last Mile Tool Panel</h2>
+            <b>Length : </b>
+            <span>{{ lastMileTool.reference.len }}</span
+            ><br />
+            <ul>
+              <b>Available Networks :</b>
+              <li
+                v-for="(item, i) in lastMileTool.reference.networks"
+                :key="i + item"
+              >
+                {{ i + 1 }} - {{ item }}
+              </li>
+            </ul>
+            <br />
+            <el-button
+              type="success"
+              plain
+              size="mini"
+              class="m1"
+              title="Select Point"
+              @click="findNewLastMile"
+            >
+              Select Point
+            </el-button>
             <el-button
               type="primary"
               plain
               :class="{ dark }"
               size="mini"
-              class="w-fit-full"
-              title="Turn off Last Mile Tool"
+              title="Close"
               @click="disableLastMileTool"
             >
-              Turn off
+              Close
             </el-button>
           </el-form>
         </el-card>
@@ -186,7 +199,9 @@ export default {
     lastMileTool: {
       active: false,
       reference: null,
-      quality: 1
+      quality: 1,
+      networks: [],
+      len: ''
     }
   }),
   computed: {
@@ -1125,6 +1140,7 @@ export default {
     handleLastMileToolActivation() {
       this.lastMileTool.active = true
       this.lastMileTool.reference.initService()
+      this.lastMileTool.reference.registerEvents()
       this.map.getCanvas().style.cursor = 'crosshair'
       // this.map.setLayoutProperty(
       //   mapConfig.facilitiesClusters,
@@ -1144,26 +1160,22 @@ export default {
     },
     disableLastMileTool() {
       this.lastMileTool.active = false
-      // this.map.setLayoutProperty(
-      //   mapConfig.facilitiesClusters,
-      //   'visibility',
-      //   'visible'
-      // )
-      // this.map.setLayoutProperty(
-      //   mapConfig.facilitiesCount,
-      //   'visibility',
-      //   'visible'
-      // )
-      // this.map.setLayoutProperty(
-      //   mapConfig.facilitiesSinglePoints,
-      //   'visibility',
-      //   'visible'
-      // )
+      this.lastMileTool.reference.clearLastMileTool()
       this.map.getCanvas().style.cursor = 'pointer'
-      document.getElementById('googlemap').remove()
     },
     handleLastMileToolCoordsChange(e) {
       this.lastMileTool.reference.find(e.lngLat)
+    },
+    findNewLastMile() {
+      this.lastMileTool.reference.clearLastMileTool()
+      this.lastMileTool.networks = []
+      this.lastMileTool.len = ''
+      var emptyGeo = { type: 'FeatureCollection', features: [] }
+      this.map.getSource('startpoints').setData(emptyGeo)
+      this.map.getSource('finishpoints').setData(emptyGeo)
+      this.map.getSource('shortestroads').setData(emptyGeo)
+      this.lastMileTool.reference.latlng = null
+      this.lastMileTool.reference.registerEvents()
     }
   }
 }

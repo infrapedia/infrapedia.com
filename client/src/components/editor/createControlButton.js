@@ -3,7 +3,11 @@ export default function(id, options = {}) {
   button.className = `editor-ctrl-btn ${options.className}`
   button.setAttribute('title', options.title)
   options.container.appendChild(button)
-
+  if (options.icon !== undefined) {
+    var ii = document.createElement('i')
+    ii.className = options.icon
+    button.appendChild(ii)
+  }
   button.addEventListener(
     'click',
     e => {

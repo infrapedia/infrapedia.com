@@ -8,6 +8,7 @@ import { DRAWING, TITLE_BY_SELECTION } from '../../events'
  * @param { elemnt } Object - HTML Element to set the calculated data
  */
 export default function handleDraw({ data, elemnt }) {
+  debugger
   if (data.features.length) {
     this.$emit(`${DRAWING}`, true)
     let calculated

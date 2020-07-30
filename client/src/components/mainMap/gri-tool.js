@@ -7,7 +7,10 @@ import {
   lineIntersect,
   round,
   lineString,
-  nearestPointOnLine
+  nearestPointOnLine,
+  circle,
+  bbox,
+  polygonToLine
 } from '@turf/turf'
 
 export function lastMileToolLayers(map) {
@@ -92,20 +95,38 @@ export default class lastMileTool {
     this.limit = 1
     this.map = map
     this.latlng = null
+    this.setCenterStatus = false
     this.googlemap = null
     this.requestType = 'mapbox'
     this.directionsService = null
+    this.networks = []
+    this.len = ''
+  }
+
+  clearLastMileTool() {
+    this.networks = []
+    this.len = ''
+    const emptyGeo = fCollectionFormat()
+    this.map.getSource('startpoints').setData(emptyGeo)
+    this.map.getSource('finishpoints').setData(emptyGeo)
+    this.map.getSource('shortestroads').setData(emptyGeo)
+    this.latlng = null
+    this.setCenterStatus = false
   }
 
   find(e) {
-    this.latlng = [e.lng, e.lat]
-    this.map.setCenter(e)
-    var pnt = point(this.latlng)
-    this.map.getSource('startpoints').setData(pnt)
+    if (this.setCenterStatus) {
+      this.latlng = [e.lng, e.lat]
+      var pnt = point(this.latlng)
+      this.setCenterStatus = true
+      this.map.getSource('startpoints').setData(pnt)
+      this.map.setCenter(e)
+    }
   }
 
   registerEvents() {
     const vm = this
+    this.setCenterStatus = true
     this.map.on('idle', function(f) {
       vm.handleIdle(f)
     })
@@ -118,12 +139,12 @@ export default class lastMileTool {
     var x = mypoint.x
     var y = mypoint.y
     for (var i = 0; i < dist.length; i++) {
-      var bbox = [
+      var mybbox = [
         [x - dist[i], y - dist[i]],
         [x + dist[i], y + dist[i]]
       ]
 
-      var features = this.map.queryRenderedFeatures(bbox, {
+      var features = this.map.queryRenderedFeatures(mybbox, {
         layers: [mapConfig.cables]
       })
 
@@ -178,6 +199,11 @@ export default class lastMileTool {
         })
       }
       var sortList = nearestPoints.sort((a, b) => a.distance - b.distance)
+      var resultinfo = {
+        //networkName: sortList[0].feature.properties.name,
+        len: 0,
+        networks: [sortList[0].feature.properties.name]
+      }
       if (sortList.length > this.limit) {
         sortList = sortList.splice(0, this.limit)
       }
@@ -200,8 +226,25 @@ export default class lastMileTool {
             )
 
             var shortWay = that.findIntersects(sortGoogleList, geojson)
-            that.map.getSource('shortestroads').setData(shortWay.line)
+
             that.map.getSource('finishpoints').setData(shortWay.point)
+            var resultNear = that.findNearNetworks(
+              shortWay.point.geometry.coordinates
+            )
+            resultinfo.networks = resultNear.networks
+            that.networks = resultNear.networks
+            //that.networkName = resultinfo.networkName
+            that.len = length(sortGoogleList[0], { units: 'meters' })
+
+            if (that.len < 1000) {
+              that.len = round(that.len, 3) + ' m'
+            } else {
+              that.len = length(sortGoogleList[0], { units: 'kilometers' })
+              that.len = round(that.len, 3) + ' km'
+            }
+            that.setCenterStatus = false
+            shortWay.line.properties.distance = that.len
+            that.map.getSource('shortestroads').setData(shortWay.line)
           }
         }
 
@@ -264,6 +307,37 @@ export default class lastMileTool {
     })
     // eslint-disable-next-line
     this.directionsService = new google.maps.DirectionsService()
+  }
+  findNearNetworks(point) {
+    var result = []
+    var center = point
+    var radius = 20
+    var options = {
+      steps: 36,
+      units: 'meters',
+      properties: { name: 'bufferarea' }
+    }
+    var mycircle = circle(center, radius, options)
+    var sline = polygonToLine(mycircle)
+    var mybbox = bbox(mycircle)
+    var p1 = [mybbox[0], mybbox[1]]
+    var p2 = [mybbox[2], mybbox[3]]
+    var mypoint1 = this.map.project(p1)
+    var mypoint2 = this.map.project(p2)
+    var pixelbbox = [
+      [mypoint1.x, mypoint1.y],
+      [mypoint2.x, mypoint2.y]
+    ]
+    var features = this.map.queryRenderedFeatures(pixelbbox, {
+      layers: [mapConfig.cables]
+    })
+    features.map(function(a) {
+      var b = a.toJSON()
+      if (result.indexOf(b.properties.name) == -1) {
+        result.push(b.properties.name)
+      }
+    })
+    return { networks: result, circle: sline }
   }
   calcRoute(start, finish, callback) {
     if (this.requestType == 'google') {
@@ -332,9 +406,12 @@ export default class lastMileTool {
         finish[1] +
         '.json?geometries=polyline&steps=true&overview=full&language=en&access_token=' +
         mapConfig.mapToken
+      var that = this
       fetch(url)
         .then(res => res.json())
-        .then(this.getMapboxRoad)
+        .then(function(result) {
+          callback(that.getMapboxRoad(result, start, finish))
+        })
     }
   }
   changeLimit(e) {
@@ -343,15 +420,39 @@ export default class lastMileTool {
   changeRequestType(e) {
     this.requestType = e.value
   }
-  getMapboxRoad(data) {
-    const routes = data.routes[0]
-    const distance = round(routes.distance, 3)
-    const ll = this.googlePointDecode(routes.geometry)
-    const line = lineString(ll, {
-      distance: distance,
-      len: distance
-    })
-    return line
+  getMapboxRoad(data, start, finish) {
+    if (data.routes !== undefined) {
+      const routes = data.routes[0]
+      const distance = round(routes.distance, 3)
+      const ll = this.googlePointDecode(routes.geometry)
+      const line = lineString(ll, {
+        distance: distance,
+        len: distance
+      })
+      return line
+    } else {
+      var route = {
+        type: 'Feature',
+        properties: { distance: 0, len: 0 },
+        geometry: {
+          type: 'LineString',
+          coordinates: [start, finish]
+        }
+      }
+      var lenn = length(route, { units: 'meters' })
+      lenn = round(lenn, 3)
+      route.properties.len = lenn
+      if (lenn >= 1000) {
+        var lennkm = length(route, {
+          units: 'kilometers'
+        })
+        lennkm = round(lennkm, 3)
+        route.properties.distance = lennkm + 'km'
+      } else {
+        route.properties.distance = lenn + 'm'
+      }
+    }
+    return route
   }
   googlePointDecode(encoded) {
     var points = []

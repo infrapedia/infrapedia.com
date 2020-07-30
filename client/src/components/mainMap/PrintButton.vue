@@ -109,10 +109,17 @@ export default {
     },
     async print() {
       if (this.form.dpi) {
+        localStorage.setItem('dpi', window.devicePixelRatio)
         await this.printer.printMap(this.form.dpi)
         const interval = setInterval(() => {
           this.donwloadingMap = this.printer.getLoading()
           if (!this.donwloadingMap) {
+            Object.defineProperty(window, 'devicePixelRatio', {
+              get: function() {
+                var orjdpi = localStorage.getItem('dpi')
+                return orjdpi
+              }
+            })
             clearInterval(interval)
           }
         }, 500)
