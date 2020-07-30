@@ -612,6 +612,7 @@ export default {
     },
     saveEdit() {
       this.categories[this.field.idx] = { ...this.field }
+      bus.$emit('categories-field-values-change', this.categories)
       this.toggleInput(false)
     },
     toggleInput(bool) {
@@ -663,8 +664,12 @@ export default {
     },
     async addCategory() {
       if (this.field.name && this.field.name !== '') {
-        this.categories.push({ ...this.field })
+        this.categories.push({
+          ...this.field,
+          _id: `${this.field.name}.${Date.now()}`
+        })
       }
+      console.log(this.categories)
       await this.toggleInput(false)
     },
     removeCategory(i) {
