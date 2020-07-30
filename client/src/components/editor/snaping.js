@@ -51,7 +51,6 @@ class Snaping {
             this.draw.set(lines)
           }
           if (drawMode == 'direct_select') {
-            debugger
             var mypoint = this.draw.getSelectedPoints()
             var lines1 = this.draw.getSelected()
             if (mypoint.features.length > 0 && lines1.features.length > 0) {
