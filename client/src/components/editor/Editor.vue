@@ -188,7 +188,7 @@ export default {
   },
   methods: {
     async handleCategoryRemoved(category) {
-      const sourceName = `${category.name}-source`
+      const sourceName = `${category._id}--source`
       if (this.map.getSource(sourceName)) {
         this.map.getSource(sourceName).setData(fCollectionFormat())
       }
@@ -213,6 +213,7 @@ export default {
           }
 
           await this.handleSetCategorySource({
+            _id: category._id,
             name: category.name,
             color: category.color,
             data: { type: data.type, features: data.features.flat() }
@@ -228,7 +229,7 @@ export default {
       }
     },
     async handleSetCategorySource(category) {
-      const sourceName = `${category.name}-source`
+      const sourceName = `${category._id}--source`
       if (!this.map.getSource(sourceName)) {
         this.map.addSource(sourceName, {
           type: 'geojson',
@@ -241,8 +242,8 @@ export default {
     async handleSetCategoryLayers(category) {
       let type = ''
       let colorProp = ''
-      let layerName = `${category.name}-layer`
-      const sourceName = layerName.replace('layer', 'source')
+      let layerName = `${category._id}--layer`
+      const sourceName = layerName.replace('--layer', '--source')
 
       if (category.t == 'subsea cables') {
         category.t = 'subsea_cables'
