@@ -669,7 +669,6 @@ export default {
           _id: `${this.field.name}.${Date.now()}`
         })
       }
-      console.log(this.categories)
       await this.toggleInput(false)
     },
     removeCategory(i) {
