@@ -1145,7 +1145,7 @@ export default {
     },
     disableLastMileTool() {
       this.lastMileTool.active = false
-      this.lastMileTool.reference.closeLastMileTool()
+      this.lastMileTool.reference.clearLastMileTool()
       this.map.getCanvas().style.cursor = 'pointer'
     },
     handleLastMileToolCoordsChange(e) {

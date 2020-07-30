@@ -100,24 +100,17 @@ export default class lastMileTool {
     this.requestType = 'mapbox'
     this.directionsService = null
     this.networks = []
-    //this.networkname = ''
     this.len = ''
   }
 
   clearLastMileTool() {
     this.networks = []
-    //this.networkName = ''
     this.len = ''
-    var emptyGeo = { type: 'FeatureCollection', features: [] }
+    const emptyGeo = fCollectionFormat()
     this.map.getSource('startpoints').setData(emptyGeo)
     this.map.getSource('finishpoints').setData(emptyGeo)
     this.map.getSource('shortestroads').setData(emptyGeo)
     this.latlng = null
-    this.setCenterStatus = true
-  }
-
-  closeLastMileTool() {
-    this.clearLastMileTool()
     this.setCenterStatus = false
   }
 

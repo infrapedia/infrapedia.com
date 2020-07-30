@@ -297,7 +297,6 @@ export default {
         map: map,
         type: this.type,
         scene: this.scene,
-        // $dispatch: this.$store.dispatch,
         handleEditFeatureProperties: feat => {
           this.dialog.mode = 'edit'
           this.dialog.visible = true
