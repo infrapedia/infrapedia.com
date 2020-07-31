@@ -147,6 +147,30 @@
           </el-button>
         </el-collapse-transition>
       </el-form-item>
+      <el-form-item class="mt12" label="Associations" v-if="linkedElements">
+        <div class="block w-fit-full">
+          <template v-for="(label, i) of Object.keys(linkedElements)">
+            <div
+              v-if="linkedElements[label].length"
+              :key="i"
+              class="ml2 inline-block"
+            >
+              <span
+                class="el-form-item__label inline-block text-left w-fit-full mt2 capitalize"
+              >
+                {{ label }}
+              </span>
+              <el-tag
+                v-for="tag in linkedElements[label]"
+                :show-close="false"
+                :key="tag._id"
+              >
+                {{ tag.label }}
+              </el-tag>
+            </div>
+          </template>
+        </div>
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer-mobile">
       <el-button
@@ -174,6 +198,7 @@ import { uploadOrgLogo } from '../../services/api/uploads'
 import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 import { checkOrganizationNameExistence } from '../../services/api/check_name'
 import debounce from '../../helpers/debounce'
+import { getOrgLinkedElements } from '../../services/api/organizations'
 
 export default {
   name: 'OrgForm',
@@ -183,6 +208,7 @@ export default {
   data: () => ({
     fileList: [],
     countriesList,
+    linkedElements: null,
     isNameRepeated: false,
     tag: {
       fullAddress: '',
@@ -273,9 +299,10 @@ export default {
     }
   },
   watch: {
-    mode(str) {
+    async mode(str) {
       if (str == 'edit') {
         this.setLogoUrl()
+        await this.getOrgLinkedElements(this.form._id)
       }
     },
     visible(bool) {
@@ -287,10 +314,31 @@ export default {
         }, 50)
       } else {
         this.fileList = []
+        this.linkedElements = null
       }
     }
   },
   methods: {
+    async getOrgLinkedElements(id) {
+      const [
+        cls,
+        subsea,
+        terrestrial,
+        facilities,
+        knownUsers
+      ] = await getOrgLinkedElements({
+        user_id: this.$auth.getUserID(),
+        id
+      })
+
+      this.linkedElements = {
+        cls: cls.r ? cls.r : cls,
+        subsea: subsea.r ? subsea.r : subsea,
+        knownUsers: knownUsers.r ? knownUsers.r : knownUsers,
+        facilities: facilities.r ? facilities.r : facilities,
+        terrestrial: terrestrial.r ? terrestrial.r : terrestrial
+      }
+    },
     checkName: debounce(async function(name) {
       this.isNameRepeated = false
       const {
