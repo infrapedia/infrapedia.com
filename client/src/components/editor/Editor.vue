@@ -242,6 +242,7 @@ export default {
     async handleSetCategoryLayers(category) {
       let type = ''
       let colorProp = ''
+      let labelLayoutProp = null
       let layerName = `${category._id}--layer`
       const sourceName = layerName.replace('--layer', '--source')
 
@@ -267,6 +268,10 @@ export default {
         default:
           type = 'cables'
           colorProp = 'line-color'
+          labelLayoutProp = [
+            ['symbol-placement', 'line'],
+            ['text-offset', [0, -0.1]]
+          ]
           layerName = layerName + '-' + type
           break
       }
@@ -276,9 +281,19 @@ export default {
       layer.source = sourceName
       layer.paint[colorProp] = category.color
 
-      !this.map.getLayer(layerName)
-        ? this.map.addLayer(layer)
-        : this.map.setPaintProperty(layerName, colorProp, category.color)
+      if (!this.map.getLayer(layerName)) {
+        this.map.addLayer(layer)
+        const labelLayer = { ...customMapLayerTypes['label'] }
+        labelLayer.id = `${category._id}--label--layer`
+        labelLayer.source = sourceName
+        if (labelLayoutProp) {
+          labelLayer.layout[labelLayoutProp[0][0]] = labelLayoutProp[0][1]
+          labelLayer.layout[labelLayoutProp[1][0]] = labelLayoutProp[1][1]
+        }
+        this.map.addLayer(labelLayer)
+      } else {
+        this.map.setPaintProperty(layerName, colorProp, category.color)
+      }
     },
     handleGetFeatures() {
       this.$emit('features-list-change', this.scene.features.list)

@@ -608,7 +608,6 @@ export default {
       this.field = { ...JSON.parse(JSON.stringify(category)), idx: i }
       this.mode = 'edit'
       this.isInputVisible = true
-      this.scrollIntoView()
     },
     saveEdit() {
       this.categories[this.field.idx] = { ...this.field }
