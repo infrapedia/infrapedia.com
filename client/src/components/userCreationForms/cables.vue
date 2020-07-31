@@ -596,27 +596,28 @@ export default {
     handleOwnersKnownUsersDynamic(listToSearch, listToCompare, t, tt, tr) {
       const listIdsToCompare = listToCompare.map(kn => kn._id)
       const idsToRemove = []
-      for (let item of listToCompare) {
-        if (!listIdsToCompare.includes(item._id)) continue
 
-        idsToRemove.push(item._id)
-        this.$message.error({
-          duration: 8000,
-          dangerouslyUseHTMLString: true,
-          message: `This ${t}: <strong class="capitalize">${item.name}</strong> can't be included because is already included on the ${tt} list`
-        })
-      }
+      listToSearch.forEach(item => {
+        let elemntID = listIdsToCompare.indexOf(item._id)
+        if (elemntID > -1 && listIdsToCompare[elemntID] == item._id) {
+          idsToRemove.push(item._id)
+          this.$message.error({
+            duration: 8000,
+            dangerouslyUseHTMLString: true,
+            message: `This ${t}: <strong class="capitalize">${item.name}</strong> can't be included because is already included on the ${tt} list`
+          })
+        }
+      })
       for (let id of idsToRemove) {
         this.form[tr] = this.form[tr].filter(item => item._id != id)
       }
-      // this.$refs[tr].$forceUpdate()
     },
     handleKnownUsersSelectChange(data) {
       this.form.knownUsers = data
       if (this.creationID == 'subsea') {
         this.handleOwnersKnownUsersDynamic(
+          this.form.owners,
           data,
-          this.form.knownUsers,
           'known user',
           'owners',
           'knownUsers'
