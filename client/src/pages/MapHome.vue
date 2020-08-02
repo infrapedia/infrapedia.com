@@ -20,28 +20,76 @@ export default {
     MapOverlay
     // VotationDialog
   },
-  head: {
-    title: 'Infrapedia | Global Internet Infrastructure Map',
-    meta: [
-      {
-        name: 'application-name',
-        content: 'Infrapedia | Global Internet Infrastructure Map'
-      },
-      {
-        name: 'keywords',
-        content:
-          'custom maps, fiber optics maps, internet infrastructure map, live map, consulting, data center, sponsorship, ads, telecommunications'
-      },
-      {
-        name: 'description',
-        content:
-          'Navigate through the World’s Largest Live Map of the Global Internet Infrastructure. All the data you need for free in a crowd-sourced platform.'
-      }
-    ]
-  },
   data: () => ({
-    isPoolDialog: false
+    isPoolDialog: false,
+    metaData: {
+      title: 'Infrapedia | Global Internet Infrastructure Map',
+      meta: [
+        {
+          name: 'application-name',
+          content: 'Infrapedia | Global Internet Infrastructure Map'
+        },
+        {
+          name: 'keywords',
+          content:
+            'custom maps, fiber optics maps, internet infrastructure map, live map, consulting, data center, sponsorship, ads, telecommunications'
+        },
+        {
+          name: 'description',
+          content:
+            'Navigate through the World’s Largest Live Map of the Global Internet Infrastructure. All the data you need for free in a crowd-sourced platform.'
+        }
+      ]
+    }
   }),
+  head() {
+    return {
+      ...this.metaData
+    }
+  },
+  watch: {
+    '$store.state.map.currentSelection'(info) {
+      if (info) {
+        this.metaData = {
+          title: `${info.name} | Infrapedia | Global Internet Infrastructure Map`,
+          meta: [
+            {
+              name: 'application-name',
+              content: 'Infrapedia | Global Internet Infrastructure Map'
+            },
+            {
+              name: 'keywords',
+              content:
+                'custom maps, fiber optics maps, internet infrastructure map, live map, consulting, data center, sponsorship, ads, telecommunications'
+            },
+            {
+              name: 'description',
+              content: `${info.name} is a ${this.focus.type} with X and Y connections`
+            }
+          ]
+        }
+      } else
+        this.metaData = {
+          title: 'Infrapedia | Global Internet Infrastructure Map',
+          meta: [
+            {
+              name: 'application-name',
+              content: 'Infrapedia | Global Internet Infrastructure Map'
+            },
+            {
+              name: 'keywords',
+              content:
+                'custom maps, fiber optics maps, internet infrastructure map, live map, consulting, data center, sponsorship, ads, telecommunications'
+            },
+            {
+              name: 'description',
+              content:
+                'Navigate through the World’s Largest Live Map of the Global Internet Infrastructure. All the data you need for free in a crowd-sourced platform.'
+            }
+          ]
+        }
+    }
+  },
   beforeCreate() {
     this.$emit('layout', 'map-app-layout')
   },
