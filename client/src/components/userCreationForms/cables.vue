@@ -3,7 +3,7 @@
     <header slot="header" class="w-fit-full mb8" v-if="showTitle">
       <h1 class="title capitalize">{{ title }}</h1>
     </header>
-    <el-form ref="form" :model="form" :rules="formRules">
+    <el-form ref="form" :model="form" :rules="formRules" id="cablesForm">
       <el-form-item label="Name" prop="name" required>
         <el-input
           :autofocus="isManualKmzUpload"
@@ -67,10 +67,18 @@
               :key="tag"
               v-for="tag in form.urls"
               closable
+              style="max-width: 16rem;"
+              :title="tag"
+              class="mr1 mb4 p2 no-overflow-x vertical-align"
               :disable-transitions="false"
               @close="handleClose(tag)"
             >
-              {{ tag }}
+              <span
+                class="inline-block h7 p0 no-overflow-x truncate"
+                style="max-width: 12rem;"
+              >
+                {{ tag }}
+              </span>
             </el-tag>
           </div>
           <template v-if="inputVisible">
@@ -128,46 +136,53 @@
           />
         </el-form-item>
         <el-form-item label="Lit Capacity" prop="litCapacity">
-          <div class="inline-block">
-            <div
-              v-for="(field, i) in form.litCapacity"
-              :key="i"
-              class="relative mt4"
-            >
-              <div class="capacity-field p4 el-card shadow--never">
-                <el-date-picker
-                  size="small"
-                  class="date-picker mr1"
-                  v-model="field.year"
-                  type="year"
-                  placeholder
-                />
-                <el-input-number
-                  size="small"
-                  :min="0"
-                  controls-position="right"
-                  v-model="field.cap"
-                />
+          <el-button
+            class="inline-block"
+            size="small"
+            :class="{ dark }"
+            @click="addLitCapacityField"
+          >
+            Add lit capacity
+          </el-button>
+          <el-collapse v-model="collapseItem" class="mt1">
+            <el-collapse-item :name="1">
+              <div class="inline-block">
+                <transition-group name="fade" mode="in-out" appear tag="div">
+                  <div
+                    v-for="(field, i) in form.litCapacity"
+                    :key="i + 'field'"
+                    class="relative mt12"
+                  >
+                    <div class="capacity-field p4 el-card shadow--never">
+                      <el-date-picker
+                        size="small"
+                        class="date-picker mr1"
+                        v-model="field.year"
+                        type="year"
+                        placeholder
+                      />
+                      <el-input-number
+                        size="small"
+                        :min="0"
+                        controls-position="right"
+                        v-model="field.cap"
+                      />
+                    </div>
+                    <span
+                      class="absolute z-index2 circle remove transition-all vertical-align"
+                    >
+                      <small
+                        class="underline-hover"
+                        @click="removeLitCapacityField(i)"
+                      >
+                        Remove
+                      </small>
+                    </span>
+                  </div>
+                </transition-group>
               </div>
-              <span
-                class="absolute z-index2 circle remove transition-all vertical-align"
-              >
-                <small
-                  class="underline-hover"
-                  @click="removeLitCapacityField(i)"
-                >
-                  Remove
-                </small>
-              </span>
-            </div>
-            <el-button
-              class="inline-block"
-              size="small"
-              @click="addLitCapacityField"
-            >
-              Add lit capacity
-            </el-button>
-          </div>
+            </el-collapse-item>
+          </el-collapse>
         </el-form-item>
       </template>
       <template v-if="creationID == 'subsea'">
@@ -191,24 +206,29 @@
           :value="mode == 'create' ? [] : form.facilities"
         />
       </el-form-item>
-      <template v-if="creationID == 'subsea'">
-        <el-form-item label="CLS" prop="cls" required>
-          <v-multi-select
-            :mode="mode"
-            :is-required="true"
-            :is-field-empty="isCLSSelectEmpty"
-            :options="clsList"
-            @input="loadCLSSearch"
-            :loading="isLoadingCLS"
-            @values-change="handleCLSSelectionChange"
-            @remove="handleCLSSelectionChange(form.cls)"
-            :value="mode == 'create' ? [] : form.cls"
-          />
-        </el-form-item>
-      </template>
+      <!-- <template v-if="creationID == 'subsea'"> -->
+      <el-form-item
+        :label="CLSLabel"
+        prop="cls"
+        :required="creationID == 'subsea'"
+      >
+        <v-multi-select
+          :mode="mode"
+          :is-required="creationID == 'subsea'"
+          :is-field-empty="isCLSSelectEmpty"
+          :options="clsList"
+          @input="loadCLSSearch"
+          :loading="isLoadingCLS"
+          @values-change="handleCLSSelectionChange"
+          @remove="handleCLSSelectionChange(form.cls)"
+          :value="mode == 'create' ? [] : form.cls"
+        />
+      </el-form-item>
+      <!-- </template> -->
       <el-form-item label="Owners" prop="owners" required>
         <v-multi-select
           :mode="mode"
+          ref="ownersField"
           :is-required="true"
           :is-field-empty="isOwnersSelectEmpty"
           :options="orgsList"
@@ -218,6 +238,19 @@
           :value="mode == 'create' ? [] : form.owners"
         />
       </el-form-item>
+      <template v-if="creationID == 'subsea'">
+        <el-form-item label="Known Users" prop="knownUsers">
+          <v-multi-select
+            ref="knownUsersField"
+            :mode="mode"
+            :options="knownUsers"
+            @input="loadKnownUsersSearch"
+            :loading="isLoadingKnownUsers"
+            @values-change="handleKnownUsersSelectChange"
+            :value="mode == 'create' ? [] : form.knownUsers"
+          />
+        </el-form-item>
+      </template>
       <el-form-item label="Tags" class="mt2" prop="tags">
         <el-select
           v-model="form.tags"
@@ -285,6 +318,7 @@ export default {
   },
   data: () => ({
     tag: '',
+    collapseItem: [],
     isOwnersSelectEmpty: false,
     isCLSSelectEmpty: false,
     currentYear: new Date(),
@@ -292,12 +326,14 @@ export default {
     facsList: [],
     tagsList: [],
     orgsList: [],
+    knownUsers: [],
     clsList: [],
     isURLValid: null,
     isLoadingCLS: false,
     inputVisible: false,
     isLoadingFacs: false,
     isLoadingOrgs: false,
+    isLoadingKnownUsers: false,
     isNameRepeated: false,
     warnTagDuplicate: false,
     litCapacityFields: []
@@ -329,7 +365,11 @@ export default {
     }
   },
   computed: {
+    CLSLabel() {
+      return this.creationID == 'subsea' ? 'CLS' : 'Connected CLS'
+    },
     formRules() {
+      const creationID = this.creationID
       return {
         activationDateTime: [],
         litCapacity: [],
@@ -366,10 +406,11 @@ export default {
             trigger: ['blur', 'change']
           }
         ],
+        knownUsers: [],
         cls: [
           {
             type: 'array',
-            required: this.creationID == 'subsea',
+            required: creationID == 'subsea',
             message: 'At least one cls is required',
             trigger: ['blur', 'change']
           }
@@ -447,6 +488,10 @@ export default {
       this.orgsList = [...owners]
       delete this.form.ownersList
     },
+    'form.knownUsersList'(knownUsers) {
+      this.knownUsers = [...knownUsers]
+      delete this.form.knownUsersList
+    },
     'form.clsList'(cls) {
       this.clsList = [...cls]
       this.handleSetFeatureOntoMap({
@@ -498,12 +543,16 @@ export default {
     },
     removeLitCapacityField(i) {
       this.form.litCapacity.splice(i, 1)
+      if (this.form.litCapacity.length <= 0) {
+        this.collapseItem = []
+      }
     },
     addLitCapacityField() {
       this.form.litCapacity.push({
         year: this.currentYear,
         cap: 0
       })
+      this.collapseItem = [1]
     },
     handleCLSSelectionChange(data) {
       this.form.cls = data
@@ -533,7 +582,47 @@ export default {
     },
     handleOwnersSelectChange(data) {
       this.form.owners = data
+      if (this.creationID == 'subsea') {
+        this.handleOwnersKnownUsersDynamic(
+          this.form.knownUsers,
+          data,
+          'owner',
+          'known users',
+          'owners'
+        )
+      }
       this.setOwnersEmptyState()
+    },
+    handleOwnersKnownUsersDynamic(listToSearch, listToCompare, t, tt, tr) {
+      const listIdsToCompare = listToCompare.map(kn => kn._id)
+      const idsToRemove = []
+
+      listToSearch.forEach(item => {
+        let elemntID = listIdsToCompare.indexOf(item._id)
+        if (elemntID > -1 && listIdsToCompare[elemntID] == item._id) {
+          idsToRemove.push(item._id)
+          this.$message.error({
+            duration: 8000,
+            dangerouslyUseHTMLString: true,
+            message: `This ${t}: <strong class="capitalize">${item.name}</strong> can't be included because is already included on the ${tt} list`
+          })
+        }
+      })
+      for (let id of idsToRemove) {
+        this.form[tr] = this.form[tr].filter(item => item._id != id)
+      }
+    },
+    handleKnownUsersSelectChange(data) {
+      this.form.knownUsers = data
+      if (this.creationID == 'subsea') {
+        this.handleOwnersKnownUsersDynamic(
+          this.form.owners,
+          data,
+          'known user',
+          'owners',
+          'knownUsers'
+        )
+      }
     },
     setOwnersEmptyState() {
       this.isOwnersSelectEmpty = this.form.owners.length <= 0
@@ -565,20 +654,28 @@ export default {
       }
       this.isLoadingFacs = false
     },
-    async loadOrgsSearch(s) {
+    async loadKnownUsersSearch(s) {
+      this.isLoadingKnownUsers = true
+      this.knownUsers = (await this.loadOrgsSearch(s, true)) || []
+      this.isLoadingKnownUsers = false
+    },
+    async loadOrgsSearch(s, returnData) {
       if (s.length <= 0) return
-      this.isLoadingOrgs = true
+
+      if (!returnData) this.isLoadingOrgs = true
       const res = await searchOrganization({
         user_id: await this.$auth.getUserID(),
         s
       })
       if (res && res.data) {
-        this.orgsList = res.data.reduce(
+        const result = res.data.reduce(
           (acc = Array.from(this.orgsList), item) => {
             return acc.map(i => i._id).includes(item._id) ? acc : [...acc, item]
           },
           []
         )
+        if (!returnData) this.orgsList = result
+        else return result
       }
       this.isLoadingOrgs = false
     },
@@ -630,6 +727,3 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-@import '../../assets/scss/components/cables-form-styles.scss';
-</style>

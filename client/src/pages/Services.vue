@@ -1,31 +1,32 @@
 <template>
-  <div class="flex column wrap justify-content-center no-overflow-x mb20">
-    <div class="banner-wrapper">
+  <div
+    class="main-wrapper flex column wrap justify-content-center no-overflow-x mb20"
+  >
+    <!-- <div class="banner-wrapper">
       <el-image
         lazy
         fit="cover"
         src="https://cdn1.infrapedia.com/bgs/b2.jpg"
         class="banner-img"
       />
-    </div>
-    <el-card class="card-wrapper" :class="{ dark }">
+    </div> -->
+    <div class="card-wrapper mt20 mb20">
       <header class="w-fit-full text-center">
-        <h2 class="title">
+        <h1 class="title mb12" :class="{ dark }">
           Services & Consulting
-        </h2>
-        <el-divider :class="{ dark }" />
+        </h1>
       </header>
-      <div class="services-wrapper">
+      <div class="services-wrapper" :class="{ dark }">
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8" :class="{ dark }">
+          <div class="p4">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
-                <h2 class="title sm">
+                <h2 class="title sm" :class="{ dark }">
+                  <span class="md-icon">
+                    <fa :icon="['fas', 'chalkboard-teacher']" />
+                  </span>
                   Consultancy
                 </h2>
-                <span class="md-icon">
-                  <fa :icon="['fas', 'chalkboard-teacher']" />
-                </span>
               </header>
               <p class="text">
                 Our team consists of industry leaders that are always eager to
@@ -36,30 +37,19 @@
                 advice, software development, project support, operations,
                 marketing consultancy, and more.
               </p>
-              <!-- <footer>
-                <router-link
-                  to="/contact"
-                  class="underline-hover inline-block mt12"
-                >
-                  Learn more
-                  <span class="fs-xsmall font-thin ml1">
-                    <fa :icon="['fas', 'angle-double-right']" />
-                  </span>
-                </router-link>
-              </footer> -->
             </div>
-          </el-card>
+          </div>
         </router-link>
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8 fix-height" :class="{ dark }">
+          <div class="p4">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
-                <h2 class="title sm">
+                <h2 class="title sm" :class="{ dark }">
+                  <span class="md-icon">
+                    <fa :icon="['fas', 'chart-area']" />
+                  </span>
                   Data analysis
                 </h2>
-                <span class="md-icon">
-                  <fa :icon="['fas', 'chart-area']" />
-                </span>
               </header>
               <p class="text">
                 Our Data Analysis services give you access to our team of
@@ -72,30 +62,19 @@
                 software to analyze our database in order to find answers to
                 your specific questions.
               </p>
-              <!-- <footer>
-                <router-link
-                  to="/contact"
-                  class="underline-hover inline-block mt12"
-                >
-                  Learn more
-                  <span class="fs-xsmall font-thin ml1">
-                    <fa :icon="['fas', 'angle-double-right']" />
-                  </span>
-                </router-link>
-              </footer> -->
             </div>
-          </el-card>
+          </div>
         </router-link>
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8 fix-height" :class="{ dark }">
+          <div class="p4">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
-                <h2 class="title sm">
+                <h2 class="title sm" :class="{ dark }">
+                  <span class="md-icon">
+                    <fa :icon="['fas', 'map']" />
+                  </span>
                   Custom Maps and GIS engineering
                 </h2>
-                <span class="md-icon">
-                  <fa :icon="['fas', 'map']" />
-                </span>
               </header>
               <p class="text">
                 At Infrapedia we have extensive knowledge about developing
@@ -108,66 +87,49 @@
                 third party information for analysis, NOC operations, dedicated
                 maps, and more.
               </p>
-              <!-- <footer>
-                <router-link
-                  to="/contact"
-                  class="underline-hover inline-block mt12"
-                >
-                  Learn more
-                  <span class="fs-xsmall font-thin ml1">
-                    <fa :icon="['fas', 'angle-double-right']" />
-                  </span>
-                </router-link>
-              </footer> -->
             </div>
-          </el-card>
+          </div>
         </router-link>
         <router-link to="/contact" class="inner-wrapper cursor-pointer">
-          <el-card shadow="hover" class="p8" :class="{ dark }">
+          <div class="p4">
             <div class="card-inner-wrapper">
               <header class="inner-wrapper_header">
-                <h2 class="title sm">
+                <h2 class="title sm" :class="{ dark }">
+                  <span class="md-icon">
+                    <fa :icon="['fas', 'code']" />
+                  </span>
                   Software Development
                 </h2>
-                <span class="md-icon">
-                  <fa :icon="['fas', 'code']" />
-                </span>
               </header>
               <p class="text">
                 Our Infrapedia team consists of skilled software engineers who
                 are able to work with you on the development of the software you
                 need to increase your team’s efficiency and profitability.
               </p>
-              <!-- <footer>
-                <router-link
-                  to="/contact"
-                  class="underline-hover inline-block mt12"
-                >
-                  Learn more
-                  <span class="fs-xsmall font-thin ml1">
-                    <fa :icon="['fas', 'angle-double-right']" />
-                  </span>
-                </router-link>
-              </footer> -->
             </div>
-          </el-card>
+          </div>
         </router-link>
       </div>
-      <footer class="mt8">
+      <footer class="mt8 pt4 pb4">
         <el-divider :class="{ dark }" />
-        <router-link to="/contact" class="underline-hover cursor-pointer">
+        <router-link
+          to="/contact"
+          class="el-button transparent no-border p0 underline cursor-pointer"
+          :class="{ dark }"
+        >
           Contact us</router-link
         >
         or
         <el-button
           type="text"
+          :class="{ dark }"
           @click="toggleNewsletterDialog"
-          class="cursor-pointer fs-medium underline-hover"
+          class="cursor-pointer fs-medium underline"
           >subscribe</el-button
         >
         to our newsletter
       </footer>
-    </el-card>
+    </div>
     <newsletter-dialog
       :visibility="isNewsLetterDialog"
       @close="toggleNewsletterDialog"
@@ -202,13 +164,13 @@ export default {
       }
     ]
   },
-  beforeCreate() {
-    this.$emit('layout', 'landing-layout')
-  },
   computed: {
     dark() {
       return this.$store.state.isDark
     }
+  },
+  beforeCreate() {
+    this.$emit('layout', 'landing-layout')
   },
   methods: {
     toggleNewsletterDialog() {

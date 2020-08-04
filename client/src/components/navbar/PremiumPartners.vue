@@ -5,7 +5,7 @@
     v-click-outside="closeSheet"
   >
     <el-button
-      class="drawer-opener fs-small"
+      class="drawer-opener fs-small font-regular mt-1"
       type="text"
       :class="{ 'text-white--hsl': dark }"
       @click="toggleVisibility"

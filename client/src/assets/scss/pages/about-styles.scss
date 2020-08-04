@@ -1,102 +1,44 @@
 @import '../base/variables';
 @import '../helpers/atomic-classes';
 
-.banner-wrapper {
-  display: grid;
+.main-wrapper {
+  border-top: 1px solid #bcbcbc;
+}
+
+.inner-wrapper {
+  width: 40vw;
   margin: 0 auto;
-  width: 80vw;
-  height: 62vh;
-  grid-template-columns: repeat(4, 1fr);
-  overflow: hidden;
-  .banner-img {
-    grid-row: 1/3;
-    grid-column: 1/5;
+  display: flex;
+  flex-flow: row wrap;
+  .team-wrapper .boxes-wrapper .box {
+    flex-basis: 50%;
+    &:first-child {
+      flex-basis: 100%;
+    }
+    @media screen and (max-width: $break-md) {
+      flex-basis: 100%;
+    }
+  }
+  @media screen and (max-width: $break-md) {
+    width: 80vw;
   }
 }
 
-.gallery-wrapper {
-  margin: 0 auto;
-  width: 80vw;
-  padding: 2rem 0;
-  display: flex;
-  flex-flow: row wrap;
-  .team-wrapper {
-    .boxes-wrapper {
-      display: grid;
-      width: 100%;
-      gap: 1rem;
-      grid-auto-flow: dense;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      .box {
-        display: flex;
-        flex-flow: column nowrap;
-        align-items: center;
-        padding: 2rem 0;
-        .image-wrapper {
-          width: 12rem;
-          .img {
-            border-radius: 50%;
-          }
-        }
-      }
-      @media screen and (max-width: $break-xs) {
-        margin-bottom: 0;
-      }
-    }
-    p.content {
-      color: $dark-charcoal;
-      line-height: 1.2;
-      font-weight: 400;
-      font-size: 20px;
-      text-align: justify;
-      @media screen and (max-width: $break-xs) {
-        font-size: 16px;
-        padding: 0 1rem;
-      }
-    }
-
-    @media screen and (max-width: $break-xs) {
-      margin-left: 0;
-      padding: 0;
-    }
-  }
+p.content {
+  @extend .text--content;
 }
 
 .title {
-  line-height: 1.3;
-  font-weight: 500;
-  font-size: 40px;
-  color: rgb(15, 50, 86);
-  text-align: center;
-  &.md {
-    text-align: left;
-    color: $dark-charcoal;
-    font-size: 30px;
-    @extend .no-selectable;
-    text-transform: capitalize;
-    @media screen and (max-width: $break-xs) {
-      font-size: 24px;
-    }
+  @extend .text--title;
+}
+
+.application.dark {
+  .title {
+    color: $white-partial;
+    text-align: center;
+    margin-bottom: 0;
   }
-  &.sm {
-    text-align: left;
-    color: $dark-charcoal;
-    font-size: 24px;
-    @extend .no-selectable;
-    text-transform: capitalize;
-    @media screen and (max-width: $break-xs) {
-      font-size: 18px;
-    }
-  }
-  &.white {
-    line-height: 1.2;
-    color: $white-full;
-  }
-  small {
-    font-size: 14px;
-    margin-top: 1rem;
-  }
-  @media screen and (max-width: $break-xs) {
-    font-size: 34px;
+  p.content {
+    color: $white-hsl;
   }
 }

@@ -9,80 +9,97 @@
     <transition name="fade" mode="out-in">
       <div
         v-if="isFullScreen"
-        class="absolute full-screen z-index1 transition-all"
+        class="absolute full-screen z-index1 transition-all custom-dialog w-fit-full-imp"
         :class="{ dark, light: !dark }"
       >
-        <el-input
-          placeholder="Search"
-          :class="{ dark }"
-          class="mt1"
-          v-model="search"
-          clearable
-          autofocus
-          @input="getQueryData"
+        <header
+          class="flex row justify-content-space-between pt1 pb1 pr4 pl4 mb2 el-dialog__header"
         >
-          <el-select
-            v-model="categories.selected"
-            slot="prepend"
-            class="w28 p0"
-            placeholder
-            @change="getQueryData(search)"
+          <el-image :src="imageURL" class="w30" fit="scale-down" lazy />
+          <el-button
+            type="text"
+            :class="{ 'text-white--hsl': dark }"
+            @click="handleClose({ keyCode: 4 })"
+            class="underline"
           >
-            <el-option
-              v-for="(opt, i) in categories.list"
-              :key="i"
-              :label="opt"
-              :value="opt"
-            />
-          </el-select>
-          <fa slot="prefix" :icon="['fas', 'search']" class="mt3 ml1" />
-        </el-input>
-        <ul class="mt8 color-inherit w-fit-full">
-          <li
-            v-for="(item, i) in searchResults.r"
-            :key="i + item"
-            tabindex="0"
-            role="listitem"
-            :class="{ dark, light: !dark }"
-            class="pt2 pb2 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
-            @click="handlePlaceSelection(item)"
-            @keyup.enter.space="handlePlaceSelection(item)"
+            close
+          </el-button>
+        </header>
+        <div class="pr4 pl4 pb20">
+          <el-input
+            :placeholder="`Search in ${categories.selected}`"
+            :class="{ dark }"
+            id="fullscreen-searchbar"
+            v-model="search"
+            clearable
+            autofocus
+            @input="getQueryData"
           >
-            <div v-if="item.address" class="inline-block">
-              {{ item.name }} in
-              <small v-for="(a, index) in item.address" :key="a.state + index">
-                {{ a.city }}, {{ a.state }};
-              </small>
-            </div>
-            <span v-else>
-              {{ item.name }}
-            </span>
-            -
-            <small class="capitalize">{{ item.t }}</small>
-            <span
-              v-if="item.premium && item.premium === 'true'"
-              class="w22 p1 h6 partner round flo-right vertical-align mt-2"
+            <el-select
+              v-model="categories.selected"
+              slot="prepend"
+              class="p0"
+              placeholder
+              @change="getQueryData(search)"
             >
-              Partner
-              <fa :icon="['fas', 'star']" class="sm-icon ml2" />
-            </span>
-          </li>
-          <el-divider class="m0" v-if="searchResults.r.length" />
-          <li
-            v-for="(item, i) in searchResults.places"
-            :key="i"
-            tabindex="0"
-            role="listitem"
-            :class="{ dark, light: !dark }"
-            class="pt2 pb2 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
-            @click="handlePlaceSelection(item)"
-            @keyup.enter.space="handlePlaceSelection(item)"
-          >
-            <span>
-              {{ item.name }}
-            </span>
-          </li>
-        </ul>
+              <el-option
+                v-for="(opt, i) in categories.list"
+                :key="i"
+                :label="opt"
+                :value="opt"
+              />
+            </el-select>
+          </el-input>
+          <ul class="mt8 color-inherit w-fit-full" v-loading="isLoading">
+            <li
+              v-for="(item, i) in searchResults.r"
+              :key="i + item"
+              tabindex="0"
+              role="listitem"
+              :class="{ dark, light: !dark }"
+              class="pt2 pb2 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
+              @click="handlePlaceSelection(item)"
+              @keyup.enter.space="handlePlaceSelection(item)"
+            >
+              <div v-if="item.address" class="inline-block fs-small">
+                {{ item.name }} in
+                <small
+                  v-for="(a, index) in item.address"
+                  :key="a.state + index"
+                >
+                  {{ a.city }}, {{ a.state }};
+                </small>
+              </div>
+              <span v-else>
+                {{ item.name }}
+              </span>
+              -
+              <small class="capitalize">{{ item.t }}</small>
+              <span
+                v-if="item.premium && item.premium == 'true'"
+                class="w22 p1 h6 partner round flo-right vertical-align mt-2"
+              >
+                Partner
+                <fa :icon="['fas', 'star']" class="sm-icon ml2" />
+              </span>
+            </li>
+            <el-divider class="m0" v-if="searchResults.r.length" />
+            <li
+              v-for="(item, i) in searchResults.places"
+              :key="i"
+              tabindex="0"
+              role="listitem"
+              :class="{ dark, light: !dark }"
+              class="pt2 pb2 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
+              @click="handlePlaceSelection(item)"
+              @keyup.enter.space="handlePlaceSelection(item)"
+            >
+              <span class="fs-small">
+                {{ item.name }}
+              </span>
+            </li>
+          </ul>
+        </div>
       </div>
     </transition>
   </div>
@@ -98,6 +115,7 @@ export default {
   name: 'IFullScreenSearch',
   data: () => ({
     isFullScreen: false,
+    isLoading: false,
     searchResults: {
       r: [],
       places: []
@@ -111,6 +129,11 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    imageURL() {
+      return this.dark
+        ? 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo.svg'
+        : 'https://cdn1.infrapedia.com/assets/img/light-mode-logo.svg'
     }
   },
   created() {
@@ -127,6 +150,7 @@ export default {
     },
     getQueryData: debounce(async function(querystring) {
       if (querystring.length <= 1) return
+      this.isLoading = true
       const res = await this.$store.dispatch('getSearchQueryData', {
         s: querystring,
         type: this.categories.selected
@@ -140,11 +164,10 @@ export default {
         place => (place.name = place.place_name)
       )
 
-      if (res && res.data.length) {
-        this.searchResults.r = res.data
-      }
-
       this.searchResults.places = places.features
+      if (res && res.data) this.searchResults.r = res.data
+
+      this.isLoading = false
     }, 820),
     handlePlaceSelection(selection) {
       // If the selection has geometry it mind it's a city
@@ -175,8 +198,12 @@ export default {
       this.search = ''
     },
     handleClose(e) {
-      if (e.keyCode === 27 || e.keyCode === 4) {
+      if (e.keyCode == 27 || e.keyCode == 4) {
         this.isFullScreen = false
+        this.searchResults = {
+          r: [],
+          places: []
+        }
       }
     }
   }

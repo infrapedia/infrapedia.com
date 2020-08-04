@@ -7,7 +7,7 @@
       <el-button
         type="text"
         :class="{ 'text-white--hsl': dark }"
-        class="drawer-opener fs-small"
+        class="drawer-opener fs-small font-regular mt-1"
         @click="toggleVisibility"
       >
         Market Place
@@ -35,6 +35,7 @@
             id="marketplace-banner-table"
             :height="120"
             border
+            v-loading="loading"
             size="small"
             max-height="620px"
             stripe
@@ -44,11 +45,6 @@
               prop="rgDate"
               :formatter="formatDate"
             />
-            <el-table-column label="Item">
-              <template slot-scope="scope">
-                <div v-html="scope.row.item" />
-              </template>
-            </el-table-column>
             <el-table-column label="Request">
               <template slot-scope="scope">
                 <div v-html="scope.row.request" />
@@ -96,12 +92,17 @@
             </el-form-item>
           </el-col>
           <el-col :lg="24">
-            <el-form-item label="Subject" prop="subject">
-              <el-input v-model="dialog.form.subject" />
+            <el-form-item label="Organization" prop="organization">
+              <el-input v-model="dialog.form.organization" />
             </el-form-item>
           </el-col>
           <el-col :lg="24">
-            <el-form-item label="Message" prop="message">
+            <el-form-item label="Subject" prop="subject">
+              <el-input v-model="dialog.form.subject" disabled />
+            </el-form-item>
+          </el-col>
+          <el-col :lg="24">
+            <el-form-item label="Message" prop="message" required>
               <el-input
                 ref="textareaInput"
                 v-model="dialog.form.message"
@@ -109,6 +110,16 @@
                 rows="4"
               />
             </el-form-item>
+          </el-col>
+          <el-col :span="24" class="mb4">
+            <vue-recaptcha
+              ref="catpcha"
+              :sitekey="siteKey"
+              :loadRecaptchaScript="true"
+              @verify="handleCatchaVerification"
+              @error="() => (catchaVerified = false)"
+              @expired="() => (catchaVerified = false)"
+            />
           </el-col>
         </el-row>
       </el-form>
@@ -121,7 +132,8 @@
         <el-button @click.stop="closeDialog" class="mr4">Cancel</el-button>
         <el-button
           type="primary"
-          @click.stop="sendOffer"
+          @click.stop="validateForm"
+          :disabled="!catchaVerified"
           :loading="isSendingData"
           >Confirm</el-button
         >
@@ -131,16 +143,23 @@
 </template>
 
 <script>
+import siteKey from '../../config/siteKey'
 import ClickOutside from 'vue-click-outside'
 import { formatDate } from '../../helpers/formatDate'
 import { getUserData } from '../../services/api/auth'
+import { formatMarketPlaceData } from '../../helpers/buyMessageFormatter'
 import { getMarketPlaceList, makeAnOffer } from '../../services/api/marketplace'
 
 export default {
+  components: {
+    VueRecaptcha: () => import('vue-recaptcha')
+  },
   data: () => ({
     marketplaceData: [],
     isSendingData: false,
+    catchaVerified: null,
     isOpen: false,
+    loading: false,
     dialog: {
       isVisible: false,
       rawMessage: null,
@@ -148,7 +167,8 @@ export default {
         name: '',
         email: '',
         subject: '',
-        message: ''
+        message: '',
+        organization: ''
       }
     }
   }),
@@ -156,12 +176,27 @@ export default {
     dark() {
       return this.$store.state.isDark
     },
+    siteKey() {
+      return siteKey
+    },
     dialogFormRules() {
       return {
         name: [
           {
             required: true,
             message: 'Please input your full name',
+            trigger: 'blur'
+          },
+          {
+            max: 50,
+            message: 'Length should be max 50',
+            trigger: ['change', 'blur']
+          }
+        ],
+        organization: [
+          {
+            required: true,
+            message: 'Please input your organization name',
             trigger: 'blur'
           },
           {
@@ -184,15 +219,31 @@ export default {
           }
         ],
         subject: [],
-        message: []
+        message: [
+          {
+            required: true,
+            message: 'A Message is required',
+            trigger: 'blur'
+          }
+        ]
+      }
+    }
+  },
+  watch: {
+    isOpen(bool) {
+      if (bool) {
+        this.getMarketPlace()
       }
     }
   },
   async mounted() {
-    await this.getMarketPlace()
     await this.getUserData()
   },
   methods: {
+    handleCatchaVerification(v) {
+      if (!v) return
+      else this.catchaVerified = true
+    },
     async getUserData() {
       if (this.dialog.form.email !== '' || this.dialog.form.name !== '') return
 
@@ -200,7 +251,7 @@ export default {
       if (res) {
         this.dialog.form.email = res.email
         this.dialog.form.name = res.name
-        if (res.user_metadata.lastname) {
+        if (res.user_metadata && res.user_metadata.lastname) {
           this.dialog.form.name =
             this.dialog.form.name + ' ' + res.user_metadata.lastname
         }
@@ -208,33 +259,20 @@ export default {
       return res
     },
     async getMarketPlace() {
+      this.loading = true
       const res = await getMarketPlaceList()
       if (res && res.data && res.data.r) {
-        this.marketplaceData = res.data.r.map(item => {
-          let request = this.formatMessage(item.message)
-            .split('Type:')[1]
-            .split('<p style="font-size: 14px">')[1]
-          let customRequest = item.message.includes('Custom Request: true')
-
-          return {
-            raw: item.message,
-            rgDate: item.rgDate,
-            status: item.status ? 'Open' : 'Closed',
-            item: `${
-              this.formatMessage(item.message)
-                .split('Element:')[1]
-                .split('<p style')[0]
-            }`,
-            request: `${
-              customRequest
-                ? 'Custom configuration'
-                : request
-                ? `<p>${request.split('</p>')[0]}`
-                : 'None'
-            }`
-          }
-        })
+        this.marketplaceData = res.data.r
+          .map(formatMarketPlaceData)
+          .filter(t => t)
       }
+      this.loading = false
+    },
+    validateForm() {
+      return this.$refs.dialogForm.validate(valid => {
+        if (valid && this.catchaVerified) this.sendOffer()
+        else return false
+      })
     },
     async sendOffer() {
       try {
@@ -254,15 +292,11 @@ export default {
     },
     async toggleDialog(data) {
       this.dialog.isVisible = true
-      this.dialog.form.subject = `Want to make an offer for this request: ${
-        data.item.split('</p>')[0]
-      } - ${
-        data.request.split('<p>')[1]
-          ? data.request.split('<p>')[1]
-          : data.request
-      }`
-      this.dialog.rawMessage = data.raw
-
+      this.dialog.rawMessage = data.request
+      this.dialog.form.subject = `Want to make an offer for this request: ${data.subject.replace(
+        '</p>',
+        ''
+      )}`
       setTimeout(() => {
         this.$refs.textareaInput.focus()
       }, 320)
@@ -270,16 +304,13 @@ export default {
     closeDialog() {
       this.dialog.isVisible = false
 
+      this.dialog.rawMessage = null
       this.dialog.form.message = ''
       this.dialog.form.subject = ''
-      this.dialog.rawMessage = null
+      this.dialog.form.organization = ''
     },
-    formatDate(_, __, value) {
-      return formatDate(value)
-    },
-    formatMessage(value) {
-      const v = value.split('The user has the following request:</p>')
-      return v[1]
+    formatDate(_, __, date) {
+      return formatDate(date)
     },
     toggleVisibility() {
       this.isOpen = !this.isOpen

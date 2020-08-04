@@ -1,9 +1,9 @@
 {
   "name": "client",
-  "version": "2.1.5",
+  "version": "2.2.6",
   "private": true,
   "scripts": {
-    "build": "vue-cli-service build",
+    "build": "rm -r dist && vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint --fix",
     "dev": "vue-cli-service serve --port 8081 --open",

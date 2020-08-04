@@ -23,6 +23,16 @@ export const clsColumns = [
     label: 'Configured alerts',
     value: 'alerts',
     showTable: true
+  },
+  {
+    label: 'Created at',
+    value: 'rgDate',
+    showTable: true
+  },
+  {
+    label: 'Updated at',
+    value: 'uDate',
+    showTable: true
   }
 ]
 
@@ -38,8 +48,8 @@ export const cablesColumns = [
   { label: 'Status', value: 'category', showSidebar: true },
   {
     label: 'Latency',
-    value: 'systemLength',
-    showSidebar: true
+    value: 'systemLength'
+    // showSidebar: true
   },
   {
     label: 'Length',
@@ -95,6 +105,11 @@ export const cablesColumns = [
     showSidebar: true
   },
   {
+    label: 'Known Users',
+    value: 'knownUsers',
+    showSidebar: true
+  },
+  {
     label: 'Organizations',
     value: 'organizations',
     showSidebar: true
@@ -103,6 +118,16 @@ export const cablesColumns = [
   {
     label: 'Configured alerts',
     value: 'alerts',
+    showTable: true
+  },
+  {
+    label: 'Created at',
+    value: 'rgDate',
+    showTable: true
+  },
+  {
+    label: 'Updated at',
+    value: 'uDate',
     showTable: true
   }
   // 'facilities', // (Array)
@@ -159,6 +184,16 @@ export const facsColumns = [
     label: 'Owners',
     value: 'organizations',
     showSidebar: true
+  },
+  {
+    label: 'Created at',
+    value: 'rgDate',
+    showTable: true
+  },
+  {
+    label: 'Updated at',
+    value: 'uDate',
+    showTable: true
   }
 ]
 
@@ -220,6 +255,16 @@ export const ixpsColumns = [
     label: 'Facilities',
     value: 'facilities',
     showSidebar: true
+  },
+  {
+    label: 'Created at',
+    value: 'rgDate',
+    showTable: true
+  },
+  {
+    label: 'Updated at',
+    value: 'uDate',
+    showTable: true
   }
 ]
 
@@ -338,6 +383,16 @@ export const orgsColumns = [
   {
     label: 'Configured alerts',
     value: 'alerts',
+    showTable: true
+  },
+  {
+    label: 'Created at',
+    value: 'rgDate',
+    showTable: true
+  },
+  {
+    label: 'Updated at',
+    value: 'uDate',
     showTable: true
   }
 ]

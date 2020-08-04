@@ -6,6 +6,7 @@ export default class PrintGL {
     this.map = map
     this.loading = false
     this.mapContainerID = 'printMap'
+    this.pixelRatio
   }
 
   getDate() {
@@ -42,9 +43,17 @@ export default class PrintGL {
   }
 
   async createVirtualCanvas(dpi) {
-    const originalCanvas = this.map.getCanvas()
-    const width = originalCanvas.width / this.getPixelRatio(dpi)
-    const height = originalCanvas.height / this.getPixelRatio(dpi)
+    Object.defineProperty(window, 'devicePixelRatio', {
+      get: function() {
+        return dpi / 96
+      }
+    })
+
+    var orjDpi = localStorage.getItem('dpi')
+    orjDpi = parseInt(orjDpi, 10)
+    const orjinalCanvas = this.map.getCanvas()
+    const width = orjinalCanvas.width / orjDpi
+    const height = orjinalCanvas.height / orjDpi
 
     const hiddenMapWrapper = document.createElement('div')
     hiddenMapWrapper.id = this.mapContainerID
@@ -62,7 +71,7 @@ export default class PrintGL {
     const pitch = this.map.getPitch()
     const style = this.map.getStyle()
 
-    const map = new mapboxgl.Map({
+    const renderMap = new mapboxgl.Map({
       container: container,
       center: center,
       zoom: zoom,
@@ -74,19 +83,62 @@ export default class PrintGL {
       fadeDuration: 0,
       attributionControl: false
     })
-    return map
+    return renderMap
   }
 
   getPixelRatio(dpi) {
     return dpi / 96
   }
 
-  async downloadCanvas(canvas, name) {
-    const mapWrapper = document.getElementById(this.mapContainerID)
-    await canvas.getCanvas().toBlob(function(blob) {
+  getImage(url, callback) {
+    var xhr = new XMLHttpRequest()
+    xhr.onload = function() {
+      var reader = new FileReader()
+      reader.onloadend = function() {
+        callback(reader.result)
+      }
+      reader.readAsDataURL(xhr.response)
+    }
+    xhr.open('GET', url)
+    xhr.responseType = 'blob'
+    xhr.send()
+  }
+
+  async downloadCanvas(canvas, name, dpi) {
+    var that = this
+    dpi = parseInt(dpi, 10)
+    var mapcanvas = canvas.getCanvas()
+    var urllogo = 'print_logo_' + dpi + 'dpi.png'
+    var canvas2 = document.createElement('canvas')
+    var w = mapcanvas.width
+    var h = mapcanvas.height
+    canvas2.width = w
+    canvas2.height = h
+    var ctx = canvas2.getContext('2d')
+    var img = mapcanvas.toDataURL('image/png')
+    //ctx.drawImage(img, 0,0);
+    var mapimage = new Image()
+    mapimage.onload = function() {
+      ctx.drawImage(mapimage, 0, 0)
+      that.getImage(urllogo, function(base64) {
+        var image = new Image()
+        image.onload = function() {
+          var imgWidth = image.width
+          var imgHeight = image.height
+          var st = w - imgWidth - 10
+          var sl = h - imgHeight - 10
+          ctx.drawImage(image, st, sl, imgWidth, imgHeight)
+          var exp = ctx.canvas.toDataURL('image/png')
+          download(exp, name + '.png', 'image/png')
+        }
+        image.src = base64
+      })
+    }
+    mapimage.src = img
+    /*await canvas.getCanvas().toBlob(function(blob) {
       if (mapWrapper) mapWrapper.remove()
       download(blob, name + '.png', 'image/png')
-    })
+    })*/
   }
 
   async printMap(dpi = 300, fileName = 'Infrapedia-Print-Map-') {
@@ -98,7 +150,7 @@ export default class PrintGL {
     map.on('idle', function() {
       setTimeout(() => {
         if (once == 0) {
-          vm.downloadCanvas(map, fileName + vm.getDate())
+          vm.downloadCanvas(map, fileName + vm.getDate(), dpi)
           vm.loading = false
           once += 1
         }

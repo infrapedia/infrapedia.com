@@ -18,24 +18,24 @@
       </span>
     </header>
     <ul class="p1 h-fit" :class="{ dark, light: !dark }">
-      <li class="w-fit-full h10">
+      <li class="w-fit-full">
         <el-button
           type="text"
-          class="inline-block color-inherit pl4 pr4 w-fit-full"
+          class="inline-block color-inherit w-fit-full p0"
           @click="toggleVisibility(false)"
         >
           <router-link
             :to="currentRoute.to"
-            class="color-inherit w-fit-full text-left inline-block underline-hover"
+            class="color-inherit pl4 pr4 inline-block underline-hover h8 flex align-items-center"
           >
             {{ currentRoute.label }}
           </router-link>
         </el-button>
       </li>
-      <li class="w-fit-full h10" v-if="currentRoute.to != '/app'">
+      <li class="w-fit-full" v-if="currentRoute.to != '/app'">
         <router-link
           to="/user/profile"
-          class="el-button pl4 pr4 el-button--text color-inherit w-fit-full text-left inline-block underline-hover"
+          class="el-button h10 pl4 pr4 el-button--text color-inherit w-fit-full text-left inline-block underline-hover"
         >
           Profile
         </router-link>
@@ -46,40 +46,38 @@
           class="inline-block capitalize w-fit-full text-left pl4 pr4 color-inherit"
           @click="toggleDarkMode"
         >
-          Toggle {{ dark ? 'light' : 'dark' }} mode
+          <span class="mode-label dark" :class="{ active: dark }">
+            Dark Mode
+          </span>
+          /
+          <span class="mode-label light" :class="{ active: !dark }"
+            >Light Mode
+          </span>
         </el-button>
       </li>
       <el-divider class="mt2 mb2" />
-      <li
-        v-for="(link, i) in infoMenuLinks.info"
-        :key="i"
-        class="w-fit-full h10"
-      >
-        <router-link
-          v-if="link.router"
-          :to="link.url"
-          v-text="link.label"
-          class="el-button pl4 pr4 el-button--text inline-block w-inherit color-inherit underline-hover text-left pl4 pr4"
-        />
-        <a
-          v-else
-          :href="link.url"
-          v-text="link.label"
-          target="_blank"
-          rel="noopener"
-          class="el-button pl4 pr4 el-button--text inline-block w-inherit color-inherit underline-hover text-left pl4 pr4"
-        />
-      </li>
-      <li class="h10 dont-break-out">
-        <router-link
-          class="el-button pl4 pr4 el-button--text no-overflow inline-block color-inherit underline-hover text-left pl4 pr4 truncate"
-          style="max-width: 13.5rem"
-          to="/votes-results"
-          title="Infrapedia Infraestructure Awards"
+      <div class="list-wrapper flex column">
+        <li
+          v-for="(link, i) in infoMenuLinks.info"
+          :key="i"
+          :data-index-link="link.menu.order"
+          class="w-fit-full h10"
         >
-          Infrapedia Infraestructure Awards
-        </router-link>
-      </li>
+          <router-link
+            v-if="link.router"
+            :to="link.url"
+            v-text="link.label"
+            class="el-button pl4 pr4 el-button--text inline-block w-inherit color-inherit underline-hover text-left pl4 pr4"
+          />
+          <a
+            v-else
+            :href="link.url"
+            v-text="link.label"
+            rel="noopener"
+            class="el-button pl4 pr4 el-button--text inline-block w-inherit color-inherit underline-hover text-left pl4 pr4"
+          />
+        </li>
+      </div>
       <el-divider class="mt2 mb2" />
       <ul
         class="flex justify-content-space-around pt2 p2"

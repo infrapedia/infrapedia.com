@@ -19,6 +19,10 @@
       <router-link class="link ml2 mr2 mt2 color-inherit" to="/privacy-policy"
         >Privacy Policy</router-link
       >
+      <el-divider direction="vertical" class="hidden-sm-and-down" />
+      <router-link class="link ml2 mr2 mt2 color-inherit" to="/faq"
+        >FAQ</router-link
+      >
     </div>
   </footer>
 </template>

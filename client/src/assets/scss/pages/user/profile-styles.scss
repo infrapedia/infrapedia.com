@@ -1,10 +1,18 @@
 @import '../../base/variables';
 @import '../../helpers/atomic-classes';
 
-li[role="listitem"] {
+li[role='listitem'] {
   font-size: 14px;
   &:hover {
     cursor: pointer;
+  }
+}
+
+.main-wrapper {
+  @media screen and (max-width: $break-sm) {
+    padding-bottom: 20rem;
+    overflow-y: scroll;
+    max-height: 80vh;
   }
 }
 
