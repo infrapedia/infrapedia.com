@@ -20,14 +20,16 @@
     <el-divider />
     <el-card shadow="never" class="w-fit-full">
       <el-table
-        :data="tableDataSorted"
-        max-height="500"
-        v-loading="isLoading"
         :row-class-name="tableRowClassName"
+        :data="tableDataSorted"
+        v-loading="isLoading"
+        max-height="500"
       >
         <el-table-column
           v-for="(col, i) in columns"
+          :sort-method="handleSortTable"
           :label="col.label"
+          :sortable="true"
           :key="i"
         >
           <template slot-scope="scope">
@@ -258,6 +260,9 @@ export default {
     }
   },
   methods: {
+    handleSortTable(a, b) {
+      return b - a
+    },
     getTableSearchValue() {
       return this.tableSearch
     },
