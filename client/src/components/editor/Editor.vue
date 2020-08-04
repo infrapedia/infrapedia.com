@@ -195,37 +195,39 @@ export default {
     },
     async handleCategoriesChange(list) {
       this.categories = list
-      // Agregando la data de features collection primero
-      // Y luego llamar a setCategoryLayers para crear los layers por color de categoria
       if (list.length > 0) {
-        this.$store.dispatch('editor/toggleMapFormLoading', true)
-        const dataKeys = Object.keys(list[0].data)
-        const data = fCollectionFormat()
-        for (let category of list) {
-          for (let key of dataKeys) {
-            if (!category.data[key].length) continue
-            let dat = await getGeometries(
-              key,
-              category.data[key].map(item => item._id),
-              await this.$auth.getUserID()
-            )
-            data.features.push(dat.features)
-          }
+        try {
+          this.$store.dispatch('editor/toggleMapFormLoading', true)
+          const dataKeys = Object.keys(list[0].data)
+          const data = fCollectionFormat()
+          for (let category of list) {
+            for (let key of dataKeys) {
+              if (!category.data[key].length) continue
+              let dat = await getGeometries(
+                key,
+                category.data[key].map(item => item._id),
+                await this.$auth.getUserID()
+              )
+              data.features.push(dat.features)
+            }
 
-          await this.handleSetCategorySource({
-            _id: category._id,
-            name: category.name,
-            color: category.color,
-            data: { type: data.type, features: data.features.flat() }
-          })
-          data.features = []
+            await this.handleSetCategorySource({
+              _id: category._id,
+              name: category.name,
+              color: category.color,
+              data: { type: data.type, features: data.features.flat() }
+            })
+            data.features = []
 
-          for (let type of category.types) {
-            if (!category.data[type].length) continue
-            this.handleSetCategoryLayers({ ...category, t: type })
+            for (let type of category.types) {
+              if (!category.data[type].length) continue
+              this.handleSetCategoryLayers({ ...category, t: type })
+            }
           }
+          this.$store.dispatch('editor/toggleMapFormLoading', false)
+        } catch (err) {
+          console.error(err)
         }
-        this.$store.dispatch('editor/toggleMapFormLoading', false)
       }
     },
     async handleSetCategorySource(category) {
@@ -246,10 +248,7 @@ export default {
       let layerName = `${category._id}--layer`
       const sourceName = layerName.replace('--layer', '--source')
 
-      if (category.t == 'subsea cables') {
-        category.t = 'subsea_cables'
-      }
-      switch (category.t) {
+      switch (category.t.toLowerCase()) {
         case 'cls':
           type = 'points'
           colorProp = 'circle-color'
@@ -282,14 +281,16 @@ export default {
       layer.paint[colorProp] = category.color
 
       if (!this.map.getLayer(layerName)) {
-        this.map.addLayer(layer)
-        const labelLayer = { ...customMapLayerTypes['label'] }
-        labelLayer.id = `${category._id}--label--layer`
+        const labelLayerName = `${category._id}--layer--label`
+        const labelLayer = { ...customMapLayerTypes.label }
+        labelLayer.id = labelLayerName
         labelLayer.source = sourceName
         if (labelLayoutProp) {
           labelLayer.layout[labelLayoutProp[0][0]] = labelLayoutProp[0][1]
           labelLayer.layout[labelLayoutProp[1][0]] = labelLayoutProp[1][1]
         }
+
+        this.map.addLayer(layer)
         this.map.addLayer(labelLayer)
       } else {
         this.map.setPaintProperty(layerName, colorProp, category.color)

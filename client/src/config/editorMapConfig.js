@@ -169,8 +169,8 @@ export const customMapLayerTypes = {
       'circle-color': '#f78682',
       'circle-stroke-width': 1,
       'circle-stroke-color': '#333333'
-    },
-    filter: ['==', '$type', 'Point']
+    }
+    // filter: ['==', '$type', 'Point']
   },
   buildings: {
     id: 'default-layer',
