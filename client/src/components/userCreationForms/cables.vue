@@ -206,25 +206,25 @@
           :value="mode == 'create' ? [] : form.facilities"
         />
       </el-form-item>
-      <template v-if="creationID == 'subsea'">
-        <el-form-item
-          :label="CLSLabel"
-          prop="cls"
-          :required="creationID == 'subsea'"
-        >
-          <v-multi-select
-            :mode="mode"
-            :is-required="creationID == 'subsea'"
-            :is-field-empty="isCLSSelectEmpty"
-            :options="clsList"
-            @input="loadCLSSearch"
-            :loading="isLoadingCLS"
-            @values-change="handleCLSSelectionChange"
-            @remove="handleCLSSelectionChange(form.cls)"
-            :value="mode == 'create' ? [] : form.cls"
-          />
-        </el-form-item>
-      </template>
+      <!-- <template v-if="creationID == 'subsea'"> -->
+      <el-form-item
+        :label="CLSLabel"
+        prop="cls"
+        :required="creationID == 'subsea'"
+      >
+        <v-multi-select
+          :mode="mode"
+          :is-required="creationID == 'subsea'"
+          :is-field-empty="isCLSSelectEmpty"
+          :options="clsList"
+          @input="loadCLSSearch"
+          :loading="isLoadingCLS"
+          @values-change="handleCLSSelectionChange"
+          @remove="handleCLSSelectionChange(form.cls)"
+          :value="mode == 'create' ? [] : form.cls"
+        />
+      </el-form-item>
+      <!-- </template> -->
       <el-form-item label="Owners" prop="owners" required>
         <v-multi-select
           :mode="mode"
@@ -238,7 +238,7 @@
           :value="mode == 'create' ? [] : form.owners"
         />
       </el-form-item>
-      <!-- <template v-if="creationID == 'subsea'">
+      <template v-if="creationID == 'subsea'">
         <el-form-item label="Known Users" prop="knownUsers">
           <v-multi-select
             ref="knownUsersField"
@@ -250,7 +250,7 @@
             :value="mode == 'create' ? [] : form.knownUsers"
           />
         </el-form-item>
-      </template> -->
+      </template>
       <el-form-item label="Tags" class="mt2" prop="tags">
         <el-select
           v-model="form.tags"

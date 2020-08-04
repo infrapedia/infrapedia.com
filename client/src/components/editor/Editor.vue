@@ -366,7 +366,7 @@ export default {
         }
       }
 
-      source.setData(fc)
+      if (source) source.setData(fc)
       this.$store.dispatch('editor/toggleMapFormLoading', false)
     },
     async handleZoomToFeature(fc) {
