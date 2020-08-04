@@ -340,35 +340,28 @@ export default {
     },
     // I have to create a source layer for each category
     // And then ask for the featureCollection
-    async handleMapFormFeatureSelection({ t, fc, categoryColor }) {
+    async handleMapFormFeatureSelection({ t, fc, source }) {
       if (!this.map) return
 
-      const sourceName = `${
-        t == 'subsea cables' || t == 'terrestrials' ? 'cables' : t
-      }-source`
-      const sourceLayer = sourceName.replace('source', 'layer')
-      const source = this.map.getSource(sourceName)
+      const sourceName = source
+        ? source
+        : `${t == 'subsea cables' || t == 'terrestrials' ? 'cables' : t}-source`
 
-      if (!fc.features) fc = fCollectionFormat(fc)
-      {
-        let circles = ['ixps', 'cls']
-        let cables = ['subsea cables', 'terrestrials']
+      if (
+        this.map.getSource(sourceName) &&
+        this.map.isSourceLoaded(sourceName)
+      ) {
+        const source = this.map.getSource(sourceName)
+        if (!fc.features) fc = fCollectionFormat(fc)
 
-        if (circles.includes(t)) {
-          this.map.setPaintProperty(sourceLayer, 'circle-color', categoryColor)
-        } else if (cables.includes(t)) {
-          this.map.setPaintProperty(sourceLayer, 'line-color', categoryColor)
-        } else {
-          this.map.setPaintProperty(
-            sourceLayer,
-            'fill-extrusion-color',
-            categoryColor
-          )
-        }
+        source.setData(fc)
+        this.$store.dispatch('editor/toggleMapFormLoading', false)
+      } else {
+        setTimeout(() => {
+          this.$store.dispatch('editor/toggleMapFormLoading', true)
+          this.handleMapFormFeatureSelection({ t, fc, source: sourceName })
+        }, 620)
       }
-
-      source.setData(fc)
-      this.$store.dispatch('editor/toggleMapFormLoading', false)
     },
     async handleZoomToFeature(fc) {
       if (fc.features.length <= 0) return
