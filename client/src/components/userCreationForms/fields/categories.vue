@@ -209,7 +209,7 @@
                 size="mini"
                 :class="{ dark }"
                 title="Edit items"
-                @click="editCategoryTypesSelections(cat, i)"
+                @click="editCategoryTypesSelections(cat, i, false)"
               />
               <el-button
                 icon="el-icon-edit-outline"
@@ -217,7 +217,7 @@
                 size="mini"
                 title="Edit"
                 :class="{ dark }"
-                @click="setEditMode(cat, i)"
+                @click="setEditMode(cat, i, true)"
               />
               <el-button
                 icon="el-icon-delete"
@@ -299,9 +299,13 @@
             :options="typesData.terrestrials"
             @input="loadCablesSearch($event, 'terrestrials')"
             :loading="typesData.isLoadingCables"
-            @remove="handleRemoveTypeChange('terrestrials', $event)"
-            @values-change="handleTypeSelectionChange('terrestrials', $event)"
-            :value="mode == 'create' ? [] : [...field.data.terrestrials]"
+            @remove="handleRemoveTypeChange('terrestrial networks', $event)"
+            @values-change="
+              handleTypeSelectionChange('terrestrial networks', $event)
+            "
+            :value="
+              mode == 'create' ? [] : [...field.data['terrestrial networks']]
+            "
           />
         </el-form-item>
         <el-form-item
@@ -604,10 +608,11 @@ export default {
     removeViewing(name) {
       this.viewing = this.viewing.filter(n => n != name)
     },
-    setEditMode(category, i) {
+    setEditMode(category, i, scrollToView) {
       this.field = { ...JSON.parse(JSON.stringify(category)), idx: i }
       this.mode = 'edit'
       this.isInputVisible = true
+      if (scrollToView) this.scrollIntoView()
     },
     saveEdit() {
       this.categories[this.field.idx] = { ...this.field }
