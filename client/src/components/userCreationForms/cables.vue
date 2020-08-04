@@ -228,6 +228,7 @@
       <el-form-item label="Owners" prop="owners" required>
         <v-multi-select
           :mode="mode"
+          ref="ownersField"
           :is-required="true"
           :is-field-empty="isOwnersSelectEmpty"
           :options="orgsList"
@@ -240,6 +241,7 @@
       <!-- <template v-if="creationID == 'subsea'">
         <el-form-item label="Known Users" prop="knownUsers">
           <v-multi-select
+            ref="knownUsersField"
             :mode="mode"
             :options="knownUsers"
             @input="loadKnownUsersSearch"
@@ -580,10 +582,47 @@ export default {
     },
     handleOwnersSelectChange(data) {
       this.form.owners = data
+      if (this.creationID == 'subsea') {
+        this.handleOwnersKnownUsersDynamic(
+          this.form.knownUsers,
+          data,
+          'owner',
+          'known users',
+          'owners'
+        )
+      }
       this.setOwnersEmptyState()
+    },
+    handleOwnersKnownUsersDynamic(listToSearch, listToCompare, t, tt, tr) {
+      const listIdsToCompare = listToCompare.map(kn => kn._id)
+      const idsToRemove = []
+
+      listToSearch.forEach(item => {
+        let elemntID = listIdsToCompare.indexOf(item._id)
+        if (elemntID > -1 && listIdsToCompare[elemntID] == item._id) {
+          idsToRemove.push(item._id)
+          this.$message.error({
+            duration: 8000,
+            dangerouslyUseHTMLString: true,
+            message: `This ${t}: <strong class="capitalize">${item.name}</strong> can't be included because is already included on the ${tt} list`
+          })
+        }
+      })
+      for (let id of idsToRemove) {
+        this.form[tr] = this.form[tr].filter(item => item._id != id)
+      }
     },
     handleKnownUsersSelectChange(data) {
       this.form.knownUsers = data
+      if (this.creationID == 'subsea') {
+        this.handleOwnersKnownUsersDynamic(
+          this.form.owners,
+          data,
+          'known user',
+          'owners',
+          'knownUsers'
+        )
+      }
     },
     setOwnersEmptyState() {
       this.isOwnersSelectEmpty = this.form.owners.length <= 0

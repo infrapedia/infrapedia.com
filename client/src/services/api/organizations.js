@@ -138,6 +138,100 @@ export const searchOrganization = async ({ user_id, s, psz }) => {
   return res
 }
 
+export const getOrgLinkedElements = async args => {
+  const results = []
+  const promises = [
+    getOrgClsAssociations,
+    getOrgSubseaAssociations,
+    getOrgTerrestrialsAssociations,
+    getOrgFacilitesAssociations,
+    getOrgIxpsAssociations,
+    getOrgKnownUsersAssociations
+  ]
+
+  for (let promise of promises) {
+    results.push(await promise(args))
+  }
+  return results.map(r => r.data)
+}
+export const getOrgClsAssociations = async ({ user_id, id }) => {
+  url = `${apiConfig.url}/organization/groups/${id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+export const getOrgSubseaAssociations = async ({ user_id, id }) => {
+  url = `${apiConfig.url}/organization/subseas/${id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+export const getOrgTerrestrialsAssociations = async ({ user_id, id }) => {
+  url = `${apiConfig.url}/organization/terrestrials/${id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+export const getOrgIxpsAssociations = async ({ user_id, id }) => {
+  url = `${apiConfig.url}/organization/ixps/${id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+export const getOrgFacilitesAssociations = async ({ user_id, id }) => {
+  url = `${apiConfig.url}/organization/facilities/${id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+export const getOrgKnownUsersAssociations = async ({ user_id, id }) => {
+  url = `${apiConfig.url}/organization/subseas/ku/${id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+export const getOrgGroupsAssociations = async ({ user_id, id }) => {
+  url = `${apiConfig.url}/organization/groups/${id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
 export const getPartners = async () => {
   url = `${apiConfig.url}/partners`
   const res = await $axios.get(url)

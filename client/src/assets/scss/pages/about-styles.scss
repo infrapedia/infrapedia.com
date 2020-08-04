@@ -2,99 +2,34 @@
 @import '../helpers/atomic-classes';
 
 .main-wrapper {
-  width: 76vw;
-  margin: 0 auto;
-}
-.banner-wrapper {
-  display: grid;
-  height: 62vh;
-  grid-template-columns: repeat(4, 1fr);
-  overflow: hidden;
-  .banner-img {
-    grid-row: 1/3;
-    grid-column: 1/5;
-  }
+  border-top: 1px solid #bcbcbc;
 }
 
-.gallery-wrapper {
-  width: 100%;
+.inner-wrapper {
+  width: 40vw;
+  margin: 0 auto;
   display: flex;
   flex-flow: row wrap;
-  .team-wrapper {
-    width: 100%;
-    .boxes-wrapper {
-      display: grid;
-      width: 100%;
-      gap: 1rem;
-      grid-auto-flow: dense;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      .box {
-        display: flex;
-        flex-flow: column nowrap;
-        align-items: center;
-        padding: 2rem 0;
-        .image-wrapper {
-          width: 12rem;
-          .img {
-            border-radius: 50%;
-          }
-        }
-      }
-      @media screen and (max-width: $break-xs) {
-        margin-bottom: 0;
-      }
+  .team-wrapper .boxes-wrapper .box {
+    flex-basis: 50%;
+    &:first-child {
+      flex-basis: 100%;
     }
-
-    @media screen and (max-width: $break-xs) {
-      margin-left: 0;
-      padding: 0;
+    @media screen and (max-width: $break-md) {
+      flex-basis: 100%;
     }
+  }
+  @media screen and (max-width: $break-md) {
+    width: 80vw;
   }
 }
 
 p.content {
-  color: $dark-charcoal;
-  line-height: 1.2;
-  font-weight: 400;
-  text-align: justify;
+  @extend .text--content;
 }
 
 .title {
-  line-height: 1.2;
-  font-weight: auto;
-  color: #485160;
-  &.md {
-    text-align: left;
-    text-transform: capitalize;
-    @media screen and (max-width: $break-xs) {
-      font-size: 24px;
-    }
-  }
-  &.sm {
-    text-align: left;
-    text-transform: capitalize;
-    @media screen and (max-width: $break-xs) {
-      font-size: 18px;
-    }
-  }
-  &.diff {
-    color: #bdc4ca;
-  }
-  &.shadow {
-    text-shadow: 1px 0 0 rgb(49, 49, 49);
-  }
-  &.white {
-    line-height: 1.2;
-    color: $white-full;
-  }
-  small {
-    font-size: 14px;
-    margin-top: 1rem;
-    color: #bdc4ca;
-  }
-  @media screen and (max-width: $break-xs) {
-    font-size: 20px;
-  }
+  @extend .text--title;
 }
 
 .application.dark {
@@ -103,7 +38,7 @@ p.content {
     text-align: center;
     margin-bottom: 0;
   }
-  .content {
+  p.content {
     color: $white-hsl;
   }
 }

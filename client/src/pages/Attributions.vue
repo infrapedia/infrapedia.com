@@ -2416,6 +2416,20 @@
 <script>
 export default {
   name: 'Attributions',
+  head: {
+    title: 'Infrapedia | Attributions | Global Internet Infrastructure Map',
+    meta: [
+      {
+        name: 'description',
+        content: "Infrapedia's contribution thank you page."
+      },
+      {
+        name: 'keywords',
+        content:
+          'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
+      }
+    ]
+  },
   beforeCreate() {
     this.$emit('layout', 'landing-layout')
   }

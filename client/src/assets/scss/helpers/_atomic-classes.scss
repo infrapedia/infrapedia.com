@@ -454,6 +454,58 @@
   }
 }
 
+.text--content {
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.8em;
+  color: #485160;
+  &.strong {
+    font-weight: 500;
+  }
+  @media screen and (max-width: $break-xs) {
+    max-width: 100%;
+  }
+}
+
+.text--title {
+  line-height: 1.2;
+  font-weight: auto;
+  color: #485160;
+  &.md {
+    text-align: left;
+    text-transform: capitalize;
+    @media screen and (max-width: $break-xs) {
+      font-size: 24px;
+    }
+  }
+  &.sm {
+    text-align: left;
+    text-transform: capitalize;
+    @media screen and (max-width: $break-xs) {
+      font-size: 18px;
+    }
+  }
+  &.diff {
+    color: #bdc4ca;
+  }
+  &.shadow {
+    text-shadow: 1px 0 0 rgb(49, 49, 49);
+  }
+  &.white {
+    line-height: 1.2;
+    color: $white-full;
+  }
+  small {
+    font-size: 14px;
+    margin-top: 1rem;
+    color: #bdc4ca;
+  }
+  @media screen and (max-width: $break-xs) {
+    font-size: 20px;
+  }
+}
+
 .text--homepage-variant {
   margin-bottom: 0;
   max-width: 72%;

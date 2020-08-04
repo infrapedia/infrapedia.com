@@ -1,22 +1,15 @@
 @import '../base/variables';
+@import '../helpers/atomic-classes';
 
 .main-wrapper {
   width: 80vw;
   margin: 0 auto;
   border-top: 1px solid $grey-ligthen-3;
   .title {
-    color: $dark-charcoal;
-    font-weight: 500;
-    font-size: 42px;
+    @extend .text--title;
   }
-  p {
-    font-size: 18px;
-    small {
-      display: block;
-      margin-bottom: 1rem;
-      margin-top: 2rem;
-
-      font-size: 24px;
-    }
+  p,
+  .text {
+    @extend .text--content;
   }
 }

@@ -1,17 +1,17 @@
 const printDpiOptions = [
   {
-    label: '96 dpi - lowest resolution',
-    value: 300,
+    label: 'Lowest resolution - 96 dpi',
+    value: 96,
     img: 'https://storage.cloud.google.com/infrapediacom/assets/img/96.png'
   },
   {
-    label: '150 dpi - regular resolution',
+    label: 'Regular resolution - 150 dpi',
     value: 150,
     img: 'https://storage.cloud.google.com/infrapediacom/assets/img/150.png'
   },
   {
-    label: '300 dpi - best resolution',
-    value: 96,
+    label: 'Best resolution - 300 dpi',
+    value: 300,
     img: 'https://storage.cloud.google.com/infrapediacom/assets/img/300.png'
   }
 ]

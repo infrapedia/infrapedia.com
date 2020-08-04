@@ -29,6 +29,7 @@
       :type="type"
       :creation-form="form"
       :is-visible="dialog.visible"
+      :categories="categories"
       :feature="dialog.selectedFeature"
       @close="handleDialogData"
     />
@@ -50,9 +51,13 @@ import {
   EDITOR_SET_FEATURES_LIST
 } from '../../events/editor'
 import { fCollectionFormat } from '../../helpers/featureCollection'
-import { editorMapConfig } from '../../config/editorMapConfig'
+import {
+  editorMapConfig,
+  customMapLayerTypes
+} from '../../config/editorMapConfig'
 import bbox from '@turf/bbox'
 import debounce from '../../helpers/debounce'
+import { getGeometries } from '../../helpers/getGeoms'
 
 export default {
   components: {
@@ -75,6 +80,7 @@ export default {
       edition: null
     },
     controls: null,
+    categories: [],
     dialog: {
       visible: false,
       mode: 'create',
@@ -138,7 +144,7 @@ export default {
   },
   watch: {
     dark(bool) {
-      return this.toggleDarkMode(bool)
+      this.toggleDarkMode(bool)
     },
     scene: {
       handler(newState) {
@@ -150,6 +156,15 @@ export default {
       this.$emit('features-list-change', list)
     }
   },
+  created() {
+    bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
+    bus.$on(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
+    bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
+    bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
+    bus.$on(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
+    bus.$on('categories-field-values-change', this.handleCategoriesChange)
+    bus.$on('category-removed', this.handleCategoryRemoved)
+  },
   mounted() {
     this.map = this.handleSetMapSources(this.addMapEvents(this.createMap()))
     this.toggleDarkMode(this.dark)
@@ -158,12 +173,6 @@ export default {
     if (this.scene.features.list.length > 0) {
       this.handleGetFeatures()
     }
-
-    bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
-    bus.$on(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
-    bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
-    bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
-    bus.$on(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
   },
   beforeDestroy() {
     if (this.scene.features.list.length) {
@@ -174,8 +183,118 @@ export default {
     bus.$off(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$off(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
     bus.$off(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
+    bus.$off('categories-field-values-change', this.handleCategoriesChange)
+    bus.$off('category-removed', this.handleCategoryRemoved)
   },
   methods: {
+    async handleCategoryRemoved(category) {
+      const sourceName = `${category._id}--source`
+      if (this.map.getSource(sourceName)) {
+        this.map.getSource(sourceName).setData(fCollectionFormat())
+      }
+    },
+    async handleCategoriesChange(list) {
+      this.categories = list
+      // Agregando la data de features collection primero
+      // Y luego llamar a setCategoryLayers para crear los layers por color de categoria
+      if (list.length > 0) {
+        this.$store.dispatch('editor/toggleMapFormLoading', true)
+        const dataKeys = Object.keys(list[0].data)
+        const data = fCollectionFormat()
+        for (let category of list) {
+          for (let key of dataKeys) {
+            if (!category.data[key].length) continue
+            let dat = await getGeometries(
+              key,
+              category.data[key].map(item => item._id),
+              await this.$auth.getUserID()
+            )
+            data.features.push(dat.features)
+          }
+
+          await this.handleSetCategorySource({
+            _id: category._id,
+            name: category.name,
+            color: category.color,
+            data: { type: data.type, features: data.features.flat() }
+          })
+          data.features = []
+
+          for (let type of category.types) {
+            if (!category.data[type].length) continue
+            this.handleSetCategoryLayers({ ...category, t: type })
+          }
+        }
+        this.$store.dispatch('editor/toggleMapFormLoading', false)
+      }
+    },
+    async handleSetCategorySource(category) {
+      const sourceName = `${category._id}--source`
+      if (!this.map.getSource(sourceName)) {
+        this.map.addSource(sourceName, {
+          type: 'geojson',
+          data: category.data
+        })
+      } else {
+        this.map.getSource(sourceName).setData(category.data)
+      }
+    },
+    async handleSetCategoryLayers(category) {
+      let type = ''
+      let colorProp = ''
+      let labelLayoutProp = null
+      let layerName = `${category._id}--layer`
+      const sourceName = layerName.replace('--layer', '--source')
+
+      if (category.t == 'subsea cables') {
+        category.t = 'subsea_cables'
+      }
+      switch (category.t) {
+        case 'cls':
+          type = 'points'
+          colorProp = 'circle-color'
+          layerName = layerName + '-' + type
+          break
+        case 'ixps':
+          type = 'points'
+          colorProp = 'circle-color'
+          layerName = layerName + '-' + type
+          break
+        case 'facilities':
+          type = 'buildings'
+          colorProp = 'fill-extrusion-color'
+          layerName = layerName + '-' + type
+          break
+        default:
+          type = 'cables'
+          colorProp = 'line-color'
+          labelLayoutProp = [
+            ['symbol-placement', 'line'],
+            ['text-offset', [0, -0.1]]
+          ]
+          layerName = layerName + '-' + type
+          break
+      }
+      const layer = { ...customMapLayerTypes[type] }
+
+      layer.id = layerName
+      layer.source = sourceName
+      layer.paint[colorProp] = category.color
+
+      if (!this.map.getLayer(layerName)) {
+        this.map.addLayer(layer)
+        const labelLayer = { ...customMapLayerTypes['label'] }
+        labelLayer.id = `${category._id}--label--layer`
+        labelLayer.source = sourceName
+        if (labelLayoutProp) {
+          labelLayer.layout[labelLayoutProp[0][0]] = labelLayoutProp[0][1]
+          labelLayer.layout[labelLayoutProp[1][0]] = labelLayoutProp[1][1]
+        }
+        this.map.addLayer(labelLayer)
+      } else {
+        this.map.setPaintProperty(layerName, colorProp, category.color)
+      }
+    },
     handleGetFeatures() {
       this.$emit('features-list-change', this.scene.features.list)
     },
@@ -218,22 +337,37 @@ export default {
         console.error(err)
       }
     },
-    async handleMapFormFeatureSelection({ t, fc, removeLoadState }) {
+    // I have to create a source layer for each category
+    // And then ask for the featureCollection
+    async handleMapFormFeatureSelection({ t, fc, categoryColor }) {
       if (!this.map) return
-      await setTimeout(async () => {
-        const source = this.map.getSource(
-          `${t == 'subsea' || t == 'terrestrials' ? 'cables' : t}-source`
-        )
 
-        if (!fc.features) {
-          fc = fCollectionFormat(fc)
-        }
+      const sourceName = `${
+        t == 'subsea cables' || t == 'terrestrials' ? 'cables' : t
+      }-source`
+      const sourceLayer = sourceName.replace('source', 'layer')
+      const source = this.map.getSource(sourceName)
 
-        if (source) await source.setData(fc)
-        if (removeLoadState) {
-          await this.$store.dispatch('editor/toggleMapFormLoading', false)
+      if (!fc.features) fc = fCollectionFormat(fc)
+      {
+        let circles = ['ixps', 'cls']
+        let cables = ['subsea cables', 'terrestrials']
+
+        if (circles.includes(t)) {
+          this.map.setPaintProperty(sourceLayer, 'circle-color', categoryColor)
+        } else if (cables.includes(t)) {
+          this.map.setPaintProperty(sourceLayer, 'line-color', categoryColor)
+        } else {
+          this.map.setPaintProperty(
+            sourceLayer,
+            'fill-extrusion-color',
+            categoryColor
+          )
         }
-      }, 10)
+      }
+
+      source.setData(fc)
+      this.$store.dispatch('editor/toggleMapFormLoading', false)
     },
     async handleZoomToFeature(fc) {
       if (fc.features.length <= 0) return
@@ -293,13 +427,15 @@ export default {
       map.addControl(scaleCtrl, 'top-left')
       map.addControl(new mapboxgl.NavigationControl())
       map.addControl(new mapboxgl.FullscreenControl())
-      this.draw = new MapboxDraw({ displayControlsDefault: false })
+      this.draw = new MapboxDraw({
+        displayControlsDefault: false
+      })
 
       this.controls = new EditorControls({
         draw: this.draw,
+        map: map,
         type: this.type,
         scene: this.scene,
-        // $dispatch: this.$store.dispatch,
         handleEditFeatureProperties: feat => {
           this.dialog.mode = 'edit'
           this.dialog.visible = true
@@ -388,7 +524,7 @@ export default {
       this.controls.resetScene()
     },
     toggleDarkMode(dark) {
-      return this.map.setStyle(dark ? mapConfig.darkBasemap : mapConfig.default)
+      this.map.setStyle(dark ? mapConfig.darkBasemap : mapConfig.default)
     }
   }
 }

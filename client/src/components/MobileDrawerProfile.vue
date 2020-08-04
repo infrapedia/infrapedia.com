@@ -46,7 +46,7 @@
           </el-button>
         </li>
       </ul>
-      <i-footer class="footer relative m0" />
+      <i-footer class="footer relative m0 pb12" style="width: 80%" />
     </div>
   </transition>
 </template>

@@ -134,6 +134,10 @@ export const navbarLinks = [
         label: 'Github',
         url: 'https://github.com/infrapedia',
         tab: true
+      },
+      {
+        label: 'FAQ',
+        url: '/faq'
       }
     ]
   },

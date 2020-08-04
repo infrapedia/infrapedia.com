@@ -6,7 +6,7 @@
         :key="i"
         closable
         style="max-width: 16rem;"
-        class="mr1 mb4 p2 no-overflow-x vertical-align"
+        class="mr1 mb4 p2 no-overflow vertical-align"
         :title="tag.name"
         :effect="dark ? 'dark' : 'light'"
         :type="dark ? 'info' : ''"
@@ -14,7 +14,7 @@
         @close="handleRemovedItem(tag)"
       >
         <span
-          class="inline-block h7 p0 no-overflow-x truncate"
+          class="inline-block h7 p0 no-overflow truncate"
           style="max-width: 12rem;"
         >
           {{ tag.name }}
@@ -123,14 +123,10 @@ export default {
   },
   watch: {
     mode(mode) {
-      if (mode != 'create' && this.value.length > 0) {
-        this.selections = this.value
-      }
+      if (mode != 'create') this.selections = this.value
     },
     value(arr) {
-      if (this.mode != 'create' && arr.length > 0) {
-        this.selections = arr
-      }
+      if (this.mode != 'create') this.selections = arr
     }
   },
   mounted() {

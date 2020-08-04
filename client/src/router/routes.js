@@ -30,6 +30,7 @@ import { getInstance } from '../auth/index'
 import VotesResults from '../pages/VotesResults.vue'
 import PrivacyPolicy from '../pages/PrivacyPolicy.vue'
 import TermsAndConditions from '../pages/TermsAndConditions.vue'
+import FAQ from '../pages/FAQ.vue'
 
 async function handleAdminOnlyRoutes(next, to) {
   const $authInstance = getInstance()
@@ -76,6 +77,11 @@ const routes = [
     path: '/attributions',
     name: 'attributions',
     component: Attributions
+  },
+  {
+    path: '/faq',
+    name: 'faq',
+    component: FAQ
   },
   {
     path: '/services',

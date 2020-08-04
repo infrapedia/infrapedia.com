@@ -16,7 +16,7 @@
         class="h14 pr4 pl4 pb2 flex justify-content-space-between align-items-center"
         :class="{ dark, light: !dark }"
       >
-        <router-link to="/">
+        <router-link :to="checkIfLoggedIn">
           <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
         </router-link>
         <el-button
@@ -44,50 +44,52 @@
           />
         </el-collapse-item>
       </el-collapse>
-      <ul class="links-wrapper mb12" :class="{ dark }">
-        <li
-          class="pr4 pl4 pt2 pb2 fs-regular"
-          v-for="(link, i) in links"
-          :key="i"
-        >
-          <a v-if="link.tab" :href="link.url" class="block underline-hover mr4">
+      <ul class="links-wrapper mb14" :class="{ dark }">
+        <li class="pr4 pl4 fs-regular" v-for="(link, i) in links" :key="i">
+          <a
+            v-if="link.tab"
+            :href="link.url"
+            class="inline-flex no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline"
+          >
             {{ link.label }}
           </a>
-          <el-collapse v-else-if="link.dropdown">
+          <!-- <el-collapse v-else-if="link.dropdown">
             <el-collapse-item>
               <span class="el-link fs-regular font-regular" slot="title">
                 {{ link.label }}
-              </span>
-              <template v-for="dropdownItem in link.dropdown">
-                <a
-                  v-if="dropdownItem.tab"
-                  :href="dropdownItem.url"
-                  target="_blank"
-                  :key="dropdownItem.url"
-                  class="underline-hover block pr4 pl4 pt2 pb2"
-                >
-                  {{ dropdownItem.label }}
-                </a>
-                <el-button
-                  v-else
-                  plain
-                  type="text"
-                  :key="dropdownItem.url"
-                  class="inline-flex no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline pr4 pl4 pt2 pb2"
-                  @click="goToRoute(link.url)"
-                  :class="{ dark, light: !dark }"
-                >
-                  {{ dropdownItem.label }}
-                </el-button>
-              </template>
-            </el-collapse-item>
-          </el-collapse>
+              </span> -->
+          <div v-else-if="link.dropdown" class="dropdown-links">
+            <template v-for="dropdownItem in link.dropdown">
+              <a
+                v-if="dropdownItem.tab"
+                :href="dropdownItem.url"
+                target="_blank"
+                :key="dropdownItem.url"
+                class="inline-flex no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline"
+              >
+                {{ dropdownItem.label }}
+              </a>
+              <el-button
+                v-else
+                plain
+                type="text"
+                :key="dropdownItem.url"
+                class="inline-flex no-border-radius align-items-center color-inherit h-fit-full block no-outline"
+                @click="goToRoute(link.url)"
+                :class="{ dark, light: !dark }"
+              >
+                {{ dropdownItem.label }}
+              </el-button>
+            </template>
+          </div>
+          <!-- </el-collapse-item>
+          </el-collapse> -->
           <template v-else>
             <el-button
               v-if="i == 0"
               plain
               type="text"
-              class="inline-flex no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline"
+              class="inline-flex mt4 no-border-radius align-items-center color-inherit h-fit-full block no-outline"
               @click="goToRoute(link.url)"
               :class="{ dark, light: !dark }"
             >
@@ -106,10 +108,7 @@
           </template>
         </li>
       </ul>
-      <i-footer
-        class="footer relative"
-        style="width: 90%; margin: 0; padding: 0;"
-      />
+      <i-footer class="footer relative" style="width: 90%; margin: 0;" />
     </el-card>
   </transition>
 </template>

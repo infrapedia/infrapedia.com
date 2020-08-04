@@ -80,8 +80,11 @@ header {
   a,
   span,
   .el-button {
+    width: 100%;
     color: $header-color;
     font-weight: 400;
+    height: 2rem;
+    margin-bottom: 0.4rem;
   }
 }
 

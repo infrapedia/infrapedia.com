@@ -1,0 +1,38 @@
+@import '../base/variables';
+
+div.el-card .empty-text {
+  color: #909399;
+  background-color: #fafafa;
+  &.dark {
+    color: $white-partial;
+    background-color: $dark-charcoal;
+  }
+}
+
+.el-card {
+  .category-box_inner-wrapper {
+    .category_name {
+      flex-basis: 40%;
+    }
+    @media screen and (max-width: $break-md) {
+      flex-flow: column nowrap;
+      padding: 0.4rem;
+      .category_name {
+        flex-basis: 100%;
+        padding: 0.4rem;
+        margin-bottom: 1rem;
+        justify-content: flex-start;
+        border-bottom: 1px solid #cdcdcd;
+      }
+    }
+  }
+  @media screen and (max-width: $break-md) {
+    padding: 0;
+    justify-content: flex-start;
+    .details-wrapper {
+      .tags-wrapper {
+        flex-flow: column nowrap;
+      }
+    }
+  }
+}

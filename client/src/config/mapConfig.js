@@ -24,6 +24,13 @@ const clsPaintConfig = {
   'circle-stroke-color': '#333333'
 }
 
+const snapPaintConfig = {
+  'circle-radius': 3.4,
+  'circle-color': '#FF0000',
+  'circle-stroke-width': 2,
+  'circle-stroke-color': '#333333'
+}
+
 const facsPaintConfig = {
   'fill-extrusion-color': [
     'case',
@@ -92,7 +99,7 @@ const cls = 'cls'
 const ixps = 'ixps'
 const clusters = 'clusters'
 const facilities = 'facilities'
-const facilitiesCount = 'facilities-count'
+// const facilitiesCount = 'facilities-count'
 // const facilitiesSinglePoints = 'facilities-single-points'
 // const facilitiesClusters = 'facilities_clusters'
 const facilitiesLabel = 'facilities_label'
@@ -112,11 +119,12 @@ export const mapConfig = {
   facilities,
   cablesLabel,
   clsPaintConfig,
+  snapPaintConfig,
   ixpsPaintConfig,
   facsPaintConfig,
   cablesPaintConfig,
   facilitiesLabel,
-  facilitiesCount,
+  // facilitiesCount,
   // facilitiesClusters,
   // facilitiesSinglePoints,
   highlightFeatureState,
@@ -136,6 +144,7 @@ export const mapConfig = {
           data: `${process.env.VUE_APP_TILES_IXPS}`
         }
       },
+
       {
         name: facilities,
         opts: {
