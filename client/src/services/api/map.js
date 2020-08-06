@@ -40,7 +40,7 @@ export const setMyMap = async ({
   subsea,
   terrestrials,
   logo,
-  draw,
+  geom,
   ixps,
   config,
   user_id
@@ -56,7 +56,7 @@ export const setMyMap = async ({
   form.append('salePhone', salePhone)
   form.append('config', JSON.stringify(config))
   form.append('logos', logo.length > 0 ? logo[0] : '')
-  form.append('draw', JSON.stringify(fCollectionFormat(draw)))
+  form.append('draw', JSON.stringify(fCollectionFormat(geom)))
 
   if (facilities && facilities.length > 0) {
     facilities.forEach((fac, i) => form.append(`facilities[${i}]`, fac._id))
