@@ -209,7 +209,7 @@
                 size="mini"
                 :class="{ dark }"
                 title="Edit items"
-                @click="editCategoryTypesSelections(cat, i, false)"
+                @click="editCategoryTypesSelections(cat, false)"
               />
               <el-button
                 icon="el-icon-edit-outline"
@@ -217,7 +217,7 @@
                 size="mini"
                 title="Edit"
                 :class="{ dark }"
-                @click="setEditMode(cat, i, true)"
+                @click="setEditMode(cat, true)"
               />
               <el-button
                 icon="el-icon-delete"
@@ -618,14 +618,19 @@ export default {
     removeViewing(name) {
       this.viewing = this.viewing.filter(n => n != name)
     },
-    setEditMode(category, i, scrollToView) {
-      this.field = { ...JSON.parse(JSON.stringify(category)), idx: i }
+    setEditMode(category, scrollToView) {
+      this.field = { ...JSON.parse(JSON.stringify(category)) }
       this.mode = 'edit'
       this.isInputVisible = true
       if (scrollToView) this.scrollIntoView()
     },
     saveEdit() {
-      this.categories[this.field.idx] = { ...this.field }
+      for (let category of this.categories) {
+        if (category._id == this.field._id) {
+          category = { ...this.field }
+          break
+        }
+      }
       bus.$emit('categories-field-values-change', this.categories)
       this.toggleInput(false)
     },
@@ -651,7 +656,7 @@ export default {
         .catch(() => {})
     },
     /**
-     * @param args { Array } - Array of args same as setEditMode
+     * @param args { Array } - Array of args. Same as setEditMode(category, scrollToView)
      */
     editCategoryTypesSelections(...args) {
       return new Promise((res, rej) => {
