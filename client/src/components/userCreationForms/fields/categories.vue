@@ -481,6 +481,16 @@ export default {
         bus.$emit('categories-field-values-change', this.categories)
       })
     },
+    value(list) {
+      let once = false
+      let vm = this
+      function x() {
+        if (once) return
+        vm.categories = list
+        once = true
+      }
+      x()
+    },
     categories(list) {
       bus.$emit('categories-field-values-change', list)
     }

@@ -398,6 +398,10 @@ export default {
       if (m == 'create') return
       // await this.handleEditModeScenario()
       this.setLogoUrl()
+      if (this.form.categoriesList) {
+        this.mapCreationData.categories = Array.from(this.form.categoriesList)
+        delete this.form.categoriesList
+      }
     }
   },
   created() {
@@ -410,6 +414,10 @@ export default {
     if (this.mode == 'edit') {
       // await this.handleEditModeScenario()
       this.setLogoUrl()
+      if (this.form.categoriesList) {
+        this.mapCreationData.categories = Array.from(this.form.categoriesList)
+        delete this.form.categoriesList
+      }
     }
   },
   methods: {
@@ -602,8 +610,33 @@ export default {
     //   this.isLoadingFacs = false
     // },
     sendData() {
+      const data = this.mapCreationData.categories.map(item => item.data)
+      const dataKeys = data.length ? Object.keys(data[0]) : []
+      const format = {
+        cls: [],
+        draw: [],
+        ixps: [],
+        subsea: [],
+        facilities: [],
+        terrestrials: []
+      }
+
+      for (let key of dataKeys) {
+        for (let dataItem of data) {
+          if (key.includes('custom')) {
+            format.draw = [...format.draw, ...dataItem[key]]
+          } else if (key.includes('subsea')) {
+            format.subsea = [...format.subsea, ...dataItem[key]]
+          } else if (key.includes('terrestrial')) {
+            format.terrestrials = [...format.terrestrials, ...dataItem[key]]
+          } else {
+            format[key] = [...format[key], ...dataItem[key]]
+          }
+        }
+      }
       return this.$emit(`${events.SEND_DATA}`, {
         ...this.form,
+        ...format,
         config: this.mapCreationData
       })
     },

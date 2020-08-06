@@ -48,10 +48,6 @@ export const setMyMap = async ({
   url = `${apiConfig.url}/auth/map/mymap`
   form = new FormData()
 
-  function checkStringID(item) {
-    return typeof item == 'string' ? item : item._id
-  }
-
   form.append('googleID', googleID)
   form.append('subdomain', subdomain)
   form.append('techEmail', techEmail)
@@ -63,34 +59,28 @@ export const setMyMap = async ({
   form.append('draw', JSON.stringify(fCollectionFormat(draw)))
 
   if (facilities && facilities.length > 0) {
-    facilities.forEach((fac, i) =>
-      form.append(`facilities[${i}]`, checkStringID(fac))
-    )
+    facilities.forEach((fac, i) => form.append(`facilities[${i}]`, fac._id))
   } else form.append('facilities', [])
 
   if (owners && owners.length > 0) {
-    owners.forEach((owner, i) =>
-      form.append(`owners[${i}]`, checkStringID(owner))
-    )
+    owners.forEach((owner, i) => form.append(`owners[${i}]`, owner._id))
   } else form.append('owners', [])
 
   if (ixps && ixps.length > 0) {
-    ixps.forEach((ixp, i) => form.append(`ixps[${i}]`, checkStringID(ixp)))
+    ixps.forEach((ixp, i) => form.append(`ixps[${i}]`, ixp._id))
   } else form.append('ixps', [])
 
   if (cls && cls.length > 0) {
-    cls.forEach((cls, i) => form.append(`cls[${i}]`, checkStringID(cls)))
+    cls.forEach((cls, i) => form.append(`cls[${i}]`, cls._id))
   } else form.append('cls', [])
 
   if (subsea && subsea.length > 0) {
-    subsea.forEach((subsea, i) =>
-      form.append(`subsea[${i}]`, checkStringID(subsea))
-    )
+    subsea.forEach((subsea, i) => form.append(`subsea[${i}]`, subsea._id))
   } else form.append('subsea', [])
 
   if (terrestrials && terrestrials.length > 0) {
     terrestrials.forEach((terrestrial, i) =>
-      form.append(`terrestrials[${i}]`, checkStringID(terrestrial))
+      form.append(`terrestrials[${i}]`, terrestrial._id)
     )
   } else form.append('terrestrials', [])
 
@@ -98,7 +88,7 @@ export const setMyMap = async ({
     address.forEach((address, i) => {
       form.append(`address[${i}]`, JSON.stringify(address))
     })
-  } else form.append('address,', [])
+  } else form.append('address', [])
 
   const res = await $axios.post(url, form, {
     withCredentials: true,

@@ -316,45 +316,33 @@ export default {
           const {
             subdomain,
             googleID,
-            cls,
-            facilities,
-            terrestrials,
-            subsea,
             logos,
-            draw,
-            ixps,
-            config,
-            owners,
             address,
             techEmail,
             techPhone,
             saleEmail,
-            salePhone
+            salePhone,
+            config: { categories }
           } = mymap[0]
 
+          // TODO: draw features need to be handle
           this.form = {
             googleID,
             subdomain,
-            ixps: Array.isArray(ixps) ? ixps : [],
-            cls: Array.isArray(cls) ? cls : [],
             logo: Array.isArray(logos) && logos.length > 0 ? logos[0] : '',
-            subsea: Array.isArray(subsea) ? subsea : [],
-            terrestrials: Array.isArray(terrestrials) ? terrestrials : [],
-            facilities: Array.isArray(facilities) ? facilities : [],
-            config: typeof config == 'string' ? JSON.parse(config) : config,
-            owners: Array.isArray(owners) ? owners : [],
             address: Array.isArray(address) ? address : [],
             techEmail: techEmail ? techEmail : '',
             techPhone: techPhone ? techPhone : '',
             saleEmail: saleEmail ? saleEmail : '',
-            salePhone: salePhone ? salePhone : ''
+            salePhone: salePhone ? salePhone : '',
+            categoriesList: categories
           }
 
-          const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
-          if (fc.features && fc.features.length) {
-            bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, fc.features)
-            bus.$emit(`${EDITOR_LOAD_DRAW}`, null, false)
-          }
+          // const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
+          // if (fc.features && fc.features.length) {
+          //   bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, fc.features)
+          //   bus.$emit(`${EDITOR_LOAD_DRAW}`, null, false)
+          // }
         }
       } catch {
         // Ignore
@@ -378,7 +366,7 @@ export default {
       if (t != 'error') {
         this.mode = 'create'
         await setupMyMapArchives(data.subdomain).catch(console.error)
-        await this.checkUserMapExistance()
+        // await this.checkUserMapExistance()
       }
       this.isSendingData = false
     },
@@ -406,7 +394,7 @@ export default {
             logo: '',
             terrestrials: [],
             subsea: [],
-            owners: [],
+            // owners: [],
             facilities: [],
             address: [],
             techEmail: '',
