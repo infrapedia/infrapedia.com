@@ -281,17 +281,19 @@ export default {
       layer.paint[colorProp] = category.color
 
       if (!this.map.getLayer(layerName)) {
-        const labelLayerName = `${category._id}--layer--label`
-        const labelLayer = { ...customMapLayerTypes.label }
-        labelLayer.id = labelLayerName
-        labelLayer.source = sourceName
-        if (labelLayoutProp) {
-          labelLayer.layout[labelLayoutProp[0][0]] = labelLayoutProp[0][1]
-          labelLayer.layout[labelLayoutProp[1][0]] = labelLayoutProp[1][1]
-        }
-
         this.map.addLayer(layer)
-        this.map.addLayer(labelLayer)
+
+        if (!this.map.getLayer(layerName)) {
+          const labelLayer = { ...customMapLayerTypes.label }
+          const labelLayerName = `${category._id}--layer--label`
+          labelLayer.id = labelLayerName
+          labelLayer.source = sourceName
+          if (labelLayoutProp) {
+            labelLayer.layout[labelLayoutProp[0][0]] = labelLayoutProp[0][1]
+            labelLayer.layout[labelLayoutProp[1][0]] = labelLayoutProp[1][1]
+          }
+          this.map.addLayer(labelLayer)
+        }
       } else {
         this.map.setPaintProperty(layerName, colorProp, category.color)
       }

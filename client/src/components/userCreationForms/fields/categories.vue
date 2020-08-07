@@ -625,12 +625,13 @@ export default {
       if (scrollToView) this.scrollIntoView()
     },
     saveEdit() {
-      for (let category of this.categories) {
-        if (category._id == this.field._id) {
-          category = { ...this.field }
-          break
-        }
-      }
+      const categoryIdx = this.categories
+        .map((cat, indx) =>
+          cat._id == this.field._id ? [cat._id, indx] : false
+        )
+        .filter(i => i)[0]
+
+      this.categories[categoryIdx[1]] = { ...this.field }
       bus.$emit('categories-field-values-change', this.categories)
       this.toggleInput(false)
     },
