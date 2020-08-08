@@ -132,7 +132,7 @@
                   <el-image
                     :src="sponsors[0].src"
                     lazy
-                    class="w28 image-sponsor"
+                    class="w26 image-sponsor"
                     fit="cover"
                     alt="catchpoint logo"
                     referrer-policy="strict-origin-when-cross-origin"
@@ -141,7 +141,7 @@
               </div>
             </li>
 
-            <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
+            <!-- <el-divider direction="vertical" class="m0 hidden-sm-and-down" /> -->
 
             <li
               class="inline-block hidden-sm-and-down relative"
@@ -154,7 +154,26 @@
                     lazy
                     :src="sponsors[1].src"
                     fit="center"
-                    class="w28 image-sponsor ipv4"
+                    class="w26 image-sponsor ipv4"
+                    alt="ipv4 logo"
+                    referrer-policy="strict-origin-when-cross-origin"
+                  />
+                </a>
+              </div>
+            </li>
+
+            <li
+              class="inline-block hidden-sm-and-down relative"
+              data-no-outline="true"
+              role="listitem"
+            >
+              <div class="list-item" data-no-hover-bg="true">
+                <a :href="sponsors[2].url" target="_blank">
+                  <el-image
+                    lazy
+                    :src="sponsors[2].src"
+                    fit="center"
+                    class="w26 mt2 image-sponsor"
                     alt="ipv4 logo"
                     referrer-policy="strict-origin-when-cross-origin"
                   />

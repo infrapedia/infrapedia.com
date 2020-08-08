@@ -9,6 +9,11 @@ const sponsors = [
       'https://ipv4.global/?utm_source=digitalads&utm_medium=banner&utm_campaign=networkatlas&utm_content=sidebar',
     alt: 'ipv4 advertiser',
     src: 'https://cdn1.infrapedia.com/assets/img/ipv4global-footer.png'
+  },
+  {
+    url: 'https://cloud.google.com/',
+    alt: 'google cloud advertiser',
+    src: 'https://cdn1.infrapedia.com/assets/img/cloud-logo.svg'
   }
   // {
   //   url: 'https://www.infrapedia.com/',
