@@ -251,14 +251,14 @@
       </el-form-item>
     </el-form>
     <!------------------------->
-    <i-map-properties-dialog
+    <!-- <i-map-properties-dialog
       :categories="mapCreationData.categories"
       :is-visible="isPropertiesDialog"
       :feature-type="featureType"
       :feature="feature"
       :mode="dialogMode"
       @close="handleDialogClose"
-    />
+    /> -->
   </div>
 </template>
 
@@ -278,8 +278,8 @@ export default {
   components: {
     // VMultiSelect,
     CategoriesField,
-    AutocompleteGoogle,
-    IMapPropertiesDialog: () => import('../dialogs/MapPropertiesDialog')
+    AutocompleteGoogle
+    // IMapPropertiesDialog: () => import('../dialogs/MapPropertiesDialog')
   },
   data: () => ({
     // facilities: [],
@@ -305,12 +305,12 @@ export default {
     tagOnEdit: null,
     inputVisible: false,
     isLoadingCls: false,
-    dialogMode: 'create',
+    // dialogMode: 'create',
     isLoadingFacs: false,
     isLoadingIxps: false,
     isLoadingCables: false,
     isLoadingOwners: false,
-    isPropertiesDialog: false,
+    // // isPropertiesDialog: false,
     currentSelectionID: null,
     mapCreationData: {
       // cls: [],
@@ -681,20 +681,20 @@ export default {
     /**
      * @param data { Object } - Data collected from propertiesDialog form
      */
-    handleDialogClose(data) {
-      this.setMapConfig(data)
-      setTimeout(async () => {
-        await this.handleSetFeatureOntoMap({
-          t: this.featureType,
-          removeLoadState: true
-        })
+    // handleDialogClose(data) {
+    //   this.setMapConfig(data)
+    //   setTimeout(async () => {
+    //     await this.handleSetFeatureOntoMap({
+    //       t: this.featureType,
+    //       removeLoadState: true
+    //     })
 
-        this.currentSelectionID = null
-        this.featureType = ''
-      }, 320)
+    //     this.currentSelectionID = null
+    //     this.featureType = ''
+    //   }, 320)
 
-      this.isPropertiesDialog = false
-    },
+    //   this.isPropertiesDialog = false
+    // },
     handleClose(tag) {
       this.form.address.splice(this.form.address.indexOf(tag), 1)
     },
