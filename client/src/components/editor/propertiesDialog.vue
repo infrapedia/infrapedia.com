@@ -188,6 +188,10 @@ export default {
             args.t = 'custom points'
             availableCategories = getCategoriesByType(args)
             break
+          case 'polygon':
+            args.t = 'custom polygons'
+            availableCategories = getCategoriesByType(args)
+            break
           default:
             args.t = 'custom lines'
             availableCategories = getCategoriesByType(args)
