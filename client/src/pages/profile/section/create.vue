@@ -114,6 +114,15 @@ import { viewIXPOwner, editIXP, createIXP } from '../../../services/api/ixps'
 import ManualKMZSubmitDialog from '../../../components/dialogs/ManualKMZSubmit'
 import debounce from '../../../helpers/debounce'
 
+const allowedCreationTypes = [
+  'cls',
+  'map',
+  'ixps',
+  'subsea',
+  'facilities',
+  'terrestrial-network'
+]
+
 export default {
   name: 'CreateSection',
   components: {
@@ -269,18 +278,24 @@ export default {
   },
   beforeCreate() {
     this.$emit('layout', 'profile-layout')
-    if (!this.$route.query.id) return this.$router.push('/user')
+    if (
+      !this.$route.query.id ||
+      allowedCreationTypes.indexOf(this.$route.query.id) == -1
+    )
+      return this.$router.push('/user')
   },
   async mounted() {
-    // window.toggleDialog = () =>
-    //   (this.isManualUploadDialog = !this.isManualUploadDialog)
-    this.creationType = this.$route.query.id
-    this.checkCreationType(this.creationType)
+    try {
+      this.creationType = this.$route.query.id
+      this.checkCreationType(this.$route.query.id)
 
-    if (this.$route.query.item) {
-      this.getElementOnEdit(this.$route.query.item)
-    } else if (this.$route.query.id == 'map') {
-      await this.checkUserMapExistance()
+      if (this.$route.query.item) {
+        this.getElementOnEdit(this.$route.query.item)
+      } else if (this.$route.query.id == 'map') {
+        await this.checkUserMapExistance()
+      }
+    } catch (err) {
+      console.error(err)
     }
   },
   methods: {

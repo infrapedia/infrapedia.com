@@ -232,6 +232,7 @@ class EditorControls {
       if (scene.edition) {
         this.buttons.editProperties.style.setProperty('display', 'block')
       } else {
+        this.buttons.polygon.style.setProperty('display', 'none')
         this.buttons.editProperties.style.setProperty('display', 'none')
       }
     } else if (isEdition) {
@@ -242,12 +243,16 @@ class EditorControls {
       this.buttons.editProperties.style.setProperty('display', 'none')
 
       if (
-        !this.type.includes('subsea') &&
-        !this.type.includes('terrestrial-network')
+        this.type.includes('subsea') &&
+        this.type.includes('terrestrial-network')
       ) {
-        this.buttons.point.style.setProperty('display', 'block')
-      } else {
         this.buttons.point.style.setProperty('display', 'none')
+      } else {
+        this.buttons.point.style.setProperty('display', 'block')
+      }
+
+      if (this.type == 'facilities' || this.type == 'map') {
+        this.buttons.polygon.style.setProperty('display', 'block')
       }
 
       if (lineStringAllowed.includes(this.type)) {
