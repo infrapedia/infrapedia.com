@@ -1,0 +1,15 @@
+@import '../base/variables';
+
+.legends-wrapper {
+  position: absolute;
+  top: 4rem;
+  left: 0.72rem;
+  z-index: 4;
+  font-weight: 500;
+  font-size: 0.95em;
+  background-color: $white-full;
+  &.dark {
+    color: $white-full;
+    background-color: $dark-charcoal;
+  }
+}
