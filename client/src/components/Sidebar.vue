@@ -70,7 +70,7 @@
             @selection="handleItemListSelection"
           />
         </transition>
-        <div class="pr8 pl8 pb8">
+        <!-- <div class="pr8 pl8 pb8">
           <a target="_blank" href="https://www.edgeuno.com" title="Ads">
             <el-image
               :src="bannerSrc"
@@ -78,7 +78,7 @@
               style="width: 100%; height: 9.88rem"
             />
           </a>
-        </div>
+        </div> -->
       </el-card>
     </div>
   </transition>
