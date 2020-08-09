@@ -1,16 +1,9 @@
 export const editorMapConfig = {
-  sources: [
-    'cls-source',
-    'ixps-source',
-    'cables-source',
-    'facilities-source',
-    'drawn-features',
-    'snappoint'
-  ],
+  sources: ['nondrawn-features', 'drawn-features', 'snappoint'],
   layers: [
     {
       id: 'cables-layer',
-      source: 'cables-source',
+      source: 'nondrawn-features',
       type: 'line',
       paint: {
         'line-width': 1.5,
@@ -19,7 +12,7 @@ export const editorMapConfig = {
     },
     {
       id: 'cables-label-layer',
-      source: 'cables-source',
+      source: 'nondrawn-features',
       type: 'symbol',
       layout: {
         'text-field': '{name}',
@@ -37,7 +30,7 @@ export const editorMapConfig = {
     {
       id: 'cls-layer',
       type: 'circle',
-      source: 'cls-source',
+      source: 'nondrawn-features',
       paint: {
         'circle-radius': 5.42,
         'circle-color': '#f78682',
@@ -47,7 +40,7 @@ export const editorMapConfig = {
     },
     {
       id: 'cls-label-layer',
-      source: 'cls-source',
+      source: 'nondrawn-features',
       type: 'symbol',
       layout: {
         'text-field': '{name}',
@@ -75,7 +68,7 @@ export const editorMapConfig = {
     {
       id: 'ixps-layer',
       type: 'circle',
-      source: 'ixps-source',
+      source: 'nondrawn-features',
       minzoom: 12,
       layout: {},
       paint: {
@@ -86,7 +79,7 @@ export const editorMapConfig = {
     },
     {
       id: 'ixps-label-layer',
-      source: 'ixps-source',
+      source: 'nondrawn-features',
       type: 'symbol',
       layout: {
         'text-field': '{name}',
@@ -103,7 +96,7 @@ export const editorMapConfig = {
     {
       id: 'facilities-layer',
       type: 'fill-extrusion',
-      source: 'facilities-source',
+      source: 'nondrawn-features',
       minzoom: 14,
       layout: {},
       paint: {
@@ -113,7 +106,7 @@ export const editorMapConfig = {
     },
     {
       id: 'facilities-label-layer',
-      source: 'facilities-source',
+      source: 'nondrawn-features',
       type: 'symbol',
       layout: {
         'text-field': '{name}',
