@@ -1,7 +1,8 @@
-import createControlButton from './createControlButton'
 import { fCollectionFormat } from '../../helpers/featureCollection'
-import Snaping from './snaping'
 import { point, booleanEqual, lineSlice } from '@turf/turf'
+import createControlButton from './createControlButton'
+import { Message } from 'element-ui'
+import Snaping from './snaping'
 
 class EditorControls {
   constructor({
@@ -429,21 +430,35 @@ class EditorControls {
       var id = line.features[0].id
       var newCoords = []
       var all = this.draw.getAll()
-      line.features[0].geometry.coordinates.map(function(a) {
-        var pt2 = point(a)
-        var status = booleanEqual(pt1, pt2)
-        if (status == false) {
-          newCoords.push(a)
-        }
-      })
-      all.features.forEach(function(a) {
-        if (a.id == id) {
-          a.geometry.coordinates = newCoords
-        }
-      })
-      this.draw.set(all)
+      if (line.features[0].geometry.coordinates.length > 2) {
+        line.features[0].geometry.coordinates.forEach(function(a) {
+          var pt2 = point(a)
+          var status = booleanEqual(pt1, pt2)
+          if (status == false) {
+            newCoords.push(a)
+          }
+        })
+        all.features.forEach(function(a) {
+          if (a.id == id) {
+            a.geometry.coordinates = newCoords
+          }
+        })
+
+        this.draw.set(all)
+      } else {
+        return Message({
+          message:
+            'A feature needs to have at least 2 coordinates in order to be valid.',
+          type: 'info',
+          duration: 8000
+        })
+      }
     } else {
-      alert('Please Select a geometry and a point')
+      return Message({
+        message: 'You must first select the vertex point of a feature.',
+        type: 'info',
+        duration: 8000
+      })
     }
   }
 }
