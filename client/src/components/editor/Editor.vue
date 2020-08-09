@@ -29,7 +29,7 @@
       :type="type"
       :creation-form="form"
       :is-visible="dialog.visible"
-      :categories="categories"
+      :categories="categoriesList"
       :feature="dialog.selectedFeature"
       @close="handleDialogData"
     />
@@ -58,6 +58,7 @@ import {
 import bbox from '@turf/bbox'
 import debounce from '../../helpers/debounce'
 import { getGeometries } from '../../helpers/getGeoms'
+import setFeaturesIntoDataSource from './setFeaturesIntoDataSource'
 
 export default {
   components: {
@@ -100,6 +101,14 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    categoriesList() {
+      return this.categories.map(item => ({
+        _id: item._id,
+        name: item.name,
+        types: item.types,
+        color: item.color
+      }))
     },
     oneClickMessage() {
       let msg = []
@@ -397,7 +406,7 @@ export default {
 
       this.dialog.mode == 'create'
         ? this.handleCreateFeature(feature)
-        : this.handleEditFeatProps([feature])
+        : this.handleEditFeatProps(feature)
 
       this.dialog = {
         visible: false,
@@ -437,6 +446,9 @@ export default {
           this.dialog.visible = true
           this.dialog.selectedFeature = feat
         },
+        handleSetFeaturesIntoDataSource: args => {
+          setFeaturesIntoDataSource(args)
+        },
         handleBeforeFeatureCreation: feat => {
           this.dialog.selectedFeature = feat
           feat.geometry.type != 'Point'
@@ -452,12 +464,28 @@ export default {
     addMapEvents(map) {
       const vm = this
       map.on('load', function() {
-        map.on('draw.selectionchange', vm.handleDrawSelectionChange)
+        // map.on('draw.selectionchange', vm.handleDrawSelectionChange)
         map.on('mousemove', function(e) {
           const coords = e.lngLat.wrap()
           vm.infoBox.lat = coords.lat.toFixed(5)
           vm.infoBox.lng = coords.lng.toFixed(5)
         })
+        const drawnLayers = editorMapConfig.layers.filter(layer =>
+          layer.id.includes('drawn')
+        )
+        for (let layer of drawnLayers) {
+          map.on('click', layer.id, function(e) {
+            vm.handleDrawnFeatureSelection({ e, layerID: layer.id, map })
+          })
+          // eslint-disable-next-line
+          map.on('mouseenter', layer.id, function(e) {
+            map.getCanvas().style.cursor = 'pointer'
+          })
+          // eslint-disable-next-line
+          map.on('mouseleave', layer.id, function(e) {
+            map.getCanvas().style.cursor = ''
+          })
+        }
         map.on('zoom', function() {
           vm.infoBox.zoom = map.getZoom().toFixed(5)
         })
@@ -497,25 +525,69 @@ export default {
         return ft
       })
     },
-    handleDrawSelectionChange(e) {
-      if (e.features.length <= 0) return
-      const featureSelected = this.scene.features.list.filter(
-        feat => feat.id == e.features[0].id
-      )
-      this.scene.edition = true
-      this.controls.handleDrawSelectionChange(featureSelected)
+    handleDrawnFeatureSelection({ e, layerID, map }) {
+      const featureSelected = map.queryRenderedFeatures(e.point, {
+        layers: [layerID]
+      })[0]
+
+      if (featureSelected) {
+        const featureID = featureSelected.properties.__editorID
+        const feature = this.scene.features.list.filter(
+          feat => feat.__editorID == featureID
+        )[0]
+
+        if (!feature) return
+        try {
+          setFeaturesIntoDataSource({
+            feature,
+            map: this.map,
+            list: this.scene.features.list.filter(
+              feat => feat.__editorID != featureID
+            )
+          })
+          this.scene.edition = true
+          this.controls.handleDrawSelectionChange(feature)
+        } catch (err) {
+          console.error(err)
+        }
+      }
     },
+    // handleDrawSelectionChange(e) {
+    //   if (e.features.length <= 0) return
+    //   const featureSelected = this.scene.features.list.filter(
+    //     feat => feat.id == e.features[0].id
+    //   )
+    //   this.scene.edition = true
+    //   this.controls.handleDrawSelectionChange(featureSelected)
+    // },
     handleCreateFeature(feat) {
-      this.scene.features.list.push(feat)
+      const feature = {
+        ...feat
+      }
+      {
+        let id = `${feat.properties.name}.${Date.now()}`
+        feature.__editorID = id
+        feature.properties.__editorID = id
+      }
+
+      this.scene.features.list.push(feature)
+      setFeaturesIntoDataSource({
+        feature,
+        map: this.map,
+        list: this.scene.features.list
+      })
       this.controls.resetScene()
     },
-    handleEditFeatProps(feats) {
+    handleEditFeatProps(feature) {
       this.scene.features.list.forEach((feat, i) => {
-        for (let featEdit of feats) {
-          if (feat.id == featEdit.id) {
-            this.scene.features.list[i] = { ...featEdit }
-          }
+        if (feat.id == feature.id) {
+          this.scene.features.list[i] = { ...feature }
         }
+      })
+      setFeaturesIntoDataSource({
+        feature,
+        map: this.map,
+        list: this.scene.features.list
       })
       this.controls.resetScene()
     },
