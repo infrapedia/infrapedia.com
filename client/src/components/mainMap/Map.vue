@@ -50,6 +50,14 @@
           </el-form>
         </el-card>
       </transition>
+      <transition
+        name="animated faster delay-1s"
+        enter-active-class="slideInLeft"
+        leave-active-class="slideOutLeft"
+        mode="out-in"
+      >
+        <legends-panel v-if="!lastMileTool.active" />
+      </transition>
       <el-button
         id="ThreeD"
         type="text"
@@ -170,6 +178,7 @@ import dataCollection from '../../mixins/dataCollection'
 import { DateTime } from 'luxon'
 import LastMileButton from './LastMileButton'
 import lastMileTool, { lastMileToolLayers } from './gri-tool'
+import LegendsPanel from './legendsPanel'
 // import bbox from '@turf/bbox'
 // import { fCollectionFormat } from '../../helpers/featureCollection'
 
@@ -180,7 +189,8 @@ export default {
     IThemeToggler,
     PrintButton,
     GooeyMenu,
-    LastMileButton
+    LastMileButton,
+    LegendsPanel
   },
   props: {
     disabled: {
