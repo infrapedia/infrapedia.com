@@ -29,7 +29,7 @@
       :type="type"
       :creation-form="form"
       :is-visible="dialog.visible"
-      :categories="categories"
+      :categories="categoriesList"
       :feature="dialog.selectedFeature"
       @close="handleDialogData"
     />
@@ -55,9 +55,13 @@ import {
   editorMapConfig,
   customMapLayerTypes
 } from '../../config/editorMapConfig'
-import bbox from '@turf/bbox'
 import debounce from '../../helpers/debounce'
 import { getGeometries } from '../../helpers/getGeoms'
+import {
+  zoomToFeature,
+  setFeaturesIntoDataSource,
+  setFeaturesIntoDrawnDataSource
+} from './index'
 
 export default {
   components: {
@@ -90,7 +94,19 @@ export default {
   props: {
     type: {
       type: String,
-      default: () => ''
+      default: () => '',
+      validator: function(t) {
+        return (
+          [
+            'cls',
+            'map',
+            'ixps',
+            'subsea',
+            'facilities',
+            'terrestrial-network'
+          ].indexOf(t) != -1
+        )
+      }
     },
     form: {
       type: Object,
@@ -100,6 +116,14 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    categoriesList() {
+      return this.categories.map(item => ({
+        _id: item._id,
+        name: item.name,
+        types: item.types,
+        color: item.color
+      }))
     },
     oneClickMessage() {
       let msg = []
@@ -330,25 +354,21 @@ export default {
           ...fc.features,
           ...this.scene.features.list
         ])
-        this.draw.set(fc_final)
-        this.scene.features.list = [
-          ...this.draw.getAll().features,
-          ...this.scene.features.list
-        ]
-        await this.handleZoomToFeature(fc_final)
+        setFeaturesIntoDataSource({
+          list: fc_final.features,
+          map: this.map
+        })
+        await zoomToFeature({ fc: fc_final, map: this.map, type: this.type })
       } catch (err) {
         console.error(err)
       }
     },
     // I have to create a source layer for each category
     // And then ask for the featureCollection
-    async handleMapFormFeatureSelection({ t, fc, source }) {
+    async handleMapFormFeatureSelection({ t, fc }) {
       if (!this.map) return
 
-      const sourceName = source
-        ? source
-        : `${t == 'subsea cables' || t == 'terrestrials' ? 'cables' : t}-source`
-
+      const sourceName = 'nondrawn-features'
       if (
         this.map.getSource(sourceName) &&
         this.map.isSourceLoaded(sourceName)
@@ -361,30 +381,9 @@ export default {
       } else {
         setTimeout(() => {
           this.$store.dispatch('editor/toggleMapFormLoading', true)
-          this.handleMapFormFeatureSelection({ t, fc, source: sourceName })
+          this.handleMapFormFeatureSelection({ t, fc })
         }, 620)
       }
-    },
-    async handleZoomToFeature(fc) {
-      if (fc.features.length <= 0) return
-
-      const bounds = bbox(fc)
-      const boundsConfig = {
-        animate: true,
-        speed: 1.75,
-        padding: 90,
-        pan: {
-          duration: 25
-        }
-      }
-      const zoomLevels = {
-        facilities: 16.8,
-        ixps: 12.8,
-        cls: 14.52
-      }
-
-      zoomLevels[this.type] ? (boundsConfig.zoom = zoomLevels[this.type]) : null
-      await this.map.fitBounds(bounds, boundsConfig)
     },
     handleDialogData(data) {
       this.dialog.visible = false
@@ -397,7 +396,7 @@ export default {
 
       this.dialog.mode == 'create'
         ? this.handleCreateFeature(feature)
-        : this.handleEditFeatProps([feature])
+        : this.handleEditFeatProps(feature)
 
       this.dialog = {
         visible: false,
@@ -437,6 +436,9 @@ export default {
           this.dialog.visible = true
           this.dialog.selectedFeature = feat
         },
+        handleSetFeaturesIntoDataSource: args => {
+          setFeaturesIntoDrawnDataSource(args)
+        },
         handleBeforeFeatureCreation: feat => {
           this.dialog.selectedFeature = feat
           feat.geometry.type != 'Point'
@@ -452,12 +454,58 @@ export default {
     addMapEvents(map) {
       const vm = this
       map.on('load', function() {
-        map.on('draw.selectionchange', vm.handleDrawSelectionChange)
+        // ---------------------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------------
+        // map.on('draw.selectionchange', vm.handleDrawSelectionChange)
+        // ---------------------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------------
         map.on('mousemove', function(e) {
           const coords = e.lngLat.wrap()
           vm.infoBox.lat = coords.lat.toFixed(5)
           vm.infoBox.lng = coords.lng.toFixed(5)
         })
+        const drawnLayers = editorMapConfig.layers.filter(layer =>
+          layer.id.includes('drawn')
+        )
+        const nonDrawnLayers = editorMapConfig.layers.filter(
+          layer => !layer.id.includes('drawn')
+        )
+        for (let layer of drawnLayers) {
+          map.on('click', layer.id, function(e) {
+            vm.handleFeatureSelection({
+              e,
+              map,
+              drawn: true,
+              layerID: layer.id
+            })
+          })
+          // eslint-disable-next-line
+          map.on('mouseenter', layer.id, function(e) {
+            map.getCanvas().style.cursor = 'pointer'
+          })
+          // eslint-disable-next-line
+          map.on('mouseleave', layer.id, function(e) {
+            map.getCanvas().style.cursor = ''
+          })
+        }
+        for (let layer of nonDrawnLayers) {
+          map.on('click', layer.id, function(e) {
+            vm.handleFeatureSelection({
+              e,
+              map,
+              drawn: false,
+              layerID: layer.id
+            })
+          })
+          // eslint-disable-next-line
+          map.on('mouseenter', layer.id, function(e) {
+            map.getCanvas().style.cursor = 'pointer'
+          })
+          // eslint-disable-next-line
+          map.on('mouseleave', layer.id, function(e) {
+            map.getCanvas().style.cursor = ''
+          })
+        }
         map.on('zoom', function() {
           vm.infoBox.zoom = map.getZoom().toFixed(5)
         })
@@ -465,57 +513,115 @@ export default {
       return map
     },
     handleRecreateDraw: debounce(async function(feats, zoomTo = true) {
-      // Deleting everything in case there's something already drawn that could be repeted
-      // if (this.scene.features.list.length <= 0) return
-      await this.draw.trash()
       const featuresCollection = fCollectionFormat(
         JSON.parse(JSON.stringify(this.scene.features.list))
       )
-      const featuresID = this.draw.set(featuresCollection)
 
-      if (
-        featuresCollection.features.length > 0 &&
-        !featuresCollection.features[0].id
-      ) {
-        this.scene.features.list = this.setFeaturesID(
-          featuresCollection,
-          featuresID
-        )
-      }
+      setFeaturesIntoDrawnDataSource({
+        map: this.map,
+        feature: this.type,
+        isCustomMap: false,
+        list: this.scene.features.list
+      })
 
       if (zoomTo) {
-        await this.handleZoomToFeature(
-          feats ? fCollectionFormat(feats) : featuresCollection
-        )
+        await zoomToFeature({
+          fc: feats ? fCollectionFormat(feats) : featuresCollection,
+          type: this.type,
+          map: this.map
+        })
       }
     }, 820),
-    setFeaturesID(fc, ids = []) {
-      return fc.features.map((ft, i) => {
-        if (ids.length > 0) {
-          ft.id = ids[i]
+    handleFeatureSelection({ e, layerID, map, drawn }) {
+      const featureSelected = map.queryRenderedFeatures(e.point, {
+        layers: [layerID]
+      })[0]
+      // TODO: Check againts _id coming from DB
+      // Joja needs to finish this first, in order to work
+      console.log(featureSelected)
+
+      if (featureSelected) {
+        const idProp = drawn ? '__editorID' : '_id'
+        const featureID = featureSelected.properties[idProp]
+        const feature = this.scene.features.list.filter(
+          feat => feat[idProp] == featureID
+        )[0]
+
+        if (!feature) return
+        try {
+          if (drawn) {
+            setFeaturesIntoDrawnDataSource({
+              feature,
+              map: this.map,
+              list: this.scene.features.list.filter(
+                feat => feat[idProp] != featureID
+              )
+            })
+          } else {
+            setFeaturesIntoDataSource({
+              feature,
+              map: this.map,
+              list: this.scene.features.list.filter(
+                feat => feat[idProp] != featureID
+              )
+            })
+          }
+          this.scene.edition = true
+          this.controls.handleDrawSelectionChange(feature)
+        } catch (err) {
+          console.error(err)
         }
-        return ft
-      })
+      }
     },
-    handleDrawSelectionChange(e) {
-      if (e.features.length <= 0) return
-      const featureSelected = this.scene.features.list.filter(
-        feat => feat.id == e.features[0].id
-      )
-      this.scene.edition = true
-      this.controls.handleDrawSelectionChange(featureSelected)
-    },
+    // ---------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------
+    // THIS WAS ONLY BEING USED WHEN USING DRAW FOR STORING THE ACTUAL FEATURE COLLLECTION DATA
+    // ---------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------
+    // handleDrawSelectionChange(e) {
+    //   if (e.features.length <= 0) return
+    //   const featureSelected = this.scene.features.list.filter(
+    //     feat => feat.id == e.features[0].id
+    //   )[0]
+
+    //   if (featureSelected) {
+    //     this.scene.edition = true
+    //     this.controls.handleDrawSelectionChange(featureSelected)
+    //   }
+    // },
+    // ---------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------
     handleCreateFeature(feat) {
-      this.scene.features.list.push(feat)
+      const feature = {
+        ...feat
+      }
+      {
+        let id = `${feat.properties.name}.${Date.now()}`
+        feature.__editorID = id
+        feature.properties.__editorID = id
+      }
+
+      this.scene.features.list.push(feature)
+      setFeaturesIntoDrawnDataSource({
+        feature,
+        map: this.map,
+        list: this.scene.features.list
+      })
       this.controls.resetScene()
     },
-    handleEditFeatProps(feats) {
+    handleEditFeatProps(feature) {
       this.scene.features.list.forEach((feat, i) => {
-        for (let featEdit of feats) {
-          if (feat.id == featEdit.id) {
-            this.scene.features.list[i] = { ...featEdit }
-          }
+        if (feat.id == feature.id) {
+          this.scene.features.list[i] = { ...feature }
         }
+      })
+      setFeaturesIntoDrawnDataSource({
+        feature,
+        map: this.map,
+        list: this.scene.features.list
       })
       this.controls.resetScene()
     },
