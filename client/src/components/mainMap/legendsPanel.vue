@@ -1,13 +1,13 @@
 <template>
   <div class="legends-wrapper flex column bottom-shadow" :class="{ dark }">
     <header class="pt2 pb2 pr4 pl4">
-      Legends.
+      Legend
     </header>
     <el-divider :class="{ dark }" class="mt1 mb1 w-fit-full" />
     <div
       class="box p1 mb1 inline-flex align-items-center seamless-hoverbg pr4 pl4"
       :class="{ light: !dark, dark }"
-      v-for="b in legends"
+      v-for="b in legend"
       :key="b.label"
     >
       <span
@@ -25,7 +25,7 @@
 export default {
   name: 'LegendsPanel',
   computed: {
-    legends() {
+    legend() {
       return [
         {
           color: '#7288b0',
