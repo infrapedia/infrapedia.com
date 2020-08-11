@@ -13,6 +13,9 @@ div.el-card .empty-text {
   .category-box_inner-wrapper {
     .category_name {
       flex-basis: 40%;
+      span {
+        flex-basis: 75%;
+      }
     }
     @media screen and (max-width: $break-md) {
       flex-flow: column nowrap;
