@@ -263,9 +263,11 @@
     <!-- TYPES SELECTION DIALOG START -->
     <el-dialog
       top="28vh"
+      id="elementsDialog"
       :visible.sync="typesDialog.visible"
       :close-on-click-modal="false"
       :custom-class="customDialogClass"
+      @opened="handleScrollToView"
       :before-close="() => $emit('cancel-types-selection')"
     >
       <header slot="title">
@@ -496,6 +498,11 @@ export default {
     }
   },
   methods: {
+    handleScrollToView() {
+      document
+        .querySelector('#elementsDialog .el-dialog')
+        .scrollIntoView({ behavior: 'smooth', block: 'end' })
+    },
     scrollIntoView() {
       setTimeout(() => {
         document
