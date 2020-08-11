@@ -2,7 +2,7 @@
   <el-header class="fs-small p4 vertical-align header">
     <h1 class="logo-title inline-block">
       <router-link :to="checkIfLoggedIn" class="hidden-sm-and-down">
-        <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
+        <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" lazy />
       </router-link>
       <el-button
         circle
@@ -90,8 +90,8 @@ export default {
     },
     imageURL() {
       return this.dark
-        ? 'https://cdn.infrapedia.com/logos/dark-mode-logo.svg'
-        : 'https://cdn.infrapedia.com/logos/light-mode-logo.svg'
+        ? 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo.svg'
+        : 'https://cdn1.infrapedia.com/assets/img/light-mode-logo.svg'
     }
   },
   methods: {
