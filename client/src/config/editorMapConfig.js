@@ -262,8 +262,9 @@ export const customMapLayerTypes = {
     paint: {
       'line-width': 1.5,
       'line-color': '#7288b0'
-    }
-    // filter: ['==', '$type', 'LineString']
+    },
+    filter: ['all', ['!=', '$type', 'Point'], ['!=', '$type', 'Polygon']]
+    // ['==', '$type', 'LineString']
     // filter: ['==', ['$type', 'LineString']]
   },
   points: {
@@ -275,15 +276,15 @@ export const customMapLayerTypes = {
       'circle-color': '#f78682',
       'circle-stroke-width': 1,
       'circle-stroke-color': '#333333'
-    }
-    // filter: ['==', '$type', 'Point']
+    },
+    filter: ['==', '$type', 'Point']
   },
   buildings: {
     id: 'default-layer',
     type: 'fill-extrusion',
     source: 'default-source',
     layout: {},
-    // filter: ['==', '$type', 'Polygon'],
+    filter: ['==', '$type', 'Polygon'],
     paint: {
       'fill-extrusion-opacity': 1,
       'fill-extrusion-color': '#666666',
