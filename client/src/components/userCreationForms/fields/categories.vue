@@ -381,7 +381,7 @@ import { searchCls } from '../../../services/api/cls'
 export default {
   name: 'CategoriesField',
   components: {
-    VMultiSelect: () => import('../../../components/MultiSelect')
+    VMultiSelect: () => import('../../MultiSelect')
   },
   props: {
     value: {
@@ -429,6 +429,13 @@ export default {
     }
   }),
   computed: {
+    includesDrawnFeatures() {
+      return (
+        this.field.types.includes('custom points') ||
+        this.field.types.includes('custom polygons') ||
+        this.field.types.includes('custom lines')
+      )
+    },
     dark() {
       return this.$store.state.isDark
     },

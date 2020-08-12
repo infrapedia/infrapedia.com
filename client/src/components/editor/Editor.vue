@@ -514,7 +514,11 @@ export default {
       })
       return map
     },
-    handleRecreateDraw: debounce(async function(feats, zoomTo = true) {
+    handleRecreateDraw: debounce(async function(
+      feats,
+      zoomTo = true,
+      custom = true
+    ) {
       const featuresCollection = fCollectionFormat(
         JSON.parse(JSON.stringify(this.scene.features.list))
       )
@@ -522,7 +526,7 @@ export default {
       setFeaturesIntoDrawnDataSource({
         map: this.map,
         feature: this.type,
-        isCustomMap: false,
+        isCustomMap: custom,
         list: this.scene.features.list
       })
 
@@ -533,7 +537,8 @@ export default {
           map: this.map
         })
       }
-    }, 820),
+    },
+    820),
     handleFeatureSelection({ e, layerID, map, drawn }) {
       const featureSelected = map.queryRenderedFeatures(e.point, {
         layers: [layerID]

@@ -329,18 +329,18 @@ export default {
         if (t != 'error' && mymap.length > 0) {
           this.mode = 'edit'
           const {
-            subdomain,
-            googleID,
+            draw,
             logos,
             address,
+            googleID,
             techEmail,
             techPhone,
             saleEmail,
             salePhone,
+            subdomain,
             config: { categories }
           } = mymap[0]
 
-          // TODO: draw features need to be handle
           this.form = {
             googleID,
             subdomain,
@@ -353,11 +353,11 @@ export default {
             categoriesList: categories
           }
 
-          // const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
-          // if (fc.features && fc.features.length) {
-          //   bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, fc.features)
-          //   bus.$emit(`${EDITOR_LOAD_DRAW}`, null, false)
-          // }
+          const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
+          if (fc.features && fc.features.length > 0) {
+            bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, fc.features)
+            bus.$emit(`${EDITOR_LOAD_DRAW}`, fc.features, false)
+          }
         }
       } catch {
         // Ignore
@@ -403,7 +403,6 @@ export default {
           this.form = {
             subdomain: '',
             googleID: '',
-            name: '',
             cls: [],
             ixps: [],
             logo: '',
@@ -731,7 +730,6 @@ export default {
       if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async createCable() {
-      debugger
       this.isSendingData = true
       const {
         t,

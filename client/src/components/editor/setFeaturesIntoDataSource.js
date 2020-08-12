@@ -14,47 +14,85 @@ export function setFeaturesIntoDrawnDataSource({
   }
 
   if (isCustomMap) {
-    const featureType = feature.geometry.type
-    const categoryColor = feature.properties.category
-      ? feature.properties.category.color
-      : null
+    const featureType =
+      feature && feature.geometry && feature.geometry.type
+        ? feature.geometry.type
+        : false
+    const categoryColor =
+      feature && feature.properties && feature.properties.category
+        ? feature.properties.category.color
+        : null
     let layerType = null
     let colorProp = ''
 
-    switch (featureType.toLowerCase()) {
-      case 'point':
-        layerType = 'cls'
-        colorProp = 'circle-color'
-        break
-      case 'polygon':
-        layerType = 'facilities'
-        colorProp = 'fill-extrusion-color'
-        break
-      default:
-        layerType = 'cables'
-        colorProp = 'line-color'
-        break
-    }
+    if (featureType && categoryColor) {
+      switch (featureType.toLowerCase()) {
+        case 'point':
+          layerType = 'cls'
+          colorProp = 'circle-color'
+          break
+        case 'polygon':
+          layerType = 'facilities'
+          colorProp = 'fill-extrusion-color'
+          break
+        default:
+          layerType = 'cables'
+          colorProp = 'line-color'
+          break
+      }
 
-    {
-      let layerName = `drawn-${layerType}-layer`
-      if (layerName && categoryColor) {
-        map.setPaintProperty(layerName, colorProp, categoryColor)
+      {
+        let layerName = `drawn-${layerType}-layer`
+        if (layerName && categoryColor) {
+          map.setPaintProperty(layerName, colorProp, categoryColor)
+        }
       }
     }
   }
 
   {
-    let source = map.getSource('drawn-features')
-    if (source) source.setData(fCollectionFormat(list))
+    let sourceName = 'drawn-features'
+    let source = map.getSource(sourceName)
+    if (source) {
+      if (map.isSourceLoaded(sourceName)) {
+        source.setData(fCollectionFormat(list))
+      }
+    } else {
+      // map.addSource(sourceName, {
+      //   type: 'geojson',
+      //   data: fCollectionFormat(list)
+      // })
+      setTimeout(
+        () =>
+          setFeaturesIntoDrawnDataSource({
+            feature,
+            list,
+            map,
+            reset,
+            isCustomMap: true
+          }),
+        320
+      )
+    }
   }
 }
 
 export function setFeaturesIntoDataSource({ list, map, reset }) {
   if (reset) {
-    map.getSource('nondrawn-features').setData(fCollectionFormat())
+    map.getSource('drawn-features').setData(fCollectionFormat())
     return
   }
-  const source = map.getSource('drawn-features')
-  if (source) source.setData(fCollectionFormat(list))
+  const sourceName = 'drawn-features'
+  const source = map.getSource(sourceName)
+  if (source) {
+    if (map.isSourceLoaded(sourceName)) {
+      source.setData(fCollectionFormat(list))
+    }
+  } else {
+    // map.addSource(sourceName, {
+    //   type: 'geojson',
+    //   data: fCollectionFormat(list)
+    // })
+    setTimeout(() => setFeaturesIntoDataSource({ list, map, reset }), 320)
+  }
 }
