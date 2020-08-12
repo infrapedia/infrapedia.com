@@ -53,7 +53,7 @@ export function setFeaturesIntoDrawnDataSource({
   {
     let sourceName = 'drawn-features'
     let source = map.getSource(sourceName)
-    if (source) {
+    if (source && map.loaded()) {
       if (map.isSourceLoaded(sourceName)) {
         source.setData(fCollectionFormat(list))
       }
@@ -84,7 +84,7 @@ export function setFeaturesIntoDataSource({ list, map, reset }) {
   }
   const sourceName = 'drawn-features'
   const source = map.getSource(sourceName)
-  if (source) {
+  if (source && map.loaded()) {
     if (map.isSourceLoaded(sourceName)) {
       source.setData(fCollectionFormat(list))
     }

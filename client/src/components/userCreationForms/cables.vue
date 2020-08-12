@@ -303,10 +303,9 @@ import validateUrl from '../../helpers/validateUrl'
 import { searchFacilities } from '../../services/api/facs'
 import { searchOrganization } from '../../services/api/organizations'
 import VMultiSelect from '../../components/MultiSelect'
-import { clsListConnectedToCable, searchCls } from '../../services/api/cls'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import * as events from '../../events/mapForm'
-import { getClsGeoms } from '../../services/api/cls'
+import { getClsGeoms, searchCls } from '../../services/api/cls'
 import { checkCableNameExistence } from '../../services/api/check_name'
 import debounce from '../../helpers/debounce'
 
@@ -468,16 +467,6 @@ export default {
         }
       ]
     }
-
-    setTimeout(async () => {
-      if (
-        this.mode != 'create' &&
-        this.creationID == 'subsea' &&
-        !this.$route.query.failedToUploadKMz
-      ) {
-        await this.getClsListConnectedToCable()
-      }
-    }, 320)
   },
   watch: {
     'form.facsList'(facs) {
@@ -561,15 +550,6 @@ export default {
         selections: this.getSelectionID('cls'),
         removeLoadState: true
       })
-    },
-    async getClsListConnectedToCable() {
-      const res = await clsListConnectedToCable({
-        user_id: await this.$auth.getUserID(),
-        cable_id: this.$route.query.item
-      })
-      if (res && res.data && res.data.r) {
-        this.clsSelectedList = res.data.r
-      }
     },
     async getTagsList(s) {
       const res = await getTags({ user_id: await this.$auth.getUserID(), s })
