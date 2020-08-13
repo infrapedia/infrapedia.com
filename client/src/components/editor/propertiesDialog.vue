@@ -19,11 +19,12 @@
           placeholder
           class="w-fit-full"
           :class="{ dark }"
+          @change="handleCategorySelected"
         >
           <el-option
             v-for="(cat, i) in categoriesList"
             :key="i"
-            :value="cat"
+            :value="cat._id"
             :label="cat.name"
             class="capitalize"
           />
@@ -54,7 +55,7 @@
       </template>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" :disabled="checkFields" @click="handleClose">
+      <el-button type="primary" @click="handleClose">
         Save
       </el-button>
     </span>
@@ -68,6 +69,7 @@ export default {
   name: 'PropertiesDialog',
   data: () => ({
     form: {},
+    categorySelected: null,
     predefineColors: [
       '#ff4500',
       '#ff8c00',
@@ -111,6 +113,9 @@ export default {
 
       if (this.mode != 'create') {
         this.form = { ...this.feature.properties }
+        if (this.form.category && typeof this.form.category != 'string') {
+          this.form.category = this.feature.properties.category._id
+        }
       } else {
         switch (type.toLowerCase()) {
           case 'point':
@@ -165,12 +170,12 @@ export default {
       }
       return title
     },
-    checkFields() {
-      const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
-      return emptyFields.length && !emptyFields.includes('status')
-        ? true
-        : false
-    },
+    // checkFields() {
+    //   const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
+    //   return emptyFields.length && !emptyFields.includes('status')
+    //     ? true
+    //     : false
+    // },
     dark() {
       return this.$store.state.isDark
     },
@@ -203,6 +208,24 @@ export default {
     }
   },
   methods: {
+    handleCategorySelected(id) {
+      const categoryData = this.categoriesList.filter(t => t._id == id)[0]
+      if (categoryData) {
+        this.categorySelected = {
+          _id: categoryData._id,
+          color: '#409EFF',
+          'stroke-width': categoryData['stroke-width'],
+          'stroke-opacity': categoryData['stroke-opacity']
+        }
+
+        if (
+          categoryData['stroke-style'] != 'normal' &&
+          this.feature.geometry.type == 'LineString'
+        ) {
+          this.categorySelected['line-dasharray'] = [0.1, 1.8]
+        }
+      }
+    },
     handleClose() {
       if (!this.form.name || this.form.name == undefined) {
         this.form.name = this.creationForm.name
@@ -212,6 +235,12 @@ export default {
         this.form.height == 0
       ) {
         this.form.height = 1
+      }
+
+      if (this.categorySelected) {
+        this.form = {
+          ...this.form
+        }
       }
       return this.$emit('close', this.form)
     }

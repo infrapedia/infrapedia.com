@@ -232,6 +232,10 @@
           <el-collapse-transition>
             <div class="details-wrapper" v-if="isViewing(cat.name)">
               <el-divider :class="{ dark }" class="mt2 mb4" />
+              <div class="fs-small block text-left pr4 pl4 mb2">
+                <strong>id: </strong>
+                {{ cat._id }}
+              </div>
               <div
                 class="flex nowrap justify-content-space-between mb4 pr4 pl4"
               >

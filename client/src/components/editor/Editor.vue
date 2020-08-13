@@ -1,6 +1,18 @@
 <template>
-  <div class="map-editor-wrapper">
+  <div
+    :class="{ dnd: drag.hover }"
+    class="map-editor-wrapper transition-all"
+    @drop.prevent="onDrop"
+    @dragover.prevent="() => (drag.hover = true)"
+    @dragleave.prevent="() => (drag.hover = false)"
+  >
     <div id="map" />
+    <div class="overlay" v-if="type == 'map'" :class="{ dark }">
+      <span class="fs-small">
+        Geojson files dropped here, will be imported into the map.
+      </span>
+    </div>
+    <input ref="file" type="file" class="hidden" />
     <div class="absolute coords-box z-index20 p2 w25">
       <p class="m0"><strong>Lat:</strong> {{ infoBox.lat }}</p>
       <p class="m0 mt1"><strong>Lng:</strong> {{ infoBox.lng }}</p>
@@ -60,7 +72,8 @@ import { getGeometries } from '../../helpers/getGeoms'
 import {
   zoomToFeature,
   setFeaturesIntoDataSource,
-  setFeaturesIntoDrawnDataSource
+  setFeaturesIntoDrawnDataSource,
+  categoryDataChange
 } from './index'
 
 export default {
@@ -70,6 +83,10 @@ export default {
   data: () => ({
     map: null,
     draw: null,
+    drag: {
+      file: null,
+      hover: false
+    },
     infoBox: {
       lat: mapConfig.center[1],
       lng: mapConfig.center[0],
@@ -78,7 +95,8 @@ export default {
     scene: {
       features: {
         list: [],
-        selected: null
+        selected: null,
+        layerFiltered: null
       },
       creation: null,
       edition: null
@@ -122,7 +140,10 @@ export default {
         _id: item._id,
         name: item.name,
         types: item.types,
-        color: item.color
+        color: item.color,
+        'stroke-width': item['stroke-width'],
+        'stroke-style': item['stroke-style'],
+        'stroke-opacity': item['stroke-opacity']
       }))
     },
     oneClickMessage() {
@@ -188,6 +209,7 @@ export default {
     bus.$on(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
     bus.$on('categories-field-values-change', this.handleCategoriesChange)
     bus.$on('category-removed', this.handleCategoryRemoved)
+    bus.$on('drawn-features-dnd', this.handleDragAndDropGeojsonFiles)
   },
   mounted() {
     this.map = this.handleSetMapSources(this.addMapEvents(this.createMap()))
@@ -209,8 +231,73 @@ export default {
     bus.$off(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
     bus.$off('categories-field-values-change', this.handleCategoriesChange)
     bus.$off('category-removed', this.handleCategoryRemoved)
+    bus.$off('drawn-features-dnd', this.handleDragAndDropGeojsonFiles)
   },
   methods: {
+    handleDragAndDropGeojsonFiles(fc) {
+      let list = []
+      let cat = null
+      const categories = []
+
+      for (let feature of fc.features) {
+        for (let category of this.categories) {
+          if (
+            feature.properties &&
+            feature.properties.category &&
+            feature.properties.category._id == category._id
+          ) {
+            cat = { ...category }
+
+            if (
+              feature.geometry.type == 'Point' &&
+              cat.types.includes('custom points')
+            ) {
+              cat.data['custom points'].push(feature)
+            } else if (
+              feature.geometry.type == 'LineString' &&
+              cat.types.includes('custom lines')
+            ) {
+              cat.data['custom lines'].push(feature)
+            } else if (
+              feature.geometry.type == 'Polygon' &&
+              cat.types.includes('custom polygons')
+            ) {
+              cat.data['custom polygons'].push(feature)
+            }
+            categories.push(cat)
+          }
+        }
+        list.push(this.handleCreateFeature(feature))
+      }
+
+      cat = null
+      this.handleSetFeaturesList([...this.scene.features.list, ...list])
+
+      if (categories.length > 0) {
+        this.categories.forEach((category, i) => {
+          for (let cat of categories) {
+            if (cat._id == category._id) {
+              this.categories[i] = { ...cat }
+            }
+          }
+        })
+        this.handleCategoriesChange(this.categories)
+      } else {
+        this.handleRecreateDraw(fc.features, false)
+      }
+    },
+    onDrop(e) {
+      if (this.type != 'map') return
+
+      const file = e.dataTransfer.files
+      this.drag.hover = false
+      const fr = new FileReader()
+      fr.onload = function() {
+        const file = { ...JSON.parse(fr.result) }
+        bus.$emit('drawn-features-dnd', file)
+      }
+      if (file) fr.readAsText(file[0])
+    },
     async handleCategoryRemoved(category) {
       const sourceName = `${category._id}--source`
       if (this.map.getSource(sourceName)) {
@@ -219,40 +306,51 @@ export default {
     },
     async handleCategoriesChange(list) {
       this.categories = list
-      if (list.length > 0) {
-        try {
-          this.$store.dispatch('editor/toggleMapFormLoading', true)
-          const dataKeys = Object.keys(list[0].data)
-          const data = fCollectionFormat()
-          for (let category of list) {
-            for (let key of dataKeys) {
-              if (!category.data[key].length) continue
-              let dat = await getGeometries(
-                key,
-                category.data[key].map(item => item._id),
-                await this.$auth.getUserID()
-              )
-              data.features.push(dat.features)
-            }
+      const paintCategories = async () => {
+        if (list.length > 0) {
+          try {
+            this.$store.dispatch('editor/toggleMapFormLoading', true)
+            const dataKeys = Object.keys(list[0].data)
+            const data = fCollectionFormat()
+            for (let category of list) {
+              for (let key of dataKeys) {
+                if (!category.data[key].length) continue
 
-            await this.handleSetCategorySource({
-              _id: category._id,
-              name: category.name,
-              color: category.color,
-              data: { type: data.type, features: data.features.flat() }
-            })
-            data.features = []
+                if (!key.includes('custom')) {
+                  let dat = await getGeometries(
+                    key,
+                    category.data[key].map(item => item._id),
+                    await this.$auth.getUserID()
+                  )
+                  data.features.push(dat.features)
+                } else {
+                  data.features.push(category.data[key])
+                }
+              }
 
-            for (let type of category.types) {
-              if (!category.data[type].length) continue
-              this.handleSetCategoryLayers({ ...category, t: type })
+              await this.handleSetCategorySource({
+                _id: category._id,
+                name: category.name,
+                color: category.color,
+                data: { type: data.type, features: data.features.flat() }
+              })
+              data.features = []
+
+              for (let type of category.types) {
+                if (!category.data[type].length) continue
+                this.handleSetCategoryLayers({ ...category, t: type })
+              }
             }
+            this.$store.dispatch('editor/toggleMapFormLoading', false)
+          } catch (err) {
+            console.error(err)
           }
-          this.$store.dispatch('editor/toggleMapFormLoading', false)
-        } catch (err) {
-          console.error(err)
         }
       }
+
+      this.map.loaded()
+        ? await paintCategories()
+        : setTimeout(() => paintCategories(), 120)
     },
     async handleSetCategorySource(category) {
       const sourceName = `${category._id}--source`
@@ -267,7 +365,9 @@ export default {
     },
     async handleSetCategoryLayers(category) {
       let type = ''
+      let vm = this
       let colorProp = ''
+      const map = this.map
       let labelLayoutProp = null
       let layerName = `${category._id}--layer`
       const sourceName = layerName.replace('--layer', '--source')
@@ -288,6 +388,16 @@ export default {
           colorProp = 'fill-extrusion-color'
           layerName = layerName + '-' + type
           break
+        case 'custom points':
+          type = 'points'
+          colorProp = 'circle-color'
+          layerName = layerName + '-' + type
+          break
+        case 'custom polygons':
+          type = 'buildings'
+          colorProp = 'fill-extrusion-color'
+          layerName = layerName + '-' + type
+          break
         default:
           type = 'cables'
           colorProp = 'line-color'
@@ -304,12 +414,29 @@ export default {
       layer.source = sourceName
       layer.paint[colorProp] = category.color
 
-      if (!this.map.getLayer(layerName)) {
+      if (!map.getLayer(layerName)) {
         const labelLayer = { ...customMapLayerTypes.label }
         const labelLayerName = `${category._id}--layer--label`
-        this.map.addLayer(layer)
+        map.addLayer(layer)
 
-        if (!this.map.getLayer(labelLayerName)) {
+        map.on('click', layer.id, function(e) {
+          vm.handleFeatureSelection({
+            e,
+            map,
+            layerID: layer.id,
+            drawn: category.t.includes('custom')
+          })
+        })
+        // eslint-disable-next-line
+        map.on('mouseenter', layer.id, function(e) {
+          map.getCanvas().style.cursor = 'pointer'
+        })
+        // eslint-disable-next-line
+        map.on('mouseleave', layer.id, function(e) {
+          map.getCanvas().style.cursor = ''
+        })
+
+        if (!map.getLayer(labelLayerName)) {
           labelLayer.id = labelLayerName
           labelLayer.source = sourceName
           labelLayer.filter = layer.filter
@@ -318,10 +445,11 @@ export default {
             labelLayer.layout[labelLayoutProp[0][0]] = labelLayoutProp[0][1]
             labelLayer.layout[labelLayoutProp[1][0]] = labelLayoutProp[1][1]
           }
-          this.map.addLayer(labelLayer)
+          if (type == 'points') labelLayer.layout['text-field'] = '{name}'
+          map.addLayer(labelLayer)
         }
       } else {
-        this.map.setPaintProperty(layerName, colorProp, category.color)
+        map.setPaintProperty(layerName, colorProp, category.color)
       }
     },
     handleGetFeatures() {
@@ -329,24 +457,6 @@ export default {
     },
     handleSetFeaturesList(list) {
       this.scene.features.list = list
-    },
-    handleSetMapSources(map) {
-      let vm = this
-      map.on('load', function() {
-        for (let source of editorMapConfig.sources) {
-          map.addSource(source, {
-            type: 'geojson',
-            data: fCollectionFormat()
-          })
-        }
-        vm.addMapLayers(vm.map)
-      })
-      return map
-    },
-    addMapLayers(map) {
-      for (let layer of editorMapConfig.layers) {
-        map.addLayer(layer)
-      }
     },
     async handleFileConverted(fc) {
       if (!fc.features.length) return
@@ -389,17 +499,32 @@ export default {
     },
     handleDialogData(data) {
       this.dialog.visible = false
-      const feature = { ...this.dialog.selectedFeature }
+      const feature = {
+        ...JSON.parse(JSON.stringify(this.dialog.selectedFeature))
+      }
 
       feature.properties = {
         ...feature.properties,
         ...data
       }
 
-      this.dialog.mode == 'create'
-        ? this.handleCreateFeature(feature)
-        : this.handleEditFeatProps(feature)
+      const ftWithMetadata =
+        this.dialog.mode == 'create'
+          ? this.handleCreateFeature(feature)
+          : this.handleEditFeatProps(feature, this.scene.features.list)
 
+      if (this.dialog.mode == 'create') {
+        this.scene.features.list.push(ftWithMetadata)
+      }
+      this.handleCategoriesChange(
+        categoryDataChange(this.categories, ftWithMetadata)
+      )
+      // setFeaturesIntoDrawnDataSource({
+      //   feature,
+      //   map: this.map,
+      //   list: this.scene.features.list
+      // })
+      this.controls.resetScene(false, true)
       this.dialog = {
         visible: false,
         mode: 'create',
@@ -438,20 +563,54 @@ export default {
           this.dialog.visible = true
           this.dialog.selectedFeature = feat
         },
+        handleCategoriesChange: (feature, list) => {
+          this.handleCategoriesChange(
+            categoryDataChange(this.categories, feature)
+          )
+          // setFeaturesIntoDrawnDataSource({
+          //   list,
+          //   map: this.map,
+          //   isCustomMap: false
+          // })
+          setFeaturesIntoDataSource({
+            list,
+            map: this.map
+          })
+        },
         handleSetFeaturesIntoDataSource: args => {
           setFeaturesIntoDrawnDataSource(args)
+          if (args.reset) setFeaturesIntoDataSource(args)
         },
         handleBeforeFeatureCreation: feat => {
           this.dialog.selectedFeature = feat
-          feat.geometry.type != 'Point'
-            ? (this.dialog.visible = true)
-            : this.handleDialogData({ name: '' })
+          this.dialog.visible = true
+          // feat.geometry.type != 'Point'
+          // ? (this.dialog.visible = true)
+          // : this.handleDialogData({ name: '' })
         }
       })
 
       map.addControl(this.controls)
       map.addControl(this.draw)
       return map
+    },
+    handleSetMapSources(map) {
+      let vm = this
+      map.on('load', function() {
+        for (let source of editorMapConfig.sources) {
+          map.addSource(source, {
+            type: 'geojson',
+            data: fCollectionFormat()
+          })
+        }
+        vm.addMapLayers(vm.map)
+      })
+      return map
+    },
+    addMapLayers(map) {
+      for (let layer of editorMapConfig.layers) {
+        map.addLayer(layer)
+      }
     },
     addMapEvents(map) {
       const vm = this
@@ -466,51 +625,29 @@ export default {
           vm.infoBox.lat = coords.lat.toFixed(5)
           vm.infoBox.lng = coords.lng.toFixed(5)
         })
-        const drawnLayers = editorMapConfig.layers.filter(layer =>
-          layer.id.includes('drawn')
-        )
-        const nonDrawnLayers = editorMapConfig.layers.filter(
-          layer => !layer.id.includes('drawn')
-        )
-        for (let layer of drawnLayers) {
-          map.on('click', layer.id, function(e) {
-            vm.handleFeatureSelection({
-              e,
-              map,
-              drawn: true,
-              layerID: layer.id
-            })
-          })
-          // eslint-disable-next-line
-          map.on('mouseenter', layer.id, function(e) {
-            map.getCanvas().style.cursor = 'pointer'
-          })
-          // eslint-disable-next-line
-          map.on('mouseleave', layer.id, function(e) {
-            map.getCanvas().style.cursor = ''
-          })
-        }
-        for (let layer of nonDrawnLayers) {
-          map.on('click', layer.id, function(e) {
-            vm.handleFeatureSelection({
-              e,
-              map,
-              drawn: false,
-              layerID: layer.id
-            })
-          })
-          // eslint-disable-next-line
-          map.on('mouseenter', layer.id, function(e) {
-            map.getCanvas().style.cursor = 'pointer'
-          })
-          // eslint-disable-next-line
-          map.on('mouseleave', layer.id, function(e) {
-            map.getCanvas().style.cursor = ''
-          })
-        }
+
         map.on('zoom', function() {
           vm.infoBox.zoom = map.getZoom().toFixed(5)
         })
+
+        for (let layer of editorMapConfig.layers) {
+          map.on('click', layer.id, function(e) {
+            vm.handleFeatureSelection({
+              e,
+              map,
+              layerID: layer.id,
+              drawn: !layer.id.includes('nondrawn')
+            })
+          })
+          // eslint-disable-next-line
+          map.on('mouseenter', layer.id, function(e) {
+            map.getCanvas().style.cursor = 'pointer'
+          })
+          // eslint-disable-next-line
+          map.on('mouseleave', layer.id, function(e) {
+            map.getCanvas().style.cursor = ''
+          })
+        }
       })
       return map
     },
@@ -527,7 +664,7 @@ export default {
         map: this.map,
         feature: this.type,
         isCustomMap: custom,
-        list: this.scene.features.list
+        list: feats ? feats : this.scene.features.list
       })
 
       if (zoomTo) {
@@ -543,9 +680,10 @@ export default {
       const featureSelected = map.queryRenderedFeatures(e.point, {
         layers: [layerID]
       })[0]
+
       // TODO: Check againts _id coming from DB
       // Joja needs to finish this first, in order to work
-      console.log(featureSelected)
+      // console.log(featureSelected)
 
       if (featureSelected) {
         const idProp = drawn ? '__editorID' : '_id'
@@ -556,81 +694,33 @@ export default {
 
         if (!feature) return
         try {
-          if (drawn) {
-            setFeaturesIntoDrawnDataSource({
-              feature,
-              map: this.map,
-              list: this.scene.features.list.filter(
-                feat => feat[idProp] != featureID
-              )
-            })
-          } else {
-            setFeaturesIntoDataSource({
-              feature,
-              map: this.map,
-              list: this.scene.features.list.filter(
-                feat => feat[idProp] != featureID
-              )
-            })
-          }
           this.scene.edition = true
-          this.controls.handleDrawSelectionChange(feature)
+          this.scene.features.layerFiltered = layerID
+          map.setFilter(layerID, ['!=', ['get', idProp], featureID])
+          this.controls.handleDrawSelectionChange(
+            JSON.parse(JSON.stringify(feature))
+          )
         } catch (err) {
           console.error(err)
         }
       }
     },
-    // ---------------------------------------------------------------------------------------
-    // ---------------------------------------------------------------------------------------
-    // ---------------------------------------------------------------------------------------
-    // THIS WAS ONLY BEING USED WHEN USING DRAW FOR STORING THE ACTUAL FEATURE COLLLECTION DATA
-    // ---------------------------------------------------------------------------------------
-    // ---------------------------------------------------------------------------------------
-    // ---------------------------------------------------------------------------------------
-    // handleDrawSelectionChange(e) {
-    //   if (e.features.length <= 0) return
-    //   const featureSelected = this.scene.features.list.filter(
-    //     feat => feat.id == e.features[0].id
-    //   )[0]
-
-    //   if (featureSelected) {
-    //     this.scene.edition = true
-    //     this.controls.handleDrawSelectionChange(featureSelected)
-    //   }
-    // },
-    // ---------------------------------------------------------------------------------------
-    // ---------------------------------------------------------------------------------------
-    // ---------------------------------------------------------------------------------------
     handleCreateFeature(feat) {
-      const feature = {
-        ...feat
-      }
-      {
-        let id = `${feat.properties.name}.${Date.now()}`
-        feature.__editorID = id
-        feature.properties.__editorID = id
-      }
-
-      this.scene.features.list.push(feature)
-      setFeaturesIntoDrawnDataSource({
-        feature,
-        map: this.map,
-        list: this.scene.features.list
-      })
-      this.controls.resetScene()
+      const feature = { ...feat }
+      let id = `${feat.properties.name}.${Date.now() + Math.random() * 1.52}`
+      feature.__editorID = id
+      feature.properties.__editorID = id
+      return feature
     },
-    handleEditFeatProps(feature) {
-      this.scene.features.list.forEach((feat, i) => {
+    handleEditFeatProps(feature, list) {
+      for (let i = 0; i < list.length; i++) {
+        let feat = list[i]
         if (feat.id == feature.id) {
           this.scene.features.list[i] = { ...feature }
+          break
         }
-      })
-      setFeaturesIntoDrawnDataSource({
-        feature,
-        map: this.map,
-        list: this.scene.features.list
-      })
-      this.controls.resetScene()
+      }
+      return feature
     },
     toggleDarkMode(dark) {
       this.map.setStyle(dark ? mapConfig.darkBasemap : mapConfig.default)

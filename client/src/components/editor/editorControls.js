@@ -10,6 +10,7 @@ class EditorControls {
     draw,
     type,
     scene,
+    handleCategoriesChange,
     handleBeforeFeatureCreation,
     handleEditFeatureProperties,
     handleSetFeaturesIntoDataSource
@@ -20,8 +21,8 @@ class EditorControls {
     this.scene = scene
     this.snaping = new Snaping({
       map: map,
-      draw: draw,
       pixel: 8,
+      draw: draw,
       scene: scene,
       snapLayers: [
         'cls-layer',
@@ -33,6 +34,7 @@ class EditorControls {
     this.snapMode = false
     this.resetScene = this.resetScene
     this.updateControls = this.updateControls
+    this.handleCategoriesChange = handleCategoriesChange
     this.handleBeforeFeatureCreation = handleBeforeFeatureCreation
     this.handleEditFeatureProperties = handleEditFeatureProperties
     this.handleDrawSelectionChange = this.handleDrawSelectionChange
@@ -82,6 +84,7 @@ class EditorControls {
             : false,
         eventListener: () => this.handleCutFeature()
       }),
+
       vertexdelete: createControlButton('vertexdelete', {
         container: this.controlGroup,
         className:
@@ -96,6 +99,7 @@ class EditorControls {
             : false,
         eventListener: () => this.handleDeleteVertex()
       }),
+
       point: createControlButton('point', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-point',
@@ -178,22 +182,27 @@ class EditorControls {
   }
   /**
    *
-   * @param { boolean } isResetList - A boolean indicating if it should reset the list of features saved too
+   * @param { boolean } reset - A boolean indicating if it should reset the list of features saved too
    */
-  resetScene(isResetList) {
+  resetScene(reset, removeFilter = false) {
     this.scene.edition = null
     this.scene.creation = null
-    this.scene.features.selected = null
     this.scene.snappoint = null
+    this.scene.features.selected = null
+
+    if (removeFilter && this.scene.features.layerFiltered) {
+      this.map.setFilter(this.scene.features.layerFiltered, ['has', '$type'])
+    }
+    this.scene.features.layerFiltered = null
     this.draw.changeMode(this.draw.modes.SIMPLE_SELECT)
     this.draw.set(fCollectionFormat())
-    if (isResetList) {
-      this.scene.features.list = []
-    }
+
+    if (reset) this.scene.features.list = []
   }
 
   deleteFeature() {
-    const selected = this.draw.getSelected()
+    const selected = this.scene.features.selected
+    //TODO: WHEN DELETING A FEATURE IS NOT DELETING THE LABEL ASSOCIATION IN THE SOURCE-LAYER
 
     if (selected && selected.features.length > 0) {
       for (let feature of selected.features) {
@@ -201,11 +210,7 @@ class EditorControls {
           feat => feat.__editorID != feature.properties.__editorID
         )
         this.scene.features.list = list
-        this.handleSetFeaturesIntoDataSource({
-          list,
-          map: this.map,
-          feature: feature
-        })
+        this.handleCategoriesChange(feature, list)
       }
       this.resetScene()
     }
@@ -300,7 +305,7 @@ class EditorControls {
    * @param { Array } features - FeatureCollection with the features that has been selected by the user
    */
   handleDrawSelectionChange(feature) {
-    if (!this.scene.creation && feature) {
+    if (feature) {
       const id = this.draw.add(feature)
       this.scene.edition = true
       this.scene.features.selected = { ...feature }
@@ -329,11 +334,13 @@ class EditorControls {
   handleFeatureEdition() {
     const currentFeature = this.draw.getSelected()
 
+    //TODO: EDITION IS NOT THERE YET, THERE SOME FEW BUGS THAT I HAVEN'T CATCH
+
     if (currentFeature.features.length > 0) {
       const feat = JSON.parse(
         JSON.stringify(
           this.scene.features.list.filter(
-            f => f.id == currentFeature.features[0].id
+            f => f.__editorID == currentFeature.features[0].__editorID
           )[0]
         )
       )
@@ -343,7 +350,7 @@ class EditorControls {
 
       this.scene.features.list.forEach((feature, i) => {
         for (let featEdit of [feat]) {
-          if (feature.id == featEdit.id) {
+          if (feature.__editorID == featEdit.__editorID) {
             this.scene.features.list[i] = { ...featEdit }
           }
         }
@@ -362,12 +369,10 @@ class EditorControls {
     const featuresSelected = this.draw.getSelected()
 
     if (featuresSelected && featuresSelected.features.length > 0) {
-      const features = this.scene.features.list.filter(
-        f => f.id == featuresSelected.features[0].id
-      )
-      await this.handleEditFeatureProperties(
-        features.length ? JSON.parse(JSON.stringify(features[0])) : null
-      )
+      const feature = this.scene.features.list.filter(
+        f => f.__editorID == featuresSelected.features[0].properties.__editorID
+      )[0]
+      if (feature) await this.handleEditFeatureProperties(feature)
     }
   }
 

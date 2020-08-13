@@ -260,8 +260,8 @@ export const customMapLayerTypes = {
     source: 'default-source',
     type: 'line',
     paint: {
-      'line-width': 1.5,
-      'line-color': '#7288b0'
+      'line-width': 1.5
+      // 'line-color': ['case', ['get', 'color'], '{color}', '#7288b0']
     },
     filter: ['all', ['!=', '$type', 'Point'], ['!=', '$type', 'Polygon']]
     // ['==', '$type', 'LineString']
