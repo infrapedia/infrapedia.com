@@ -184,13 +184,13 @@ class EditorControls {
    *
    * @param { boolean } reset - A boolean indicating if it should reset the list of features saved too
    */
-  resetScene(reset, removeFilter = false) {
+  resetScene(reset, removeFilter = Boolean(this.scene.features.layerFiltered)) {
     this.scene.edition = null
     this.scene.creation = null
     this.scene.snappoint = null
     this.scene.features.selected = null
 
-    if (removeFilter && this.scene.features.layerFiltered) {
+    if (removeFilter) {
       this.map.setFilter(this.scene.features.layerFiltered, ['has', '$type'])
     }
     this.scene.features.layerFiltered = null
@@ -201,16 +201,19 @@ class EditorControls {
   }
 
   deleteFeature() {
-    const selected = this.scene.features.selected
+    const selected = this.draw.getSelected().features
     //TODO: WHEN DELETING A FEATURE IS NOT DELETING THE LABEL ASSOCIATION IN THE SOURCE-LAYER
 
-    if (selected && selected.features.length > 0) {
-      for (let feature of selected.features) {
-        const list = this.scene.features.list.filter(
-          feat => feat.__editorID != feature.properties.__editorID
+    if (selected && selected.length > 0) {
+      for (let feature of selected) {
+        this.scene.features.list = this.scene.features.list.filter(
+          feat => feat.properties.__editorID != feature.properties.__editorID
         )
-        this.scene.features.list = list
-        this.handleCategoriesChange(feature, list)
+        this.handleCategoriesChange({
+          feature,
+          isDelete: true,
+          list: this.scene.features.list
+        })
       }
       this.resetScene()
     }
@@ -269,35 +272,35 @@ class EditorControls {
   }
 
   handleCancel() {
-    this.scene.features.selected = this.draw.getSelected()
-
-    if (this.scene.creation) {
-      // We are deleting the selected and just created draw(s)
-      if (this.scene.features && this.scene.features.length) {
-        for (let feat of this.scene.features) {
-          this.draw.delete(feat.id)
-        }
-        if (this.scene.features) {
-          for (let feature of this.scene.features.features) {
-            this.handleSetFeaturesIntoDataSource({
-              list: this.scene.features.list,
-              map: this.map,
-              feature
-            })
-          }
-        }
-      }
-    } else if (this.scene.edition) {
-      // Because you cancel the edition we need to refresh the sourceData
-      for (let feature of this.scene.features.list) {
-        this.handleSetFeaturesIntoDataSource({
-          feature,
-          map: this.map,
-          list: this.scene.features.list
-        })
-      }
-    }
     this.resetScene()
+    // this.scene.features.selected = this.draw.getSelected()
+    // if (this.scene.creation) {
+    //   // We are deleting the selected and just created draw(s)
+    //   if (this.scene.features && this.scene.features.length) {
+    //     for (let feat of this.scene.features) {
+    //       this.draw.delete(feat.id)
+    //     }
+    //     if (this.scene.features) {
+    //       for (let feature of this.scene.features.features) {
+    //         this.handleSetFeaturesIntoDataSource({
+    //           list: this.scene.features.list,
+    //           map: this.map,
+    //           feature
+    //         })
+    //       }
+    //     }
+    //   }
+    // } else if (this.scene.edition) {
+    //   // Because you cancel the edition we need to refresh the sourceData
+    //   for (let feature of this.scene.features.list) {
+    //     this.handleSetFeaturesIntoDataSource({
+    //       feature,
+    //       map: this.map,
+    //       list: this.scene.features.list
+    //     })
+    //   }
+    // }
+    // }
   }
 
   /**
@@ -331,48 +334,33 @@ class EditorControls {
       })
     }
   }
-  handleFeatureEdition() {
-    const currentFeature = this.draw.getSelected()
+  async handleFeatureEdition() {
+    const features = this.draw.getSelected().features
 
     //TODO: EDITION IS NOT THERE YET, THERE SOME FEW BUGS THAT I HAVEN'T CATCH
 
-    if (currentFeature.features.length > 0) {
-      const feat = JSON.parse(
-        JSON.stringify(
-          this.scene.features.list.filter(
-            f => f.__editorID == currentFeature.features[0].__editorID
-          )[0]
-        )
-      )
-
-      feat.geometry.coordinates =
-        currentFeature.features[0].geometry.coordinates
-
-      this.scene.features.list.forEach((feature, i) => {
-        for (let featEdit of [feat]) {
-          if (feature.__editorID == featEdit.__editorID) {
-            this.scene.features.list[i] = { ...featEdit }
-          }
-        }
-      })
-
-      this.handleSetFeaturesIntoDataSource({
-        feature: currentFeature.features[0],
-        list: this.scene.features.list,
-        map: this.map
+    if (features.length > 0) {
+      await this.handleEditFeatureProperties({
+        feat: features[0],
+        isGeomEdit: true
       })
       this.resetScene()
     }
   }
 
   async handleEditFeatureProps() {
-    const featuresSelected = this.draw.getSelected()
+    const features = this.draw.getSelected().features
 
-    if (featuresSelected && featuresSelected.features.length > 0) {
+    if (features && features.length > 0) {
       const feature = this.scene.features.list.filter(
-        f => f.__editorID == featuresSelected.features[0].properties.__editorID
+        f => f.properties.__editorID == features[0].properties.__editorID
       )[0]
-      if (feature) await this.handleEditFeatureProperties(feature)
+
+      if (feature)
+        await this.handleEditFeatureProperties({
+          feat: feature,
+          isGeomEdit: false
+        })
     }
   }
 

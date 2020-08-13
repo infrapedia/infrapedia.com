@@ -7,7 +7,7 @@
     :show-close="true"
     :close-on-press-escape="true"
     :close-on-click-modal="false"
-    :before-close="handleClose"
+    :before-close="() => handleClose(true)"
   >
     <h2 class="title-user-variant" slot="title">
       {{ title }}
@@ -55,7 +55,7 @@
       </template>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="handleClose">
+      <el-button type="primary" @click="() => handleClose(false)">
         Save
       </el-button>
     </span>
@@ -226,23 +226,27 @@ export default {
         }
       }
     },
-    handleClose() {
-      if (!this.form.name || this.form.name == undefined) {
-        this.form.name = this.creationForm.name
-      }
-      if (
-        this.feature.geometry.type.toLowerCase() == 'polygon' &&
-        this.form.height == 0
-      ) {
-        this.form.height = 1
-      }
-
-      if (this.categorySelected) {
-        this.form = {
-          ...this.form
+    handleClose(cancel) {
+      if (!cancel) {
+        if (!this.form.name || this.form.name == undefined) {
+          this.form.name = this.creationForm.name
         }
+        if (
+          this.feature.geometry.type.toLowerCase() == 'polygon' &&
+          this.form.height == 0
+        ) {
+          this.form.height = 1
+        }
+
+        if (this.categorySelected) {
+          this.form = {
+            ...this.form
+          }
+        }
+        return this.$emit('close', this.form)
+      } else {
+        return this.$emit('close', false)
       }
-      return this.$emit('close', this.form)
     }
   }
 }

@@ -214,14 +214,14 @@ export default {
   mounted() {
     this.map = this.handleSetMapSources(this.addMapEvents(this.createMap()))
     this.toggleDarkMode(this.dark)
-    this.controls.resetScene(false)
+    this.controls.resetScene()
 
     if (this.scene.features.list.length > 0) {
       this.handleGetFeatures()
     }
   },
   beforeDestroy() {
-    if (this.scene.features.list.length) {
+    if (process.env == 'production' && this.scene.features.list.length) {
       this.controls.resetScene(true)
     }
     bus.$off(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
@@ -287,16 +287,17 @@ export default {
       }
     },
     onDrop(e) {
+      this.drag.hover = false
       if (this.type != 'map') return
 
-      const file = e.dataTransfer.files
-      this.drag.hover = false
       const fr = new FileReader()
       fr.onload = function() {
         const file = { ...JSON.parse(fr.result) }
         bus.$emit('drawn-features-dnd', file)
       }
-      if (file) fr.readAsText(file[0])
+      if (e.dataTransfer.files.length > 0) {
+        fr.readAsText(e.dataTransfer.files[0])
+      }
     },
     async handleCategoryRemoved(category) {
       const sourceName = `${category._id}--source`
@@ -499,32 +500,30 @@ export default {
     },
     handleDialogData(data) {
       this.dialog.visible = false
-      const feature = {
-        ...JSON.parse(JSON.stringify(this.dialog.selectedFeature))
+      if (data) {
+        const feature = {
+          ...JSON.parse(JSON.stringify(this.dialog.selectedFeature))
+        }
+
+        feature.properties = {
+          ...feature.properties,
+          ...data
+        }
+
+        const ftWithMetadata =
+          this.dialog.mode == 'create'
+            ? this.handleCreateFeature(feature)
+            : this.handleEditFeatProps(feature, this.scene.features.list)
+
+        if (this.dialog.mode == 'create') {
+          this.scene.features.list.push(ftWithMetadata)
+        }
+        this.handleCategoriesChange(
+          categoryDataChange(this.categories, ftWithMetadata)
+        )
       }
 
-      feature.properties = {
-        ...feature.properties,
-        ...data
-      }
-
-      const ftWithMetadata =
-        this.dialog.mode == 'create'
-          ? this.handleCreateFeature(feature)
-          : this.handleEditFeatProps(feature, this.scene.features.list)
-
-      if (this.dialog.mode == 'create') {
-        this.scene.features.list.push(ftWithMetadata)
-      }
-      this.handleCategoriesChange(
-        categoryDataChange(this.categories, ftWithMetadata)
-      )
-      // setFeaturesIntoDrawnDataSource({
-      //   feature,
-      //   map: this.map,
-      //   list: this.scene.features.list
-      // })
-      this.controls.resetScene(false, true)
+      this.controls.resetScene()
       this.dialog = {
         visible: false,
         mode: 'create',
@@ -558,24 +557,22 @@ export default {
         map: map,
         type: this.type,
         scene: this.scene,
-        handleEditFeatureProperties: feat => {
-          this.dialog.mode = 'edit'
-          this.dialog.visible = true
-          this.dialog.selectedFeature = feat
+        handleEditFeatureProperties: ({ feat, isGeomEdit = false }) => {
+          if (isGeomEdit) {
+            this.handleEditFeatProps(feat, this.scene.features.list)
+            this.handleCategoriesChange(
+              categoryDataChange(this.categories, feat)
+            )
+          } else {
+            this.dialog.mode = 'edit'
+            this.dialog.visible = true
+            this.dialog.selectedFeature = feat
+          }
         },
-        handleCategoriesChange: (feature, list) => {
+        handleCategoriesChange: ({ feature, isDelete }) => {
           this.handleCategoriesChange(
-            categoryDataChange(this.categories, feature)
+            categoryDataChange(this.categories, feature, isDelete)
           )
-          // setFeaturesIntoDrawnDataSource({
-          //   list,
-          //   map: this.map,
-          //   isCustomMap: false
-          // })
-          setFeaturesIntoDataSource({
-            list,
-            map: this.map
-          })
         },
         handleSetFeaturesIntoDataSource: args => {
           setFeaturesIntoDrawnDataSource(args)
@@ -681,6 +678,8 @@ export default {
         layers: [layerID]
       })[0]
 
+      if (this.scene.edition) this.controls.resetScene()
+
       // TODO: Check againts _id coming from DB
       // Joja needs to finish this first, in order to work
       // console.log(featureSelected)
@@ -689,7 +688,7 @@ export default {
         const idProp = drawn ? '__editorID' : '_id'
         const featureID = featureSelected.properties[idProp]
         const feature = this.scene.features.list.filter(
-          feat => feat[idProp] == featureID
+          feat => feat.properties[idProp] == featureID
         )[0]
 
         if (!feature) return
@@ -715,7 +714,10 @@ export default {
     handleEditFeatProps(feature, list) {
       for (let i = 0; i < list.length; i++) {
         let feat = list[i]
-        if (feat.id == feature.id) {
+        if (
+          feat.__editorID == feature.properties.__editorID ||
+          feat.properties.__editorID == feature.properties.__editorID
+        ) {
           this.scene.features.list[i] = { ...feature }
           break
         }

@@ -27,9 +27,12 @@ function zoomToFeature({ fc, map, type }) {
   return map
 }
 
-function categoryDataChange(categories, feature) {
+function categoryDataChange(categories, feature, isDelete) {
   return categories.map(cat => {
-    if (cat._id == feature.properties.category) {
+    if (
+      cat._id == feature.properties.category ||
+      cat._id == feature.properties.category._id
+    ) {
       if (
         feature.geometry.type == 'Point' &&
         cat.types.includes('custom points')
@@ -37,19 +40,30 @@ function categoryDataChange(categories, feature) {
         ////////////////////////////////
         //////----  POINTS ----////////
         //////////////////////////////
-        const data = cat.data['custom points'].map(it => it.__editorID)
+        const data = cat.data['custom points'].map(
+          it => it.properties.__editorID
+        )
         if (!data.includes(feature.properties.__editorID)) {
           cat.data['custom points'].push(feature)
         } else {
           for (let i = 0; i < data.length; i++) {
             if (
-              cat.data['custom points'][i].__editorID ==
+              cat.data['custom points'][i].properties.__editorID ==
               feature.properties.__editorID
             ) {
-              cat.data['custom points'][i] = { ...feature }
+              console.log('MATCH!!!!!!!', 'POINTS')
+              if (!isDelete) {
+                cat.data['custom points'][i] = { ...feature }
+              } else {
+                delete cat.data['custom points'][i]
+              }
               break
             }
           }
+        }
+
+        if (isDelete) {
+          cat.data['custom points'] = cat.data['custom points'].filter(t => t)
         }
       } else if (
         feature.geometry.type == 'Polygon' &&
@@ -58,19 +72,32 @@ function categoryDataChange(categories, feature) {
         ////////////////////////////////
         //////---  POLYGONS ---////////
         //////////////////////////////
-        const data = cat.data['custom polygons'].map(it => it.__editorID)
+        const data = cat.data['custom polygons'].map(
+          it => it.properties.__editorID
+        )
         if (!data.includes(feature.properties.__editorID)) {
           cat.data['custom polygons'].push(feature)
         } else {
           for (let i = 0; i < data.length; i++) {
             if (
-              cat.data['custom polygons'][i].__editorID ==
+              cat.data['custom polygons'][i].properties.__editorID ==
               feature.properties.__editorID
             ) {
-              cat.data['custom polygons'][i] = { ...feature }
+              console.log('MATCH!!!!!!!', 'POLYGONS')
+              if (!isDelete) {
+                cat.data['custom polygons'][i] = { ...feature }
+              } else {
+                delete cat.data['custom polygons'][i]
+              }
               break
             }
           }
+        }
+
+        if (isDelete) {
+          cat.data['custom polygons'] = cat.data['custom polygons'].filter(
+            t => t
+          )
         }
       } else if (
         feature.geometry.type == 'LineString' &&
@@ -79,19 +106,30 @@ function categoryDataChange(categories, feature) {
         ////////////////////////////////
         ///////----  LINES ----////////
         //////////////////////////////
-        const data = cat.data['custom lines'].map(it => it.__editorID)
+        const data = cat.data['custom lines'].map(
+          it => it.properties.__editorID
+        )
         if (!data.includes(feature.properties.__editorID)) {
           cat.data['custom lines'].push(feature)
         } else {
           for (let i = 0; i < data.length; i++) {
             if (
-              cat.data['custom lines'][i].__editorID ==
+              cat.data['custom lines'][i].properties.__editorID ==
               feature.properties.__editorID
             ) {
-              cat.data['custom lines'][i] = { ...feature }
+              console.log('MATCH!!!!!!!', 'LINES')
+              if (!isDelete) {
+                cat.data['custom lines'][i] = { ...feature }
+              } else {
+                delete cat.data['custom lines'][i]
+              }
               break
             }
           }
+        }
+
+        if (isDelete) {
+          cat.data['custom lines'] = cat.data['custom lines'].filter(t => t)
         }
       }
     }
