@@ -198,7 +198,7 @@ import { uploadOrgLogo } from '../../services/api/uploads'
 import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 import { checkOrganizationNameExistence } from '../../services/api/check_name'
 import debounce from '../../helpers/debounce'
-import { getOrgLinkedElements } from '../../services/api/organizations'
+// import { getOrgLinkedElements } from '../../services/api/organizations'
 
 export default {
   name: 'OrgForm',
@@ -302,7 +302,7 @@ export default {
     async mode(str) {
       if (str == 'edit') {
         this.setLogoUrl()
-        await this.getOrgLinkedElements(this.form._id)
+        // await this.getOrgLinkedElements(this.form._id)
       }
     },
     visible(bool) {
@@ -319,26 +319,26 @@ export default {
     }
   },
   methods: {
-    async getOrgLinkedElements(id) {
-      const [
-        cls,
-        subsea,
-        terrestrial,
-        facilities,
-        knownUsers
-      ] = await getOrgLinkedElements({
-        user_id: this.$auth.getUserID(),
-        id
-      })
+    // async getOrgLinkedElements(id) {
+    //   const [
+    //     cls,
+    //     subsea,
+    //     terrestrial,
+    //     facilities,
+    //     knownUsers
+    //   ] = await getOrgLinkedElements({
+    //     user_id: this.$auth.getUserID(),
+    //     id
+    //   })
 
-      this.linkedElements = {
-        cls: cls.r ? cls.r : cls,
-        subsea: subsea.r ? subsea.r : subsea,
-        knownUsers: knownUsers.r ? knownUsers.r : knownUsers,
-        facilities: facilities.r ? facilities.r : facilities,
-        terrestrial: terrestrial.r ? terrestrial.r : terrestrial
-      }
-    },
+    //   this.linkedElements = {
+    //     cls: cls.r ? cls.r : cls,
+    //     subsea: subsea.r ? subsea.r : subsea,
+    //     knownUsers: knownUsers.r ? knownUsers.r : knownUsers,
+    //     facilities: facilities.r ? facilities.r : facilities,
+    //     terrestrial: terrestrial.r ? terrestrial.r : terrestrial
+    //   }
+    // },
     checkName: debounce(async function(name) {
       this.isNameRepeated = false
       const {

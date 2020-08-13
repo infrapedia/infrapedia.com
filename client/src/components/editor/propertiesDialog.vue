@@ -13,7 +13,7 @@
       {{ title }}
     </h2>
     <el-form>
-      <el-form-item label="Category">
+      <el-form-item label="Category" v-if="type == 'map'">
         <el-select
           v-model="form.category"
           placeholder

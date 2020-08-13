@@ -75,7 +75,7 @@ export default {
       return this.$store.state.isDark
     },
     checkMode() {
-      return this.mode === 'create' ? this.createOrg : this.saveEditedOrg
+      return this.mode == 'create' ? this.createOrg : this.saveEditedOrg
     }
   },
   beforeCreate() {
