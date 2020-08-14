@@ -15,7 +15,7 @@
 }
 
 .information-box {
-  top: 5rem;
+  top: 1.56rem;
   left: unset;
   font-size: 12px;
   background: rgba(255, 255, 255, 0.75);
@@ -29,6 +29,9 @@
   position: relative;
   &.custom-map {
     border: 2px dashed #ccc;
+    .information-box {
+      top: 5rem;
+    }
   }
   .overlay {
     position: absolute;
