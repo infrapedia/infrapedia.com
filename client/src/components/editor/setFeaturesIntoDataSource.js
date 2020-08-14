@@ -13,25 +13,26 @@ export function setFeaturesIntoDrawnDataSource({
     return
   }
 
-  console.log(feature)
-  // TODO: NEED TO CHECK EVERY CATEGORY COLOR, BEFORE STYLING THE CORRESPONDING LAYER
   if (isCustomMap) {
     const featureType =
       feature && feature.geometry && feature.geometry.type
         ? feature.geometry.type
-        : list[0].geometry.type
+        : list.length > 0
         ? list[0].geometry.type
         : false
     const categoryColor =
       feature && feature.properties && feature.properties.category
         ? feature.properties.category.color
-        : list[0].properties.category
+        : list.length > 0 &&
+          list[0].properties &&
+          list[0].properties.category &&
+          list[0].properties.color
         ? list[0].properties.category.color
         : null
     let layerType = null
     let colorProp = ''
 
-    if (featureType && categoryColor) {
+    if (featureType) {
       switch (featureType.toLowerCase()) {
         case 'point':
           layerType = 'cls'
@@ -50,8 +51,12 @@ export function setFeaturesIntoDrawnDataSource({
       const styleLayer = async type => {
         map.on('load', function() {
           let layerName = `drawn-${type}-layer`
-          if (layerName && categoryColor) {
-            map.setPaintProperty(layerName, colorProp, categoryColor)
+          if (layerName) {
+            map.setPaintProperty(
+              layerName,
+              colorProp,
+              categoryColor ? categoryColor : '#666666'
+            )
           }
         })
       }
@@ -71,11 +76,11 @@ export function setFeaturesIntoDrawnDataSource({
       setTimeout(
         () =>
           setFeaturesIntoDrawnDataSource({
-            feature,
-            list,
             map,
+            list,
             reset,
-            isCustomMap: true
+            feature,
+            isCustomMap
           }),
         320
       )
@@ -95,10 +100,6 @@ export function setFeaturesIntoDataSource({ list, map, reset }) {
       source.setData(fCollectionFormat(list))
     }
   } else {
-    // map.addSource(sourceName, {
-    //   type: 'geojson',
-    //   data: fCollectionFormat(list)
-    // })
     setTimeout(() => setFeaturesIntoDataSource({ list, map, reset }), 320)
   }
 }

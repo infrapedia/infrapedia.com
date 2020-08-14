@@ -71,6 +71,7 @@ import debounce from '../../helpers/debounce'
 import { getGeometries } from '../../helpers/getGeoms'
 import {
   zoomToFeature,
+  toggleDarkMode,
   setFeaturesIntoDataSource,
   setFeaturesIntoDrawnDataSource,
   categoryDataChange
@@ -188,8 +189,8 @@ export default {
     }
   },
   watch: {
-    dark(bool) {
-      this.toggleDarkMode(bool)
+    dark(dark) {
+      toggleDarkMode({ dark, map: this.map })
     },
     scene: {
       handler(newState) {
@@ -213,7 +214,7 @@ export default {
   },
   mounted() {
     this.map = this.handleSetMapSources(this.addMapEvents(this.createMap()))
-    this.toggleDarkMode(this.dark)
+    toggleDarkMode({ dark: this.dark, map: this.map })
     this.controls.resetScene()
 
     if (this.scene.features.list.length > 0) {
@@ -420,23 +421,6 @@ export default {
         const labelLayerName = `${category._id}--layer--label`
         map.addLayer(layer)
 
-        map.on('click', layer.id, function(e) {
-          vm.handleFeatureSelection({
-            e,
-            map,
-            layerID: layer.id,
-            drawn: category.t.includes('custom')
-          })
-        })
-        // eslint-disable-next-line
-        map.on('mouseenter', layer.id, function(e) {
-          map.getCanvas().style.cursor = 'pointer'
-        })
-        // eslint-disable-next-line
-        map.on('mouseleave', layer.id, function(e) {
-          map.getCanvas().style.cursor = ''
-        })
-
         if (!map.getLayer(labelLayerName)) {
           labelLayer.id = labelLayerName
           labelLayer.source = sourceName
@@ -451,6 +435,25 @@ export default {
         }
       } else {
         map.setPaintProperty(layerName, colorProp, category.color)
+      }
+
+      if (category.t.includes('custom')) {
+        map.on('click', layer.id, function(e) {
+          vm.handleFeatureSelection({
+            e,
+            map,
+            drawn: true,
+            layerID: layer.id
+          })
+        })
+        // eslint-disable-next-line
+        map.on('mouseenter', layer.id, function(e) {
+          map.getCanvas().style.cursor = 'pointer'
+        })
+        // eslint-disable-next-line
+        map.on('mouseleave', layer.id, function(e) {
+          map.getCanvas().style.cursor = ''
+        })
       }
     },
     handleGetFeatures() {
@@ -477,7 +480,7 @@ export default {
       }
     },
     // I have to create a source layer for each category
-    // And then ask for the featureCollection
+    // And then ask for each featureCollection
     async handleMapFormFeatureSelection({ t, fc }) {
       if (!this.map) return
 
@@ -498,7 +501,7 @@ export default {
         }, 620)
       }
     },
-    handleDialogData(data) {
+    async handleDialogData(data) {
       this.dialog.visible = false
       if (data) {
         const feature = {
@@ -518,9 +521,18 @@ export default {
         if (this.dialog.mode == 'create') {
           this.scene.features.list.push(ftWithMetadata)
         }
-        this.handleCategoriesChange(
-          categoryDataChange(this.categories, ftWithMetadata)
-        )
+
+        if (data.category) {
+          this.handleCategoriesChange(
+            await categoryDataChange(this.categories, ftWithMetadata)
+          )
+        } else {
+          setFeaturesIntoDrawnDataSource({
+            feature,
+            map: this.map,
+            list: this.scene.features.list
+          })
+        }
       }
 
       this.controls.resetScene()
@@ -557,26 +569,40 @@ export default {
         map: map,
         type: this.type,
         scene: this.scene,
-        handleEditFeatureProperties: ({ feat, isGeomEdit = false }) => {
+        handleEditFeatureProperties: async ({
+          feat: feature,
+          isGeomEdit = false
+        }) => {
           if (isGeomEdit) {
-            this.handleEditFeatProps(feat, this.scene.features.list)
-            this.handleCategoriesChange(
-              categoryDataChange(this.categories, feat)
-            )
+            this.handleEditFeatProps(feature, this.scene.features.list)
+            if (feature.properties.category) {
+              this.handleCategoriesChange(
+                await categoryDataChange(this.categories, feature)
+              )
+            } else {
+              setFeaturesIntoDrawnDataSource({
+                feature,
+                map: this.map,
+                list: this.scene.features.list
+              })
+            }
           } else {
             this.dialog.mode = 'edit'
             this.dialog.visible = true
-            this.dialog.selectedFeature = feat
+            this.dialog.selectedFeature = feature
           }
         },
-        handleCategoriesChange: ({ feature, isDelete }) => {
-          this.handleCategoriesChange(
-            categoryDataChange(this.categories, feature, isDelete)
+        handleCategoriesChange: async ({ feature, isDelete }) => {
+          await this.handleCategoriesChange(
+            await categoryDataChange(this.categories, feature, isDelete)
           )
         },
-        handleSetFeaturesIntoDataSource: args => {
-          setFeaturesIntoDrawnDataSource(args)
-          if (args.reset) setFeaturesIntoDataSource(args)
+        handleSetFeaturesIntoDataSource: async args => {
+          await setFeaturesIntoDrawnDataSource(args)
+          if (args.reset) {
+            await setFeaturesIntoDataSource(args)
+            bus.$emit('categories-field-reset-datasets')
+          }
         },
         handleBeforeFeatureCreation: feat => {
           this.dialog.selectedFeature = feat
@@ -626,14 +652,15 @@ export default {
         map.on('zoom', function() {
           vm.infoBox.zoom = map.getZoom().toFixed(5)
         })
-
-        for (let layer of editorMapConfig.layers) {
+        const drawnLayers = editorMapConfig.layers.filter(
+          t => !t.id.includes('nondrawn')
+        )
+        for (let layer of drawnLayers) {
           map.on('click', layer.id, function(e) {
             vm.handleFeatureSelection({
               e,
               map,
-              layerID: layer.id,
-              drawn: !layer.id.includes('nondrawn')
+              layerID: layer.id
             })
           })
           // eslint-disable-next-line
@@ -673,34 +700,38 @@ export default {
       }
     },
     820),
-    handleFeatureSelection({ e, layerID, map, drawn }) {
+    handleFeatureSelection({ e, layerID, map }) {
       const featureSelected = map.queryRenderedFeatures(e.point, {
         layers: [layerID]
       })[0]
 
       if (this.scene.edition) this.controls.resetScene()
 
-      // TODO: Check againts _id coming from DB
-      // Joja needs to finish this first, in order to work
-      // console.log(featureSelected)
-
       if (featureSelected) {
-        const idProp = drawn ? '__editorID' : '_id'
+        const idProp = '__editorID'
         const featureID = featureSelected.properties[idProp]
         const feature = this.scene.features.list.filter(
           feat => feat.properties[idProp] == featureID
         )[0]
 
-        if (!feature) return
-        try {
-          this.scene.edition = true
-          this.scene.features.layerFiltered = layerID
-          map.setFilter(layerID, ['!=', ['get', idProp], featureID])
-          this.controls.handleDrawSelectionChange(
-            JSON.parse(JSON.stringify(feature))
-          )
-        } catch (err) {
-          console.error(err)
+        if (feature) {
+          try {
+            this.scene.edition = true
+            this.scene.features.layerFiltered = layerID
+            map.setFilter(layerID, ['!=', ['get', idProp], featureID])
+            this.controls.handleDrawSelectionChange(
+              JSON.parse(JSON.stringify(feature))
+            )
+          } catch (err) {
+            console.error(err)
+          }
+        } else {
+          setFeaturesIntoDrawnDataSource({
+            map: this.map,
+            feature: null,
+            list: this.scene.features.list,
+            isCustomMap: this.type == 'map'
+          })
         }
       }
     },
@@ -723,9 +754,6 @@ export default {
         }
       }
       return feature
-    },
-    toggleDarkMode(dark) {
-      this.map.setStyle(dark ? mapConfig.darkBasemap : mapConfig.default)
     }
   }
 }

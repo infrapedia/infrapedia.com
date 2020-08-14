@@ -174,7 +174,7 @@ export const editorMapConfig = {
       filter: ['==', '$type', 'Point'],
       type: 'symbol',
       layout: {
-        'text-field': '{name}. Status: {status}',
+        'text-field': '{name}',
         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
         'text-size': 14,
         'text-justify': 'right',
@@ -204,7 +204,7 @@ export const editorMapConfig = {
       type: 'symbol',
       filter: ['==', '$type', 'Point'],
       layout: {
-        'text-field': '{name}. Status: {status}',
+        'text-field': '{name}',
         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
         'text-size': 14,
         'text-justify': 'right',
@@ -219,7 +219,6 @@ export const editorMapConfig = {
       id: 'drawn-facilities-layer',
       type: 'fill-extrusion',
       source: 'drawn-features',
-      minzoom: 14,
       filter: ['==', '$type', 'Polygon'],
       paint: {
         'fill-extrusion-color': '#666666',
@@ -272,8 +271,6 @@ export const customMapLayerTypes = {
       // 'line-color': ['case', ['get', 'color'], '{color}', '#7288b0']
     },
     filter: ['all', ['!=', '$type', 'Point'], ['!=', '$type', 'Polygon']]
-    // ['==', '$type', 'LineString']
-    // filter: ['==', ['$type', 'LineString']]
   },
   points: {
     id: 'default-layer',

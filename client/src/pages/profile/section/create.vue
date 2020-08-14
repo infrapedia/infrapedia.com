@@ -544,7 +544,7 @@ export default {
       }
 
       bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, features)
-      await bus.$emit(`${EDITOR_LOAD_DRAW}`, features)
+      await bus.$emit(`${EDITOR_LOAD_DRAW}`, features, true, false)
     },
     handleCLSEditMode(data) {
       if (this.form.state == 'null' || this.form.state == 'undefined') {

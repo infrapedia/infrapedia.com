@@ -508,6 +508,18 @@ export default {
       bus.$emit('categories-field-values-change', list)
     }
   },
+  created() {
+    bus.$on(
+      'categories-field-reset-datasets',
+      this.handleCategoriesResetDataset
+    )
+  },
+  beforeDestroy() {
+    bus.$off(
+      'categories-field-reset-datasets',
+      this.handleCategoriesResetDataset
+    )
+  },
   methods: {
     handleScrollToView() {
       document
@@ -578,6 +590,9 @@ export default {
       }
       this.typesData.isLoadingCls = false
     },
+    /**
+     * @param s { String } - search queried from ixps select input
+     */
     async loadIxpsSearch(s) {
       if (s === '') return
       this.typesData.isLoadingIxps = true
@@ -641,6 +656,21 @@ export default {
       this.mode = 'edit'
       this.isInputVisible = true
       if (scrollToView) this.scrollIntoView()
+    },
+    handleCategoriesResetDataset() {
+      this.categories = this.categories.map(category => {
+        category.data = {
+          cls: [],
+          ixps: [],
+          facilities: [],
+          'custom lines': [],
+          'subsea cables': [],
+          'custom points': [],
+          'custom polygons': [],
+          'terrestrial networks': []
+        }
+        return category
+      })
     },
     saveEdit() {
       const categoryIdx = this.categories

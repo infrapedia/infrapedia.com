@@ -3,6 +3,7 @@ import {
   setFeaturesIntoDataSource,
   setFeaturesIntoDrawnDataSource
 } from './setFeaturesIntoDataSource'
+import { mapConfig } from '../../config/mapConfig'
 
 function zoomToFeature({ fc, map, type }) {
   if (fc.features.length <= 0) return
@@ -27,8 +28,13 @@ function zoomToFeature({ fc, map, type }) {
   return map
 }
 
-function categoryDataChange(categories, feature, isDelete) {
-  return categories.map(cat => {
+function toggleDarkMode({ dark, map }) {
+  map.setStyle(dark ? mapConfig.darkBasemap : mapConfig.default)
+  return map
+}
+
+async function categoryDataChange(categories, feature, isDelete) {
+  return await categories.map(cat => {
     if (
       cat._id == feature.properties.category ||
       cat._id == feature.properties.category._id
@@ -139,6 +145,7 @@ function categoryDataChange(categories, feature, isDelete) {
 
 export {
   zoomToFeature,
+  toggleDarkMode,
   categoryDataChange,
   setFeaturesIntoDataSource,
   setFeaturesIntoDrawnDataSource

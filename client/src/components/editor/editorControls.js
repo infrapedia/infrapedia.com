@@ -1,7 +1,7 @@
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { point, booleanEqual, lineSlice } from '@turf/turf'
 import createControlButton from './createControlButton'
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import Snaping from './snaping'
 
 class EditorControls {
@@ -151,9 +151,20 @@ class EditorControls {
         title: 'Delete All',
         visible: true,
         eventListener: () => {
-          if (this.scene.features.list.length <= 0) return
-          this.resetScene(true)
-          this.handleSetFeaturesIntoDataSource({ reset: true, map: this.map })
+          const message =
+            this.type == 'map'
+              ? 'This will delete everything on the editor. Including the elements on each category you created. You sure you want to continue?'
+              : 'This will delete everything on the editor. Except the elements you have selected on the form.'
+
+          return MessageBox.confirm(message, 'Delete all?')
+            .then(() => {
+              this.resetScene(true)
+              this.handleSetFeaturesIntoDataSource({
+                reset: true,
+                map: this.map
+              })
+            })
+            .catch(() => {})
         }
       }),
 
@@ -176,7 +187,7 @@ class EditorControls {
         container: this.controlGroup,
         className: 'editor-ctrl editor-cancel',
         title: 'Cancel',
-        eventListener: () => this.handleCancel()
+        eventListener: () => this.resetScene()
       })
     }
   }
@@ -209,11 +220,20 @@ class EditorControls {
         this.scene.features.list = this.scene.features.list.filter(
           feat => feat.properties.__editorID != feature.properties.__editorID
         )
-        this.handleCategoriesChange({
-          feature,
-          isDelete: true,
-          list: this.scene.features.list
-        })
+
+        if (feature.properties.category) {
+          this.handleCategoriesChange({
+            feature,
+            isDelete: true,
+            list: this.scene.features.list
+          })
+        } else {
+          this.handleSetFeaturesIntoDataSource({
+            feature,
+            map: this.map,
+            list: this.scene.features.list
+          })
+        }
       }
       this.resetScene()
     }
@@ -271,38 +291,6 @@ class EditorControls {
     }
   }
 
-  handleCancel() {
-    this.resetScene()
-    // this.scene.features.selected = this.draw.getSelected()
-    // if (this.scene.creation) {
-    //   // We are deleting the selected and just created draw(s)
-    //   if (this.scene.features && this.scene.features.length) {
-    //     for (let feat of this.scene.features) {
-    //       this.draw.delete(feat.id)
-    //     }
-    //     if (this.scene.features) {
-    //       for (let feature of this.scene.features.features) {
-    //         this.handleSetFeaturesIntoDataSource({
-    //           list: this.scene.features.list,
-    //           map: this.map,
-    //           feature
-    //         })
-    //       }
-    //     }
-    //   }
-    // } else if (this.scene.edition) {
-    //   // Because you cancel the edition we need to refresh the sourceData
-    //   for (let feature of this.scene.features.list) {
-    //     this.handleSetFeaturesIntoDataSource({
-    //       feature,
-    //       map: this.map,
-    //       list: this.scene.features.list
-    //     })
-    //   }
-    // }
-    // }
-  }
-
   /**
    *
    * @param { Array } features - FeatureCollection with the features that has been selected by the user
@@ -336,8 +324,6 @@ class EditorControls {
   }
   async handleFeatureEdition() {
     const features = this.draw.getSelected().features
-
-    //TODO: EDITION IS NOT THERE YET, THERE SOME FEW BUGS THAT I HAVEN'T CATCH
 
     if (features.length > 0) {
       await this.handleEditFeatureProperties({
