@@ -13,7 +13,7 @@
       {{ title }}
     </h2>
     <el-form>
-      <el-form-item label="Category">
+      <el-form-item label="Category" v-if="type == 'map'">
         <el-select
           v-model="form.category"
           placeholder
@@ -113,7 +113,11 @@ export default {
 
       if (this.mode != 'create') {
         this.form = { ...this.feature.properties }
-        if (this.form.category && typeof this.form.category != 'string') {
+        if (
+          this.type == 'map' &&
+          this.form.category &&
+          typeof this.form.category != 'string'
+        ) {
           this.form.category = this.feature.properties.category._id
         }
       } else {
@@ -209,6 +213,7 @@ export default {
   },
   methods: {
     handleCategorySelected(id) {
+      if (this.type != 'map') return
       const categoryData = this.categoriesList.filter(t => t._id == id)[0]
       if (categoryData) {
         this.categorySelected = {
@@ -238,7 +243,7 @@ export default {
           this.form.height = 1
         }
 
-        if (this.categorySelected) {
+        if (this.categorySelected && this.type == 'map') {
           this.form = {
             ...this.form
           }
