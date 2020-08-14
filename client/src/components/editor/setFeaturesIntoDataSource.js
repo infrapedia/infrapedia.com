@@ -71,6 +71,18 @@ export function setFeaturesIntoDrawnDataSource({
     if (source) {
       if (map.isSourceLoaded(sourceName)) {
         source.setData(fCollectionFormat(list))
+      } else {
+        setTimeout(
+          () =>
+            setFeaturesIntoDrawnDataSource({
+              map,
+              list,
+              reset,
+              feature,
+              isCustomMap
+            }),
+          10
+        )
       }
     } else {
       setTimeout(

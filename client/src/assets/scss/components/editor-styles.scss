@@ -27,7 +27,9 @@
 
 .map-editor-wrapper {
   position: relative;
-  border: 2px dashed transparent;
+  &.custom-map {
+    border: 2px dashed #ccc;
+  }
   .overlay {
     position: absolute;
     top: 0;

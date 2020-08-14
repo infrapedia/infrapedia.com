@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="{ dnd: drag.hover }"
+    :class="{ dnd: drag.hover, 'custom-map': type == 'map' }"
     class="map-editor-wrapper transition-all"
     @drop.prevent="onDrop"
     @dragover.prevent="() => (drag.hover = true)"
@@ -683,8 +683,7 @@ export default {
       const featuresCollection = fCollectionFormat(
         JSON.parse(JSON.stringify(this.scene.features.list))
       )
-
-      setFeaturesIntoDrawnDataSource({
+      await setFeaturesIntoDrawnDataSource({
         map: this.map,
         feature: this.type,
         isCustomMap: custom,
@@ -708,7 +707,9 @@ export default {
       if (this.scene.edition) this.controls.resetScene()
 
       if (featureSelected) {
-        const idProp = '__editorID'
+        const idProp = featureSelected.properties.__editorID
+          ? '__editorID'
+          : '_id'
         const featureID = featureSelected.properties[idProp]
         const feature = this.scene.features.list.filter(
           feat => feat.properties[idProp] == featureID
