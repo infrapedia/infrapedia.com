@@ -202,9 +202,14 @@ class EditorControls {
     this.scene.features.selected = null
 
     if (removeFilter) {
-      this.map.setFilter(this.scene.features.layerFiltered, ['has', '$type'])
+      const layerID = this.scene.features.layerFiltered
+
+      if (layerID.includes('label')) {
+        this.map.setFilter(layerID.replace('-label', ''), ['has', '$type'])
+      }
+      this.map.setFilter(layerID, ['has', '$type'])
+      this.scene.features.layerFiltered = null
     }
-    this.scene.features.layerFiltered = null
     this.draw.changeMode(this.draw.modes.SIMPLE_SELECT)
     this.draw.set(fCollectionFormat())
 
@@ -217,8 +222,9 @@ class EditorControls {
 
     if (selected && selected.length > 0) {
       for (let feature of selected) {
+        const idProp = feature.properties.__editorID ? '__editorID' : '_id'
         this.scene.features.list = this.scene.features.list.filter(
-          feat => feat.properties.__editorID != feature.properties.__editorID
+          feat => feat.properties[idProp] != feature.properties[idProp]
         )
 
         if (feature.properties.category) {
@@ -323,31 +329,18 @@ class EditorControls {
     }
   }
   async handleFeatureEdition() {
-    const features = this.draw.getSelected().features
-
-    if (features.length > 0) {
-      await this.handleEditFeatureProperties({
-        feat: features[0],
-        isGeomEdit: true
-      })
-      this.resetScene()
-    }
+    await this.handleEditFeatureProperties({
+      feat: this.scene.features.selected,
+      isGeomEdit: true
+    })
+    this.resetScene()
   }
 
   async handleEditFeatureProps() {
-    const features = this.draw.getSelected().features
-
-    if (features && features.length > 0) {
-      const feature = this.scene.features.list.filter(
-        f => f.properties.__editorID == features[0].properties.__editorID
-      )[0]
-
-      if (feature)
-        await this.handleEditFeatureProperties({
-          feat: feature,
-          isGeomEdit: false
-        })
-    }
+    await this.handleEditFeatureProperties({
+      isGeomEdit: false,
+      feat: this.scene.features.selected
+    })
   }
 
   async handleCutFeature() {

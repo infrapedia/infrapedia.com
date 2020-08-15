@@ -719,6 +719,13 @@ export default {
           try {
             this.scene.edition = true
             this.scene.features.layerFiltered = layerID
+            if (layerID.includes('label')) {
+              map.setFilter(layerID.replace('-label', ''), [
+                '!=',
+                ['get', idProp],
+                featureID
+              ])
+            }
             map.setFilter(layerID, ['!=', ['get', idProp], featureID])
             this.controls.handleDrawSelectionChange(
               JSON.parse(JSON.stringify(feature))
@@ -744,11 +751,12 @@ export default {
       return feature
     },
     handleEditFeatProps(feature, list) {
+      const idProp = feature.properties.__editorID ? '__editorID' : '_id'
       for (let i = 0; i < list.length; i++) {
         let feat = list[i]
         if (
-          feat.__editorID == feature.properties.__editorID ||
-          feat.properties.__editorID == feature.properties.__editorID
+          feat[idProp] == feature.properties[idProp] ||
+          feat.properties[idProp] == feature.properties[idProp]
         ) {
           this.scene.features.list[i] = { ...feature }
           break
