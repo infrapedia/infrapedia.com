@@ -17,6 +17,12 @@
       @page-change="getCablesList"
       @clear-search-input="getCablesList"
     />
+    <prompt-delete
+      :elemnt="elemntType"
+      :is-visible="promptDelete"
+      @delete-cancel="$emit('delete-cancel')"
+      @delete-confirm="$emit('delete-confirm')"
+    />
   </div>
 </template>
 
@@ -31,15 +37,18 @@ import {
 import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
 import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
 import debounce from '../../../helpers/debounce'
+import { deleteCablePermanently } from '../../../services/api/permanentDelete'
 
 export default {
   name: 'CablesSection',
   components: {
-    TableList
+    TableList,
+    PromptDelete: () => import('../../../components/PromptDelete')
   },
   data: () => ({
     tableData: [],
     loading: false,
+    promptDelete: false,
     tableConfig: {
       title: 'Terrestrial Networks',
       creation_link: '/user/section/create?id=terrestrial-network',
@@ -52,6 +61,9 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    elemntType() {
+      return 'network'
     }
   },
   beforeCreate() {
@@ -86,22 +98,37 @@ export default {
         query: { id: 'terrestrial-network', item: _id }
       })
     },
-    handleDeleteCable(_id) {
-      return this.$confirm(
-        'Are you sure you want to delete this Cable. This action is irreversible',
-        'Please confirm to continue'
-      ).then(async () => {
-        await deleteCable({
-          user_id: await this.$auth.getUserID(),
-          _id
-        }).then(() => {
-          this.handleTerrestrialSearch(
-            this.$refs.tableList.getTableSearchValue()
+    handleDeleteCable(_id, isPermanent) {
+      this.promptDelete = true
+
+      this.$once('delete-confirm', async () => {
+        if (!isPermanent) {
+          await deleteCable({
+            user_id: await this.$auth.getUserID(),
+            _id
+          }).then(() =>
+            this.handleTerrestrialSearch(
+              ...this.$refs.tableList.getTableSearchValue()
+            )
           )
-        })
-      }, console.error)
+        } else {
+          await deleteCablePermanently({
+            user_id: await this.$auth.getUserID(),
+            _id
+          }).then(() =>
+            this.handleTerrestrialSearch(
+              ...this.$refs.tableList.getTableSearchValue()
+            )
+          )
+        }
+        this.promptDelete = false
+      })
+
+      this.$once('delete-cancel', async () => {
+        this.promptDelete = false
+      })
     },
-    handleTerrestrialSearch: debounce(async function(s) {
+    handleTerrestrialSearch: debounce(async function(s, sortBy) {
       if (s == '') {
         if (!this.loading) await this.getCablesList()
         return
@@ -111,7 +138,8 @@ export default {
       const res = await getSearchByCablesT({
         user_id: await this.$auth.getUserID(),
         psz: true,
-        s
+        s,
+        sortBy
       })
       if (res && res.data) {
         this.tableData = res.data
