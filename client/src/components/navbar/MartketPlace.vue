@@ -51,7 +51,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="status" label="Status" />
-            <!-- <el-table-column fixed="right" label="Operations" width="220">
+            <el-table-column fixed="right" label="Operations" width="220">
               <template slot-scope="scope">
                 <div class="flex row justify-content-center">
                   <el-button @click="toggleDialog(scope.row)" size="small">
@@ -59,12 +59,12 @@
                   </el-button>
                 </div>
               </template>
-            </el-table-column> -->
+            </el-table-column>
           </el-table>
         </div>
       </transition>
     </div>
-    <!-- <el-dialog
+    <el-dialog
       :show-close="false"
       :append-to-body="true"
       :visible.sync="dialog.isVisible"
@@ -138,24 +138,24 @@
           >Confirm</el-button
         >
       </span>
-    </el-dialog> -->
+    </el-dialog>
   </div>
 </template>
 
 <script>
-// import siteKey from '../../config/siteKey'
+import siteKey from '../../config/siteKey'
 import ClickOutside from 'vue-click-outside'
 import { formatDate } from '../../helpers/formatDate'
-// import { getUserData } from '../../services/api/auth'
+import { getUserData } from '../../services/api/auth'
 import { formatMarketPlaceData } from '../../helpers/buyMessageFormatter'
 import {
-  getMarketPlaceList
-  // makeAnOffer
+  getMarketPlaceList,
+  makeAnOffer
 } from '../../services/api/marketplace'
 
 export default {
   components: {
-    // VueRecaptcha: () => import('vue-recaptcha')
+    VueRecaptcha: () => import('vue-recaptcha')
   },
   data: () => ({
     marketplaceData: [],
@@ -166,6 +166,7 @@ export default {
     dialog: {
       isVisible: false,
       rawMessage: null,
+      altRawMessage: null,
       form: {
         name: '',
         email: '',
@@ -179,58 +180,58 @@ export default {
     dark() {
       return this.$store.state.isDark
     }
-    // siteKey() {
-    //   return siteKey
-    // },
-    // dialogFormRules() {
-    //   return {
-    //     name: [
-    //       {
-    //         required: true,
-    //         message: 'Please input your full name',
-    //         trigger: 'blur'
-    //       },
-    //       {
-    //         max: 50,
-    //         message: 'Length should be max 50',
-    //         trigger: ['change', 'blur']
-    //       }
-    //     ],
-    //     organization: [
-    //       {
-    //         required: true,
-    //         message: 'Please input your organization name',
-    //         trigger: 'blur'
-    //       },
-    //       {
-    //         max: 50,
-    //         message: 'Length should be max 50',
-    //         trigger: ['change', 'blur']
-    //       }
-    //     ],
-    //     email: [
-    //       {
-    //         required: true,
-    //         message: 'Please input your email',
-    //         trigger: 'blur'
-    //       },
-    //       {
-    //         type: 'email',
-    //         required: true,
-    //         message: 'Please input a valid email',
-    //         trigger: 'change'
-    //       }
-    //     ],
-    //     subject: [],
-    //     message: [
-    //       {
-    //         required: true,
-    //         message: 'A Message is required',
-    //         trigger: 'blur'
-    //       }
-    //     ]
-    //   }
-    // }
+    siteKey() {
+      return siteKey
+    },
+    dialogFormRules() {
+      return {
+        name: [
+          {
+            required: true,
+            message: 'Please input your full name',
+            trigger: 'blur'
+          },
+          {
+            max: 50,
+            message: 'Length should be max 50',
+            trigger: ['change', 'blur']
+          }
+        ],
+        organization: [
+          {
+            required: true,
+            message: 'Please input your organization name',
+            trigger: 'blur'
+          },
+          {
+            max: 50,
+            message: 'Length should be max 50',
+            trigger: ['change', 'blur']
+          }
+        ],
+        email: [
+          {
+            required: true,
+            message: 'Please input your email',
+            trigger: 'blur'
+          },
+          {
+            type: 'email',
+            required: true,
+            message: 'Please input a valid email',
+            trigger: 'change'
+          }
+        ],
+        subject: [],
+        message: [
+          {
+            required: true,
+            message: 'A Message is required',
+            trigger: 'blur'
+          }
+        ]
+      }
+    }
   },
   watch: {
     isOpen(bool) {
@@ -239,28 +240,27 @@ export default {
       }
     }
   },
-  // async mounted() {
-  //   await this.getUserData()
-  // },
+  async mounted() {
+    await this.getUserData()
+  },
   methods: {
     handleCatchaVerification(v) {
       if (!v) return
       else this.catchaVerified = true
     },
-    // async getUserData() {
-    //   if (this.dialog.form.email !== '' || this.dialog.form.name !== '') return
+    async getUserData() {
+      if (this.dialog.form.email !== '' || this.dialog.form.name !== '') return
 
-    //   const res = await getUserData(await this.$auth.getUserID())
-    //   if (res) {
-    //     this.dialog.form.email = res.email
-    //     this.dialog.form.name = res.name
-    //     if (res.user_metadata && res.user_metadata.lastname) {
-    //       this.dialog.form.name =
-    //         this.dialog.form.name + ' ' + res.user_metadata.lastname
-    //     }
-    //   }
-    //   return res
-    // },
+      const res = await getUserData(await this.$auth.getUserID())
+      if (res) {
+        this.dialog.form.email = res.email
+        this.dialog.form.name = res.name
+        if (res.user_metadata && res.user_metadata.lastname) {
+          this.dialog.form.name =
+            this.dialog.form.name + ' ' + res.user_metadata.lastname
+        }
+      }
+    },
     async getMarketPlace() {
       this.loading = true
       const res = await getMarketPlaceList()
@@ -271,47 +271,54 @@ export default {
       }
       this.loading = false
     },
-    // validateForm() {
-    //   return this.$refs.dialogForm.validate(valid => {
-    //     if (valid && this.catchaVerified) this.sendOffer()
-    //     else return false
-    //   })
-    // },
-    // async sendOffer() {
-    //   try {
-    //     this.isSendingData = true
-    //     const { t } = await makeAnOffer({
-    //       ...this.dialog.form,
-    //       message: `${this.dialog.form.message} <br> <br> <hr /> ${this.dialog.rawMessage}`,
-    //       user_id: await this.$auth.getUserID()
-    //     })
+    validateForm() {
+      return this.$refs.dialogForm.validate(valid => {
+        if (valid && this.catchaVerified) this.sendOffer()
+        else return false
+      })
+    },
+    async sendOffer() {
+      try {
+        this.isSendingData = true
+        const { t } = await makeAnOffer({
+          ...this.dialog.form,
+          message: `${this.dialog.form.message} <br> <br> <hr /> ${this.dialog.rawMessage} <br> <br> <hr /> ${this.dialog.altRawMessage}`,
+          user_id: await this.$auth.getUserID()
+        })
 
-    //     if (t != 'error') this.closeDialog()
-    //   } catch (err) {
-    //     console.error(err)
-    //   } finally {
-    //     this.isSendingData = false
-    //   }
-    // },
-    // async toggleDialog(data) {
-    //   this.dialog.isVisible = true
-    //   this.dialog.rawMessage = data.request
-    //   this.dialog.form.subject = `Want to make an offer for this request: ${data.subject.replace(
-    //     '</p>',
-    //     ''
-    //   )}`
-    //   setTimeout(() => {
-    //     this.$refs.textareaInput.focus()
-    //   }, 320)
-    // },
-    // closeDialog() {
-    //   this.dialog.isVisible = false
+        if (t != 'error') this.closeDialog()
+      } catch (err) {
+        console.error(err)
+      } finally {
+        this.isSendingData = false
+      }
+    },
+    async toggleDialog(data) {
+      try {
+        this.dialog.isVisible = true
+        this.dialog.altRawMessage = data.message
+        this.dialog.rawMessage = data.request
+        this.dialog.form.subject = `Want to make an offer for this request: ${data.subject.replace(
+          '</p>',
+          ''
+        )}`
 
-    //   this.dialog.rawMessage = null
-    //   this.dialog.form.message = ''
-    //   this.dialog.form.subject = ''
-    //   this.dialog.form.organization = ''
-    // },
+        setTimeout(() => {
+          this.$refs.textareaInput.focus()
+        }, 320)
+      } catch (err) {
+        console.error(err)
+      }
+    },
+    closeDialog() {
+      this.dialog.isVisible = false
+
+      this.dialog.altRawMessage = null
+      this.dialog.rawMessage = null
+      this.dialog.form.message = ''
+      this.dialog.form.subject = ''
+      this.dialog.form.organization = ''
+    },
     formatDate(_, __, date) {
       return formatDate(date)
     },
