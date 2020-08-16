@@ -49,7 +49,7 @@ import { orgsColumns } from '../../../config/columns'
 import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
 import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
 import debounce from '../../../helpers/debounce'
-// import { delet } from '../../../services/api/permanentDelete'
+import { deleteOrgPermanently } from '../../../services/api/permanentDelete'
 
 export default {
   name: 'CablesSection',
@@ -141,6 +141,7 @@ export default {
     },
     deleteOrg(_id, isPermanent) {
       this.promptDelete = true
+
       this.$once('delete-confirm', async () => {
         if (!isPermanent) {
           await deleteOrganization({
@@ -150,14 +151,17 @@ export default {
             this.handleOrgSearch(...this.$refs.tableList.getTableSearchValue())
           })
         } else {
-          console.log(_id)
-          // await deleteClsPermanently({
-          //   user_id: await this.$auth.getUserID(),
-          //   _id
-          // }).then(() => {
-          //   this.handleCLSSearch(...this.$refs.tableList.getTableSearchValue())
-          // })
+          await deleteOrgPermanently({
+            user_id: await this.$auth.getUserID(),
+            _id
+          }).then(() => {
+            this.handleOrgSearch(...this.$refs.tableList.getTableSearchValue())
+          })
         }
+        this.promptDelete = false
+      })
+
+      this.$once('delete-cancel', async () => {
         this.promptDelete = false
       })
     },

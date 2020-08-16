@@ -5,7 +5,7 @@ var url
 
 export const deleteCablePermanently = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/cables/permanentdelete/${_id}`
-  const res = await $axios.get(url, {
+  const res = await $axios.delete(url, {
     withCredentials: true,
     headers: {
       userid: user_id,
@@ -17,7 +17,7 @@ export const deleteCablePermanently = async ({ user_id, _id }) => {
 
 export const deleteIxpPermanently = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/ixps/permanentdelete/${_id}`
-  const res = await $axios.get(url, {
+  const res = await $axios.delete(url, {
     withCredentials: true,
     headers: {
       userid: user_id,
@@ -29,7 +29,7 @@ export const deleteIxpPermanently = async ({ user_id, _id }) => {
 
 export const deleteClsPermanently = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/cls/permanentdelete/${_id}`
-  const res = await $axios.get(url, {
+  const res = await $axios.delete(url, {
     withCredentials: true,
     headers: {
       userid: user_id,
@@ -41,7 +41,7 @@ export const deleteClsPermanently = async ({ user_id, _id }) => {
 
 export const deleteGroupPermanently = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/networks/permanentdelete/${_id}`
-  const res = await $axios.get(url, {
+  const res = await $axios.delete(url, {
     withCredentials: true,
     headers: {
       userid: user_id,
@@ -53,7 +53,19 @@ export const deleteGroupPermanently = async ({ user_id, _id }) => {
 
 export const deleteFacilityPermanently = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/facilities/permanentdelete/${_id}`
-  const res = await $axios.get(url, {
+  const res = await $axios.delete(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const deleteOrgPermanently = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/auth/organization/permanentdelete/${_id}`
+  const res = await $axios.delete(url, {
     withCredentials: true,
     headers: {
       userid: user_id,
