@@ -13,6 +13,7 @@
       @search-input="handleIxpSearch"
       @edit-item="handleEditIxp"
       @page-change="getIxpsList"
+      @sort-by="handleIxpSearch"
       @delete-item="handleDeleteIXP"
     />
     <prompt-delete

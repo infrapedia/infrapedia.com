@@ -16,6 +16,7 @@
       @search-input="handleTerrestrialSearch"
       @page-change="getCablesList"
       @clear-search-input="getCablesList"
+      @sort-by="handleTerrestrialSearch"
     />
     <prompt-delete
       :elemnt="elemntType"

@@ -11,6 +11,7 @@
       :table-data="tableData"
       :pagination="true"
       @search-input="handleFacsSearch"
+      @sort-by="handleFacsSearch"
       @edit-item="handleEditFac"
       @delete-item="handleDeleteFac"
       @page-change="getFacilitiesList"

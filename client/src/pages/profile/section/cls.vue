@@ -13,6 +13,7 @@
       @delete-item="handleDeleteCLS"
       @alert-message="handleSendMessage"
       @search-input="handleCLSSearch"
+      @sort-by="handleCLSSearch"
       @clear-search-input="getClssList"
       :pagination="true"
       @page-change="getClssList"

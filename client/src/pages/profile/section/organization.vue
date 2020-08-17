@@ -15,6 +15,7 @@
       @alert-message="handleSendMessage"
       :pagination="true"
       @search-input="handleOrgSearch"
+      @sort-by="handleOrgSearch"
       @page-change="getOrganizationsList"
       @clear-search-input="getOrganizationsList"
     />

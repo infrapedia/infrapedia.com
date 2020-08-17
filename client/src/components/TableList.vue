@@ -119,7 +119,7 @@
                 id="sortBy"
                 v-model="sort.selected"
                 size="mini"
-                class="mr4"
+                class="mr2 w70"
                 style="padding: 0;"
                 :class="{ dark }"
                 placeholder

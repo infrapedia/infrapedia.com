@@ -16,6 +16,7 @@
       @page-change="getCablesList"
       @search-input="handleSubseaSearch"
       @clear-search-input="getCablesList"
+      @sort-by="handleSubseaSearch"
     />
     <prompt-delete
       :elemnt="elemntType"
