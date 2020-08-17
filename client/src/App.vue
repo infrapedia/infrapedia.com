@@ -5,7 +5,6 @@
     role="main"
     :style="getDarkStyles"
   >
-    <versions-banner />
     <div class="h-fit-content min-height60vh">
       <!-- <transition
         mode="out-in"
@@ -26,13 +25,9 @@ import ProfileLayout from './layouts/profile'
 import NoNav from './layouts/nothing'
 import LandingPage from './layouts/homepage'
 import MapHome from './layouts/default'
-import VersionsBanner from './components/VersionsBanner'
 
 export default {
   name: 'App',
-  components: {
-    VersionsBanner
-  },
   data: () => ({
     layout: LandingPage
   }),

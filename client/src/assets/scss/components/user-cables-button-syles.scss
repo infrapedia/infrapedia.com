@@ -3,20 +3,65 @@
 .mainw {
   top: 4.4rem;
   right: 1.6rem;
+  height: 40vh;
   z-index: 100;
 }
 
 .list-wrapper {
   right: 0.2rem;
-  overflow-y: auto;
+  overflow: hidden;
   max-height: 20rem;
   background-color: $white-partial;
-
+  .list-wrapper__inner {
+    height: 33vh;
+  }
+  header {
+    padding: 1.2rem;
+    background-color: #cccccc;
+  }
+  ul {
+    overflow-y: auto;
+    height: 20vh;
+  }
+  .name {
+    font-size: 1em;
+  }
+  footer {
+    left: 0;
+    bottom: 0;
+    width: 96%;
+    background-color: $white-partial;
+  }
   li.inline-block {
     background-color: $white-partial;
   }
   .icon {
     color: #757575;
+  }
+
+  &.dark {
+    li[role='listitem'] {
+      color: $white-hsl;
+      background-color: $light-charcoal;
+      &:hover {
+        background-color: darken($dark-charcoal, 2%);
+      }
+    }
+    color: $white-hsl;
+    background-color: $dark-charcoal;
+    .el-button {
+      color: $dark-charcoal;
+      background-color: $light-yellow;
+      border: 1px solid $light-yellow;
+      &:hover,
+      &:focus,
+      &:focus-within {
+        background: darken($light-yellow, 10%);
+      }
+    }
+    footer {
+      background-color: $dark-charcoal;
+    }
   }
 }
 
@@ -32,42 +77,13 @@
   color: #ff4e46;
 }
 
-.list-wrapper.dark {
-  li[role='listitem'] {
-    color: $white-hsl;
-    background-color: $light-charcoal;
-    &:hover {
-      background-color: darken($dark-charcoal, 2%);
-    }
-  }
-  color: $white-hsl;
-  background-color: $dark-charcoal;
-  .el-button {
-    color: $dark-charcoal;
-    background-color: $light-yellow;
-    border: 1px solid $light-yellow;
-    &:hover,
-    &:focus,
-    &:focus-within {
-      background: darken($light-yellow, 10%);
-    }
-  }
-}
-
-.list-wrapper {
-  @media screen and (max-width: $break-sm) {
-    width: 80vw;
-    .name {
-      font-size: 12px;
-    }
-    .create-btn {
-      width: 100%;
-    }
-  }
-}
-
 .mainw {
   @media screen and (max-width: $break-sm) {
     right: 1.2rem;
   }
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
 }
