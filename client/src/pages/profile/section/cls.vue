@@ -13,10 +13,17 @@
       @delete-item="handleDeleteCLS"
       @alert-message="handleSendMessage"
       @search-input="handleCLSSearch"
+      @sort-by="handleCLSSearch"
       @clear-search-input="getClssList"
       :pagination="true"
       @page-change="getClssList"
       :row-classes="['state', 'light-yellow-bg', 'false']"
+    />
+    <prompt-delete
+      :elemnt="elemntType"
+      :is-visible="promptDelete"
+      @delete-cancel="$emit('delete-cancel')"
+      @delete-confirm="$emit('delete-confirm')"
     />
   </div>
 </template>
@@ -28,15 +35,18 @@ import { getClss, deleteCls, searchCls } from '../../../services/api/cls'
 import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
 import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
 import debounce from '../../../helpers/debounce'
+import { deleteClsPermanently } from '../../../services/api/permanentDelete'
 
 export default {
   name: 'ClsSection',
   components: {
-    TableList
+    TableList,
+    PromptDelete: () => import('../../../components/PromptDelete')
   },
   data: () => ({
     tableData: [],
     loading: false,
+    promptDelete: false,
     tableConfig: {
       title: 'CLS',
       creation_link: '/user/section/create?id=cls',
@@ -53,6 +63,9 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    elemntType() {
+      return 'cls'
     }
   },
   methods: {
@@ -78,20 +91,33 @@ export default {
         query: { id: 'cls', item: _id }
       })
     },
-    handleDeleteCLS(_id) {
-      this.$confirm(
-        'Are you sure you want to delete this CLS. This action is irreversible',
-        'Please confirm to continue'
-      ).then(async () => {
-        await deleteCls({
-          user_id: await this.$auth.getUserID(),
-          _id
-        }).then(() => {
-          this.handleCLSSearch(this.$refs.tableList.getTableSearchValue())
-        })
-      }, console.error)
+    handleDeleteCLS(_id, isPermanent) {
+      this.promptDelete = true
+
+      this.$once('delete-confirm', async () => {
+        if (!isPermanent) {
+          await deleteCls({
+            user_id: await this.$auth.getUserID(),
+            _id
+          }).then(() => {
+            this.handleCLSSearch(...this.$refs.tableList.getTableSearchValue())
+          })
+        } else {
+          await deleteClsPermanently({
+            user_id: await this.$auth.getUserID(),
+            _id
+          }).then(() => {
+            this.handleCLSSearch(...this.$refs.tableList.getTableSearchValue())
+          })
+        }
+        this.promptDelete = false
+      })
+
+      this.$once('delete-cancel', async () => {
+        this.promptDelete = false
+      })
     },
-    handleCLSSearch: debounce(async function(s) {
+    handleCLSSearch: debounce(async function(s, sortBy) {
       this.loading = true
       if (s == '') {
         await this.getClssList()
@@ -101,7 +127,8 @@ export default {
       const res = await searchCls({
         user_id: await this.$auth.getUserID(),
         psz: true,
-        s
+        s,
+        sortBy
       })
       if (res && res.data) {
         this.tableData = res.data

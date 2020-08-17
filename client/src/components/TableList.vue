@@ -27,9 +27,7 @@
       >
         <el-table-column
           v-for="(col, i) in columns"
-          :sort-method="handleSortTable"
           :label="col.label"
-          :sortable="true"
           :key="i"
         >
           <template slot-scope="scope">
@@ -110,19 +108,41 @@
         <el-table-column
           fixed="right"
           label="Operations"
-          :width="canSearch ? 220 : 90"
+          :width="canSearch ? 320 : 90"
         >
           <template v-if="canSearch" slot="header" slot-scope="scope">
-            <el-input
-              :key="scope.index"
-              v-model="tableSearch"
-              size="mini"
-              clearable
-              :class="{ dark }"
-              @input="$emit('search-input', $event)"
-              @clear="$emit('clear-search-input')"
-              placeholder="Type to search by name"
-            />
+            <div
+              class="table-list__searchbar"
+              style="display: flex; flex-flow: row nowrap; padding: 0; "
+            >
+              <el-select
+                id="sortBy"
+                v-model="sort.selected"
+                size="mini"
+                class="mr2 w70"
+                style="padding: 0;"
+                :class="{ dark }"
+                placeholder
+                @change="$emit('sort-by', tableSearch, $event)"
+              >
+                <el-option
+                  v-for="(opt, i) in sort.list"
+                  :key="i"
+                  :label="opt.text"
+                  :value="opt.value"
+                />
+              </el-select>
+              <el-input
+                :key="scope.index"
+                v-model="tableSearch"
+                size="mini"
+                clearable
+                :class="{ dark }"
+                @clear="$emit('clear-search-input')"
+                @input="$emit('search-input', $event, sort.selected)"
+                :placeholder="`Type to search by ${sort.selected}`"
+              />
+            </div>
           </template>
           <template slot-scope="scope">
             <div class="flex row nowrap justify-content-center">
@@ -156,11 +176,31 @@
                       ? scope.row.idReport
                       : scope.row.idMessage
                       ? scope.row.idMessage
-                      : scope.row._id
+                      : scope.row._id,
+                    scope.row.deleted
                   )
                 "
               >
                 <fa :icon="deleteIcon" />
+              </el-button>
+              <el-button
+                v-else-if="canDelete && scope.row.deleted"
+                type="danger"
+                class="p2 fs-regular"
+                size="small"
+                @click="
+                  $emit(
+                    'delete-item',
+                    scope.row.idReport
+                      ? scope.row.idReport
+                      : scope.row.idMessage
+                      ? scope.row.idMessage
+                      : scope.row._id,
+                    scope.row.deleted
+                  )
+                "
+              >
+                Permanent delete
               </el-button>
             </div>
           </template>
@@ -247,6 +287,14 @@ export default {
   },
   data: () => ({
     formatDate,
+    sort: {
+      selected: 'name',
+      list: [
+        { text: 'Name', value: 'name' },
+        { text: 'Created at', value: 'createdAt' },
+        { text: 'Updated at', value: 'updatedAt' }
+      ]
+    },
     tableSearch: '',
     paginationPage: 0
   }),
@@ -260,11 +308,8 @@ export default {
     }
   },
   methods: {
-    handleSortTable(a, b) {
-      return b - a
-    },
     getTableSearchValue() {
-      return this.tableSearch
+      return [this.tableSearch, this.sort.selected]
     },
     getKeys(arr) {
       if (!arr.length) return []
