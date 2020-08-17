@@ -690,12 +690,12 @@ export default {
     beforeAddCategoryAddTypesSelections() {
       return new Promise((res, rej) => {
         this.typesDialog.visible = true
-        this.$on('save-types', function() {
+        this.$once('save-types', function() {
           if (this.mode != 'create') return
           this.typesDialog.visible = false
           res()
         })
-        this.$on('cancel-types-selection', function() {
+        this.$once('cancel-types-selection', function() {
           if (this.mode != 'create') return
           this.typesDialog.visible = false
           rej()
@@ -712,12 +712,12 @@ export default {
         this.setEditMode(...args)
         this.nextStep()
         this.typesDialog.visible = true
-        this.$on('save-types', function() {
+        this.$once('save-types', function() {
           if (this.mode == 'create') return
           this.typesDialog.visible = false
           res()
         })
-        this.$on('cancel-types-selection', function() {
+        this.$once('cancel-types-selection', function() {
           if (this.mode == 'create') return
           this.toggleInput(false)
           this.typesDialog.visible = false
