@@ -15,11 +15,6 @@ const teamMembers = [
     position: 'Lead Engineer'
   },
   {
-    name: 'Ali Kilic',
-    photo: 'https://cdn1.infrapedia.com/assets/team/ali.jpeg',
-    position: 'GIS Engineer'
-  },
-  {
     name: 'Manuel Blanco',
     photo: 'https://cdn1.infrapedia.com/assets/team/mb.jpg',
     position: 'Front End Engineer'
