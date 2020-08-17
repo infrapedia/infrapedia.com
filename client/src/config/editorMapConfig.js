@@ -50,12 +50,11 @@ export const editorMapConfig = {
       type: 'symbol',
       layout: {
         'text-field': '{name}',
-        'symbol-placement': 'line',
         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-        'text-size': 10,
+        'text-size': 14,
         'text-justify': 'right',
         'text-anchor': 'bottom',
-        'text-offset': [0, -0.1]
+        'text-offset': [0, 1.6]
       },
       paint: {
         'text-color': '#485E69'

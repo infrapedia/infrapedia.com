@@ -148,10 +148,7 @@ import ClickOutside from 'vue-click-outside'
 import { formatDate } from '../../helpers/formatDate'
 import { getUserData } from '../../services/api/auth'
 import { formatMarketPlaceData } from '../../helpers/buyMessageFormatter'
-import {
-  getMarketPlaceList,
-  makeAnOffer
-} from '../../services/api/marketplace'
+import { getMarketPlaceList, makeAnOffer } from '../../services/api/marketplace'
 
 export default {
   components: {
@@ -179,7 +176,7 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
-    }
+    },
     siteKey() {
       return siteKey
     },
