@@ -232,6 +232,10 @@
           <el-collapse-transition>
             <div class="details-wrapper" v-if="isViewing(cat.name)">
               <el-divider :class="{ dark }" class="mt2 mb4" />
+              <div class="fs-small block text-left pr4 pl4 mb2">
+                <strong>id: </strong>
+                {{ cat._id }}
+              </div>
               <div
                 class="flex nowrap justify-content-space-between mb4 pr4 pl4"
               >
@@ -381,7 +385,7 @@ import { searchCls } from '../../../services/api/cls'
 export default {
   name: 'CategoriesField',
   components: {
-    VMultiSelect: () => import('../../../components/MultiSelect')
+    VMultiSelect: () => import('../../MultiSelect')
   },
   props: {
     value: {
@@ -429,6 +433,13 @@ export default {
     }
   }),
   computed: {
+    includesDrawnFeatures() {
+      return (
+        this.field.types.includes('custom points') ||
+        this.field.types.includes('custom polygons') ||
+        this.field.types.includes('custom lines')
+      )
+    },
     dark() {
       return this.$store.state.isDark
     },
@@ -496,6 +507,18 @@ export default {
     categories(list) {
       bus.$emit('categories-field-values-change', list)
     }
+  },
+  created() {
+    bus.$on(
+      'categories-field-reset-datasets',
+      this.handleCategoriesResetDataset
+    )
+  },
+  beforeDestroy() {
+    bus.$off(
+      'categories-field-reset-datasets',
+      this.handleCategoriesResetDataset
+    )
   },
   methods: {
     handleScrollToView() {
@@ -567,6 +590,9 @@ export default {
       }
       this.typesData.isLoadingCls = false
     },
+    /**
+     * @param s { String } - search queried from ixps select input
+     */
     async loadIxpsSearch(s) {
       if (s === '') return
       this.typesData.isLoadingIxps = true
@@ -631,6 +657,21 @@ export default {
       this.isInputVisible = true
       if (scrollToView) this.scrollIntoView()
     },
+    handleCategoriesResetDataset() {
+      this.categories = this.categories.map(category => {
+        category.data = {
+          cls: [],
+          ixps: [],
+          facilities: [],
+          'custom lines': [],
+          'subsea cables': [],
+          'custom points': [],
+          'custom polygons': [],
+          'terrestrial networks': []
+        }
+        return category
+      })
+    },
     saveEdit() {
       const categoryIdx = this.categories
         .map((cat, indx) =>
@@ -649,12 +690,12 @@ export default {
     beforeAddCategoryAddTypesSelections() {
       return new Promise((res, rej) => {
         this.typesDialog.visible = true
-        this.$on('save-types', function() {
+        this.$once('save-types', function() {
           if (this.mode != 'create') return
           this.typesDialog.visible = false
           res()
         })
-        this.$on('cancel-types-selection', function() {
+        this.$once('cancel-types-selection', function() {
           if (this.mode != 'create') return
           this.typesDialog.visible = false
           rej()
@@ -671,12 +712,12 @@ export default {
         this.setEditMode(...args)
         this.nextStep()
         this.typesDialog.visible = true
-        this.$on('save-types', function() {
+        this.$once('save-types', function() {
           if (this.mode == 'create') return
           this.typesDialog.visible = false
           res()
         })
-        this.$on('cancel-types-selection', function() {
+        this.$once('cancel-types-selection', function() {
           if (this.mode == 'create') return
           this.toggleInput(false)
           this.typesDialog.visible = false

@@ -1,7 +1,7 @@
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { point, booleanEqual, lineSlice } from '@turf/turf'
 import createControlButton from './createControlButton'
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import Snaping from './snaping'
 
 class EditorControls {
@@ -10,6 +10,7 @@ class EditorControls {
     draw,
     type,
     scene,
+    handleCategoriesChange,
     handleBeforeFeatureCreation,
     handleEditFeatureProperties,
     handleSetFeaturesIntoDataSource
@@ -20,8 +21,8 @@ class EditorControls {
     this.scene = scene
     this.snaping = new Snaping({
       map: map,
-      draw: draw,
       pixel: 8,
+      draw: draw,
       scene: scene,
       snapLayers: [
         'cls-layer',
@@ -33,6 +34,7 @@ class EditorControls {
     this.snapMode = false
     this.resetScene = this.resetScene
     this.updateControls = this.updateControls
+    this.handleCategoriesChange = handleCategoriesChange
     this.handleBeforeFeatureCreation = handleBeforeFeatureCreation
     this.handleEditFeatureProperties = handleEditFeatureProperties
     this.handleDrawSelectionChange = this.handleDrawSelectionChange
@@ -82,6 +84,7 @@ class EditorControls {
             : false,
         eventListener: () => this.handleCutFeature()
       }),
+
       vertexdelete: createControlButton('vertexdelete', {
         container: this.controlGroup,
         className:
@@ -96,6 +99,7 @@ class EditorControls {
             : false,
         eventListener: () => this.handleDeleteVertex()
       }),
+
       point: createControlButton('point', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-point',
@@ -147,9 +151,20 @@ class EditorControls {
         title: 'Delete All',
         visible: true,
         eventListener: () => {
-          if (this.scene.features.list.length <= 0) return
-          this.resetScene(true)
-          this.handleSetFeaturesIntoDataSource({ reset: true, map: this.map })
+          const message =
+            this.type == 'map'
+              ? 'This will delete everything on the editor. Including the elements on each category you created. You sure you want to continue?'
+              : 'This will delete everything on the editor. Except the elements you have selected on the form.'
+
+          return MessageBox.confirm(message, 'Delete all?')
+            .then(() => {
+              this.resetScene(true)
+              this.handleSetFeaturesIntoDataSource({
+                reset: true,
+                map: this.map
+              })
+            })
+            .catch(() => {})
         }
       }),
 
@@ -172,40 +187,59 @@ class EditorControls {
         container: this.controlGroup,
         className: 'editor-ctrl editor-cancel',
         title: 'Cancel',
-        eventListener: () => this.handleCancel()
+        eventListener: () => this.resetScene()
       })
     }
   }
   /**
    *
-   * @param { boolean } isResetList - A boolean indicating if it should reset the list of features saved too
+   * @param { boolean } reset - A boolean indicating if it should reset the list of features saved too
    */
-  resetScene(isResetList) {
+  resetScene(reset, removeFilter = Boolean(this.scene.features.layerFiltered)) {
     this.scene.edition = null
     this.scene.creation = null
-    this.scene.features.selected = null
     this.scene.snappoint = null
+    this.scene.features.selected = null
+
+    if (removeFilter) {
+      const layerID = this.scene.features.layerFiltered
+
+      if (layerID.includes('label')) {
+        this.map.setFilter(layerID.replace('-label', ''), ['has', '$type'])
+      }
+      this.map.setFilter(layerID, ['has', '$type'])
+      this.scene.features.layerFiltered = null
+    }
     this.draw.changeMode(this.draw.modes.SIMPLE_SELECT)
     this.draw.set(fCollectionFormat())
-    if (isResetList) {
-      this.scene.features.list = []
-    }
+
+    if (reset) this.scene.features.list = []
   }
 
   deleteFeature() {
-    const selected = this.draw.getSelected()
+    const selected = this.draw.getSelected().features
+    //TODO: WHEN DELETING A FEATURE IS NOT DELETING THE LABEL ASSOCIATION IN THE SOURCE-LAYER
 
-    if (selected && selected.features.length > 0) {
-      for (let feature of selected.features) {
-        const list = this.scene.features.list.filter(
-          feat => feat.__editorID != feature.properties.__editorID
+    if (selected && selected.length > 0) {
+      for (let feature of selected) {
+        const idProp = feature.properties.__editorID ? '__editorID' : '_id'
+        this.scene.features.list = this.scene.features.list.filter(
+          feat => feat.properties[idProp] != feature.properties[idProp]
         )
-        this.scene.features.list = list
-        this.handleSetFeaturesIntoDataSource({
-          list,
-          map: this.map,
-          feature: feature
-        })
+
+        if (feature.properties.category) {
+          this.handleCategoriesChange({
+            feature,
+            isDelete: true,
+            list: this.scene.features.list
+          })
+        } else {
+          this.handleSetFeaturesIntoDataSource({
+            feature,
+            map: this.map,
+            list: this.scene.features.list
+          })
+        }
       }
       this.resetScene()
     }
@@ -263,44 +297,12 @@ class EditorControls {
     }
   }
 
-  handleCancel() {
-    this.scene.features.selected = this.draw.getSelected()
-
-    if (this.scene.creation) {
-      // We are deleting the selected and just created draw(s)
-      if (this.scene.features && this.scene.features.length) {
-        for (let feat of this.scene.features) {
-          this.draw.delete(feat.id)
-        }
-        if (this.scene.features) {
-          for (let feature of this.scene.features.features) {
-            this.handleSetFeaturesIntoDataSource({
-              list: this.scene.features.list,
-              map: this.map,
-              feature
-            })
-          }
-        }
-      }
-    } else if (this.scene.edition) {
-      // Because you cancel the edition we need to refresh the sourceData
-      for (let feature of this.scene.features.list) {
-        this.handleSetFeaturesIntoDataSource({
-          feature,
-          map: this.map,
-          list: this.scene.features.list
-        })
-      }
-    }
-    this.resetScene()
-  }
-
   /**
    *
    * @param { Array } features - FeatureCollection with the features that has been selected by the user
    */
   handleDrawSelectionChange(feature) {
-    if (!this.scene.creation && feature) {
+    if (feature) {
       const id = this.draw.add(feature)
       this.scene.edition = true
       this.scene.features.selected = { ...feature }
@@ -326,49 +328,19 @@ class EditorControls {
       })
     }
   }
-  handleFeatureEdition() {
-    const currentFeature = this.draw.getSelected()
-
-    if (currentFeature.features.length > 0) {
-      const feat = JSON.parse(
-        JSON.stringify(
-          this.scene.features.list.filter(
-            f => f.id == currentFeature.features[0].id
-          )[0]
-        )
-      )
-
-      feat.geometry.coordinates =
-        currentFeature.features[0].geometry.coordinates
-
-      this.scene.features.list.forEach((feature, i) => {
-        for (let featEdit of [feat]) {
-          if (feature.id == featEdit.id) {
-            this.scene.features.list[i] = { ...featEdit }
-          }
-        }
-      })
-
-      this.handleSetFeaturesIntoDataSource({
-        feature: currentFeature.features[0],
-        list: this.scene.features.list,
-        map: this.map
-      })
-      this.resetScene()
-    }
+  async handleFeatureEdition() {
+    await this.handleEditFeatureProperties({
+      feat: this.scene.features.selected,
+      isGeomEdit: true
+    })
+    this.resetScene()
   }
 
   async handleEditFeatureProps() {
-    const featuresSelected = this.draw.getSelected()
-
-    if (featuresSelected && featuresSelected.features.length > 0) {
-      const features = this.scene.features.list.filter(
-        f => f.id == featuresSelected.features[0].id
-      )
-      await this.handleEditFeatureProperties(
-        features.length ? JSON.parse(JSON.stringify(features[0])) : null
-      )
-    }
+    await this.handleEditFeatureProperties({
+      isGeomEdit: false,
+      feat: this.scene.features.selected
+    })
   }
 
   async handleCutFeature() {

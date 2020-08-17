@@ -3,6 +3,7 @@ import {
   setFeaturesIntoDataSource,
   setFeaturesIntoDrawnDataSource
 } from './setFeaturesIntoDataSource'
+import { mapConfig } from '../../config/mapConfig'
 
 function zoomToFeature({ fc, map, type }) {
   if (fc.features.length <= 0) return
@@ -27,8 +28,125 @@ function zoomToFeature({ fc, map, type }) {
   return map
 }
 
+function toggleDarkMode({ dark, map }) {
+  map.setStyle(dark ? mapConfig.darkBasemap : mapConfig.default)
+  return map
+}
+
+async function categoryDataChange(categories, feature, isDelete) {
+  return await categories.map(cat => {
+    if (
+      cat._id == feature.properties.category ||
+      cat._id == feature.properties.category._id
+    ) {
+      if (
+        feature.geometry.type == 'Point' &&
+        cat.types.includes('custom points')
+      ) {
+        ////////////////////////////////
+        //////----  POINTS ----////////
+        //////////////////////////////
+        const data = cat.data['custom points'].map(
+          it => it.properties.__editorID
+        )
+        if (!data.includes(feature.properties.__editorID)) {
+          cat.data['custom points'].push(feature)
+        } else {
+          for (let i = 0; i < data.length; i++) {
+            if (
+              cat.data['custom points'][i].properties.__editorID ==
+              feature.properties.__editorID
+            ) {
+              console.log('MATCH!!!!!!!', 'POINTS')
+              if (!isDelete) {
+                cat.data['custom points'][i] = { ...feature }
+              } else {
+                delete cat.data['custom points'][i]
+              }
+              break
+            }
+          }
+        }
+
+        if (isDelete) {
+          cat.data['custom points'] = cat.data['custom points'].filter(t => t)
+        }
+      } else if (
+        feature.geometry.type == 'Polygon' &&
+        cat.types.includes('custom polygons')
+      ) {
+        ////////////////////////////////
+        //////---  POLYGONS ---////////
+        //////////////////////////////
+        const data = cat.data['custom polygons'].map(
+          it => it.properties.__editorID
+        )
+        if (!data.includes(feature.properties.__editorID)) {
+          cat.data['custom polygons'].push(feature)
+        } else {
+          for (let i = 0; i < data.length; i++) {
+            if (
+              cat.data['custom polygons'][i].properties.__editorID ==
+              feature.properties.__editorID
+            ) {
+              console.log('MATCH!!!!!!!', 'POLYGONS')
+              if (!isDelete) {
+                cat.data['custom polygons'][i] = { ...feature }
+              } else {
+                delete cat.data['custom polygons'][i]
+              }
+              break
+            }
+          }
+        }
+
+        if (isDelete) {
+          cat.data['custom polygons'] = cat.data['custom polygons'].filter(
+            t => t
+          )
+        }
+      } else if (
+        feature.geometry.type == 'LineString' &&
+        cat.types.includes('custom lines')
+      ) {
+        ////////////////////////////////
+        ///////----  LINES ----////////
+        //////////////////////////////
+        const data = cat.data['custom lines'].map(
+          it => it.properties.__editorID
+        )
+        if (!data.includes(feature.properties.__editorID)) {
+          cat.data['custom lines'].push(feature)
+        } else {
+          for (let i = 0; i < data.length; i++) {
+            if (
+              cat.data['custom lines'][i].properties.__editorID ==
+              feature.properties.__editorID
+            ) {
+              console.log('MATCH!!!!!!!', 'LINES')
+              if (!isDelete) {
+                cat.data['custom lines'][i] = { ...feature }
+              } else {
+                delete cat.data['custom lines'][i]
+              }
+              break
+            }
+          }
+        }
+
+        if (isDelete) {
+          cat.data['custom lines'] = cat.data['custom lines'].filter(t => t)
+        }
+      }
+    }
+    return cat
+  })
+}
+
 export {
   zoomToFeature,
+  toggleDarkMode,
+  categoryDataChange,
   setFeaturesIntoDataSource,
   setFeaturesIntoDrawnDataSource
 }

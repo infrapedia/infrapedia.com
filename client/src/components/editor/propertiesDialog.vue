@@ -7,23 +7,24 @@
     :show-close="true"
     :close-on-press-escape="true"
     :close-on-click-modal="false"
-    :before-close="handleClose"
+    :before-close="() => handleClose(true)"
   >
     <h2 class="title-user-variant" slot="title">
       {{ title }}
     </h2>
     <el-form>
-      <el-form-item label="Category">
+      <el-form-item label="Category" v-if="type == 'map'">
         <el-select
           v-model="form.category"
           placeholder
           class="w-fit-full"
           :class="{ dark }"
+          @change="handleCategorySelected"
         >
           <el-option
             v-for="(cat, i) in categoriesList"
             :key="i"
-            :value="cat"
+            :value="cat._id"
             :label="cat.name"
             class="capitalize"
           />
@@ -54,7 +55,7 @@
       </template>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" :disabled="checkFields" @click="handleClose">
+      <el-button type="primary" @click="() => handleClose(false)">
         Save
       </el-button>
     </span>
@@ -68,6 +69,7 @@ export default {
   name: 'PropertiesDialog',
   data: () => ({
     form: {},
+    categorySelected: null,
     predefineColors: [
       '#ff4500',
       '#ff8c00',
@@ -111,6 +113,13 @@ export default {
 
       if (this.mode != 'create') {
         this.form = { ...this.feature.properties }
+        if (
+          this.type == 'map' &&
+          this.form.category &&
+          typeof this.form.category != 'string'
+        ) {
+          this.form.category = this.feature.properties.category._id
+        }
       } else {
         switch (type.toLowerCase()) {
           case 'point':
@@ -165,12 +174,12 @@ export default {
       }
       return title
     },
-    checkFields() {
-      const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
-      return emptyFields.length && !emptyFields.includes('status')
-        ? true
-        : false
-    },
+    // checkFields() {
+    //   const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
+    //   return emptyFields.length && !emptyFields.includes('status')
+    //     ? true
+    //     : false
+    // },
     dark() {
       return this.$store.state.isDark
     },
@@ -203,17 +212,46 @@ export default {
     }
   },
   methods: {
-    handleClose() {
-      if (!this.form.name || this.form.name == undefined) {
-        this.form.name = this.creationForm.name
+    handleCategorySelected(id) {
+      if (this.type != 'map') return
+      const categoryData = this.categoriesList.filter(t => t._id == id)[0]
+      if (categoryData) {
+        this.categorySelected = {
+          _id: categoryData._id,
+          color: '#409EFF',
+          'stroke-width': categoryData['stroke-width'],
+          'stroke-opacity': categoryData['stroke-opacity']
+        }
+
+        if (
+          categoryData['stroke-style'] != 'normal' &&
+          this.feature.geometry.type == 'LineString'
+        ) {
+          this.categorySelected['line-dasharray'] = [0.1, 1.8]
+        }
       }
-      if (
-        this.feature.geometry.type.toLowerCase() == 'polygon' &&
-        this.form.height == 0
-      ) {
-        this.form.height = 1
+    },
+    handleClose(cancel) {
+      if (!cancel) {
+        if (!this.form.name || this.form.name == undefined) {
+          this.form.name = this.creationForm.name
+        }
+        if (
+          this.feature.geometry.type.toLowerCase() == 'polygon' &&
+          this.form.height == 0
+        ) {
+          this.form.height = 1
+        }
+
+        if (this.categorySelected && this.type == 'map') {
+          this.form = {
+            ...this.form
+          }
+        }
+        return this.$emit('close', this.form)
+      } else {
+        return this.$emit('close', false)
       }
-      return this.$emit('close', this.form)
     }
   }
 }

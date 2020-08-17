@@ -2,10 +2,10 @@ import { fCollectionFormat } from '../../helpers/featureCollection'
 // import { editorMapConfig } from '../../config/editorMapConfig'
 
 export function setFeaturesIntoDrawnDataSource({
-  feature,
-  list,
   map,
   reset,
+  feature,
+  list = [],
   isCustomMap = true
 }) {
   if (reset) {
@@ -14,39 +14,89 @@ export function setFeaturesIntoDrawnDataSource({
   }
 
   if (isCustomMap) {
-    const featureType = feature.geometry.type
-    const categoryColor = feature.properties.category
-      ? feature.properties.category.color
-      : null
+    const featureType =
+      feature && feature.geometry && feature.geometry.type
+        ? feature.geometry.type
+        : list.length > 0
+        ? list[0].geometry.type
+        : false
+    const categoryColor =
+      feature && feature.properties && feature.properties.category
+        ? feature.properties.category.color
+        : list.length > 0 &&
+          list[0].properties &&
+          list[0].properties.category &&
+          list[0].properties.color
+        ? list[0].properties.category.color
+        : null
     let layerType = null
     let colorProp = ''
 
-    switch (featureType.toLowerCase()) {
-      case 'point':
-        layerType = 'cls'
-        colorProp = 'circle-color'
-        break
-      case 'polygon':
-        layerType = 'facilities'
-        colorProp = 'fill-extrusion-color'
-        break
-      default:
-        layerType = 'cables'
-        colorProp = 'line-color'
-        break
-    }
-
-    {
-      let layerName = `drawn-${layerType}-layer`
-      if (layerName && categoryColor) {
-        map.setPaintProperty(layerName, colorProp, categoryColor)
+    if (featureType) {
+      switch (featureType.toLowerCase()) {
+        case 'point':
+          layerType = 'cls'
+          colorProp = 'circle-color'
+          break
+        case 'polygon':
+          layerType = 'facilities'
+          colorProp = 'fill-extrusion-color'
+          break
+        default:
+          layerType = 'cables'
+          colorProp = 'line-color'
+          break
       }
+
+      const styleLayer = async type => {
+        map.on('load', function() {
+          let layerName = `drawn-${type}-layer`
+          if (layerName) {
+            map.setPaintProperty(
+              layerName,
+              colorProp,
+              categoryColor ? categoryColor : '#666666'
+            )
+          }
+        })
+      }
+      styleLayer(layerType)
     }
   }
 
   {
-    let source = map.getSource('drawn-features')
-    if (source) source.setData(fCollectionFormat(list))
+    let sourceName = 'drawn-features'
+    let source = map.getSource(sourceName)
+
+    if (source) {
+      if (map.isSourceLoaded(sourceName)) {
+        source.setData(fCollectionFormat(list))
+      } else {
+        setTimeout(
+          () =>
+            setFeaturesIntoDrawnDataSource({
+              map,
+              list,
+              reset,
+              feature,
+              isCustomMap
+            }),
+          10
+        )
+      }
+    } else {
+      setTimeout(
+        () =>
+          setFeaturesIntoDrawnDataSource({
+            map,
+            list,
+            reset,
+            feature,
+            isCustomMap
+          }),
+        320
+      )
+    }
   }
 }
 
@@ -55,6 +105,13 @@ export function setFeaturesIntoDataSource({ list, map, reset }) {
     map.getSource('nondrawn-features').setData(fCollectionFormat())
     return
   }
-  const source = map.getSource('drawn-features')
-  if (source) source.setData(fCollectionFormat(list))
+  const sourceName = 'nondrawn-features'
+  const source = map.getSource(sourceName)
+  if (source && map.loaded()) {
+    if (map.isSourceLoaded(sourceName)) {
+      source.setData(fCollectionFormat(list))
+    }
+  } else {
+    setTimeout(() => setFeaturesIntoDataSource({ list, map, reset }), 320)
+  }
 }
