@@ -56,7 +56,8 @@
         leave-active-class="slideOutLeft"
         mode="out-in"
       >
-        <legends-panel v-if="!lastMileTool.active" />
+        <!-- v-if="!lastMileTool.active"  -->
+        <legends-panel />
       </transition>
       <el-button
         id="ThreeD"
@@ -109,13 +110,6 @@
               <last-mile-button @click="handleLastMileToolActivation" />
             </li> -->
             <li role="listitem">
-              <i-theme-toggler
-                id="toggleTheme"
-                title="Toggle dark mode"
-                @click="toggleDarkMode"
-              />
-            </li>
-            <li role="listitem">
               <el-button
                 title="Share menu"
                 type="primary"
@@ -155,7 +149,6 @@ import {
   HAS_TO_EASE_TO,
   EASE_POINT
 } from '../../store/actionTypes/map'
-import IThemeToggler from '../../components/ThemeToggler'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../../config/mapConfig'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
@@ -186,7 +179,6 @@ export default {
   name: 'Map',
   mixins: [dataCollection],
   components: {
-    IThemeToggler,
     PrintButton,
     GooeyMenu,
     // LastMileButton,
@@ -385,7 +377,8 @@ export default {
       return map
     },
     handleCLSHover(e, isHovering) {
-      if (!this.map || this.lastMileTool.active) return
+      //  || this.lastMileTool.active
+      if (!this.map) return
       const {
         features: [
           {
@@ -465,8 +458,8 @@ export default {
       if (
         !clusters.length &&
         e.features.length &&
-        !this.isMobile &&
-        !this.lastMileTool.active
+        !this.isMobile
+        // !this.lastMileTool.active
       ) {
         this.map.getCanvas().style.cursor = 'pointer'
         this.showPopup({ e, map: this.map, popup, isPoint, type })
@@ -557,10 +550,10 @@ export default {
         }
         if (this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
 
-        if (this.lastMileTool.active) {
-          this.handleLastMileToolCoordsChange(e)
-          return
-        }
+        // if (this.lastMileTool.active) {
+        //   this.handleLastMileToolCoordsChange(e)
+        //   return
+        // }
 
         const cables = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.cables]
@@ -1152,21 +1145,21 @@ export default {
     //   this.lastMileTool.reference.initService()
     //   this.lastMileTool.reference.registerEvents()
     //   this.map.getCanvas().style.cursor = 'crosshair'
-    // this.map.setLayoutProperty(
-    //   mapConfig.facilitiesClusters,
-    //   'visibility',
-    //   'none'
-    // )
-    // this.map.setLayoutProperty(
-    //   mapConfig.facilitiesCount,
-    //   'visibility',
-    //   'none'
-    // )
-    // this.map.setLayoutProperty(
-    //   mapConfig.facilitiesSinglePoints,
-    //   'visibility',
-    //   'none'
-    // )
+    //   // this.map.setLayoutProperty(
+    //   //   mapConfig.facilitiesClusters,
+    //   //   'visibility',
+    //   //   'none'
+    //   // )
+    //   // this.map.setLayoutProperty(
+    //   //   mapConfig.facilitiesCount,
+    //   //   'visibility',
+    //   //   'none'
+    //   // )
+    //   // this.map.setLayoutProperty(
+    //   //   mapConfig.facilitiesSinglePoints,
+    //   //   'visibility',
+    //   //   'none'
+    //   // )
     // },
     // disableLastMileTool() {
     //   this.lastMileTool.active = false
