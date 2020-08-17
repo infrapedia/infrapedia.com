@@ -167,9 +167,9 @@ export default {
       return this.$auth.isAuthenticated ? '/app' : '/'
     },
     imageURL() {
-      return !this.dark
-        ? 'https://cdn.infrapedia.com/logos/dark-mode-logo.svg'
-        : 'https://cdn.infrapedia.com/logos/light-mode-logo.svg'
+      return this.dark
+        ? 'https://cdn1.infrapedia.com/assets/img/light-mode-logo.svg'
+        : 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo.svg'
     }
   }
 }
