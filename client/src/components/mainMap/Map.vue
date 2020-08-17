@@ -177,7 +177,7 @@ import dataCollection from '../../mixins/dataCollection'
 // eslint-disable-next-line
 import { DateTime } from 'luxon'
 // import LastMileButton from './LastMileButton'
-import lastMileTool, { lastMileToolLayers } from './gri-tool'
+// import lastMileTool, { lastMileToolLayers } from './gri-tool'
 import LegendsPanel from './legendsPanel'
 // import bbox from '@turf/bbox'
 // import { fCollectionFormat } from '../../helpers/featureCollection'
@@ -335,7 +335,7 @@ export default {
       for (let layer of mapConfig.data.layers) {
         map.addLayer(layer)
       }
-      lastMileToolLayers(map)
+      // lastMileToolLayers(map)
       map.setFilter(mapConfig.cables, mapConfig.filter.all)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
     },
