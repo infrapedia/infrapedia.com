@@ -147,7 +147,7 @@
           </el-button>
         </el-collapse-transition>
       </el-form-item>
-      <el-form-item class="mt12" label="Associations" v-if="linkedElements">
+      <!-- <el-form-item class="mt12" label="Associations" v-if="linkedElements">
         <div class="block w-fit-full">
           <template v-for="(label, i) of Object.keys(linkedElements)">
             <div
@@ -170,7 +170,7 @@
             </div>
           </template>
         </div>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
     <div slot="footer" class="dialog-footer-mobile">
       <el-button
@@ -195,7 +195,6 @@
 import apiConfig from '../../config/apiConfig'
 import countriesList from '../../config/countriesList'
 import { uploadOrgLogo } from '../../services/api/uploads'
-import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 import { checkOrganizationNameExistence } from '../../services/api/check_name'
 import debounce from '../../helpers/debounce'
 // import { getOrgLinkedElements } from '../../services/api/organizations'
@@ -203,12 +202,12 @@ import debounce from '../../helpers/debounce'
 export default {
   name: 'OrgForm',
   components: {
-    AutocompleteGoogle
+    AutocompleteGoogle: () => import('../../components/AutocompleteGoogle')
   },
   data: () => ({
     fileList: [],
     countriesList,
-    linkedElements: null,
+    // linkedElements: null,
     isNameRepeated: false,
     tag: {
       fullAddress: '',
