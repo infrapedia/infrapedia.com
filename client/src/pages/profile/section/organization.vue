@@ -15,6 +15,7 @@
       @alert-message="handleSendMessage"
       :pagination="true"
       @search-input="handleOrgSearch"
+      @sort-by="handleOrgSearch"
       @page-change="getOrganizationsList"
       @clear-search-input="getOrganizationsList"
     />
@@ -24,6 +25,12 @@
       :visible="isDialog"
       :mode="mode"
       @close="toggleDialog(true)"
+    />
+    <prompt-delete
+      :elemnt="elemntType"
+      :is-visible="promptDelete"
+      @delete-cancel="$emit('delete-cancel')"
+      @delete-confirm="$emit('delete-confirm')"
     />
   </div>
 </template>
@@ -43,17 +50,20 @@ import { orgsColumns } from '../../../config/columns'
 import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
 import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
 import debounce from '../../../helpers/debounce'
+import { deleteOrgPermanently } from '../../../services/api/permanentDelete'
 
 export default {
   name: 'CablesSection',
   components: {
+    'org-form': OrgForm,
     'table-list': TableList,
-    'org-form': OrgForm
+    PromptDelete: () => import('../../../components/PromptDelete')
   },
   data: () => ({
     tableData: [],
     mode: 'create',
     loading: false,
+    promptDelete: false,
     form: {
       name: '',
       logo: '',
@@ -74,8 +84,11 @@ export default {
     dark() {
       return this.$store.state.isDark
     },
+    elemntType() {
+      return 'organization'
+    },
     checkMode() {
-      return this.mode === 'create' ? this.createOrg : this.saveEditedOrg
+      return this.mode == 'create' ? this.createOrg : this.saveEditedOrg
     }
   },
   beforeCreate() {
@@ -127,18 +140,31 @@ export default {
       this.mode = 'edit'
       this.toggleDialog()
     },
-    deleteOrg(_id) {
-      return this.$confirm(
-        'Are you sure you want to delete this organization. This action is irreversible',
-        'Please confirm to continue'
-      ).then(async () => {
-        await deleteOrganization({
-          user_id: await this.$auth.getUserID(),
-          _id
-        }).then(() => {
-          this.handleOrgSearch(this.$refs.tableList.getTableSearchValue())
-        })
-      }, console.error)
+    deleteOrg(_id, isPermanent) {
+      this.promptDelete = true
+
+      this.$once('delete-confirm', async () => {
+        if (!isPermanent) {
+          await deleteOrganization({
+            user_id: await this.$auth.getUserID(),
+            _id
+          }).then(() => {
+            this.handleOrgSearch(...this.$refs.tableList.getTableSearchValue())
+          })
+        } else {
+          await deleteOrgPermanently({
+            user_id: await this.$auth.getUserID(),
+            _id
+          }).then(() => {
+            this.handleOrgSearch(...this.$refs.tableList.getTableSearchValue())
+          })
+        }
+        this.promptDelete = false
+      })
+
+      this.$once('delete-cancel', async () => {
+        this.promptDelete = false
+      })
     },
     toggleDialog(itClearsForm) {
       this.isDialog = !this.isDialog
@@ -172,7 +198,7 @@ export default {
       })
       if (res && res.data && res.t !== 'error') {
         this.toggleDialog(true)
-        this.handleOrgSearch(this.$refs.tableList.getTableSearchValue())
+        this.handleOrgSearch(...this.$refs.tableList.getTableSearchValue())
       }
     },
     async saveEditedOrg() {
@@ -182,10 +208,10 @@ export default {
       })
       if (res && res.t !== 'error') {
         this.toggleDialog(true)
-        this.handleOrgSearch(this.$refs.tableList.getTableSearchValue())
+        this.handleOrgSearch(...this.$refs.tableList.getTableSearchValue())
       }
     },
-    handleOrgSearch: debounce(async function(s) {
+    handleOrgSearch: debounce(async function(s, sortBy) {
       if (s == '') {
         if (!this.loading) await this.getOrganizationsList()
         return
@@ -195,7 +221,8 @@ export default {
       const res = await searchOrganization({
         user_id: await this.$auth.getUserID(),
         psz: true,
-        s
+        s,
+        sortBy
       })
       if (res && res.data) {
         this.tableData = res.data

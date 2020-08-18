@@ -1,0 +1,26 @@
+@import '../base/variables';
+
+.legends-wrapper {
+  position: absolute;
+  top: 4rem;
+  z-index: 4;
+  left: 0.72rem;
+  font-weight: 500;
+  font-size: 0.95em;
+  background-color: $white-full;
+  &.dark {
+    color: $white-full;
+    background-color: $dark-charcoal;
+  }
+  #legend-info-wrapper {
+    height: 0;
+    overflow: hidden;
+    &.active {
+      height: 15em;
+    }
+  }
+
+  @media screen and (max-width: $break-sm) {
+    top: 4.5rem;
+  }
+}

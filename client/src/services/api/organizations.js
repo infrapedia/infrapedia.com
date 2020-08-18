@@ -123,8 +123,8 @@ export const viewOrganization = async ({ user_id, _id }) => {
   return res
 }
 
-export const searchOrganization = async ({ user_id, s, psz }) => {
-  url = `${apiConfig.url}/organization/search?s=${s}`
+export const searchOrganization = async ({ user_id, s, psz, sortBy }) => {
+  url = `${apiConfig.url}/organization/search?s=${s}&sortBy=${sortBy}`
   if (psz) {
     url = url + '&psz=1'
   }

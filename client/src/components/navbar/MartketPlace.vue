@@ -163,6 +163,7 @@ export default {
     dialog: {
       isVisible: false,
       rawMessage: null,
+      altRawMessage: null,
       form: {
         name: '',
         email: '',
@@ -279,7 +280,7 @@ export default {
         this.isSendingData = true
         const { t } = await makeAnOffer({
           ...this.dialog.form,
-          message: `${this.dialog.form.message} <br> <br> <hr /> ${this.dialog.rawMessage}`,
+          message: `${this.dialog.form.message} <br> <br> <hr /> ${this.dialog.rawMessage} <br> <br> <hr /> ${this.dialog.altRawMessage}`,
           user_id: await this.$auth.getUserID()
         })
 
@@ -291,19 +292,26 @@ export default {
       }
     },
     async toggleDialog(data) {
-      this.dialog.isVisible = true
-      this.dialog.rawMessage = data.request
-      this.dialog.form.subject = `Want to make an offer for this request: ${data.subject.replace(
-        '</p>',
-        ''
-      )}`
-      setTimeout(() => {
-        this.$refs.textareaInput.focus()
-      }, 320)
+      try {
+        this.dialog.isVisible = true
+        this.dialog.altRawMessage = data.message
+        this.dialog.rawMessage = data.request
+        this.dialog.form.subject = `Want to make an offer for this request: ${data.subject.replace(
+          '</p>',
+          ''
+        )}`
+
+        setTimeout(() => {
+          this.$refs.textareaInput.focus()
+        }, 320)
+      } catch (err) {
+        console.error(err)
+      }
     },
     closeDialog() {
       this.dialog.isVisible = false
 
+      this.dialog.altRawMessage = null
       this.dialog.rawMessage = null
       this.dialog.form.message = ''
       this.dialog.form.subject = ''

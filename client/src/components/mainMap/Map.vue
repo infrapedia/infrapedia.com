@@ -1,7 +1,7 @@
 <template>
   <div id="map">
     <template v-if="!disabled">
-      <transition
+      <!-- <transition
         name="animated faster delay-1s"
         enter-active-class="slideInLeft"
         leave-active-class="slideOutLeft"
@@ -49,6 +49,15 @@
             </el-button>
           </el-form>
         </el-card>
+      </transition> -->
+      <transition
+        name="animated faster delay-1s"
+        enter-active-class="slideInLeft"
+        leave-active-class="slideOutLeft"
+        mode="out-in"
+      >
+        <!-- v-if="!lastMileTool.active"  -->
+        <legends-panel />
       </transition>
       <el-button
         id="ThreeD"
@@ -97,16 +106,9 @@
             <li role="listitem">
               <print-button :map="map" />
             </li>
-            <li role="listitem">
+            <!-- <li role="listitem">
               <last-mile-button @click="handleLastMileToolActivation" />
-            </li>
-            <li role="listitem">
-              <i-theme-toggler
-                id="toggleTheme"
-                title="Toggle dark mode"
-                @click="toggleDarkMode"
-              />
-            </li>
+            </li> -->
             <li role="listitem">
               <el-button
                 title="Share menu"
@@ -147,7 +149,6 @@ import {
   HAS_TO_EASE_TO,
   EASE_POINT
 } from '../../store/actionTypes/map'
-import IThemeToggler from '../../components/ThemeToggler'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../../config/mapConfig'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
@@ -168,8 +169,9 @@ import dataCollection from '../../mixins/dataCollection'
 // import convertToYear from '../../helpers/convertToYear'
 // eslint-disable-next-line
 import { DateTime } from 'luxon'
-import LastMileButton from './LastMileButton'
-import lastMileTool, { lastMileToolLayers } from './gri-tool'
+// import LastMileButton from './LastMileButton'
+// import lastMileTool, { lastMileToolLayers } from './gri-tool'
+import LegendsPanel from './legendsPanel'
 // import bbox from '@turf/bbox'
 // import { fCollectionFormat } from '../../helpers/featureCollection'
 
@@ -177,10 +179,10 @@ export default {
   name: 'Map',
   mixins: [dataCollection],
   components: {
-    IThemeToggler,
     PrintButton,
     GooeyMenu,
-    LastMileButton
+    // LastMileButton,
+    LegendsPanel
   },
   props: {
     disabled: {
@@ -295,7 +297,7 @@ export default {
         mbCtrl.appendChild(document.getElementById('FScreen'))
 
         window.draw = draw
-        this.lastMileTool.reference = new lastMileTool({ map })
+        // this.lastMileTool.reference = new lastMileTool({ map })
       }
 
       window.mapboxgl = mapboxgl
@@ -325,7 +327,7 @@ export default {
       for (let layer of mapConfig.data.layers) {
         map.addLayer(layer)
       }
-      lastMileToolLayers(map)
+      // lastMileToolLayers(map)
       map.setFilter(mapConfig.cables, mapConfig.filter.all)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
     },
@@ -361,7 +363,7 @@ export default {
         map.on('click', this.handleMapClick)
         map.on('touchend', this.handleMapClick)
         map.on('render', this.handleBoundsChange)
-        this.lastMileTool.reference.registerEvents()
+        // this.lastMileTool.reference.registerEvents()
       } else {
         const disabledClick = () => this.$emit('clicked-disabled-map')
         map.on('click', disabledClick)
@@ -375,7 +377,8 @@ export default {
       return map
     },
     handleCLSHover(e, isHovering) {
-      if (!this.map || this.lastMileTool.active) return
+      //  || this.lastMileTool.active
+      if (!this.map) return
       const {
         features: [
           {
@@ -455,8 +458,8 @@ export default {
       if (
         !clusters.length &&
         e.features.length &&
-        !this.isMobile &&
-        !this.lastMileTool.active
+        !this.isMobile
+        // !this.lastMileTool.active
       ) {
         this.map.getCanvas().style.cursor = 'pointer'
         this.showPopup({ e, map: this.map, popup, isPoint, type })
@@ -547,10 +550,10 @@ export default {
         }
         if (this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
 
-        if (this.lastMileTool.active) {
-          this.handleLastMileToolCoordsChange(e)
-          return
-        }
+        // if (this.lastMileTool.active) {
+        //   this.handleLastMileToolCoordsChange(e)
+        //   return
+        // }
 
         const cables = this.map.queryRenderedFeatures(e.point, {
           layers: [mapConfig.cables]
@@ -1136,47 +1139,47 @@ export default {
     },
     handlePreviouslySelected: debounce(function() {
       if (this.map.loaded()) this.handleFocusOn(this.focus)
-    }, 1200),
-    handleLastMileToolActivation() {
-      this.lastMileTool.active = true
-      this.lastMileTool.reference.initService()
-      this.lastMileTool.reference.registerEvents()
-      this.map.getCanvas().style.cursor = 'crosshair'
-      // this.map.setLayoutProperty(
-      //   mapConfig.facilitiesClusters,
-      //   'visibility',
-      //   'none'
-      // )
-      // this.map.setLayoutProperty(
-      //   mapConfig.facilitiesCount,
-      //   'visibility',
-      //   'none'
-      // )
-      // this.map.setLayoutProperty(
-      //   mapConfig.facilitiesSinglePoints,
-      //   'visibility',
-      //   'none'
-      // )
-    },
-    disableLastMileTool() {
-      this.lastMileTool.active = false
-      this.lastMileTool.reference.clearLastMileTool()
-      this.map.getCanvas().style.cursor = 'pointer'
-    },
-    handleLastMileToolCoordsChange(e) {
-      this.lastMileTool.reference.find(e.lngLat)
-    },
-    findNewLastMile() {
-      this.lastMileTool.reference.clearLastMileTool()
-      this.lastMileTool.networks = []
-      this.lastMileTool.len = ''
-      var emptyGeo = { type: 'FeatureCollection', features: [] }
-      this.map.getSource('startpoints').setData(emptyGeo)
-      this.map.getSource('finishpoints').setData(emptyGeo)
-      this.map.getSource('shortestroads').setData(emptyGeo)
-      this.lastMileTool.reference.latlng = null
-      this.lastMileTool.reference.registerEvents()
-    }
+    }, 1200)
+    // handleLastMileToolActivation() {
+    //   this.lastMileTool.active = true
+    //   this.lastMileTool.reference.initService()
+    //   this.lastMileTool.reference.registerEvents()
+    //   this.map.getCanvas().style.cursor = 'crosshair'
+    //   // this.map.setLayoutProperty(
+    //   //   mapConfig.facilitiesClusters,
+    //   //   'visibility',
+    //   //   'none'
+    //   // )
+    //   // this.map.setLayoutProperty(
+    //   //   mapConfig.facilitiesCount,
+    //   //   'visibility',
+    //   //   'none'
+    //   // )
+    //   // this.map.setLayoutProperty(
+    //   //   mapConfig.facilitiesSinglePoints,
+    //   //   'visibility',
+    //   //   'none'
+    //   // )
+    // },
+    // disableLastMileTool() {
+    //   this.lastMileTool.active = false
+    //   this.lastMileTool.reference.clearLastMileTool()
+    //   this.map.getCanvas().style.cursor = 'pointer'
+    // },
+    // handleLastMileToolCoordsChange(e) {
+    //   this.lastMileTool.reference.find(e.lngLat)
+    // },
+    // findNewLastMile() {
+    //   this.lastMileTool.reference.clearLastMileTool()
+    //   this.lastMileTool.networks = []
+    //   this.lastMileTool.len = ''
+    //   var emptyGeo = { type: 'FeatureCollection', features: [] }
+    //   this.map.getSource('startpoints').setData(emptyGeo)
+    //   this.map.getSource('finishpoints').setData(emptyGeo)
+    //   this.map.getSource('shortestroads').setData(emptyGeo)
+    //   this.lastMileTool.reference.latlng = null
+    //   this.lastMileTool.reference.registerEvents()
+    // }
   }
 }
 </script>

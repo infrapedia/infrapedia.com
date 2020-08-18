@@ -33,19 +33,22 @@ ul[role='group'] {
   height: 2.5rem;
   right: 3rem;
   top: 0;
+  li {
+    margin-right: 1em;
+  }
 
   &.active {
-    // width: 10.2rem;
-    width: 12.2rem;
+    width: fit-content;
+    // width: 12.2rem;
   }
 
-  #toggleTheme {
-    position: relative;
-    top: unset;
-    bottom: unset;
-    left: unset;
-    right: unset;
-  }
+  // #toggleTheme {
+  //   position: relative;
+  //   top: unset;
+  //   bottom: unset;
+  //   left: unset;
+  //   right: unset;
+  // }
 }
 
 /*
