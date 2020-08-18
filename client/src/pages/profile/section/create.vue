@@ -114,6 +114,15 @@ import { viewIXPOwner, editIXP, createIXP } from '../../../services/api/ixps'
 import ManualKMZSubmitDialog from '../../../components/dialogs/ManualKMZSubmit'
 import debounce from '../../../helpers/debounce'
 
+const allowedCreationTypes = [
+  'cls',
+  'map',
+  'ixps',
+  'subsea',
+  'facilities',
+  'terrestrial-network'
+]
+
 export default {
   name: 'CreateSection',
   components: {
@@ -269,18 +278,24 @@ export default {
   },
   beforeCreate() {
     this.$emit('layout', 'profile-layout')
-    if (!this.$route.query.id) return this.$router.push('/user')
+    if (
+      !this.$route.query.id ||
+      allowedCreationTypes.indexOf(this.$route.query.id) == -1
+    )
+      return this.$router.push('/user')
   },
   async mounted() {
-    // window.toggleDialog = () =>
-    //   (this.isManualUploadDialog = !this.isManualUploadDialog)
-    this.creationType = this.$route.query.id
-    this.checkCreationType(this.creationType)
+    try {
+      this.creationType = this.$route.query.id
+      this.checkCreationType(this.$route.query.id)
 
-    if (this.$route.query.item) {
-      this.getElementOnEdit(this.$route.query.item)
-    } else if (this.$route.query.id == 'map') {
-      await this.checkUserMapExistance()
+      if (this.$route.query.item) {
+        this.getElementOnEdit(this.$route.query.item)
+      } else if (this.$route.query.id == 'map') {
+        await this.checkUserMapExistance()
+      }
+    } catch (err) {
+      console.error(err)
     }
   },
   methods: {
@@ -314,46 +329,34 @@ export default {
         if (t != 'error' && mymap.length > 0) {
           this.mode = 'edit'
           const {
-            subdomain,
-            googleID,
-            cls,
-            facilities,
-            terrestrials,
-            subsea,
-            logos,
             draw,
-            ixps,
-            config,
-            owners,
+            logos,
             address,
+            googleID,
             techEmail,
             techPhone,
             saleEmail,
-            salePhone
+            salePhone,
+            subdomain,
+            config: { categories }
           } = mymap[0]
 
           this.form = {
             googleID,
             subdomain,
-            ixps: Array.isArray(ixps) ? ixps : [],
-            cls: Array.isArray(cls) ? cls : [],
             logo: Array.isArray(logos) && logos.length > 0 ? logos[0] : '',
-            subsea: Array.isArray(subsea) ? subsea : [],
-            terrestrials: Array.isArray(terrestrials) ? terrestrials : [],
-            facilities: Array.isArray(facilities) ? facilities : [],
-            config: typeof config == 'string' ? JSON.parse(config) : config,
-            owners: Array.isArray(owners) ? owners : [],
             address: Array.isArray(address) ? address : [],
             techEmail: techEmail ? techEmail : '',
             techPhone: techPhone ? techPhone : '',
             saleEmail: saleEmail ? saleEmail : '',
-            salePhone: salePhone ? salePhone : ''
+            salePhone: salePhone ? salePhone : '',
+            categoriesList: categories
           }
 
           const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
-          if (fc.features && fc.features.length) {
+          if (fc.features && fc.features.length > 0) {
             bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, fc.features)
-            bus.$emit(`${EDITOR_LOAD_DRAW}`, null, false)
+            bus.$emit(`${EDITOR_LOAD_DRAW}`, fc.features, false)
           }
         }
       } catch {
@@ -378,7 +381,7 @@ export default {
       if (t != 'error') {
         this.mode = 'create'
         await setupMyMapArchives(data.subdomain).catch(console.error)
-        await this.checkUserMapExistance()
+        // await this.checkUserMapExistance()
       }
       this.isSendingData = false
     },
@@ -400,13 +403,12 @@ export default {
           this.form = {
             subdomain: '',
             googleID: '',
-            name: '',
             cls: [],
             ixps: [],
             logo: '',
             terrestrials: [],
             subsea: [],
-            owners: [],
+            // owners: [],
             facilities: [],
             address: [],
             techEmail: '',
@@ -471,37 +473,41 @@ export default {
       }
     },
     async getElementOnEdit(_id) {
-      this.loading = true
-      this.mode = 'edit'
-      let currentElement = {}
+      try {
+        this.loading = true
+        this.mode = 'edit'
+        let currentElement = {}
 
-      switch (this.creationType) {
-        case 'cls':
-          currentElement = await this.viewCurrentCLS(_id)
-          if (!currentElement.country || currentElement.country == 'null') {
-            currentElement.country = ''
-          }
-          break
-        case 'facilities':
-          currentElement = await this.viewCurrentFacility(_id)
-          break
-        case 'ixps':
-          currentElement = await this.viewCurrentIXP(_id)
-          currentElement.owners
-            ? currentElement.owners
-            : (currentElement.owners = [])
-          break
-        default:
-          currentElement = await this.viewCurrentCable(_id)
-          if (this.creationType == 'subsea' && !currentElement.litCapacity) {
-            currentElement.litCapacity = []
-          }
-          break
+        switch (this.creationType) {
+          case 'cls':
+            currentElement = await this.viewCurrentCLS(_id)
+            if (!currentElement.country || currentElement.country == 'null') {
+              currentElement.country = ''
+            }
+            break
+          case 'facilities':
+            currentElement = await this.viewCurrentFacility(_id)
+            break
+          case 'ixps':
+            currentElement = await this.viewCurrentIXP(_id)
+            currentElement.owners
+              ? currentElement.owners
+              : (currentElement.owners = [])
+            break
+          default:
+            currentElement = await this.viewCurrentCable(_id)
+            if (this.creationType == 'subsea' && !currentElement.litCapacity) {
+              currentElement.litCapacity = []
+            }
+            break
+        }
+
+        this.form = { ...currentElement }
+        await this.handleEditModeSettings(currentElement)
+        this.loading = false
+      } catch (err) {
+        console.error(err)
       }
-
-      this.form = { ...currentElement }
-      await this.handleEditModeSettings(currentElement)
-      this.loading = false
     },
     async handleEditModeSettings(data) {
       switch (this.creationType) {
@@ -525,24 +531,26 @@ export default {
       // when it's a point feature
       {
         features =
-          data.geom.type == 'Point'
+          data.geom.type == 'Point' || data.geom.type == 'Feature'
             ? [
                 {
                   type: 'Feature',
                   properties: data.geom.properties
-                    ? { ...data.geom.properties }
+                    ? data.geom.properties
                     : { name: '' },
-                  geometry: {
-                    type: data.geom.type,
-                    coordinates: data.geom.coordinates
-                  }
+                  geometry: data.geom.geometry
+                    ? data.geom.geometry
+                    : {
+                        type: data.geom.type,
+                        coordinates: data.geom.coordinates
+                      }
                 }
               ]
             : [...data.geom.features]
       }
 
       bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, features)
-      await bus.$emit(`${EDITOR_LOAD_DRAW}`, features)
+      await bus.$emit(`${EDITOR_LOAD_DRAW}`, features, true, false)
     },
     handleCLSEditMode(data) {
       if (this.form.state == 'null' || this.form.state == 'undefined') {
@@ -594,6 +602,8 @@ export default {
       }
       if (!this.form.geom || this.form.geom == 'undefined') {
         this.form.geom = this.featuresList
+      } else if (data.geom && !Array.isArray(data.geom)) {
+        this.form.geom = [data.geom]
       }
 
       if (data.owners && Array.isArray(data.owners)) {
@@ -728,7 +738,6 @@ export default {
       if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     },
     async createCable() {
-      debugger
       this.isSendingData = true
       const {
         t,

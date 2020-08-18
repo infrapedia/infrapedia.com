@@ -1,3 +1,6 @@
+@import '../base/variables';
+@import '../helpers/atomic-classes';
+
 #map {
   width: 100%;
   height: 100vh;
@@ -12,12 +15,55 @@
 }
 
 .information-box {
-  top: 5rem;
+  top: 1.56rem;
   left: unset;
   font-size: 12px;
   background: rgba(255, 255, 255, 0.75);
   &.dark {
     color: rgb(231, 226, 226);
     background: rgba(61, 60, 60, 0.75);
+  }
+}
+
+.map-editor-wrapper {
+  position: relative;
+  &.custom-map {
+    border: 2px dashed #ccc;
+    .information-box {
+      top: 5rem;
+    }
+  }
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.8;
+    width: 100%;
+    height: 1.4rem;
+    @extend .vertical-align;
+    // background: linear-gradient(
+    //   180deg,
+    //   $white-full 0,
+    //   rgba(255, 255, 255, 0) 100%
+    // );
+    background: linear-gradient(
+      180deg,
+      $dark-charcoal 2,
+      rgba(255, 255, 255, 0.8) 90%
+    );
+    &.dark {
+      color: $white-full;
+      background: linear-gradient(
+        180deg,
+        $dark-charcoal 0,
+        rgba(255, 255, 255, 0) 100%
+      );
+    }
+  }
+  &.dnd {
+    border-color: $blue;
+    .overlay {
+      opacity: 1;
+    }
   }
 }

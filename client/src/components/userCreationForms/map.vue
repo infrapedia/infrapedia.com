@@ -251,14 +251,14 @@
       </el-form-item>
     </el-form>
     <!------------------------->
-    <i-map-properties-dialog
+    <!-- <i-map-properties-dialog
       :categories="mapCreationData.categories"
       :is-visible="isPropertiesDialog"
       :feature-type="featureType"
       :feature="feature"
       :mode="dialogMode"
       @close="handleDialogClose"
-    />
+    /> -->
   </div>
 </template>
 
@@ -278,8 +278,8 @@ export default {
   components: {
     // VMultiSelect,
     CategoriesField,
-    AutocompleteGoogle,
-    IMapPropertiesDialog: () => import('../dialogs/MapPropertiesDialog')
+    AutocompleteGoogle
+    // IMapPropertiesDialog: () => import('../dialogs/MapPropertiesDialog')
   },
   data: () => ({
     // facilities: [],
@@ -305,12 +305,12 @@ export default {
     tagOnEdit: null,
     inputVisible: false,
     isLoadingCls: false,
-    dialogMode: 'create',
+    // dialogMode: 'create',
     isLoadingFacs: false,
     isLoadingIxps: false,
     isLoadingCables: false,
     isLoadingOwners: false,
-    isPropertiesDialog: false,
+    // // isPropertiesDialog: false,
     currentSelectionID: null,
     mapCreationData: {
       // cls: [],
@@ -398,6 +398,10 @@ export default {
       if (m == 'create') return
       // await this.handleEditModeScenario()
       this.setLogoUrl()
+      if (this.form.categoriesList) {
+        this.mapCreationData.categories = Array.from(this.form.categoriesList)
+        delete this.form.categoriesList
+      }
     }
   },
   created() {
@@ -410,6 +414,10 @@ export default {
     if (this.mode == 'edit') {
       // await this.handleEditModeScenario()
       this.setLogoUrl()
+      if (this.form.categoriesList) {
+        this.mapCreationData.categories = Array.from(this.form.categoriesList)
+        delete this.form.categoriesList
+      }
     }
   },
   methods: {
@@ -602,8 +610,33 @@ export default {
     //   this.isLoadingFacs = false
     // },
     sendData() {
+      const data = this.mapCreationData.categories.map(item => item.data)
+      const dataKeys = data.length ? Object.keys(data[0]) : []
+      const format = {
+        cls: [],
+        draw: [],
+        ixps: [],
+        subsea: [],
+        facilities: [],
+        terrestrials: []
+      }
+
+      for (let key of dataKeys) {
+        for (let dataItem of data) {
+          if (key.includes('custom')) {
+            format.draw = [...format.draw, ...dataItem[key]]
+          } else if (key.includes('subsea')) {
+            format.subsea = [...format.subsea, ...dataItem[key]]
+          } else if (key.includes('terrestrial')) {
+            format.terrestrials = [...format.terrestrials, ...dataItem[key]]
+          } else {
+            format[key] = [...format[key], ...dataItem[key]]
+          }
+        }
+      }
       return this.$emit(`${events.SEND_DATA}`, {
         ...this.form,
+        ...format,
         config: this.mapCreationData
       })
     },
@@ -648,20 +681,20 @@ export default {
     /**
      * @param data { Object } - Data collected from propertiesDialog form
      */
-    handleDialogClose(data) {
-      this.setMapConfig(data)
-      setTimeout(async () => {
-        await this.handleSetFeatureOntoMap({
-          t: this.featureType,
-          removeLoadState: true
-        })
+    // handleDialogClose(data) {
+    //   this.setMapConfig(data)
+    //   setTimeout(async () => {
+    //     await this.handleSetFeatureOntoMap({
+    //       t: this.featureType,
+    //       removeLoadState: true
+    //     })
 
-        this.currentSelectionID = null
-        this.featureType = ''
-      }, 320)
+    //     this.currentSelectionID = null
+    //     this.featureType = ''
+    //   }, 320)
 
-      this.isPropertiesDialog = false
-    },
+    //   this.isPropertiesDialog = false
+    // },
     handleClose(tag) {
       this.form.address.splice(this.form.address.indexOf(tag), 1)
     },

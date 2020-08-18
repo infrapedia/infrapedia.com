@@ -209,7 +209,7 @@
                 size="mini"
                 :class="{ dark }"
                 title="Edit items"
-                @click="editCategoryTypesSelections(cat, i)"
+                @click="editCategoryTypesSelections(cat, false)"
               />
               <el-button
                 icon="el-icon-edit-outline"
@@ -217,7 +217,7 @@
                 size="mini"
                 title="Edit"
                 :class="{ dark }"
-                @click="setEditMode(cat, i)"
+                @click="setEditMode(cat, true)"
               />
               <el-button
                 icon="el-icon-delete"
@@ -232,6 +232,10 @@
           <el-collapse-transition>
             <div class="details-wrapper" v-if="isViewing(cat.name)">
               <el-divider :class="{ dark }" class="mt2 mb4" />
+              <div class="fs-small block text-left pr4 pl4 mb2">
+                <strong>id: </strong>
+                {{ cat._id }}
+              </div>
               <div
                 class="flex nowrap justify-content-space-between mb4 pr4 pl4"
               >
@@ -263,9 +267,11 @@
     <!-- TYPES SELECTION DIALOG START -->
     <el-dialog
       top="28vh"
+      id="elementsDialog"
       :visible.sync="typesDialog.visible"
       :close-on-click-modal="false"
       :custom-class="customDialogClass"
+      @opened="handleScrollToView"
       :before-close="() => $emit('cancel-types-selection')"
     >
       <header slot="title">
@@ -299,9 +305,13 @@
             :options="typesData.terrestrials"
             @input="loadCablesSearch($event, 'terrestrials')"
             :loading="typesData.isLoadingCables"
-            @remove="handleRemoveTypeChange('terrestrials', $event)"
-            @values-change="handleTypeSelectionChange('terrestrials', $event)"
-            :value="mode == 'create' ? [] : [...field.data.terrestrials]"
+            @remove="handleRemoveTypeChange('terrestrial networks', $event)"
+            @values-change="
+              handleTypeSelectionChange('terrestrial networks', $event)
+            "
+            :value="
+              mode == 'create' ? [] : [...field.data['terrestrial networks']]
+            "
           />
         </el-form-item>
         <el-form-item
@@ -375,7 +385,7 @@ import { searchCls } from '../../../services/api/cls'
 export default {
   name: 'CategoriesField',
   components: {
-    VMultiSelect: () => import('../../../components/MultiSelect')
+    VMultiSelect: () => import('../../MultiSelect')
   },
   props: {
     value: {
@@ -423,6 +433,13 @@ export default {
     }
   }),
   computed: {
+    includesDrawnFeatures() {
+      return (
+        this.field.types.includes('custom points') ||
+        this.field.types.includes('custom polygons') ||
+        this.field.types.includes('custom lines')
+      )
+    },
     dark() {
       return this.$store.state.isDark
     },
@@ -477,11 +494,38 @@ export default {
         bus.$emit('categories-field-values-change', this.categories)
       })
     },
+    value(list) {
+      let once = false
+      let vm = this
+      function x() {
+        if (once) return
+        vm.categories = list
+        once = true
+      }
+      x()
+    },
     categories(list) {
       bus.$emit('categories-field-values-change', list)
     }
   },
+  created() {
+    bus.$on(
+      'categories-field-reset-datasets',
+      this.handleCategoriesResetDataset
+    )
+  },
+  beforeDestroy() {
+    bus.$off(
+      'categories-field-reset-datasets',
+      this.handleCategoriesResetDataset
+    )
+  },
   methods: {
+    handleScrollToView() {
+      document
+        .querySelector('#elementsDialog .el-dialog')
+        .scrollIntoView({ behavior: 'smooth', block: 'end' })
+    },
     scrollIntoView() {
       setTimeout(() => {
         document
@@ -546,6 +590,9 @@ export default {
       }
       this.typesData.isLoadingCls = false
     },
+    /**
+     * @param s { String } - search queried from ixps select input
+     */
     async loadIxpsSearch(s) {
       if (s === '') return
       this.typesData.isLoadingIxps = true
@@ -604,13 +651,35 @@ export default {
     removeViewing(name) {
       this.viewing = this.viewing.filter(n => n != name)
     },
-    setEditMode(category, i) {
-      this.field = { ...JSON.parse(JSON.stringify(category)), idx: i }
+    setEditMode(category, scrollToView) {
+      this.field = { ...JSON.parse(JSON.stringify(category)) }
       this.mode = 'edit'
       this.isInputVisible = true
+      if (scrollToView) this.scrollIntoView()
+    },
+    handleCategoriesResetDataset() {
+      this.categories = this.categories.map(category => {
+        category.data = {
+          cls: [],
+          ixps: [],
+          facilities: [],
+          'custom lines': [],
+          'subsea cables': [],
+          'custom points': [],
+          'custom polygons': [],
+          'terrestrial networks': []
+        }
+        return category
+      })
     },
     saveEdit() {
-      this.categories[this.field.idx] = { ...this.field }
+      const categoryIdx = this.categories
+        .map((cat, indx) =>
+          cat._id == this.field._id ? [cat._id, indx] : false
+        )
+        .filter(i => i)[0]
+
+      this.categories[categoryIdx[1]] = { ...this.field }
       bus.$emit('categories-field-values-change', this.categories)
       this.toggleInput(false)
     },
@@ -621,12 +690,12 @@ export default {
     beforeAddCategoryAddTypesSelections() {
       return new Promise((res, rej) => {
         this.typesDialog.visible = true
-        this.$on('save-types', function() {
+        this.$once('save-types', function() {
           if (this.mode != 'create') return
           this.typesDialog.visible = false
           res()
         })
-        this.$on('cancel-types-selection', function() {
+        this.$once('cancel-types-selection', function() {
           if (this.mode != 'create') return
           this.typesDialog.visible = false
           rej()
@@ -636,19 +705,19 @@ export default {
         .catch(() => {})
     },
     /**
-     * @param args { Array } - Array of args same as setEditMode
+     * @param args { Array } - Array of args. Same as setEditMode(category, scrollToView)
      */
     editCategoryTypesSelections(...args) {
       return new Promise((res, rej) => {
         this.setEditMode(...args)
         this.nextStep()
         this.typesDialog.visible = true
-        this.$on('save-types', function() {
+        this.$once('save-types', function() {
           if (this.mode == 'create') return
           this.typesDialog.visible = false
           res()
         })
-        this.$on('cancel-types-selection', function() {
+        this.$once('cancel-types-selection', function() {
           if (this.mode == 'create') return
           this.toggleInput(false)
           this.typesDialog.visible = false

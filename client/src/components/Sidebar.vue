@@ -70,6 +70,15 @@
             @selection="handleItemListSelection"
           />
         </transition>
+        <div class="pr8 pl8 pb8">
+          <a target="_blank" href="https://www.edgeuno.com" title="Ads">
+            <el-image
+              :src="bannerSrc"
+              fit="cover"
+              style="width: 100%; height: 9.88rem"
+            />
+          </a>
+        </div>
       </el-card>
     </div>
   </transition>
@@ -126,6 +135,9 @@ export default {
       sidebarMode: state => state.sidebarMode,
       currentSelection: state => state.map.currentSelection
     }),
+    bannerSrc() {
+      return 'https://cdn1.infrapedia.com/assets/edgeuno_banner.jpeg'
+    },
     defaultMode() {
       return modes.CABLE_MODE
     },
