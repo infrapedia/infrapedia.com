@@ -67,9 +67,6 @@ export default {
       return 'network'
     }
   },
-  beforeCreate() {
-    this.$emit('layout', 'profile-layout')
-  },
   async mounted() {
     await this.getCablesList()
   },

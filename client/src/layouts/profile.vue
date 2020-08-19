@@ -1,6 +1,7 @@
 <template>
   <el-container
     class="vph-full"
+    id="profile-layout__main-wraper"
     :class="{
       'no-overflow': isMobileProfileDrawer
     }"
@@ -9,7 +10,7 @@
 
     <el-aside
       width="200px"
-      class="mt12 oveflow-y-auto no-overflow hidden-md-and-down transition-all"
+      class="mt12 no-overflow hidden-md-and-down transition-all"
       :class="{ 'adjust-width': $route.path.includes('create') }"
     >
       <ul role="group" class="pt7 h-fit-full">
@@ -50,8 +51,13 @@
       @close="handleToggleMobileProfileDrawer"
     />
 
-    <transition mode="out-in" name="fade">
-      <slot />
+    <transition
+      mode="out-in"
+      name="animated super-fast"
+      enter-active-class="fadeIn"
+      leave-active-class="fadeOut"
+    >
+      <router-view />
     </transition>
 
     <i-footer
@@ -150,6 +156,7 @@ export default {
       `${navbarEvents.TOGGLE_MOBILE_DRAWER_PROFILE}`,
       this.handleToggleMobileProfileDrawer
     )
+    document.querySelector('body').className = 'no-overflow'
   },
   beforeDestroy() {
     bus.$off(

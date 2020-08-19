@@ -277,7 +277,6 @@ export default {
     }
   },
   beforeCreate() {
-    this.$emit('layout', 'profile-layout')
     if (
       !this.$route.query.id ||
       allowedCreationTypes.indexOf(this.$route.query.id) == -1

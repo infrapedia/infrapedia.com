@@ -1,32 +1,19 @@
-import Landing from '../pages/Landing.vue'
-import MapHome from '../pages/MapHome.vue'
-import Login from '../pages/login.vue'
+import { getInstance } from '../auth/index'
 import NotFound from '../layouts/404.vue'
-import User from '../pages/profile/index.vue'
+import ProfileLayout from '../layouts/profile.vue'
+import HomepageLayout from '../layouts/homepage.vue'
+
+import Landing from '../pages/Landing.vue'
+import MapApp from '../pages/MapApp.vue'
+import Login from '../pages/login.vue'
 import Profile from '../pages/profile/profile.vue'
-import CLS from '../pages/profile/section/cls.vue'
-import IxpsSection from '../pages/profile/section/ixps.vue'
-import CreateSection from '../pages/profile/section/create.vue'
-import TerrestrialNetworksSection from '../pages/profile/section/terrestrial-networks.vue'
-import SubseaCablesSection from '../pages/profile/section/subsea-cables.vue'
-import IssuesSection from '../pages/profile/section/issues.vue'
-import AlertsSection from '../pages/profile/section/alerts.vue'
 import ChangePassword from '../pages/profile/recover-password.vue'
-import Groups from '../pages/profile/section/groups.vue'
-import OrgsSection from '../pages/profile/section/organization.vue'
-import MyIssuesSection from '../pages/profile/section/myissues.vue'
-import FacilitiesSection from '../pages/profile/section/facilities.vue'
 import EmailProviders from '../pages/profile/email-providers.vue'
-// import MarketPlace from '../pages/marketplace'
-// import MessagesSection from '../pages/profile/section/messages.vue'
-// import MyMessagesSection from '../pages/profile/section/mymessages.vue'
 import Contact from '../pages/Contact.vue'
 import About from '../pages/About.vue'
 import Attributions from '../pages/Attributions.vue'
 import Services from '../pages/Services.vue'
 import Sponsors from '../pages/Sponsors.vue'
-// import VotationPool from '../pages/VotationPool.vue'
-import { getInstance } from '../auth/index'
 import VotesResults from '../pages/VotesResults.vue'
 import PrivacyPolicy from '../pages/PrivacyPolicy.vue'
 import TermsAndConditions from '../pages/TermsAndConditions.vue'
@@ -51,72 +38,122 @@ async function handleAdminOnlyRoutes(next, to) {
   }
 }
 
+/**
+ * DYNAMIC IMPORT OF USER DASHBOARD ROUTES
+ */
+const UserDashboard = () =>
+  import(
+    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/index.vue'
+  )
+const TerrestrialNetworksSection = () =>
+  import(
+    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/terrestrial-networks.vue'
+  )
+const SubseaCablesSection = () =>
+  import(
+    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/subsea-cables.vue'
+  )
+const CLSSection = () =>
+  import(
+    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/cls.vue'
+  )
+const IxpsSection = () =>
+  import(
+    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/ixps.vue'
+  )
+const CreateSection = () =>
+  import(
+    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/create.vue'
+  )
+const AlertsSection = () =>
+  import(
+    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/alerts.vue'
+  )
+const OrgsSection = () =>
+  import(
+    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/organization.vue'
+  )
+const FacilitiesSection = () =>
+  import(
+    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/facilities.vue'
+  )
+
+/**
+ * THIS ARE RELATED NESTED ROUTES SO WE CAN DEFER THEM FROM THE OTHERS
+ */
+const IssuesSection = () =>
+  import(
+    /* webpackChunkName: "user-nested-routes-issues-group" */ '../pages/profile/section/issues.vue'
+  )
+const MyIssuesSection = () =>
+  import(
+    /* webpackChunkName: "user-nested-routes-issues-group" */ '../pages/profile/section/myissues.vue'
+  )
+
 const routes = [
   { path: '*', component: NotFound },
   {
     path: '/app',
-    name: 'map-app',
-    component: MapHome
+    name: 'app',
+    component: MapApp
   },
-  // {
-  //   path: '/vote',
-  //   name: 'votation-pool',
-  //   component: VotationPool
-  // },
   {
-    path: '/votes-results',
-    name: 'votes-results',
-    component: VotesResults
+    path: '/homepage',
+    name: 'homepage',
+    alias: '/',
+    component: Landing
   },
   {
     path: '/',
     name: 'landing',
-    component: Landing
-  },
-  {
-    path: '/attributions',
-    name: 'attributions',
-    component: Attributions
-  },
-  {
-    path: '/faq',
-    name: 'faq',
-    component: FAQ
-  },
-  {
-    path: '/services',
-    name: 'services',
-    component: Services
-  },
-  {
-    path: '/privacy-policy',
-    name: 'privacy-policy',
-    component: PrivacyPolicy
-  },
-  {
-    path: '/terms-and-conditions',
-    name: 'terms-and-conditions',
-    component: TermsAndConditions
-  },
-  {
-    path: '/sponsors',
-    name: 'sponsors',
-    component: Sponsors
-  },
-  // {
-  //   path: '/marketplace',
-  //   name: 'marketplace',
-  //   component: MarketPlace
-  // },
-  {
-    path: '/contact',
-    name: 'contact',
-    component: Contact
-  },
-  {
-    path: '/about',
-    name: 'about',
-    component: About
+    component: HomepageLayout,
+    children: [
+      {
+        path: '/attributions',
+        name: 'attributions',
+        component: Attributions
+      },
+      {
+        path: '/faq',
+        name: 'faq',
+        component: FAQ
+      },
+      {
+        path: '/services',
+        name: 'services',
+        component: Services
+      },
+      {
+        path: '/privacy-policy',
+        name: 'privacy-policy',
+        component: PrivacyPolicy
+      },
+      {
+        path: '/terms-and-conditions',
+        name: 'terms-and-conditions',
+        component: TermsAndConditions
+      },
+      {
+        path: '/sponsors',
+        name: 'sponsors',
+        component: Sponsors
+      },
+      {
+        path: '/contact',
+        name: 'contact',
+        component: Contact
+      },
+      {
+        path: '/about',
+        name: 'about',
+        component: About
+      },
+      {
+        path: '/votes-results',
+        name: 'votes-results',
+        component: VotesResults
+      }
+    ]
   },
   {
     path: '/login',
@@ -124,97 +161,94 @@ const routes = [
     component: Login
   },
   {
-    path: '/user',
-    name: 'user',
-    component: User
-  },
-  {
-    path: '/user/profile',
-    name: 'user-profile',
-    component: Profile
-  },
-  {
-    path: '/user/profile/email-providers',
-    name: 'user-profile/email-providers',
-    component: EmailProviders
-  },
-  {
-    path: '/change-password',
+    path: '/user/change-password',
     name: 'change-password',
     component: ChangePassword
   },
   {
-    path: '/user/section/terrestrial-networks',
-    name: 'user/terrestrial-cables-section',
-    component: TerrestrialNetworksSection
-  },
-  {
-    path: '/user/section/subsea-cables',
-    name: 'user/subsea-cables-section',
-    component: SubseaCablesSection
-  },
-  {
-    path: '/user/section/orgs',
-    name: 'user/orgs-section',
-    component: OrgsSection
-  },
-  {
-    path: '/user/section/cls',
-    name: 'user/cls-section',
-    component: CLS
-  },
-  {
-    path: '/user/section/facilities',
-    name: 'user/facs-section',
-    component: FacilitiesSection,
-    beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next, to)
-  },
-  {
-    path: '/user/section/ixps',
-    name: 'user/ixps-section',
-    component: IxpsSection,
-    beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next)
-  },
-  {
-    path: '/user/section/groups',
-    name: 'user/groups-section',
-    component: Groups,
-    beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next)
-  },
-  {
-    path: '/user/section/issues',
-    name: 'user/issues-section',
-    component: IssuesSection
-  },
-  {
-    path: '/user/section/issues-reported',
-    name: 'user/issues-reported',
-    component: MyIssuesSection
-  },
-  // {
-  //   path: '/user/section/my-messages',
-  //   name: 'user/my-messages',
-  //   component: MyMessagesSection
-  // },
-  // {
-  //   path: '/user/section/messages',
-  //   name: 'user/messages',
-  //   component: MessagesSection
-  // },
-  {
-    path: '/user/section/alerts',
-    name: 'user/alerts-section',
-    component: AlertsSection
-  },
-  {
-    path: '/user/section/create',
-    name: '/user/create',
-    component: CreateSection,
-    beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next, to)
-  },
-  {
-    path: '/user/section',
-    redirect: { name: 'user/orgs-section' }
+    path: '/user',
+    name: 'user',
+    component: ProfileLayout,
+    children: [
+      {
+        path: 'dashboard',
+        name: 'user-dashboard',
+        component: UserDashboard
+      },
+      {
+        path: 'profile',
+        name: 'user-profile',
+        component: Profile,
+        children: [
+          {
+            path: 'email-providers',
+            name: 'email-providers',
+            component: EmailProviders
+          }
+        ]
+      },
+      {
+        path: 'section/terrestrial-networks',
+        name: 'user/terrestrial-cables-section',
+        component: TerrestrialNetworksSection
+      },
+      {
+        path: 'section/subsea-cables',
+        name: 'user/subsea-cables-section',
+        component: SubseaCablesSection
+      },
+      {
+        path: 'section/orgs',
+        name: 'user/orgs-section',
+        component: OrgsSection
+      },
+      {
+        path: 'section/cls',
+        name: 'user/cls-section',
+        component: CLSSection
+      },
+      {
+        path: 'section/facilities',
+        name: 'user/facs-section',
+        component: FacilitiesSection,
+        beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next, to)
+      },
+      {
+        path: 'section/ixps',
+        name: 'user/ixps-section',
+        component: IxpsSection,
+        beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next)
+      },
+      {
+        path: 'section/issues',
+        name: 'user/issues-section',
+        component: IssuesSection
+      },
+      {
+        path: 'section/issues-reported',
+        name: 'user/issues-reported',
+        component: MyIssuesSection
+      },
+      {
+        path: 'section/alerts',
+        name: 'user/alerts-section',
+        component: AlertsSection
+      },
+      {
+        path: 'section/create',
+        name: 'create',
+        component: CreateSection,
+        beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next, to)
+      },
+      {
+        path: 'section',
+        redirect: { name: 'user/orgs-section' }
+      },
+      {
+        path: '/user',
+        redirect: { name: 'user-dashboard' }
+      }
+    ]
   }
 ]
 

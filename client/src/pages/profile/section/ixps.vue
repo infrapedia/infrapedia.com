@@ -57,9 +57,6 @@ export default {
       return 'ixp'
     }
   },
-  beforeCreate() {
-    this.$emit('layout', 'profile-layout')
-  },
   async mounted() {
     await this.getIxpsList()
   },

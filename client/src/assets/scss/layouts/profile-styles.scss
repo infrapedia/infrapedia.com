@@ -10,6 +10,7 @@
 }
 
 .vph-full {
+  background-color: $white-profile;
   @media screen and (max-width: $break-sm) {
     overflow-y: scroll;
   }
@@ -27,7 +28,7 @@
 }
 
 .profile-footer {
-  transform: translateX(18rem) translateY(-0.4rem);
+  transform: translateX(11rem) translateY(-0.4rem);
   &.is-create-route {
     transform: translateX(32.8rem) translateY(-0.4rem);
   }
@@ -92,5 +93,8 @@
         }
       }
     }
+  }
+  #profile-layout__main-wraper {
+    background-color: $dark-charcoal;
   }
 }

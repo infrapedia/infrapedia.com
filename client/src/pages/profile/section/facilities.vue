@@ -62,9 +62,6 @@ export default {
       return 'facility'
     }
   },
-  beforeCreate() {
-    this.$emit('layout', 'profile-layout')
-  },
   async mounted() {
     await this.getFacilitiesList()
   },

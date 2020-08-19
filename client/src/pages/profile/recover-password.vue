@@ -1,13 +1,11 @@
 <template>
-  <div
-    class="main-wrapper w-full pt24 p4 flex column no-wrap justify-content-center align-items-center h-full"
+  <el-container
+    direction="vertical"
+    class="no-overflow vph-full pt12 p4 flex column align-items-center"
+    style="background-color: #333232;"
   >
-    <el-image
-      class="mt-62"
-      src="https://cdn.infrapedia.com/logos/dark-mode-logo.svg"
-      fit="contain"
-    />
-    <div class="mt24">
+    <el-image class="block w40" :src="logoUrl" fit="contain" />
+    <div class="mt14">
       <router-link
         to="/user/profile"
         class="inline-block mb4 underline-hover fs-medium"
@@ -59,7 +57,7 @@
         </el-form>
       </el-card>
     </div>
-  </div>
+  </el-container>
 </template>
 
 <script>
@@ -74,12 +72,12 @@ export default {
     dark() {
       return this.$store.state.isDark
     },
+    logoUrl() {
+      return 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo.svg'
+    },
     isPassEqual() {
       return this.passw == this.passwr
     }
-  },
-  beforeCreate() {
-    this.$emit('layout', 'nothing-layout')
   },
   methods: {
     async sendData() {
@@ -109,7 +107,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-@import '../../assets/scss/pages/user/recover-password-styles.scss';
-</style>

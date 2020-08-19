@@ -8,7 +8,13 @@ const router = new VueRouter({
   mode: 'history',
   routes,
   base: process.env.BASE_URL,
-  scrollBehavior: () => ({ x: 0, y: 0 })
+  scrollBehavior: (to, from, savedPosition) => {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { x: 0, y: 0 }
+    }
+  }
 })
 
 export default router

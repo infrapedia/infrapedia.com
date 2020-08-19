@@ -506,14 +506,22 @@
 }
 
 .animated.faster2x {
+  -moz-animation-duration: 320ms;
   -webkit-animation-duration: 320ms;
-  animation-duration: 320ms;
   transition-duration: 320ms;
+  animation-duration: 320ms;
 }
 .animated.faster3x {
+  -moz-animation-duration: 120ms;
   -webkit-animation-duration: 120ms;
-  animation-duration: 120ms;
   transition-duration: 120ms;
+  animation-duration: 120ms;
+}
+.animated.super-fast {
+  -moz-animation-duration: 2ms;
+  -webkit-animation-duration: 2ms;
+  transition-duration: 2ms;
+  animation-duration: 2ms;
 }
 
 .animated.slow {
