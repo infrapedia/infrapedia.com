@@ -126,7 +126,7 @@
                 @change="$emit('sort-by', tableSearch, $event)"
               >
                 <el-option
-                  v-for="(opt, i) in sort.list"
+                  v-for="(opt, i) in sortList"
                   :key="i"
                   :label="opt.text"
                   :value="opt.value"
@@ -225,6 +225,17 @@ import sortAlphabetically from '../helpers/sortAlphabetically'
 export default {
   name: 'TableList',
   props: {
+    sortList: {
+      type: Array,
+      default: () => [
+        { text: 'Name Asc', value: 'nameAsc' },
+        { text: 'Name Desc', value: 'nameDesc' },
+        { text: 'Created at Asc', value: 'creatAtAsc' },
+        { text: 'Created at Desc', value: 'creatAtDesc' },
+        { text: 'Updated at Asc', value: 'updateAtAsc' },
+        { text: 'Updated at Desc', value: 'updateAtDesc' }
+      ]
+    },
     columns: {
       type: Array,
       required: true
@@ -288,12 +299,7 @@ export default {
   data: () => ({
     formatDate,
     sort: {
-      selected: 'name',
-      list: [
-        { text: 'Name', value: 'name' },
-        { text: 'Created at', value: 'createdAt' },
-        { text: 'Updated at', value: 'updatedAt' }
-      ]
+      selected: 'nameAsc'
     },
     tableSearch: '',
     paginationPage: 0
