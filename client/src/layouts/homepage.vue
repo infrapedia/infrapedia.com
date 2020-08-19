@@ -1,6 +1,5 @@
 <template>
   <el-container direction="vertical">
-    <cookie-consent :message="cc.message" :href="cc.href" />
     <h-mobile-drawer
       class="hidden-md-and-up"
       :is-homepage-drawer="true"
@@ -33,13 +32,7 @@ export default {
     HMobileDrawer
   },
   data: () => ({
-    isMobileDrawer: false,
-    cc: {
-      message:
-        'This website uses cookies to improve your experience. Visit our Privacy Policy page for more information about cookies and how we use them.',
-      href:
-        'https://networkatlas.com/wp-content/uploads/2019/03/privacy-policy.pdf'
-    }
+    isMobileDrawer: false
   }),
   methods: {
     closeDrawer() {
