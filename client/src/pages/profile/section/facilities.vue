@@ -84,11 +84,6 @@ export default {
       })
     },
     handleFacsSearch: debounce(async function(s, sortBy) {
-      if (s == '') {
-        if (!this.loading) await this.getFacilitiesList()
-        return
-      }
-
       this.loading = true
       const res = await searchFacilities({
         user_id: await this.$auth.getUserID(),

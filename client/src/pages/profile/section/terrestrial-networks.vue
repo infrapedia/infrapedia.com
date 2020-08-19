@@ -127,11 +127,6 @@ export default {
       })
     },
     handleTerrestrialSearch: debounce(async function(s, sortBy) {
-      if (s == '') {
-        if (!this.loading) await this.getCablesList()
-        return
-      }
-
       this.loading = true
       const res = await getSearchByCablesT({
         user_id: await this.$auth.getUserID(),

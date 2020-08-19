@@ -21,7 +21,7 @@
     <el-card shadow="never" class="w-fit-full">
       <el-table
         :row-class-name="tableRowClassName"
-        :data="tableDataSorted"
+        :data="tableData"
         v-loading="isLoading"
         max-height="500"
       >
@@ -209,7 +209,7 @@
     </el-card>
     <div v-if="pagination" class="w-fit-full flex justify-content-center mt8">
       <el-pagination
-        v-if="!tableSearch"
+        v-if="!tableSearch && !isSorting"
         layout="prev, next"
         :current-page.sync="paginationPage"
         @current-change="$emit('page-change', $event)"
@@ -220,7 +220,6 @@
 
 <script>
 import { formatDate } from '../helpers/formatDate'
-import sortAlphabetically from '../helpers/sortAlphabetically'
 
 export default {
   name: 'TableList',
@@ -301,19 +300,25 @@ export default {
     sort: {
       selected: 'nameAsc'
     },
+    isSorting: false,
     tableSearch: '',
     paginationPage: 0
   }),
   computed: {
-    tableDataSorted() {
-      const data = Array.from(this.tableData)
-      return data.sort((a, b) => sortAlphabetically(a, b))
-    },
     dark() {
       return this.$store.state.isDark
     }
   },
+  created() {
+    this.$on('sort-by', this.handleSortByChange)
+  },
+  beforeDestroy() {
+    this.$off('sort-by', this.handleSortByChange)
+  },
   methods: {
+    handleSortByChange(s, sort) {
+      this.isSorting = Boolean(sort != this.sortList[0].value)
+    },
     getTableSearchValue() {
       return [this.tableSearch, this.sort.selected]
     },

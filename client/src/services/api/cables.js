@@ -342,12 +342,7 @@ export const getSubseaCables = async ({ user_id, page }) => {
   return res
 }
 
-export const getSearchByCablesS = async ({
-  user_id,
-  s,
-  psz,
-  sortBy = 'name'
-}) => {
+export const getSearchByCablesS = async ({ user_id, s, psz, sortBy }) => {
   url = `${apiConfig.url}/cables/search/s?s=${s}&sortBy=${sortBy}`
   if (psz) {
     url = url + '&psz=1'
@@ -363,12 +358,7 @@ export const getSearchByCablesS = async ({
   return res
 }
 
-export const getSearchByCablesT = async ({
-  user_id,
-  s,
-  psz,
-  sortBy = 'name'
-}) => {
+export const getSearchByCablesT = async ({ user_id, s, psz, sortBy }) => {
   url = `${apiConfig.url}/cables/search/t?s=${s}&sortBy=${sortBy}`
   if (psz) {
     url = url + '&psz=1'

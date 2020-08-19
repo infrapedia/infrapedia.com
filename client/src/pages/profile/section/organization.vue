@@ -209,11 +209,6 @@ export default {
       }
     },
     handleOrgSearch: debounce(async function(s, sortBy) {
-      if (s == '') {
-        if (!this.loading) await this.getOrganizationsList()
-        return
-      }
-
       this.loading = true
       const res = await searchOrganization({
         user_id: await this.$auth.getUserID(),
