@@ -8,12 +8,13 @@
     <i-navbar role="navigation" :is-user-navbar="true" />
 
     <el-aside
+      width="200px"
       class="mt12 oveflow-y-auto no-overflow hidden-md-and-down transition-all"
       :class="{ 'adjust-width': $route.path.includes('create') }"
     >
-      <ul role="group" class="pt2 h-fit-full">
+      <ul role="group" class="pt7 h-fit-full">
         <template v-for="(link, i) in links">
-          <li role="listitem" class="h18" :key="i" :title="link.label">
+          <li role="listitem" class="h10" :key="i" :title="link.label">
             <router-link
               exact
               :to="link.url"
@@ -27,7 +28,15 @@
               :class="checkURL(link)"
               class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
             >
-              <fa :icon="link.icon" class="mr2 icon" /> {{ link.label }}
+              <fa :icon="link.icon" class="mr2 icon" />
+              <span
+                class="label"
+                :class="{
+                  'transition-all-delay-520ms': !$route.path.includes('create')
+                }"
+              >
+                {{ link.label }}
+              </span>
             </router-link>
           </li>
         </template>
