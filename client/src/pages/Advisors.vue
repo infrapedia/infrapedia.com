@@ -60,10 +60,6 @@ export default {
         link: 'https://www.linkedin.com/in/dave-crowley-007647/'
       },
       {
-        name: 'Eric Handa, AP Telecom',
-        link: 'https://www.linkedin.com/in/erichanda/'
-      },
-      {
         name: 'Greg Mahlknecht, Always Active Technologies',
         link: 'https://www.linkedin.com/in/greg-mahlknecht-9b544019/'
       },
