@@ -4,7 +4,7 @@
 .el-aside {
   ul[role='group'] {
     li[role='listitem'] {
-      font-size: 0.8em;
+      font-size: 14px;
     }
   }
 }
@@ -31,11 +31,6 @@
   &.is-create-route {
     transform: translateX(32.8rem) translateY(-0.4rem);
   }
-}
-
-.transition-all-delay-520ms {
-  @extend .transition-all;
-  transition-delay: 520ms;
 }
 
 /*
