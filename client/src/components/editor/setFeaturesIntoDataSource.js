@@ -38,10 +38,10 @@ export function setFeaturesIntoDrawnDataSource({
           layerType = 'cls'
           colorProp = 'circle-color'
           break
-        case 'polygon':
-          layerType = 'facilities'
-          colorProp = 'fill-extrusion-color'
-          break
+        // case 'polygon':
+        //   layerType = 'facilities'
+        //   colorProp = 'circle-color'
+        //   break
         default:
           layerType = 'cables'
           colorProp = 'line-color'
@@ -68,21 +68,9 @@ export function setFeaturesIntoDrawnDataSource({
     let sourceName = 'drawn-features'
     let source = map.getSource(sourceName)
 
-    if (source) {
+    if (source && map.loaded()) {
       if (map.isSourceLoaded(sourceName)) {
         source.setData(fCollectionFormat(list))
-      } else {
-        setTimeout(
-          () =>
-            setFeaturesIntoDrawnDataSource({
-              map,
-              list,
-              reset,
-              feature,
-              isCustomMap
-            }),
-          10
-        )
       }
     } else {
       setTimeout(
@@ -94,7 +82,7 @@ export function setFeaturesIntoDrawnDataSource({
             feature,
             isCustomMap
           }),
-        320
+        820
       )
     }
   }
@@ -112,6 +100,6 @@ export function setFeaturesIntoDataSource({ list, map, reset }) {
       source.setData(fCollectionFormat(list))
     }
   } else {
-    setTimeout(() => setFeaturesIntoDataSource({ list, map, reset }), 320)
+    setTimeout(() => setFeaturesIntoDataSource({ list, map, reset }), 820)
   }
 }

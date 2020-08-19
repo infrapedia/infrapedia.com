@@ -256,7 +256,7 @@ export const customMapLayerTypes = {
       'text-size': 14,
       'text-justify': 'right',
       'text-anchor': 'top',
-      'text-offset': [0, -2]
+      'text-offset': [0, -2.04]
     },
     paint: {
       'text-color': '#485E69'
@@ -283,17 +283,17 @@ export const customMapLayerTypes = {
       'circle-stroke-color': '#333333'
     },
     filter: ['==', '$type', 'Point']
-  },
-  buildings: {
-    id: 'default-layer',
-    type: 'fill-extrusion',
-    source: 'default-source',
-    layout: {},
-    filter: ['==', '$type', 'Polygon'],
-    paint: {
-      'fill-extrusion-opacity': 1,
-      'fill-extrusion-color': '#666666',
-      'fill-extrusion-height': ['get', 'height']
-    }
   }
+  // buildings: {
+  //   id: 'default-layer',
+  //   type: 'fill-extrusion',
+  //   source: 'default-source',
+  //   layout: {},
+  //   filter: ['==', '$type', 'Polygon'],
+  //   paint: {
+  //     'fill-extrusion-opacity': 1,
+  //     'fill-extrusion-color': '#666666',
+  //     'fill-extrusion-height': ['get', 'height']
+  //   }
+  // }
 }

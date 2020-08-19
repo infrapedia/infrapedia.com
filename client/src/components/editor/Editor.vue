@@ -53,7 +53,6 @@ import { bus } from '../../helpers/eventBus'
 import EditorControls from './editorControls'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
-import PropertiesDialog from './propertiesDialog'
 import { mapConfig } from '../../config/mapConfig'
 import {
   EDITOR_LOAD_DRAW,
@@ -79,7 +78,7 @@ import {
 
 export default {
   components: {
-    PropertiesDialog
+    PropertiesDialog: () => import('./propertiesDialog')
   },
   data: () => ({
     map: null,
@@ -699,7 +698,13 @@ export default {
       }
     },
     820),
-    handleFeatureSelection({ e, layerID, map }) {
+    handleFeatureSelection: debounce(function setFeatureSelection({
+      e,
+      layerID,
+      map
+    }) {
+      if (layerID.includes('label')) return
+
       const featureSelected = map.queryRenderedFeatures(e.point, {
         layers: [layerID]
       })[0]
@@ -718,15 +723,43 @@ export default {
         if (feature) {
           try {
             this.scene.edition = true
-            this.scene.features.layerFiltered = layerID
-            if (layerID.includes('label')) {
-              map.setFilter(layerID.replace('-label', ''), [
-                '!=',
-                ['get', idProp],
-                featureID
-              ])
+            {
+              let layerType = layerID.includes('--')
+                ? layerID.split('--')[1].split('-')[1]
+                : layerID.split('-')[1]
+              switch (layerType.toLowerCase()) {
+                case 'ixps':
+                  layerType = 'points'
+                  break
+                case 'cls':
+                  layerType = 'points'
+                  break
+                case 'facilities':
+                  layerType = 'points'
+                  break
+                default:
+                  layerType = 'cables'
+                  break
+              }
+
+              let filter = [
+                'all',
+                customMapLayerTypes[layerType].filter,
+                ['!=', `${idProp}`, featureID]
+              ]
+
+              // if (layerID.includes('label')) {
+              //   map.setFilter(layerID.replace('-label', ''), filter)
+              // } else {
+              map.setFilter(layerID, filter)
+              // }
+
+              this.scene.features.layerFiltered = {
+                name: layerID,
+                filter: customMapLayerTypes[layerType].filter
+              }
             }
-            map.setFilter(layerID, ['!=', ['get', idProp], featureID])
+
             this.controls.handleDrawSelectionChange(
               JSON.parse(JSON.stringify(feature))
             )
@@ -743,6 +776,7 @@ export default {
         }
       }
     },
+    320),
     handleCreateFeature(feat) {
       const feature = { ...feat }
       let id = `${feat.properties.name}.${Date.now() + Math.random() * 1.52}`

@@ -236,6 +236,7 @@ export default {
         if (!this.form.name || this.form.name == undefined) {
           this.form.name = this.creationForm.name
         }
+
         if (
           this.feature.geometry.type.toLowerCase() == 'polygon' &&
           this.form.height == 0
@@ -243,11 +244,6 @@ export default {
           this.form.height = 1
         }
 
-        if (this.categorySelected && this.type == 'map') {
-          this.form = {
-            ...this.form
-          }
-        }
         return this.$emit('close', this.form)
       } else {
         return this.$emit('close', false)

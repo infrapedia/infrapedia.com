@@ -1,8 +1,8 @@
 import { fCollectionFormat } from '../../helpers/featureCollection'
-import { point, booleanEqual, lineSlice } from '@turf/turf'
+// import { point, booleanEqual, lineSlice } from '@turf/turf'
 import createControlButton from './createControlButton'
-import { Message, MessageBox } from 'element-ui'
-import Snaping from './snaping'
+// Message,
+import { MessageBox } from 'element-ui'
 
 class EditorControls {
   constructor({
@@ -15,23 +15,23 @@ class EditorControls {
     handleEditFeatureProperties,
     handleSetFeaturesIntoDataSource
   }) {
-    this.type = type
     this.map = map
     this.draw = draw
+    this.type = type
     this.scene = scene
-    this.snaping = new Snaping({
-      map: map,
-      pixel: 8,
-      draw: draw,
-      scene: scene,
-      snapLayers: [
-        'cls-layer',
-        'ixps-layer',
-        'cables-layer',
-        'facilities-layer'
-      ]
-    })
-    this.snapMode = false
+    // this.snaping = new Snaping({
+    //   map: map,
+    //   pixel: 8,
+    //   draw: draw,
+    //   scene: scene,
+    //   snapLayers: [
+    //     'cls-layer',
+    //     'ixps-layer',
+    //     'cables-layer',
+    //     'facilities-layer'
+    //   ]
+    // })
+    // this.snapMode = false
     this.resetScene = this.resetScene
     this.updateControls = this.updateControls
     this.handleCategoriesChange = handleCategoriesChange
@@ -200,20 +200,23 @@ class EditorControls {
     this.scene.creation = null
     this.scene.snappoint = null
     this.scene.features.selected = null
-
-    if (removeFilter) {
-      const layerID = this.scene.features.layerFiltered
-
-      if (layerID.includes('label')) {
-        this.map.setFilter(layerID.replace('-label', ''), ['has', '$type'])
-      }
-      this.map.setFilter(layerID, ['has', '$type'])
-      this.scene.features.layerFiltered = null
-    }
-    this.draw.changeMode(this.draw.modes.SIMPLE_SELECT)
     this.draw.set(fCollectionFormat())
+    this.draw.changeMode(this.draw.modes.SIMPLE_SELECT)
 
     if (reset) this.scene.features.list = []
+
+    if (removeFilter) {
+      const layerFiltered = this.scene.features.layerFiltered
+      // if (layerFiltered.name.includes('label')) {
+      //   this.map.setFilter(
+      //     layerFiltered.name.replace('-label', ''),
+      //     layerFiltered.filter
+      //   )
+      // }
+      console.log(layerFiltered)
+      this.map.setFilter(layerFiltered.name, layerFiltered.filter)
+      this.scene.features.layerFiltered = null
+    }
   }
 
   deleteFeature() {
@@ -343,101 +346,101 @@ class EditorControls {
     })
   }
 
-  async handleCutFeature() {
-    var mypoint = this.draw.getSelectedPoints()
-    var line = this.draw.getSelected()
-    var len = line.features[0].geometry.coordinates.length
-    var id = line.features[0].id
-    var all = Array.from(this.scene.features.list, it => ({ ...it }))
-    var newlist = fCollectionFormat()
-    if (mypoint.features.length > 0 && line.features.length > 0) {
-      var start = point(line.features[0].geometry.coordinates[0])
-      var stop = point(mypoint.features[0].geometry.coordinates)
-      var finish = point(line.features[0].geometry.coordinates[len - 1])
+  // async handleCutFeature() {
+  //   var mypoint = this.draw.getSelectedPoints()
+  //   var line = this.draw.getSelected()
+  //   var len = line.features[0].geometry.coordinates.length
+  //   var id = line.features[0].id
+  //   var all = Array.from(this.scene.features.list, it => ({ ...it }))
+  //   var newlist = fCollectionFormat()
+  //   if (mypoint.features.length > 0 && line.features.length > 0) {
+  //     var start = point(line.features[0].geometry.coordinates[0])
+  //     var stop = point(mypoint.features[0].geometry.coordinates)
+  //     var finish = point(line.features[0].geometry.coordinates[len - 1])
 
-      var firstSegment = lineSlice(start, stop, line.features[0])
-      var secondSegment = lineSlice(stop, finish, line.features[0])
-      firstSegment.id = this.draw.add(firstSegment)[0]
-      secondSegment.id = this.draw.add(secondSegment)[0]
-      firstSegment.properties.__editorID = firstSegment.id
-      secondSegment.properties.__editorID = secondSegment.id
+  //     var firstSegment = lineSlice(start, stop, line.features[0])
+  //     var secondSegment = lineSlice(stop, finish, line.features[0])
+  //     firstSegment.id = this.draw.add(firstSegment)[0]
+  //     secondSegment.id = this.draw.add(secondSegment)[0]
+  //     firstSegment.properties.__editorID = firstSegment.id
+  //     secondSegment.properties.__editorID = secondSegment.id
 
-      firstSegment.geometry.coordinates.pop()
+  //     firstSegment.geometry.coordinates.pop()
 
-      const selection = all.filter(item => item.id == id)
-      if (selection && selection.length > 0) {
-        firstSegment.properties = { ...selection[0].properties }
-        secondSegment.properties = {
-          ...selection[0].properties,
-          name: `${selection[0].properties.name}.copy`
-        }
-      }
+  //     const selection = all.filter(item => item.id == id)
+  //     if (selection && selection.length > 0) {
+  //       firstSegment.properties = { ...selection[0].properties }
+  //       secondSegment.properties = {
+  //         ...selection[0].properties,
+  //         name: `${selection[0].properties.name}.copy`
+  //       }
+  //     }
 
-      for (let feat of all) {
-        if (feat.id != id) {
-          newlist.features.push(feat)
-        } else {
-          newlist.features.push(firstSegment)
-          newlist.features.push(secondSegment)
-        }
-      }
+  //     for (let feat of all) {
+  //       if (feat.id != id) {
+  //         newlist.features.push(feat)
+  //       } else {
+  //         newlist.features.push(firstSegment)
+  //         newlist.features.push(secondSegment)
+  //       }
+  //     }
 
-      for (let feat of newlist) {
-        this.handleSetFeaturesIntoDataSource({
-          list: this.scene.features.list,
-          feature: feat,
-          map: this.map
-        })
-      }
-      this.scene.edition = null
-      this.scene.creation = null
-      this.scene.features.selected = null
-      this.scene.features.list = newlist.features
-    } else {
-      alert('Please Select a geometry and a point')
-    }
-  }
+  //     for (let feat of newlist) {
+  //       this.handleSetFeaturesIntoDataSource({
+  //         list: this.scene.features.list,
+  //         feature: feat,
+  //         map: this.map
+  //       })
+  //     }
+  //     this.scene.edition = null
+  //     this.scene.creation = null
+  //     this.scene.features.selected = null
+  //     this.scene.features.list = newlist.features
+  //   } else {
+  //     alert('Please Select a geometry and a point')
+  //   }
+  // }
 
-  async handleDeleteVertex() {
-    var mypoint = this.draw.getSelectedPoints()
-    var pt1 = mypoint.features[0]
-    var line = this.draw.getSelected()
+  // async handleDeleteVertex() {
+  //   var mypoint = this.draw.getSelectedPoints()
+  //   var pt1 = mypoint.features[0]
+  //   var line = this.draw.getSelected()
 
-    if (mypoint.features.length > 0 && line.features.length > 0) {
-      var id = line.features[0].id
-      var newCoords = []
-      var all = this.draw.getAll()
-      if (line.features[0].geometry.coordinates.length > 2) {
-        line.features[0].geometry.coordinates.forEach(function(a) {
-          var pt2 = point(a)
-          var status = booleanEqual(pt1, pt2)
-          if (status == false) {
-            newCoords.push(a)
-          }
-        })
-        all.features.forEach(function(a) {
-          if (a.id == id) {
-            a.geometry.coordinates = newCoords
-          }
-        })
+  //   if (mypoint.features.length > 0 && line.features.length > 0) {
+  //     var id = line.features[0].id
+  //     var newCoords = []
+  //     var all = this.draw.getAll()
+  //     if (line.features[0].geometry.coordinates.length > 2) {
+  //       line.features[0].geometry.coordinates.forEach(function(a) {
+  //         var pt2 = point(a)
+  //         var status = booleanEqual(pt1, pt2)
+  //         if (status == false) {
+  //           newCoords.push(a)
+  //         }
+  //       })
+  //       all.features.forEach(function(a) {
+  //         if (a.id == id) {
+  //           a.geometry.coordinates = newCoords
+  //         }
+  //       })
 
-        this.draw.set(all)
-      } else {
-        return Message({
-          message:
-            'A feature needs to have at least 2 coordinates in order to be valid.',
-          type: 'info',
-          duration: 8000
-        })
-      }
-    } else {
-      return Message({
-        message: 'You must first select the vertex point of a feature.',
-        type: 'info',
-        duration: 8000
-      })
-    }
-  }
+  //       this.draw.set(all)
+  //     } else {
+  //       return Message({
+  //         message:
+  //           'A feature needs to have at least 2 coordinates in order to be valid.',
+  //         type: 'info',
+  //         duration: 8000
+  //       })
+  //     }
+  //   } else {
+  //     return Message({
+  //       message: 'You must first select the vertex point of a feature.',
+  //       type: 'info',
+  //       duration: 8000
+  //     })
+  //   }
+  // }
 }
 
 export default EditorControls
