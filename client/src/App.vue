@@ -5,6 +5,7 @@
     role="main"
     :style="getDarkStyles"
   >
+    <cookie-consent :message="cc.message" :href="cc.href" />
     <div class="h-fit-content min-height60vh">
       <!-- <transition
         mode="out-in"
@@ -38,6 +39,13 @@ export default {
     }
   },
   computed: {
+    cc() {
+      return {
+        message:
+          'This website uses cookies to improve your experience. Visit our Privacy Policy page for more information about cookies and how we use them.',
+        href: window.origin + '/privacy-policy'
+      }
+    },
     dark() {
       return this.$store.state.isDark
     },
