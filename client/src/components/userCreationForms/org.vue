@@ -147,32 +147,8 @@
           </el-button>
         </el-collapse-transition>
       </el-form-item>
-      <el-form-item class="mt12" label="Associations" v-if="linkedElements">
-        <div class="block w-fit-full">
-          <template v-for="(label, i) of Object.keys(linkedElements)">
-            <div
-              v-if="linkedElements[label].length"
-              :key="i"
-              class="ml2 inline-block"
-            >
-              <span
-                class="el-form-item__label inline-block text-left w-fit-full mt2 capitalize"
-              >
-                {{ label }}
-              </span>
-              <el-tag
-                v-for="tag in linkedElements[label]"
-                :show-close="false"
-                :key="tag._id"
-              >
-                {{ tag.label }}
-              </el-tag>
-            </div>
-          </template>
-        </div>
-      </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer-mobile">
+    <div class="dialog-footer-mobile mt4">
       <el-button
         class="h10 capitalize"
         :class="{ dark }"
@@ -188,6 +164,37 @@
         Cancel
       </el-button>
     </div>
+    <el-form slot="footer" v-loading="!linkedElements">
+      <el-divider />
+      <el-form-item label="Associations" v-if="linkedElements">
+        <div class="flex column w-fit-full">
+          <template v-for="(label, i) of linkedElements.labels">
+            <el-form-item :label="label" :key="i" class="ml2 mt2">
+              <v-multi-select
+                mode="edit"
+                get-selected-id
+                :loading="linkedElements.loading"
+                :value="mode == 'create' ? [] : linkedElements.values[i]"
+                :options="linkedElements.options[label.toLowerCase()]"
+                @remove="
+                  handleLinkedElementsRemove({
+                    type: label,
+                    selection: $event
+                  })
+                "
+                @input="handleSearchLinkedElements(label, $event)"
+                @values-change="
+                  handleLinkedElementsChange({
+                    type: label,
+                    selection: $event
+                  })
+                "
+              />
+            </el-form-item>
+          </template>
+        </div>
+      </el-form-item>
+    </el-form>
   </el-dialog>
 </template>
 
@@ -195,15 +202,36 @@
 import apiConfig from '../../config/apiConfig'
 import countriesList from '../../config/countriesList'
 import { uploadOrgLogo } from '../../services/api/uploads'
-import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 import { checkOrganizationNameExistence } from '../../services/api/check_name'
 import debounce from '../../helpers/debounce'
-import { getOrgLinkedElements } from '../../services/api/organizations'
+import {
+  getOrgLinkedElements,
+  setOrgSubseaAssociations,
+  removeOrgSubseaAssociations,
+  removeOrgTerrestrialsAssociations,
+  setOrgTerrestrialsAssociations,
+  setOrgClsAssociations,
+  setOrgIxpsAssociations,
+  removeOrgClsAssociations,
+  removeOrgKnownUsersAssociations,
+  removeOrgFacilitiesAssociations,
+  setOrgKnownUsersAssociations,
+  setOrgFacilitiesAssociations,
+  removeOrgIxpsAssociations
+} from '../../services/api/organizations'
+import {
+  getSearchByCablesS,
+  getSearchByCablesT
+} from '../../services/api/cables'
+import { searchIxps } from '../../services/api/ixps'
+import { searchCls } from '../../services/api/cls'
+import { searchFacilities } from '../../services/api/facs'
 
 export default {
   name: 'OrgForm',
   components: {
-    AutocompleteGoogle
+    VMultiSelect: () => import('../../components/MultiSelect'),
+    AutocompleteGoogle: () => import('../../components/AutocompleteGoogle')
   },
   data: () => ({
     fileList: [],
@@ -319,12 +347,126 @@ export default {
     }
   },
   methods: {
+    /**
+     * @param t { string } - The type of the elemnt: subsea cable, terretrial networks, cls, known users, etc...
+     * @param search { string } - Query search
+     */
+    async handleSearchLinkedElements(t, search) {
+      this.linkedElements.loading = true
+
+      let results = []
+      let method = null
+      const args = {
+        user_id: await this.$auth.getUserID(),
+        s: search
+      }
+      t = t.toLowerCase()
+
+      switch (t) {
+        case 'terrestrial networks':
+          method = getSearchByCablesT
+          break
+        case 'cls':
+          method = searchCls
+          break
+        case 'ixps':
+          method = searchIxps
+          break
+        case 'known users':
+          method = getSearchByCablesS
+          break
+        case 'facilities':
+          method = searchFacilities
+          break
+        default:
+          method = getSearchByCablesS
+          break
+      }
+
+      if (method) {
+        const { data } = (await method(args)) || { data: [] }
+        results = data ? data : []
+      }
+
+      this.linkedElements.loading = false
+      this.linkedElements.options[t] = results
+    },
+    /**
+     * @param type { String } - The type of the elemnt: subsea cable, terretrial networks, cls, known users, etc...
+     * @param valuePosition { Number } - Index, position of the value elemnt
+     * @param selection { String } - Selection => _id: [ObjectID]
+     */
+    async handleLinkedElementsChange({ type, selection }) {
+      console.log(selection, 'update')
+
+      const args = {
+        _id: selection,
+        org_id: this.form._id,
+        user_id: await this.$auth.getUserID()
+      }
+
+      try {
+        switch (type.toLowerCase()) {
+          case 'terrestrial networks':
+            await setOrgTerrestrialsAssociations(args)
+            break
+          case 'cls':
+            await setOrgClsAssociations(args)
+            break
+          case 'ixps':
+            await setOrgIxpsAssociations(args)
+            break
+          case 'facilities':
+            await setOrgFacilitiesAssociations(args)
+            break
+          case 'known users':
+            await setOrgKnownUsersAssociations(args)
+            break
+          default:
+            await setOrgSubseaAssociations(args)
+            break
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    },
+    async handleLinkedElementsRemove({ type, selection }) {
+      console.log(selection, type, 'remove')
+
+      const args = {
+        _id: selection,
+        org_id: this.form._id,
+        user_id: await this.$auth.getUserID()
+      }
+
+      switch (type.toLowerCase()) {
+        case 'terrestrial networks':
+          await removeOrgTerrestrialsAssociations(args)
+          break
+        case 'ixps':
+          await removeOrgIxpsAssociations(args)
+          break
+        case 'facilities':
+          await removeOrgFacilitiesAssociations(args)
+          break
+        case 'known users':
+          await removeOrgKnownUsersAssociations(args)
+          break
+        case 'cls':
+          await removeOrgClsAssociations(args)
+          break
+        default:
+          await removeOrgSubseaAssociations(args)
+          break
+      }
+    },
     async getOrgLinkedElements(id) {
       const [
         cls,
         subsea,
         terrestrial,
         facilities,
+        ixps,
         knownUsers
       ] = await getOrgLinkedElements({
         user_id: this.$auth.getUserID(),
@@ -332,11 +474,31 @@ export default {
       })
 
       this.linkedElements = {
-        cls: cls.r ? cls.r : cls,
-        subsea: subsea.r ? subsea.r : subsea,
-        knownUsers: knownUsers.r ? knownUsers.r : knownUsers,
-        facilities: facilities.r ? facilities.r : facilities,
-        terrestrial: terrestrial.r ? terrestrial.r : terrestrial
+        loading: false,
+        labels: [
+          'CLS',
+          'IXPS',
+          'Subsea Cables',
+          'Known Users',
+          'Facilities',
+          'Terrestrial Networks'
+        ],
+        options: {
+          cls: [],
+          ixps: [],
+          facilities: [],
+          'known users': [],
+          'subsea cables': [],
+          'terrestrial networks': []
+        },
+        values: [
+          cls.r ? cls.r : cls,
+          ixps.r ? ixps.r : ixps,
+          subsea.r ? subsea.r : subsea,
+          knownUsers.r ? knownUsers.r : knownUsers,
+          facilities.r ? facilities.r : facilities,
+          terrestrial.r ? terrestrial.r : terrestrial
+        ]
       }
     },
     checkName: debounce(async function(name) {

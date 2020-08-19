@@ -8,7 +8,7 @@
           closable
           style="max-width: 16rem;"
           class="mr1 mb4 p2 no-overflow vertical-align"
-          :title="tag.name"
+          :title="tag.name ? tag.name : tag.label"
           :effect="dark ? 'dark' : 'light'"
           :type="dark ? 'info' : ''"
           :disable-transitions="true"
@@ -18,7 +18,7 @@
             class="inline-block h7 p0 no-overflow truncate"
             style="max-width: 12rem;"
           >
-            {{ tag.name }}
+            {{ tag.name ? tag.name : tag.label }}
           </span>
         </el-tag>
       </template>
@@ -46,7 +46,7 @@
         >
           <div>
             <fa :icon="['fas', 'award']" v-if="opt.yours == 1" class="mr1" />
-            {{ opt.name }}
+            {{ opt.name ? opt.name : opt.label }}
           </div>
         </el-option>
       </el-select>

@@ -17,6 +17,7 @@
       @search-input="handleSubseaSearch"
       @clear-search-input="getCablesList"
       @sort-by="handleSubseaSearch"
+      :sortList="sortByList"
     />
     <prompt-delete
       :elemnt="elemntType"
@@ -58,6 +59,18 @@ export default {
     columns: [...cablesColumns].filter(col => col.showTable)
   }),
   computed: {
+    sortByList() {
+      return [
+        { text: 'Name Asc', value: 'nameAsc' },
+        { text: 'Name Desc', value: 'nameDesc' },
+        { text: 'RFS Asc', value: 'rfsAsc' },
+        { text: 'RFS Desc', value: 'rfsDesc' },
+        { text: 'Created at Asc', value: 'creatAtAsc' },
+        { text: 'Created at Desc', value: 'creatAtDesc' },
+        { text: 'Updated at Asc', value: 'updateAtAsc' },
+        { text: 'Updated at Desc', value: 'updateAtDesc' }
+      ]
+    },
     dark() {
       return this.$store.state.isDark
     },

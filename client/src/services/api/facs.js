@@ -6,7 +6,12 @@ import { fCollectionFormat } from '../../helpers/featureCollection'
 var url
 var form
 
-export const searchFacilities = async ({ s, user_id, psz, sortBy }) => {
+export const searchFacilities = async ({
+  s,
+  user_id,
+  psz,
+  sortBy = 'name'
+}) => {
   url = `${apiConfig.url}/auth/facilities/search?s=${s}&sortBy=${sortBy}`
   if (psz) {
     url = url + '&psz=1'

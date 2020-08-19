@@ -5,7 +5,7 @@
     role="main"
     :style="getDarkStyles"
   >
-    <versions-banner />
+    <cookie-consent :message="cc.message" :href="cc.href" />
     <div class="h-fit-content min-height60vh">
       <!-- <transition
         mode="out-in"
@@ -26,13 +26,9 @@ import ProfileLayout from './layouts/profile'
 import NoNav from './layouts/nothing'
 import LandingPage from './layouts/homepage'
 import MapHome from './layouts/default'
-import VersionsBanner from './components/VersionsBanner'
 
 export default {
   name: 'App',
-  components: {
-    VersionsBanner
-  },
   data: () => ({
     layout: LandingPage
   }),
@@ -43,6 +39,13 @@ export default {
     }
   },
   computed: {
+    cc() {
+      return {
+        message:
+          'This website uses cookies to improve your experience. Visit our Privacy Policy page for more information about cookies and how we use them.',
+        href: window.origin + '/privacy-policy'
+      }
+    },
     dark() {
       return this.$store.state.isDark
     },
