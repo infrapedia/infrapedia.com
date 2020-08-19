@@ -1,13 +1,29 @@
 # Infrapedia Open Source
 
-## Version 2.1.6
+## Version 2.1.8
+
+- Editor performance issues with using mapbox Draw plugin has been solved.
+  - TODO: Editor improvements list.
+- Dynamic import of user dashboard routes, with webpack 'named chunks'
+- Changing between layouts has changed, we are now using vue-route 'children' property. It reduces the memory usage, and iddle time between route changes
+
+## Version 2.2.7
+
+- Community Market Place "Make Offer" Button
+- Legend Panel
+- ClS Labels in Editor
+- Homepage footer src logo url was incorrect
+- CLS input in terrestrials create section
+- Known Users in Subsea cables creation section
+
+## Version 2.2.6
 
 - Community Market Place adjustments
 - Homepage new layout
 - Mobile Drawer links matching Homepage Navbar links
 - Full screen search bar component style adjustments
 
-## Version 2.1.5
+## Version 2.2.5
 
 - Community Market Place
 

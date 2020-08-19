@@ -78,9 +78,6 @@ export default {
       return 'subsea cable'
     }
   },
-  beforeCreate() {
-    this.$emit('layout', 'profile-layout')
-  },
   async mounted() {
     await this.getCablesList()
   },

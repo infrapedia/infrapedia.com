@@ -102,7 +102,7 @@
       <router-link
         exact
         id="changePass"
-        to="/change-password"
+        to="/user/change-password"
         class="underline fs-regular"
       >
         Change my password »
@@ -191,9 +191,6 @@ export default {
           : false
       return provider == 'auth0' ? true : false
     }
-  },
-  beforeCreate() {
-    this.$emit('layout', 'profile-layout')
   },
   async created() {
     await this.setUserData()

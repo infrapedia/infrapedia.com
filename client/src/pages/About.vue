@@ -92,9 +92,6 @@ export default {
           'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
       }
     ]
-  },
-  beforeCreate() {
-    this.$emit('layout', 'landing-layout')
   }
 }
 </script>

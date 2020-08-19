@@ -169,9 +169,6 @@ export default {
       return this.$store.state.isDark
     }
   },
-  beforeCreate() {
-    this.$emit('layout', 'landing-layout')
-  },
   methods: {
     toggleNewsletterDialog() {
       this.isNewsLetterDialog = !this.isNewsLetterDialog
