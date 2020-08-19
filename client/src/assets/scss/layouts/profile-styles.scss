@@ -15,6 +15,24 @@
   }
 }
 
+.el-aside.adjust-width {
+  width: 4rem !important;
+  ul a {
+    padding: 0 1.4rem 0 1.4rem;
+    color: transparent;
+  }
+  &:hover {
+    width: 4.2rem !important;
+  }
+}
+
+.profile-footer {
+  transform: translateX(18rem) translateY(-0.4rem);
+  &.is-create-route {
+    transform: translateX(32.8rem) translateY(-0.4rem);
+  }
+}
+
 /*
 *  THEME VARIANT'S
 */
@@ -32,6 +50,9 @@
           &:focus:not(.router-link-exact-active),
           &:focus-within:not(.router-link-exact-active) {
             background-color: lighten($blue-user-interface, 4%);
+          }
+          .icon {
+            color: $white-partial;
           }
         }
         .router-link-exact-active {
@@ -56,6 +77,9 @@
           &:focus:not(.router-link-exact-active),
           &:focus-within:not(.router-link-exact-active) {
             background-color: lighten($dark-charcoal, 4%);
+          }
+          .icon {
+            color: $white-partial;
           }
         }
         .router-link-exact-active {

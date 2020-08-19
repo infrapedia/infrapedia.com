@@ -7,10 +7,13 @@
   >
     <i-navbar role="navigation" :is-user-navbar="true" />
 
-    <el-aside class="mt12 oveflow-y-auto no-overflow-x hidden-md-and-down">
-      <ul role="group" class="pt10 pb20 h-fit-full">
+    <el-aside
+      class="mt12 oveflow-y-auto no-overflow hidden-md-and-down transition-all"
+      :class="{ 'adjust-width': $route.path.includes('create') }"
+    >
+      <ul role="group" class="pt2 h-fit-full">
         <template v-for="(link, i) in links">
-          <li role="listitem" class="h18" :key="i">
+          <li role="listitem" class="h18" :key="i" :title="link.label">
             <router-link
               exact
               :to="link.url"
@@ -24,7 +27,7 @@
               :class="checkURL(link)"
               class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
             >
-              <fa :icon="link.icon" class="mr2" /> {{ link.label }}
+              <fa :icon="link.icon" class="mr2 icon" /> {{ link.label }}
             </router-link>
           </li>
         </template>
@@ -43,9 +46,8 @@
     </transition>
 
     <i-footer
-      role="contentinfo"
-      id="footer-profile"
-      class="mb1 ml80 hidden-md-and-down"
+      class="profile-footer hidden-md-and-down transition-all"
+      :class="{ 'is-create-route': $route.path.includes('create') }"
     />
     <v-tour
       name="profile-tour"
