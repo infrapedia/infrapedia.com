@@ -9,7 +9,7 @@
     <i-navbar role="navigation" :is-user-navbar="true" />
 
     <el-aside
-      width="210px"
+      width="200px"
       class="mt12 no-overflow hidden-md-and-down cubic-transition"
       :class="{ 'adjust-width': $route.path.includes('create') }"
     >
