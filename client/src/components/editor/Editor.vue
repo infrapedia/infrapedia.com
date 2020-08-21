@@ -71,8 +71,7 @@ import {
   toggleDarkMode,
   setFeatureEditorID,
   setFeaturesIntoDataSource,
-  updateDrawnFeatureDataSource,
-  setFeaturesIntoDrawnDataSource
+  updateDrawnFeatureDataSource
 } from './index'
 import Dictionary from '../../lib/Dictionary'
 import { categoriesDictionary } from '../userCreationForms/fields/dictionary'
@@ -767,20 +766,14 @@ export default {
       })
       return map
     },
-    handleRecreateDraw: debounce(async function(
-      feats,
-      zoomTo = true,
-      custom = true
-    ) {
+    handleRecreateDraw: debounce(async function(feats, zoomTo = true) {
       const featuresCollection = fCollectionFormat(
         JSON.parse(JSON.stringify(this.sceneDictionary.getCollectionList()))
       )
-      await setFeaturesIntoDrawnDataSource({
-        map: this.map,
-        feature: this.type,
-        isCustomMap: custom,
-        list: feats ? feats : this.sceneDictionary.getCollectionList()
-      })
+      await updateDrawnFeatureDataSource(
+        this.map,
+        feats ? feats : this.sceneDictionary.getCollectionList()
+      )
 
       if (zoomTo) {
         await zoomToFeature({
@@ -789,8 +782,7 @@ export default {
           map: this.map
         })
       }
-    },
-    820),
+    }, 820),
     handleFeatureSelection: debounce(function setFeatureSelection({
       e,
       layerID,
