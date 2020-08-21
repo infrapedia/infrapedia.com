@@ -146,11 +146,6 @@ export default {
     }
   },
   watch: {
-    '$store.state.editor.scene.features.list'(fc) {
-      if (this.form.geom && fc.length) {
-        this.form.geom = JSON.parse(JSON.stringify(fc))
-      }
-    },
     '$route.query'(q) {
       if (q.id != this.creationType) {
         this.creationType = q.id
