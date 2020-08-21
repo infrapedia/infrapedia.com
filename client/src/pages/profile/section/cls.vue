@@ -116,11 +116,6 @@ export default {
     },
     handleCLSSearch: debounce(async function(s, sortBy) {
       this.loading = true
-      if (s == '') {
-        await this.getClssList()
-        return
-      }
-
       const res = await searchCls({
         user_id: await this.$auth.getUserID(),
         psz: true,

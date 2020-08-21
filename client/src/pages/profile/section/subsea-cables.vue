@@ -138,11 +138,6 @@ export default {
       })
     },
     handleSubseaSearch: debounce(async function(s, sortBy) {
-      if (s == '') {
-        if (!this.loading) await this.getCablesList()
-        return
-      }
-
       this.loading = true
       const res = await getSearchByCablesS({
         user_id: await this.$auth.getUserID(),

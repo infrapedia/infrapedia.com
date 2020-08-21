@@ -271,7 +271,7 @@ import AutocompleteGoogle from '../../components/AutocompleteGoogle'
 import { uploadOrgLogo } from '../../services/api/uploads'
 import CategoriesField from './fields/categories.vue'
 import { bus } from '../../helpers/eventBus'
-import { getGeometries } from '../../helpers/getGeoms'
+import { getGeometries } from '../../services/api'
 
 export default {
   name: 'MapForm',
@@ -421,8 +421,8 @@ export default {
     }
   },
   methods: {
-    updateCategoriesList(list) {
-      this.mapCreationData.categories = list
+    updateCategoriesList(categories) {
+      this.mapCreationData.categories = categories
     },
     handleFileListRemove() {
       this.form.logo = ''

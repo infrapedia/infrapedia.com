@@ -19,6 +19,7 @@
           placeholder
           class="w-fit-full"
           :class="{ dark }"
+          clearable
           @change="handleCategorySelected"
         >
           <el-option
@@ -64,6 +65,7 @@
 
 <script>
 import { getCategoriesByType } from '../../helpers'
+import { categoriesDictionary } from '../userCreationForms/fields/dictionary'
 
 export default {
   name: 'PropertiesDialog',
@@ -77,7 +79,8 @@ export default {
       '#90ee90',
       '#00ced1',
       '#1e90ff'
-    ]
+    ],
+    categoriesList: []
   }),
   props: {
     isVisible: {
@@ -86,10 +89,6 @@ export default {
     },
     mode: {
       type: String,
-      required: true
-    },
-    categories: {
-      type: Array,
       required: true
     },
     type: {
@@ -107,40 +106,46 @@ export default {
   },
   watch: {
     isVisible(bool) {
-      if (!bool) return
+      if (bool) {
+        const type = this.feature.geometry.type
+        if (this.type == 'map') this.loadCategories()
+        else this.categoriesList = []
 
-      const type = this.feature.geometry.type
-
-      if (this.mode != 'create') {
-        this.form = { ...this.feature.properties }
-        if (
-          this.type == 'map' &&
-          this.form.category &&
-          typeof this.form.category != 'string'
-        ) {
-          this.form.category = this.feature.properties.category._id
+        if (this.mode != 'create') {
+          this.form = { ...this.feature.properties }
+          if (
+            this.type == 'map' &&
+            this.form.category &&
+            typeof this.form.category != 'string'
+          ) {
+            this.form.category = this.feature.properties.category._id
+          }
+        } else {
+          switch (type.toLowerCase()) {
+            case 'point':
+              this.form = {
+                name: ''
+              }
+              break
+            case 'polygon':
+              this.form = {
+                name: '',
+                height: 0,
+                status: true
+              }
+              break
+            default:
+              this.form = {
+                name: '',
+                status: true
+              }
+              break
+          }
         }
       } else {
-        switch (type.toLowerCase()) {
-          case 'point':
-            this.form = {
-              name: ''
-            }
-            break
-          case 'polygon':
-            this.form = {
-              name: '',
-              height: 0,
-              status: true
-            }
-            break
-          default:
-            this.form = {
-              name: '',
-              status: true
-            }
-            break
-        }
+        this.form = {}
+        this.categoriesList = []
+        this.categorySelected = null
       }
     }
   },
@@ -174,24 +179,55 @@ export default {
       }
       return title
     },
-    // checkFields() {
-    //   const emptyFields = Object.keys(this.form).filter(key => !this.form[key])
-    //   return emptyFields.length && !emptyFields.includes('status')
-    //     ? true
-    //     : false
-    // },
     dark() {
       return this.$store.state.isDark
+    }
+  },
+  methods: {
+    handleCategorySelected(id) {
+      if (this.type != 'map') return
+
+      const categoryData = this.categoriesList.filter(t => t._id == id)[0]
+      if (categoryData) {
+        this.categorySelected = {
+          category: categoryData._id,
+          color: categoryData.color,
+          'stroke-width': categoryData['stroke-width'],
+          'stroke-opacity': categoryData['stroke-opacity']
+        }
+
+        if (
+          categoryData['stroke-style'] != 'normal' &&
+          this.feature.geometry.type == 'LineString'
+        ) {
+          this.categorySelected['line-dasharray'] = [0.1, 1.8]
+        }
+      } else {
+        this.categorySelected = null
+        let keys = [
+          'color',
+          'category',
+          'stroke-width',
+          'stroke-opacity',
+          'line-dasharray'
+        ]
+
+        for (let key of keys) {
+          if (this.form[key]) {
+            delete this.form[key]
+          }
+        }
+      }
     },
-    categoriesList() {
+    loadCategories() {
       const featureType =
         this.feature && this.feature.geometry && this.feature.geometry.type
           ? this.feature.geometry.type.toLowerCase()
           : false
       let availableCategories = []
-      let args = { t: null, categories: this.categories }
+      let args = { t: null, categories: categoriesDictionary.getRaw() }
 
-      if (featureType && this.categories.length > 0) {
+      if (featureType && categoriesDictionary.getLength() > 0) {
         switch (featureType) {
           case 'point':
             args.t = 'custom points'
@@ -208,34 +244,14 @@ export default {
         }
       }
 
-      return availableCategories
-    }
-  },
-  methods: {
-    handleCategorySelected(id) {
-      if (this.type != 'map') return
-      const categoryData = this.categoriesList.filter(t => t._id == id)[0]
-      if (categoryData) {
-        this.categorySelected = {
-          _id: categoryData._id,
-          color: '#409EFF',
-          'stroke-width': categoryData['stroke-width'],
-          'stroke-opacity': categoryData['stroke-opacity']
-        }
-
-        if (
-          categoryData['stroke-style'] != 'normal' &&
-          this.feature.geometry.type == 'LineString'
-        ) {
-          this.categorySelected['line-dasharray'] = [0.1, 1.8]
-        }
-      }
+      this.categoriesList = availableCategories
     },
     handleClose(cancel) {
       if (!cancel) {
         if (!this.form.name || this.form.name == undefined) {
           this.form.name = this.creationForm.name
         }
+
         if (
           this.feature.geometry.type.toLowerCase() == 'polygon' &&
           this.form.height == 0
@@ -243,15 +259,17 @@ export default {
           this.form.height = 1
         }
 
-        if (this.categorySelected && this.type == 'map') {
+        if (this.type == 'map' && this.categorySelected) {
           this.form = {
-            ...this.form
+            ...this.form,
+            ...this.categorySelected
           }
         }
-        return this.$emit('close', this.form)
-      } else {
-        return this.$emit('close', false)
+
+        return this.$emit('close', { ...this.form })
       }
+
+      return this.$emit('close', false)
     }
   }
 }

@@ -162,7 +162,7 @@
     <template name="categories-items">
       <!-- EMPTY LIST START -->
       <div
-        v-if="!isInputVisible && !categories.length"
+        v-if="isCategoriesEmpty"
         class="el-card empty-text text-center p8 no-border"
         :class="{ dark }"
       >
@@ -178,19 +178,19 @@
       <div v-else>
         <div
           class="el-card round pt2 pb2 pr4 pl4 mb2"
-          v-for="(cat, i) in categories"
-          :key="i"
+          v-for="(item, id) in dictionary.getRaw()"
+          :key="id"
         >
           <div
             class="flex nowrap justify-content-space-between align-items-center category-box_inner-wrapper"
           >
             <div class="flex nowrap align-items-center category_name">
               <div
-                :style="{ backgroundColor: cat.color }"
+                :style="{ backgroundColor: item.color }"
                 class="w6 h6 circle inline-block"
               />
               <span class="capitalize ml2 font-medium fs-small">
-                {{ cat.name }}
+                {{ item.name }}
               </span>
             </div>
             <div class="buttons-wrapper">
@@ -200,8 +200,8 @@
                 size="mini"
                 :class="{ dark }"
                 title="View"
-                :type="isViewing(cat.name) ? 'primary' : ''"
-                @click="determineView(cat.name)"
+                :type="isViewing(item.name) ? 'primary' : ''"
+                @click="determineView(item.name)"
               />
               <el-button
                 icon="el-icon-set-up"
@@ -209,7 +209,7 @@
                 size="mini"
                 :class="{ dark }"
                 title="Edit items"
-                @click="editCategoryTypesSelections(cat, false)"
+                @click="editCategoryTypesSelections(item, false)"
               />
               <el-button
                 icon="el-icon-edit-outline"
@@ -217,7 +217,7 @@
                 size="mini"
                 title="Edit"
                 :class="{ dark }"
-                @click="setEditMode(cat, true)"
+                @click="setEditMode(item, true)"
               />
               <el-button
                 icon="el-icon-delete"
@@ -225,33 +225,33 @@
                 size="mini"
                 title="Delete"
                 :class="{ dark }"
-                @click="removeCategory(i)"
+                @click="removeCategory(id)"
               />
             </div>
           </div>
           <el-collapse-transition>
-            <div class="details-wrapper" v-if="isViewing(cat.name)">
+            <div class="details-wrapper" v-if="isViewing(item.name)">
               <el-divider :class="{ dark }" class="mt2 mb4" />
               <div class="fs-small block text-left pr4 pl4 mb2">
                 <strong>id: </strong>
-                {{ cat._id }}
+                {{ item._id }}
               </div>
               <div
                 class="flex nowrap justify-content-space-between mb4 pr4 pl4"
               >
                 <div class="fs-small">
                   <strong>Stroke style: </strong>
-                  {{ cat['stroke-style'] }}
+                  {{ item['stroke-style'] }}
                 </div>
                 <div class=" inline-block fs-small">
                   <strong>
                     Opacity:
                   </strong>
-                  {{ cat['stroke-opacity'] }}
+                  {{ item['stroke-opacity'] }}
                 </div>
               </div>
               <div class="flex row wrap flex-start pl4 pr4 pb4 tags-wrapper">
-                <el-tag v-for="t in cat.types" :key="t" size="mini">
+                <el-tag v-for="t in item.types" :key="t" size="mini">
                   {{ t }}
                 </el-tag>
               </div>
@@ -292,7 +292,9 @@
             :loading="typesData.isLoadingFacs"
             @remove="handleRemoveTypeChange('facilities', $event)"
             @values-change="handleTypeSelectionChange('facilities', $event)"
-            :value="mode == 'create' ? [] : [...field.data.facilities]"
+            :value="
+              mode == 'create' ? [] : getTypeSelectionsAsArray('facilities')
+            "
           />
         </el-form-item>
         <el-form-item
@@ -310,7 +312,9 @@
               handleTypeSelectionChange('terrestrial networks', $event)
             "
             :value="
-              mode == 'create' ? [] : [...field.data['terrestrial networks']]
+              mode == 'create'
+                ? []
+                : getTypeSelectionsAsArray('terrestrial networks')
             "
           />
         </el-form-item>
@@ -326,7 +330,9 @@
             :loading="typesData.isLoadingCables"
             @remove="handleRemoveTypeChange('subsea cables', $event)"
             @values-change="handleTypeSelectionChange('subsea cables', $event)"
-            :value="mode == 'create' ? [] : [...field.data['subsea cables']]"
+            :value="
+              mode == 'create' ? [] : getTypeSelectionsAsArray('subsea cables')
+            "
           />
         </el-form-item>
         <el-form-item v-if="field.types.includes('cls')" label="CLS">
@@ -338,7 +344,7 @@
             :loading="typesData.isLoadingCls"
             @remove="handleRemoveTypeChange('cls', $event)"
             @values-change="handleTypeSelectionChange('cls', $event)"
-            :value="mode == 'create' ? [] : [...field.data.cls]"
+            :value="mode == 'create' ? [] : getTypeSelectionsAsArray('cls')"
           />
         </el-form-item>
         <el-form-item v-if="field.types.includes('ixps')" label="Ixps">
@@ -350,7 +356,7 @@
             :loading="typesData.isLoadingIxps"
             @remove="handleRemoveTypeChange('ixps', $event)"
             @values-change="handleTypeSelectionChange('ixps', $event)"
-            :value="mode == 'create' ? [] : [...field.data.ixps]"
+            :value="mode == 'create' ? [] : getTypeSelectionsAsArray('ixps')"
           />
         </el-form-item>
       </el-form>
@@ -381,6 +387,7 @@ import {
 } from '../../../services/api/cables'
 import { searchIxps } from '../../../services/api/ixps'
 import { searchCls } from '../../../services/api/cls'
+import { categoriesDictionary } from './dictionary'
 
 export default {
   name: 'CategoriesField',
@@ -395,8 +402,8 @@ export default {
   },
   data: () => ({
     isInputVisible: false,
-    categories: [],
     viewing: [],
+    dictionary: {},
     typesDialog: {
       visible: false
     },
@@ -410,14 +417,14 @@ export default {
       'stroke-opacity': 1,
       'stroke-style': 'normal',
       data: {
-        cls: [],
-        ixps: [],
-        facilities: [],
-        'custom lines': [],
-        'subsea cables': [],
-        'custom points': [],
-        'custom polygons': [],
-        'terrestrial networks': []
+        cls: {},
+        ixps: {},
+        facilities: {},
+        'custom lines': {},
+        'subsea cables': {},
+        'custom points': {},
+        'custom polygons': {},
+        'terrestrial networks': {}
       }
     },
     typesData: {
@@ -433,6 +440,9 @@ export default {
     }
   }),
   computed: {
+    isCategoriesEmpty() {
+      return !this.isInputVisible && !this.dictionary.getLength() > 0
+    },
     includesDrawnFeatures() {
       return (
         this.field.types.includes('custom points') ||
@@ -485,27 +495,38 @@ export default {
     },
     isViewing() {
       return name => this.viewing.includes(name)
+    },
+    getTypeSelectionsAsArray() {
+      return function getCategorySelections(t) {
+        let r = []
+        for (let key in this.field.data[t]) {
+          r.push({
+            _id: key,
+            ...this.field.data[t][key]
+          })
+        }
+        return r
+      }
     }
   },
   watch: {
     // eslint-disable-next-line
     dark(theme) {
-      this.$nextTick(() => {
-        bus.$emit('categories-field-values-change', this.categories)
-      })
+      this.$nextTick(() => this.emitCategoriesChanged(this.dictionary.getRaw()))
     },
-    value(list) {
+    value(categories) {
       let once = false
       let vm = this
       function x() {
         if (once) return
-        vm.categories = list
+        try {
+          vm.dictionary.set(categories)
+        } catch (err) {
+          console.error(err)
+        }
         once = true
       }
       x()
-    },
-    categories(list) {
-      bus.$emit('categories-field-values-change', list)
     }
   },
   created() {
@@ -513,30 +534,19 @@ export default {
       'categories-field-reset-datasets',
       this.handleCategoriesResetDataset
     )
+    this.dictionary = categoriesDictionary
+    this.dictionary.on('storage--changed', this.emitCategoriesChanged)
   },
   beforeDestroy() {
     bus.$off(
       'categories-field-reset-datasets',
       this.handleCategoriesResetDataset
     )
+    this.dictionary.off('storage--changed', this.emitCategoriesChanged)
   },
   methods: {
-    handleScrollToView() {
-      document
-        .querySelector('#elementsDialog .el-dialog')
-        .scrollIntoView({ behavior: 'smooth', block: 'end' })
-    },
-    scrollIntoView() {
-      setTimeout(() => {
-        document
-          .getElementById('mapFormWrapper')
-          .scrollIntoView({ behavior: 'smooth', block: 'end' })
-        this.$refs.categoryNameInput.focus()
-      }, 270)
-    },
-    handleBeforeCreateCategory() {
-      this.toggleInput(true)
-      this.scrollIntoView()
+    async emitCategoriesChanged(data) {
+      await bus.$emit('categories-field-values-change', data)
     },
     /**
      * @param s { String } - search queried from facilities select input
@@ -602,19 +612,40 @@ export default {
       }
       this.typesData.isLoadingIxps = false
     },
+    handleScrollToView() {
+      document
+        .querySelector('#elementsDialog .el-dialog')
+        .scrollIntoView({ behavior: 'smooth', block: 'end' })
+    },
+    scrollIntoView() {
+      setTimeout(() => {
+        document
+          .getElementById('mapFormWrapper')
+          .scrollIntoView({ behavior: 'smooth', block: 'end' })
+        this.$refs.categoryNameInput.focus()
+      }, 270)
+    },
+    handleBeforeCreateCategory() {
+      this.toggleInput(true)
+      this.scrollIntoView()
+    },
     /**
      * @param t { String } - selection type
      * @param _id { String } - ID of item removed
      */
     handleRemoveTypeChange(t, _id) {
-      this.field.data[t] = this.field.data[t].filter(item => item._id != _id)
+      delete this.field.data[t][_id]
     },
     /**
      * @param t { String } - selection type
      * @param data { String } - Elements selected
      */
     handleTypeSelectionChange(t, data) {
-      this.field.data[t] = [...data]
+      let r = {}
+      for (let item of data) {
+        r[item._id] = item
+      }
+      this.field.data[t] = r
     },
     nextStep() {
       this.step += 1
@@ -634,14 +665,14 @@ export default {
         'stroke-opacity': 1,
         'stroke-style': 'normal',
         data: {
-          cls: [],
-          ixps: [],
-          facilities: [],
-          'custom lines': [],
-          'subsea cables': [],
-          'custom points': [],
-          'custom polygons': [],
-          'terrestrial networks': []
+          cls: {},
+          ixps: {},
+          facilities: {},
+          'custom lines': {},
+          'subsea cables': {},
+          'custom points': {},
+          'custom polygons': {},
+          'terrestrial networks': {}
         }
       }
     },
@@ -658,29 +689,28 @@ export default {
       if (scrollToView) this.scrollIntoView()
     },
     handleCategoriesResetDataset() {
-      this.categories = this.categories.map(category => {
-        category.data = {
-          cls: [],
-          ixps: [],
-          facilities: [],
-          'custom lines': [],
-          'subsea cables': [],
-          'custom points': [],
-          'custom polygons': [],
-          'terrestrial networks': []
-        }
-        return category
-      })
+      const categories = this.dictionary.getRaw()
+      let data = {
+        cls: {},
+        ixps: {},
+        facilities: {},
+        'custom lines': {},
+        'subsea cables': {},
+        'custom points': {},
+        'custom polygons': {},
+        'terrestrial networks': {}
+      }
+
+      for (let id in categories) {
+        let item = this.dictionary.get(id)
+        this.dictionary.update(id, {
+          ...item,
+          data
+        })
+      }
     },
     saveEdit() {
-      const categoryIdx = this.categories
-        .map((cat, indx) =>
-          cat._id == this.field._id ? [cat._id, indx] : false
-        )
-        .filter(i => i)[0]
-
-      this.categories[categoryIdx[1]] = { ...this.field }
-      bus.$emit('categories-field-values-change', this.categories)
+      this.dictionary.update(this.field._id, this.field)
       this.toggleInput(false)
     },
     toggleInput(bool) {
@@ -724,24 +754,22 @@ export default {
           rej()
         })
       })
-        .then(() => {
-          this.saveEdit()
-          bus.$emit('categories-field-values-change', this.categories)
-        })
+        .then(this.saveEdit)
         .catch(() => {})
     },
-    async addCategory() {
+    addCategory() {
       if (this.field.name && this.field.name !== '') {
-        this.categories.push({
+        let id = `${this.field.name}.${Date.now()}`
+        this.dictionary.add(id, {
           ...this.field,
-          _id: `${this.field.name}.${Date.now()}`
+          _id: id
         })
       }
-      await this.toggleInput(false)
+      this.toggleInput(false)
     },
-    removeCategory(i) {
-      bus.$emit('category-removed', { ...this.categories[i] })
-      this.categories.splice(i, 1)
+    removeCategory(_id) {
+      this.dictionary.remove(_id)
+      bus.$emit('category-removed', _id)
     }
   }
 }

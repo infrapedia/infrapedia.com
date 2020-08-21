@@ -397,8 +397,6 @@ export default {
      * @param selection { String } - Selection => _id: [ObjectID]
      */
     async handleLinkedElementsChange({ type, selection }) {
-      console.log(selection, 'update')
-
       const args = {
         _id: selection,
         org_id: this.form._id,
@@ -431,8 +429,6 @@ export default {
       }
     },
     async handleLinkedElementsRemove({ type, selection }) {
-      console.log(selection, type, 'remove')
-
       const args = {
         _id: selection,
         org_id: this.form._id,

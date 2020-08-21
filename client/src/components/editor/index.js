@@ -1,8 +1,5 @@
 import bbox from '@turf/bbox'
-import {
-  setFeaturesIntoDataSource,
-  setFeaturesIntoDrawnDataSource
-} from './setFeaturesIntoDataSource'
+import { fCollectionFormat } from '../../helpers/featureCollection'
 import { mapConfig } from '../../config/mapConfig'
 
 function zoomToFeature({ fc, map, type }) {
@@ -33,120 +30,52 @@ function toggleDarkMode({ dark, map }) {
   return map
 }
 
-async function categoryDataChange(categories, feature, isDelete) {
-  return await categories.map(cat => {
-    if (
-      cat._id == feature.properties.category ||
-      cat._id == feature.properties.category._id
-    ) {
-      if (
-        feature.geometry.type == 'Point' &&
-        cat.types.includes('custom points')
-      ) {
-        ////////////////////////////////
-        //////----  POINTS ----////////
-        //////////////////////////////
-        const data = cat.data['custom points'].map(
-          it => it.properties.__editorID
-        )
-        if (!data.includes(feature.properties.__editorID)) {
-          cat.data['custom points'].push(feature)
-        } else {
-          for (let i = 0; i < data.length; i++) {
-            if (
-              cat.data['custom points'][i].properties.__editorID ==
-              feature.properties.__editorID
-            ) {
-              console.log('MATCH!!!!!!!', 'POINTS')
-              if (!isDelete) {
-                cat.data['custom points'][i] = { ...feature }
-              } else {
-                delete cat.data['custom points'][i]
-              }
-              break
-            }
-          }
-        }
+function setFeatureEditorID(feat) {
+  const feature = { ...feat }
+  let id = `${feat.properties.name}.${Date.now() + Math.random() * 1.52}`
+  feature.__editorID = id
+  feature.properties.__editorID = id
+  return feature
+}
 
-        if (isDelete) {
-          cat.data['custom points'] = cat.data['custom points'].filter(t => t)
-        }
-      } else if (
-        feature.geometry.type == 'Polygon' &&
-        cat.types.includes('custom polygons')
-      ) {
-        ////////////////////////////////
-        //////---  POLYGONS ---////////
-        //////////////////////////////
-        const data = cat.data['custom polygons'].map(
-          it => it.properties.__editorID
-        )
-        if (!data.includes(feature.properties.__editorID)) {
-          cat.data['custom polygons'].push(feature)
-        } else {
-          for (let i = 0; i < data.length; i++) {
-            if (
-              cat.data['custom polygons'][i].properties.__editorID ==
-              feature.properties.__editorID
-            ) {
-              console.log('MATCH!!!!!!!', 'POLYGONS')
-              if (!isDelete) {
-                cat.data['custom polygons'][i] = { ...feature }
-              } else {
-                delete cat.data['custom polygons'][i]
-              }
-              break
-            }
-          }
-        }
+/**
+ *
+ * @param { object } map - mapboxgl map reference
+ * @param { array } featureList - a list containing all of features in the drawn source
+ */
+async function updateDrawnFeatureDataSource(map, featureList) {
+  if (!map || !featureList) return
+  let sourceName = 'drawn-features'
+  let source = map.getSource(sourceName)
 
-        if (isDelete) {
-          cat.data['custom polygons'] = cat.data['custom polygons'].filter(
-            t => t
-          )
-        }
-      } else if (
-        feature.geometry.type == 'LineString' &&
-        cat.types.includes('custom lines')
-      ) {
-        ////////////////////////////////
-        ///////----  LINES ----////////
-        //////////////////////////////
-        const data = cat.data['custom lines'].map(
-          it => it.properties.__editorID
-        )
-        if (!data.includes(feature.properties.__editorID)) {
-          cat.data['custom lines'].push(feature)
-        } else {
-          for (let i = 0; i < data.length; i++) {
-            if (
-              cat.data['custom lines'][i].properties.__editorID ==
-              feature.properties.__editorID
-            ) {
-              console.log('MATCH!!!!!!!', 'LINES')
-              if (!isDelete) {
-                cat.data['custom lines'][i] = { ...feature }
-              } else {
-                delete cat.data['custom lines'][i]
-              }
-              break
-            }
-          }
-        }
+  if (source) source.setData(fCollectionFormat(featureList))
+  else {
+    setTimeout(
+      async () => await updateDrawnFeatureDataSource(map, featureList),
+      2000
+    )
+  }
+}
 
-        if (isDelete) {
-          cat.data['custom lines'] = cat.data['custom lines'].filter(t => t)
-        }
-      }
-    }
-    return cat
-  })
+function setFeaturesIntoDataSource({ list, map, reset }) {
+  if (reset) {
+    map.getSource('nondrawn-features').setData(fCollectionFormat())
+    return
+  }
+
+  console.log(list, 'HERAERLKJA')
+  const sourceName = 'nondrawn-features'
+  const source = map.getSource(sourceName)
+  if (source) source.setData(fCollectionFormat(list))
+  else {
+    setTimeout(() => setFeaturesIntoDataSource({ list, map, reset }), 1200)
+  }
 }
 
 export {
   zoomToFeature,
   toggleDarkMode,
-  categoryDataChange,
+  setFeatureEditorID,
   setFeaturesIntoDataSource,
-  setFeaturesIntoDrawnDataSource
+  updateDrawnFeatureDataSource
 }

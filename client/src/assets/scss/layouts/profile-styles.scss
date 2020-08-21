@@ -5,6 +5,9 @@
   ul[role='group'] {
     li[role='listitem'] {
       font-size: 0.8em;
+      .label {
+        transform: translateX(1rem);
+      }
     }
   }
 }
@@ -35,7 +38,7 @@
 }
 
 .transition-all-delay-520ms {
-  @extend .transition-all;
+  @extend .cubic-transition;
   transition-delay: 520ms;
 }
 

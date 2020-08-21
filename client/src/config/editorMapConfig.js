@@ -52,7 +52,7 @@ export const editorMapConfig = {
         'text-size': 14,
         'text-justify': 'right',
         'text-anchor': 'top',
-        'text-offset': [0, -2]
+        'text-offset': [0, -1.8]
       },
       paint: {
         'text-color': '#485E69'
@@ -135,7 +135,7 @@ export const editorMapConfig = {
       filter: ['all', ['!=', '$type', 'Point'], ['!=', '$type', 'Polygon']],
       paint: {
         'line-width': 1.5,
-        'line-color': '#7288b0'
+        'line-color': ['case', ['has', 'color'], ['get', 'color'], '#7288b0']
       }
     },
     {
@@ -163,7 +163,7 @@ export const editorMapConfig = {
       filter: ['==', '$type', 'Point'],
       paint: {
         'circle-radius': 5.42,
-        'circle-color': '#f78682',
+        'circle-color': ['case', ['has', 'color'], ['get', 'color'], '#f78682'],
         'circle-stroke-width': 1,
         'circle-stroke-color': '#333333'
       }
@@ -179,7 +179,7 @@ export const editorMapConfig = {
         'text-size': 14,
         'text-justify': 'right',
         'text-anchor': 'top',
-        'text-offset': [0, -2]
+        'text-offset': [0, -1]
       },
       paint: {
         'text-color': '#485E69'
@@ -193,7 +193,7 @@ export const editorMapConfig = {
       minzoom: 12,
       layout: {},
       paint: {
-        'circle-color': '#666666',
+        'circle-color': ['case', ['has', 'color'], ['get', 'color'], '#666666'],
         'circle-radius': ['interpolate', ['linear'], ['zoom'], 0, 1.75, 5, 6],
         'circle-stroke-color': '#ffffff'
       }
@@ -221,7 +221,12 @@ export const editorMapConfig = {
       source: 'drawn-features',
       filter: ['==', '$type', 'Polygon'],
       paint: {
-        'fill-extrusion-color': '#666666',
+        'fill-extrusion-color': [
+          'case',
+          ['has', 'color'],
+          ['get', 'color'],
+          '#666666'
+        ],
         'fill-extrusion-height': ['/', ['get', 'height'], 1.25]
       }
     },
@@ -283,17 +288,17 @@ export const customMapLayerTypes = {
       'circle-stroke-color': '#333333'
     },
     filter: ['==', '$type', 'Point']
-  },
-  buildings: {
-    id: 'default-layer',
-    type: 'fill-extrusion',
-    source: 'default-source',
-    layout: {},
-    filter: ['==', '$type', 'Polygon'],
-    paint: {
-      'fill-extrusion-opacity': 1,
-      'fill-extrusion-color': '#666666',
-      'fill-extrusion-height': ['get', 'height']
-    }
   }
+  // buildings: {
+  //   id: 'default-layer',
+  //   type: 'fill-extrusion',
+  //   source: 'default-source',
+  //   layout: {},
+  //   filter: ['==', '$type', 'Polygon'],
+  //   paint: {
+  //     'fill-extrusion-opacity': 1,
+  //     'fill-extrusion-color': '#666666',
+  //     'fill-extrusion-height': ['get', 'height']
+  //   }
+  // }
 }

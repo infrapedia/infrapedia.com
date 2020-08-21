@@ -76,11 +76,6 @@ export default {
       })
     },
     handleIxpSearch: debounce(async function(s, sortBy) {
-      if (s == '') {
-        if (!this.loading) await this.getIxpsList()
-        return
-      }
-
       this.loading = true
       const res = await searchIxps({
         user_id: await this.$auth.getUserID(),
