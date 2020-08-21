@@ -9,8 +9,8 @@
     <i-navbar role="navigation" :is-user-navbar="true" />
 
     <el-aside
-      width="200px"
-      class="mt12 no-overflow hidden-md-and-down transition-all"
+      width="210px"
+      class="mt12 no-overflow hidden-md-and-down cubic-transition"
       :class="{ 'adjust-width': $route.path.includes('create') }"
     >
       <ul role="group" class="pt7 h-fit-full">
@@ -19,7 +19,7 @@
             <router-link
               exact
               :to="link.url"
-              style="width: 90%"
+              style="width: 90%;"
               :id="
                 `${link.label
                   .trim()
@@ -27,9 +27,9 @@
                   .replace(' ', '-')}-link`
               "
               :class="checkURL(link)"
-              class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
+              class="inline-flex align-items-center pl5 color-inherit h-fit-full w-fit-full no-outline"
             >
-              <fa :icon="link.icon" class="mr2 icon" />
+              <fa :icon="link.icon" class="cubic-transition icon" />
               <span
                 class="label"
                 :class="{
