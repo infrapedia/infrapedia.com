@@ -28,12 +28,15 @@ export default class Dictionary extends EventEmitter {
   reset() {
     this.__storage = {}
     this.__length = 0
+    this.emit('storage--reset')
   }
 
   set(dict) {
-    this.__storage = dict
-    this.__length = Object.keys(dict).length
-    this.emit('storage--changed', this.getRaw())
+    if (dict) {
+      this.__storage = dict
+      this.__length = Object.keys(dict).length
+      this.emit('storage--changed', this.getRaw())
+    }
   }
 
   /**
@@ -76,8 +79,10 @@ export default class Dictionary extends EventEmitter {
    * @param { object } item
    */
   update(id, item) {
-    this.__storage[id] = item
-    this.emit('storage--item-updated', item)
+    if (id && item) {
+      this.__storage[id] = item
+      this.emit('storage--item-updated', item)
+    }
   }
 
   /**
@@ -85,13 +90,15 @@ export default class Dictionary extends EventEmitter {
    * @param { string } id
    */
   includes(id) {
-    let includesItem = false
-    for (let key in this.__storage) {
-      if (key == id) {
-        includesItem = true
-        break
+    if (id) {
+      let includesItem = false
+      for (let key in this.__storage) {
+        if (key == id) {
+          includesItem = true
+          break
+        }
       }
+      return includesItem
     }
-    return includesItem
   }
 }

@@ -45,14 +45,18 @@ function setFeatureEditorID(feat) {
  */
 async function updateDrawnFeatureDataSource(map, featureList) {
   if (!map || !featureList) return
-  let sourceName = 'drawn-features'
-  let source = map.getSource(sourceName)
+  if (featureList.length <= 0) {
+    map.getSource('drawn-features').setData(fCollectionFormat())
+    return
+  }
+  const sourceName = 'drawn-features'
+  const source = map.getSource(sourceName)
 
   if (source) source.setData(fCollectionFormat(featureList))
   else {
     setTimeout(
       async () => await updateDrawnFeatureDataSource(map, featureList),
-      2000
+      1200
     )
   }
 }
@@ -63,9 +67,9 @@ function setFeaturesIntoDataSource({ list, map, reset }) {
     return
   }
 
-  console.log(list, 'HERAERLKJA')
   const sourceName = 'nondrawn-features'
   const source = map.getSource(sourceName)
+
   if (source) source.setData(fCollectionFormat(list))
   else {
     setTimeout(() => setFeaturesIntoDataSource({ list, map, reset }), 1200)

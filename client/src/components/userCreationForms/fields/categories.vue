@@ -189,7 +189,7 @@
                 :style="{ backgroundColor: item.color }"
                 class="w6 h6 circle inline-block"
               />
-              <span class="capitalize ml2 font-medium fs-small">
+              <span class="text-left capitalize ml2 font-medium fs-small">
                 {{ item.name }}
               </span>
             </div>
@@ -505,6 +505,7 @@ export default {
             ...this.field.data[t][key]
           })
         }
+        console.log(t, r)
         return r
       }
     }

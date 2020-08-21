@@ -338,14 +338,14 @@ export default {
         for (let key in category.data) {
           if (!key.includes('custom')) {
             let ids = Object.keys(category.data[key])
-            console.log(ids)
+            // console.log(ids, key)
             if (ids.length > 0) {
               res = await getGeometries(key, ids, userID)
               if (res && res.features) {
                 features.push(res.features)
               }
             }
-          } else if (Object.keys(category.data[key]).length > 0) {
+          } else if (Object.keys(category.data[key])) {
             updateDrawnFeatures = true
           }
         }
@@ -354,7 +354,7 @@ export default {
           _id: category._id,
           name: category.name,
           color: category.color,
-          data: fCollectionFormat(features.flat())
+          data: fCollectionFormat(features.length > 0 ? features.flat() : [])
         })
 
         for (let t of category.types) {
@@ -380,16 +380,19 @@ export default {
       }
     },
     async handleSetCategorySource(category) {
-      if (this.map && this.map.loaded()) {
+      if (this.map) {
         const sourceName = `${category._id}--source`
-        if (!this.map.getSource(sourceName)) {
+        const source = this.map.getSource(sourceName)
+
+        if (!source) {
           this.map.addSource(sourceName, {
             type: 'geojson',
             data: category.data
           })
-        } else {
-          this.map.getSource(sourceName).setData(category.data)
         }
+
+        if (source) source.setData(category.data)
+        else this.handleSetCategorySource(category)
       }
     },
     async handleSetCategoryLayers(category) {
@@ -398,6 +401,7 @@ export default {
       let colorProp = ''
       const map = this.map
       let labelLayoutProp = null
+      let layer = null
       let layerName = `${category._id}--layer`
       const sourceName = layerName.replace('--layer', '--source')
 
@@ -406,6 +410,7 @@ export default {
           type = 'points'
           colorProp = 'circle-color'
           layerName = layerName + '-' + type
+          labelLayoutProp = { 'text-field': '{name}' }
           break
         case 'ixps':
           type = 'points'
@@ -430,39 +435,60 @@ export default {
         default:
           type = 'cables'
           colorProp = 'line-color'
-          labelLayoutProp = [
-            ['symbol-placement', 'line'],
-            ['text-offset', [0, -0.1]]
-          ]
+          labelLayoutProp = {
+            'symbol-placement': 'line',
+            'text-offset': [0, -0.1]
+          }
           layerName = layerName + '-' + type
           break
       }
-      const layer = { ...customMapLayerTypes[type] }
 
-      layer.id = layerName
-      layer.source = sourceName
-      layer.paint[colorProp] = category.color
+      const manageLayers = () => {
+        layer = { ...customMapLayerTypes[type] }
+        layer.id = layerName
+        layer.source = sourceName
+        layer.paint[colorProp] = category.color
 
-      if (!map.getLayer(layerName)) {
         const labelLayer = { ...customMapLayerTypes.label }
         const labelLayerName = `${category._id}--layer--label`
-        map.addLayer(layer)
+        labelLayer.id = labelLayerName
+        labelLayer.source = sourceName
+        labelLayer.filter = layer.filter
 
-        if (!map.getLayer(labelLayerName)) {
-          labelLayer.id = labelLayerName
-          labelLayer.source = sourceName
-          labelLayer.filter = layer.filter
-
-          if (labelLayoutProp) {
-            labelLayer.layout[labelLayoutProp[0][0]] = labelLayoutProp[0][1]
-            labelLayer.layout[labelLayoutProp[1][0]] = labelLayoutProp[1][1]
+        if (labelLayoutProp) {
+          labelLayer.layout = {
+            ...labelLayer.layout,
+            ...labelLayoutProp
           }
-          if (type == 'points') labelLayer.layout['text-field'] = '{name}'
-          map.addLayer(labelLayer)
         }
-      } else {
-        map.setPaintProperty(layerName, colorProp, category.color)
+
+        const mapLayer = map.getLayer(layerName)
+        const mapLabelLayer = map.getLayer(labelLayerName)
+
+        if (!mapLayer) {
+          map.addLayer(layer)
+        } else {
+          map.setPaintProperty(layerName, colorProp, category.color)
+        }
+
+        if (!mapLabelLayer) {
+          map.addLayer(labelLayer)
+        } else if (mapLabelLayer && labelLayoutProp) {
+          for (let prop in labelLayoutProp) {
+            map.setLayoutProperty(
+              `${category._id}--layer--label`,
+              prop,
+              labelLayoutProp[prop]
+            )
+          }
+        }
+
+        if (!mapLayer || !mapLabelLayer) {
+          setTimeout(() => manageLayers(), 120)
+        }
+        return true
       }
+      manageLayers()
 
       if (category.t.includes('custom')) {
         map.on('click', layer.id, function(e) {
@@ -686,7 +712,7 @@ export default {
         if (this.type == 'map') {
           bus.$emit('categories-field-reset-datasets')
         }
-        await this.handleUpdateMapSourcesData(false, [])
+        // await this.handleUpdateMapSourcesData(false, [])
       }
 
       if (removeFilter && this.scene.layerFiltered) {
@@ -800,7 +826,7 @@ export default {
                 layerType = 'points'
                 break
               case 'facilities':
-                layerType = 'points'
+                layerType = 'buildings'
                 break
               default:
                 layerType = 'cables'
