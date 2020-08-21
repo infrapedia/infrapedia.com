@@ -54,7 +54,6 @@ import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import { mapConfig } from '../../config/mapConfig'
 import {
-  EDITOR_LOAD_DRAW,
   EDITOR_SET_FEATURES,
   EDITOR_FILE_CONVERTED,
   EDITOR_GET_FEATURES_LIST,
@@ -190,29 +189,32 @@ export default {
   },
   created() {
     this.sceneDictionary = new Dictionary()
-    this.categoriesDictionary = categoriesDictionary
+    this.sceneDictionary.on('storage--changed', () => this.handleRecreateDraw())
 
     bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
-    bus.$on(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
     bus.$on(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
+
     // CATEGORIES RELATED EVENTS
-    {
-      bus.$on('category-removed', this.handleCategoryRemoved)
-      this.$on('drawn-features-dnd', this.handleDragAndDropGeojsonFiles)
-      this.categoriesDictionary.on(
-        'storage--changed',
-        this.handleCategoriesChange
-      )
-      this.categoriesDictionary.on(
-        'storage--item-added',
-        this.handleCategoryChange
-      )
-      this.categoriesDictionary.on(
-        'storage--item-updated',
-        this.handleCategoryChange
-      )
+    if (this.type == 'map') {
+      this.categoriesDictionary = categoriesDictionary
+      {
+        bus.$on('category-removed', this.handleCategoryRemoved)
+        this.$on('drawn-features-dnd', this.handleDragAndDropGeojsonFiles)
+        this.categoriesDictionary.on(
+          'storage--changed',
+          this.handleCategoriesChange
+        )
+        this.categoriesDictionary.on(
+          'storage--item-added',
+          this.handleCategoryChange
+        )
+        this.categoriesDictionary.on(
+          'storage--item-updated',
+          this.handleCategoryChange
+        )
+      }
     }
   },
   async mounted() {
@@ -228,16 +230,15 @@ export default {
   },
   beforeDestroy() {
     this.sceneDictionary.reset()
-    this.categoriesDictionary.reset()
 
     bus.$off(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
-    bus.$off(`${EDITOR_LOAD_DRAW}`, this.handleRecreateDraw)
     bus.$off(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$off(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
     bus.$off(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
 
     // CATEGORIES RELATED EVENTS
-    {
+    if (this.type == 'map') {
+      this.categoriesDictionary.reset()
       bus.$off('category-removed', this.handleCategoryRemoved)
       this.$off('drawn-features-dnd', this.handleDragAndDropGeojsonFiles)
       this.categoriesDictionary.off(
@@ -300,7 +301,10 @@ export default {
       if (categories.length > 0) {
         this.handleCategoriesChange(categories)
       } else {
-        this.handleRecreateDraw(fc.features, false)
+        this.handleRecreateDraw(
+          [...fc.features, this.sceneDictionary.getCollectionList()],
+          false
+        )
       }
     },
     onDrop(e) {
@@ -488,7 +492,7 @@ export default {
     handleSetFeaturesList(list) {
       let r = {}
       for (let item of list) {
-        r[item._id ? item._id : item.__editorID] = item
+        r[item.properties._id ? item.properties._id : item.__editorID] = item
       }
       this.sceneDictionary.set(r)
     },
@@ -509,29 +513,12 @@ export default {
         console.error(err)
       }
     },
-    // I have to create a source layer for each category
-    // And then ask for each featureCollection
-    async handleMapFormFeatureSelection({ t, fc }) {
+    async handleMapFormFeatureSelection({ fc }) {
       if (!this.map) return
 
-      console.log(t)
-
-      const sourceName = 'nondrawn-features'
-      if (
-        this.map.getSource(sourceName) &&
-        this.map.isSourceLoaded(sourceName)
-      ) {
-        const source = this.map.getSource(sourceName)
-        if (!fc.features) fc = fCollectionFormat(fc)
-
-        source.setData(fc)
-        this.$store.dispatch('editor/toggleMapFormLoading', false)
-      } else {
-        setTimeout(() => {
-          this.$store.dispatch('editor/toggleMapFormLoading', true)
-          this.handleMapFormFeatureSelection({ t, fc })
-        }, 620)
-      }
+      this.$store.dispatch('editor/toggleMapFormLoading', true)
+      await setFeaturesIntoDataSource({ list: fc.features, map: this.map })
+      this.$store.dispatch('editor/toggleMapFormLoading', false)
     },
     async setPropertiesDialogEditMode() {
       this.dialog.mode = 'edit'
@@ -676,7 +663,7 @@ export default {
         if (features && features.length > 0) {
           if (
             onlyOneFeatureAllowed.includes(this.type) &&
-            this.dictionary.getLength() > 0
+            this.sceneDictionary.getLength() > 0
           ) {
             return
           }
@@ -767,17 +754,12 @@ export default {
       return map
     },
     handleRecreateDraw: debounce(async function(feats, zoomTo = true) {
-      const featuresCollection = fCollectionFormat(
-        JSON.parse(JSON.stringify(this.sceneDictionary.getCollectionList()))
-      )
-      await updateDrawnFeatureDataSource(
-        this.map,
-        feats ? feats : this.sceneDictionary.getCollectionList()
-      )
+      const features = feats ? feats : this.sceneDictionary.getCollectionList()
+      await updateDrawnFeatureDataSource(this.map, features)
 
       if (zoomTo) {
         await zoomToFeature({
-          fc: feats ? fCollectionFormat(feats) : featuresCollection,
+          fc: fCollectionFormat(features),
           type: this.type,
           map: this.map
         })

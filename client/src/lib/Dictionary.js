@@ -65,7 +65,9 @@ export default class Dictionary extends EventEmitter {
    * @param { string } id
    */
   get(id) {
-    return JSON.parse(JSON.stringify(this.__storage[id]))
+    if (id) {
+      return JSON.parse(JSON.stringify(this.__storage[id]))
+    }
   }
 
   /**

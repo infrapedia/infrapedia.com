@@ -94,7 +94,6 @@ import {
   viewCableOwner
 } from '../../../services/api/cables'
 import {
-  EDITOR_LOAD_DRAW,
   EDITOR_FILE_CONVERTED,
   EDITOR_SET_FEATURES,
   EDITOR_SET_FEATURES_LIST
@@ -278,7 +277,7 @@ export default {
     )
       return this.$router.push('/user')
   },
-  async mounted() {
+  async created() {
     try {
       this.creationType = this.$route.query.id
       this.checkCreationType(this.$route.query.id)
@@ -350,7 +349,6 @@ export default {
           const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
           if (fc.features && fc.features.length > 0) {
             bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, fc.features)
-            bus.$emit(`${EDITOR_LOAD_DRAW}`, fc.features, false)
           }
         }
       } catch {
@@ -544,7 +542,6 @@ export default {
       }
 
       bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, features)
-      await bus.$emit(`${EDITOR_LOAD_DRAW}`, features, true, false)
     },
     handleCLSEditMode(data) {
       if (this.form.state == 'null' || this.form.state == 'undefined') {

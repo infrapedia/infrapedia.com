@@ -51,11 +51,7 @@ async function updateDrawnFeatureDataSource(map, featureList) {
   if (source) source.setData(fCollectionFormat(featureList))
   else {
     setTimeout(
-      async () =>
-        await updateDrawnFeatureDataSource({
-          map,
-          featureList
-        }),
+      async () => await updateDrawnFeatureDataSource(map, featureList),
       2000
     )
   }
@@ -66,14 +62,13 @@ function setFeaturesIntoDataSource({ list, map, reset }) {
     map.getSource('nondrawn-features').setData(fCollectionFormat())
     return
   }
+
+  console.log(list, 'HERAERLKJA')
   const sourceName = 'nondrawn-features'
   const source = map.getSource(sourceName)
-  if (source && map.loaded()) {
-    if (map.isSourceLoaded(sourceName)) {
-      source.setData(fCollectionFormat(list))
-    }
-  } else {
-    setTimeout(() => setFeaturesIntoDataSource({ list, map, reset }), 820)
+  if (source) source.setData(fCollectionFormat(list))
+  else {
+    setTimeout(() => setFeaturesIntoDataSource({ list, map, reset }), 1200)
   }
 }
 
