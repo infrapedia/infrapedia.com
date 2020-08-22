@@ -1,6 +1,11 @@
 import bbox from '@turf/bbox'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { mapConfig } from '../../config/mapConfig'
+import Dictionary from '../../lib/Dictionary'
+
+const sceneDictionary = new Dictionary({
+  debug: process.env != 'production'
+})
 
 function zoomToFeature({ fc, map, type }) {
   if (fc.features.length <= 0) return
@@ -79,6 +84,7 @@ function setFeaturesIntoDataSource({ list, map, reset }) {
 export {
   zoomToFeature,
   toggleDarkMode,
+  sceneDictionary,
   setFeatureEditorID,
   setFeaturesIntoDataSource,
   updateDrawnFeatureDataSource

@@ -155,9 +155,6 @@
       </el-collapse-transition>
       <!-- CREATION FORM END -->
     </div>
-    <!-------------------------->
-    <!-------------------------->
-    <!-------------------------->
     <!-- CATEGORIES ITEMS START -->
     <template name="categories-items">
       <!-- EMPTY LIST START -->
@@ -171,8 +168,6 @@
         </span>
       </div>
       <!-- EMPTY LIST END -->
-
-      <!-------------------->
       <!-------------------->
 
       <div v-else>
@@ -261,9 +256,6 @@
       </div>
     </template>
     <!-- CATEGORIES ITEMS END -->
-    <!-------------------------->
-    <!-------------------------->
-    <!-------------------------->
     <!-- TYPES SELECTION DIALOG START -->
     <el-dialog
       top="28vh"
@@ -505,16 +497,11 @@ export default {
             ...this.field.data[t][key]
           })
         }
-        console.log(t, r)
         return r
       }
     }
   },
   watch: {
-    // eslint-disable-next-line
-    dark(theme) {
-      this.$nextTick(() => this.emitCategoriesChanged(this.dictionary.getRaw()))
-    },
     value(categories) {
       let once = false
       let vm = this
@@ -536,19 +523,14 @@ export default {
       this.handleCategoriesResetDataset
     )
     this.dictionary = categoriesDictionary
-    this.dictionary.on('storage--changed', this.emitCategoriesChanged)
   },
   beforeDestroy() {
     bus.$off(
       'categories-field-reset-datasets',
       this.handleCategoriesResetDataset
     )
-    this.dictionary.off('storage--changed', this.emitCategoriesChanged)
   },
   methods: {
-    async emitCategoriesChanged(data) {
-      await bus.$emit('categories-field-values-change', data)
-    },
     /**
      * @param s { String } - search queried from facilities select input
      */

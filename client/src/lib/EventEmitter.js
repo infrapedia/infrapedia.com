@@ -39,7 +39,7 @@ export default class EventEmitter {
 
     for (let callback of this._events[name]) {
       if (this.debug) {
-        console.log(
+        console.info(
           '%cEMITTING EVENT-------------' + '%c' + name,
           'color: lightblue',
           'color: salmon'
