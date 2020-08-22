@@ -393,20 +393,32 @@ export default {
     sendData() {
       const format = {
         cls: [],
-        draw: [],
+        draw: {},
         ixps: [],
         facilities: [],
-        'subsea cables': [],
-        'terrestrial networks': []
+        subsea: [],
+        terrestrials: []
       }
       const t = categoriesDictionary.getRaw()
       for (let categoryId in t) {
         for (let key in t[categoryId].data) {
           if (!key.includes('custom')) {
-            format[key] = [
-              ...format[key],
-              ...Object.keys(t[categoryId].data[key])
-            ]
+            if (key == 'subsea cables') {
+              format.subsea = [
+                ...format.subsea,
+                ...Object.keys(t[categoryId].data[key])
+              ]
+            } else if (key == 'terrestrial networks') {
+              format.terrestrials = [
+                ...format.terrestrials,
+                ...Object.keys(t[categoryId].data[key])
+              ]
+            } else {
+              format[key] = [
+                ...format[key],
+                ...Object.keys(t[categoryId].data[key])
+              ]
+            }
           }
         }
       }
@@ -520,4 +532,3 @@ export default {
   }
 }
 </script>
-1

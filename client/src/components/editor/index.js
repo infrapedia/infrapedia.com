@@ -38,8 +38,8 @@ function toggleDarkMode({ dark, map }) {
 function setFeatureEditorID(feat) {
   const feature = { ...feat }
   let id = `${feat.properties.name}.${Date.now() + Math.random() * 1.52}`
-  feature.__editorID = id
-  feature.properties.__editorID = id
+  feature.editorID = id
+  feature.properties.editorID = id
   return feature
 }
 

@@ -188,9 +188,9 @@ export default {
     }
   },
   created() {
-    sceneDictionary.on('storage--changed', () => this.handleRecreateDraw())
+    sceneDictionary.on('storage--changed', this.handleDrawSceneFeatures)
 
-    bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
+    bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetSceneFeaturesList)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
     bus.$on(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
@@ -222,15 +222,12 @@ export default {
     )
     toggleDarkMode({ dark: this.dark, map: this.map })
     this.controls.resetScene()
-
-    // if (this.scene.list.length > 0) {
-    //   this.handleGetFeatures()
-    // }
   },
   beforeDestroy() {
     sceneDictionary.reset()
+    sceneDictionary.off('storage--changed', this.handleDrawSceneFeatures)
 
-    bus.$off(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
+    bus.$off(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetSceneFeaturesList)
     bus.$off(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$off(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
     bus.$off(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
@@ -255,6 +252,9 @@ export default {
     }
   },
   methods: {
+    async handleDrawSceneFeatures() {
+      await this.handleRecreateDraw(null, false)
+    },
     async handleDragAndDropGeojsonFiles(fc) {
       let list = []
       let cat = null
@@ -292,7 +292,7 @@ export default {
       }
 
       cat = null
-      this.handleSetFeaturesList([
+      this.handleSetSceneFeaturesList([
         ...sceneDictionary.getCollectionList(),
         ...list
       ])
@@ -337,7 +337,6 @@ export default {
         for (let key in category.data) {
           if (!key.includes('custom')) {
             let ids = Object.keys(category.data[key])
-            // console.log(ids, key)
             if (ids.length > 0) {
               res = await getGeometries(key, ids, userID)
               if (res && res.features) {
@@ -374,8 +373,16 @@ export default {
       }
     },
     async handleCategoriesChange(data) {
-      for await (let category of data) {
-        await this.handleCategoryChange(category)
+      if (!data || typeof data == 'string' || typeof data == 'number') return
+
+      if (Array.isArray(data)) {
+        for await (let category of data) {
+          await this.handleCategoryChange(category)
+        }
+      } else {
+        for (let key in data) {
+          await this.handleCategoryChange(data[key])
+        }
       }
     },
     async handleSetCategorySource(category) {
@@ -511,10 +518,14 @@ export default {
     handleGetFeatures() {
       this.$emit('features-list-change', sceneDictionary.getCollectionList())
     },
-    handleSetFeaturesList(list) {
+    handleSetSceneFeaturesList(list) {
       let r = {}
       for (let item of list) {
-        r[item.properties._id ? item.properties._id : item.__editorID] = item
+        r[
+          item.properties.editorID
+            ? item.properties.editorID
+            : item.properties._id
+        ] = item
       }
       sceneDictionary.set(r)
     },
@@ -561,14 +572,14 @@ export default {
             ...JSON.parse(JSON.stringify(featuresSelected[0]))
           }
           feature.properties = { ...data }
-          // This adds the __editorID property with which I keep track of it
+          // This adds the editorID property with which I keep track of it
           const ftWithMetadata =
             this.dialog.mode == 'create'
               ? setFeatureEditorID(feature)
               : this.updateSceneDictionaryFeature(feature)
           // Then I do can add it into the dictionary
           if (this.dialog.mode == 'create') {
-            sceneDictionary.add(ftWithMetadata.__editorID, ftWithMetadata)
+            sceneDictionary.add(ftWithMetadata.editorID, ftWithMetadata)
           }
 
           await this.handleUpdateMapSourcesData(
@@ -615,7 +626,7 @@ export default {
       }`
 
       if (types.includes(customType)) {
-        category.data[customType][feature.properties.__editorID] = feature
+        category.data[customType][feature.properties.editorID] = feature
         this.categoriesDictionary.update(category._id, category)
         this.handleCategoryChange(category)
       }
@@ -803,9 +814,7 @@ export default {
       }
 
       if (featureSelected) {
-        const idProp = featureSelected.properties.__editorID
-          ? '__editorID'
-          : '_id'
+        const idProp = featureSelected.properties.editorID ? 'editorID' : '_id'
         const featureID = featureSelected.properties[idProp]
         const feature = sceneDictionary.get(featureID)
 
@@ -855,8 +864,7 @@ export default {
     },
     320),
     updateSceneDictionaryFeature(feature) {
-      const idProp = feature.properties.__editorID ? '__editorID' : '_id'
-      sceneDictionary.update(feature.properties[idProp], feature)
+      sceneDictionary.update(feature.properties.editorID, feature)
       return feature
     },
     async handleFeatureEdition(feature) {
@@ -872,7 +880,7 @@ export default {
     },
     async handleDeleteFeature(features) {
       for (let feature of features) {
-        sceneDictionary.remove(feature.properties.__editorID)
+        sceneDictionary.remove(feature.properties.editorID)
         await this.handleUpdateMapSourcesData(
           feature,
           sceneDictionary.getCollectionList()
