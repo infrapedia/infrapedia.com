@@ -70,9 +70,9 @@ import {
   toggleDarkMode,
   setFeatureEditorID,
   setFeaturesIntoDataSource,
-  updateDrawnFeatureDataSource
+  updateDrawnFeatureDataSource,
+  sceneDictionary
 } from './index'
-import Dictionary from '../../lib/Dictionary'
 import { categoriesDictionary } from '../userCreationForms/fields/dictionary'
 import { getGeometries } from '../../services/api'
 
@@ -188,8 +188,7 @@ export default {
     }
   },
   created() {
-    this.sceneDictionary = new Dictionary()
-    this.sceneDictionary.on('storage--changed', () => this.handleRecreateDraw())
+    sceneDictionary.on('storage--changed', () => this.handleRecreateDraw())
 
     bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
@@ -229,7 +228,7 @@ export default {
     // }
   },
   beforeDestroy() {
-    this.sceneDictionary.reset()
+    sceneDictionary.reset()
 
     bus.$off(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetFeaturesList)
     bus.$off(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
@@ -294,7 +293,7 @@ export default {
 
       cat = null
       this.handleSetFeaturesList([
-        ...this.sceneDictionary.getCollectionList(),
+        ...sceneDictionary.getCollectionList(),
         ...list
       ])
 
@@ -302,7 +301,7 @@ export default {
         this.handleCategoriesChange(categories)
       } else {
         this.handleRecreateDraw(
-          [...fc.features, this.sceneDictionary.getCollectionList()],
+          [...fc.features, sceneDictionary.getCollectionList()],
           false
         )
       }
@@ -365,7 +364,7 @@ export default {
         if (updateDrawnFeatures) {
           await updateDrawnFeatureDataSource(
             this.map,
-            this.sceneDictionary.getCollectionList()
+            sceneDictionary.getCollectionList()
           )
         }
       } catch (err) {
@@ -510,17 +509,14 @@ export default {
       }
     },
     handleGetFeatures() {
-      this.$emit(
-        'features-list-change',
-        this.sceneDictionary.getCollectionList()
-      )
+      this.$emit('features-list-change', sceneDictionary.getCollectionList())
     },
     handleSetFeaturesList(list) {
       let r = {}
       for (let item of list) {
         r[item.properties._id ? item.properties._id : item.__editorID] = item
       }
-      this.sceneDictionary.set(r)
+      sceneDictionary.set(r)
     },
     async handleFileConverted(fc) {
       if (!fc.features.length) return
@@ -528,7 +524,7 @@ export default {
       try {
         const fc_final = fCollectionFormat([
           ...fc.features,
-          ...this.sceneDictionary.getCollectionList()
+          ...sceneDictionary.getCollectionList()
         ])
         setFeaturesIntoDataSource({
           list: fc_final.features,
@@ -572,12 +568,12 @@ export default {
               : this.updateSceneDictionaryFeature(feature)
           // Then I do can add it into the dictionary
           if (this.dialog.mode == 'create') {
-            this.sceneDictionary.add(ftWithMetadata.__editorID, ftWithMetadata)
+            sceneDictionary.add(ftWithMetadata.__editorID, ftWithMetadata)
           }
 
           await this.handleUpdateMapSourcesData(
             ftWithMetadata,
-            this.sceneDictionary.getCollectionList()
+            sceneDictionary.getCollectionList()
           )
         }
       }
@@ -689,7 +685,7 @@ export default {
         if (features && features.length > 0) {
           if (
             onlyOneFeatureAllowed.includes(this.type) &&
-            this.sceneDictionary.getLength() > 0
+            sceneDictionary.getLength() > 0
           ) {
             return
           }
@@ -708,7 +704,7 @@ export default {
       }
 
       if (reset) {
-        this.sceneDictionary.reset()
+        sceneDictionary.reset()
         if (this.type == 'map') {
           bus.$emit('categories-field-reset-datasets')
         }
@@ -780,7 +776,7 @@ export default {
       return map
     },
     handleRecreateDraw: debounce(async function(feats, zoomTo = true) {
-      const features = feats ? feats : this.sceneDictionary.getCollectionList()
+      const features = feats ? feats : sceneDictionary.getCollectionList()
       await updateDrawnFeatureDataSource(this.map, features)
 
       if (zoomTo) {
@@ -811,7 +807,7 @@ export default {
           ? '__editorID'
           : '_id'
         const featureID = featureSelected.properties[idProp]
-        const feature = this.sceneDictionary.get(featureID)
+        const feature = sceneDictionary.get(featureID)
 
         if (feature) {
           try {
@@ -860,14 +856,14 @@ export default {
     320),
     updateSceneDictionaryFeature(feature) {
       const idProp = feature.properties.__editorID ? '__editorID' : '_id'
-      this.sceneDictionary.update(feature.properties[idProp], feature)
+      sceneDictionary.update(feature.properties[idProp], feature)
       return feature
     },
     async handleFeatureEdition(feature) {
       const ftUpdated = this.updateSceneDictionaryFeature(feature)
       await this.handleUpdateMapSourcesData(
         ftUpdated,
-        this.sceneDictionary.getCollectionList()
+        sceneDictionary.getCollectionList()
       )
       await this.handleResetScene({
         reset: false,
@@ -876,10 +872,10 @@ export default {
     },
     async handleDeleteFeature(features) {
       for (let feature of features) {
-        this.sceneDictionary.remove(feature.properties.__editorID)
+        sceneDictionary.remove(feature.properties.__editorID)
         await this.handleUpdateMapSourcesData(
           feature,
-          this.sceneDictionary.getCollectionList()
+          sceneDictionary.getCollectionList()
         )
         await this.handleResetScene({
           reset: false,

@@ -190,7 +190,6 @@ export const editorMapConfig = {
       type: 'circle',
       source: 'drawn-features',
       filter: ['==', '$type', 'Point'],
-      minzoom: 12,
       layout: {},
       paint: {
         'circle-color': ['case', ['has', 'color'], ['get', 'color'], '#666666'],

@@ -155,88 +155,8 @@
       </el-form-item>
       <el-divider :class="{ dark }" />
       <!-- CATEGORIES FIELD START -->
-      <categories-field
-        class="mb24"
-        :value="mapCreationData.categories"
-        @values-change="updateCategoriesList"
-      />
+      <categories-field class="mb24" />
       <!-- CATEGORIES FIELD END -->
-      <!-- <el-form-item label="Owners">
-        <v-multi-select
-          :mode="mode"
-          :options="owners"
-          :get-selected-id="true"
-          @input="loadOwnersSearch"
-          :loading="isLoadingOwners"
-          @values-change="handleSelectionChange('owners', $event)"
-          :value="mode == 'create' ? [] : [...form.owners]"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="Facilities">
-        <v-multi-select
-          ref="facilities-MultiSelect"
-          :mode="mode"
-          :options="facilities"
-          @input="loadFacSearch"
-          :get-selected-id="true"
-          :loading="isLoadingFacs"
-          @remove="handleRemoveFeature('facilities')"
-          @values-change="handleSelectionChange('facilities', $event)"
-          :value="mode == 'create' ? [] : [...form.facilities]"
-        />
-      </el-form-item>
-      <el-form-item label="Terrestrial Networks" prop="tNets">
-        <v-multi-select
-          ref="terrestrials-MultiSelect"
-          :mode="mode"
-          :options="terrestrials"
-          :get-selected-id="true"
-          @input="loadCablesSearch($event, 'terrestrials')"
-          :loading="isLoadingCables"
-          @remove="handleRemoveFeature('terrestrials')"
-          @values-change="handleSelectionChange('terrestrials', $event)"
-          :value="mode == 'create' ? [] : [...form.terrestrials]"
-        />
-      </el-form-item>
-      <el-form-item label="Subsea Cables" prop="sCables">
-        <v-multi-select
-          ref="subsea-MultiSelect"
-          :mode="mode"
-          :get-selected-id="true"
-          :options="subsea"
-          @input="loadCablesSearch($event, 'subsea')"
-          :loading="isLoadingCables"
-          @remove="handleRemoveFeature('subsea')"
-          @values-change="handleSelectionChange('subsea', $event)"
-          :value="mode == 'create' ? [] : [...form.subsea]"
-        />
-      </el-form-item>
-      <el-form-item label="CLS">
-        <v-multi-select
-          ref="cls-MultiSelect"
-          :mode="mode"
-          :options="cls"
-          @input="loadClsSearch"
-          :loading="isLoadingCls"
-          :get-selected-id="true"
-          @remove="handleRemoveFeature('cls')"
-          @values-change="handleSelectionChange('cls', $event)"
-          :value="mode == 'create' ? [] : [...form.cls]"
-        />
-      </el-form-item>
-      <el-form-item label="Ixps">
-        <v-multi-select
-          ref="ixps-MultiSelect"
-          :mode="mode"
-          :options="ixps"
-          :get-selected-id="true"
-          @input="loadIxpsSearch"
-          :loading="isLoadingIxps"
-          @remove="handleRemoveFeature('ixps')"
-          @values-change="handleSelectionChange('ixps', $event)"
-          :value="mode == 'create' ? [] : [...form.ixps]"
-        />
-      </el-form-item> -->
       <el-form-item class="mt12">
         <el-button
           type="primary"
@@ -250,44 +170,25 @@
         </el-button>
       </el-form-item>
     </el-form>
-    <!------------------------->
-    <!-- <i-map-properties-dialog
-      :categories="mapCreationData.categories"
-      :is-visible="isPropertiesDialog"
-      :feature-type="featureType"
-      :feature="feature"
-      :mode="dialogMode"
-      @close="handleDialogClose"
-    /> -->
   </div>
 </template>
 
 <script>
 import apiConfig from '../../config/apiConfig'
 import * as events from '../../events/mapForm'
-import AutocompleteGoogle from '../../components/AutocompleteGoogle'
-// import { searchOrganization } from '../../services/api/organizations'
-// import VMultiSelect from '../../components/MultiSelect'
 import { uploadOrgLogo } from '../../services/api/uploads'
 import CategoriesField from './fields/categories.vue'
-import { bus } from '../../helpers/eventBus'
 import { getGeometries } from '../../services/api'
+import { categoriesDictionary } from './fields/dictionary'
+import { sceneDictionary } from '../editor'
 
 export default {
   name: 'MapForm',
   components: {
-    // VMultiSelect,
     CategoriesField,
-    AutocompleteGoogle
-    // IMapPropertiesDialog: () => import('../dialogs/MapPropertiesDialog')
+    AutocompleteGoogle: () => import('../../components/AutocompleteGoogle')
   },
   data: () => ({
-    // facilities: [],
-    // subsea: [],
-    // terrestrials: [],
-    // cls: [],
-    // ixps: [],
-    // owners: [],
     feature: {},
     fileList: [],
     featureType: '',
@@ -305,22 +206,11 @@ export default {
     tagOnEdit: null,
     inputVisible: false,
     isLoadingCls: false,
-    // dialogMode: 'create',
     isLoadingFacs: false,
     isLoadingIxps: false,
     isLoadingCables: false,
     isLoadingOwners: false,
-    // // isPropertiesDialog: false,
     currentSelectionID: null,
-    mapCreationData: {
-      // cls: [],
-      // ixps: [],
-      // subsea: [],
-      // terrestrials: [],
-      // owners: [],
-      // facilities: [],
-      categories: []
-    },
     uploadLogo: {
       text: '',
       type: '',
@@ -394,36 +284,19 @@ export default {
     }
   },
   watch: {
-    async mode(m) {
+    mode(m) {
       if (m == 'create') return
-      // await this.handleEditModeScenario()
+      this.loadMapConfig()
       this.setLogoUrl()
-      if (this.form.categoriesList) {
-        this.mapCreationData.categories = Array.from(this.form.categoriesList)
-        delete this.form.categoriesList
-      }
     }
   },
-  created() {
-    bus.$on('categories-field-values-change', this.updateCategoriesList)
-  },
-  beforeDestroy() {
-    bus.$off('categories-field-values-change', this.updateCategoriesList)
-  },
-  async mounted() {
+  mounted() {
     if (this.mode == 'edit') {
-      // await this.handleEditModeScenario()
+      this.loadMapConfig()
       this.setLogoUrl()
-      if (this.form.categoriesList) {
-        this.mapCreationData.categories = Array.from(this.form.categoriesList)
-        delete this.form.categoriesList
-      }
     }
   },
   methods: {
-    updateCategoriesList(categories) {
-      this.mapCreationData.categories = categories
-    },
     handleFileListRemove() {
       this.form.logo = ''
       this.fileList = []
@@ -473,35 +346,19 @@ export default {
         this.fileList = [{ url: this.form.logo }]
       }
     },
-    /**
-    async handleEditModeScenario() {
-      const multiselectFields = [
-        'facilities',
-        'terrestrials',
-        'subsea',
-        'cls',
-        'ixps'
-        // 'owners'
-      ]
-
-      const multiSelectFormat = arr =>
-        arr.map(item => ({ name: item.label, _id: item._id }))
-
-      for (let field of multiselectFields) {
-        let value = multiSelectFormat(this.form[field])
-        this[field] = value
-        this.form[field] = value
+    loadMapConfig() {
+      if (this.form.config) {
+        const { categories } = this.form.config
+        if (
+          categories &&
+          typeof categories != 'string' &&
+          !Array.isArray(categories)
+        ) {
+          categoriesDictionary.set(categories)
+        }
+        delete this.form.config
       }
-
-      for (let t of multiselectFields) {
-        await this.handleSetFeatureOntoMap({ t })
-      }
-
-      await this.$store.dispatch('editor/toggleMapFormLoading', false)
-      this.mapCreationData = { ...this.form.config }
-      delete this.form.config
     },
-    */
     /**
      * @param t { String } - selection type { can be: facilities, cables, cls, ixps }
      * @param _id { String } - selection id
@@ -533,168 +390,36 @@ export default {
         .trim()
         .toLowerCase()
     },
-    /**
-     * @param s { String } - search queried from cables select input
-     */
-    // async loadOwnersSearch(s) {
-    //   if (s === '') return
-    //   this.isLoadingOwners = true
-    //   const res = await searchOrganization({
-    //     user_id: await this.$auth.getUserID(),
-    //     s
-    //   })
-    //   if (res && res.data) {
-    //     this.owners = res.data
-    //   }
-    //   this.isLoadingOwners = false
-    // },
-    /**
-    //  * @param s { String } - search queried from cables select input
-    //  */
-    // async loadCablesSearch(s, type) {
-    //   if (s === '') return
-    //   this.isLoadingCables = true
-    //   let method = () => {}
-    //   switch (type) {
-    //     case 'terrestrials':
-    //       method = getSearchByCablesT
-    //       break
-    //     default:
-    //       method = getSearchByCablesS
-    //       break
-    //   }
-    //   const { data = [] } = (await method({
-    //     user_id: await this.$auth.getUserID(),
-    //     s
-    //   })) || { data: [] }
-
-    //   if (type == 'terrestrials') this.terrestrials = data
-    //   else this.subsea = data
-
-    //   this.isLoadingCables = false
-    // },
-    // /**
-    //  * @param s { String } - search queried from cls select input
-    //  */
-    // async loadClsSearch(s) {
-    //   if (s === '') return
-    //   this.isLoadingCls = true
-    //   const res = await searchCls({ user_id: await this.$auth.getUserID(), s })
-    //   if (res && res.data) {
-    //     this.cls = res.data
-    //   }
-    //   this.isLoadingCls = false
-    // },
-    // async loadIxpsSearch(s) {
-    //   if (s === '') return
-    //   this.isLoadingIxps = true
-    //   const res = await searchIxps({ user_id: await this.$auth.getUserID(), s })
-    //   if (res && res.data) {
-    //     this.ixps = res.data
-    //   }
-    //   this.isLoadingIxps = false
-    // },
-    // /**
-    //  * @param s { String } - search queried from facilities select input
-    //  */
-    // async loadFacSearch(s) {
-    //   if (s === '') return
-    //   this.isLoadingFacs = true
-    //   const res = await searchFacilities({
-    //     user_id: await this.$auth.getUserID(),
-    //     s
-    //   })
-    //   if (res && res.data) {
-    //     this.facilities = res.data
-    //   }
-    //   this.isLoadingFacs = false
-    // },
     sendData() {
-      const data = this.mapCreationData.categories.map(item => item.data)
-      const dataKeys = data.length ? Object.keys(data[0]) : []
       const format = {
         cls: [],
         draw: [],
         ixps: [],
-        subsea: [],
         facilities: [],
-        terrestrials: []
+        'subsea cables': [],
+        'terrestrial networks': []
       }
-
-      for (let key of dataKeys) {
-        for (let dataItem of data) {
-          if (key.includes('custom')) {
-            format.draw = [...format.draw, ...dataItem[key]]
-          } else if (key.includes('subsea')) {
-            format.subsea = [...format.subsea, ...dataItem[key]]
-          } else if (key.includes('terrestrial')) {
-            format.terrestrials = [...format.terrestrials, ...dataItem[key]]
-          } else {
-            format[key] = [...format[key], ...dataItem[key]]
+      const t = categoriesDictionary.getRaw()
+      for (let categoryId in t) {
+        for (let key in t[categoryId].data) {
+          if (!key.includes('custom')) {
+            format[key] = [
+              ...format[key],
+              ...Object.keys(t[categoryId].data[key])
+            ]
           }
         }
       }
+      format.draw = sceneDictionary.getCollectionList()
+
       return this.$emit(`${events.SEND_DATA}`, {
         ...this.form,
         ...format,
-        config: this.mapCreationData
+        config: {
+          categories: t
+        }
       })
     },
-    /**
-     * @param t { String } - selection type { can be: facilities, cables, cls, ixps, subsea, terrestrials }
-     * @param _id { String } - selection id
-     */
-    // async handleSelectionChange(t, _id) {
-    //   {
-    //     let selectedIDs = this.getSelectionID(t)
-    //     if (!selectedIDs.includes(_id)) {
-    //       this.form[t].push(this[t].filter(t => t._id == _id)[0])
-    //     }
-    //   }
-
-    //   if (this.form[t].length < this.mapCreationData[t].length) {
-    //     // Loading again the featureCollections
-    //     setTimeout(async () => {
-    //       await this.handleSetFeatureOntoMap({
-    //         removeLoadState: true,
-    //         t: t
-    //       })
-    //     }, 320)
-    //   }
-
-    //   this.featureType = t
-    //   this.currentSelectionID = _id
-    //   if (t != 'owners') {
-    //     setTimeout(() => (this.isPropertiesDialog = true), 320)
-    //   } else this.setMapConfig()
-    // },
-    setMapConfig(data) {
-      const ids = this.mapCreationData[this.featureType].map(d => d.id)
-      if (!ids.includes(this.currentSelectionID)) {
-        let obj = {
-          _id: this.currentSelectionID
-        }
-        data ? (obj = { ...obj, ...data }) : null
-        this.mapCreationData[this.featureType].push(obj)
-      }
-    },
-    /**
-     * @param data { Object } - Data collected from propertiesDialog form
-     */
-    // handleDialogClose(data) {
-    //   this.setMapConfig(data)
-    //   setTimeout(async () => {
-    //     await this.handleSetFeatureOntoMap({
-    //       t: this.featureType,
-    //       removeLoadState: true
-    //     })
-
-    //     this.currentSelectionID = null
-    //     this.featureType = ''
-    //   }, 320)
-
-    //   this.isPropertiesDialog = false
-    // },
     handleClose(tag) {
       this.form.address.splice(this.form.address.indexOf(tag), 1)
     },

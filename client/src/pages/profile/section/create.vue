@@ -331,19 +331,19 @@ export default {
             saleEmail,
             salePhone,
             subdomain,
-            config: { categories }
+            config
           } = mymap[0]
 
           this.form = {
+            config,
             googleID,
             subdomain,
-            logo: Array.isArray(logos) && logos.length > 0 ? logos[0] : '',
-            address: Array.isArray(address) ? address : [],
+            salePhone: salePhone ? salePhone : '',
             techEmail: techEmail ? techEmail : '',
             techPhone: techPhone ? techPhone : '',
             saleEmail: saleEmail ? saleEmail : '',
-            salePhone: salePhone ? salePhone : '',
-            categoriesList: categories
+            address: Array.isArray(address) ? address : [],
+            logo: Array.isArray(logos) && logos.length > 0 ? logos[0] : ''
           }
 
           const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
