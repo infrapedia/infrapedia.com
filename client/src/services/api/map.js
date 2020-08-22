@@ -40,8 +40,8 @@ export const setMyMap = async ({
   subsea,
   terrestrials,
   logo,
-  geom,
   ixps,
+  draw,
   config,
   user_id
 }) => {
@@ -56,31 +56,31 @@ export const setMyMap = async ({
   form.append('salePhone', salePhone)
   form.append('config', JSON.stringify(config))
   form.append('logos', logo.length > 0 ? logo[0] : '')
-  form.append('draw', JSON.stringify(fCollectionFormat(geom)))
+  form.append('draw', JSON.stringify(fCollectionFormat(draw)))
 
   if (facilities && facilities.length > 0) {
-    facilities.forEach((fac, i) => form.append(`facilities[${i}]`, fac._id))
+    facilities.forEach((fac, i) => form.append(`facilities[${i}]`, fac))
   } else form.append('facilities', [])
 
   if (owners && owners.length > 0) {
-    owners.forEach((owner, i) => form.append(`owners[${i}]`, owner._id))
+    owners.forEach((owner, i) => form.append(`owners[${i}]`, owner))
   } else form.append('owners', [])
 
   if (ixps && ixps.length > 0) {
-    ixps.forEach((ixp, i) => form.append(`ixps[${i}]`, ixp._id))
+    ixps.forEach((ixp, i) => form.append(`ixps[${i}]`, ixp))
   } else form.append('ixps', [])
 
   if (cls && cls.length > 0) {
-    cls.forEach((cls, i) => form.append(`cls[${i}]`, cls._id))
+    cls.forEach((cls, i) => form.append(`cls[${i}]`, cls))
   } else form.append('cls', [])
 
   if (subsea && subsea.length > 0) {
-    subsea.forEach((subsea, i) => form.append(`subsea[${i}]`, subsea._id))
+    subsea.forEach((subsea, i) => form.append(`subsea[${i}]`, subsea))
   } else form.append('subsea', [])
 
   if (terrestrials && terrestrials.length > 0) {
     terrestrials.forEach((terrestrial, i) =>
-      form.append(`terrestrials[${i}]`, terrestrial._id)
+      form.append(`terrestrials[${i}]`, terrestrial)
     )
   } else form.append('terrestrials', [])
 
