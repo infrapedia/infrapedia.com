@@ -613,7 +613,7 @@ export default {
     sendData() {
       this.setOwnersEmptyState()
       this.setCLSEmptyState()
-      return this.$refs['form'].validate(isValid =>
+      return this.$refs.form.validate(isValid =>
         isValid && !this.isOwnersSelectEmpty ? this.$emit('send-data') : false
       )
     },

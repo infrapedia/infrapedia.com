@@ -73,8 +73,8 @@ import {
   updateDrawnFeatureDataSource,
   sceneDictionary
 } from './index'
-import { categoriesDictionary } from '../userCreationForms/fields/dictionary'
 import { getGeometries } from '../../services/api'
+import { categoriesDictionary } from '../userCreationForms/fields/dictionary'
 
 const onlyOneFeatureAllowed = ['cls', 'ixps']
 
@@ -85,7 +85,6 @@ export default {
   data: () => ({
     map: null,
     draw: null,
-    sceneDictionary: null,
     categoriesDictionary: null,
     drag: {
       file: null,
@@ -187,7 +186,7 @@ export default {
       deep: true
     }
   },
-  created() {
+  async created() {
     sceneDictionary.on('storage--changed', this.handleDrawSceneFeatures)
 
     bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetSceneFeaturesList)
@@ -198,6 +197,7 @@ export default {
     // CATEGORIES RELATED EVENTS
     if (this.type == 'map') {
       this.categoriesDictionary = categoriesDictionary
+
       {
         bus.$on('category-removed', this.handleCategoryRemoved)
         this.$on('drawn-features-dnd', this.handleDragAndDropGeojsonFiles)
