@@ -97,8 +97,7 @@ export default {
     },
     scene: {
       layerFiltered: null,
-      creation: null,
-      edition: null
+      isDynamicControls: false
     },
     controls: null,
     categories: [],
@@ -555,8 +554,7 @@ export default {
     },
     async setPropertiesDialogEditMode() {
       this.dialog.mode = 'edit'
-      this.scene.edition = true
-      this.scene.creation = null
+      this.scene.isDynamicControls = true
       this.dialog.visible = true
       this.$once(
         `properties-dialog-close-${this.dialog.mode}`,
@@ -662,7 +660,7 @@ export default {
       })
 
       this.controls.on('confirm', this.handleConfirmAction)
-      this.controls.on('draw', () => (this.scene.creation = true))
+      this.controls.on('draw', () => (this.scene.isDynamicControls = true))
       this.controls.on('reset-scene', await this.handleResetScene)
       this.controls.on('delete-feature', await this.handleDeleteFeature)
       this.controls.on('update-feature', await this.handleFeatureEdition)
@@ -686,23 +684,20 @@ export default {
         )
       } else await this.handleDialogData({ name: '' })
     },
-    handleConfirmAction(features) {
-      if (!features) return
+    handleConfirmAction([feature]) {
+      if (!feature) return
 
-      const { creation } = this.scene
-      if (!creation && this.scene.edition) {
-        this.handleFeatureEdition({ ...features[0] })
+      if (feature.properties.editorID) {
+        this.handleFeatureEdition({ ...feature })
       } else {
-        if (features && features.length > 0) {
-          if (
-            onlyOneFeatureAllowed.includes(this.type) &&
-            sceneDictionary.getLength() > 0
-          ) {
-            return
-          }
-
-          this.handleBeforeCreateFeature({ ...features[0] })
+        if (
+          onlyOneFeatureAllowed.includes(this.type) &&
+          sceneDictionary.getLength() > 0
+        ) {
+          return
         }
+
+        this.handleBeforeCreateFeature({ ...feature })
       }
     },
     async handleResetScene({ reset, removeFilter }) {
@@ -710,8 +705,7 @@ export default {
       this.draw.set(fCollectionFormat())
       this.scene = {
         layerFiltered: this.scene.layerFiltered,
-        edition: null,
-        creation: null
+        isDynamicControls: false
       }
 
       if (reset) {
@@ -809,7 +803,7 @@ export default {
         layers: [layerID]
       })[0]
 
-      if (this.scene.edition) {
+      if (this.scene.isDynamicControls) {
         this.controls.resetScene({ reset: false, removeFilter: true })
       }
 
@@ -850,8 +844,7 @@ export default {
               filter: customMapLayerTypes[layerType].filter
             }
 
-            this.scene.edition = true
-            this.scene.creation = false
+            this.scene.isDynamicControls = true
             this.dialog.selectedFeature = JSON.parse(JSON.stringify(feature))
             this.draw.changeMode('simple_select', {
               featureIds: this.draw.add(feature)
@@ -875,7 +868,7 @@ export default {
       )
       await this.handleResetScene({
         reset: false,
-        removeFilter: this.scene.edition
+        removeFilter: this.scene.isDynamicControls
       })
     },
     async handleDeleteFeature(features) {
@@ -887,7 +880,7 @@ export default {
         )
         await this.handleResetScene({
           reset: false,
-          removeFilter: this.scene.edition
+          removeFilter: this.scene.isDynamicControls
         })
       }
     }

@@ -287,17 +287,17 @@ export const customMapLayerTypes = {
       'circle-stroke-color': '#333333'
     },
     filter: ['==', '$type', 'Point']
+  },
+  buildings: {
+    id: 'default-layer',
+    type: 'fill-extrusion',
+    source: 'default-source',
+    layout: {},
+    filter: ['==', '$type', 'Polygon'],
+    paint: {
+      'fill-extrusion-opacity': 1,
+      'fill-extrusion-color': '#666666',
+      'fill-extrusion-height': ['get', 'height']
+    }
   }
-  // buildings: {
-  //   id: 'default-layer',
-  //   type: 'fill-extrusion',
-  //   source: 'default-source',
-  //   layout: {},
-  //   filter: ['==', '$type', 'Polygon'],
-  //   paint: {
-  //     'fill-extrusion-opacity': 1,
-  //     'fill-extrusion-color': '#666666',
-  //     'fill-extrusion-height': ['get', 'height']
-  //   }
-  // }
 }

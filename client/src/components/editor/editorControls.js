@@ -8,12 +8,18 @@ class EditorControls extends EventEmitter {
     this.map = map
     this.draw = draw
     this.type = type
+    this.buttons = null
+    this.visibleControls = {
+      lines: ['subsea', 'map', 'terrestrial-network'],
+      points: ['facilities', 'ixps', 'cls', 'map'],
+      polygon: ['facilities', 'map']
+    }
   }
 
   onAdd() {
     this.controlGroup = document.createElement('div')
     this.controlGroup.className = 'mapboxgl-ctrl-group mapboxgl-ctrl'
-    this.buttons = this.createButtons()
+    this.buttons = this._createButtons()
     return this.controlGroup
   }
 
@@ -21,51 +27,43 @@ class EditorControls extends EventEmitter {
     this.controlGroup.parentNode.removeChild(this.controlGroup)
   }
 
-  createButtons() {
+  _createButtons() {
     return {
-      line_string: createControlButton('line_string', {
+      line_string: createControlButton('line_string-static', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-line-string',
         title: 'Draw line',
-        visible:
-          this.type == 'map' ||
-          this.type == 'subsea' ||
-          this.type == 'terrestrial-network'
-            ? true
-            : false,
+        dataset: ['data-control-filter', 'lines'],
+        visible: this.visibleControls.lines.includes(this.type),
         eventListener: () => this.createDraw(this.draw.modes.DRAW_LINE_STRING)
       }),
 
-      point: createControlButton('point', {
+      point: createControlButton('point-static', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-point',
         title: 'Create point',
-        visible:
-          this.type == 'map' ||
-          this.type == 'cls' ||
-          this.type == 'ixps' ||
-          this.type == 'facilities'
-            ? true
-            : false,
+        dataset: ['data-control-filter', 'points'],
+        visible: this.visibleControls.points.includes(this.type),
         eventListener: () => this.createDraw(this.draw.modes.DRAW_POINT)
       }),
 
-      polygon: createControlButton('polygon', {
+      polygon: createControlButton('polygon-static', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-polygon',
         title: 'Create polygon',
-        visible: this.type == 'map' || this.type == 'facilities' ? true : false,
+        dataset: ['data-control-filter', 'polygon'],
+        visible: this.visibleControls.polygon.includes(this.type),
         eventListener: () => this.createDraw(this.draw.modes.DRAW_POLYGON)
       }),
 
-      editProperties: createControlButton('edit-properties', {
+      editProperties: createControlButton('edit-properties-dynamic', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-edit-properties',
         title: 'Edit properties',
         eventListener: () => this.emit('update-feature-properties')
       }),
 
-      trash: createControlButton('trash', {
+      trash: createControlButton('trash-dynamic', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-trash',
         title: 'Delete',
@@ -73,7 +71,7 @@ class EditorControls extends EventEmitter {
           this.emit('delete-feature', this.draw.getSelected().features)
       }),
 
-      deleteAll: createControlButton('delete-all', {
+      deleteAll: createControlButton('delete-all-static', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-delete-all',
         title: 'Delete All',
@@ -90,7 +88,7 @@ class EditorControls extends EventEmitter {
         }
       }),
 
-      ok: createControlButton('ok', {
+      ok: createControlButton('ok-dynamic', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-ok',
         title: 'Accept',
@@ -98,7 +96,7 @@ class EditorControls extends EventEmitter {
           this.emit('confirm', this.draw.getSelected().features)
       }),
 
-      cancel: createControlButton('cancel', {
+      cancel: createControlButton('cancel-dynamic', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-cancel',
         title: 'Cancel',
@@ -126,49 +124,48 @@ class EditorControls extends EventEmitter {
    * @param { Object } scene
    */
   updateControls(scene) {
-    const isCreation = scene.creation || scene.edition
-    const isEdition = !scene.creation || !scene.edition
-    const lineStringAllowed = ['map', 'subsea', 'terrestrial-network']
+    const staticControls = Object.keys(this.buttons)
+      .map(key => this.buttons[key].id)
+      .filter(id => id.includes('-static'))
 
-    if (isCreation) {
-      this.buttons.ok.style.setProperty('display', 'block')
-      this.buttons.cancel.style.setProperty('display', 'block')
-      this.buttons.trash.style.setProperty('display', 'block')
+    const dynamicControls = Object.keys(this.buttons)
+      .map(key => this.buttons[key].id)
+      .filter(id => id.includes('-dynamic'))
 
-      this.buttons.point.style.setProperty('display', 'none')
-      this.buttons.polygon.style.setProperty('display', 'none')
-      this.buttons.line_string.style.setProperty('display', 'none')
+    const deleteAllBtnID = 'delete-all-static'
 
-      if (scene.edition) {
-        this.buttons.editProperties.style.setProperty('display', 'block')
-      } else {
-        this.buttons.polygon.style.setProperty('display', 'none')
-        this.buttons.editProperties.style.setProperty('display', 'none')
+    if (!scene.isDynamicControls) {
+      // ON STATIC MODE, THERE SHOULD ONLY BE TWO CONTROLS AT DISPOSITION
+      // THE DRAW BUTTON FOR THE TYPE CREATION AND THE DELETE ALL BUTTON
+      for (let key in this.buttons) {
+        if (staticControls.includes(this.buttons[key].id)) {
+          if (this.buttons[key].id == deleteAllBtnID) {
+            this.buttons[key].style.setProperty('display', 'block')
+          } else if (
+            this.buttons[key].dataset.controlFilter &&
+            this.visibleControls[
+              this.buttons[key].dataset.controlFilter
+            ].includes(this.type)
+          ) {
+            this.buttons[key].style.setProperty('display', 'block')
+          } else {
+            this.buttons[key].style.setProperty('display', 'none')
+          }
+        } else {
+          this.buttons[key].style.setProperty('display', 'none')
+        }
       }
-    } else if (isEdition) {
-      this.buttons.ok.style.setProperty('display', 'none')
-      this.buttons.trash.style.setProperty('display', 'none')
-      this.buttons.cancel.style.setProperty('display', 'none')
-      this.buttons.polygon.style.setProperty('display', 'none')
-      this.buttons.editProperties.style.setProperty('display', 'none')
-
-      if (
-        this.type.includes('subsea') &&
-        this.type.includes('terrestrial-network')
-      ) {
-        this.buttons.point.style.setProperty('display', 'none')
-      } else {
-        this.buttons.point.style.setProperty('display', 'block')
-      }
-
-      if (this.type == 'facilities' || this.type == 'map') {
-        this.buttons.polygon.style.setProperty('display', 'block')
-      }
-
-      if (lineStringAllowed.includes(this.type)) {
-        this.buttons.line_string.style.setProperty('display', 'block')
-      } else {
-        this.buttons.line_string.style.setProperty('display', 'none')
+    } else {
+      // OTHERWISE ALL THE DYNAMIC BUTTONS SHOULD BE DISPLAYED
+      // WITHOUT REMOVING THE DELETE-ALL BUTTON OFC
+      for (let key in this.buttons) {
+        if (dynamicControls.includes(this.buttons[key].id)) {
+          this.buttons[key].style.setProperty('display', 'block')
+        } else if (this.buttons[key].id == deleteAllBtnID) {
+          this.buttons[key].style.setProperty('display', 'block')
+        } else {
+          this.buttons[key].style.setProperty('display', 'none')
+        }
       }
     }
   }
