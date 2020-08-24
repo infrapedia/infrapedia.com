@@ -5,7 +5,7 @@
   >
     <div class="left el-card p6" v-loading="loading">
       <header class="w-fit-full text-left mb8">
-        <router-link :to="routeGiver" v-if="creationType !== 'map'">
+        <router-link v-if="creationType != 'map'" :to="backButtonRoute">
           <fa :icon="['fas', 'arrow-left']" />
         </router-link>
       </header>
@@ -15,11 +15,11 @@
         :mode="mode"
         :is-send-data-disabled="checkGeomLength"
         :is-sending-data="isSendingData"
-        @send-data="checkType"
         @handle-file-converted="handleFileConverted"
-        @set-selection-onto-map="handleSetSelectionOntoMap"
         @cancel-geom-loading="toggleMapFormLoading(false)"
+        @set-selection-onto-map="handleSetSelectionOntoMap"
         @loading-selection-geom="toggleMapFormLoading(true)"
+        @send-data="handleSendData(mode, creationType, $event)"
         @dragger-geojson-upload-failed="handleFileConvertionFailed"
       />
     </div>
@@ -112,6 +112,8 @@ import {
 import { viewIXPOwner, editIXP, createIXP } from '../../../services/api/ixps'
 import ManualKMZSubmitDialog from '../../../components/dialogs/ManualKMZSubmit'
 import debounce from '../../../helpers/debounce'
+import { sceneDictionary } from '../../../components/editor'
+import { STORAGE__WATCH } from '../../../lib/Dictionary'
 
 const allowedCreationTypes = [
   'cls',
@@ -150,9 +152,6 @@ export default {
         this.creationType = q.id
         this.mapKey += 1
       }
-    },
-    featuresList(list) {
-      this.form.geom = list
     }
   },
   computed: {
@@ -195,7 +194,7 @@ export default {
       return view
     },
     checkGeomLength() {
-      return this.featuresList.length ? false : true
+      return this.form.geom.length > 0 ? false : true
     },
     isMapFormLoading: {
       get() {
@@ -205,50 +204,7 @@ export default {
         return this.$store.dispatch('editor/toggleMapFormLoading', false)
       }
     },
-    checkType() {
-      let method
-
-      if (this.mode == 'edit') {
-        switch (this.creationType) {
-          case 'cls':
-            method = this.editCLS
-            break
-          case 'map':
-            method = this.setMap
-            break
-          case 'facilities':
-            method = this.editFacility
-            break
-          case 'ixps':
-            method = this.editIXP
-            break
-          default:
-            method = this.editCable
-            break
-        }
-      } else {
-        switch (this.creationType) {
-          case 'cls':
-            method = this.createCLS
-            break
-          case 'map':
-            method = this.setMap
-            break
-          case 'facilities':
-            method = this.createFacility
-            break
-          case 'ixps':
-            method = this.createIXP
-            break
-          default:
-            method = this.createCable
-            break
-        }
-      }
-
-      return method
-    },
-    routeGiver() {
+    backButtonRoute() {
       let route
       switch (this.creationType.toLowerCase()) {
         case 'cls':
@@ -275,11 +231,16 @@ export default {
       !this.$route.query.id ||
       allowedCreationTypes.indexOf(this.$route.query.id) == -1
     )
-      return this.$router.push('/user')
+      this.$router.push('/user')
   },
   async created() {
     try {
       this.creationType = this.$route.query.id
+      if (this.creationType != 'map') {
+        sceneDictionary.watchStorage()
+        sceneDictionary.on(STORAGE__WATCH, this.handleSceneChanged)
+      }
+
       this.checkCreationType(this.$route.query.id)
 
       if (this.$route.query.item) {
@@ -291,7 +252,16 @@ export default {
       console.error(err)
     }
   },
+  beforeDestroy() {
+    if (this.creationType != 'map') {
+      sceneDictionary.unwatchStorage()
+      sceneDictionary.off(STORAGE__WATCH, this.handleSceneChanged)
+    }
+  },
   methods: {
+    handleSceneChanged() {
+      this.form.geom = sceneDictionary.getCollectionList()
+    },
     closeMannualKmzSubmitDialog: debounce(function() {
       this.isManualUploadDialog = false
       this.$router.replace(`${this.$route.path}?id=${this.$route.query.id}`)
@@ -363,20 +333,6 @@ export default {
     handleDialogVisibility(bool) {
       this.isPropertiesDialog = bool
     },
-    async setMap(data) {
-      this.isSendingData = true
-      const { t } = (await setMyMap({
-        ...data,
-        user_id: await this.$auth.getUserID()
-      })) || { t: 'error' }
-
-      if (t != 'error') {
-        this.mode = 'create'
-        await setupMyMapArchives(data.subdomain).catch(console.error)
-        // await this.checkUserMapExistance()
-      }
-      this.isSendingData = false
-    },
     async checkCreationType(type) {
       switch (type) {
         case 'cls':
@@ -388,7 +344,7 @@ export default {
             cables: [],
             owners: [],
             state: 'unknown',
-            geom: this.featuresList
+            geom: []
           }
           break
         case 'map':
@@ -400,7 +356,7 @@ export default {
             logo: '',
             terrestrials: [],
             subsea: [],
-            // owners: [],
+            geom: [],
             facilities: [],
             address: [],
             techEmail: '',
@@ -414,7 +370,7 @@ export default {
             name: '',
             tags: [],
             owners: [],
-            geom: this.featuresList,
+            geom: [],
             nameLong: '',
             media: '',
             techEmail: '',
@@ -432,7 +388,7 @@ export default {
             point: '',
             address: [],
             website: '',
-            geom: this.featuresList,
+            geom: [],
             ixps: [],
             tags: [],
             t: '',
@@ -459,7 +415,7 @@ export default {
             terrestrial: this.creationType == 'subsea' ? false : true,
             category: cableStates[0],
             activationDateTime: '',
-            geom: this.featuresList
+            geom: []
           }
           break
       }
@@ -591,11 +547,6 @@ export default {
       if (!this.form.media || this.form.media == 'undefined') {
         this.form.media = ''
       }
-      if (!this.form.geom || this.form.geom == 'undefined') {
-        this.form.geom = this.featuresList
-      } else if (data.geom && !Array.isArray(data.geom)) {
-        this.form.geom = [data.geom]
-      }
 
       if (data.owners && Array.isArray(data.owners)) {
         let ownersData = data.owners.map(owner => ({
@@ -676,144 +627,73 @@ export default {
       })
       return res && res.data && res.data.r ? res.data.r : {}
     },
-    handleReturningRoute(type) {
-      let route = ''
-      switch (type) {
-        case 'cls':
-          route = '/user/section/cls'
-          break
-        case 'subsea':
-          route = '/user/section/subsea-cables'
-          break
-        case 'ixps':
-          route = '/user/section/ixps'
-          break
-        case 'facilities':
-          route = '/user/section/facilities'
-          break
-        default:
-          route = '/user/section/terrestrial-networks'
-          break
+    async handleSendData(mode, creationType) {
+      if (!mode || !creationType) return
+      let method = null
+      this.isSendingData = true
+
+      if (mode == 'create') {
+        switch (creationType.toLowerCase()) {
+          case 'cls':
+            method = createCls
+            break
+          case 'ixps':
+            method = createIXP
+            break
+          case 'map':
+            method = setMyMap
+            break
+          case 'facilities':
+            method = createFacility
+            break
+          default:
+            method = createCable
+            break
+        }
+      } else if (mode == 'edit') {
+        switch (creationType.toLowerCase()) {
+          case 'cls':
+            method = editCLS
+            break
+          case 'ixps':
+            method = editIXP
+            break
+          case 'facilities':
+            method = editFacility
+            break
+          case 'map':
+            method = setMyMap
+            break
+          default:
+            method = editCable
+            break
+        }
       }
-      return this.$router.push(route)
-    },
-    async createCLS() {
-      this.isSendingData = true
 
-      this.featuresList[0].properties.name === ''
+      this.form.geom = sceneDictionary.getCollectionList()
+      this.form.geom[0].properties.name === ''
         ? (this.form.geom[0].properties.name = this.form.name)
-        : (this.form.geom[0].properties.name = this.featuresList[0].properties.name)
+        : (this.form.geom[0].properties.name = this.form.geom[0].properties.name)
 
-      const res = await createCls({
+      const { t, data } = (await method({
         ...this.form,
         user_id: await this.$auth.getUserID()
-      })
-
-      this.isSendingData = false
-      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
-    },
-    async editCLS() {
-      this.isSendingData = true
-
-      this.featuresList[0].properties.name === ''
-        ? (this.form.geom[0].properties.name = this.form.name)
-        : (this.form.geom[0].properties.name = this.featuresList[0].properties.name)
-
-      const res = await editCLS({
-        ...this.form,
-        user_id: await this.$auth.getUserID(),
-        _id: this.$route.query.item
-      })
-
-      this.isSendingData = false
-      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
-    },
-    async createCable() {
-      this.isSendingData = true
-      const {
-        t,
-        data: { r: cableid }
-      } = (await createCable({
-        ...this.form,
-        user_id: await this.$auth.getUserID()
-      })) || { t: 'error' }
+      })) || { t: 'error', data: null }
 
       this.isSendingData = false
       if (t != 'error') {
         this.mode = 'edit'
-        this.$router.push({
+        this.$router.replace({
           path: '/user/section/create',
           query: {
             id: this.$route.query.id,
-            item: cableid
+            item: data.r
           }
         })
+        if (creationType == 'map') {
+          await setupMyMapArchives(this.form.subdomain).catch(console.error)
+        }
       }
-    },
-    async editCable() {
-      this.isSendingData = true
-      await editCable({
-        ...this.form,
-        user_id: await this.$auth.getUserID(),
-        _id: this.$route.query.item
-      })
-
-      this.isSendingData = false
-      // if (t != 'error') return this.handleReturningRoute(this.creationType)
-    },
-    async createIXP() {
-      this.isSendingData = true
-
-      this.featuresList[0].properties.name === ''
-        ? (this.form.geom[0].properties.name = this.form.name)
-        : (this.form.geom[0].properties.name = this.featuresList[0].properties.name)
-
-      const res = await createIXP({
-        ...this.form,
-        user_id: await this.$auth.getUserID()
-      })
-
-      this.isSendingData = false
-      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
-    },
-    async editIXP() {
-      this.isSendingData = true
-
-      this.featuresList[0].properties.name === ''
-        ? (this.form.geom[0].properties.name = this.form.name)
-        : (this.form.geom[0].properties.name = this.featuresList[0].properties.name)
-
-      const res = await editIXP({
-        ...this.form,
-        _id: this.$route.query.item,
-        user_id: await this.$auth.getUserID()
-      })
-
-      this.isSendingData = false
-      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
-    },
-    async createFacility() {
-      this.isSendingData = true
-
-      const res = await createFacility({
-        ...this.form,
-        user_id: await this.$auth.getUserID()
-      })
-
-      this.isSendingData = false
-      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
-    },
-    async editFacility() {
-      this.isSendingData = true
-
-      const res = await editFacility({
-        ...this.form,
-        _id: this.$route.query.item,
-        user_id: await this.$auth.getUserID()
-      })
-
-      this.isSendingData = false
-      if (res.t != 'error') return this.handleReturningRoute(this.creationType)
     }
   }
 }

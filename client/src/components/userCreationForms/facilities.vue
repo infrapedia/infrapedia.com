@@ -323,6 +323,7 @@ export default {
         ],
         owners: [
           {
+            type: 'array',
             message: 'At least one owner is required',
             trigger: ['blur', 'change']
           }
