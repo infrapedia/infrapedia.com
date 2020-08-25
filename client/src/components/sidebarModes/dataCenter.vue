@@ -197,7 +197,7 @@
                 <template v-if="Array.isArray(info[col.value])">
                   <a
                     class="text-bold underline dont-break-out mt3 inline-block"
-                    style="max-width: 10.4rem"
+                    style="max-width: 20.4rem"
                     v-for="(url, i) in info[col.value]"
                     :href="
                       url.includes('http://') || url.includes('https://')
@@ -211,7 +211,7 @@
                 </template>
                 <a
                   v-else
-                  style="max-width: 10.4rem"
+                  style="max-width: 20.4rem"
                   class="text-bold underline dont-break-out mt3 inline-block"
                   :href="
                     info[col.value].includes('http://') ||
@@ -319,90 +319,91 @@
 
     <!---- FOOTER SECTION STARTS ----->
     <footer class="pr8 pl8 pb8">
-      <template>
-        <el-divider class="mt0" />
-        <el-row :gutter="20">
-          <el-col :sx="24" :md="12">
-            <el-popover
-              placement="bottom"
-              width="100"
-              popper-class="buy-capacity-popper"
-              :visible-arrow="false"
-              trigger="manual"
-              v-model="isMenuOpen"
-            >
-              <el-card shadow="never" class>
-                <ul role="list" class="pt2 pb2">
-                  <li
-                    v-for="(option, i) in buyOptions"
-                    :key="i"
-                    tabindex="1"
-                    role="listitem"
-                    class="p4 no-selectable transition cursor-pointer seamless-hoverbg no-outline"
-                    :class="{ dark, light: !dark }"
-                    @click="emitEvent(option)"
-                    v-text="option"
-                  />
-                </ul>
-              </el-card>
-              <div
-                v-if="focus.type != 'cls'"
-                slot="reference"
-                @click="toggleMenu"
-                class="cursor-pointer no-outline no-selectable"
-              >
-                <el-button
-                  type="warning"
-                  circle
-                  class="mr1 w9 h9 vertical-align"
-                >
-                  <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
-                </el-button>
-                <span class="cursor-pointer fs-regular label"
-                  >Buy capacity</span
-                >
-              </div>
-            </el-popover>
-          </el-col>
-          <el-col :sx="24" :md="12">
-            <div
-              class="cursor-pointer no-selectable"
-              @click="$emit(REPORT_ISSUE)"
-            >
-              <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
-                <fa
-                  :icon="['fas', 'exclamation-circle']"
-                  class="sm-icon mt-1"
-                />
-              </el-button>
-              <span class="cursor-pointer fs-regular label">Report issue</span>
-            </div>
-          </el-col>
-          <el-col
-            :xs="24"
-            :sm="12"
-            :md="24"
-            :lg="12"
-            :class="{ mt8: focus.type != 'cls' }"
+      <el-divider class="mt0" />
+      <el-row :gutter="20">
+        <el-col :sx="24" :md="12">
+          <el-popover
+            placement="bottom"
+            width="100"
+            popper-class="buy-capacity-popper"
+            :visible-arrow="false"
+            trigger="manual"
+            v-model="isMenuOpen"
           >
+            <el-card shadow="never" class>
+              <ul role="list" class="pt2 pb2">
+                <li
+                  v-for="(option, i) in buyOptions"
+                  :key="i"
+                  tabindex="1"
+                  role="listitem"
+                  class="p4 no-selectable transition cursor-pointer seamless-hoverbg no-outline"
+                  :class="{ dark, light: !dark }"
+                  @click="emitEvent(option)"
+                  v-text="option"
+                />
+              </ul>
+            </el-card>
             <div
-              class="cursor-pointer no-selectable"
-              @click="$emit(CREATE_ALERT)"
+              v-if="focus.type != 'cls'"
+              slot="reference"
+              @click="toggleMenu"
+              class="cursor-pointer no-outline no-selectable"
+              :class="{ disabled: isActionButtonsDisabled }"
             >
               <el-button
-                :type="info.alert !== 1 ? 'info' : 'warning'"
+                :disabled="isActionButtonsDisabled"
+                type="warning"
                 circle
                 class="mr1 w9 h9 vertical-align"
               >
-                <fa :icon="['fas', 'bell']" class="sm-icon mt-1" />
+                <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
               </el-button>
-              <span class="cursor-pointer fs-regular label"
-                >Receive alerts</span
-              >
+              <span class="fs-regular label">Buy capacity</span>
             </div>
-          </el-col>
-        </el-row>
-      </template>
+          </el-popover>
+        </el-col>
+        <el-col :sx="24" :md="12">
+          <div
+            :class="{ disabled: isActionButtonsDisabled }"
+            class="cursor-pointer no-selectable"
+            @click="$emit(REPORT_ISSUE)"
+          >
+            <el-button
+              :disabled="isActionButtonsDisabled"
+              type="warning"
+              circle
+              class="mr1 w9 h9 vertical-align"
+            >
+              <fa :icon="['fas', 'exclamation-circle']" class="sm-icon mt-1" />
+            </el-button>
+            <span class="fs-regular label">Report issue</span>
+          </div>
+        </el-col>
+        <el-col
+          :xs="24"
+          :sm="12"
+          :md="24"
+          :lg="12"
+          :class="{ mt8: focus.type != 'cls' }"
+        >
+          <div
+            :class="{ disabled: isActionButtonsDisabled }"
+            class="cursor-pointer no-selectable"
+            @click="$emit(CREATE_ALERT)"
+          >
+            <el-button
+              :disabled="isActionButtonsDisabled"
+              :type="info.alert !== 1 ? 'info' : 'warning'"
+              circle
+              class="mr1 w9 h9 vertical-align"
+            >
+              <fa :icon="['fas', 'bell']" class="sm-icon mt-1" />
+            </el-button>
+            <span class="fs-regular label">Receive alerts</span>
+          </div>
+        </el-col>
+      </el-row>
     </footer>
     <!---- FOOTER SECTION END ----->
   </div>
@@ -466,6 +467,9 @@ export default {
         })
         .filter(col => col)
       return cols
+    },
+    isActionButtonsDisabled() {
+      return !this.$auth.isAuthenticated
     }
   },
   mounted() {

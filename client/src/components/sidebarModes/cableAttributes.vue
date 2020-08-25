@@ -125,7 +125,7 @@
                 <a
                   class="underline dont-break-out fs-regular mr2 inline-block"
                   v-for="(url, i) in info[col.value]"
-                  style="max-width: 10.4rem"
+                  style="max-width: 20.4rem"
                   :href="
                     url.includes('http://') || url.includes('https://')
                       ? url
@@ -226,7 +226,7 @@
       <!---- VALUES SECTION END ---->
     </div>
     <!---- FOOTER SECTION STARTS ----->
-    <footer class="pr8 pl8 pb8">
+    <footer class="pr8 pl8 pb8" :class="{ disabled: isActionButtonsDisabled }">
       <template>
         <el-divider class="mt0" />
         <el-row :gutter="20">
@@ -260,31 +260,30 @@
                 <el-button
                   type="warning"
                   circle
+                  :disabled="isActionButtonsDisabled"
                   class="mr1 w9 h9 vertical-align"
                 >
                   <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
                 </el-button>
-                <span class="cursor-pointer fs-regular label"
-                  >Buy capacity</span
-                >
+                <span class="fs-regular label">Buy capacity</span>
               </div>
             </el-popover>
           </el-col>
           <el-col :xs="24" :sm="12" :md="24" :lg="12">
             <div
               class="cursor-pointer no-selectable"
+              :class="{ disabled: isActionButtonsDisabled }"
               @click="$emit(CREATE_ALERT)"
             >
               <el-button
-                :type="info.alert !== 1 ? 'info' : 'warning'"
+                :type="info.alert != 1 ? 'info' : 'warning'"
                 circle
+                :disabled="isActionButtonsDisabled"
                 class="mr1 w9 h9 vertical-align"
               >
                 <fa :icon="['fas', 'bell']" class="sm-icon mt-1" />
               </el-button>
-              <span class="cursor-pointer fs-regular label"
-                >Receive alerts</span
-              >
+              <span class="fs-regular label">Receive alerts</span>
             </div>
           </el-col>
         </el-row>
@@ -292,6 +291,7 @@
           <el-col :xs="24" :sm="12" :md="24" :lg="12">
             <div
               class="cursor-pointer no-selectable"
+              :class="{ disabled: isActionButtonsDisabled }"
               @click="
                 $emit(`${EDIT_CABLE}`, {
                   _id: info._id,
@@ -300,7 +300,12 @@
                 })
               "
             >
-              <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
+              <el-button
+                :disabled="isActionButtonsDisabled"
+                type="warning"
+                circle
+                class="mr1 w9 h9 vertical-align"
+              >
                 <fa :icon="['fas', 'pen']" class="sm-icon mt-1" />
               </el-button>
               <span class="fs-regular label">{{
@@ -311,15 +316,21 @@
           <el-col :xs="24" :sm="12" :md="24" :lg="12">
             <div
               class="cursor-pointer no-selectable"
+              :class="{ disabled: isActionButtonsDisabled }"
               @click="$emit(REPORT_ISSUE)"
             >
-              <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
+              <el-button
+                :disabled="isActionButtonsDisabled"
+                type="warning"
+                circle
+                class="mr1 w9 h9 vertical-align"
+              >
                 <fa
                   :icon="['fas', 'exclamation-circle']"
                   class="sm-icon mt-1"
                 />
               </el-button>
-              <span class="cursor-pointer fs-regular label">Report issue</span>
+              <span class="fs-regular label">Report issue</span>
             </div>
           </el-col>
         </el-row>
@@ -391,6 +402,9 @@ export default {
         cols = cols.filter(col => col.label != 'EOL')
       }
       return cols
+    },
+    isActionButtonsDisabled() {
+      return !this.$auth.isAuthenticated
     },
     isFutureState() {
       const date = this.info.activation_datetime
