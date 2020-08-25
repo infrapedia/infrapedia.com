@@ -143,7 +143,7 @@ export default {
       return infoMenuLinks
     },
     userName() {
-      return this.$auth.user ? this.$auth.user.name : 'Loading...'
+      return this.$auth.user ? this.$auth.user.name : ''
     },
     currentRoute() {
       return this.$route.path.includes('/user')
