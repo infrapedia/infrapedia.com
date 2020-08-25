@@ -38,7 +38,6 @@ import {
   TOGGLE_ISSUES_DIALOG
 } from '../store/actionTypes'
 import { disableAlert } from '../services/api/alerts'
-import Sidebar from '../components/Sidebar.vue'
 import { setCookie } from '../helpers/cookies'
 import { getAccessToken } from '../services/api/auth'
 import MapOverlay from '../components/mainMap/MapOverlay'
@@ -48,7 +47,7 @@ export default {
     IFooter,
     INavbar,
     MapOverlay,
-    ISidebar: Sidebar,
+    ISidebar: () => import('../components/Sidebar.vue'),
     IBuyDialog: () => import('../components/dialogs/BuyDialog'),
     UserCablesButton: () => import('../components/UserCablesButton'),
     IIssuesDialog: () => import('../components/dialogs/IssuesDialog'),
@@ -83,6 +82,12 @@ export default {
   },
   created() {
     document.querySelector('body').className = 'no-overflow'
+  },
+  beforeRouteEnter({ params }, from, next) {
+    if (params.type && params.slug) {
+      console.log(params)
+    }
+    next()
   },
   async mounted() {
     if (this.$auth.isAuthenticated) {

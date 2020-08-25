@@ -98,6 +98,11 @@ const routes = [
     component: MapApp
   },
   {
+    path: '/app/:type/:slug',
+    name: 'app-match-routes',
+    component: MapApp
+  },
+  {
     path: '/homepage',
     name: 'homepage',
     alias: '/',
