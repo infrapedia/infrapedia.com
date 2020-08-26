@@ -30,47 +30,9 @@
       >
         <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
       </el-button>
-      <el-button
-        id="menuOpener"
-        circle
-        size="small"
-        title="Share menu, print map, and toggle dark mode button"
-        class="absolute z-index1 w11 h11"
-        @click.stop="toggleMenu"
-        tabindex="0"
-      >
-        <fa
-          :icon="['far', 'hand-point-up']"
-          class="icon fs-medium"
-          v-if="!isMenuOpen"
-        />
-        <fa :icon="['fas', 'times']" class="icon fs-medium" v-else />
-
-        <template>
-          <ul
-            v-if="isMenuOpen"
-            role="group"
-            class="absolute flex justify-content-space-around align-items-center"
-            :class="{ active: isMenuOpen }"
-          >
-            <li role="listitem">
-              <print-button :map="map" />
-            </li>
-            <li role="listitem">
-              <el-button
-                title="Share menu"
-                type="primary"
-                class="w11 h11"
-                circle
-                @click.stop="toggleGooeyMenu"
-              >
-                <fa :icon="['fas', 'share-alt']" />
-              </el-button>
-            </li>
-          </ul>
-        </template>
-      </el-button>
-      <gooey-menu :is-active="isGooeyMenu" @close="toggleGooeyMenu" />
+      <gooey-menu>
+        <print-button slot="body" class="mr4" :map="map" />
+      </gooey-menu>
     </template>
   </div>
 </template>
@@ -134,8 +96,7 @@ export default {
     print: null,
     trackID: null,
     map: undefined,
-    isMenuOpen: false,
-    isGooeyMenu: false
+    isMenuOpen: false
   }),
   computed: {
     ...mapState({
@@ -751,18 +712,6 @@ export default {
       // We have to remove the filter cause if not it will only draw the filtered cable
       this.$store.commit(`${CURRENT_MAP_FILTER}`, ['all'])
       switchStyles(style)
-    },
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen
-      if (this.isMenuOpen && this.isGooeyMenu) {
-        this.isGooeyMenu = false
-      }
-    },
-    toggleGooeyMenu() {
-      this.isGooeyMenu = !this.isGooeyMenu
-      if (this.isMenuOpen && this.isGooeyMenu) {
-        this.isMenuOpen = false
-      }
     },
     toggleFullScreen() {
       const el = document.querySelector('.application')

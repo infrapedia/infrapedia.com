@@ -1,4 +1,5 @@
 import { getInstance } from '../auth/index'
+import { checkCookie } from '../helpers/cookies'
 import NotFound from '../layouts/404.vue'
 import ProfileLayout from '../layouts/profile.vue'
 import HomepageLayout from '../layouts/homepage.vue'
@@ -176,12 +177,9 @@ const routes = [
     component: ProfileLayout,
     beforeEnter: (to, from, next) => {
       const auth = getInstance()
-      if (auth.isAuthenticated) next()
-      else if (!auth.loading && !auth.isAuthenticated) {
+      if (!checkCookie('auth0.is.authenticated')) {
         auth.loginWithRedirect()
-      } else {
-        next('/app')
-      }
+      } else next()
     },
     children: [
       {

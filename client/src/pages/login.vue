@@ -27,8 +27,6 @@
 </template>
 
 <script>
-import { deleteCookie } from '../helpers/cookies'
-
 export default {
   data: () => ({
     isUserBlock: false
@@ -54,7 +52,6 @@ export default {
                 // Ignore
               })
           } else {
-            deleteCookie('auth0.is.authenticated')
             // this.$notify({
             //   title: 'Something wrong happened...',
             //   message:

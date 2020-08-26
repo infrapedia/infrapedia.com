@@ -1,7 +1,8 @@
 export const shareLinkButtons = [
   {
     icon: ['fas', 'share-alt'],
-    func: 'shareViewLink'
+    func: 'shareViewLink',
+    title: 'Share Link'
   },
   // {
   //   icon: ['fab', 'telegram-plane'],
@@ -9,7 +10,8 @@ export const shareLinkButtons = [
   // },
   {
     icon: ['fab', 'whatsapp'],
-    func: 'shareViaWhatsApp'
+    func: 'shareViaWhatsApp',
+    title: 'Share to WhatsApp'
   },
   // {
   //   icon: ['fab', 'skype'],
@@ -17,7 +19,8 @@ export const shareLinkButtons = [
   // },
   {
     icon: ['fab', 'facebook-square'],
-    func: 'shareViaFacebook'
+    func: 'shareViaFacebook',
+    title: 'Share to Facebook'
   }
   // {
   //   icon: ['fab', 'linkedin'],

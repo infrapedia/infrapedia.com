@@ -62,18 +62,8 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next(async vm => {
-      if (
-        checkCookie('auth0.is.authenticated') ||
-        (await vm.$auth.checkAuthStatus()) === true ||
-        window.location.search.includes('code=')
-      ) {
-        vm.$router
-          .replace('/login')
-          .then(() => {})
-          // eslint-disable-next-line
-          .catch(err => {
-            // Ignore
-          })
+      if (checkCookie('auth0.is.authenticated')) {
+        vm.$router.push('/app')
       }
     })
   },
