@@ -7,7 +7,7 @@ const gzip = require('@gfx/zopfli').gzip
 
 function getRoutes() {
   let arr = []
-  if (process.env === 'production') {
+  if (process.env.NODE_ENV == 'production') {
     fs.readdir('./src/pages', (err, files) => {
       arr = Array.from(files)
     })

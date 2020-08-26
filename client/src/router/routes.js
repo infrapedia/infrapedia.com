@@ -174,6 +174,15 @@ const routes = [
     path: '/user',
     name: 'user',
     component: ProfileLayout,
+    beforeEnter: (to, from, next) => {
+      const auth = getInstance()
+      if (auth.isAuthenticated) next()
+      else if (!auth.loading && !auth.isAuthenticated) {
+        auth.loginWithRedirect()
+      } else {
+        next('/app')
+      }
+    },
     children: [
       {
         path: 'dashboard',

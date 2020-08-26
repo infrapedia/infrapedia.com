@@ -23,7 +23,6 @@ export default {
   name: 'App',
   created() {
     this.handleSharedView()
-    console.log('APP created!!')
   },
   computed: {
     cc() {
