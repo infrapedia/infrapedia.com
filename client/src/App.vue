@@ -22,7 +22,9 @@
 export default {
   name: 'App',
   created() {
-    this.handleSharedView()
+    if (Object.keys(this.$route.query).length > 0) {
+      this.handleSharedView()
+    }
   },
   computed: {
     cc() {
