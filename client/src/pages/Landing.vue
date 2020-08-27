@@ -62,8 +62,12 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next(async vm => {
-      if (checkCookie('auth0.is.authenticated')) {
+      if (
+        checkCookie('auth0.is.authenticated') &&
+        !localStorage.getItem('once-redirected')
+      ) {
         vm.$router.push('/app')
+        localStorage.setItem('once-redirected', true)
       }
     })
   },
