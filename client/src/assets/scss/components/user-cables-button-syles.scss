@@ -28,8 +28,9 @@
   }
   footer {
     left: 0;
-    width: 96%;
+    width: 100%;
     bottom: -0.4rem;
+    border-top: 1px solid #dcdfe6;
     background-color: darken($white-partial, 4%);
     .create-btn {
       width: 50%;
@@ -53,6 +54,7 @@
     color: $white-hsl;
     background-color: $dark-charcoal;
     footer {
+      border: 1px solid $light-charcoal;
       background-color: $dark-charcoal;
       .el-button {
         color: $white-hsl;

@@ -204,6 +204,7 @@ export default {
       map.on('load', function() {
         vm.addMapSources(map)
         vm.addMapLayers(map)
+        vm.$emit('map-loaded')
       })
       return map
     },

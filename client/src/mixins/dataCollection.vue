@@ -74,6 +74,9 @@ export default {
         case 'ixps':
           await this.handleIxpsItemSelected({ id, type: option })
           break
+        case 'ixp':
+          await this.handleIxpsItemSelected({ id, type: option })
+          break
         case 'facility':
           await this.handleFacilityItemSelected({ id, type: option })
           break
@@ -86,9 +89,9 @@ export default {
         case 'networks':
           await this.handleNetworkItemSelected({ id, type: option })
           break
-        case 'groups':
-          await this.handleNetworkItemSelected({ id, type: 'networks' })
-          break
+        // case 'groups':
+        //   await this.handleNetworkItemSelected({ id, type: 'networks' })
+        //   break
         case 'cable':
           await this.handleSubmarineCableItemSelected(id)
           break
@@ -107,10 +110,16 @@ export default {
         case 'organizations':
           await this.handleOrgItemSelected({ id, type: option })
           break
+        case 'organization':
+          await this.handleOrgItemSelected({ id, type: option })
+          break
         case 'org':
           await this.handleOrgItemSelected({ id, type: option })
           break
         case 'owners':
+          await this.handleOrgItemSelected({ id, type: option })
+          break
+        case 'owner':
           await this.handleOrgItemSelected({ id, type: option })
           break
         case 'partners':
@@ -119,11 +128,12 @@ export default {
       }
     },
     async handleSubmarineCableItemSelected(id) {
-      if (!id)
+      if (!id) {
         throw {
           message:
             'MISSING ID PARAMETER, handleSubmarineCableItemSelected() - dataCollection.vue: line 203'
         }
+      }
 
       // GETTING APPROPIATE MAP BOUNDS FOR ZOOM IN
       if (this.sharedViewData) {

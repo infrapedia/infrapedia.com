@@ -2,7 +2,11 @@
   <div class="no-overflow">
     <!----------- THE CABLE SELECTED HANDLER COMES FROM --------------->
     <!---------------- THE "dataCollection" MIXIN --------------------->
-    <i-map @drawing="handleIsDrawing" @title-by-selection="title = $event" />
+    <i-map
+      @drawing="handleIsDrawing"
+      @map-loaded="$emit('map-loaded')"
+      @title-by-selection="title = $event"
+    />
     <div
       v-show="isDrawing"
       class="absolute calculation-box truncate w44 h22 p1 text-center"
@@ -24,7 +28,7 @@ import { bus } from '../../helpers/eventBus'
 import debounce from '../../helpers/debounce'
 import dataCollection from '../../mixins/dataCollection.vue'
 import { IS_DRAWING, TOGGLE_SIDEBAR } from '../../store/actionTypes'
-import { FOCUS_ON_CITY } from '../../events'
+import { FOCUS_ON_CITY, PARAMS_SELECTION } from '../../events'
 import { HAS_TO_EASE_TO, EASE_POINT } from '../../store/actionTypes/map'
 import * as navbarEvents from '../../events/navbar'
 
@@ -37,6 +41,7 @@ export default {
   },
   data: () => ({
     title: '',
+    isMapLoaded: false,
     isBlogOverlay: false,
     isMobileDrawer: false
   }),
@@ -69,14 +74,27 @@ export default {
       `${navbarEvents.TOGGLE_MOBILE_DRAWER}`,
       this.handleToggleDrawerVisibility
     )
+    bus.$on(`${PARAMS_SELECTION}`, this.handleParamsRoute)
   },
   beforeDestroy() {
     bus.$off(
       `${navbarEvents.TOGGLE_MOBILE_DRAWER}`,
       this.handleToggleDrawerVisibility
     )
+    bus.$off(`${PARAMS_SELECTION}`, this.handleParamsRoute)
   },
   methods: {
+    setMapLoaded() {
+      this.isMapLoaded = true
+    },
+    handleParamsRoute(params) {
+      let vm = this
+      this.$once('map-loaded', function executeWhenMapIsLoaded() {
+        setTimeout(() => {
+          vm.handleItemListSelection(params)
+        }, 1200)
+      })
+    },
     handleToggleDrawerVisibility() {
       this.isMobileDrawer = !this.isMobileDrawer
     },
