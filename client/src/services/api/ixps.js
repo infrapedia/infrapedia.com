@@ -6,8 +6,8 @@ import { fCollectionFormat } from '../../helpers/featureCollection'
 var url
 var form
 
-export const searchIxps = async ({ s, user_id, psz, sortBy }) => {
-  url = `${apiConfig.url}/ixps/search?s=${s}&sortBy=${sortBy}`
+export const searchIxps = async ({ s, user_id, psz, sortBy, page }) => {
+  url = `${apiConfig.url}/ixps/search?s=${s}&sortBy=${sortBy}&page=${page}`
   if (psz) {
     url = url + '&psz=1'
   }

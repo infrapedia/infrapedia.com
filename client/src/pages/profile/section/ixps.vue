@@ -12,7 +12,7 @@
       :pagination="true"
       @search-input="handleIxpSearch"
       @edit-item="handleEditIxp"
-      @page-change="getIxpsList"
+      @page-change="handleIxpSearch"
       @sort-by="handleIxpSearch"
       @delete-item="handleDeleteIXP"
     />
@@ -29,7 +29,7 @@
 import debounce from '../../../helpers/debounce'
 import { ixpsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { getIxps, searchIxps, deleteIXP } from '../../../services/api/ixps'
+import { searchIxps, deleteIXP } from '../../../services/api/ixps'
 import { deleteIxpPermanently } from '../../../services/api/permanentDelete'
 
 export default {
@@ -57,31 +57,24 @@ export default {
       return 'ixp'
     }
   },
-  async mounted() {
-    await this.getIxpsList()
+  async created() {
+    await this.handleIxpSearch('', 'nameAsc', 0)
   },
   methods: {
-    async getIxpsList(page = 0) {
-      this.loading = true
-      const res = await getIxps({ user_id: await this.$auth.getUserID(), page })
-      if (res.t !== 'error' && res.data) {
-        this.tableData = res.data.r
-      }
-      this.loading = false
-    },
     handleEditIxp(_id) {
       return this.$router.push({
         path: '/user/section/create',
         query: { id: 'ixps', item: _id }
       })
     },
-    handleIxpSearch: debounce(async function(s, sortBy) {
+    handleIxpSearch: debounce(async function(s, sortBy, page = 0) {
       this.loading = true
       const res = await searchIxps({
         user_id: await this.$auth.getUserID(),
         psz: true,
-        s,
-        sortBy
+        sortBy,
+        page,
+        s
       })
       if (res && res.data) {
         this.tableData = res.data

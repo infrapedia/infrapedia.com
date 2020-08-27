@@ -9,15 +9,15 @@
       :columns="columns"
       :config="tableConfig"
       :table-data="tableData"
+      :pagination="true"
+      :row-classes="['state', 'light-yellow-bg', 'false']"
       @edit-item="handleEditCLS"
       @delete-item="handleDeleteCLS"
       @alert-message="handleSendMessage"
       @search-input="handleCLSSearch"
       @sort-by="handleCLSSearch"
-      @clear-search-input="getClssList"
-      :pagination="true"
-      @page-change="getClssList"
-      :row-classes="['state', 'light-yellow-bg', 'false']"
+      @clear-search-input="handleCLSSearch"
+      @page-change="handleCLSSearch"
     />
     <prompt-delete
       :elemnt="elemntType"
@@ -31,7 +31,7 @@
 <script>
 import { clsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { getClss, deleteCls, searchCls } from '../../../services/api/cls'
+import { deleteCls, searchCls } from '../../../services/api/cls'
 import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
 import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
 import debounce from '../../../helpers/debounce'
@@ -55,7 +55,7 @@ export default {
     columns: [...clsColumns].filter(col => col.showTable)
   }),
   async mounted() {
-    await this.getClssList()
+    await this.handleCLSSearch()
   },
   computed: {
     dark() {
@@ -73,14 +73,6 @@ export default {
         type: 'cls'
       })
       return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
-    },
-    async getClssList(page = 0) {
-      this.loading = true
-      const res = await getClss({ user_id: await this.$auth.getUserID(), page })
-      if (res.t !== 'error' && res.data) {
-        this.tableData = res.data.r
-      }
-      this.loading = false
     },
     handleEditCLS(_id) {
       this.$router.push({
@@ -114,13 +106,14 @@ export default {
         this.promptDelete = false
       })
     },
-    handleCLSSearch: debounce(async function(s, sortBy) {
+    handleCLSSearch: debounce(async function(s, sortBy, page = 0) {
       this.loading = true
       const res = await searchCls({
         user_id: await this.$auth.getUserID(),
         psz: true,
-        s,
-        sortBy
+        sortBy,
+        page,
+        s
       })
       if (res && res.data) {
         this.tableData = res.data
