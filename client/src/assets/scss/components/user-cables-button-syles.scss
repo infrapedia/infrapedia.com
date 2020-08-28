@@ -13,7 +13,7 @@
   max-height: 20rem;
   background-color: darken($white-partial, 4%);
   .list-wrapper__inner {
-    height: 33vh;
+    height: fit-content;
   }
   header {
     padding: 1.2rem;
