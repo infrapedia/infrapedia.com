@@ -95,12 +95,14 @@ export default {
   },
   methods: {
     openDialog() {
+      this.$emit('print-dialog', true)
       this.printDialog = true
     },
     initPrint() {
       this.printer = new PrintGL({ map: this.map })
     },
     handleClose() {
+      this.$emit('print-dialog', false)
       this.printDialog = false
       this.form = {
         filename: 'Infrapedia-map',

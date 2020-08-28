@@ -54,9 +54,20 @@
             <el-table-column fixed="right" label="Operations" width="220">
               <template slot-scope="scope">
                 <div class="flex row justify-content-center">
-                  <el-button @click="toggleDialog(scope.row)" size="small">
-                    Make an offer
-                  </el-button>
+                  <el-tooltip
+                    effect="dark"
+                    :disabled="isLoggedIn"
+                    placement="top-start"
+                    content="You need to login before making an offer"
+                  >
+                    <el-button
+                      @click="toggleDialog(scope.row)"
+                      size="small"
+                      :disabled="!isLoggedIn"
+                    >
+                      Make an offer
+                    </el-button>
+                  </el-tooltip>
                 </div>
               </template>
             </el-table-column>
@@ -149,6 +160,7 @@ import { formatDate } from '../../helpers/formatDate'
 import { getUserData } from '../../services/api/auth'
 import { formatMarketPlaceData } from '../../helpers/buyMessageFormatter'
 import { getMarketPlaceList, makeAnOffer } from '../../services/api/marketplace'
+import { checkCookie } from '../../helpers/cookies'
 
 export default {
   components: {
@@ -176,6 +188,9 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    isLoggedIn() {
+      return checkCookie('auth.token-session')
     },
     siteKey() {
       return siteKey

@@ -25,7 +25,11 @@
         role="group"
         class="absolute flex justify-content-space-around align-items-center"
       >
-        <slot name="body" />
+        <print-button
+          :map="map"
+          class="mr2"
+          @print-dialog="bool => (isPrintDialog = bool)"
+        />
         <li role="listitem">
           <el-button
             title="Share menu"
@@ -80,14 +84,25 @@
 
 <script>
 import * as share from './shareLinks'
+import PrintButton from './PrintButton'
 import ClickOutside from 'vue-click-outside'
 import { shareLinkButtons } from '../../config/shareLinkButtons'
 
 export default {
+  components: {
+    PrintButton
+  },
   data: () => ({
     isMenuOpen: false,
-    isGooeyMenu: false
+    isGooeyMenu: false,
+    isPrintDialog: false
   }),
+  props: {
+    map: {
+      type: Object,
+      required: true
+    }
+  },
   computed: {
     shareLinkButtons() {
       return shareLinkButtons
@@ -113,8 +128,10 @@ export default {
       }
     },
     closeBoth() {
-      this.isGooeyMenu = false
-      this.isMenuOpen = false
+      if (!this.isPrintDialog) {
+        this.isGooeyMenu = false
+        this.isMenuOpen = false
+      }
     },
     closeGooey() {
       this.isGooeyMenu = false

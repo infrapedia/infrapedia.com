@@ -30,9 +30,7 @@
       >
         <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
       </el-button>
-      <gooey-menu>
-        <print-button slot="body" class="mr4" :map="map" />
-      </gooey-menu>
+      <gooey-menu :map="map ? map : {}" />
     </template>
   </div>
 </template>
@@ -71,7 +69,6 @@ import handleDraw from './draw'
 import setBoundsCookie from './setBoundsCookie'
 import disableCurrentHighlight from './disableHighlight'
 import GooeyMenu from './GooeyMenu'
-import PrintButton from './PrintButton'
 import highlightCurrentSelection from './highlightCurrentSelection'
 import dataCollection from '../../mixins/dataCollection'
 import { DateTime } from 'luxon'
@@ -81,7 +78,6 @@ export default {
   name: 'Map',
   mixins: [dataCollection],
   components: {
-    PrintButton,
     GooeyMenu,
     LegendsPanel
   },
