@@ -126,6 +126,17 @@
         </div>
       </el-form-item>
       <template v-if="creationID == 'subsea'">
+        <el-form-item label="Fiber Pairs" prop="fiberPairs">
+          <el-input-number
+            :min="0"
+            :class="{ dark }"
+            class="w-fit-full"
+            controls-position="right"
+            v-model="form.fiberPairs"
+          />
+        </el-form-item>
+        <!-- </template>
+      <template v-if="creationID == 'subsea'"> -->
         <el-form-item label="Design Capacity (Tbps)" prop="tbpsCapacity">
           <el-input-number
             :min="0"
@@ -179,17 +190,6 @@
               </div>
             </div>
           </div>
-        </el-form-item>
-      </template>
-      <template v-if="creationID == 'subsea'">
-        <el-form-item label="Fiber Pairs" prop="fiberPairs">
-          <el-input-number
-            :min="0"
-            :class="{ dark }"
-            class="w-fit-full"
-            controls-position="right"
-            v-model="form.fiberPairs"
-          />
         </el-form-item>
       </template>
       <el-form-item :label="facilitiesLabel" prop="facilities">
