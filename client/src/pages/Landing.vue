@@ -37,6 +37,47 @@ export default {
         name: 'keywords',
         content:
           'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
+      },
+      // ------------------ FACEBOOK - OPEN GRAPH
+      {
+        vmid: 'og:title',
+        name: 'og:title',
+        content:
+          'The world’s largest network and datacenter infrastructure atlas.'
+      },
+      {
+        vmid: 'og:description',
+        name: 'og:description',
+        content:
+          "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
+      },
+      {
+        vmid: 'og:image',
+        name: 'og:image',
+        content: '/infrapedia-2.jpg'
+      },
+      // ---------------------- TWITTER
+      {
+        vmid: 'twitter:title',
+        name: 'twitter:title',
+        content:
+          'The world’s largest network and datacenter infrastructure atlas.'
+      },
+      {
+        vmid: 'twitter:description',
+        name: 'twitter:description',
+        content:
+          "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
+      },
+      {
+        vmid: 'twitter:image',
+        name: 'twitter:image',
+        content: '/infrapedia-2.jpg'
+      },
+      {
+        vmid: 'content-language',
+        name: 'content-language',
+        content: 'en-US'
       }
     ]
   },

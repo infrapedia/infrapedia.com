@@ -75,7 +75,7 @@ function getMetaDataTagsFromSelectionType({ type, name, owners }) {
       typeClean.t = 'org'
       break
   }
-  return {
+  const meta = {
     title: typeClean.title,
     meta: [
       {
@@ -125,6 +125,7 @@ function getMetaDataTagsFromSelectionType({ type, name, owners }) {
       }
     ]
   }
+  return meta
 }
 
 export default getMetaDataTagsFromSelectionType
