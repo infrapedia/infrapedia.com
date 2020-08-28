@@ -101,7 +101,13 @@ export default {
         case 'subsea cables':
           await this.handleSubmarineCableItemSelected(id)
           break
+        case 'subsea-cable':
+          await this.handleSubmarineCableItemSelected(id)
+          break
         case 'terrestrial networks':
+          await this.handleSubmarineCableItemSelected(id)
+          break
+        case 'terrestrial-network':
           await this.handleSubmarineCableItemSelected(id)
           break
         case 'terrestrial':
