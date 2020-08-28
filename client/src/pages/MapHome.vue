@@ -49,6 +49,11 @@ export default {
   watch: {
     '$store.state.map.currentSelection'(data) {
       this.handleCurrentMetaTagsUpdate(data)
+    },
+    '$store.state.isSidebar'(bool) {
+      if (!bool) {
+        this.handleCurrentMetaTagsUpdate(bool)
+      }
     }
   },
   beforeCreate() {
