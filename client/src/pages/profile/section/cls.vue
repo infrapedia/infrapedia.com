@@ -54,8 +54,8 @@ export default {
     },
     columns: [...clsColumns].filter(col => col.showTable)
   }),
-  async mounted() {
-    await this.handleCLSSearch()
+  async created() {
+    await this.handleCLSSearch('', 'nameAsc', 0)
   },
   computed: {
     dark() {
