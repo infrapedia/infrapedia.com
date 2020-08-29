@@ -2,9 +2,9 @@ function getMetaDataTagsFromSelectionType({ type, name, owners }) {
   const description = {
     ixps: `${name}, IXP information, cable systems and operators #internet #ixps`,
     cls: `${name}, CLS information, cable systems and operators #internet #cls`,
-    cables: `${name}, a fiber optic submarine telecommunications cable system information, owned/operated by ${owners.join(
-      ','
-    )}`,
+    cables: `${name}, a fiber optic submarine telecommunications cable system information, owned/operated by ${owners
+      .map(o => o.name)
+      .join(', ')}`,
     fac: `${name}, Facility information, cable systems and operators #internet #facility`,
     org: `${name}, Organization information, cable systems and operators #internet #organization #org`
   }
@@ -93,21 +93,51 @@ function getMetaDataTagsFromSelectionType({ type, name, owners }) {
         name: 'og:type',
         content: 'article'
       },
+      // {
+      //   // vmid: 'og:type',
+      //   name: 'og:url',
+      //   content: 'http://localhost:8081/app/cable/dunant'
+      // },
       {
         // vmid: 'og:title',
         name: 'og:title',
         content: typeClean.title
       },
+      /// IF HUBERT EVER LEAVES INFRAPEDIA THIS SHOULD BE REMOVED
+      {
+        // vmid: 'og:title',
+        name: 'fb:admins',
+        content: '100006549764818'
+      },
+      {
+        // vmid: 'description',
+        name: 'og:description',
+        content: description[typeClean.t]
+      },
       {
         // vmid: 'og:site_name',
         name: 'og:site_name',
-        content: name
+        content: 'Infrapedia'
       },
       {
         // vmid: 'twitter:title',
         name: 'twitter:title',
         content: typeClean.title
       },
+      {
+        // vmid: 'twitter:title',
+        name: 'twitter:card',
+        content: 'summary_large_image'
+      },
+      {
+        // vmid: 'twitter:title',
+        name: 'twitter:descr',
+        content: 'summary_large_image'
+      },
+      // <meta property="og:image" content="">
+      // <meta property="og:image:width" content="1200">
+      // <meta property="og:image:height" content="630">
+      // <meta property="og:url" content="http://www.fiberatlantic.com/system/689Jl"></meta>
       {
         // vmid: 'twitter:site',
         name: 'twitter:site',
