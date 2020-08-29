@@ -334,15 +334,25 @@ export default {
         let res = null
 
         for (let key in category.data) {
+          const dataKeys = Object.keys(category.data[key])
           if (!key.includes('custom')) {
-            let ids = Object.keys(category.data[key])
+            let ids = dataKeys
             if (ids.length > 0) {
               res = await getGeometries(key, ids, userID)
               if (res && res.features) {
                 features.push(res.features)
               }
             }
-          } else if (Object.keys(category.data[key])) {
+          } else if (dataKeys) {
+            // KEEPING CUSTOM ELEMENTS COLOR IN SYNC WITH THE CATEGORY
+            for (let dataKey of dataKeys) {
+              let customElement = category.data[key][dataKey]
+
+              if (customElement.properties.color != category.color) {
+                customElement.properties.color = category.color
+                sceneDictionary.update(dataKey, customElement)
+              }
+            }
             updateDrawnFeatures = true
           }
         }

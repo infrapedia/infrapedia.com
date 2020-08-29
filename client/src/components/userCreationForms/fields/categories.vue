@@ -704,12 +704,10 @@ export default {
       return new Promise((res, rej) => {
         this.typesDialog.visible = true
         this.$once('save-types', function() {
-          if (this.mode != 'create') return
           this.typesDialog.visible = false
           res()
         })
         this.$once('cancel-types-selection', function() {
-          if (this.mode != 'create') return
           this.typesDialog.visible = false
           rej()
         })
@@ -726,12 +724,10 @@ export default {
         this.nextStep()
         this.typesDialog.visible = true
         this.$once('save-types', function() {
-          if (this.mode == 'create') return
           this.typesDialog.visible = false
           res()
         })
         this.$once('cancel-types-selection', function() {
-          if (this.mode == 'create') return
           this.toggleInput(false)
           this.typesDialog.visible = false
           rej()
