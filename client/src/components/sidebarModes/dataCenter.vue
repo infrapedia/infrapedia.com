@@ -334,6 +334,7 @@
               popper-class="buy-capacity-popper"
               :visible-arrow="false"
               trigger="manual"
+              :disabled="isActionButtonsDisabled"
               v-model="isMenuOpen"
             >
               <el-card shadow="never" class>
@@ -373,7 +374,7 @@
             <div
               :class="{ disabled: isActionButtonsDisabled }"
               class="cursor-pointer no-selectable"
-              @click="$emit(REPORT_ISSUE)"
+              @click="!isActionButtonsDisabled ? $emit(REPORT_ISSUE) : () => {}"
             >
               <el-button
                 :disabled="isActionButtonsDisabled"
@@ -399,7 +400,7 @@
             <div
               :class="{ disabled: isActionButtonsDisabled }"
               class="cursor-pointer no-selectable"
-              @click="$emit(CREATE_ALERT)"
+              @click="!isActionButtonsDisabled ? $emit(CREATE_ALERT) : () => {}"
             >
               <el-button
                 :disabled="isActionButtonsDisabled"
