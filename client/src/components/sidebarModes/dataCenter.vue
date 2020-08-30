@@ -320,7 +320,7 @@
     <!---- FOOTER SECTION STARTS ----->
     <el-tooltip
       effect="dark"
-      :disabled="isActionButtonsDisabled"
+      :disabled="!isActionButtonsDisabled"
       placement="top-start"
       content="You need to login before making use of this features"
     >
