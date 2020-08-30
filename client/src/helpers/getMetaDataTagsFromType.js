@@ -2,7 +2,10 @@ function getMetaDataTagsFromSelectionType({ type, name, owners }) {
   const description = {
     ixps: `${name}, IXP information, cable systems and operators #internet #ixps`,
     cls: `${name}, CLS information, cable systems and operators #internet #cls`,
-    cables: `${name}, a fiber optic submarine telecommunications cable system information, owned/operated by ${owners
+    subsea: `${name}, a fiber optic submarine telecommunications cable system information, owned/operated by ${owners
+      .map(o => o.name)
+      .join(', ')}`,
+    terrestrial: `${name}, a fiber optic submarine telecommunications cable system information, owned/operated by ${owners
       .map(o => o.name)
       .join(', ')}`,
     fac: `${name}, Facility information, cable systems and operators #internet #facility`,
@@ -52,11 +55,11 @@ function getMetaDataTagsFromSelectionType({ type, name, owners }) {
       break
     case 'terrestrial networks':
       typeClean.title = `${typeClean.title} | Terrestrial Network System System`
-      typeClean.t = 'cables'
+      typeClean.t = 'terrestrial'
       break
     case 'terrestrial':
       typeClean.title = `${typeClean.title} | Terrestrial Network System System`
-      typeClean.t = 'cables'
+      typeClean.t = 'terrestrial'
       break
     case 'organizations':
       typeClean.title = `${typeClean.title} | Organization`
