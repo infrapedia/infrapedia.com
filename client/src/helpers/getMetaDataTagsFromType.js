@@ -26,11 +26,6 @@ export default async function getMetaDataTagsFromSelectionType({
   }
 
   switch (type.toLowerCase().trim()) {
-    case 'ixps':
-      typeClean.title = `${typeClean.title} | Internet Exchange Point | IXP`
-      typeClean.t = 'ixps'
-      typeClean.slug = `ixp-${slug}`
-      break
     case 'ixp':
       typeClean.title = `${typeClean.title} | Internet Exchange Point | IXP`
       typeClean.t = 'ixps'
@@ -41,72 +36,17 @@ export default async function getMetaDataTagsFromSelectionType({
       typeClean.t = 'fac'
       typeClean.slug = `facility-${slug}`
       break
-    case 'facilities':
-      typeClean.title = `${typeClean.title} | Facility`
-      typeClean.t = 'fac'
-      typeClean.slug = `facility-${slug}`
-      break
     case 'cls':
       typeClean.title = `${typeClean.title} | Cable Landing Station | CLS`
       typeClean.t = 'cls'
       typeClean.slug = `cls-${slug}`
-      break
-    case 'cable':
-      typeClean.title = `${typeClean.title} | Submarine Cable System`
-      typeClean.t = 'subsea'
-      typeClean.slug = `subsea-cable-${slug}`
-      break
-    case 'cables':
-      typeClean.title = `${typeClean.title} | Submarine Cable System`
-      typeClean.t = 'subsea'
-      typeClean.slug = `subsea-cable-${slug}`
-      break
-    case 'subsea cables':
-      typeClean.title = `${typeClean.title} | Submarine Cable System`
-      typeClean.t = 'subsea'
-      typeClean.slug = `subsea-cable-${slug}`
-      break
-    case 'subsea cable':
-      typeClean.title = `${typeClean.title} | Submarine Cable System`
-      typeClean.t = 'subsea'
-      typeClean.slug = `subsea-cable-${slug}`
       break
     case 'subsea-cable':
       typeClean.title = `${typeClean.title} | Submarine Cable System`
       typeClean.t = 'subsea'
       typeClean.slug = `subsea-cable-${slug}`
       break
-    case 'subsea-cables':
-      typeClean.title = `${typeClean.title} | Submarine Cable System`
-      typeClean.t = 'subsea'
-      typeClean.slug = `subsea-cable-${slug}`
-      break
-    case 'subsea':
-      typeClean.title = `${typeClean.title} | Submarine Cable System`
-      typeClean.t = 'subsea'
-      typeClean.slug = `subsea-cable-${slug}`
-      break
-    case 'terrestrial networks':
-      typeClean.title = `${typeClean.title} | Terrestrial Network System`
-      typeClean.t = 'terrestrial'
-      typeClean.slug = `terrestrial-network-${slug}`
-      break
-    case 'terrestrial network':
-      typeClean.title = `${typeClean.title} | Terrestrial Network System`
-      typeClean.t = 'terrestrial'
-      typeClean.slug = `terrestrial-network-${slug}`
-      break
     case 'terrestrial-network':
-      typeClean.title = `${typeClean.title} | Terrestrial Network System`
-      typeClean.t = 'terrestrial'
-      typeClean.slug = `terrestrial-network-${slug}`
-      break
-    case 'terrestrial-networks':
-      typeClean.title = `${typeClean.title} | Terrestrial Network System`
-      typeClean.t = 'terrestrial'
-      typeClean.slug = `terrestrial-network-${slug}`
-      break
-    case 'terrestrial':
       typeClean.title = `${typeClean.title} | Terrestrial Network System`
       typeClean.t = 'terrestrial'
       typeClean.slug = `terrestrial-network-${slug}`

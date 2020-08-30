@@ -494,12 +494,12 @@ export default {
       } else if (ixps.length > 0) {
         await this.handleIxpsSelection({
           id: ixps[0].properties._id,
-          type: 'ixps'
+          type: 'ixp'
         })
       } else if (facilities.length > 0) {
         await this.handleFacilitySelection({
           id: facilities[0].properties._id,
-          type: 'facilities'
+          type: 'facility'
         })
       } else if (cables.length > 0) {
         await this.handleCablesSelection(cables.length > 0, cables)
@@ -772,13 +772,10 @@ export default {
         case 'facility':
           await this.handleFacilityFocus({ id, type })
           break
-        case 'facilities':
-          await this.handleFacilityFocus({ id, type })
-          break
         case 'cls':
           await this.handleClsFocus({ id, type })
           break
-        case 'ixps':
+        case 'ixp':
           await this.handleIxpsFocus({ id, type })
           break
         case 'city':
