@@ -36,14 +36,14 @@
           -
           <small class="capitalize">{{ geResultType(item) }}</small>
           <span
-            v-if="item.premium && item.premium === 'true'"
+            v-if="item.premium && item.premium == 'true'"
             class="w22 p1 h6 partner round flo-right vertical-align mt-2"
           >
             Partner
             <fa :icon="['fas', 'star']" class="sm-icon ml2" />
           </span>
         </li>
-        <el-divider class="m0" v-if="searchResults.r.length" />
+        <el-divider class="m0" v-if="searchResults.r.length > 0" />
         <li
           v-for="(item, i) in searchResults.places"
           :key="i"
@@ -158,15 +158,13 @@ export default {
       this.isResultsVisible = true
     }, 820),
     geResultType(item) {
-      if (item.t.toLowerCase() === 'cable') {
-        return item.terrestrial ? 'terrestrial network' : 'subsea cable'
-      } else return item.t
+      let t = item.t
+      if (item.t.toLowerCase() == 'cable') {
+        t = item.terrestrial ? 'terrestrial-network' : 'subsea-cable'
+      }
+      return t
     },
     close() {
-      this.searchResults = {
-        r: [],
-        places: []
-      }
       this.isResultsVisible = false
     },
     loseFocus() {
@@ -174,11 +172,21 @@ export default {
       // this.isResultsVisible = false
     },
     clearSearch() {
-      this.search = ''
       this.close()
+      this.search = ''
+      this.searchResults = {
+        r: [],
+        places: []
+      }
     },
     setFocus() {
       this.isFocused = true
+      if (
+        this.searchResults.r.length > 0 ||
+        this.searchResults.places.length > 0
+      ) {
+        this.isResultsVisible = true
+      }
     },
     handlePlaceSelection(selection) {
       // If the selection has geometry it's a city
@@ -202,8 +210,14 @@ export default {
           id: selection.id ? selection.id : selection._id,
           option: selection.type
             ? selection.type
-            : selection.t && selection.t === 'groups'
-            ? 'networks'
+            : selection.t
+            ? selection.t == 'groups'
+              ? 'networks'
+              : selection.t == 'cable'
+              ? selection.terrestrial
+                ? 'subsea-cable'
+                : 'terrestrial-network'
+              : selection.t
             : selection.t
         })
       }

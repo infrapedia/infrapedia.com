@@ -191,7 +191,13 @@ export default {
         // Otherwise if must be an org/facility/datacenter, etc...
         this.$emit(SEARCH_SELECTION, {
           id: selection.id ? selection.id : selection._id,
-          option: selection.type ? selection.type : selection.t
+          option: selection.type
+            ? selection.type
+            : selection.t == 'cable'
+            ? selection.terrestrial
+              ? 'subsea-cable'
+              : 'terrestrial-network'
+            : selection.t
         })
       }
 

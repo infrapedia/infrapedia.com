@@ -1,4 +1,12 @@
-function getMetaDataTagsFromSelectionType({ type, name, owners }) {
+import { getElementImgByType } from '../services/api'
+
+export default async function getMetaDataTagsFromSelectionType({
+  type,
+  name,
+  owners,
+  url,
+  slug
+}) {
   const description = {
     ixps: `${name}, IXP information, cable systems and operators #internet #ixps`,
     cls: `${name}, CLS information, cable systems and operators #internet #cls`,
@@ -13,6 +21,7 @@ function getMetaDataTagsFromSelectionType({ type, name, owners }) {
   }
   const typeClean = {
     title: name,
+    slug: '',
     t: ''
   }
 
@@ -20,18 +29,87 @@ function getMetaDataTagsFromSelectionType({ type, name, owners }) {
     case 'ixps':
       typeClean.title = `${typeClean.title} | Internet Exchange Point | IXP`
       typeClean.t = 'ixps'
+      typeClean.slug = `ixp-${slug}`
+      break
+    case 'ixp':
+      typeClean.title = `${typeClean.title} | Internet Exchange Point | IXP`
+      typeClean.t = 'ixps'
+      typeClean.slug = `ixp-${slug}`
       break
     case 'facility':
       typeClean.title = `${typeClean.title} | Facility`
       typeClean.t = 'fac'
+      typeClean.slug = `facility-${slug}`
       break
     case 'facilities':
       typeClean.title = `${typeClean.title} | Facility`
       typeClean.t = 'fac'
+      typeClean.slug = `facility-${slug}`
       break
     case 'cls':
       typeClean.title = `${typeClean.title} | Cable Landing Station | CLS`
       typeClean.t = 'cls'
+      typeClean.slug = `cls-${slug}`
+      break
+    case 'cable':
+      typeClean.title = `${typeClean.title} | Submarine Cable System`
+      typeClean.t = 'subsea'
+      typeClean.slug = `subsea-cable-${slug}`
+      break
+    case 'cables':
+      typeClean.title = `${typeClean.title} | Submarine Cable System`
+      typeClean.t = 'subsea'
+      typeClean.slug = `subsea-cable-${slug}`
+      break
+    case 'subsea cables':
+      typeClean.title = `${typeClean.title} | Submarine Cable System`
+      typeClean.t = 'subsea'
+      typeClean.slug = `subsea-cable-${slug}`
+      break
+    case 'subsea cable':
+      typeClean.title = `${typeClean.title} | Submarine Cable System`
+      typeClean.t = 'subsea'
+      typeClean.slug = `subsea-cable-${slug}`
+      break
+    case 'subsea-cable':
+      typeClean.title = `${typeClean.title} | Submarine Cable System`
+      typeClean.t = 'subsea'
+      typeClean.slug = `subsea-cable-${slug}`
+      break
+    case 'subsea-cables':
+      typeClean.title = `${typeClean.title} | Submarine Cable System`
+      typeClean.t = 'subsea'
+      typeClean.slug = `subsea-cable-${slug}`
+      break
+    case 'subsea':
+      typeClean.title = `${typeClean.title} | Submarine Cable System`
+      typeClean.t = 'subsea'
+      typeClean.slug = `subsea-cable-${slug}`
+      break
+    case 'terrestrial networks':
+      typeClean.title = `${typeClean.title} | Terrestrial Network System`
+      typeClean.t = 'terrestrial'
+      typeClean.slug = `terrestrial-network-${slug}`
+      break
+    case 'terrestrial network':
+      typeClean.title = `${typeClean.title} | Terrestrial Network System`
+      typeClean.t = 'terrestrial'
+      typeClean.slug = `terrestrial-network-${slug}`
+      break
+    case 'terrestrial-network':
+      typeClean.title = `${typeClean.title} | Terrestrial Network System`
+      typeClean.t = 'terrestrial'
+      typeClean.slug = `terrestrial-network-${slug}`
+      break
+    case 'terrestrial-networks':
+      typeClean.title = `${typeClean.title} | Terrestrial Network System`
+      typeClean.t = 'terrestrial'
+      typeClean.slug = `terrestrial-network-${slug}`
+      break
+    case 'terrestrial':
+      typeClean.title = `${typeClean.title} | Terrestrial Network System`
+      typeClean.t = 'terrestrial'
+      typeClean.slug = `terrestrial-network-${slug}`
       break
     case 'networks':
       typeClean.title = `${typeClean.title} | Organization`
@@ -40,26 +118,6 @@ function getMetaDataTagsFromSelectionType({ type, name, owners }) {
     case 'groups':
       typeClean.title = `${typeClean.title} | Organization`
       typeClean.t = 'org'
-      break
-    case 'cable':
-      typeClean.title = `${typeClean.title} | Submarine Cable System`
-      typeClean.t = 'cables'
-      break
-    case 'cables':
-      typeClean.title = `${typeClean.title} | Submarine Cable System`
-      typeClean.t = 'cables'
-      break
-    case 'subsea cables':
-      typeClean.title = `${typeClean.title} | Submarine Cable System`
-      typeClean.t = 'cables'
-      break
-    case 'terrestrial networks':
-      typeClean.title = `${typeClean.title} | Terrestrial Network System System`
-      typeClean.t = 'terrestrial'
-      break
-    case 'terrestrial':
-      typeClean.title = `${typeClean.title} | Terrestrial Network System System`
-      typeClean.t = 'terrestrial'
       break
     case 'organizations':
       typeClean.title = `${typeClean.title} | Organization`
@@ -78,6 +136,7 @@ function getMetaDataTagsFromSelectionType({ type, name, owners }) {
       typeClean.t = 'org'
       break
   }
+
   const meta = {
     title: typeClean.title,
     meta: [
@@ -96,11 +155,6 @@ function getMetaDataTagsFromSelectionType({ type, name, owners }) {
         name: 'og:type',
         content: 'article'
       },
-      // {
-      //   // vmid: 'og:type',
-      //   name: 'og:url',
-      //   content: 'http://localhost:8081/app/cable/dunant'
-      // },
       {
         // vmid: 'og:title',
         name: 'og:title',
@@ -123,6 +177,25 @@ function getMetaDataTagsFromSelectionType({ type, name, owners }) {
         content: 'Infrapedia'
       },
       {
+        name: 'og:image',
+        content:
+          type == 'org'
+            ? 'https://cdn1.infrapedia.com/assets/default.jpg'
+            : await getElementImgByType({ slug: typeClean.slug })
+      },
+      {
+        name: 'og:image:width',
+        content: ''
+      },
+      {
+        name: 'og:image:height',
+        content: ''
+      },
+      {
+        name: 'og:url',
+        content: url
+      },
+      {
         // vmid: 'twitter:title',
         name: 'twitter:title',
         content: typeClean.title
@@ -137,10 +210,6 @@ function getMetaDataTagsFromSelectionType({ type, name, owners }) {
         name: 'twitter:descr',
         content: 'summary_large_image'
       },
-      // <meta property="og:image" content="">
-      // <meta property="og:image:width" content="1200">
-      // <meta property="og:image:height" content="630">
-      // <meta property="og:url" content="http://www.fiberatlantic.com/system/689Jl"></meta>
       {
         // vmid: 'twitter:site',
         name: 'twitter:site',
@@ -160,5 +229,3 @@ function getMetaDataTagsFromSelectionType({ type, name, owners }) {
   }
   return meta
 }
-
-export default getMetaDataTagsFromSelectionType

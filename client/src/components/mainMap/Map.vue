@@ -587,7 +587,8 @@ export default {
           // Highlight the nearest clicked cable
           await this.handleCableSelected({
             _id: cables[0].properties._id,
-            name: cables[0].properties.name
+            name: cables[0].properties.name,
+            terrestrial: cables[0].properties.terrestrial == 'true'
           }).then(() => this.highlightSelection(cables[0].properties._id))
           break
         default:
@@ -762,7 +763,10 @@ export default {
         case 'partners':
           await this.handleOrganizationFocus(id, fc)
           break
-        case 'cable':
+        case 'terrestrial-network':
+          await this.handleCableFocus(id)
+          break
+        case 'subsea-cable':
           await this.handleCableFocus(id)
           break
         case 'facility':
