@@ -27,52 +27,52 @@ export default async function getMetaDataTagsFromSelectionType({
 
   switch (type.toLowerCase().trim()) {
     case 'ixp':
-      typeClean.title = `${typeClean.title} | Internet Exchange Point | IXP`
+      typeClean.title = `${typeClean.title} | Internet Exchange Point | IXP | Infrapedia`
       typeClean.t = 'ixps'
       typeClean.slug = `ixp-${slug}`
       break
     case 'facility':
-      typeClean.title = `${typeClean.title} | Facility`
+      typeClean.title = `${typeClean.title} | Facility | Infrapedia`
       typeClean.t = 'fac'
       typeClean.slug = `facility-${slug}`
       break
     case 'cls':
-      typeClean.title = `${typeClean.title} | Cable Landing Station | CLS`
+      typeClean.title = `${typeClean.title} | Cable Landing Station | CLS | Infrapedia`
       typeClean.t = 'cls'
       typeClean.slug = `cls-${slug}`
       break
     case 'subsea-cable':
-      typeClean.title = `${typeClean.title} | Submarine Cable System`
+      typeClean.title = `${typeClean.title} | Submarine Cable System | Infrapedia`
       typeClean.t = 'subsea'
       typeClean.slug = `subsea-cable-${slug}`
       break
     case 'terrestrial-network':
-      typeClean.title = `${typeClean.title} | Terrestrial Network System`
+      typeClean.title = `${typeClean.title} | Terrestrial Network System | Infrapedia`
       typeClean.t = 'terrestrial'
       typeClean.slug = `terrestrial-network-${slug}`
       break
     case 'networks':
-      typeClean.title = `${typeClean.title} | Organization`
+      typeClean.title = `${typeClean.title} | Organization | Infrapedia`
       typeClean.t = 'org'
       break
     case 'groups':
-      typeClean.title = `${typeClean.title} | Organization`
+      typeClean.title = `${typeClean.title} | Organization | Infrapedia`
       typeClean.t = 'org'
       break
     case 'organizations':
-      typeClean.title = `${typeClean.title} | Organization`
+      typeClean.title = `${typeClean.title} | Organization | Infrapedia`
       typeClean.t = 'org'
       break
     case 'org':
-      typeClean.title = `${typeClean.title} | Organization`
+      typeClean.title = `${typeClean.title} | Organization | Infrapedia`
       typeClean.t = 'org'
       break
     case 'owners':
-      typeClean.title = `${typeClean.title} | Organization`
+      typeClean.title = `${typeClean.title} | Organization | Infrapedia`
       typeClean.t = 'org'
       break
     case 'partners':
-      typeClean.title = `${typeClean.title} | Organization`
+      typeClean.title = `${typeClean.title} | Organization | Infrapedia`
       typeClean.t = 'org'
       break
   }
