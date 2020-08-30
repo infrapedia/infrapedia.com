@@ -36,7 +36,7 @@ export default {
     async loadPremiumPartners() {
       return await this.getPremiumData()
     },
-    async handleCableSelected({ _id, name }) {
+    async handleCableSelected({ _id, name, terrestrial }) {
       if (!_id) return
 
       await this.$store.commit(`${TOGGLE_LOADING}`, true)
@@ -49,7 +49,7 @@ export default {
           this.$store.commit(`${MAP_FOCUS_ON}`, {
             name,
             id: _id,
-            type: 'cable'
+            type: terrestrial ? 'terrestrial-network' : 'subsea-cable'
           })
         })
       } catch {
@@ -69,8 +69,9 @@ export default {
       if (this.focus) {
         bus.$emit(`${CLEAR_SELECTION}`, true, this.focus.type.split().join(''))
       }
+      option = option.toLowerCase().trim()
 
-      switch (option.toLowerCase().trim()) {
+      switch (option) {
         case 'ixps':
           await this.handleIxpsItemSelected({ id, type: option })
           break
@@ -89,29 +90,17 @@ export default {
         case 'networks':
           await this.handleNetworkItemSelected({ id, type: option })
           break
-        // case 'groups':
-        //   await this.handleNetworkItemSelected({ id, type: 'networks' })
-        //   break
-        case 'cable':
-          await this.handleSubmarineCableItemSelected(id)
-          break
-        case 'cables':
-          await this.handleSubmarineCableItemSelected(id)
-          break
-        case 'subsea cables':
-          await this.handleSubmarineCableItemSelected(id)
-          break
         case 'subsea-cable':
-          await this.handleSubmarineCableItemSelected(id)
-          break
-        case 'terrestrial networks':
-          await this.handleSubmarineCableItemSelected(id)
+          await this.handleCableItemSelected({
+            id,
+            type: option
+          })
           break
         case 'terrestrial-network':
-          await this.handleSubmarineCableItemSelected(id)
-          break
-        case 'terrestrial':
-          await this.handleSubmarineCableItemSelected(id)
+          await this.handleCableItemSelected({
+            id,
+            type: option
+          })
           break
         case 'organizations':
           await this.handleOrgItemSelected({ id, type: option })
@@ -133,11 +122,11 @@ export default {
           break
       }
     },
-    async handleSubmarineCableItemSelected(id) {
+    async handleCableItemSelected({ id, type }) {
       if (!id) {
         throw {
           message:
-            'MISSING ID PARAMETER, handleSubmarineCableItemSelected() - dataCollection.vue: line 203'
+            'MISSING ID PARAMETER, handleCableItemSelected() - dataCollection.vue: line 203'
         }
       }
 
@@ -150,7 +139,7 @@ export default {
           _id: id
         })
       }
-      bus.$emit(`${FOCUS_ON}`, { id, type: 'cable' })
+      bus.$emit(`${FOCUS_ON}`, { id, type })
     },
     async handleFacilityItemSelected({ id, type }) {
       if (!id) throw { message: 'MISSING ID PARAMETER' }

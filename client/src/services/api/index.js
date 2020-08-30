@@ -124,3 +124,8 @@ export async function getElementIdByType({ type, slug }) {
   const res = await $axios.get(`${apiConfig.url}/${type}/${slug}`)
   return res
 }
+
+export async function getElementImgByType({ slug }) {
+  const res = await $axios.get(`${apiConfig.url}/elm/map/${slug}.jpg`)
+  return res ? res : ''
+}

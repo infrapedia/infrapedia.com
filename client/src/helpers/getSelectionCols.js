@@ -17,7 +17,11 @@ export function getSelectionCols(type) {
     col = [...clsColumns]
   } else if (t.includes('fac')) {
     col = [...facsColumns]
-  } else if (t.includes('cable')) {
+  } else if (
+    t.includes('cable') ||
+    t.includes('subsea') ||
+    t.includes('terrestrial')
+  ) {
     col = [...cablesColumns]
   } else if (t.includes('ixp')) {
     col = [...ixpsColumns]
