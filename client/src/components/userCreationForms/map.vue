@@ -434,7 +434,6 @@ export default {
         }
       }
 
-      console.log(data)
       return this.$emit(`${events.SEND_DATA}`, data)
     },
     handleClose(tag) {

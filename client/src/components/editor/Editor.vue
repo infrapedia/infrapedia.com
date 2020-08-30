@@ -100,7 +100,6 @@ export default {
       isDynamicControls: false
     },
     controls: null,
-    categories: [],
     dialog: {
       visible: false,
       mode: 'create',
@@ -255,12 +254,14 @@ export default {
       await this.handleRecreateDraw(null, false)
     },
     async handleDragAndDropGeojsonFiles(fc) {
+      if (this.type != 'map') return
+
       let list = []
       let cat = null
       const categories = []
 
       for (let feature of fc.features) {
-        for (let category of this.categories) {
+        for (let category of this.categoriesDictionary.getCollectionList()) {
           if (
             feature.properties &&
             feature.properties.category &&
@@ -378,7 +379,9 @@ export default {
       } catch (err) {
         console.error(err)
       } finally {
-        this.$store.dispatch('editor/toggleMapFormLoading', false)
+        setTimeout(() => {
+          this.$store.dispatch('editor/toggleMapFormLoading', false)
+        }, 320)
       }
     },
     async handleCategoriesChange(data) {
@@ -585,6 +588,38 @@ export default {
             this.dialog.mode == 'create'
               ? setFeatureEditorID(feature)
               : this.updateSceneDictionaryFeature(feature)
+
+          if (this.type == 'map') {
+            const ftCategory = categoriesDictionary.get(
+              ftWithMetadata.properties.category
+            )
+            if (ftCategory) {
+              // ftWithMetadata.properties.color = ftCategory.color
+              let ftType = ftWithMetadata.geometry.type.toLowerCase()
+              let dataType = ''
+
+              if (ftType == 'point') {
+                dataType = 'custom points'
+              } else if (ftType == 'polygon') {
+                dataType = 'custom polygons'
+              } else if (
+                ftType == 'linestring' ||
+                ftType == 'multilinestring'
+              ) {
+                dataType = 'custom lines'
+              }
+
+              ftCategory.data[dataType][
+                ftWithMetadata.properties.editorID
+              ] = ftWithMetadata
+              // UPDATING THE CATEGORY WITH THE FEATURE DATA
+              categoriesDictionary.update(
+                ftWithMetadata.properties.category,
+                ftCategory
+              )
+            }
+          }
+
           // Then I do can add it into the dictionary
           if (this.dialog.mode == 'create') {
             sceneDictionary.add(ftWithMetadata.editorID, ftWithMetadata)
