@@ -1,5 +1,6 @@
 export const editorMapConfig = {
-  sources: ['nondrawn-features', 'drawn-features', 'snappoint'],
+  sources: ['nondrawn-features', 'drawn-features'],
+  //  'snappoint'
   layers: [
     {
       id: 'cables-layer',
@@ -58,47 +59,47 @@ export const editorMapConfig = {
         'text-color': '#485E69'
       }
     },
-    {
-      id: 'snappoint',
-      type: 'circle',
-      source: 'snappoint',
-      paint: {
-        'circle-radius': 6,
-        'circle-color': ['get', 'color'],
-        'circle-stroke-width': 1,
-        'circle-stroke-color': '#333333'
-      }
-    },
-    {
-      id: 'ixps-layer',
-      type: 'circle',
-      source: 'nondrawn-features',
-      filter: ['==', '$type', 'Point'],
-      minzoom: 12,
-      layout: {},
-      paint: {
-        'circle-color': '#666666',
-        'circle-radius': ['interpolate', ['linear'], ['zoom'], 0, 1.75, 5, 6],
-        'circle-stroke-color': '#ffffff'
-      }
-    },
-    {
-      id: 'ixps-label-layer',
-      source: 'nondrawn-features',
-      filter: ['==', '$type', 'Point'],
-      type: 'symbol',
-      layout: {
-        'text-field': '{name}',
-        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-        'text-size': 14,
-        'text-justify': 'right',
-        'text-anchor': 'bottom',
-        'text-offset': [0, -0.1]
-      },
-      paint: {
-        'text-color': '#485E69'
-      }
-    },
+    // {
+    //   id: 'snappoint',
+    //   type: 'circle',
+    //   source: 'snappoint',
+    //   paint: {
+    //     'circle-radius': 6,
+    //     'circle-color': ['get', 'color'],
+    //     'circle-stroke-width': 1,
+    //     'circle-stroke-color': '#333333'
+    //   }
+    // },
+    // {
+    //   id: 'ixps-layer',
+    //   type: 'circle',
+    //   source: 'nondrawn-features',
+    //   filter: ['==', '$type', 'Point'],
+    //   minzoom: 12,
+    //   layout: {},
+    //   paint: {
+    //     'circle-color': '#666666',
+    //     'circle-radius': ['interpolate', ['linear'], ['zoom'], 0, 1.75, 5, 6],
+    //     'circle-stroke-color': '#ffffff'
+    //   }
+    // },
+    // {
+    //   id: 'ixps-label-layer',
+    //   source: 'nondrawn-features',
+    //   filter: ['==', '$type', 'Point'],
+    //   type: 'symbol',
+    //   layout: {
+    //     'text-field': '{name}',
+    //     'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+    //     'text-size': 14,
+    //     'text-justify': 'right',
+    //     'text-anchor': 'bottom',
+    //     'text-offset': [0, -0.1]
+    //   },
+    //   paint: {
+    //     'text-color': '#485E69'
+    //   }
+    // },
     {
       id: 'facilities-layer',
       type: 'fill-extrusion',
@@ -185,35 +186,35 @@ export const editorMapConfig = {
         'text-color': '#485E69'
       }
     },
-    {
-      id: 'drawn-ixps-layer',
-      type: 'circle',
-      source: 'drawn-features',
-      filter: ['==', '$type', 'Point'],
-      layout: {},
-      paint: {
-        'circle-color': ['case', ['has', 'color'], ['get', 'color'], '#666666'],
-        'circle-radius': ['interpolate', ['linear'], ['zoom'], 0, 1.75, 5, 6],
-        'circle-stroke-color': '#ffffff'
-      }
-    },
-    {
-      id: 'drawn-ixps-label-layer',
-      source: 'drawn-features',
-      type: 'symbol',
-      filter: ['==', '$type', 'Point'],
-      layout: {
-        'text-field': '{name}',
-        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-        'text-size': 14,
-        'text-justify': 'right',
-        'text-anchor': 'bottom',
-        'text-offset': [0, -0.1]
-      },
-      paint: {
-        'text-color': '#485E69'
-      }
-    },
+    // {
+    //   id: 'drawn-ixps-layer',
+    //   type: 'circle',
+    //   source: 'drawn-features',
+    //   filter: ['==', '$type', 'Point'],
+    //   layout: {},
+    //   paint: {
+    //     'circle-color': ['case', ['has', 'color'], ['get', 'color'], '#666666'],
+    //     'circle-radius': ['interpolate', ['linear'], ['zoom'], 0, 1.75, 5, 6],
+    //     'circle-stroke-color': '#ffffff'
+    //   }
+    // },
+    // {
+    //   id: 'drawn-ixps-label-layer',
+    //   source: 'drawn-features',
+    //   type: 'symbol',
+    //   filter: ['==', '$type', 'Point'],
+    //   layout: {
+    //     'text-field': '{name}',
+    //     'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+    //     'text-size': 14,
+    //     'text-justify': 'right',
+    //     'text-anchor': 'bottom',
+    //     'text-offset': [0, -0.1]
+    //   },
+    //   paint: {
+    //     'text-color': '#485E69'
+    //   }
+    // },
     {
       id: 'drawn-facilities-layer',
       type: 'fill-extrusion',
