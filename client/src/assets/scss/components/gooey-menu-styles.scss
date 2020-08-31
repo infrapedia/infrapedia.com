@@ -1,13 +1,70 @@
+@import '../base/variables';
+
 .gooey-wrapper {
-  opacity: 0;
-  bottom: 8.8rem;
-  right: 4.6rem;
+  right: 0;
+  bottom: 3.4rem;
   height: fit-content;
   #gooeyList {
     height: fit-content;
     width: fit-content;
   }
+}
+
+#menuOpener,
+.icon {
+  transition: all $regular-transition;
+}
+
+#menuOpener,
+.icon {
+  transition: all $regular-transition;
+}
+
+#menuOpener {
+  right: 1.3rem;
+  bottom: 9rem;
+  color: inherit;
+
+  &:focus,
+  &:focus-within,
+  &:hover {
+    color: inherit;
+    background-color: darken($white-full, 20%);
+  }
+
+  @media screen and (max-width: 320px) and (max-height: 580px) {
+    bottom: 6.4rem;
+  }
+}
+
+ul[role='group'] {
+  transition: all $regular-transition;
+  height: 2.5rem;
+  right: 3rem;
+  top: 0;
+  li {
+    margin-right: 1em;
+  }
+
   &.active {
-    opacity: 1;
+    width: fit-content;
+    // width: 12.2rem;
+  }
+}
+
+/*
+*  THEME VARIANT'S
+*/
+
+.application.dark {
+  .el-card,
+  #menuOpener {
+    color: $white-partial;
+    background: $dark-charcoal;
+    border-color: $dark-charcoal;
+    &:hover {
+      background: $light-charcoal;
+      border-color: $light-charcoal;
+    }
   }
 }

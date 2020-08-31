@@ -16,8 +16,8 @@
       :pagination="true"
       @search-input="handleOrgSearch"
       @sort-by="handleOrgSearch"
-      @page-change="getOrganizationsList"
-      @clear-search-input="getOrganizationsList"
+      @page-change="handleOrgSearch"
+      @clear-search-input="handleOrgSearch"
     />
     <org-form
       :form="form"
@@ -40,7 +40,6 @@ import TableList from '../../../components/TableList.vue'
 import OrgForm from '../../../components/userCreationForms/org'
 import {
   createOrganization,
-  getOrganizations,
   deleteOrganization,
   editOrganization,
   viewOrganizationOwner,
@@ -91,8 +90,8 @@ export default {
       return this.mode == 'create' ? this.createOrg : this.saveEditedOrg
     }
   },
-  async mounted() {
-    await this.getOrganizationsList()
+  async created() {
+    await this.handleOrgSearch('', 'nameAsc', 0)
   },
   methods: {
     handleSendMessage(data) {
@@ -177,17 +176,6 @@ export default {
         }
       }
     },
-    async getOrganizationsList(page = 0) {
-      this.loading = true
-      const res = await getOrganizations({
-        user_id: await this.$auth.getUserID(),
-        page
-      })
-      if (res && res.data && res.t !== 'error') {
-        this.tableData = res.data.r
-      }
-      this.loading = false
-    },
     async createOrg() {
       const res = await createOrganization({
         ...this.form,
@@ -208,13 +196,14 @@ export default {
         this.handleOrgSearch(...this.$refs.tableList.getTableSearchValue())
       }
     },
-    handleOrgSearch: debounce(async function(s, sortBy) {
+    handleOrgSearch: debounce(async function(s, sortBy, page = 0) {
       this.loading = true
       const res = await searchOrganization({
         user_id: await this.$auth.getUserID(),
         psz: true,
-        s,
-        sortBy
+        sortBy,
+        page,
+        s
       })
       if (res && res.data) {
         this.tableData = res.data

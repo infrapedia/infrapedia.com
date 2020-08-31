@@ -63,17 +63,11 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(async vm => {
       if (
-        checkCookie('auth0.is.authenticated') ||
-        (await vm.$auth.checkAuthStatus()) === true ||
-        window.location.search.includes('code=')
+        checkCookie('auth0.is.authenticated') &&
+        !localStorage.getItem('once-redirected')
       ) {
-        vm.$router
-          .replace('/login')
-          .then(() => {})
-          // eslint-disable-next-line
-          .catch(err => {
-            // Ignore
-          })
+        vm.$router.push('/app')
+        localStorage.setItem('once-redirected', true)
       }
     })
   },

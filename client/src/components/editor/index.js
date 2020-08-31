@@ -4,7 +4,7 @@ import { mapConfig } from '../../config/mapConfig'
 import Dictionary from '../../lib/Dictionary'
 
 const sceneDictionary = new Dictionary({
-  debug: process.env != 'production'
+  debug: process.env.NODE_ENV != 'production'
 })
 
 function zoomToFeature({ fc, map, type }) {

@@ -348,7 +348,10 @@ export default {
     },
     loadMapConfig() {
       if (this.form.config) {
-        const { categories } = this.form.config
+        const { categories } =
+          typeof this.form.config == 'string'
+            ? JSON.parse(this.form.config)
+            : this.form.config
         if (
           categories &&
           typeof categories != 'string' &&
@@ -423,14 +426,16 @@ export default {
         }
       }
       format.draw = sceneDictionary.getCollectionList()
-
-      return this.$emit(`${events.SEND_DATA}`, {
+      const data = {
         ...this.form,
         ...format,
         config: {
           categories: t
         }
-      })
+      }
+
+      console.log(data)
+      return this.$emit(`${events.SEND_DATA}`, data)
     },
     handleClose(tag) {
       this.form.address.splice(this.form.address.indexOf(tag), 1)

@@ -38,17 +38,19 @@ import {
   TOGGLE_ISSUES_DIALOG
 } from '../store/actionTypes'
 import { disableAlert } from '../services/api/alerts'
-import Sidebar from '../components/Sidebar.vue'
 import { setCookie } from '../helpers/cookies'
 import { getAccessToken } from '../services/api/auth'
 import MapOverlay from '../components/mainMap/MapOverlay'
+import { getElementIdByType } from '../services/api'
+import { PARAMS_SELECTION } from '../events'
+import { bus } from '../helpers/eventBus'
 
 export default {
   components: {
     IFooter,
     INavbar,
     MapOverlay,
-    ISidebar: Sidebar,
+    ISidebar: () => import('../components/Sidebar.vue'),
     IBuyDialog: () => import('../components/dialogs/BuyDialog'),
     UserCablesButton: () => import('../components/UserCablesButton'),
     IIssuesDialog: () => import('../components/dialogs/IssuesDialog'),
@@ -81,8 +83,22 @@ export default {
       }
     ]
   },
-  created() {
+  async created() {
     document.querySelector('body').className = 'no-overflow'
+
+    const { params } = this.$route
+    if (params.type && params.slug) {
+      const res = await getElementIdByType({
+        type: params.type,
+        slug: params.slug
+      })
+      if (res && res.data && res.data.r) {
+        bus.$emit(`${PARAMS_SELECTION}`, {
+          option: params.type,
+          id: res.data.r
+        })
+      }
+    }
   },
   async mounted() {
     if (this.$auth.isAuthenticated) {
@@ -104,16 +120,16 @@ export default {
     },
     openBuyDialog(option) {
       this.$store.commit(`${BUY_TYPE}`, { title: option })
-      return this.$store.commit(`${TOGGLE_BUY_DIALOG}`, true)
+      this.$store.commit(`${TOGGLE_BUY_DIALOG}`, true)
     },
     openIssuesDialog() {
-      return this.$store.state.map.currentSelection.hasAlert
+      this.$store.state.map.currentSelection.hasAlert
         ? this.disableCurrentSelectionAlert()
         : this.$store.commit(`${TOGGLE_ISSUES_DIALOG}`, true)
     },
     async disableCurrentSelectionAlert() {
       const { focus } = this.$store.state.map
-      return await disableAlert({
+      await disableAlert({
         t: focus.type,
         elemnt: focus.id,
         user_id: await this.$auth.getUserID()
@@ -125,7 +141,7 @@ export default {
     async handleEditCable({ _id, owner, terrestrial }) {
       if (this.$auth && this.$auth.isAuthenticated) {
         let queryType = terrestrial ? 'terrestrial-network' : 'subsea'
-        return owner == (await this.$auth.getUserID())
+        owner == (await this.$auth.getUserID())
           ? this.$router.push(
               `/user/section/create?id=${queryType}&item=${_id}`
             )

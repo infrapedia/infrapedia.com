@@ -14,8 +14,8 @@
       @alert-message="handleSendMessage"
       :pagination="true"
       @search-input="handleTerrestrialSearch"
-      @page-change="getCablesList"
-      @clear-search-input="getCablesList"
+      @page-change="handleTerrestrialSearch"
+      @clear-search-input="handleTerrestrialSearch"
       @sort-by="handleTerrestrialSearch"
     />
     <prompt-delete
@@ -30,11 +30,7 @@
 <script>
 import { cablesColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import {
-  getTerrestrialNetworks,
-  deleteCable,
-  getSearchByCablesT
-} from '../../../services/api/cables'
+import { deleteCable, getSearchByCablesT } from '../../../services/api/cables'
 import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
 import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
 import debounce from '../../../helpers/debounce'
@@ -67,8 +63,8 @@ export default {
       return 'network'
     }
   },
-  async mounted() {
-    await this.getCablesList()
+  async created() {
+    await this.handleTerrestrialSearch('', 'nameAsc', 0)
   },
   methods: {
     handleSendMessage(data) {
@@ -78,17 +74,6 @@ export default {
         type: 'cables'
       })
       return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
-    },
-    async getCablesList(page = 0) {
-      this.loading = true
-      const res = await getTerrestrialNetworks({
-        user_id: await this.$auth.getUserID(),
-        page
-      })
-      if (res.t !== 'error' && res.data) {
-        this.tableData = res.data.r
-      }
-      this.loading = false
     },
     handleEditCable(_id) {
       return this.$router.push({
@@ -126,13 +111,14 @@ export default {
         this.promptDelete = false
       })
     },
-    handleTerrestrialSearch: debounce(async function(s, sortBy) {
+    handleTerrestrialSearch: debounce(async function(s, sortBy, page = 0) {
       this.loading = true
       const res = await getSearchByCablesT({
         user_id: await this.$auth.getUserID(),
         psz: true,
-        s,
-        sortBy
+        sortBy,
+        page,
+        s
       })
       if (res && res.data) {
         this.tableData = res.data

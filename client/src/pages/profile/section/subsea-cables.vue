@@ -13,9 +13,9 @@
       @delete-item="handleDeleteCable"
       @alert-message="handleSendMessage"
       :pagination="true"
-      @page-change="getCablesList"
+      @page-change="handleSubseaSearch"
       @search-input="handleSubseaSearch"
-      @clear-search-input="getCablesList"
+      @clear-search-input="handleSubseaSearch"
       @sort-by="handleSubseaSearch"
       :sortList="sortByList"
     />
@@ -31,11 +31,7 @@
 <script>
 import { cablesColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import {
-  getSubseaCables,
-  deleteCable,
-  getSearchByCablesS
-} from '../../../services/api/cables'
+import { deleteCable, getSearchByCablesS } from '../../../services/api/cables'
 import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
 import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
 import debounce from '../../../helpers/debounce'
@@ -78,8 +74,8 @@ export default {
       return 'subsea cable'
     }
   },
-  async mounted() {
-    await this.getCablesList()
+  async created() {
+    await this.handleSubseaSearch('', 'nameAsc', 0)
   },
   methods: {
     handleSendMessage(data) {
@@ -89,17 +85,6 @@ export default {
         type: 'cables'
       })
       return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
-    },
-    async getCablesList(page = 0) {
-      this.loading = true
-      const res = await getSubseaCables({
-        user_id: await this.$auth.getUserID(),
-        page
-      })
-      if (res.t != 'error' && res.data) {
-        this.tableData = res.data.r
-      }
-      this.loading = false
     },
     handleEditCable(_id) {
       return this.$router.push({
@@ -137,13 +122,14 @@ export default {
         this.promptDelete = false
       })
     },
-    handleSubseaSearch: debounce(async function(s, sortBy) {
+    handleSubseaSearch: debounce(async function(s, sortBy, page = 0) {
       this.loading = true
       const res = await getSearchByCablesS({
         user_id: await this.$auth.getUserID(),
         psz: true,
-        s,
-        sortBy
+        sortBy,
+        page,
+        s
       })
       if (res && res.data) {
         this.tableData = res.data

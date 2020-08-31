@@ -24,16 +24,13 @@ export const useAuth0 = ({
       error: null
     }),
     computed: {
-      userID() {
-        return this.$auth.user && this.$auth.user.sub
-          ? this.$auth.user.sub
-          : this.$auth.getUserID()
-      },
       isUserAnAdmin() {
+        const userId =
+          this.$auth.user && this.$auth.user.sub ? this.$auth.user.sub : ''
         const admIDs = process.env.VUE_APP_RESTRICTED_IDS
           ? process.env.VUE_APP_RESTRICTED_IDS.split(',')
           : []
-        return admIDs.includes(this.userID)
+        return admIDs.includes(userId)
       }
     },
     async created() {
@@ -66,22 +63,17 @@ export const useAuth0 = ({
         } finally {
           // Initialize our internal authentication state
           this.isAuthenticated = await this.auth0Client.isAuthenticated()
-          this.user = await this.auth0Client.getUser()
+          this.user = (await this.auth0Client.getUser()) || {}
           this.loading = false
         }
       },
       async getUserID() {
-        if (!this.user || (this.user && !this.user.sub)) {
-          if (!this.auth0Client) await this.createAuthClient()
-          this.user = await this.auth0Client.getUser()
-          if (!this.user) return this.loginWithRedirect()
-          else return this.user.sub
-        }
-
-        return this.user.sub
+        return this.user && this.user.sub ? this.user.sub : ''
       },
       async checkAuthStatus() {
-        return await this.auth0Client.isAuthenticated()
+        if (this.auth0Client) {
+          await this.auth0Client.isAuthenticated()
+        }
       },
       /** Authenticates the user using a popup window */
       async loginWithPopup(o) {
@@ -90,7 +82,6 @@ export const useAuth0 = ({
         try {
           await this.auth0Client.loginWithPopup(o)
         } catch (e) {
-          // eslint-disable-next-line
           console.error(e)
         } finally {
           this.popupOpen = false
@@ -118,7 +109,7 @@ export const useAuth0 = ({
         if (this.loading) {
           setTimeout(() => this.loginWithRedirect(o), 1000)
         } else {
-          return this.auth0Client.loginWithRedirect(o)
+          this.auth0Client.loginWithRedirect(o)
         }
       },
       /** Returns all the claims present in the ID token */
@@ -135,7 +126,7 @@ export const useAuth0 = ({
       },
       /** Logs the user out and removes their session on the authorization server */
       logout(o) {
-        return this.auth0Client.logout(o)
+        this.auth0Client.logout(o)
       }
     }
   })

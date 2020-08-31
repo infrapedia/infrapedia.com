@@ -125,7 +125,7 @@
                 <a
                   class="underline dont-break-out fs-regular mr2 inline-block"
                   v-for="(url, i) in info[col.value]"
-                  style="max-width: 10.4rem"
+                  style="max-width: 20.4rem"
                   :href="
                     url.includes('http://') || url.includes('https://')
                       ? url
@@ -226,105 +226,134 @@
       <!---- VALUES SECTION END ---->
     </div>
     <!---- FOOTER SECTION STARTS ----->
-    <footer class="pr8 pl8 pb8">
-      <template>
-        <el-divider class="mt0" />
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="12" :md="24" :lg="12">
-            <el-popover
-              placement="bottom"
-              width="100"
-              popper-class="buy-capacity-popper"
-              :visible-arrow="false"
-              trigger="manual"
-              v-model="isMenuOpen"
-            >
-              <el-card shadow="never" class>
-                <ul role="list" class="pt2 pb2">
-                  <li
-                    tabindex="1"
-                    role="listitem"
-                    class="p4 no-selectable transition cursor-pointer seamless-hoverbg no-outline"
-                    :class="{ dark, light: !dark }"
-                    @click="emitEvent"
+    <el-tooltip
+      effect="dark"
+      :disabled="!isActionButtonsDisabled"
+      placement="top-start"
+      content="You need to login before making use of this features"
+    >
+      <footer
+        class="pr8 pl8 pb8"
+        :class="{ disabled: isActionButtonsDisabled }"
+      >
+        <template>
+          <el-divider class="mt0" />
+          <el-row :gutter="20">
+            <el-col :xs="24" :sm="12" :md="24" :lg="12">
+              <el-popover
+                placement="bottom"
+                width="100"
+                popper-class="buy-capacity-popper"
+                :visible-arrow="false"
+                trigger="manual"
+                :disabled="isActionButtonsDisabled"
+                v-model="isMenuOpen"
+              >
+                <el-card shadow="never" class>
+                  <ul role="list" class="pt2 pb2">
+                    <li
+                      tabindex="1"
+                      role="listitem"
+                      class="p4 no-selectable transition cursor-pointer seamless-hoverbg no-outline"
+                      :class="{ dark, light: !dark }"
+                      @click="emitEvent"
+                    >
+                      Backbone
+                    </li>
+                  </ul>
+                </el-card>
+                <div
+                  slot="reference"
+                  @click="toggleMenu"
+                  :class="{ disabled: isActionButtonsDisabled }"
+                  class="cursor-pointer no-outline no-selectable"
+                >
+                  <el-button
+                    type="warning"
+                    circle
+                    :disabled="isActionButtonsDisabled"
+                    class="mr1 w9 h9 vertical-align"
                   >
-                    Backbone
-                  </li>
-                </ul>
-              </el-card>
+                    <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
+                  </el-button>
+                  <span class="fs-regular label">Buy capacity</span>
+                </div>
+              </el-popover>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="24" :lg="12">
               <div
-                slot="reference"
-                @click="toggleMenu"
-                class="cursor-pointer no-outline no-selectable"
+                class="cursor-pointer no-selectable"
+                :class="{ disabled: isActionButtonsDisabled }"
+                @click="
+                  !isActionButtonsDisabled ? $emit(CREATE_ALERT) : () => {}
+                "
               >
                 <el-button
+                  :type="info.alert != 1 ? 'info' : 'warning'"
+                  circle
+                  :disabled="isActionButtonsDisabled"
+                  class="mr1 w9 h9 vertical-align"
+                >
+                  <fa :icon="['fas', 'bell']" class="sm-icon mt-1" />
+                </el-button>
+                <span class="fs-regular label">Receive alerts</span>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20" class="mt8">
+            <el-col :xs="24" :sm="12" :md="24" :lg="12">
+              <div
+                class="cursor-pointer no-selectable"
+                :class="{ disabled: isActionButtonsDisabled }"
+                @click="
+                  !isActionButtonsDisabled
+                    ? $emit(`${EDIT_CABLE}`, {
+                        _id: info._id,
+                        owner: info.uuid,
+                        terrestrial: info.terrestrial
+                      })
+                    : () => {}
+                "
+              >
+                <el-button
+                  :disabled="isActionButtonsDisabled"
                   type="warning"
                   circle
                   class="mr1 w9 h9 vertical-align"
                 >
-                  <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
+                  <fa :icon="['fas', 'pen']" class="sm-icon mt-1" />
                 </el-button>
-                <span class="cursor-pointer fs-regular label"
-                  >Buy capacity</span
-                >
+                <span class="fs-regular label">{{
+                  info.terrestrial ? 'Edit Network' : 'Edit this cable'
+                }}</span>
               </div>
-            </el-popover>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="24" :lg="12">
-            <div
-              class="cursor-pointer no-selectable"
-              @click="$emit(CREATE_ALERT)"
-            >
-              <el-button
-                :type="info.alert !== 1 ? 'info' : 'warning'"
-                circle
-                class="mr1 w9 h9 vertical-align"
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="24" :lg="12">
+              <div
+                class="cursor-pointer no-selectable"
+                :class="{ disabled: isActionButtonsDisabled }"
+                @click="
+                  !isActionButtonsDisabled ? $emit(REPORT_ISSUE) : () => {}
+                "
               >
-                <fa :icon="['fas', 'bell']" class="sm-icon mt-1" />
-              </el-button>
-              <span class="cursor-pointer fs-regular label"
-                >Receive alerts</span
-              >
-            </div>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20" class="mt8">
-          <el-col :xs="24" :sm="12" :md="24" :lg="12">
-            <div
-              class="cursor-pointer no-selectable"
-              @click="
-                $emit(`${EDIT_CABLE}`, {
-                  _id: info._id,
-                  owner: info.uuid,
-                  terrestrial: info.terrestrial
-                })
-              "
-            >
-              <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
-                <fa :icon="['fas', 'pen']" class="sm-icon mt-1" />
-              </el-button>
-              <span class="fs-regular label">{{
-                info.terrestrial ? 'Edit Network' : 'Edit this cable'
-              }}</span>
-            </div>
-          </el-col>
-          <el-col :xs="24" :sm="12" :md="24" :lg="12">
-            <div
-              class="cursor-pointer no-selectable"
-              @click="$emit(REPORT_ISSUE)"
-            >
-              <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
-                <fa
-                  :icon="['fas', 'exclamation-circle']"
-                  class="sm-icon mt-1"
-                />
-              </el-button>
-              <span class="cursor-pointer fs-regular label">Report issue</span>
-            </div>
-          </el-col>
-        </el-row>
-      </template>
-    </footer>
+                <el-button
+                  :disabled="isActionButtonsDisabled"
+                  type="warning"
+                  circle
+                  class="mr1 w9 h9 vertical-align"
+                >
+                  <fa
+                    :icon="['fas', 'exclamation-circle']"
+                    class="sm-icon mt-1"
+                  />
+                </el-button>
+                <span class="fs-regular label">Report issue</span>
+              </div>
+            </el-col>
+          </el-row>
+        </template>
+      </footer>
+    </el-tooltip>
     <!---- FOOTER SECTION END ----->
   </div>
 </template>
@@ -395,6 +424,9 @@ export default {
         cols = cols.filter(col => col.value != 'RFS')
       }
       return cols
+    },
+    isActionButtonsDisabled() {
+      return !this.$auth.isAuthenticated
     },
     isFutureState() {
       const date = this.info.activation_datetime

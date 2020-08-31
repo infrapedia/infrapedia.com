@@ -26,12 +26,12 @@ Vue.config.errorHandler = (err, vm, info) => appErrorHandler(err, vm, info)
 Vue.use(Vue2TouchEvents)
 
 // Install VueMeta here for SEO enhancement
-if (process.env.NODE_ENV == 'production') {
-  Vue.use(VueMeta, {
-    refreshOnceOnNavigation: true,
-    keyName: 'head'
-  })
-}
+// if (process.env.NODE_ENV == 'production') {
+Vue.use(VueMeta, {
+  refreshOnceOnNavigation: true,
+  keyName: 'head'
+})
+// }
 
 // Install the authentication plugin here
 Vue.use(Auth0Plugin, {

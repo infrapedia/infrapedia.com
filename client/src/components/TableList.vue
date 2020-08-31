@@ -117,13 +117,13 @@
             >
               <el-select
                 id="sortBy"
-                v-model="sort.selected"
+                v-model="sortBy"
                 size="mini"
                 class="mr2 w70"
                 style="padding: 0;"
                 :class="{ dark }"
                 placeholder
-                @change="$emit('sort-by', tableSearch, $event)"
+                @change="$emit('sort-by', tableSearch, $event, paginationPage)"
               >
                 <el-option
                   v-for="(opt, i) in sortList"
@@ -138,9 +138,9 @@
                 size="mini"
                 clearable
                 :class="{ dark }"
-                @clear="$emit('clear-search-input')"
-                @input="$emit('search-input', $event, sort.selected)"
-                :placeholder="`Type to search by ${sort.selected}`"
+                @clear="$emit('clear-search-input', '', sortBy, paginationPage)"
+                @input="$emit('search-input', $event, sortBy, paginationPage)"
+                :placeholder="`Type to search by ${sortBy}`"
               />
             </div>
           </template>
@@ -209,10 +209,9 @@
     </el-card>
     <div v-if="pagination" class="w-fit-full flex justify-content-center mt8">
       <el-pagination
-        v-if="!tableSearch && !isSorting"
         layout="prev, next"
         :current-page.sync="paginationPage"
-        @current-change="$emit('page-change', $event)"
+        @current-change="$emit('page-change', tableSearch, sortBy, $event)"
       />
     </div>
   </div>
@@ -297,10 +296,7 @@ export default {
   },
   data: () => ({
     formatDate,
-    sort: {
-      selected: 'nameAsc'
-    },
-    isSorting: false,
+    sortBy: 'nameAsc',
     tableSearch: '',
     paginationPage: 0
   }),
@@ -309,18 +305,13 @@ export default {
       return this.$store.state.isDark
     }
   },
-  created() {
-    this.$on('sort-by', this.handleSortByChange)
-  },
-  beforeDestroy() {
-    this.$off('sort-by', this.handleSortByChange)
-  },
   methods: {
-    handleSortByChange(s, sort) {
-      this.isSorting = Boolean(sort != this.sortList[0].value)
-    },
     getTableSearchValue() {
-      return [this.tableSearch, this.sort.selected]
+      return [
+        this.tableSearch != undefined ? this.tableSearch : '',
+        this.sortBy,
+        this.paginationPage
+      ]
     },
     getKeys(arr) {
       if (!arr.length) return []

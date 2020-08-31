@@ -1,5 +1,6 @@
 // BUY REQUEST
 import $axios from '../axios'
+import apiConfig from '../../config/apiConfig'
 import { getFacilitiesGeom, getFacilitiesGeomPoints } from './facs'
 import { getCablesGeom } from './cables'
 import { getIxpsGeoms } from './ixps'
@@ -117,4 +118,9 @@ export async function handleGetIxpsGeom(ids, user_id) {
     ids
   })
   return res && res.data && res.data.r ? res.data.r : fCollectionFormat()
+}
+
+export async function getElementIdByType({ type, slug }) {
+  const res = await $axios.get(`${apiConfig.url}/${type}/${slug}`)
+  return res
 }

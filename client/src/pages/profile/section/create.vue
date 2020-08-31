@@ -303,11 +303,13 @@ export default {
             subdomain,
             config
           } = mymap[0]
+          const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
 
           this.form = {
             config,
             googleID,
             subdomain,
+            geom: [],
             salePhone: salePhone ? salePhone : '',
             techEmail: techEmail ? techEmail : '',
             techPhone: techPhone ? techPhone : '',
@@ -316,7 +318,6 @@ export default {
             logo: Array.isArray(logos) && logos.length > 0 ? logos[0] : ''
           }
 
-          const fc = typeof draw == 'string' ? JSON.parse(draw) : draw
           if (fc.features && fc.features.length > 0) {
             bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, fc.features)
           }
@@ -627,7 +628,7 @@ export default {
       })
       return res && res.data && res.data.r ? res.data.r : {}
     },
-    async handleSendData(mode, creationType) {
+    async handleSendData(mode, creationType, mapData) {
       if (!mode || !creationType) return
       let method = null
       this.isSendingData = true
@@ -675,23 +676,28 @@ export default {
         ? (this.form.geom[0].properties.name = this.form.name)
         : (this.form.geom[0].properties.name = this.form.geom[0].properties.name)
 
+      /**
+       * The only one that sends data throught the event is the custom map form
+       */
+      const formData = mapData ? mapData : this.form
       const { t, data } = (await method({
-        ...this.form,
+        ...formData,
         user_id: await this.$auth.getUserID()
       })) || { t: 'error', data: null }
 
       this.isSendingData = false
       if (t != 'error') {
         this.mode = 'edit'
-        this.$router.replace({
-          path: '/user/section/create',
-          query: {
-            id: this.$route.query.id,
-            item: data.r
-          }
-        })
         if (creationType == 'map') {
           await setupMyMapArchives(this.form.subdomain).catch(console.error)
+        } else {
+          this.$router.replace({
+            path: '/user/section/create',
+            query: {
+              id: this.$route.query.id,
+              item: data.r
+            }
+          })
         }
       }
     }

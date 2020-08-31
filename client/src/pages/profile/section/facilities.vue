@@ -14,8 +14,8 @@
       @sort-by="handleFacsSearch"
       @edit-item="handleEditFac"
       @delete-item="handleDeleteFac"
-      @page-change="getFacilitiesList"
-      @clear-search-input="getFacilitiesList"
+      @page-change="handleFacsSearch"
+      @clear-search-input="handleFacsSearch"
     />
     <prompt-delete
       :elemnt="elemntType"
@@ -29,11 +29,7 @@
 <script>
 import { facsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import {
-  getFacilities,
-  searchFacilities,
-  deleteFacility
-} from '../../../services/api/facs'
+import { searchFacilities, deleteFacility } from '../../../services/api/facs'
 import debounce from '../../../helpers/debounce'
 import { deleteFacilityPermanently } from '../../../services/api/permanentDelete'
 
@@ -62,34 +58,24 @@ export default {
       return 'facility'
     }
   },
-  async mounted() {
-    await this.getFacilitiesList()
+  async created() {
+    await this.handleFacsSearch('', 'nameAsc', 0)
   },
   methods: {
-    async getFacilitiesList(page = 0) {
-      this.loading = true
-      const res = await getFacilities({
-        user_id: await this.$auth.getUserID(),
-        page
-      })
-      if (res.t !== 'error' && res.data) {
-        this.tableData = res.data.r
-      }
-      this.loading = false
-    },
     handleEditFac(_id) {
       return this.$router.push({
         path: '/user/section/create',
         query: { id: 'facilities', item: _id }
       })
     },
-    handleFacsSearch: debounce(async function(s, sortBy) {
+    handleFacsSearch: debounce(async function(s, sortBy, page = 0) {
       this.loading = true
       const res = await searchFacilities({
         user_id: await this.$auth.getUserID(),
         psz: true,
-        s,
-        sortBy
+        sortBy,
+        page,
+        s
       })
       if (res && res.data) {
         this.tableData = res.data
