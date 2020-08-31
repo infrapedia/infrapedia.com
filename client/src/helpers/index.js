@@ -1,4 +1,6 @@
-export function getCategoriesByType({ t, categories }) {
+import getMetaDataTagsFromSelectionType from './getMetaDataTagsFromType'
+
+function getCategoriesByType({ t, categories }) {
   const result = []
   for (let key in categories) {
     if (categories[key].types.includes(t)) {
@@ -7,3 +9,5 @@ export function getCategoriesByType({ t, categories }) {
   }
   return result
 }
+
+export { getMetaDataTagsFromSelectionType, getCategoriesByType }
