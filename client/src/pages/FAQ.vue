@@ -104,9 +104,6 @@ export default {
         }
       ]
     }
-  },
-  beforeCreate() {
-    this.$emit('layout', 'landing-layout')
   }
 }
 </script>

@@ -1,45 +1,25 @@
 import createControlButton from './createControlButton'
-import { fCollectionFormat } from '../../helpers/featureCollection'
-// import Snaping from './snaping'
-// import { point, booleanEqual, lineSlice } from '@turf/turf'
+import { MessageBox } from 'element-ui'
+import EventEmitter from '../../lib/EventEmitter'
 
-class EditorControls {
-  constructor({
-    map,
-    draw,
-    type,
-    scene,
-    handleEditFeatureProperties,
-    handleBeforeFeatureCreation
-  }) {
-    this.type = type
+class EditorControls extends EventEmitter {
+  constructor({ map, draw, type }) {
+    super()
     this.map = map
     this.draw = draw
-    this.scene = scene
-    // this.snaping = new Snaping({
-    //   map: map,
-    //   draw: draw,
-    //   pixel: 8,
-    //   scene: scene,
-    //   snapLayers: [
-    //     'cls-layer',
-    //     'ixps-layer',
-    //     'cables-layer',
-    //     'facilities-layer'
-    //   ]
-    // })
-    // this.snapMode = false
-    this.resetScene = this.resetScene
-    this.updateControls = this.updateControls
-    this.handleBeforeFeatureCreation = handleBeforeFeatureCreation
-    this.handleEditFeatureProperties = handleEditFeatureProperties
-    this.handleDrawSelectionChange = this.handleDrawSelectionChange
+    this.type = type
+    this.buttons = null
+    this.visibleControls = {
+      lines: ['subsea', 'map', 'terrestrial-network'],
+      points: ['facilities', 'ixps', 'cls', 'map'],
+      polygon: ['facilities', 'map']
+    }
   }
 
   onAdd() {
     this.controlGroup = document.createElement('div')
     this.controlGroup.className = 'mapboxgl-ctrl-group mapboxgl-ctrl'
-    this.buttons = this.createButtons()
+    this.buttons = this._createButtons()
     return this.controlGroup
   }
 
@@ -47,389 +27,148 @@ class EditorControls {
     this.controlGroup.parentNode.removeChild(this.controlGroup)
   }
 
-  createButtons() {
+  _createButtons() {
     return {
-      line_string: createControlButton('line_string', {
+      line_string: createControlButton('line_string-static', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-line-string',
         title: 'Draw line',
-        visible:
-          this.type == 'map' ||
-          this.type == 'subsea' ||
-          this.type == 'terrestrial-network'
-            ? true
-            : false,
-        eventListener: () => {
-          this.scene.creation = true
-          this.draw.changeMode(this.draw.modes.DRAW_LINE_STRING)
-        }
+        dataset: ['data-control-filter', 'lines'],
+        visible: this.visibleControls.lines.includes(this.type),
+        eventListener: () => this.createDraw(this.draw.modes.DRAW_LINE_STRING)
       }),
 
-      // cut: createControlButton('cut', {
-      //   container: this.controlGroup,
-      //   className:
-      //     'editor-ctrl el-button m0 p0 el-button--text el-button--small',
-      //   title: 'Cut Lines',
-      //   icon: 'el-icon-scissors',
-      //   visible:
-      //     this.type == 'map' ||
-      //     this.type == 'subsea' ||
-      //     this.type == 'terrestrial-network'
-      //       ? true
-      //       : false,
-      //   eventListener: () => this.handleCutFeature()
-      // }),
-      // vertexdelete: createControlButton('vertexdelete', {
-      //   container: this.controlGroup,
-      //   className:
-      //     'editor-ctrl el-button m0 p0 el-button--text el-button--small',
-      //   title: 'Vertex Deleting',
-      //   icon: 'el-icon-delete-location',
-      //   visible:
-      //     this.type == 'map' ||
-      //     this.type == 'subsea' ||
-      //     this.type == 'terrestrial-network'
-      //       ? true
-      //       : false,
-      //   eventListener: () => this.handleDeleteVertex()
-      // }),
-
-      point: createControlButton('point', {
+      point: createControlButton('point-static', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-point',
         title: 'Create point',
-        visible:
-          this.type == 'map' ||
-          this.type == 'cls' ||
-          this.type == 'ixps' ||
-          this.type == 'facilities'
-            ? true
-            : false,
-        eventListener: () => {
-          this.scene.creation = true
-          this.draw.changeMode(this.draw.modes.DRAW_POINT)
-        }
+        dataset: ['data-control-filter', 'points'],
+        visible: this.visibleControls.points.includes(this.type),
+        eventListener: () => this.createDraw(this.draw.modes.DRAW_POINT)
       }),
 
-      polygon: createControlButton('polygon', {
+      polygon: createControlButton('polygon-static', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-polygon',
         title: 'Create polygon',
-        visible: this.type == 'map' || this.type == 'facilities' ? true : false,
-        eventListener: () => {
-          this.scene.creation = true
-          this.draw.changeMode(this.draw.modes.DRAW_POLYGON)
-        }
+        dataset: ['data-control-filter', 'polygon'],
+        visible: this.visibleControls.polygon.includes(this.type),
+        eventListener: () => this.createDraw(this.draw.modes.DRAW_POLYGON)
       }),
 
-      editProperties: createControlButton('edit-properties', {
+      editProperties: createControlButton('edit-properties-dynamic', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-edit-properties',
         title: 'Edit properties',
-        eventListener: () => this.handleEditFeatureProps()
+        eventListener: () => this.emit('update-feature-properties')
       }),
 
-      trash: createControlButton('trash', {
+      trash: createControlButton('trash-dynamic', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-trash',
         title: 'Delete',
-        eventListener: () => {
-          this.scene.features.selected = this.draw.getSelected()
-          this.deleteFeature()
-        }
+        eventListener: () =>
+          this.emit('delete-feature', this.draw.getSelected().features)
       }),
 
-      deleteAll: createControlButton('delete-all', {
+      deleteAll: createControlButton('delete-all-static', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-delete-all',
         title: 'Delete All',
         visible: true,
-        eventListener: async () => {
-          if (this.scene.features.list.length <= 0) return
+        eventListener: () => {
+          const message =
+            this.type == 'map'
+              ? 'This will delete everything on the editor. Including the elements on each category you created. You sure you want to continue?'
+              : 'This will delete everything on the editor. Except the elements you have selected on the form.'
 
-          this.scene.features.list = []
-          await this.draw.set(fCollectionFormat())
+          return MessageBox.confirm(message, 'Delete all?')
+            .then(() => this.resetScene(true, true))
+            .catch(() => {})
         }
       }),
 
-      ok: createControlButton('ok', {
+      ok: createControlButton('ok-dynamic', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-ok',
         title: 'Accept',
-        eventListener: () => {
-          try {
-            this.scene.creation
-              ? this.handleFeatureCreation()
-              : this.handleFeatureEdition()
-          } catch (err) {
-            console.error(err)
-          }
-        }
+        eventListener: () =>
+          this.emit('confirm', this.draw.getSelected().features)
       }),
 
-      cancel: createControlButton('cancel', {
+      cancel: createControlButton('cancel-dynamic', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-cancel',
         title: 'Cancel',
-        eventListener: () => this.handleCancel()
+        eventListener: () => this.resetScene(false, true)
       })
     }
   }
   /**
    *
-   * @param { boolean } isResetList - A boolean indicating if it should reset the list of features saved too
+   * @param { string } mode - Mapbox Draw Mode
    */
-  resetScene(isResetList) {
-    this.scene.edition = null
-    this.scene.creation = null
-    this.scene.features.selected = null
-    this.scene.snappoint = null
-    this.draw.changeMode(this.draw.modes.SIMPLE_SELECT)
-    if (isResetList) {
-      this.scene.features.list = []
-    }
+  createDraw(mode) {
+    this.emit('draw')
+    this.draw.changeMode(mode)
   }
-
-  deleteFeature() {
-    const selected = this.draw.getSelected()
-
-    if (selected && selected.features.length > 0) {
-      for (let featureSelected of selected.features) {
-        this.scene.features.list = this.scene.features.list.filter(
-          feat => feat.id != featureSelected.id
-        )
-        this.draw.delete(featureSelected.id)
-      }
-      this.resetScene()
-    }
-  }
-
   /**
    *
-   * @param { Object } scene - Reference to the Vuex state of the scene
+   * @param { boolean } reset - A boolean indicating if it should reset the list of features saved too
    */
-  updateControls(scene = this.scene) {
-    const isCreation = scene.creation || scene.edition
-    const isEdition = !scene.creation || !scene.edition
-    const lineStringAllowed = ['map', 'subsea', 'terrestrial-network']
-
-    if (isCreation) {
-      this.buttons.ok.style.setProperty('display', 'block')
-      this.buttons.cancel.style.setProperty('display', 'block')
-      this.buttons.trash.style.setProperty('display', 'block')
-
-      this.buttons.point.style.setProperty('display', 'none')
-      this.buttons.line_string.style.setProperty('display', 'none')
-
-      if (scene.edition) {
-        this.buttons.editProperties.style.setProperty('display', 'block')
-      } else {
-        this.buttons.editProperties.style.setProperty('display', 'none')
-      }
-    } else if (isEdition) {
-      this.buttons.ok.style.setProperty('display', 'none')
-      this.buttons.cancel.style.setProperty('display', 'none')
-      this.buttons.trash.style.setProperty('display', 'none')
-      this.buttons.editProperties.style.setProperty('display', 'none')
-
-      if (
-        !this.type.includes('subsea') &&
-        !this.type.includes('terrestrial-network')
-      ) {
-        this.buttons.point.style.setProperty('display', 'block')
-      } else {
-        this.buttons.point.style.setProperty('display', 'none')
-      }
-
-      if (lineStringAllowed.includes(this.type)) {
-        this.buttons.line_string.style.setProperty('display', 'block')
-      } else {
-        this.buttons.line_string.style.setProperty('display', 'none')
-      }
-    }
+  resetScene(reset, removeFilter = false) {
+    this.emit('reset-scene', { reset, removeFilter })
   }
+  /**
+   *
+   * @param { Object } scene
+   */
+  updateControls(scene) {
+    const staticControls = Object.keys(this.buttons)
+      .map(key => this.buttons[key].id)
+      .filter(id => id.includes('-static'))
 
-  handleCancel() {
-    this.scene.features.selected = this.draw.getSelected()
-    const creations = this.draw.getAll()
-    const savedFeats = Array.from(this.scene.features.list).map(feat => feat.id)
-    const { selected } = this.scene.features
+    const dynamicControls = Object.keys(this.buttons)
+      .map(key => this.buttons[key].id)
+      .filter(id => id.includes('-dynamic'))
 
-    if (this.scene.creation) {
-      // We are deleting the selected and just created draw(s)
-      if (selected && selected.length) {
-        for (let feat of selected) {
-          this.draw.delete(feat.id)
-        }
-      } else if (creations.features.length) {
-        // Otherwise if the user has created draw(s) but he un-selected them
-        // We are checking for ones which aren't saved on the store and deleting them
-        for (let feat of creations.features) {
-          if (!savedFeats.includes(feat.id)) {
-            this.draw.delete(feat.id)
+    const deleteAllBtnID = 'delete-all-static'
+
+    if (!scene.isDynamicControls) {
+      // ON STATIC MODE, THERE SHOULD ONLY BE TWO CONTROLS AT DISPOSITION
+      // THE DRAW BUTTON FOR THE TYPE CREATION AND THE DELETE ALL BUTTON
+      for (let key in this.buttons) {
+        if (staticControls.includes(this.buttons[key].id)) {
+          if (this.buttons[key].id == deleteAllBtnID) {
+            this.buttons[key].style.setProperty('display', 'block')
+          } else if (
+            this.buttons[key].dataset.controlFilter &&
+            this.visibleControls[
+              this.buttons[key].dataset.controlFilter
+            ].includes(this.type)
+          ) {
+            this.buttons[key].style.setProperty('display', 'block')
+          } else {
+            this.buttons[key].style.setProperty('display', 'none')
           }
+        } else {
+          this.buttons[key].style.setProperty('display', 'none')
         }
       }
-      this.resetScene()
-    } else if (this.scene.edition) {
-      // Because you cancel the edition we need to recreate all the draw(s) again
-      // This function does the same as doing this.draw.trash() and them this.draw.add() for each feature
-      // The difference is that this one has better performance
-      this.draw.set({
-        type: 'FeatureCollection',
-        features: Array.from(this.scene.features.list, f => ({
-          ...f
-        }))
-      })
-      this.resetScene()
-    }
-  }
-
-  /**
-   *
-   * @param { Array } features - FeatureCollection with the features that has been selected by the user
-   */
-  handleDrawSelectionChange(features) {
-    if (!this.scene.edition && !this.scene.creation && features.length) {
-      this.scene.edition = true
-      this.scene.features.selected = { features }
-    }
-  }
-
-  async handleFeatureCreation() {
-    this.scene.features.selected = this.draw.getSelected()
-    const { selected } = this.scene.features
-
-    if (selected && selected.features.length > 0) {
-      const onlyOneFeatureAllowed = ['cls', 'ixps']
-      if (
-        onlyOneFeatureAllowed.includes(this.type) &&
-        this.scene.features.list.length > 0
-      ) {
-        return
-      }
-
-      await this.handleBeforeFeatureCreation({
-        ...selected.features[0]
-      })
-    }
-  }
-  /**
-   *
-   * @param { Object } features - Features that has been edited
-   */
-  handleFeatureEdition() {
-    const currentFeature = this.draw.getSelected()
-
-    if (currentFeature.features.length > 0) {
-      const feat = JSON.parse(
-        JSON.stringify(
-          this.scene.features.list.filter(
-            f => f.id == currentFeature.features[0].id
-          )[0]
-        )
-      )
-
-      feat.geometry.coordinates =
-        currentFeature.features[0].geometry.coordinates
-
-      this.scene.features.list.forEach((feature, i) => {
-        for (let featEdit of [feat]) {
-          if (feature.id == featEdit.id) {
-            this.scene.features.list[i] = { ...featEdit }
-          }
+    } else {
+      // OTHERWISE ALL THE DYNAMIC BUTTONS SHOULD BE DISPLAYED
+      // WITHOUT REMOVING THE DELETE-ALL BUTTON OFC
+      for (let key in this.buttons) {
+        if (dynamicControls.includes(this.buttons[key].id)) {
+          this.buttons[key].style.setProperty('display', 'block')
+        } else if (this.buttons[key].id == deleteAllBtnID) {
+          this.buttons[key].style.setProperty('display', 'block')
+        } else {
+          this.buttons[key].style.setProperty('display', 'none')
         }
-      })
-      this.resetScene()
+      }
     }
   }
-
-  async handleEditFeatureProps() {
-    const featuresSelected = this.draw.getSelected()
-
-    if (featuresSelected && featuresSelected.features.length > 0) {
-      const features = this.scene.features.list.filter(
-        f => f.id == featuresSelected.features[0].id
-      )
-      await this.handleEditFeatureProperties(
-        features.length ? JSON.parse(JSON.stringify(features[0])) : null
-      )
-    }
-  }
-
-  // async handleCutFeature() {
-  //   var mypoint = this.draw.getSelectedPoints()
-  //   var line = this.draw.getSelected()
-  //   var len = line.features[0].geometry.coordinates.length
-  //   var id = line.features[0].id
-  //   var all = Array.from(this.scene.features.list, it => ({ ...it }))
-  //   var newlist = fCollectionFormat()
-  //   if (mypoint.features.length > 0 && line.features.length > 0) {
-  //     var start = point(line.features[0].geometry.coordinates[0])
-  //     var stop = point(mypoint.features[0].geometry.coordinates)
-  //     var finish = point(line.features[0].geometry.coordinates[len - 1])
-
-  //     var firstSegment = lineSlice(start, stop, line.features[0])
-  //     var secondSegment = lineSlice(stop, finish, line.features[0])
-  //     firstSegment.id = this.draw.add(firstSegment)[0]
-  //     secondSegment.id = this.draw.add(secondSegment)[0]
-
-  //     firstSegment.geometry.coordinates.pop()
-
-  //     const selection = all.filter(item => item.id == id)
-  //     if (selection && selection.length > 0) {
-  //       firstSegment.properties = { ...selection[0].properties }
-  //       secondSegment.properties = {
-  //         ...selection[0].properties,
-  //         name: `${selection[0].properties.name}.copy`
-  //       }
-  //     }
-
-  //     for (let feat of all) {
-  //       if (feat.id != id) {
-  //         newlist.features.push(feat)
-  //       } else {
-  //         newlist.features.push(firstSegment)
-  //         newlist.features.push(secondSegment)
-  //       }
-  //     }
-
-  //     this.draw.set(newlist)
-  //     this.scene.edition = null
-  //     this.scene.creation = null
-  //     this.scene.features.selected = null
-  //     this.scene.features.list = newlist.features
-  //   } else {
-  //     alert('Please Select a geometry and a point')
-  //   }
-  // }
-
-  // async handleDeleteVertex() {
-  //   var mypoint = this.draw.getSelectedPoints()
-  //   var pt1 = mypoint.features[0]
-  //   var line = this.draw.getSelected()
-
-  //   if (mypoint.features.length > 0 && line.features.length > 0) {
-  //     var id = line.features[0].id
-  //     var newCoords = []
-  //     var all = this.draw.getAll()
-  //     line.features[0].geometry.coordinates.map(function(a) {
-  //       var pt2 = point(a)
-  //       var status = booleanEqual(pt1, pt2)
-  //       if (status == false) {
-  //         newCoords.push(a)
-  //       }
-  //     })
-  //     all.features.forEach(function(a) {
-  //       if (a.id == id) {
-  //         a.geometry.coordinates = newCoords
-  //       }
-  //     })
-  //     this.draw.set(all)
-  //   } else {
-  //     alert('Please Select a geometry and a point')
-  //   }
-  // }
 }
 
 export default EditorControls

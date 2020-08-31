@@ -5,6 +5,7 @@
     >
       <div
         class="flex no-padding navbar-wrapper w-full nowrap justify-content-space-between pr1 pl1"
+        :class="{ 'pr2 pl2': isUserNavbar }"
       >
         <h1 class="logo-title">
           <router-link :to="checkIfLoggedIn" class="hidden-md-and-down">

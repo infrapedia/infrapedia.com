@@ -4,15 +4,42 @@
 .el-aside {
   ul[role='group'] {
     li[role='listitem'] {
-      font-size: 14px;
+      font-size: 0.8em;
+      .label {
+        transform: translateX(1rem);
+      }
     }
   }
 }
 
 .vph-full {
+  background-color: $white-profile;
   @media screen and (max-width: $break-sm) {
     overflow-y: scroll;
   }
+}
+
+.el-aside.adjust-width {
+  width: 4rem !important;
+  ul a {
+    padding: 0 1.4rem 0 1.4rem;
+    color: transparent;
+  }
+  &:hover {
+    width: 4.2rem !important;
+  }
+}
+
+.profile-footer {
+  transform: translateX(11.96rem) translateY(-0.4rem);
+  &.is-create-route {
+    transform: translateX(32.8rem) translateY(-0.4rem);
+  }
+}
+
+.transition-all-delay-520ms {
+  @extend .cubic-transition;
+  transition-delay: 520ms;
 }
 
 /*
@@ -32,6 +59,9 @@
           &:focus:not(.router-link-exact-active),
           &:focus-within:not(.router-link-exact-active) {
             background-color: lighten($blue-user-interface, 4%);
+          }
+          .icon {
+            color: $white-partial;
           }
         }
         .router-link-exact-active {
@@ -57,11 +87,17 @@
           &:focus-within:not(.router-link-exact-active) {
             background-color: lighten($dark-charcoal, 4%);
           }
+          .icon {
+            color: $white-partial;
+          }
         }
         .router-link-exact-active {
           background-color: $dark-charcoal;
         }
       }
     }
+  }
+  #profile-layout__main-wraper {
+    background-color: $dark-charcoal;
   }
 }

@@ -1,25 +1,27 @@
 <template>
   <div class="inline-block w-fit-full multi-select">
     <div class="flex row wrap w-fit-full">
-      <el-tag
-        v-for="(tag, i) in selections"
-        :key="i"
-        closable
-        style="max-width: 16rem;"
-        class="mr1 mb4 p2 no-overflow vertical-align"
-        :title="tag.name"
-        :effect="dark ? 'dark' : 'light'"
-        :type="dark ? 'info' : ''"
-        :disable-transitions="true"
-        @close="handleRemovedItem(tag)"
-      >
-        <span
-          class="inline-block h7 p0 no-overflow truncate"
-          style="max-width: 12rem;"
+      <template v-for="(tag, i) in selections">
+        <el-tag
+          v-if="tag"
+          :key="i"
+          closable
+          style="max-width: 16rem;"
+          class="mr1 mb4 p2 no-overflow vertical-align"
+          :title="tag.name ? tag.name : tag.label"
+          :effect="dark ? 'dark' : 'light'"
+          :type="dark ? 'info' : ''"
+          :disable-transitions="true"
+          @close="handleRemovedItem(tag)"
         >
-          {{ tag.name }}
-        </span>
-      </el-tag>
+          <span
+            class="inline-block h7 p0 no-overflow truncate"
+            style="max-width: 12rem;"
+          >
+            {{ tag.name ? tag.name : tag.label }}
+          </span>
+        </el-tag>
+      </template>
       <el-select
         v-if="isInputVisible"
         v-model="selected"
@@ -44,7 +46,7 @@
         >
           <div>
             <fa :icon="['fas', 'award']" v-if="opt.yours == 1" class="mr1" />
-            {{ opt.name }}
+            {{ opt.name ? opt.name : opt.label }}
           </div>
         </el-option>
       </el-select>
@@ -140,11 +142,13 @@ export default {
       else return this.$emit('input', s)
     }, 320),
     handleRemovedItem(tag) {
+      if (!tag) return
+
       this.selections.splice(
         this.selections.map(opt => opt._id).indexOf(tag._id),
         1
       )
-      return this.$emit('remove', tag._id)
+      this.$emit('remove', tag._id)
     },
     toggleInput(bool) {
       this.isInputVisible = bool

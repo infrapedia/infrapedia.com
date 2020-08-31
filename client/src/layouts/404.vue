@@ -1,7 +1,7 @@
 <template>
-  <div class="vph-half text-center">
+  <el-container direction="vertical">
     <el-divider class="m0"></el-divider>
-    <div class="mt50">
+    <div class="mt50 text-center">
       <h2>
         404 NOT FOUND
       </h2>
@@ -14,7 +14,7 @@
         to head over there now.
       </p>
     </div>
-  </div>
+  </el-container>
 </template>
 
 <script>

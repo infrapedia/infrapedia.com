@@ -2,7 +2,7 @@
   <el-header class="fs-small p4 vertical-align header">
     <h1 class="logo-title inline-block">
       <router-link :to="checkIfLoggedIn" class="hidden-sm-and-down">
-        <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
+        <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" lazy />
       </router-link>
       <el-button
         circle

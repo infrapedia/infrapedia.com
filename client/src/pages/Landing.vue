@@ -1,24 +1,37 @@
 <template>
-  <div class="min-height60vh">
-    <home-page />
-    <!-- <votation-dialog
-      :is-visible="isPoolDialog"
-      @close="() => (isPoolDialog = false)"
-    /> -->
-  </div>
+  <el-container direction="vertical">
+    <h-mobile-drawer
+      class="hidden-md-and-up"
+      :is-homepage-drawer="true"
+      :visibility="isMobileDrawer"
+      @close="closeDrawer"
+    />
+    <h-navbar @toggle-mobile-drawer="toggleDrawerVisibility" />
+    <transition
+      mode="out-in"
+      name="animated faster3x"
+      enter-active-class="fadeIn"
+      leave-active-class="fadeOut"
+    >
+      <home-page />
+    </transition>
+    <h-footer />
+  </el-container>
 </template>
 
 <script>
+import HFooter from '../components/homepage/Footer'
+import HNavbar from '../components/homepage/Navbar'
+import HMobileDrawer from '../components/MobileDrawer'
 import HomePage from '../components/homepage/HomePage'
 import { checkCookie } from '../helpers/cookies'
-// import VotationDialog from '../components/dialogs/VotationDialog'
-// import { checkUserVote } from '../services/api/voting'
-// import debounce from '../helpers/debounce'
 
 export default {
   components: {
-    HomePage
-    // VotationDialog
+    HomePage,
+    HFooter,
+    HNavbar,
+    HMobileDrawer
   },
   head: {
     title: 'Global Internet Infrastructure Map | Infrapedia',
@@ -41,14 +54,12 @@ export default {
     ]
   },
   data: () => ({
-    isPoolDialog: false
+    isPoolDialog: false,
+    isMobileDrawer: false
   }),
-  beforeCreate() {
-    this.$emit('layout', 'landing-layout')
+  created() {
+    document.querySelector('body').className = 'overflow-y-auto'
   },
-  // async created() {
-  //   await this.checkVote()
-  // },
   beforeRouteEnter(to, from, next) {
     next(async vm => {
       if (
@@ -65,16 +76,20 @@ export default {
           })
       }
     })
+  },
+  methods: {
+    closeDrawer() {
+      this.isMobileDrawer = false
+
+      const body = document.querySelector('body')
+      body.className = this.isMobileDrawer ? 'no-overflow' : 'overflow-y-scroll'
+    },
+    toggleDrawerVisibility() {
+      this.isMobileDrawer = !this.isMobileDrawer
+
+      const body = document.querySelector('body')
+      body.className = this.isMobileDrawer ? 'no-overflow' : 'overflow-y-scroll'
+    }
   }
-  // methods: {
-  //   checkVote: debounce(async function() {
-  //     const { t } = (await checkUserVote('')) || {
-  //       t: 'error'
-  //     }
-  //     if (t && t != 'error') {
-  //       this.isPoolDialog = true
-  //     }
-  //   }, 1200)
-  // }
 }
 </script>

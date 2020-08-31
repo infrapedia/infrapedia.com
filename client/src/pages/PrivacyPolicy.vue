@@ -221,9 +221,6 @@ export default {
     dark() {
       return this.$store.state.isDark
     }
-  },
-  beforeCreate() {
-    this.$emit('layout', 'landing-layout')
   }
 }
 </script>

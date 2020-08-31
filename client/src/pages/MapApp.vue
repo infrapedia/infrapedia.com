@@ -19,7 +19,7 @@
       />
       <user-cables-button />
       <div class="h-fit-content min-height60vh">
-        <slot />
+        <map-overlay />
       </div>
     </template>
     <i-footer role="contentinfo" class="ml20 hidden-sm-and-down" />
@@ -32,6 +32,7 @@ import INavbar from '../components/navbar/Navbar'
 import { BUY_CAPACITY, EDIT_CABLE } from '../events/sidebar'
 import {
   BUY_TYPE,
+  IS_DRAWING,
   TOGGLE_BUY_DIALOG,
   TOGGLE_ALERT_DIALOG,
   TOGGLE_ISSUES_DIALOG
@@ -40,11 +41,13 @@ import { disableAlert } from '../services/api/alerts'
 import Sidebar from '../components/Sidebar.vue'
 import { setCookie } from '../helpers/cookies'
 import { getAccessToken } from '../services/api/auth'
+import MapOverlay from '../components/mainMap/MapOverlay'
 
 export default {
   components: {
     IFooter,
     INavbar,
+    MapOverlay,
     ISidebar: Sidebar,
     IBuyDialog: () => import('../components/dialogs/BuyDialog'),
     UserCablesButton: () => import('../components/UserCablesButton'),
@@ -59,12 +62,40 @@ export default {
     EDIT_CABLE,
     openEditDialog: false
   }),
+  head: {
+    title: 'Infrapedia | Global Internet Infrastructure Map',
+    meta: [
+      {
+        name: 'application-name',
+        content: 'Infrapedia | Global Internet Infrastructure Map'
+      },
+      {
+        name: 'keywords',
+        content:
+          'custom maps, fiber optics maps, internet infrastructure map, live map, consulting, data center, sponsorship, ads, telecommunications'
+      },
+      {
+        name: 'description',
+        content:
+          'Navigate through the World’s Largest Live Map of the Global Internet Infrastructure. All the data you need for free in a crowd-sourced platform.'
+      }
+    ]
+  },
+  created() {
+    document.querySelector('body').className = 'no-overflow'
+  },
   async mounted() {
     if (this.$auth.isAuthenticated) {
       await this.setToken()
     }
   },
   methods: {
+    beforeRouteLeave(to, from, next) {
+      if (this.$store.state.isDrawing) {
+        this.$store.commit(`${IS_DRAWING}`, false)
+      }
+      next()
+    },
     async setToken() {
       const token = await getAccessToken()
       if (token) {
@@ -94,7 +125,7 @@ export default {
     async handleEditCable({ _id, owner, terrestrial }) {
       if (this.$auth && this.$auth.isAuthenticated) {
         let queryType = terrestrial ? 'terrestrial-network' : 'subsea'
-        return owner === (await this.$auth.getUserID())
+        return owner == (await this.$auth.getUserID())
           ? this.$router.push(
               `/user/section/create?id=${queryType}&item=${_id}`
             )

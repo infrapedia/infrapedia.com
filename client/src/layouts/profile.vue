@@ -1,20 +1,25 @@
 <template>
   <el-container
     class="vph-full"
+    id="profile-layout__main-wraper"
     :class="{
       'no-overflow': isMobileProfileDrawer
     }"
   >
     <i-navbar role="navigation" :is-user-navbar="true" />
 
-    <el-aside class="mt12 oveflow-y-auto no-overflow-x hidden-md-and-down">
-      <ul role="group" class="pt10 pb20 h-fit-full">
+    <el-aside
+      width="200px"
+      class="mt12 no-overflow hidden-md-and-down cubic-transition"
+      :class="{ 'adjust-width': $route.path.includes('create') }"
+    >
+      <ul role="group" class="pt7 h-fit-full">
         <template v-for="(link, i) in links">
-          <li role="listitem" class="h18" :key="i">
+          <li role="listitem" class="h10" :key="i" :title="link.label">
             <router-link
               exact
               :to="link.url"
-              style="width: 90%"
+              style="width: 90%;"
               :id="
                 `${link.label
                   .trim()
@@ -22,9 +27,17 @@
                   .replace(' ', '-')}-link`
               "
               :class="checkURL(link)"
-              class="inline-flex align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
+              class="inline-flex align-items-center pl5 color-inherit h-fit-full w-fit-full no-outline"
             >
-              <fa :icon="link.icon" class="mr2" /> {{ link.label }}
+              <fa :icon="link.icon" class="cubic-transition icon" />
+              <span
+                class="label"
+                :class="{
+                  'transition-all-delay-520ms': !$route.path.includes('create')
+                }"
+              >
+                {{ link.label }}
+              </span>
             </router-link>
           </li>
         </template>
@@ -38,14 +51,18 @@
       @close="handleToggleMobileProfileDrawer"
     />
 
-    <transition mode="out-in" name="fade">
-      <slot />
+    <transition
+      mode="out-in"
+      name="animated super-fast"
+      enter-active-class="fadeIn"
+      leave-active-class="fadeOut"
+    >
+      <router-view />
     </transition>
 
     <i-footer
-      role="contentinfo"
-      id="footer-profile"
-      class="mb1 ml80 hidden-md-and-down"
+      class="profile-footer hidden-md-and-down transition-all"
+      :class="{ 'is-create-route': $route.path.includes('create') }"
     />
     <v-tour
       name="profile-tour"
@@ -139,6 +156,7 @@ export default {
       `${navbarEvents.TOGGLE_MOBILE_DRAWER_PROFILE}`,
       this.handleToggleMobileProfileDrawer
     )
+    document.querySelector('body').className = 'no-overflow'
   },
   beforeDestroy() {
     bus.$off(

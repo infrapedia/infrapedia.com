@@ -1,7 +1,7 @@
 const profileLinks = [
   {
     label: 'Dashboard',
-    url: '/user',
+    url: '/user/dashboard',
     icon: ['fas', 'home']
   },
   {
@@ -29,12 +29,12 @@ const profileLinks = [
     url: '/user/section/orgs',
     icon: ['fas', 'sitemap']
   },
-  {
-    label: 'Groups',
-    url: '/user/section/groups',
-    icon: ['fas', 'project-diagram'],
-    adminOnly: true
-  },
+  // {
+  //   label: 'Groups',
+  //   url: '/user/section/groups',
+  //   icon: ['fas', 'project-diagram'],
+  //   adminOnly: true
+  // },
   {
     label: 'CLS',
     url: '/user/section/cls',

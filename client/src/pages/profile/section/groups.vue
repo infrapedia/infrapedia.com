@@ -97,9 +97,6 @@ export default {
       return this.mode == 'create' ? this.createNet : this.saveEditedNet
     }
   },
-  beforeCreate() {
-    this.$emit('layout', 'profile-layout')
-  },
   async mounted() {
     await this.getNetworksList()
   },

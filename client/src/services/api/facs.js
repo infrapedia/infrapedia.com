@@ -6,8 +6,8 @@ import { fCollectionFormat } from '../../helpers/featureCollection'
 var url
 var form
 
-export const searchFacilities = async ({ s, user_id, psz }) => {
-  url = `${apiConfig.url}/auth/facilities/search?s=${s}`
+export const searchFacilities = async ({ s, user_id, psz, sortBy }) => {
+  url = `${apiConfig.url}/auth/facilities/search?s=${s}&sortBy=${sortBy}`
   if (psz) {
     url = url + '&psz=1'
   }
@@ -61,6 +61,27 @@ export const getFacilityGeom = async ({ user_id, _id }) => {
 
 export const getFacilitiesGeom = async ({ user_id, ids }) => {
   url = `${apiConfig.url}/facilities/geoms`
+  form = new FormData()
+
+  if (ids && ids.length) {
+    ids.forEach((id, i) => {
+      form.append(`ids[${i}]`, id)
+    })
+  } else form.append('ids', '')
+
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+
+  return res
+}
+
+export const getFacilitiesGeomPoints = async ({ user_id, ids }) => {
+  url = `${apiConfig.url}/facilities/geomspoints`
   form = new FormData()
 
   if (ids && ids.length) {

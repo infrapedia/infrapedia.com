@@ -13,6 +13,7 @@ body,
 html,
 .application {
   font-family: 'Roboto', sans-serif;
+  scroll-behavior: smooth;
 }
 
 .el-form-item__label {
@@ -360,6 +361,12 @@ input.issues-dialog {
 .editor-delete-all {
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.table-list__searchbar {
+  .el-input__suffix {
+    right: 14px;
+  }
 }
 
 // -----------------------------------------------------

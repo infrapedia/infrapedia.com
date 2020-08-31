@@ -123,8 +123,8 @@ export const viewOrganization = async ({ user_id, _id }) => {
   return res
 }
 
-export const searchOrganization = async ({ user_id, s, psz }) => {
-  url = `${apiConfig.url}/organization/search?s=${s}`
+export const searchOrganization = async ({ user_id, s, psz, sortBy }) => {
+  url = `${apiConfig.url}/organization/search?s=${s}&sortBy=${sortBy}`
   if (psz) {
     url = url + '&psz=1'
   }
@@ -154,8 +154,9 @@ export const getOrgLinkedElements = async args => {
   }
   return results.map(r => r.data)
 }
+
 export const getOrgClsAssociations = async ({ user_id, id }) => {
-  url = `${apiConfig.url}/organization/groups/${id}`
+  url = `${apiConfig.url}/organization/cls/${id}`
   const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
@@ -165,6 +166,41 @@ export const getOrgClsAssociations = async ({ user_id, id }) => {
   })
   return res
 }
+
+export const setOrgClsAssociations = async ({ user_id, org_id, _id }) => {
+  url = `${apiConfig.url}/auth/updateOrganizationCLS`
+  form = new FormData()
+
+  form.append('idcls', _id)
+  form.append('idorg', org_id)
+
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const removeOrgClsAssociations = async ({ user_id, org_id, _id }) => {
+  url = `${apiConfig.url}/auth/updateOrganizationCLS`
+
+  const res = await $axios.delete(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    },
+    data: {
+      idcls: _id,
+      idorg: org_id
+    }
+  })
+  return res
+}
+
 export const getOrgSubseaAssociations = async ({ user_id, id }) => {
   url = `${apiConfig.url}/organization/subseas/${id}`
   const res = await $axios.get(url, {
@@ -176,6 +212,41 @@ export const getOrgSubseaAssociations = async ({ user_id, id }) => {
   })
   return res
 }
+
+export const setOrgSubseaAssociations = async ({ user_id, org_id, _id }) => {
+  url = `${apiConfig.url}/auth/updateOrganizationCable`
+  form = new FormData()
+
+  form.append('idcable', _id)
+  form.append('idorg', org_id)
+
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const removeOrgSubseaAssociations = async ({ user_id, org_id, _id }) => {
+  url = `${apiConfig.url}/auth/updateOrganizationCable`
+
+  const res = await $axios.delete(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    },
+    data: {
+      idcable: _id,
+      idorg: org_id
+    }
+  })
+  return res
+}
+
 export const getOrgTerrestrialsAssociations = async ({ user_id, id }) => {
   url = `${apiConfig.url}/organization/terrestrials/${id}`
   const res = await $axios.get(url, {
@@ -187,6 +258,49 @@ export const getOrgTerrestrialsAssociations = async ({ user_id, id }) => {
   })
   return res
 }
+
+export const setOrgTerrestrialsAssociations = async ({
+  user_id,
+  org_id,
+  _id
+}) => {
+  url = `${apiConfig.url}/auth/updateOrganizationCable`
+  form = new FormData()
+
+  form.append('idcable', _id)
+  form.append('idorg', org_id)
+
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const removeOrgTerrestrialsAssociations = async ({
+  user_id,
+  org_id,
+  _id
+}) => {
+  url = `${apiConfig.url}/auth/updateOrganizationCable`
+
+  const res = await $axios.delete(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    },
+    data: {
+      idcable: _id,
+      idorg: org_id
+    }
+  })
+  return res
+}
+
 export const getOrgIxpsAssociations = async ({ user_id, id }) => {
   url = `${apiConfig.url}/organization/ixps/${id}`
   const res = await $axios.get(url, {
@@ -198,6 +312,41 @@ export const getOrgIxpsAssociations = async ({ user_id, id }) => {
   })
   return res
 }
+
+export const setOrgIxpsAssociations = async ({ user_id, org_id, _id }) => {
+  url = `${apiConfig.url}/auth/updateOrganizationIXP`
+  form = new FormData()
+
+  form.append('idixp', _id)
+  form.append('idorg', org_id)
+
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const removeOrgIxpsAssociations = async ({ user_id, org_id, _id }) => {
+  url = `${apiConfig.url}/auth/updateOrganizationIXP`
+
+  const res = await $axios.delete(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    },
+    data: {
+      idixp: _id,
+      idorg: org_id
+    }
+  })
+  return res
+}
+
 export const getOrgFacilitesAssociations = async ({ user_id, id }) => {
   url = `${apiConfig.url}/organization/facilities/${id}`
   const res = await $axios.get(url, {
@@ -209,6 +358,49 @@ export const getOrgFacilitesAssociations = async ({ user_id, id }) => {
   })
   return res
 }
+
+export const setOrgFacilitiesAssociations = async ({
+  user_id,
+  org_id,
+  _id
+}) => {
+  url = `${apiConfig.url}/auth/updateOrganizationFacility`
+  form = new FormData()
+
+  form.append('idfacility', _id)
+  form.append('idorg', org_id)
+
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const removeOrgFacilitiesAssociations = async ({
+  user_id,
+  org_id,
+  _id
+}) => {
+  url = `${apiConfig.url}/auth/updateOrganizationFacility`
+
+  const res = await $axios.delete(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    },
+    data: {
+      idfacility: _id,
+      idorg: org_id
+    }
+  })
+  return res
+}
+
 export const getOrgKnownUsersAssociations = async ({ user_id, id }) => {
   url = `${apiConfig.url}/organization/subseas/ku/${id}`
   const res = await $axios.get(url, {
@@ -220,6 +412,49 @@ export const getOrgKnownUsersAssociations = async ({ user_id, id }) => {
   })
   return res
 }
+
+export const setOrgKnownUsersAssociations = async ({
+  user_id,
+  org_id,
+  _id
+}) => {
+  url = `${apiConfig.url}/auth/updateknownuserCable`
+  form = new FormData()
+
+  form.append('idcable', _id)
+  form.append('idorg', org_id)
+
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const removeOrgKnownUsersAssociations = async ({
+  user_id,
+  org_id,
+  _id
+}) => {
+  url = `${apiConfig.url}/auth/updateknownuserCable`
+
+  const res = await $axios.delete(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    },
+    data: {
+      idcable: _id,
+      idorg: org_id
+    }
+  })
+  return res
+}
+
 export const getOrgGroupsAssociations = async ({ user_id, id }) => {
   url = `${apiConfig.url}/organization/groups/${id}`
   const res = await $axios.get(url, {
