@@ -125,11 +125,11 @@ export default async function getMetaDataTagsFromSelectionType({
       },
       {
         name: 'og:image:width',
-        content: ''
+        content: '1200'
       },
       {
         name: 'og:image:height',
-        content: ''
+        content: '630'
       },
       {
         name: 'og:url',
