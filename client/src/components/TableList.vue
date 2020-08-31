@@ -183,7 +183,7 @@
               >
                 <fa :icon="deleteIcon" />
               </el-button>
-              <el-button
+              <!-- <el-button
                 v-else-if="canDelete && scope.row.deleted"
                 type="danger"
                 class="p2 fs-regular"
@@ -201,7 +201,7 @@
                 "
               >
                 Permanent delete
-              </el-button>
+              </el-button> -->
             </div>
           </template>
         </el-table-column>
