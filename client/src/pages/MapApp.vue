@@ -65,7 +65,7 @@ export default {
     BUY_CAPACITY,
     openEditDialog: false,
     metaData: {
-      title: 'Global Internet Infrastructure Map | Infrapedia',
+      title: 'Infrapedia | Global Internet Infrastructure Map',
       meta: [
         {
           name: 'application-name',
@@ -94,6 +94,17 @@ export default {
           name: 'og:description',
           content:
             "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
+        },
+        {
+          // vmid: 'og:site_name',
+          name: 'og:site_name',
+          content: 'Infrapedia'
+        },
+        /// IF HUBERT EVER LEAVES INFRAPEDIA THIS SHOULD BE REMOVED
+        {
+          // vmid: 'og:title',
+          name: 'fb:admins',
+          content: '100006549764818'
         },
         {
           vmid: 'og:image',
@@ -182,15 +193,71 @@ export default {
           title: 'Infrapedia | Global Internet Infrastructure Map',
           meta: [
             {
-              vmid: 'application-name',
               name: 'application-name',
-              content: 'Infrapedia | Global Internet Infrastructure Map'
+              content:
+                'Global Internet Infrastructure Map | Telecommunications and Data Center Infrastructure'
             },
             {
-              vmid: 'keywords',
+              name: 'description',
+              content:
+                "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
+            },
+            {
               name: 'keywords',
               content:
-                'custom maps, fiber optics maps, internet infrastructure map, live map, consulting, data center, sponsorship, ads, telecommunications'
+                'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
+            },
+            // ------------------ FACEBOOK - OPEN GRAPH
+            {
+              vmid: 'og:title',
+              name: 'og:title',
+              content:
+                'The world’s largest network and datacenter infrastructure atlas.'
+            },
+            {
+              vmid: 'og:description',
+              name: 'og:description',
+              content:
+                "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
+            },
+            {
+              // vmid: 'og:site_name',
+              name: 'og:site_name',
+              content: 'Infrapedia'
+            },
+            /// IF HUBERT EVER LEAVES INFRAPEDIA THIS SHOULD BE REMOVED
+            {
+              // vmid: 'og:title',
+              name: 'fb:admins',
+              content: '100006549764818'
+            },
+            {
+              vmid: 'og:image',
+              name: 'og:image',
+              content: '/infrapedia-2.jpg'
+            },
+            // ---------------------- TWITTER
+            {
+              vmid: 'twitter:title',
+              name: 'twitter:title',
+              content:
+                'The world’s largest network and datacenter infrastructure atlas.'
+            },
+            {
+              vmid: 'twitter:description',
+              name: 'twitter:description',
+              content:
+                "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
+            },
+            {
+              vmid: 'twitter:image',
+              name: 'twitter:image',
+              content: '/infrapedia-2.jpg'
+            },
+            {
+              vmid: 'content-language',
+              name: 'content-language',
+              content: 'en-US'
             }
           ]
         }

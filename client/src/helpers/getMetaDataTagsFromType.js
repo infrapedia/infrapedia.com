@@ -1,4 +1,4 @@
-import { getElementImgByType } from '../services/api'
+import apiConfig from '../config/apiConfig'
 
 export default async function getMetaDataTagsFromSelectionType({
   type,
@@ -121,7 +121,7 @@ export default async function getMetaDataTagsFromSelectionType({
         content:
           type == 'org'
             ? 'https://cdn1.infrapedia.com/assets/default.jpg'
-            : await getElementImgByType({ slug: typeClean.slug })
+            : `${apiConfig.url}/elm/map/${typeClean.slug}.jpg`
       },
       {
         name: 'og:image:width',
@@ -147,8 +147,8 @@ export default async function getMetaDataTagsFromSelectionType({
       },
       {
         // vmid: 'twitter:title',
-        name: 'twitter:descr',
-        content: 'summary_large_image'
+        name: 'twitter:description',
+        content: description[typeClean.t]
       },
       {
         // vmid: 'twitter:site',
