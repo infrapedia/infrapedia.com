@@ -190,14 +190,12 @@ const routes = [
       {
         path: 'profile',
         name: 'user-profile',
-        component: Profile,
-        children: [
-          {
-            path: 'email-providers',
-            name: 'email-providers',
-            component: EmailProviders
-          }
-        ]
+        component: Profile
+      },
+      {
+        path: 'profile/email-providers',
+        name: 'email-providers',
+        component: EmailProviders
       },
       {
         path: 'section/terrestrial-networks',
