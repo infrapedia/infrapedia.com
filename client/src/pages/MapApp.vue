@@ -261,7 +261,10 @@ export default {
             }
           ]
         }
-        this.$router.replace('/app')
+
+        if (Object.keys(this.$route.params).length > 0) {
+          this.$router.replace('/app')
+        }
       } else {
         this.$once('focus-changed', async function handleFocusChanged(focus) {
           const url = `/app/${focus.type}/${data.slug}`
