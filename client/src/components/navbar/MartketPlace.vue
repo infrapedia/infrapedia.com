@@ -190,7 +190,7 @@ export default {
       return this.$store.state.isDark
     },
     isLoggedIn() {
-      return checkCookie('auth.token-session')
+      return checkCookie('auth.token-session') && this.$auth.isAuthenticated
     },
     siteKey() {
       return siteKey
