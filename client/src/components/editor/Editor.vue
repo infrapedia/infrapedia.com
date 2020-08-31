@@ -732,7 +732,7 @@ export default {
     handleConfirmAction([feature]) {
       if (!feature) return
 
-      if (feature.properties.editorID) {
+      if (feature.properties.editorID || feature.properties._id) {
         this.handleFeatureEdition({ ...feature })
       } else {
         if (
@@ -758,7 +758,7 @@ export default {
         if (this.type == 'map') {
           bus.$emit('categories-field-reset-datasets')
         }
-        // await this.handleUpdateMapSourcesData(false, [])
+        await this.handleUpdateMapSourcesData(false, [])
       }
 
       if (removeFilter && this.scene.layerFiltered) {
@@ -842,14 +842,17 @@ export default {
       layerID,
       map
     }) {
-      if (layerID.includes('label')) return
-
+      // if (layerID.includes('label')) return
       const featureSelected = map.queryRenderedFeatures(e.point, {
         layers: [layerID]
       })[0]
 
+      if (layerID.includes('label')) {
+        layerID = layerID.replace('-label', '')
+      }
+
       if (this.scene.isDynamicControls) {
-        this.controls.resetScene({ reset: false, removeFilter: true })
+        this.handleResetScene({ reset: false, removeFilter: true })
       }
 
       if (featureSelected) {
@@ -902,7 +905,12 @@ export default {
     },
     320),
     updateSceneDictionaryFeature(feature) {
-      sceneDictionary.update(feature.properties.editorID, feature)
+      sceneDictionary.update(
+        feature.properties.editorID
+          ? feature.properties.editorID
+          : feature.properties._id,
+        feature
+      )
       return feature
     },
     async handleFeatureEdition(feature) {
