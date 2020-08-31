@@ -11,15 +11,12 @@
               Sign-up and explore the Internet infrastructure
             </small>
           </h1>
-          <el-button
-            class="mr4 w42"
-            plain
-            round
-            type="primary"
-            @click="askToRegister"
+          <router-link
+            to="/app"
+            class="el-button el-button--primary is-round mr4 w42 inline-block is-plain"
           >
-            Login / Sign-Up
-          </el-button>
+            Go to Map
+          </router-link>
         </div>
       </div>
       <div class="map-wrapper cubic-transition">
