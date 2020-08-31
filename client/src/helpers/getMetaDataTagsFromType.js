@@ -8,7 +8,7 @@ export default async function getMetaDataTagsFromSelectionType({
   slug
 }) {
   const description = {
-    ixps: `${name}, IXP information, cable systems and operators #internet #ixps`,
+    ixps: `${name}, Internet Exchange (IXP) information, data center locations and members #internet #ixps`,
     cls: `${name}, CLS information, cable systems and operators #internet #cls`,
     subsea: `${name}, a fiber optic submarine telecommunications cable system information, owned/operated by ${owners
       .map(o => o.name)
@@ -16,7 +16,7 @@ export default async function getMetaDataTagsFromSelectionType({
     terrestrial: `${name}, a fiber optic submarine telecommunications cable system information, owned/operated by ${owners
       .map(o => o.name)
       .join(', ')}`,
-    fac: `${name}, Facility information, cable systems and operators #internet #facility`,
+    fac: `${name}, data center facility information #internet #facility`,
     org: `${name}, Organization information, cable systems and operators #internet #organization #org`
   }
   const typeClean = {
