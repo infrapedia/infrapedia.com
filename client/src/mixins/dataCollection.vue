@@ -197,7 +197,11 @@ export default {
         id,
         type,
         fc:
-          res.data.r && res.data.r.features && res.data.r.features.length
+          res &&
+          res.data &&
+          res.data.r &&
+          res.data.r.features &&
+          res.data.r.features.length
             ? res.data.r
             : false
       })
@@ -213,7 +217,11 @@ export default {
         id,
         type,
         fc:
-          res.data.r && res.data.r.features && res.data.r.features.length
+          res &&
+          res.data &&
+          res.data.r &&
+          res.data.r.features &&
+          res.data.r.features.length
             ? res.data.r
             : false
       })
