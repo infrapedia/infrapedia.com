@@ -24,7 +24,14 @@
                           <el-tag
                             v-for="(item, index) in col.filter(info[col.value])"
                             :key="index + item.name"
-                            @click="handleSelection(item._id, col.label)"
+                            @click="
+                              handleSelection(
+                                item._id,
+                                item.terrestrial == 'true'
+                                  ? 'terrestrial-network'
+                                  : 'subsea-cable'
+                              )
+                            "
                             class="mr2 cursor-pointer"
                             size="mini"
                           >
@@ -38,7 +45,14 @@
                       <el-tag
                         v-for="(item, index) in col.filter(info[col.value])"
                         :key="index + item.name"
-                        @click="handleSelection(item._id, col.label)"
+                        @click="
+                          handleSelection(
+                            item._id,
+                            item.terrestrial == 'true'
+                              ? 'terrestrial-network'
+                              : 'subsea-cable'
+                          )
+                        "
                         class="mr2 cursor-pointer"
                         size="mini"
                       >
