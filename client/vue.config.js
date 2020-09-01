@@ -28,7 +28,9 @@ const productionPlugins = [
     renderer: new PrerenderSpaPlugin.PuppeteerRenderer({
       // We need to inject a value so we're able to
       // detect if the page is currently pre-rendered.
-      inject: {},
+      inject: {
+        prerendered: true
+      },
       // Our view component is rendered after the API
       // request has fetched all the necessary data,
       // so we create a snapshot of the page after the
@@ -39,7 +41,6 @@ const productionPlugins = [
 ]
 
 module.exports = {
-  // publicPath: process.env.NODE_ENV == 'production' ? 'https://cdn1.infrapedia.com/dist/' : '/',
   configureWebpack: config => {
     if (process.env.NODE_ENV == 'production') {
       config.plugins.push(...productionPlugins)
@@ -64,7 +65,6 @@ module.exports = {
       .options({
         fix: true
       })
-
     // if (process.env.NODE_ENV == 'production') {
     // config.module.rule('gzip-loader').use('gzip-loader')
     // }

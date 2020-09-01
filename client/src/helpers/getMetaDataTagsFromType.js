@@ -79,6 +79,12 @@ export default async function getMetaDataTagsFromSelectionType({
 
   const meta = {
     title: typeClean.title,
+    link: [
+      {
+        rel: 'canonical',
+        href: url
+      }
+    ],
     meta: [
       {
         // vmid: 'keywords',
@@ -94,6 +100,21 @@ export default async function getMetaDataTagsFromSelectionType({
         // vmid: 'og:type',
         name: 'og:type',
         content: 'article'
+      },
+      // {
+      //   // vmid: 'twitter:title',
+      //   name: 'twitter:card',
+      //   content: 'summary'
+      // },
+      {
+        // vmid: 'twitter:site',
+        name: 'twitter:site',
+        content: '@infrapedia'
+      },
+      {
+        // vmid: 'twitter:creator',
+        name: 'twitter:creator',
+        content: '@infrapedia'
       },
       {
         // vmid: 'og:title',
@@ -134,31 +155,6 @@ export default async function getMetaDataTagsFromSelectionType({
       {
         name: 'og:url',
         content: url
-      },
-      {
-        // vmid: 'twitter:title',
-        name: 'twitter:title',
-        content: typeClean.title
-      },
-      {
-        // vmid: 'twitter:title',
-        name: 'twitter:card',
-        content: 'summary_large_image'
-      },
-      {
-        // vmid: 'twitter:title',
-        name: 'twitter:description',
-        content: description[typeClean.t]
-      },
-      {
-        // vmid: 'twitter:site',
-        name: 'twitter:site',
-        content: '@infrapedia'
-      },
-      {
-        // vmid: 'twitter:creator',
-        name: 'twitter:creator',
-        content: '@infrapedia'
       },
       {
         // vmid: 'content-language',
