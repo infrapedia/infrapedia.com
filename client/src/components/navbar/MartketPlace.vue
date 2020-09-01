@@ -306,6 +306,8 @@ export default {
       }
     },
     async toggleDialog(data) {
+      if (!this.isLoggedIn) return
+
       try {
         this.dialog.isVisible = true
         this.dialog.altRawMessage = data.message
