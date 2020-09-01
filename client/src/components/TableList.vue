@@ -20,10 +20,10 @@
     <el-divider />
     <el-card shadow="never" class="w-fit-full">
       <el-table
-        :data="tableDataSorted"
-        max-height="500"
-        v-loading="isLoading"
         :row-class-name="tableRowClassName"
+        :data="tableData"
+        v-loading="isLoading"
+        max-height="500"
       >
         <el-table-column
           v-for="(col, i) in columns"
@@ -108,19 +108,41 @@
         <el-table-column
           fixed="right"
           label="Operations"
-          :width="canSearch ? 220 : 90"
+          :width="canSearch ? 320 : 90"
         >
           <template v-if="canSearch" slot="header" slot-scope="scope">
-            <el-input
-              :key="scope.index"
-              v-model="tableSearch"
-              size="mini"
-              clearable
-              :class="{ dark }"
-              @input="$emit('search-input', $event)"
-              @clear="$emit('clear-search-input')"
-              placeholder="Type to search by name"
-            />
+            <div
+              class="table-list__searchbar"
+              style="display: flex; flex-flow: row nowrap; padding: 0; "
+            >
+              <el-select
+                id="sortBy"
+                v-model="sortBy"
+                size="mini"
+                class="mr2 w70"
+                style="padding: 0;"
+                :class="{ dark }"
+                placeholder
+                @change="$emit('sort-by', tableSearch, $event, paginationPage)"
+              >
+                <el-option
+                  v-for="(opt, i) in sortList"
+                  :key="i"
+                  :label="opt.text"
+                  :value="opt.value"
+                />
+              </el-select>
+              <el-input
+                :key="scope.index"
+                v-model="tableSearch"
+                size="mini"
+                clearable
+                :class="{ dark }"
+                @clear="$emit('clear-search-input', '', sortBy, paginationPage)"
+                @input="$emit('search-input', $event, sortBy, paginationPage)"
+                :placeholder="`Type to search by ${sortBy}`"
+              />
+            </div>
           </template>
           <template slot-scope="scope">
             <div class="flex row nowrap justify-content-center">
@@ -154,12 +176,32 @@
                       ? scope.row.idReport
                       : scope.row.idMessage
                       ? scope.row.idMessage
-                      : scope.row._id
+                      : scope.row._id,
+                    scope.row.deleted
                   )
                 "
               >
                 <fa :icon="deleteIcon" />
               </el-button>
+              <!-- <el-button
+                v-else-if="canDelete && scope.row.deleted"
+                type="danger"
+                class="p2 fs-regular"
+                size="small"
+                @click="
+                  $emit(
+                    'delete-item',
+                    scope.row.idReport
+                      ? scope.row.idReport
+                      : scope.row.idMessage
+                      ? scope.row.idMessage
+                      : scope.row._id,
+                    scope.row.deleted
+                  )
+                "
+              >
+                Permanent delete
+              </el-button> -->
             </div>
           </template>
         </el-table-column>
@@ -167,10 +209,9 @@
     </el-card>
     <div v-if="pagination" class="w-fit-full flex justify-content-center mt8">
       <el-pagination
-        v-if="!tableSearch"
         layout="prev, next"
         :current-page.sync="paginationPage"
-        @current-change="$emit('page-change', $event)"
+        @current-change="$emit('page-change', tableSearch, sortBy, $event)"
       />
     </div>
   </div>
@@ -178,11 +219,21 @@
 
 <script>
 import { formatDate } from '../helpers/formatDate'
-import sortAlphabetically from '../helpers/sortAlphabetically'
 
 export default {
   name: 'TableList',
   props: {
+    sortList: {
+      type: Array,
+      default: () => [
+        { text: 'Name Asc', value: 'nameAsc' },
+        { text: 'Name Desc', value: 'nameDesc' },
+        { text: 'Created at Asc', value: 'creatAtAsc' },
+        { text: 'Created at Desc', value: 'creatAtDesc' },
+        { text: 'Updated at Asc', value: 'updateAtAsc' },
+        { text: 'Updated at Desc', value: 'updateAtDesc' }
+      ]
+    },
     columns: {
       type: Array,
       required: true
@@ -245,21 +296,22 @@ export default {
   },
   data: () => ({
     formatDate,
+    sortBy: 'nameAsc',
     tableSearch: '',
     paginationPage: 0
   }),
   computed: {
-    tableDataSorted() {
-      const data = Array.from(this.tableData)
-      return data.sort((a, b) => sortAlphabetically(a, b))
-    },
     dark() {
       return this.$store.state.isDark
     }
   },
   methods: {
     getTableSearchValue() {
-      return this.tableSearch
+      return [
+        this.tableSearch != undefined ? this.tableSearch : '',
+        this.sortBy,
+        this.paginationPage
+      ]
     },
     getKeys(arr) {
       if (!arr.length) return []

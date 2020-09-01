@@ -9,14 +9,21 @@
       :columns="columns"
       :config="tableConfig"
       :table-data="tableData"
+      :pagination="true"
+      :row-classes="['state', 'light-yellow-bg', 'false']"
       @edit-item="handleEditCLS"
       @delete-item="handleDeleteCLS"
       @alert-message="handleSendMessage"
       @search-input="handleCLSSearch"
-      @clear-search-input="getClssList"
-      :pagination="true"
-      @page-change="getClssList"
-      :row-classes="['state', 'light-yellow-bg', 'false']"
+      @sort-by="handleCLSSearch"
+      @clear-search-input="handleCLSSearch"
+      @page-change="handleCLSSearch"
+    />
+    <prompt-delete
+      :elemnt="elemntType"
+      :is-visible="promptDelete"
+      @delete-cancel="$emit('delete-cancel')"
+      @delete-confirm="$emit('delete-confirm')"
     />
   </div>
 </template>
@@ -24,19 +31,22 @@
 <script>
 import { clsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { getClss, deleteCls, searchCls } from '../../../services/api/cls'
+import { deleteCls, searchCls } from '../../../services/api/cls'
 import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
 import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
 import debounce from '../../../helpers/debounce'
+import { deleteClsPermanently } from '../../../services/api/permanentDelete'
 
 export default {
   name: 'ClsSection',
   components: {
-    TableList
+    TableList,
+    PromptDelete: () => import('../../../components/PromptDelete')
   },
   data: () => ({
     tableData: [],
     loading: false,
+    promptDelete: false,
     tableConfig: {
       title: 'CLS',
       creation_link: '/user/section/create?id=cls',
@@ -44,15 +54,15 @@ export default {
     },
     columns: [...clsColumns].filter(col => col.showTable)
   }),
-  beforeCreate() {
-    this.$emit('layout', 'profile-layout')
-  },
-  async mounted() {
-    await this.getClssList()
+  async created() {
+    await this.handleCLSSearch('', 'nameAsc', 0)
   },
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    elemntType() {
+      return 'cls'
     }
   },
   methods: {
@@ -64,43 +74,45 @@ export default {
       })
       return this.$store.commit(`${TOGGLE_MESSAGE_DIALOG}`, true)
     },
-    async getClssList(page = 0) {
-      this.loading = true
-      const res = await getClss({ user_id: await this.$auth.getUserID(), page })
-      if (res.t !== 'error' && res.data) {
-        this.tableData = res.data.r
-      }
-      this.loading = false
-    },
     handleEditCLS(_id) {
       this.$router.push({
         path: '/user/section/create',
         query: { id: 'cls', item: _id }
       })
     },
-    handleDeleteCLS(_id) {
-      this.$confirm(
-        'Are you sure you want to delete this CLS. This action is irreversible',
-        'Please confirm to continue'
-      ).then(async () => {
-        await deleteCls({
-          user_id: await this.$auth.getUserID(),
-          _id
-        }).then(() => {
-          this.handleCLSSearch(this.$refs.tableList.getTableSearchValue())
-        })
-      }, console.error)
-    },
-    handleCLSSearch: debounce(async function(s) {
-      this.loading = true
-      if (s == '') {
-        await this.getClssList()
-        return
-      }
+    handleDeleteCLS(_id, isPermanent) {
+      this.promptDelete = true
 
+      this.$once('delete-confirm', async () => {
+        if (!isPermanent) {
+          await deleteCls({
+            user_id: await this.$auth.getUserID(),
+            _id
+          }).then(() => {
+            this.handleCLSSearch(...this.$refs.tableList.getTableSearchValue())
+          })
+        } else {
+          await deleteClsPermanently({
+            user_id: await this.$auth.getUserID(),
+            _id
+          }).then(() => {
+            this.handleCLSSearch(...this.$refs.tableList.getTableSearchValue())
+          })
+        }
+        this.promptDelete = false
+      })
+
+      this.$once('delete-cancel', async () => {
+        this.promptDelete = false
+      })
+    },
+    handleCLSSearch: debounce(async function(s, sortBy, page = 0) {
+      this.loading = true
       const res = await searchCls({
         user_id: await this.$auth.getUserID(),
         psz: true,
+        sortBy,
+        page,
         s
       })
       if (res && res.data) {

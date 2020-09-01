@@ -77,9 +77,6 @@ export default {
       return this.$store.state.premium
     }
   },
-  beforeCreate() {
-    this.$emit('layout', 'landing-layout')
-  },
   async mounted() {
     await this.$store.dispatch('getPremiumData')
   }

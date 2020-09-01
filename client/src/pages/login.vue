@@ -1,35 +1,36 @@
 <template>
-  <div class="flex justify-content-center align-items-center w-full h-fit-full">
-    <el-card class="p8">
-      <div class="flex justify-content-center mb4 animate">
-        <el-image
-          fit="contain"
-          src="https://cdn1.infrapedia.com/assets/img/light-mode-logo-sphere.svg"
-        />
-      </div>
-      <template v-if="isUserBlock">
-        <p>
-          Please contact
-          <a href="mailto:admin@infrapedia.com">admin@infrapedia.com</a> to
-          enable your access
-        </p>
-      </template>
-      <template v-else>
-        <p class="fs-large">Hold on. We're redirecting you</p>
-      </template>
-    </el-card>
-  </div>
+  <el-container direction="vertical">
+    <div class="flex justify-content-center align-items-center vph-full">
+      <el-card class="p8">
+        <div
+          class="flex justify-content-center mb4"
+          :class="{ animate: !isUserBlock }"
+        >
+          <el-image
+            fit="contain"
+            src="https://cdn1.infrapedia.com/assets/img/light-mode-logo-sphere.svg"
+          />
+        </div>
+        <template v-if="isUserBlock">
+          <p>
+            Please contact
+            <a href="mailto:admin@infrapedia.com">admin@infrapedia.com</a> to
+            enable your access
+          </p>
+        </template>
+        <template v-else>
+          <p class="fs-large">Hold on. We're redirecting you</p>
+        </template>
+      </el-card>
+    </div>
+  </el-container>
 </template>
 
 <script>
-import { deleteCookie } from '../helpers/cookies'
 export default {
   data: () => ({
     isUserBlock: false
   }),
-  beforeCreate() {
-    this.$emit('layout', 'nothing-layout')
-  },
   created() {
     if (
       this.$route.hash &&
@@ -51,7 +52,6 @@ export default {
                 // Ignore
               })
           } else {
-            deleteCookie('auth0.is.authenticated')
             // this.$notify({
             //   title: 'Something wrong happened...',
             //   message:

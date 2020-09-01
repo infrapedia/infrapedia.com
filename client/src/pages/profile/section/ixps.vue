@@ -12,8 +12,15 @@
       :pagination="true"
       @search-input="handleIxpSearch"
       @edit-item="handleEditIxp"
-      @page-change="getIxpsList"
+      @page-change="handleIxpSearch"
+      @sort-by="handleIxpSearch"
       @delete-item="handleDeleteIXP"
+    />
+    <prompt-delete
+      :elemnt="elemntType"
+      :is-visible="promptDelete"
+      @delete-cancel="$emit('delete-cancel')"
+      @delete-confirm="$emit('delete-confirm')"
     />
   </div>
 </template>
@@ -22,16 +29,19 @@
 import debounce from '../../../helpers/debounce'
 import { ixpsColumns } from '../../../config/columns'
 import TableList from '../../../components/TableList.vue'
-import { getIxps, searchIxps, deleteIXP } from '../../../services/api/ixps'
+import { searchIxps, deleteIXP } from '../../../services/api/ixps'
+import { deleteIxpPermanently } from '../../../services/api/permanentDelete'
 
 export default {
   name: 'IxpsSection',
   components: {
-    TableList
+    TableList,
+    PromptDelete: () => import('../../../components/PromptDelete')
   },
   data: () => ({
     tableData: [],
     loading: false,
+    promptDelete: false,
     tableConfig: {
       title: 'IXPs',
       creation_link: '/user/section/create?id=ixps',
@@ -42,39 +52,28 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    elemntType() {
+      return 'ixp'
     }
   },
-  beforeCreate() {
-    this.$emit('layout', 'profile-layout')
-  },
-  async mounted() {
-    await this.getIxpsList()
+  async created() {
+    await this.handleIxpSearch('', 'nameAsc', 0)
   },
   methods: {
-    async getIxpsList(page = 0) {
-      this.loading = true
-      const res = await getIxps({ user_id: await this.$auth.getUserID(), page })
-      if (res.t !== 'error' && res.data) {
-        this.tableData = res.data.r
-      }
-      this.loading = false
-    },
     handleEditIxp(_id) {
       return this.$router.push({
         path: '/user/section/create',
         query: { id: 'ixps', item: _id }
       })
     },
-    handleIxpSearch: debounce(async function(s) {
-      if (s == '') {
-        if (!this.loading) await this.getIxpsList()
-        return
-      }
-
+    handleIxpSearch: debounce(async function(s, sortBy, page = 0) {
       this.loading = true
       const res = await searchIxps({
         user_id: await this.$auth.getUserID(),
         psz: true,
+        sortBy,
+        page,
         s
       })
       if (res && res.data) {
@@ -82,18 +81,29 @@ export default {
       }
       this.loading = false
     }, 820),
-    async handleDeleteIXP(_id) {
-      this.$confirm(
-        'Are you sure you want to delete this IXP. This action is irreversible',
-        'Please confirm to continue'
-      ).then(async () => {
-        await deleteIXP({
-          user_id: await this.$auth.getUserID(),
-          _id
-        }).then(() => {
-          this.handleIxpSearch(this.$refs.tableList.getTableSearchValue())
-        })
-      }, console.error)
+    async handleDeleteIXP(_id, isPermanent) {
+      this.promptDelete = true
+      this.$once('delete-confirm', async () => {
+        if (!isPermanent) {
+          await deleteIXP({
+            user_id: await this.$auth.getUserID(),
+            _id
+          }).then(() => {
+            this.handleIxpSearch(...this.$refs.tableList.getTableSearchValue())
+          })
+        } else {
+          await deleteIxpPermanently({
+            user_id: await this.$auth.getUserID(),
+            _id
+          }).then(() => {
+            this.handleIxpSearch(...this.$refs.tableList.getTableSearchValue())
+          })
+        }
+        this.promptDelete = false
+      })
+      this.$once('delete-cancel', async () => {
+        this.promptDelete = false
+      })
     }
   }
 }

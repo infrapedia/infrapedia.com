@@ -5,6 +5,7 @@
     >
       <div
         class="flex no-padding navbar-wrapper w-full nowrap justify-content-space-between pr1 pl1"
+        :class="{ 'pr2 pl2': isUserNavbar }"
       >
         <h1 class="logo-title">
           <router-link :to="checkIfLoggedIn" class="hidden-md-and-down">
@@ -81,7 +82,7 @@
               @keyup.enter="toggleDrawerVisibility"
             >
               <div class="list-item pr4 pl4 no-selectable">
-                <bottom-sheet
+                <trusted-by
                   :visibility="isDrawerOpen"
                   @close="toggleDrawerVisibility"
                   @item-selected="handleItemListSelection"
@@ -219,7 +220,6 @@
 import sponsors from '../../config/navbarSponsors'
 import infoMenuLinks from '../../config/infoMenuLinks'
 import dataCollection from '../../mixins/dataCollection'
-import FullScreenSearch from './FullScreenSearch.vue'
 import * as events from '../../events/navbar'
 import { bus } from '../../helpers/eventBus'
 
@@ -229,10 +229,10 @@ export default {
     IMenu: () => import('./Menu'),
     IFilter: () => import('./Filter'),
     ISearch: () => import('./Search'),
-    BottomSheet: () => import('./BottomSheet'),
+    TrustedBy: () => import('./TrustedBy'),
     MarketPlace: () => import('./MartketPlace'),
     PremiumPartnersButton: () => import('./PremiumPartners'),
-    IFullScreenSearch: FullScreenSearch
+    IFullScreenSearch: () => import('./FullScreenSearch.vue')
   },
   mixins: [dataCollection],
   props: {

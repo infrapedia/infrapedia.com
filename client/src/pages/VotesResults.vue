@@ -54,28 +54,10 @@ export default {
       'Best Datacenter Company'
     ]
   }),
-  async created() {
-    this.$emit('layout', 'default')
-    // await this.checkVote()
-  },
   async mounted() {
     await this.loadVotesPool()
   },
   methods: {
-    // async checkVote() {
-    //   this.isCheckingVote = true
-    //   const { t } = (await checkUserVote(await this.$auth.getUserID())) || {
-    //     t: 'error'
-    //   }
-
-    //   this.isCheckingVote = false
-    //   if (t != 'error') {
-    //     this.$message(
-    //       'You have not voted yet. For seeing the results, you first have to vote'
-    //     )
-    //     setTimeout(() => this.$router.replace('/app'), 320)
-    //   }
-    // },
     calculatePercentage(vote) {
       return Math.round((vote.votes * 100) / vote.totalVotes)
     },

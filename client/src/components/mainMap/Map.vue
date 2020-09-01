@@ -1,62 +1,12 @@
 <template>
   <div id="map">
     <template v-if="!disabled">
-      <!-- <transition
-        name="animated faster delay-1s"
-        enter-active-class="slideInLeft"
-        leave-active-class="slideOutLeft"
-        mode="out-in"
-      >
-        <el-card
-          v-if="lastMileTool.active"
-          class="z-index120 w50 p4"
-          style="position: fixed; top: 4rem; left: 2.4rem;"
-        >
-          <el-form>
-            <h2>Last Mile Tool Panel</h2>
-            <b>Length : </b>
-            <span>{{ lastMileTool.reference.len }}</span
-            ><br />
-            <ul>
-              <b>Available Networks :</b>
-              <li
-                v-for="(item, i) in lastMileTool.reference.networks"
-                :key="i + item"
-              >
-                {{ i + 1 }} - {{ item }}
-              </li>
-            </ul>
-            <br />
-            <el-button
-              type="success"
-              plain
-              size="mini"
-              class="m1"
-              title="Select Point"
-              @click="findNewLastMile"
-            >
-              Select Point
-            </el-button>
-            <el-button
-              type="primary"
-              plain
-              :class="{ dark }"
-              size="mini"
-              title="Close"
-              @click="disableLastMileTool"
-            >
-              Close
-            </el-button>
-          </el-form>
-        </el-card>
-      </transition> -->
       <transition
         name="animated faster delay-1s"
         enter-active-class="slideInLeft"
         leave-active-class="slideOutLeft"
         mode="out-in"
       >
-        <!-- v-if="!lastMileTool.active"  -->
         <legends-panel />
       </transition>
       <el-button
@@ -80,50 +30,7 @@
       >
         <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
       </el-button>
-      <el-button
-        id="menuOpener"
-        circle
-        size="small"
-        title="Share menu, print map, and toggle dark mode button"
-        class="absolute z-index1 w11 h11"
-        @click.stop="toggleMenu"
-        tabindex="0"
-      >
-        <fa
-          :icon="['far', 'hand-point-up']"
-          class="icon fs-medium"
-          v-if="!isMenuOpen"
-        />
-        <fa :icon="['fas', 'times']" class="icon fs-medium" v-else />
-
-        <template>
-          <ul
-            v-if="isMenuOpen"
-            role="group"
-            class="absolute flex justify-content-space-around align-items-center"
-            :class="{ active: isMenuOpen }"
-          >
-            <li role="listitem">
-              <print-button :map="map" />
-            </li>
-            <!-- <li role="listitem">
-              <last-mile-button @click="handleLastMileToolActivation" />
-            </li> -->
-            <li role="listitem">
-              <el-button
-                title="Share menu"
-                type="primary"
-                class="w11 h11"
-                circle
-                @click.stop="toggleGooeyMenu"
-              >
-                <fa :icon="['fas', 'share-alt']" />
-              </el-button>
-            </li>
-          </ul>
-        </template>
-      </el-button>
-      <gooey-menu :is-active="isGooeyMenu" @close="toggleGooeyMenu" />
+      <gooey-menu :map="map ? map : {}" />
     </template>
   </div>
 </template>
@@ -131,7 +38,6 @@
 <script>
 import {
   TOGGLE_THEME,
-  // CABLE_SELECTED,
   CLEAR_SELECTION,
   FOCUS_ON,
   FOCUS_ON_CITY
@@ -163,25 +69,16 @@ import handleDraw from './draw'
 import setBoundsCookie from './setBoundsCookie'
 import disableCurrentHighlight from './disableHighlight'
 import GooeyMenu from './GooeyMenu'
-import PrintButton from './PrintButton'
 import highlightCurrentSelection from './highlightCurrentSelection'
 import dataCollection from '../../mixins/dataCollection'
-// import convertToYear from '../../helpers/convertToYear'
-// eslint-disable-next-line
 import { DateTime } from 'luxon'
-// import LastMileButton from './LastMileButton'
-// import lastMileTool, { lastMileToolLayers } from './gri-tool'
 import LegendsPanel from './legendsPanel'
-// import bbox from '@turf/bbox'
-// import { fCollectionFormat } from '../../helpers/featureCollection'
 
 export default {
   name: 'Map',
   mixins: [dataCollection],
   components: {
-    PrintButton,
     GooeyMenu,
-    // LastMileButton,
     LegendsPanel
   },
   props: {
@@ -195,16 +92,7 @@ export default {
     print: null,
     trackID: null,
     map: undefined,
-    isMenuOpen: false,
-    isGooeyMenu: false,
-    isLocationZoomIn: true,
-    lastMileTool: {
-      active: false,
-      reference: null,
-      quality: 1,
-      networks: [],
-      len: ''
-    }
+    isMenuOpen: false
   }),
   computed: {
     ...mapState({
@@ -312,6 +200,7 @@ export default {
       map.on('load', function() {
         vm.addMapSources(map)
         vm.addMapLayers(map)
+        vm.$emit('map-loaded')
       })
       return map
     },
@@ -472,12 +361,12 @@ export default {
      * @param map { Object } The map instance
      */
     handlePopupVisibilityOff({ popup, map }) {
-      if (!this.lastMileTool.active) {
-        map.getCanvas().style.cursor = ''
-      } else {
-        map.getCanvas().style.cursor = 'crosshair'
-      }
+      // if (!this.lastMileTool.active) {
       popup.remove()
+      map.getCanvas().style.cursor = ''
+      // } else {
+      //   map.getCanvas().style.cursor = 'crosshair'
+      // }
     },
     highlightSelection(id) {
       if (!this.focus) return
@@ -541,109 +430,99 @@ export default {
       // If is currently drawing shouldn't do anything
       if (this.isDrawing) return
 
-      if (this.$auth.isAuthenticated) {
-        if (this.focus) {
-          this.disableSelectionHighlight(
-            false,
-            this.focus.type.split().join('')
-          )
+      if (this.focus) {
+        this.disableSelectionHighlight(false, this.focus.type.split().join(''))
+      }
+      if (this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
+
+      const cables = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.cables]
+      })
+
+      const facilities = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.facilities]
+      })
+      const ixps = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.ixps]
+      })
+      const cls = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.cls]
+      })
+      const clusters = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.clusters]
+      })
+
+      // const facsClusters = this.map.queryRenderedFeatures(e.point, {
+      //   layers: [mapConfig.facilitiesClusters]
+      // })
+
+      // const facsClustersSinglePoints = this.map.queryRenderedFeatures(
+      //   e.point,
+      //   {
+      //     layers: [mapConfig.facilitiesSinglePoints]
+      //   }
+      // )
+
+      // If in the region selected there is a point or a building
+      // Call the api to retrieve that facility data and open the sidebar
+      // if (facsClustersSinglePoints.length > 0) {
+      //   this.map.fitBounds(
+      //     bbox(fCollectionFormat(facsClustersSinglePoints)),
+      //     {
+      //       ease: true,
+      //       zoom: 16.4
+      //     }
+      //   )
+      // || facsClusters.length > 0
+      if (clusters.length > 0) {
+        // let data = clusters.length > 0 ? clusters : facsClusters
+        // let sourceName =
+        //   clusters.length > 0
+        //     ? mapConfig.clusters
+        //     : mapConfig.facilitiesClusters
+
+        await this.handleClustersSelection(
+          clusters,
+          this.map,
+          mapConfig.clusters
+        )
+      } else if (cls.length > 0) {
+        await this.handleClsSelection({
+          id: cls[0].properties._id,
+          type: 'cls'
+        })
+      } else if (ixps.length > 0) {
+        await this.handleIxpsSelection({
+          id: ixps[0].properties._id,
+          type: 'ixp'
+        })
+      } else if (facilities.length > 0) {
+        await this.handleFacilitySelection({
+          id: facilities[0].properties._id,
+          type: 'facility'
+        })
+      } else if (cables.length > 0) {
+        await this.handleCablesSelection(cables.length > 0, cables)
+      } else if (
+        facilities.length <= 0 &&
+        ixps.length <= 0 &&
+        cls.length <= 0
+      ) {
+        // Clearing clusters source in case there was something previously selected
+        try {
+          this.map
+            .getSource(mapConfig.clusters)
+            .setData({ type: 'FeatureCollection', features: [] })
+        } catch {
+          // Ignore
+        } finally {
+          this.disableSelectionHighlight()
         }
-        if (this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
-
-        // if (this.lastMileTool.active) {
-        //   this.handleLastMileToolCoordsChange(e)
-        //   return
-        // }
-
-        const cables = this.map.queryRenderedFeatures(e.point, {
-          layers: [mapConfig.cables]
-        })
-
-        const facilities = this.map.queryRenderedFeatures(e.point, {
-          layers: [mapConfig.facilities]
-        })
-        const ixps = this.map.queryRenderedFeatures(e.point, {
-          layers: [mapConfig.ixps]
-        })
-        const cls = this.map.queryRenderedFeatures(e.point, {
-          layers: [mapConfig.cls]
-        })
-        const clusters = this.map.queryRenderedFeatures(e.point, {
-          layers: [mapConfig.clusters]
-        })
-
-        // const facsClusters = this.map.queryRenderedFeatures(e.point, {
-        //   layers: [mapConfig.facilitiesClusters]
-        // })
-
-        // const facsClustersSinglePoints = this.map.queryRenderedFeatures(
-        //   e.point,
-        //   {
-        //     layers: [mapConfig.facilitiesSinglePoints]
-        //   }
-        // )
-
-        // If in the region selected there is a point or a building
-        // Call the api to retrieve that facility data and open the sidebar
-        // if (facsClustersSinglePoints.length > 0) {
-        //   this.map.fitBounds(
-        //     bbox(fCollectionFormat(facsClustersSinglePoints)),
-        //     {
-        //       ease: true,
-        //       zoom: 16.4
-        //     }
-        //   )
-        // || facsClusters.length > 0
-        if (clusters.length > 0) {
-          // let data = clusters.length > 0 ? clusters : facsClusters
-          // let sourceName =
-          //   clusters.length > 0
-          //     ? mapConfig.clusters
-          //     : mapConfig.facilitiesClusters
-
-          await this.handleClustersSelection(
-            clusters,
-            this.map,
-            mapConfig.clusters
-          )
-        } else if (cls.length > 0) {
-          await this.handleClsSelection({
-            id: cls[0].properties._id,
-            type: 'cls'
-          })
-        } else if (ixps.length > 0) {
-          await this.handleIxpsSelection({
-            id: ixps[0].properties._id,
-            type: 'ixps'
-          })
-        } else if (facilities.length > 0) {
-          await this.handleFacilitySelection({
-            id: facilities[0].properties._id,
-            type: 'facilities'
-          })
-        } else if (cables.length > 0) {
-          await this.handleCablesSelection(cables.length > 0, cables)
-        } else if (
-          facilities.length <= 0 &&
-          ixps.length <= 0 &&
-          cls.length <= 0
-        ) {
-          // Clearing clusters source in case there was something previously selected
-          try {
-            this.map
-              .getSource(mapConfig.clusters)
-              .setData({ type: 'FeatureCollection', features: [] })
-          } catch {
-            // Ignore
-          } finally {
-            this.disableSelectionHighlight()
-          }
-        }
-      } else await this.$auth.loginWithRedirect()
+      }
     },
     async handleOrganizationFocus(_id, fc) {
       const res = await viewOrganization({
-        user_id: await this.$auth.getUserID(),
+        user_id: this.$auth.user,
         _id
       })
       if (res && res.data && res.data.r && res.data.r.length) {
@@ -708,7 +587,8 @@ export default {
           // Highlight the nearest clicked cable
           await this.handleCableSelected({
             _id: cables[0].properties._id,
-            name: cables[0].properties.name
+            name: cables[0].properties.name,
+            terrestrial: cables[0].properties.terrestrial == 'true'
           }).then(() => this.highlightSelection(cables[0].properties._id))
           break
         default:
@@ -831,18 +711,6 @@ export default {
       this.$store.commit(`${CURRENT_MAP_FILTER}`, ['all'])
       switchStyles(style)
     },
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen
-      if (this.isMenuOpen && this.isGooeyMenu) {
-        this.isGooeyMenu = false
-      }
-    },
-    toggleGooeyMenu() {
-      this.isGooeyMenu = !this.isGooeyMenu
-      if (this.isMenuOpen && this.isGooeyMenu) {
-        this.isMenuOpen = false
-      }
-    },
     toggleFullScreen() {
       const el = document.querySelector('.application')
       if (!document.fullscreen) {
@@ -895,19 +763,19 @@ export default {
         case 'partners':
           await this.handleOrganizationFocus(id, fc)
           break
-        case 'cable':
+        case 'terrestrial-network':
+          await this.handleCableFocus(id)
+          break
+        case 'subsea-cable':
           await this.handleCableFocus(id)
           break
         case 'facility':
           await this.handleFacilityFocus({ id, type })
           break
-        case 'facilities':
-          await this.handleFacilityFocus({ id, type })
-          break
         case 'cls':
           await this.handleClsFocus({ id, type })
           break
-        case 'ixps':
+        case 'ixp':
           await this.handleIxpsFocus({ id, type })
           break
         case 'city':
@@ -1140,46 +1008,6 @@ export default {
     handlePreviouslySelected: debounce(function() {
       if (this.map.loaded()) this.handleFocusOn(this.focus)
     }, 1200)
-    // handleLastMileToolActivation() {
-    //   this.lastMileTool.active = true
-    //   this.lastMileTool.reference.initService()
-    //   this.lastMileTool.reference.registerEvents()
-    //   this.map.getCanvas().style.cursor = 'crosshair'
-    //   // this.map.setLayoutProperty(
-    //   //   mapConfig.facilitiesClusters,
-    //   //   'visibility',
-    //   //   'none'
-    //   // )
-    //   // this.map.setLayoutProperty(
-    //   //   mapConfig.facilitiesCount,
-    //   //   'visibility',
-    //   //   'none'
-    //   // )
-    //   // this.map.setLayoutProperty(
-    //   //   mapConfig.facilitiesSinglePoints,
-    //   //   'visibility',
-    //   //   'none'
-    //   // )
-    // },
-    // disableLastMileTool() {
-    //   this.lastMileTool.active = false
-    //   this.lastMileTool.reference.clearLastMileTool()
-    //   this.map.getCanvas().style.cursor = 'pointer'
-    // },
-    // handleLastMileToolCoordsChange(e) {
-    //   this.lastMileTool.reference.find(e.lngLat)
-    // },
-    // findNewLastMile() {
-    //   this.lastMileTool.reference.clearLastMileTool()
-    //   this.lastMileTool.networks = []
-    //   this.lastMileTool.len = ''
-    //   var emptyGeo = { type: 'FeatureCollection', features: [] }
-    //   this.map.getSource('startpoints').setData(emptyGeo)
-    //   this.map.getSource('finishpoints').setData(emptyGeo)
-    //   this.map.getSource('shortestroads').setData(emptyGeo)
-    //   this.lastMileTool.reference.latlng = null
-    //   this.lastMileTool.reference.registerEvents()
-    // }
   }
 }
 </script>

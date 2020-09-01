@@ -15,8 +15,9 @@
       @alert-message="handleSendMessage"
       :pagination="true"
       @search-input="handleOrgSearch"
-      @page-change="getOrganizationsList"
-      @clear-search-input="getOrganizationsList"
+      @sort-by="handleOrgSearch"
+      @page-change="handleOrgSearch"
+      @clear-search-input="handleOrgSearch"
     />
     <org-form
       :form="form"
@@ -24,6 +25,12 @@
       :visible="isDialog"
       :mode="mode"
       @close="toggleDialog(true)"
+    />
+    <prompt-delete
+      :elemnt="elemntType"
+      :is-visible="promptDelete"
+      @delete-cancel="$emit('delete-cancel')"
+      @delete-confirm="$emit('delete-confirm')"
     />
   </div>
 </template>
@@ -33,7 +40,6 @@ import TableList from '../../../components/TableList.vue'
 import OrgForm from '../../../components/userCreationForms/org'
 import {
   createOrganization,
-  getOrganizations,
   deleteOrganization,
   editOrganization,
   viewOrganizationOwner,
@@ -43,17 +49,20 @@ import { orgsColumns } from '../../../config/columns'
 import { TOGGLE_MESSAGE_DIALOG } from '../../../store/actionTypes'
 import { MAP_FOCUS_ON } from '../../../store/actionTypes/map'
 import debounce from '../../../helpers/debounce'
+import { deleteOrgPermanently } from '../../../services/api/permanentDelete'
 
 export default {
   name: 'CablesSection',
   components: {
+    'org-form': OrgForm,
     'table-list': TableList,
-    'org-form': OrgForm
+    PromptDelete: () => import('../../../components/PromptDelete')
   },
   data: () => ({
     tableData: [],
     mode: 'create',
     loading: false,
+    promptDelete: false,
     form: {
       name: '',
       logo: '',
@@ -74,15 +83,15 @@ export default {
     dark() {
       return this.$store.state.isDark
     },
+    elemntType() {
+      return 'organization'
+    },
     checkMode() {
       return this.mode == 'create' ? this.createOrg : this.saveEditedOrg
     }
   },
-  beforeCreate() {
-    this.$emit('layout', 'profile-layout')
-  },
-  async mounted() {
-    await this.getOrganizationsList()
+  async created() {
+    await this.handleOrgSearch('', 'nameAsc', 0)
   },
   methods: {
     handleSendMessage(data) {
@@ -127,18 +136,31 @@ export default {
       this.mode = 'edit'
       this.toggleDialog()
     },
-    deleteOrg(_id) {
-      return this.$confirm(
-        'Are you sure you want to delete this organization. This action is irreversible',
-        'Please confirm to continue'
-      ).then(async () => {
-        await deleteOrganization({
-          user_id: await this.$auth.getUserID(),
-          _id
-        }).then(() => {
-          this.handleOrgSearch(this.$refs.tableList.getTableSearchValue())
-        })
-      }, console.error)
+    deleteOrg(_id, isPermanent) {
+      this.promptDelete = true
+
+      this.$once('delete-confirm', async () => {
+        if (!isPermanent) {
+          await deleteOrganization({
+            user_id: await this.$auth.getUserID(),
+            _id
+          }).then(() => {
+            this.handleOrgSearch(...this.$refs.tableList.getTableSearchValue())
+          })
+        } else {
+          await deleteOrgPermanently({
+            user_id: await this.$auth.getUserID(),
+            _id
+          }).then(() => {
+            this.handleOrgSearch(...this.$refs.tableList.getTableSearchValue())
+          })
+        }
+        this.promptDelete = false
+      })
+
+      this.$once('delete-cancel', async () => {
+        this.promptDelete = false
+      })
     },
     toggleDialog(itClearsForm) {
       this.isDialog = !this.isDialog
@@ -154,17 +176,6 @@ export default {
         }
       }
     },
-    async getOrganizationsList(page = 0) {
-      this.loading = true
-      const res = await getOrganizations({
-        user_id: await this.$auth.getUserID(),
-        page
-      })
-      if (res && res.data && res.t !== 'error') {
-        this.tableData = res.data.r
-      }
-      this.loading = false
-    },
     async createOrg() {
       const res = await createOrganization({
         ...this.form,
@@ -172,7 +183,7 @@ export default {
       })
       if (res && res.data && res.t !== 'error') {
         this.toggleDialog(true)
-        this.handleOrgSearch(this.$refs.tableList.getTableSearchValue())
+        this.handleOrgSearch(...this.$refs.tableList.getTableSearchValue())
       }
     },
     async saveEditedOrg() {
@@ -182,19 +193,16 @@ export default {
       })
       if (res && res.t !== 'error') {
         this.toggleDialog(true)
-        this.handleOrgSearch(this.$refs.tableList.getTableSearchValue())
+        this.handleOrgSearch(...this.$refs.tableList.getTableSearchValue())
       }
     },
-    handleOrgSearch: debounce(async function(s) {
-      if (s == '') {
-        if (!this.loading) await this.getOrganizationsList()
-        return
-      }
-
+    handleOrgSearch: debounce(async function(s, sortBy, page = 0) {
       this.loading = true
       const res = await searchOrganization({
         user_id: await this.$auth.getUserID(),
         psz: true,
+        sortBy,
+        page,
         s
       })
       if (res && res.data) {

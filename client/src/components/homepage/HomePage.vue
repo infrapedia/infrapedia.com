@@ -11,15 +11,12 @@
               Sign-up and explore the Internet infrastructure
             </small>
           </h1>
-          <el-button
-            class="mr4 w42"
-            plain
-            round
-            type="primary"
-            @click="askToRegister"
+          <router-link
+            to="/app"
+            class="el-button el-button--primary is-round mr4 w42 inline-block is-plain"
           >
-            Login / Sign-Up
-          </el-button>
+            Go to Map
+          </router-link>
         </div>
       </div>
       <div class="map-wrapper cubic-transition">
@@ -250,6 +247,7 @@ import Map from '../mainMap/Map'
 import teamMembers from '../../config/teamMembers.js'
 import { formatDate } from '../../helpers/formatDate'
 import { getTrustedBy } from '../../services/api/organizations'
+import { checkCookie } from '../../helpers/cookies'
 
 export default {
   name: 'HomePage',
@@ -334,8 +332,11 @@ export default {
     //     .filter(t => t)
     // },
     askToRegister() {
-      this.$parent.$emit('layout', 'nothing-layout')
-      this.$router.push('/login?redirect=true')
+      if (checkCookie('auth0.is.authenticated')) {
+        this.$router.push('/app')
+      } else {
+        this.$router.push('/login?redirect=true')
+      }
     }
   }
 }

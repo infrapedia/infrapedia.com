@@ -1,7 +1,7 @@
 const profileLinks = [
   {
     label: 'Dashboard',
-    url: '/user',
+    url: '/user/dashboard',
     icon: ['fas', 'home']
   },
   {

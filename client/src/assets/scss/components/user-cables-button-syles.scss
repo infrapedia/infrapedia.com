@@ -11,9 +11,9 @@
   right: 0.2rem;
   overflow: hidden;
   max-height: 20rem;
-  background-color: $white-partial;
+  background-color: darken($white-partial, 4%);
   .list-wrapper__inner {
-    height: 33vh;
+    height: fit-content;
   }
   header {
     padding: 1.2rem;
@@ -28,9 +28,13 @@
   }
   footer {
     left: 0;
-    bottom: 0;
-    width: 96%;
-    background-color: $white-partial;
+    width: 100%;
+    bottom: -0.4rem;
+    border-top: 1px solid #dcdfe6;
+    background-color: darken($white-partial, 4%);
+    .create-btn {
+      width: 50%;
+    }
   }
   li.inline-block {
     background-color: $white-partial;
@@ -49,18 +53,19 @@
     }
     color: $white-hsl;
     background-color: $dark-charcoal;
-    .el-button {
-      color: $dark-charcoal;
-      background-color: $light-yellow;
-      border: 1px solid $light-yellow;
-      &:hover,
-      &:focus,
-      &:focus-within {
-        background: darken($light-yellow, 10%);
-      }
-    }
     footer {
+      border: 1px solid $light-charcoal;
       background-color: $dark-charcoal;
+      .el-button {
+        color: $white-hsl;
+        background-color: $dark-charcoal;
+        border: 1px solid $dark-charcoal;
+        &:hover,
+        &:focus,
+        &:focus-within {
+          background: darken($dark-charcoal, 10%);
+        }
+      }
     }
   }
 }
@@ -81,9 +86,4 @@
   @media screen and (max-width: $break-sm) {
     right: 1.2rem;
   }
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
 }

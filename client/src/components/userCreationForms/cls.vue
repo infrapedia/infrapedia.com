@@ -309,8 +309,7 @@ export default {
       return this.$emit('set-selection-onto-map', {
         fc: Array.isArray(featureCollection)
           ? fCollectionFormat(featureCollection)
-          : featureCollection,
-        t: 'cables'
+          : featureCollection
       })
     },
     async getTagsList(s) {

@@ -22,7 +22,7 @@
     >
       <el-divider :class="{ dark }" class="mt1 mb1 w-fit-full" />
       <div
-        class="box p1 mb1 inline-flex align-items-center w-fit-full seamless-hoverbg pr4 pl4"
+        class="box p1 mb1 inline-flex align-items-center w-fit-full pr4 pl4"
         :class="{ light: !dark, dark }"
         v-for="b in legend"
         :key="b.label"

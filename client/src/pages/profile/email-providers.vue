@@ -285,9 +285,6 @@ export default {
       }
     }
   },
-  beforeCreate() {
-    this.$emit('layout', 'profile-layout')
-  },
   computed: {
     dark() {
       return this.$store.state.isDark

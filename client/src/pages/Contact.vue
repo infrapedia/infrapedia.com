@@ -185,9 +185,6 @@ export default {
       }
     }
   },
-  beforeCreate() {
-    this.$emit('layout', 'landing-layout')
-  },
   methods: {
     handleCatchaVerification(v) {
       if (!v) return

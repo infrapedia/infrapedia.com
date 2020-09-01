@@ -1,13 +1,21 @@
 export default function(id, options = {}) {
   const button = document.createElement('button')
+
+  button.id = id
   button.className = `editor-ctrl-btn ${options.className}`
   button.setAttribute('title', options.title)
+
   options.container.appendChild(button)
-  if (options.icon !== undefined) {
-    var ii = document.createElement('i')
-    ii.className = options.icon
-    button.appendChild(ii)
+  if (options.icon != undefined) {
+    var icon = document.createElement('i')
+    icon.className = options.icon
+    button.appendChild(icon)
   }
+
+  if (options.dataset) {
+    button.setAttribute(options.dataset[0], options.dataset[1])
+  }
+
   button.addEventListener(
     'click',
     e => {

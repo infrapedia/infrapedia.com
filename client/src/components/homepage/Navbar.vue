@@ -2,7 +2,7 @@
   <el-header class="fs-small p4 vertical-align header">
     <h1 class="logo-title inline-block">
       <router-link :to="checkIfLoggedIn" class="hidden-sm-and-down">
-        <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
+        <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" lazy />
       </router-link>
       <el-button
         circle
@@ -52,20 +52,16 @@
           </el-dropdown-menu>
         </el-dropdown>
         <template v-else>
-          <router-link
+          <!-- <router-link
             v-if="i == 0"
             :key="i"
             :to="checkIfLoggedIn"
             class="mr4 underline-hover"
           >
             {{ link.label }}
-          </router-link>
-          <router-link
-            v-else
-            :key="i"
-            :to="link.url"
-            class="mr4 underline-hover"
-          >
+          </router-link> -->
+          <!-- v-else -->
+          <router-link :key="i" :to="link.url" class="mr4 underline-hover">
             {{ link.label }}
           </router-link>
         </template>

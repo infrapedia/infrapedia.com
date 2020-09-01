@@ -160,8 +160,8 @@ export const viewClsBBox = async ({ user_id, _id }) => {
   return res
 }
 
-export const searchCls = async ({ user_id, s, psz }) => {
-  url = `${apiConfig.url}/cls/search?s=${s}`
+export const searchCls = async ({ user_id, s, psz, sortBy, page }) => {
+  url = `${apiConfig.url}/cls/search?s=${s}&sortBy=${sortBy}&page=${page}`
   if (psz) {
     url = url + '&psz=1'
   }

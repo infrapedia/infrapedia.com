@@ -126,6 +126,17 @@
         </div>
       </el-form-item>
       <template v-if="creationID == 'subsea'">
+        <el-form-item label="Fiber Pairs" prop="fiberPairs">
+          <el-input-number
+            :min="0"
+            :class="{ dark }"
+            class="w-fit-full"
+            controls-position="right"
+            v-model="form.fiberPairs"
+          />
+        </el-form-item>
+        <!-- </template>
+      <template v-if="creationID == 'subsea'"> -->
         <el-form-item label="Design Capacity (Tbps)" prop="tbpsCapacity">
           <el-input-number
             :min="0"
@@ -136,64 +147,49 @@
           />
         </el-form-item>
         <el-form-item label="Lit Capacity" prop="litCapacity">
-          <el-button
-            class="inline-block"
-            size="small"
-            :class="{ dark }"
-            @click="addLitCapacityField"
-          >
-            Add lit capacity
-          </el-button>
-          <el-collapse v-model="collapseItem" class="mt1">
-            <el-collapse-item :name="1">
-              <div class="inline-block">
-                <transition-group name="fade" mode="in-out" appear tag="div">
-                  <div
-                    v-for="(field, i) in form.litCapacity"
-                    :key="i + 'field'"
-                    class="relative mt12"
-                  >
-                    <div class="capacity-field p4 el-card shadow--never">
-                      <el-date-picker
-                        size="small"
-                        class="date-picker mr1"
-                        v-model="field.year"
-                        type="year"
-                        placeholder
-                      />
-                      <el-input-number
-                        size="small"
-                        :min="0"
-                        controls-position="right"
-                        v-model="field.cap"
-                      />
-                    </div>
-                    <span
-                      class="absolute z-index2 circle remove transition-all vertical-align"
-                    >
-                      <small
-                        class="underline-hover"
-                        @click="removeLitCapacityField(i)"
-                      >
-                        Remove
-                      </small>
-                    </span>
-                  </div>
-                </transition-group>
+          <div class="inline-block">
+            <el-button
+              class="inline-block"
+              size="small"
+              @click="addLitCapacityField"
+            >
+              Add lit capacity
+            </el-button>
+          </div>
+          <div class="w-fit-full">
+            <div
+              v-for="(field, i) in form.litCapacity"
+              :key="i"
+              class="relative mt4"
+            >
+              <div
+                class="flex column justify-content-center pt4 pb1 pl4 pr4 el-card shadow--never"
+              >
+                <el-date-picker
+                  size="small"
+                  class="date-picker"
+                  v-model="field.year"
+                  style="width: 100%"
+                  type="year"
+                  placeholder
+                />
+                <el-input-number
+                  size="small"
+                  :min="0"
+                  class="w-fit-full mt2"
+                  controls-position="right"
+                  v-model="field.cap"
+                />
+                <el-button
+                  type="text"
+                  class="fs-small text-left mt4"
+                  @click="removeLitCapacityField(i)"
+                >
+                  Remove
+                </el-button>
               </div>
-            </el-collapse-item>
-          </el-collapse>
-        </el-form-item>
-      </template>
-      <template v-if="creationID == 'subsea'">
-        <el-form-item label="Fiber Pairs" prop="fiberPairs">
-          <el-input-number
-            :min="0"
-            :class="{ dark }"
-            class="w-fit-full"
-            controls-position="right"
-            v-model="form.fiberPairs"
-          />
+            </div>
+          </div>
         </el-form-item>
       </template>
       <el-form-item :label="facilitiesLabel" prop="facilities">
@@ -303,10 +299,9 @@ import validateUrl from '../../helpers/validateUrl'
 import { searchFacilities } from '../../services/api/facs'
 import { searchOrganization } from '../../services/api/organizations'
 import VMultiSelect from '../../components/MultiSelect'
-import { clsListConnectedToCable, searchCls } from '../../services/api/cls'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import * as events from '../../events/mapForm'
-import { getClsGeoms } from '../../services/api/cls'
+import { getClsGeoms, searchCls } from '../../services/api/cls'
 import { checkCableNameExistence } from '../../services/api/check_name'
 import debounce from '../../helpers/debounce'
 
@@ -335,8 +330,7 @@ export default {
     isLoadingOrgs: false,
     isLoadingKnownUsers: false,
     isNameRepeated: false,
-    warnTagDuplicate: false,
-    litCapacityFields: []
+    warnTagDuplicate: false
   }),
   props: {
     showTitle: {
@@ -468,16 +462,6 @@ export default {
         }
       ]
     }
-
-    setTimeout(async () => {
-      if (
-        this.mode != 'create' &&
-        this.creationID == 'subsea' &&
-        !this.$route.query.failedToUploadKMz
-      ) {
-        await this.getClsListConnectedToCable()
-      }
-    }, 320)
   },
   watch: {
     'form.facsList'(facs) {
@@ -562,15 +546,6 @@ export default {
         removeLoadState: true
       })
     },
-    async getClsListConnectedToCable() {
-      const res = await clsListConnectedToCable({
-        user_id: await this.$auth.getUserID(),
-        cable_id: this.$route.query.item
-      })
-      if (res && res.data && res.data.r) {
-        this.clsSelectedList = res.data.r
-      }
-    },
     async getTagsList(s) {
       const res = await getTags({ user_id: await this.$auth.getUserID(), s })
       if (res && res.data) {
@@ -633,7 +608,7 @@ export default {
     sendData() {
       this.setOwnersEmptyState()
       this.setCLSEmptyState()
-      return this.$refs['form'].validate(isValid =>
+      return this.$refs.form.validate(isValid =>
         isValid && !this.isOwnersSelectEmpty ? this.$emit('send-data') : false
       )
     },

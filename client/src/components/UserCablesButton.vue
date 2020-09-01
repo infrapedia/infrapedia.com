@@ -2,6 +2,7 @@
   <div class="absolute mainw">
     <el-popover
       :visible-arrow="false"
+      v-click-outside="close"
       placement="bottom-start"
       width="320"
       trigger="manual"
@@ -23,68 +24,74 @@
         class="list-wrapper bottom-shadow sm-round h-fit-content absolute w90 mt4 flex column"
       >
         <div class="relative list-wrapper__inner">
-          <header class=" h8 text-right">
-            <span
-              @click="toggleListVisibility"
-              class="inline-block cursor-pointer"
-            >
-              <fa :icon="['fas', 'times']" class="fs-large icon" />
-            </span>
+          <header class="h8 text-right">
+            <el-button
+              icon="el-icon-close"
+              circle
+              size="small"
+              class="transparent"
+              @click="close"
+            />
           </header>
           <ul
-            class="w-fit-full flex row wrap m0 p0 block"
+            class="w-fit-full flex row wrap pt4 m0 p0 block no-overflow-x"
             v-loading="loading"
             role="group"
           >
             <li
               v-for="(cable, i) in cablesList"
-              class="transition-all cursor-pointer bg-white no-outline mt4 mb4 pr4 pl4 h-fit"
+              class="transition-all cursor-pointer bg-white no-outline mb4 pr4 pl4 h-fit"
               role="listitem"
               style="width: 100%"
               :key="i"
             >
-              <div
-                class="flex row pt5 pb4 pl2 pr2 nowrap justify-content-space-between align-items-center"
+              <el-button
+                type="text"
+                class="color-inherit transparent text-left w-fit-full row pt5 pb4 pl2 pr2"
                 @click="loadCable(cable._id)"
               >
-                <div>
-                  <strong>
-                    <p class="name m0 p0 mb1">
-                      <fa :icon="getIcon(cable.terrestrial)" />
-                      {{ cable.name }}
-                    </p>
-                  </strong>
-                  <small class="hidden-sm-and-down">
-                    ID: {{ cable._id }}
-                  </small>
-                </div>
-                <p
-                  class="m0 p0 status-text"
-                  :class="{ on: cable.status, off: !cable.status }"
+                <div
+                  class="no-overflow flex nowrap justify-content-space-between align-items-center"
                 >
-                  {{ cable.status ? 'On' : 'Off' }}
-                </p>
-              </div>
+                  <div>
+                    <strong>
+                      <p class="name m0 p0 mb1">
+                        <fa :icon="getIcon(cable.terrestrial)" />
+                        {{ cable.name }}
+                      </p>
+                    </strong>
+                    <small class="hidden-sm-and-down">
+                      ID: {{ cable._id }}
+                    </small>
+                  </div>
+                  <p
+                    class="m0 p0 status-text align-self-end"
+                    :class="{ on: cable.status, off: !cable.status }"
+                  >
+                    {{ cable.status ? 'On' : 'Off' }}
+                  </p>
+                </div>
+              </el-button>
             </li>
           </ul>
           <footer
-            class="pl2 pr2 pb2 flex nowrap justify-content-space-between align-items-center"
+            class="flex nowrap justify-content-space-between align-items-center"
           >
             <el-button
-              class="create-btn p2 h10"
+              class="create-btn p2 h10 no-border transparent"
               plain
               type="text"
               @click="headToCreationRoute('subsea')"
             >
-              <fa :icon="['fas', 'plus']" class="mr1" /> Create new subsea
+              Create new subsea
             </el-button>
             <el-button
-              class="create-btn p2 h10"
+              class="create-btn p2 h10 no-border transparent"
               plain
               type="text"
               @click="headToCreationRoute('terrestrial')"
             >
-              <fa :icon="['fas', 'plus']" class="mr1" /> Create new network
+              Create new network
             </el-button>
           </footer>
         </div>
@@ -94,6 +101,7 @@
 </template>
 
 <script>
+import ClickOutside from 'vue-click-outside'
 import dataCollection from '../mixins/dataCollection'
 import { getCablesShortList } from '../services/api/cables'
 
@@ -124,6 +132,9 @@ export default {
     toggleListVisibility() {
       this.isListOpen = !this.isListOpen
     },
+    close() {
+      this.isListOpen = false
+    },
     async getCablesList() {
       this.loading = true
       const res = await getCablesShortList({
@@ -143,6 +154,9 @@ export default {
         ? this.$router.push('/user/section/create?id=subsea')
         : this.$router.push('/user/section/create?id=terrestrial-network')
     }
+  },
+  directives: {
+    ClickOutside
   }
 }
 </script>

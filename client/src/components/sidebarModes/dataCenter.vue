@@ -24,7 +24,14 @@
                           <el-tag
                             v-for="(item, index) in col.filter(info[col.value])"
                             :key="index + item.name"
-                            @click="handleSelection(item._id, col.label)"
+                            @click="
+                              handleSelection(
+                                item._id,
+                                item.terrestrial == true
+                                  ? 'terrestrial-network'
+                                  : 'subsea-cable'
+                              )
+                            "
                             class="mr2 cursor-pointer"
                             size="mini"
                           >
@@ -34,15 +41,22 @@
                       </el-collapse>
                     </template>
                     <template v-else>
-                      <p class="label capitalize">{{ col.label }}</p>
+                      <p class="label capitalize">{{ col.label }}h</p>
                       <el-tag
                         v-for="(item, index) in col.filter(info[col.value])"
                         :key="index + item.name"
-                        @click="handleSelection(item._id, col.label)"
+                        @click="
+                          handleSelection(
+                            item._id,
+                            item.terrestrial == true
+                              ? 'terrestrial-network'
+                              : 'subsea-cable'
+                          )
+                        "
                         class="mr2 cursor-pointer"
                         size="mini"
                       >
-                        {{ item.name }}
+                        {{ item.name }}h
                       </el-tag>
                     </template>
                   </template>
@@ -75,7 +89,7 @@
                         class="mr2 cursor-pointer"
                         size="mini"
                       >
-                        {{ item.name }}
+                        {{ item.name }} t
                       </el-tag>
                     </template>
                   </template>
@@ -130,7 +144,14 @@
                     <el-tag
                       v-for="(item, index) in col.filter(info[col.value])"
                       :key="index + item.name"
-                      @click="handleSelection(item._id, col.label)"
+                      @click="
+                        handleSelection(
+                          item._id,
+                          item.terrestrial == true
+                            ? 'terrestrial-network'
+                            : 'subsea-cable'
+                        )
+                      "
                       class="mr2 cursor-pointer"
                       size="mini"
                     >
@@ -197,7 +218,7 @@
                 <template v-if="Array.isArray(info[col.value])">
                   <a
                     class="text-bold underline dont-break-out mt3 inline-block"
-                    style="max-width: 10.4rem"
+                    style="max-width: 20.4rem"
                     v-for="(url, i) in info[col.value]"
                     :href="
                       url.includes('http://') || url.includes('https://')
@@ -211,7 +232,7 @@
                 </template>
                 <a
                   v-else
-                  style="max-width: 10.4rem"
+                  style="max-width: 20.4rem"
                   class="text-bold underline dont-break-out mt3 inline-block"
                   :href="
                     info[col.value].includes('http://') ||
@@ -318,8 +339,13 @@
     <!---- VALUES SECTION END ---->
 
     <!---- FOOTER SECTION STARTS ----->
-    <footer class="pr8 pl8 pb8">
-      <template>
+    <el-tooltip
+      effect="dark"
+      :disabled="!isActionButtonsDisabled"
+      placement="top-start"
+      content="You need to login before making use of this features"
+    >
+      <footer class="pr8 pl8 pb8">
         <el-divider class="mt0" />
         <el-row :gutter="20">
           <el-col :sx="24" :md="12">
@@ -329,6 +355,7 @@
               popper-class="buy-capacity-popper"
               :visible-arrow="false"
               trigger="manual"
+              :disabled="isActionButtonsDisabled"
               v-model="isMenuOpen"
             >
               <el-card shadow="never" class>
@@ -350,32 +377,38 @@
                 slot="reference"
                 @click="toggleMenu"
                 class="cursor-pointer no-outline no-selectable"
+                :class="{ disabled: isActionButtonsDisabled }"
               >
                 <el-button
+                  :disabled="isActionButtonsDisabled"
                   type="warning"
                   circle
                   class="mr1 w9 h9 vertical-align"
                 >
                   <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
                 </el-button>
-                <span class="cursor-pointer fs-regular label"
-                  >Buy capacity</span
-                >
+                <span class="fs-regular label">Buy capacity</span>
               </div>
             </el-popover>
           </el-col>
           <el-col :sx="24" :md="12">
             <div
+              :class="{ disabled: isActionButtonsDisabled }"
               class="cursor-pointer no-selectable"
-              @click="$emit(REPORT_ISSUE)"
+              @click="!isActionButtonsDisabled ? $emit(REPORT_ISSUE) : () => {}"
             >
-              <el-button type="warning" circle class="mr1 w9 h9 vertical-align">
+              <el-button
+                :disabled="isActionButtonsDisabled"
+                type="warning"
+                circle
+                class="mr1 w9 h9 vertical-align"
+              >
                 <fa
                   :icon="['fas', 'exclamation-circle']"
                   class="sm-icon mt-1"
                 />
               </el-button>
-              <span class="cursor-pointer fs-regular label">Report issue</span>
+              <span class="fs-regular label">Report issue</span>
             </div>
           </el-col>
           <el-col
@@ -386,24 +419,24 @@
             :class="{ mt8: focus.type != 'cls' }"
           >
             <div
+              :class="{ disabled: isActionButtonsDisabled }"
               class="cursor-pointer no-selectable"
-              @click="$emit(CREATE_ALERT)"
+              @click="!isActionButtonsDisabled ? $emit(CREATE_ALERT) : () => {}"
             >
               <el-button
+                :disabled="isActionButtonsDisabled"
                 :type="info.alert !== 1 ? 'info' : 'warning'"
                 circle
                 class="mr1 w9 h9 vertical-align"
               >
                 <fa :icon="['fas', 'bell']" class="sm-icon mt-1" />
               </el-button>
-              <span class="cursor-pointer fs-regular label"
-                >Receive alerts</span
-              >
+              <span class="fs-regular label">Receive alerts</span>
             </div>
           </el-col>
         </el-row>
-      </template>
-    </footer>
+      </footer>
+    </el-tooltip>
     <!---- FOOTER SECTION END ----->
   </div>
 </template>
@@ -466,6 +499,9 @@ export default {
         })
         .filter(col => col)
       return cols
+    },
+    isActionButtonsDisabled() {
+      return !this.$auth.isAuthenticated
     }
   },
   mounted() {

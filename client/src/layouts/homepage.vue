@@ -13,7 +13,7 @@
       enter-active-class="fadeIn"
       leave-active-class="fadeOut"
     >
-      <slot />
+      <router-view />
     </transition>
     <h-footer />
   </el-container>
@@ -34,6 +34,9 @@ export default {
   data: () => ({
     isMobileDrawer: false
   }),
+  created() {
+    document.querySelector('body').className = 'overflow-y-auto'
+  },
   methods: {
     closeDrawer() {
       this.isMobileDrawer = false

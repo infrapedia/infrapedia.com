@@ -120,10 +120,10 @@ export default {
     optionsGiver() {
       const option = this.option.toLowerCase()
 
-      if (option === 'partners') return this.premium
-      else if (option === 'submarine') return this.submarine
-      else if (option === 'ixps') return this.ixps
-      else if (option === 'datacenters') return this.dataCenters
+      if (option == 'partners') return this.premium
+      else if (option == 'submarine') return this.submarine
+      else if (option == 'ixps') return this.ixps
+      else if (option == 'datacenters') return this.dataCenters
       else return this.networks
     }
   },
@@ -135,7 +135,7 @@ export default {
       })
     },
     isFinal(num) {
-      return num + 1 === this.optionsGiver.length
+      return num + 1 == this.optionsGiver.length
     },
     clearSearch() {
       this.isSearching = false
