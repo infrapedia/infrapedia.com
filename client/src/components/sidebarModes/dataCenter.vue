@@ -27,7 +27,7 @@
                             @click="
                               handleSelection(
                                 item._id,
-                                item.terrestrial == 'true'
+                                item.terrestrial == true
                                   ? 'terrestrial-network'
                                   : 'subsea-cable'
                               )
@@ -41,14 +41,14 @@
                       </el-collapse>
                     </template>
                     <template v-else>
-                      <p class="label capitalize">{{ col.label }}</p>
+                      <p class="label capitalize">{{ col.label }}h</p>
                       <el-tag
                         v-for="(item, index) in col.filter(info[col.value])"
                         :key="index + item.name"
                         @click="
                           handleSelection(
                             item._id,
-                            item.terrestrial == 'true'
+                            item.terrestrial == true
                               ? 'terrestrial-network'
                               : 'subsea-cable'
                           )
@@ -56,7 +56,7 @@
                         class="mr2 cursor-pointer"
                         size="mini"
                       >
-                        {{ item.name }}
+                        {{ item.name }}h
                       </el-tag>
                     </template>
                   </template>
@@ -89,7 +89,7 @@
                         class="mr2 cursor-pointer"
                         size="mini"
                       >
-                        {{ item.name }}
+                        {{ item.name }} t
                       </el-tag>
                     </template>
                   </template>
@@ -144,7 +144,14 @@
                     <el-tag
                       v-for="(item, index) in col.filter(info[col.value])"
                       :key="index + item.name"
-                      @click="handleSelection(item._id, col.label)"
+                      @click="
+                        handleSelection(
+                          item._id,
+                          item.terrestrial == true
+                            ? 'terrestrial-network'
+                            : 'subsea-cable'
+                        )
+                      "
                       class="mr2 cursor-pointer"
                       size="mini"
                     >
