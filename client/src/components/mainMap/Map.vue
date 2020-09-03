@@ -9,6 +9,14 @@
       >
         <legends-panel />
       </transition>
+      <transition
+        name="animated faster delay-1s"
+        enter-active-class="slideInLeft"
+        leave-active-class="slideOutLeft"
+        mode="out-in"
+      >
+        <layers-panel @toggle-layer="handleToggleLayer" />
+      </transition>
       <el-button
         id="ThreeD"
         type="text"
@@ -72,13 +80,18 @@ import GooeyMenu from './GooeyMenu'
 import highlightCurrentSelection from './highlightCurrentSelection'
 import dataCollection from '../../mixins/dataCollection'
 import { DateTime } from 'luxon'
-import LegendsPanel from './legendsPanel'
+import LegendsPanel from './LegendsPanel'
+import LayersPanel from './LayersPanel'
+import { bbox } from '@turf/turf'
+import { fCollectionFormat } from '../../helpers/featureCollection'
+import $axios from '../../services/axios'
 
 export default {
   name: 'Map',
   mixins: [dataCollection],
   components: {
     GooeyMenu,
+    LayersPanel,
     LegendsPanel
   },
   props: {
@@ -265,6 +278,61 @@ export default {
 
       return map
     },
+    async handleToggleLayer({ layerName, active, layersDict }) {
+      if (!this.map) return
+
+      const filter = active
+        ? mapConfig.filter.all
+        : ['has', 'a_propertie_that_doesnt_exist']
+
+      if (layerName == mapConfig.facilitiesClusters) {
+        const facsClustersSource = this.map.getSource(
+          mapConfig.facilitiesClusters
+        )
+        let features = fCollectionFormat()
+
+        if (active) {
+          features = { features } = (await $axios.get(
+            process.env.VUE_APP_TILES_FACS_CLUSTERS
+          )) || { features: [] }
+
+          this.map.setFilter(mapConfig.facilities, [
+            'has',
+            'a_propertie_that_doesnt_exist'
+          ])
+        } else {
+          this.map.setFilter(mapConfig.facilities, mapConfig.filter.all)
+        }
+
+        facsClustersSource.setData(features)
+      } else if (layerName == 'terrestrial') {
+        let filterBy = active ? mapConfig.filter.all : mapConfig.filter.subsea
+
+        if (!layersDict.subsea.active && active) {
+          filterBy = ['all', ['==', 'terrestrial', 'true'], ['has', '_id']]
+        } else if (!layersDict.subsea.active && !active) {
+          filterBy = ['has', 'a_propertie_that_doesnt_exist']
+        }
+
+        this.map.setFilter(mapConfig.cables, filterBy)
+        this.map.setFilter(mapConfig.cablesLabel, filterBy)
+      } else if (layerName == 'subsea') {
+        let filterBy = active
+          ? mapConfig.filter.all
+          : mapConfig.filter.terrestrial
+
+        if (!layersDict.terrestrial.active && active) {
+          filterBy = ['all', ['!=', 'terrestrial', 'true'], ['has', '_id']]
+        } else if (!layersDict.terrestrial.active && !active) {
+          filterBy = ['has', 'a_propertie_that_doesnt_exist']
+        }
+
+        this.map.setFilter(mapConfig.cables, filterBy)
+        this.map.setFilter(mapConfig.cablesLabel, filterBy)
+      } else {
+        this.map.setFilter(layerName, filter)
+      }
+    },
     handleCLSHover(e, isHovering) {
       //  || this.lastMileTool.active
       if (!this.map) return
@@ -306,11 +374,11 @@ export default {
       const cableCategoryColor =
         category == 'active' ? 'green' : category == 'project' ? 'red' : 'black'
 
-      // const facsClusters = this.map.queryRenderedFeatures(e.point, {
-      //   layers: [mapConfig.facilitiesClusters]
-      // })
+      const facsClusters = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.facilitiesClusters]
+      })
 
-      // if (facsClusters.length > 0) return
+      if (facsClusters.length > 0) return
 
       let str = `<div class="cable-name dark-color"><b>${name}</b></div>`
 
@@ -452,39 +520,33 @@ export default {
         layers: [mapConfig.clusters]
       })
 
-      // const facsClusters = this.map.queryRenderedFeatures(e.point, {
-      //   layers: [mapConfig.facilitiesClusters]
-      // })
-
-      // const facsClustersSinglePoints = this.map.queryRenderedFeatures(
-      //   e.point,
-      //   {
-      //     layers: [mapConfig.facilitiesSinglePoints]
-      //   }
-      // )
+      const facsClusters = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.facilitiesClusters]
+      })
+      const facsClustersSinglePoints = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.facilitiesSinglePoints]
+      })
 
       // If in the region selected there is a point or a building
       // Call the api to retrieve that facility data and open the sidebar
-      // if (facsClustersSinglePoints.length > 0) {
-      //   this.map.fitBounds(
-      //     bbox(fCollectionFormat(facsClustersSinglePoints)),
-      //     {
-      //       ease: true,
-      //       zoom: 16.4
-      //     }
-      //   )
-      // || facsClusters.length > 0
-      if (clusters.length > 0) {
-        // let data = clusters.length > 0 ? clusters : facsClusters
-        // let sourceName =
-        //   clusters.length > 0
-        //     ? mapConfig.clusters
-        //     : mapConfig.facilitiesClusters
+      if (facsClustersSinglePoints.length > 0) {
+        this.map.fitBounds(bbox(fCollectionFormat(facsClustersSinglePoints)), {
+          ease: true,
+          zoom: 16.4
+        })
+      } else if (clusters.length > 0 || facsClusters.length > 0) {
+        let data = clusters.length > 0 ? clusters : facsClusters
+        let sourceName =
+          clusters.length > 0
+            ? mapConfig.clusters
+            : mapConfig.facilitiesClusters
 
         await this.handleClustersSelection(
-          clusters,
+          // clusters,
+          data,
           this.map,
-          mapConfig.clusters
+          sourceName
+          // mapConfig.clusters
         )
       } else if (cls.length > 0) {
         await this.handleClsSelection({
