@@ -94,6 +94,7 @@ const cablesPaintConfig = {
   ]
 }
 
+const facsMinZoom = 10.89
 const cables = 'cables'
 const cls = 'cls'
 const ixps = 'ixps'
@@ -117,6 +118,7 @@ export const mapConfig = {
   cables,
   clusters,
   facilities,
+  facsMinZoom,
   cablesLabel,
   clsPaintConfig,
   snapPaintConfig,
@@ -223,21 +225,15 @@ export const mapConfig = {
         id: facilities,
         type: 'fill-extrusion',
         source: facilities,
+        minzoom: facsMinZoom,
         paint: facsPaintConfig,
         filter: ['has', 'a_propertie_that_doesnt_exist']
-      },
-      {
-        id: ixps,
-        type: 'circle',
-        source: ixps,
-        minzoom: 15,
-        paint: ixpsPaintConfig
       },
       {
         id: facilitiesLabel,
         type: 'symbol',
         source: facilities,
-        minzoom: 10.89,
+        minzoom: facsMinZoom,
         layout: {
           'text-field': ['to-string', ['get', 'name']],
           'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Regular'],
@@ -250,6 +246,13 @@ export const mapConfig = {
           'text-halo-color': '#ffffff',
           'text-halo-width': 0.75
         }
+      },
+      {
+        id: ixps,
+        type: 'circle',
+        source: ixps,
+        minzoom: 15,
+        paint: ixpsPaintConfig
       },
       {
         id: facilitiesClusters,
