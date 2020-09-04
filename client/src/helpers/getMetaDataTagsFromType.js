@@ -161,6 +161,42 @@ export default async function getMetaDataTagsFromSelectionType({
         name: 'content-language',
         content: 'en-US'
       }
+    ],
+    script: [
+      {
+        type: 'application/ld+json',
+        json: {
+          type: 'application/ld+json',
+          json: {
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            mainEntityOfPage: {
+              '@type': 'WebPage',
+              '@id': url
+            },
+            headline: typeClean.title,
+            description: description[typeClean.t],
+            image:
+              type == 'org'
+                ? 'https://cdn1.infrapedia.com/assets/default.jpg'
+                : `${apiConfig.url}/elm/map/${typeClean.slug}.jpg`,
+            author: {
+              '@type': 'Organization',
+              name
+            },
+            publisher: {
+              '@type': 'Organization',
+              name: 'Infrapedia',
+              logo: {
+                '@type': 'ImageObject',
+                url:
+                  'https://cdn1.infrapedia.com/assets/img/light-mode-logo.svg'
+              }
+            },
+            datePublished: ''
+          }
+        }
+      }
     ]
   }
   return meta

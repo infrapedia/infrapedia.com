@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { bus } from '../../helpers/eventBus'
+import { bus } from '../../../helpers/eventBus'
 
 export default {
   name: 'LegendsPanel',
@@ -101,5 +101,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/scss/components/legends-panel-styles.scss';
+@import '../../../assets/scss/components/legends-panel-styles.scss';
 </style>
