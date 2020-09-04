@@ -45,6 +45,7 @@ import { getElementIdByType } from '../services/api'
 import { PARAMS_SELECTION } from '../events'
 import { bus } from '../helpers/eventBus'
 import { getMetaDataTagsFromSelectionType } from '../helpers'
+import apiConfig from '../config/apiConfig'
 
 export default {
   components: {
@@ -133,6 +134,25 @@ export default {
           vmid: 'content-language',
           name: 'content-language',
           content: 'en-US'
+        }
+      ],
+      script: [
+        {
+          type: 'application/ld+json',
+          json: {
+            type: 'application/ld+json',
+            json: {
+              '@context': 'https://schema.org/',
+              '@type': 'WebSite',
+              name: 'Infrapedia',
+              url: 'https://www.infrapedia.com',
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: `${apiConfig.url}/search/field/?s={search_term_string}`,
+                'query-input': 'required name=search_term_string'
+              }
+            }
+          }
         }
       ]
     }
@@ -258,6 +278,25 @@ export default {
               vmid: 'content-language',
               name: 'content-language',
               content: 'en-US'
+            }
+          ],
+          script: [
+            {
+              type: 'application/ld+json',
+              json: {
+                type: 'application/ld+json',
+                json: {
+                  '@context': 'https://schema.org/',
+                  '@type': 'WebSite',
+                  name: 'Infrapedia',
+                  url: 'https://www.infrapedia.com',
+                  potentialAction: {
+                    '@type': 'SearchAction',
+                    target: `${apiConfig.url}/search/field/?s={search_term_string}`,
+                    'query-input': 'required name=search_term_string'
+                  }
+                }
+              }
             }
           ]
         }

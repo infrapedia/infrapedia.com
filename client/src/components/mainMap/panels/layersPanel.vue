@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import { mapConfig } from '../../config/mapConfig'
-import { bus } from '../../helpers/eventBus'
+import { mapConfig } from '../../../config/mapConfig'
+import { bus } from '../../../helpers/eventBus'
 
 export default {
   name: 'LayersPanel',
@@ -112,5 +112,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/scss/components/layers-panel-styles.scss';
+@import '../../../assets/scss/components/layers-panel-styles.scss';
 </style>
