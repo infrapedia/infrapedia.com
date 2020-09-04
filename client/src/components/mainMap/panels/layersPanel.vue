@@ -61,12 +61,8 @@ export default {
         active: true
       },
       [mapConfig.facilities]: {
-        active: false,
-        label: 'Facilities Buildings'
-      },
-      [mapConfig.facilitiesClusters]: {
         active: true,
-        label: 'Facilities Clusters'
+        label: 'Facilities'
       },
       terrestrial: {
         active: true,
@@ -91,10 +87,6 @@ export default {
   },
   methods: {
     handleSwitchValueChange(bool, layer, layers) {
-      if (layer == mapConfig.facilitiesClusters) {
-        this.layers[mapConfig.facilities].active = !bool
-      }
-
       this.$emit('toggle-layer', {
         active: bool,
         layerName: layer,

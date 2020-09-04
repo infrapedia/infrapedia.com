@@ -105,7 +105,11 @@ export default {
     print: null,
     trackID: null,
     map: undefined,
-    isMenuOpen: false
+    isMenuOpen: false,
+    facilitiesClusters: {
+      active: true,
+      hasData: true
+    }
   }),
   computed: {
     ...mapState({
@@ -265,6 +269,7 @@ export default {
         map.on('click', this.handleMapClick)
         map.on('touchend', this.handleMapClick)
         map.on('render', this.handleBoundsChange)
+        map.on('zoomend', this.handleFacilitiesLayerAtCertainZoomLevel)
         // this.lastMileTool.reference.registerEvents()
       } else {
         const disabledClick = () => this.$emit('clicked-disabled-map')
@@ -278,6 +283,26 @@ export default {
 
       return map
     },
+    async handleFacilitiesLayerAtCertainZoomLevel() {
+      if (!this.map) return
+
+      const currentZoomLevel = this.map.getZoom()
+      const minZoom = mapConfig.facsMinZoom - 1.8
+      if (currentZoomLevel >= minZoom) {
+        await this.handleToggleLayer({
+          layerName: mapConfig.facilities,
+          active: false
+        })
+      } else if (
+        currentZoomLevel < minZoom &&
+        !this.facilitiesClusters.hasData
+      ) {
+        await this.handleToggleLayer({
+          layerName: mapConfig.facilities,
+          active: true
+        })
+      }
+    },
     async handleToggleLayer({ layerName, active, layersDict }) {
       if (!this.map) return
 
@@ -285,26 +310,33 @@ export default {
         ? mapConfig.filter.all
         : ['has', 'a_propertie_that_doesnt_exist']
 
-      if (layerName == mapConfig.facilitiesClusters) {
+      if (layersDict) {
+        this.facilitiesClusters.active = layersDict[mapConfig.facilities].active
+      }
+
+      if (layerName == mapConfig.facilities) {
         const facsClustersSource = this.map.getSource(
           mapConfig.facilitiesClusters
         )
         let features = fCollectionFormat()
 
-        if (active) {
+        if (
+          active &&
+          this.facilitiesClusters.active &&
+          !this.facilitiesClusters.hasData
+        ) {
           features = { features } = (await $axios.get(
             process.env.VUE_APP_TILES_FACS_CLUSTERS
           )) || { features: [] }
-
-          this.map.setFilter(mapConfig.facilities, [
-            'has',
-            'a_propertie_that_doesnt_exist'
-          ])
         } else {
-          this.map.setFilter(mapConfig.facilities, mapConfig.filter.all)
+          this.map.setFilter(
+            mapConfig.facilities,
+            this.facilitiesClusters.active ? mapConfig.filter.all : filter
+          )
         }
 
         facsClustersSource.setData(features)
+        this.facilitiesClusters.hasData = features.features.length > 0
       } else if (layerName == 'terrestrial') {
         let filterBy = active ? mapConfig.filter.all : mapConfig.filter.subsea
 
