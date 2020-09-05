@@ -1,6 +1,17 @@
 # Infrapedia Open Source
 
-## Version 2.1.8
+## Version 2.2.9
+
+- Searchbar fixings
+  - Dark mode styles weren't being applied
+  - Overflowing of ul list fixed
+  - Height should be adjusted automatically depending wether the api gave results for places or not
+- MapApp page fixings
+  - Sometimes owners array is undefined so it can't be passed on to the metadata helper function
+  - The "focus-change" event is being triggered with focus being null, so that needed to be catch
+  - metadata.json file created for configuration
+
+## Version 2.2.8
 
 - Editor performance issues with using mapbox Draw plugin has been solved.
   - TODO: Editor improvements list.
