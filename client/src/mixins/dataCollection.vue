@@ -4,6 +4,7 @@ import { bus } from '../helpers/eventBus'
 import { TOGGLE_SIDEBAR, TOGGLE_LOADING } from '../store/actionTypes'
 import { FOCUS_ON, CLEAR_SELECTION } from '../events'
 import { MAP_FOCUS_ON, MAP_BOUNDS } from '../store/actionTypes/map'
+import { viewOrganization } from '../services/api/organizations'
 
 export default {
   data: () => ({
@@ -205,7 +206,7 @@ export default {
     async handleOrgItemSelected({ id, type }) {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
-      const res = await this.getClustersPointsOrgsData({
+      const res = await viewOrganization({
         user_id: await this.$auth.getUserID(),
         _id: id
       })
