@@ -2,8 +2,14 @@
 @import '../base/variables';
 
 ul[role='list'] {
-  overflow: scroll;
+  height: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   max-height: 28rem;
+  &.dark {
+    color: $white-partial;
+    background-color: $dark-charcoal;
+  }
 }
 
 .partner {

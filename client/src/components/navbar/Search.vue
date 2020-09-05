@@ -7,8 +7,12 @@
     v-click-outside="close"
     :value.sync="isResultsVisible"
   >
-    <el-card class="p0 no-border" shadow="never">
-      <ul role="list" class="w-fit-full h80 no-outline no-selectable">
+    <el-card class="p0 no-border" shadow="never" :class="{ dark }">
+      <ul
+        role="list"
+        class="w-fit-full h80 no-outline no-selectable"
+        :class="{ dark }"
+      >
         <li
           v-for="(item, i) in searchResults.r"
           :key="i + item"
@@ -43,7 +47,11 @@
             <fa :icon="['fas', 'star']" class="sm-icon ml2" />
           </span>
         </li>
-        <el-divider class="m0" v-if="searchResults.r.length > 0" />
+        <el-divider
+          class="m0"
+          v-if="searchResults.places.length > 0"
+          :class="{ dark }"
+        />
         <li
           v-for="(item, i) in searchResults.places"
           :key="i"
@@ -74,6 +82,7 @@
           id="search-select-navbar"
           slot="prepend"
           class="w10 search-navbar-select"
+          :class="{ dark }"
           placeholder
           @change="getQueryData(search)"
         >
