@@ -45,6 +45,7 @@ import { getElementIdByType } from '../services/api'
 import { PARAMS_SELECTION } from '../events'
 import { bus } from '../helpers/eventBus'
 import { getMetaDataTagsFromSelectionType } from '../helpers'
+import metadata from '../config/map_metadata.json'
 
 export default {
   components: {
@@ -63,79 +64,8 @@ export default {
   data: () => ({
     EDIT_CABLE,
     BUY_CAPACITY,
-    openEditDialog: false,
-    metaData: {
-      title: 'Infrapedia | Global Internet Infrastructure Map',
-      meta: [
-        {
-          name: 'application-name',
-          content:
-            'Global Internet Infrastructure Map | Telecommunications and Data Center Infrastructure'
-        },
-        {
-          name: 'description',
-          content:
-            "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
-        },
-        {
-          name: 'keywords',
-          content:
-            'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
-        },
-        // ------------------ FACEBOOK - OPEN GRAPH
-        {
-          vmid: 'og:title',
-          name: 'og:title',
-          content:
-            'The world’s largest network and datacenter infrastructure atlas.'
-        },
-        {
-          vmid: 'og:description',
-          name: 'og:description',
-          content:
-            "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
-        },
-        {
-          // vmid: 'og:site_name',
-          name: 'og:site_name',
-          content: 'Infrapedia'
-        },
-        /// IF HUBERT EVER LEAVES INFRAPEDIA THIS SHOULD BE REMOVED
-        {
-          // vmid: 'og:title',
-          name: 'fb:admins',
-          content: '100006549764818'
-        },
-        {
-          vmid: 'og:image',
-          name: 'og:image',
-          content: '/infrapedia-2.jpg'
-        },
-        // ---------------------- TWITTER
-        {
-          vmid: 'twitter:title',
-          name: 'twitter:title',
-          content:
-            'The world’s largest network and datacenter infrastructure atlas.'
-        },
-        {
-          vmid: 'twitter:description',
-          name: 'twitter:description',
-          content:
-            "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
-        },
-        {
-          vmid: 'twitter:image',
-          name: 'twitter:image',
-          content: '/infrapedia-2.jpg'
-        },
-        {
-          vmid: 'content-language',
-          name: 'content-language',
-          content: 'en-US'
-        }
-      ]
-    }
+    metaData: metadata,
+    openEditDialog: false
   }),
   computed: {
     focus() {
@@ -189,84 +119,16 @@ export default {
   methods: {
     handleCurrentMetaTagsUpdate(data) {
       if (!data) {
-        this.metaData = {
-          title: 'Infrapedia | Global Internet Infrastructure Map',
-          meta: [
-            {
-              name: 'application-name',
-              content:
-                'Global Internet Infrastructure Map | Telecommunications and Data Center Infrastructure'
-            },
-            {
-              name: 'description',
-              content:
-                "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
-            },
-            {
-              name: 'keywords',
-              content:
-                'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
-            },
-            // ------------------ FACEBOOK - OPEN GRAPH
-            {
-              vmid: 'og:title',
-              name: 'og:title',
-              content:
-                'The world’s largest network and datacenter infrastructure atlas.'
-            },
-            {
-              vmid: 'og:description',
-              name: 'og:description',
-              content:
-                "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
-            },
-            {
-              // vmid: 'og:site_name',
-              name: 'og:site_name',
-              content: 'Infrapedia'
-            },
-            /// IF HUBERT EVER LEAVES INFRAPEDIA THIS SHOULD BE REMOVED
-            {
-              // vmid: 'og:title',
-              name: 'fb:admins',
-              content: '100006549764818'
-            },
-            {
-              vmid: 'og:image',
-              name: 'og:image',
-              content: '/infrapedia-2.jpg'
-            },
-            // ---------------------- TWITTER
-            {
-              vmid: 'twitter:title',
-              name: 'twitter:title',
-              content:
-                'The world’s largest network and datacenter infrastructure atlas.'
-            },
-            {
-              vmid: 'twitter:description',
-              name: 'twitter:description',
-              content:
-                "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
-            },
-            {
-              vmid: 'twitter:image',
-              name: 'twitter:image',
-              content: '/infrapedia-2.jpg'
-            },
-            {
-              vmid: 'content-language',
-              name: 'content-language',
-              content: 'en-US'
-            }
-          ]
-        }
-
+        this.metaData = metadata
         if (Object.keys(this.$route.params).length > 0) {
           this.$router.replace('/app')
         }
       } else {
         this.$once('focus-changed', async function handleFocusChanged(focus) {
+          if (!focus) {
+            this.metaData = metadata
+            return
+          }
           const url = `/app/${focus.type}/${data.slug}`
 
           this.metaData = {
@@ -274,7 +136,7 @@ export default {
               name: data.name,
               slug: data.slug,
               type: focus.type,
-              owners: data.owners,
+              owners: data.owners ? data.owners : [],
               url: window.origin + url
             }))
           }

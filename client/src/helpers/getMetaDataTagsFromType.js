@@ -10,12 +10,12 @@ export default async function getMetaDataTagsFromSelectionType({
   const description = {
     ixps: `${name}, Internet Exchange (IXP) information, data center locations and members #internet #ixps`,
     cls: `${name}, CLS information, cable systems and operators #internet #cls`,
-    subsea: `${name}, a fiber optic submarine telecommunications cable system information, owned/operated by ${owners
-      .map(o => o.name)
-      .join(', ')}`,
-    terrestrial: `${name}, a fiber optic submarine telecommunications cable system information, owned/operated by ${owners
-      .map(o => o.name)
-      .join(', ')}`,
+    subsea: `${name}, a fiber optic submarine telecommunications cable system information, owned/operated by ${
+      owners.length > 0 ? owners.map(o => o.name).join(', ') : 'Unknown'
+    }`,
+    terrestrial: `${name}, terrestrial network information and on-net facilities, owned/operated by ${
+      owners.length > 0 ? owners.map(o => o.name).join(', ') : 'Unknown'
+    }`,
     fac: `${name}, data center facility information #internet #facility`,
     org: `${name}, Organization information, cable systems and operators #internet #organization #org`
   }
