@@ -926,7 +926,11 @@ export default {
     },
     async handleDeleteFeature(features) {
       for (let feature of features) {
-        sceneDictionary.remove(feature.properties.editorID)
+        sceneDictionary.remove(
+          feature.properties.editorID
+            ? feature.properties.editorID
+            : feature.properties._id
+        )
         await this.handleUpdateMapSourcesData(
           feature,
           sceneDictionary.getCollectionList()
