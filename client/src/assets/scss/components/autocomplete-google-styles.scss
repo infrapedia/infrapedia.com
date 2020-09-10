@@ -1,0 +1,14 @@
+@import '../base/variables';
+
+ul[role='list'] {
+  max-height: 12rem;
+}
+
+.powered-by-wrapper {
+  bottom: -2.4rem;
+  flex-basis: fill;
+  background: $white-full;
+  &.dark {
+    background: $dark-charcoal;
+  }
+}

@@ -6,6 +6,7 @@ import { getCablesGeom } from './cables'
 import { getIxpsGeoms } from './ixps'
 import { getClsGeoms } from './cls'
 import { fCollectionFormat } from '../../helpers/featureCollection'
+import { getCookie } from '../../helpers/cookies'
 
 export const buyRequest = async data => {
   const { type, cable, email, lastname, name, capacity } = data
@@ -128,4 +129,32 @@ export async function getElementIdByType({ type, slug }) {
 export async function getElementImgByType({ slug }) {
   const res = await $axios.get(`${apiConfig.url}/elm/map/${slug}.jpg`)
   return res ? res : ''
+}
+
+export async function getPlace(search) {
+  const res = await $axios
+    .get(
+      `https://maps.googleapis.com/maps/api/place/autocomplete/json?key=${
+        process.env.VUE_APP_GOOGLE_API_KEY
+      }&input=${encodeURIComponent(
+        search
+      )}&types=geocode&inputtype=textquery&language=en&fields=address_component&sessiontoken=${getCookie(
+        'auth.token-session'
+      )}`
+    )
+    .catch(console.info)
+  return res
+}
+
+export async function getPlaceDetails(id) {
+  const res = await $axios
+    .get(
+      `https://maps.googleapis.com/maps/api/place/details/json?key=${
+        process.env.VUE_APP_GOOGLE_API_KEY
+      }&place_id=${id}&types=geocode&fields=address_component&sessiontoken=${getCookie(
+        'auth.token-session'
+      )}`
+    )
+    .catch(console.info)
+  return res
 }

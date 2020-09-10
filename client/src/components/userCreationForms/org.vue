@@ -106,8 +106,9 @@
               <el-form-item prop="address" label="Address">
                 <autocomplete-google
                   :mode="tagMode"
-                  @place-changed="handleAddressChange"
+                  :width="520"
                   :value="autocompleteAddress"
+                  @place-changed="handleAddressChange"
                 />
               </el-form-item>
             </el-form>
@@ -320,10 +321,15 @@ export default {
       return `${apiConfig.url}/auth/upload/logo`
     },
     autocompleteAddress() {
-      return this.tag ? this.tag.fullAddress : ''
+      return this.tag
     },
     tagMode() {
       return this.tagOnEdit != null && this.tag ? 'edit' : 'create'
+    },
+    addressWidth() {
+      const el = document.getElementById('autocompleteGoogle')
+      console.log(el)
+      return el
     }
   },
   watch: {
