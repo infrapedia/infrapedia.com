@@ -1,9 +1,9 @@
 const fs = require('fs')
 const path = require('path')
-const PrerenderSpaPlugin = require('prerender-spa-plugin')
 const WebpackBar = require('webpackbar')
+const PrerenderSpaPlugin = require('prerender-spa-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
-const gzip = require('@gfx/zopfli').gzip
+// const gzip = require('@gfx/zopfli').gzip
 
 function getRoutes() {
   let arr = []
@@ -28,9 +28,7 @@ const productionPlugins = [
     renderer: new PrerenderSpaPlugin.PuppeteerRenderer({
       // We need to inject a value so we're able to
       // detect if the page is currently pre-rendered.
-      inject: {
-        prerendered: true
-      },
+      inject: {},
       // Our view component is rendered after the API
       // request has fetched all the necessary data,
       // so we create a snapshot of the page after the
@@ -48,10 +46,7 @@ module.exports = {
         new CompressionPlugin({
           compressionOptions: { level: 11 },
           threshold: 1250,
-          minRatio: 0.8,
-          algorithm(input, compressionOptions, callback) {
-            return gzip(input, compressionOptions, callback)
-          }
+          minRatio: 0.8
         })
       )
     } else {
