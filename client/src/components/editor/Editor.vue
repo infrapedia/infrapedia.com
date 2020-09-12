@@ -75,6 +75,14 @@ import {
 } from './index'
 import { getGeometries } from '../../services/api'
 import { categoriesDictionary } from '../userCreationForms/fields/dictionary'
+import {
+  lineSlice,
+  point
+  // booleanEqual,
+  // featureCollection,
+  // lineSlice,
+  // lineString
+} from '@turf/turf'
 
 const onlyOneFeatureAllowed = ['cls', 'ixps']
 
@@ -713,10 +721,78 @@ export default {
         'update-feature-properties',
         await this.setPropertiesDialogEditMode
       )
+      this.controls.on(
+        'delete-vertex',
+        this.handleDeleteVertexFromFeatureSelected
+      )
+      this.controls.on('cut-feature', this.handleCutFeatureSelected)
 
       map.addControl(this.controls)
       map.addControl(this.draw)
       return map
+    },
+    handleDeleteVertexFromFeatureSelected({ feature, geometryType }) {
+      console.info('NOT DONE YET', feature, geometryType)
+    },
+    async handleCutFeatureSelected({ feature, geometryType }) {
+      const vertexPoints = this.draw.getSelectedPoints().features
+      const vertexPointSelected = vertexPoints.length ? vertexPoints[0] : null
+
+      if (!vertexPointSelected)
+        return console.error('There no vertex point selected')
+
+      if (geometryType == 'linestring') {
+        let coordinates = feature.geometry.coordinates
+        let id = feature.properties._id
+          ? feature.properties._id
+          : feature.properties.editorID
+
+        if (vertexPoints.length > 0) {
+          let pStart = point(coordinates[0])
+          let pStop = point(vertexPointSelected.geometry.coordinates)
+          let pEnd = coordinates[coordinates.length - 1]
+
+          let originalSegment = lineSlice(pStart, pStop, feature)
+          let cuttedSegment = setFeatureEditorID(
+            lineSlice(pStop, pEnd, feature)
+          )
+
+          originalSegment.properties.editorID = id
+          originalSegment.geometry.coordinates.pop()
+
+          const featureSelected = sceneDictionary.get(id)
+          if (featureSelected) {
+            originalSegment.properties = { ...featureSelected.properties }
+            let cuttedTimes = !featureSelected.properties.cutTimes
+              ? (featureSelected.properties.cutTimes = 1)
+              : featureSelected.properties.cutTimes++
+
+            let cuttedSegmentName =
+              featureSelected.properties.name &&
+              featureSelected.properties.name !== ''
+                ? `${featureSelected.properties.name}.cut(${cuttedTimes}) `
+                : 'default-name.'
+
+            cuttedSegment.properties = {
+              ...featureSelected.properties,
+              name: cuttedSegmentName,
+              editorID: cuttedSegment.editorID
+            }
+          }
+
+          sceneDictionary.update(id, originalSegment)
+          sceneDictionary.add(cuttedSegment.editorID, cuttedSegment)
+
+          await this.handleUpdateMapSourcesData(
+            null,
+            sceneDictionary.getCollectionList()
+          )
+          await this.handleResetScene({
+            reset: false,
+            removeFilter: this.scene.isDynamicControls
+          })
+        }
+      }
     },
     async handleBeforeCreateFeature(feature) {
       this.dialog.selectedFeature = feature
