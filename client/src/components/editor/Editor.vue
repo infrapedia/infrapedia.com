@@ -75,14 +75,7 @@ import {
 } from './index'
 import { getGeometries } from '../../services/api'
 import { categoriesDictionary } from '../userCreationForms/fields/dictionary'
-import {
-  lineSlice,
-  point
-  // booleanEqual,
-  // featureCollection,
-  // lineSlice,
-  // lineString
-} from '@turf/turf'
+import { lineString, lineSlice, point, booleanEqual } from '@turf/turf'
 
 const onlyOneFeatureAllowed = ['cls', 'ixps']
 
@@ -731,68 +724,164 @@ export default {
       map.addControl(this.draw)
       return map
     },
-    handleDeleteVertexFromFeatureSelected({ feature, geometryType }) {
-      console.info('NOT DONE YET', feature, geometryType)
+    async handleDeleteVertexFromFeatureSelected({ feature, geometryType }) {
+      const vertexPoints = this.draw.getSelectedPoints().features
+      const vertexPointSelected = vertexPoints.length ? vertexPoints[0] : null
+
+      if (!vertexPointSelected || !vertexPointSelected) {
+        this.$message("There's no vertex point selected")
+        return
+      }
+
+      const id = feature.properties.editorID
+        ? feature.properties.editorID
+        : feature.properties._id
+      const featureSelected = sceneDictionary.get(id)
+      const coordinates = feature.geometry.coordinates
+
+      if (geometryType == 'linestring') {
+        if (coordinates.length <= 2) {
+          this.$message("You can't delete this vertex")
+          return
+        }
+
+        featureSelected.geometry.coordinates = coordinates.filter(
+          coord => !booleanEqual(vertexPointSelected, point(coord))
+        )
+      } else if (geometryType == 'multilinestring') {
+        const linestring = lineString(coordinates[0])
+        const linestringCoords = linestring.geometry.coordinates
+
+        if (linestringCoords.length <= 2) {
+          this.$message("You can't delete this vertex")
+          return
+        }
+
+        const linestringNewCoords = linestringCoords.filter(
+          coord => !booleanEqual(vertexPointSelected, point(coord))
+        )
+        featureSelected.geometry.coordinates = [linestringNewCoords]
+      }
+
+      sceneDictionary.update(id, featureSelected)
+      await this.handleUpdateMapSourcesData(
+        null,
+        sceneDictionary.getCollectionList()
+      )
+      await this.handleResetScene({
+        reset: false,
+        removeFilter: this.scene.isDynamicControls
+      })
     },
     async handleCutFeatureSelected({ feature, geometryType }) {
       const vertexPoints = this.draw.getSelectedPoints().features
       const vertexPointSelected = vertexPoints.length ? vertexPoints[0] : null
 
-      if (!vertexPointSelected)
-        return console.error('There no vertex point selected')
+      if (!vertexPointSelected || !vertexPointSelected) {
+        this.$message("There's no vertex point selected")
+        return
+      }
 
-      if (geometryType == 'linestring') {
-        let coordinates = feature.geometry.coordinates
-        let id = feature.properties._id
-          ? feature.properties._id
-          : feature.properties.editorID
+      const id = feature.properties.editorID
+        ? feature.properties.editorID
+        : feature.properties._id
+      const featureSelected = sceneDictionary.get(id)
+      const coordinates = feature.geometry.coordinates
+      let originalSegment
+      let cuttedSegment
+      let pStart
+      let pStop
+      let pEnd
 
-        if (vertexPoints.length > 0) {
-          let pStart = point(coordinates[0])
-          let pStop = point(vertexPointSelected.geometry.coordinates)
-          let pEnd = coordinates[coordinates.length - 1]
+      function setProperties(original, clone, props) {
+        let cuttedTimes = !props.cutTimes
+          ? (props.cutTimes = 1)
+          : props.cutTimes++
 
-          let originalSegment = lineSlice(pStart, pStop, feature)
-          let cuttedSegment = setFeatureEditorID(
-            lineSlice(pStop, pEnd, feature)
-          )
+        let cuttedSegmentName
 
-          originalSegment.properties.editorID = id
-          originalSegment.geometry.coordinates.pop()
+        if (props.cutTimes >= 1 && props.name.includes('.cut')) {
+          let name = props.name.split('.cut')[0]
+          cuttedSegmentName = `${name}.cut(${props.cutTimes})`
+        } else {
+          cuttedSegmentName =
+            props.name && props.name !== ''
+              ? `${props.name}.cut(${cuttedTimes}) `
+              : 'default-name.'
+        }
 
-          const featureSelected = sceneDictionary.get(id)
-          if (featureSelected) {
-            originalSegment.properties = { ...featureSelected.properties }
-            let cuttedTimes = !featureSelected.properties.cutTimes
-              ? (featureSelected.properties.cutTimes = 1)
-              : featureSelected.properties.cutTimes++
+        original.properties = { ...props }
+        clone.properties = {
+          ...props,
+          name: cuttedSegmentName,
+          editorID: clone.editorID
+        }
+        // Deleting this property is necessary for filtering the map correctly
+        delete clone.properties._id
 
-            let cuttedSegmentName =
-              featureSelected.properties.name &&
-              featureSelected.properties.name !== ''
-                ? `${featureSelected.properties.name}.cut(${cuttedTimes}) `
-                : 'default-name.'
-
-            cuttedSegment.properties = {
-              ...featureSelected.properties,
-              name: cuttedSegmentName,
-              editorID: cuttedSegment.editorID
-            }
-          }
-
-          sceneDictionary.update(id, originalSegment)
-          sceneDictionary.add(cuttedSegment.editorID, cuttedSegment)
-
-          await this.handleUpdateMapSourcesData(
-            null,
-            sceneDictionary.getCollectionList()
-          )
-          await this.handleResetScene({
-            reset: false,
-            removeFilter: this.scene.isDynamicControls
-          })
+        return {
+          clone,
+          original
         }
       }
+
+      if (geometryType == 'linestring') {
+        pStart = point(coordinates[0])
+        pStop = point(vertexPointSelected.geometry.coordinates)
+        pEnd = coordinates[coordinates.length - 1]
+
+        originalSegment = lineSlice(pStart, pStop, feature)
+        cuttedSegment = setFeatureEditorID(lineSlice(pStop, pEnd, feature))
+      } else if (geometryType == 'multilinestring') {
+        let indx = -1
+
+        for (let i = 0; i < coordinates.length; i++) {
+          for (let co of coordinates[i]) {
+            if (
+              co[0] == vertexPointSelected.geometry.coordinates[0] &&
+              co[1] == vertexPointSelected.geometry.coordinates[1]
+            ) {
+              indx = i
+              break
+            }
+          }
+        }
+
+        pStart = point(coordinates[indx][0])
+        pStop = point(vertexPointSelected.geometry.coordinates)
+        pEnd = point(coordinates[indx][coordinates[indx].length - 1])
+
+        let linestring = lineString(coordinates[indx])
+        originalSegment = lineSlice(pStart, pStop, linestring)
+        cuttedSegment = setFeatureEditorID(lineSlice(pStop, pEnd, linestring))
+      }
+
+      originalSegment.properties._id = id
+      originalSegment.properties.editorID = id
+      originalSegment.geometry.coordinates.pop()
+
+      if (featureSelected) {
+        let { clone, original } = setProperties(
+          originalSegment,
+          cuttedSegment,
+          featureSelected.properties
+        )
+
+        cuttedSegment = clone
+        originalSegment = original
+      }
+
+      sceneDictionary.update(id, originalSegment)
+      sceneDictionary.add(cuttedSegment.editorID, cuttedSegment)
+
+      await this.handleUpdateMapSourcesData(
+        null,
+        sceneDictionary.getCollectionList()
+      )
+      await this.handleResetScene({
+        reset: false,
+        removeFilter: this.scene.isDynamicControls
+      })
     },
     async handleBeforeCreateFeature(feature) {
       this.dialog.selectedFeature = feature
