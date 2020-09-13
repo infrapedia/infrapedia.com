@@ -325,11 +325,6 @@ export default {
     },
     tagMode() {
       return this.tagOnEdit != null && this.tag ? 'edit' : 'create'
-    },
-    addressWidth() {
-      const el = document.getElementById('autocompleteGoogle')
-      console.log(el)
-      return el
     }
   },
   watch: {
