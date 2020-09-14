@@ -1,7 +1,7 @@
 const types = [
   {
     value: 1,
-    t: ['submarine', 'cable', 'subsea', 'terrestrial-network']
+    t: ['submarine', 'cable', 'subsea', 'terrestrial-network', 'subsea-cable']
   },
   {
     value: 2,
@@ -9,7 +9,15 @@ const types = [
   },
   {
     value: 3,
-    t: ['fac', 'facility', 'facilities', 'facs', 'datacenters', 'data centers']
+    t: [
+      'fac',
+      'facility',
+      'facilities',
+      'facs',
+      'datacenters',
+      'data centers',
+      'data-center'
+    ]
   },
   {
     value: 4,

@@ -18,6 +18,7 @@
       :visibility.sync="isMobileDrawer"
       @close="handleToggleDrawerVisibility"
       @click-list-item="handleItemListSelection"
+      @toggle-marketplace="emitToggleMarketplace"
     />
   </div>
 </template>
@@ -84,6 +85,9 @@ export default {
     bus.$off(`${PARAMS_SELECTION}`, this.handleParamsRoute)
   },
   methods: {
+    emitToggleMarketplace() {
+      bus.$emit(`${navbarEvents.TOGGLE_MARKETPLACE}`)
+    },
     setMapLoaded() {
       this.isMapLoaded = true
     },

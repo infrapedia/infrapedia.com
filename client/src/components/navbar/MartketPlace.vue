@@ -5,6 +5,7 @@
       class="text-center h-fit-full flex align-items-center"
     >
       <el-button
+        v-if="!isMobile"
         type="text"
         :class="{ 'text-white--hsl': dark }"
         class="drawer-opener fs-small font-regular mt-1"
@@ -23,6 +24,7 @@
           v-if="isOpen"
           class="wrapper flex column bg-white pr6 pl6 pt12"
           :class="{
+            mobile: isMobile,
             'bg-white': !dark,
             'bg-charcoal': dark
           }"
@@ -30,7 +32,6 @@
           <h1 class="title w-fit-full mb8">Community Market Place</h1>
           <el-table
             :data="marketplaceData"
-            class="w-fit-full"
             :class="{ dark }"
             id="marketplace-banner-table"
             :height="120"
@@ -43,15 +44,20 @@
             <el-table-column
               label="Date"
               prop="rgDate"
+              :width="isMobile ? 79 : 'auto'"
               :formatter="formatDate"
             />
-            <el-table-column label="Request">
+            <el-table-column label="Request" :width="isMobile ? 120 : 'auto'">
               <template slot-scope="scope">
                 <div v-html="scope.row.request" />
               </template>
             </el-table-column>
             <el-table-column prop="status" label="Status" />
-            <el-table-column fixed="right" label="Operations" width="220">
+            <el-table-column
+              fixed="right"
+              label="Operations"
+              :width="isMobile ? 120 : 220"
+            >
               <template slot-scope="scope">
                 <div class="flex row justify-content-center">
                   <el-tooltip
@@ -161,10 +167,18 @@ import { getUserData } from '../../services/api/auth'
 import { formatMarketPlaceData } from '../../helpers/buyMessageFormatter'
 import { getMarketPlaceList, makeAnOffer } from '../../services/api/marketplace'
 import { checkCookie } from '../../helpers/cookies'
+import { bus } from '../../helpers/eventBus'
+import { TOGGLE_MARKETPLACE } from '../../events/navbar'
 
 export default {
   components: {
     VueRecaptcha: () => import('vue-recaptcha')
+  },
+  props: {
+    isMobile: {
+      type: Boolean,
+      default: () => false
+    }
   },
   data: () => ({
     marketplaceData: [],
@@ -254,6 +268,12 @@ export default {
   },
   async mounted() {
     await this.getUserData()
+  },
+  created() {
+    bus.$on(`${TOGGLE_MARKETPLACE}`, this.toggleVisibility)
+  },
+  beforeDestroy() {
+    bus.$off(`${TOGGLE_MARKETPLACE}`, this.toggleVisibility)
   },
   methods: {
     handleCatchaVerification(v) {

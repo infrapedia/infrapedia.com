@@ -19,6 +19,7 @@
       />
       <user-cables-button />
       <h-mobile-menu class="hidden-md-and-up" />
+      <market-place :is-mobile="true" />
       <div class="h-fit-content min-height60vh">
         <map-overlay />
       </div>
@@ -61,7 +62,8 @@ export default {
     IEditDialog: () => import('../components/dialogs/EditDialog'),
     IVerificationDialog: () =>
       import('../components/dialogs/VerificationDialog'),
-    HMobileMenu: () => import('../components/navbar/MobileMenu')
+    HMobileMenu: () => import('../components/navbar/MobileMenu'),
+    MarketPlace: () => import('../components/navbar/MartketPlace')
   },
   data: () => ({
     EDIT_CABLE,

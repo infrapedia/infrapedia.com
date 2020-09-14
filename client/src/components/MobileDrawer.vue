@@ -46,6 +46,15 @@
           </el-collapse-item>
         </el-collapse>
         <ul class="links-wrapper mb6" :class="{ dark }">
+          <li class="pt2 pr4 pl4 fs-regular h10">
+            <el-button
+              type="text"
+              class="inline-flex no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline p0"
+              @click.stop="emitToggleMarketplace"
+            >
+              Marketplace
+            </el-button>
+          </li>
           <li class="pr4 pl4 fs-regular" v-for="(link, i) in links" :key="i">
             <a
               v-if="link.tab"
@@ -90,7 +99,7 @@
                 v-if="i == 0"
                 plain
                 type="text"
-                class="inline-flex mt4 no-border-radius align-items-center color-inherit h-fit-full block no-outline"
+                class="inline-flex no-border-radius align-items-center color-inherit h-fit-full block no-outline"
                 @click="goToRoute(link.url)"
                 :class="{ dark, light: !dark }"
               >
@@ -228,6 +237,10 @@ export default {
       this.$emit(CLICK_LIST_ITEM, selected)
       this.toggleVisibility()
       this.collapseActive = ''
+    },
+    emitToggleMarketplace() {
+      this.toggleVisibility()
+      this.$emit('toggle-marketplace')
     },
     goToRoute(link) {
       this.toggleVisibility()
