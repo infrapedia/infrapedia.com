@@ -45,7 +45,7 @@ module.exports = {
       // config.plugins.push(...productionPlugins)
       config.plugins.push(
         new CompressionPlugin({
-          compressionOptions: { level: 11 },
+          compressionOptions: { level: 9 },
           threshold: 1250,
           minRatio: 0.8
           // algorithm(input, compressionOptions, callback) {
