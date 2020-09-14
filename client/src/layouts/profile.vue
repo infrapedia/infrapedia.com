@@ -50,6 +50,7 @@
       :visibility.sync="isMobileProfileDrawer"
       @close="handleToggleMobileProfileDrawer"
     />
+    <h-mobile-menu class="hidden-md-and-up" />
 
     <transition
       mode="out-in"
@@ -126,7 +127,8 @@ export default {
     IFooter: () => import('../components/Footer'),
     INavbar: () => import('../components/navbar/Navbar'),
     IMessageDialog: () => import('../components/dialogs/MessageDialog'),
-    IMobileProfileDrawer: () => import('../components/MobileDrawerProfile')
+    IMobileProfileDrawer: () => import('../components/MobileDrawerProfile'),
+    HMobileMenu: () => import('../components/navbar/MobileMenu')
   },
   data() {
     return {

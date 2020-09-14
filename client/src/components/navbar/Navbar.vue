@@ -191,7 +191,24 @@
                 aria-haspopup="true"
                 data-no-hover-bg="true"
               >
-                <i-menu class="mt1" />
+                <i-menu class="mt1 hidden-sm-and-down" />
+                <el-button
+                  type="text"
+                  circle
+                  class="no-border no-outline w10 h11 mt-2 hidden-md-and-up"
+                  @click="toggleMobileMenu"
+                >
+                  <el-avatar
+                    v-if="userImage"
+                    size="small"
+                    :src="$auth.user.picture"
+                  />
+                  <fa
+                    v-else
+                    :icon="['fas', 'user-circle']"
+                    class="md-icon user-icon"
+                  />
+                </el-button>
               </div>
             </li>
           </ul>
@@ -206,7 +223,24 @@
                 aria-haspopup="true"
                 data-no-hover-bg="true"
               >
-                <i-menu class="mt3 mr4" />
+                <i-menu class="mt3 mr4 hidden-sm-and-down" />
+                <el-button
+                  type="text"
+                  circle
+                  class="no-border no-outline w10 h11 mt-2 hidden-md-and-up"
+                  @click="toggleMobileMenu"
+                >
+                  <el-avatar
+                    v-if="userImage"
+                    size="small"
+                    :src="$auth.user.picture"
+                  />
+                  <fa
+                    v-else
+                    :icon="['fas', 'user-circle']"
+                    class="md-icon user-icon"
+                  />
+                </el-button>
               </div>
             </li>
           </ul>
@@ -274,6 +308,9 @@ export default {
         ? 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo.svg'
         : 'https://cdn1.infrapedia.com/assets/img/light-mode-logo.svg'
     },
+    userImage() {
+      return this.$auth.user && this.$auth.user.picture
+    },
     imageURLSphere() {
       return this.dark
         ? 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo-sphere.svg'
@@ -287,8 +324,11 @@ export default {
     toggleDrawerVisibility() {
       this.isDrawerOpen = !this.isDrawerOpen
     },
+    toggleMobileMenu() {
+      bus.$emit(`${events.TOGGLE_MOBILE_MENU}`)
+    },
     toggleMobileDrawer() {
-      return bus.$emit(
+      bus.$emit(
         this.isUserNavbar
           ? `${events.TOGGLE_MOBILE_DRAWER_PROFILE}`
           : `${events.TOGGLE_MOBILE_DRAWER}`

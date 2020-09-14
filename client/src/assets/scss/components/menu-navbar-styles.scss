@@ -38,6 +38,14 @@ $header-color: rgb(37, 95, 185);
   }
 }
 
+.el-card.dark {
+  background-color: $light-charcoal;
+  border-color: $light-charcoal;
+}
+.el-card.light {
+  background-color: $white-full;
+}
+
 .header.dark {
   background-color: $light-yellow;
   color: $dark-charcoal;

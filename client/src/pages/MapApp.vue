@@ -18,6 +18,7 @@
         @close="() => (openEditDialog = false)"
       />
       <user-cables-button />
+      <h-mobile-menu class="hidden-md-and-up" />
       <div class="h-fit-content min-height60vh">
         <map-overlay />
       </div>
@@ -59,7 +60,8 @@ export default {
     IAlertsDialog: () => import('../components/dialogs/AlertsDialog'),
     IEditDialog: () => import('../components/dialogs/EditDialog'),
     IVerificationDialog: () =>
-      import('../components/dialogs/VerificationDialog')
+      import('../components/dialogs/VerificationDialog'),
+    HMobileMenu: () => import('../components/navbar/MobileMenu')
   },
   data: () => ({
     EDIT_CABLE,
