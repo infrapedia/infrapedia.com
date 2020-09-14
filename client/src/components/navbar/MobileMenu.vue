@@ -13,17 +13,24 @@
       class="drawer-wrapper overflow-y vph-full absolute w-fit-full"
       style="top: 0; left: 0; z-index: 2000000000000000"
     >
-      <header
-        class="header h8 flex justify-content-space-between pr7 pl6 pt2 pb2 align-items-center"
-        :class="{ dark, light: !dark }"
-      >
-        <strong class="fs-regular truncate">{{ userName }}</strong>
-        <span
-          class="fs-regular cursor-pointer"
-          @click="toggleVisibility(false)"
+      <header class="header" :class="{ dark, light: !dark }">
+        <div class="flex column align-items-center justify-content-center pt6">
+          <router-link to="/app" class="h10 w24">
+            <el-image :src="imageURL" fit="scale-down" lazy />
+          </router-link>
+          <el-divider class="m0 mb2" />
+        </div>
+        <div
+          class="flex justify-content-space-between pr7 pl6 pt2 pb4 align-items-center"
         >
-          <fa :icon="['fas', 'times']" />
-        </span>
+          <strong class="fs-regular truncate">{{ userName }}</strong>
+          <span
+            class="fs-regular cursor-pointer"
+            @click="toggleVisibility(false)"
+          >
+            <fa :icon="['fas', 'times']" />
+          </span>
+        </div>
       </header>
       <ul class="p1 h-fit" :class="{ dark, light: !dark }">
         <template v-if="isUserAuthenticated">
@@ -153,6 +160,9 @@ export default {
     isUserAuthenticated() {
       return this.$auth.isAuthenticated
     },
+    imageURL() {
+      return 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo.svg'
+    },
     userName() {
       return this.$auth.user ? this.$auth.user.name : ''
     },
@@ -213,5 +223,16 @@ export default {
 @import '../../assets/scss/components/menu-navbar-styles.scss';
 .drawer-wrapper {
   z-index: 2000;
+}
+.el-card {
+  border-radius: 0;
+}
+.el-card.dark {
+  background-color: $light-charcoal;
+  border-color: $light-charcoal;
+}
+.el-card.light {
+  background-color: $white-full;
+  border: none !important;
 }
 </style>

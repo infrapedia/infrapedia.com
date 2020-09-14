@@ -46,7 +46,7 @@
           </el-collapse-item>
         </el-collapse>
         <ul class="links-wrapper mb6" :class="{ dark }">
-          <li class="pt2 pr4 pl4 fs-regular h10">
+          <li class="pt2 pr4 pl4 fs-regular h10" v-if="!isHomepageDrawer">
             <el-button
               type="text"
               class="inline-flex no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline p0"
@@ -55,7 +55,11 @@
               Marketplace
             </el-button>
           </li>
-          <li class="pr4 pl4 fs-regular" v-for="(link, i) in links" :key="i">
+          <li
+            class="pr4 pl4 pt2 fs-regular"
+            v-for="(link, i) in links"
+            :key="i"
+          >
             <a
               v-if="link.tab"
               :href="link.url"

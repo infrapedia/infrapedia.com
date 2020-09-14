@@ -12,6 +12,7 @@
 
 .header {
   width: 75vw;
+  padding: 2rem;
   margin: 0 auto;
 }
 
@@ -41,5 +42,19 @@
   .header {
     padding-left: 0.4rem;
     padding-right: 0.4rem;
+  }
+}
+
+@media screen and (max-width: $break-sm) {
+  .header {
+    padding: 1rem;
+    width: 100%;
+  }
+  .mobile-items {
+    flex-basis: 100%;
+    .logo-link {
+      flex-basis: 78%;
+      justify-content: center;
+    }
   }
 }
