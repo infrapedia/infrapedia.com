@@ -88,10 +88,20 @@ export default {
       }
     }
   },
+  created() {
+    bus.$on('toggle-legend-panel', this.closeLegendPanel)
+  },
+  beforeDestroy() {
+    bus.$off('toggle-legend-panel', this.closeLegendPanel)
+  },
   mounted() {
     if (this.mobile) this.isActive = false
   },
   methods: {
+    closeLegendPanel() {
+      this.isActive = false
+      bus.$emit('legends-panel-visibility', this.isActive)
+    },
     toggleVisibility() {
       this.isActive = !this.isActive
       bus.$emit('legends-panel-visibility', this.isActive)
