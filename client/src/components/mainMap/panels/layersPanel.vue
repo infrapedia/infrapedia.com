@@ -87,6 +87,9 @@ export default {
   },
   mounted() {
     bus.$on('legends-panel-visibility', this.handleLegendsPanelVisilityChange)
+    if (this.mobile) {
+      this.isLegendsPanelActive = false
+    }
   },
   beforeDestroy() {
     bus.$off('legends-panel-visibility', this.handleLegendsPanelVisilityChange)
