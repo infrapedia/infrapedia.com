@@ -1,0 +1,29 @@
+@import '../base/variables';
+
+.layers-wrapper {
+  position: absolute;
+  top: 18rem;
+  z-index: 4;
+  left: 0.72rem;
+  font-weight: 500;
+  font-size: 0.95em;
+  background-color: $white-full;
+  &.dark {
+    color: $white-full;
+    background-color: $dark-charcoal;
+  }
+  &.adjust-position {
+    top: 7.4rem;
+  }
+  #layers-info-wrapper {
+    height: 0;
+    overflow: hidden;
+    &.active {
+      height: auto;
+    }
+  }
+
+  @media screen and (max-width: $break-sm) {
+    top: 8.5rem;
+  }
+}

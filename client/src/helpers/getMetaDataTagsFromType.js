@@ -79,6 +79,12 @@ export default async function getMetaDataTagsFromSelectionType({
 
   const meta = {
     title: typeClean.title,
+    link: [
+      {
+        rel: 'canonical',
+        href: url
+      }
+    ],
     meta: [
       {
         // vmid: 'keywords',
@@ -94,6 +100,16 @@ export default async function getMetaDataTagsFromSelectionType({
         // vmid: 'og:type',
         name: 'og:type',
         content: 'article'
+      },
+      {
+        // vmid: 'twitter:site',
+        name: 'twitter:site',
+        content: '@infrapedia'
+      },
+      {
+        // vmid: 'twitter:creator',
+        name: 'twitter:creator',
+        content: '@infrapedia'
       },
       {
         // vmid: 'og:title',
@@ -141,9 +157,8 @@ export default async function getMetaDataTagsFromSelectionType({
         content: typeClean.title
       },
       {
-        // vmid: 'twitter:title',
-        name: 'twitter:card',
-        content: 'summary_large_image'
+        name: 'og:image:width',
+        content: '1200'
       },
       {
         // vmid: 'twitter:title',
@@ -151,19 +166,49 @@ export default async function getMetaDataTagsFromSelectionType({
         content: description[typeClean.t]
       },
       {
-        // vmid: 'twitter:site',
-        name: 'twitter:site',
-        content: '@infrapedia'
-      },
-      {
-        // vmid: 'twitter:creator',
-        name: 'twitter:creator',
-        content: '@infrapedia'
+        name: 'og:url',
+        content: url
       },
       {
         // vmid: 'content-language',
         name: 'content-language',
         content: 'en-US'
+      }
+    ],
+    script: [
+      {
+        type: 'application/ld+json',
+        json: {
+          type: 'application/ld+json',
+          json: {
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            mainEntityOfPage: {
+              '@type': 'WebPage',
+              '@id': url
+            },
+            headline: typeClean.title,
+            description: description[typeClean.t],
+            image:
+              type == 'org'
+                ? 'https://cdn1.infrapedia.com/assets/default.jpg'
+                : `${apiConfig.url}/elm/map/${typeClean.slug}.jpg`,
+            author: {
+              '@type': 'Organization',
+              name
+            },
+            publisher: {
+              '@type': 'Organization',
+              name: 'Infrapedia',
+              logo: {
+                '@type': 'ImageObject',
+                url:
+                  'https://cdn1.infrapedia.com/assets/img/light-mode-logo.svg'
+              }
+            },
+            datePublished: ''
+          }
+        }
       }
     ]
   }

@@ -37,119 +37,132 @@
             </el-button>
           </header>
           <el-card shadow="never" class="p4" :class="{ dark }">
-            <el-row :gutter="20">
-              <transition name="fade" mode="out-in" tag="div">
-                <div v-if="step == 1">
-                  <el-col :lg="20">
-                    <el-form-item
-                      label="category name"
-                      class="capitalize"
-                      size="mini"
-                    >
-                      <el-input
-                        ref="categoryNameInput"
-                        v-model="field.name"
-                        :class="{ dark }"
-                        size="small"
-                      />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="4">
-                    <el-form-item label="color" class="capitalize" size="mini">
-                      <el-color-picker
-                        size="small"
-                        :class="{ dark }"
-                        v-model="field.color"
-                        :predefine="predefineColors"
-                      />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="5">
-                    <el-form-item
-                      label="opacity"
-                      class="capitalize"
-                      size="small"
-                    >
-                      <el-input-number
-                        class="w14"
-                        :controls="false"
-                        :class="{ dark }"
-                        size="small"
-                        v-model="field['stroke-width']"
-                        :min="0.1"
-                        :max="1"
-                      />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="16">
-                    <el-form-item
-                      label="stroke style"
-                      class="capitalize flex column nowrap align-items-start"
-                      size="small"
-                    >
-                      <el-radio-group
-                        v-model="field['stroke-style']"
-                        size="small"
-                        :class="{ dark }"
+            <el-form ref="categories-form" :model="field" :rules="formRules">
+              <el-row :gutter="20">
+                <transition name="fade" mode="out-in" tag="div">
+                  <div v-if="step == 1">
+                    <el-col :lg="20">
+                      <el-form-item
+                        label="category name"
+                        class="capitalize"
+                        prop="name"
+                        size="mini"
                       >
-                        <el-radio-button label="normal" class="capitalize" />
-                        <el-radio-button label="dashed" class="capitalize" />
-                      </el-radio-group>
-                    </el-form-item>
-                  </el-col>
-                </div>
-              </transition>
-              <transition name="fade" mode="out-in" tag="div">
-                <div v-if="step == 2">
-                  <el-col :span="24">
-                    <el-form-item label="Types" class="capitalize" size="small">
-                      <el-select
-                        v-model="field.types"
-                        collapse-tags
-                        placeholder
-                        class="w-fit-full"
-                        :class="{ dark }"
-                        multiple
-                        size="small"
-                        clearable
-                        filter
-                      >
-                        <el-option
-                          v-for="opt in typesAvailable"
-                          :key="opt"
-                          class="capitalize"
-                          :label="opt"
-                          :value="opt"
+                        <el-input
+                          ref="categoryNameInput"
+                          v-model="field.name"
+                          :class="{ dark }"
+                          size="small"
                         />
-                      </el-select>
-                    </el-form-item>
-                  </el-col>
-                </div>
-              </transition>
-            </el-row>
-            <footer class="flo-right mt6">
-              <el-button
-                class="capitalize mr2"
-                :disabled="step != 2"
-                :class="{ dark }"
-                size="mini"
-                round
-                :plain="dark"
-                @click="back"
-              >
-                back
-              </el-button>
-              <el-button
-                type="primary"
-                class="capitalize"
-                :class="{ dark }"
-                size="mini"
-                round
-                @click="determineFunc"
-              >
-                {{ step == 1 ? 'next' : 'save' }}
-              </el-button>
-            </footer>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="4">
+                      <el-form-item
+                        label="color"
+                        prop="color"
+                        class="capitalize"
+                        size="mini"
+                      >
+                        <el-color-picker
+                          size="small"
+                          :class="{ dark }"
+                          v-model="field.color"
+                          :predefine="predefineColors"
+                        />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="5">
+                      <el-form-item
+                        label="opacity"
+                        class="capitalize"
+                        size="small"
+                      >
+                        <el-input-number
+                          class="w14"
+                          :controls="false"
+                          :class="{ dark }"
+                          size="small"
+                          v-model="field['stroke-width']"
+                          :min="0.1"
+                          :max="1"
+                        />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="16">
+                      <el-form-item
+                        label="stroke style"
+                        class="capitalize flex column nowrap align-items-start"
+                        size="small"
+                      >
+                        <el-radio-group
+                          v-model="field['stroke-style']"
+                          size="small"
+                          :class="{ dark }"
+                        >
+                          <el-radio-button label="normal" class="capitalize" />
+                          <el-radio-button label="dashed" class="capitalize" />
+                        </el-radio-group>
+                      </el-form-item>
+                    </el-col>
+                  </div>
+                </transition>
+                <transition name="fade" mode="out-in" tag="div">
+                  <div v-if="step == 2">
+                    <el-col :span="24">
+                      <el-form-item
+                        label="Types"
+                        prop="types"
+                        class="capitalize"
+                        size="small"
+                      >
+                        <el-select
+                          v-model="field.types"
+                          collapse-tags
+                          placeholder
+                          class="w-fit-full"
+                          :class="{ dark }"
+                          multiple
+                          size="small"
+                          clearable
+                          filter
+                        >
+                          <el-option
+                            v-for="opt in typesAvailable"
+                            :key="opt"
+                            class="capitalize"
+                            :label="opt"
+                            :value="opt"
+                          />
+                        </el-select>
+                      </el-form-item>
+                    </el-col>
+                  </div>
+                </transition>
+              </el-row>
+              <footer class="flo-right mt6">
+                <el-button
+                  class="capitalize mr2"
+                  :disabled="step != 2"
+                  :class="{ dark }"
+                  size="mini"
+                  round
+                  :plain="dark"
+                  @click="back"
+                >
+                  back
+                </el-button>
+                <el-button
+                  type="primary"
+                  class="capitalize"
+                  :class="{ dark }"
+                  size="mini"
+                  round
+                  @click="determineFunc"
+                >
+                  {{ step == 1 ? 'next' : 'save' }}
+                </el-button>
+              </footer>
+            </el-form>
           </el-card>
         </div>
       </el-collapse-transition>
@@ -204,7 +217,7 @@
                 size="mini"
                 :class="{ dark }"
                 title="Edit items"
-                @click="editCategoryTypesSelections(item, false)"
+                @click="editCategoryTypesSelections(id, false)"
               />
               <el-button
                 icon="el-icon-edit-outline"
@@ -212,7 +225,7 @@
                 size="mini"
                 title="Edit"
                 :class="{ dark }"
-                @click="setEditMode(item, true)"
+                @click="setEditMode(id, true)"
               />
               <el-button
                 icon="el-icon-delete"
@@ -229,7 +242,7 @@
               <el-divider :class="{ dark }" class="mt2 mb4" />
               <div class="fs-small block text-left pr4 pl4 mb2">
                 <strong>id: </strong>
-                {{ item._id }}
+                {{ id }}
               </div>
               <div
                 class="flex nowrap justify-content-space-between mb4 pr4 pl4"
@@ -471,6 +484,15 @@ export default {
         'custom polygons'
       ]
     },
+    nonCustomTypes() {
+      return [
+        'cls',
+        'ixps',
+        'facilities',
+        'subsea cables',
+        'terrestrial networks'
+      ]
+    },
     determineFunc() {
       return this.step == 1
         ? this.nextStep
@@ -498,6 +520,32 @@ export default {
           })
         }
         return r
+      }
+    },
+    formRules() {
+      return {
+        name: [
+          {
+            required: true,
+            message: 'Please input a category name',
+            trigger: 'blur'
+          }
+        ],
+        color: [
+          {
+            required: true,
+            message: 'A color is required',
+            trigger: ['blur', 'change']
+          }
+        ],
+        types: [
+          {
+            type: 'array',
+            required: true,
+            message: 'Please select at least one type',
+            trigger: ['blur', 'change']
+          }
+        ]
       }
     }
   },
@@ -665,11 +713,14 @@ export default {
     removeViewing(name) {
       this.viewing = this.viewing.filter(n => n != name)
     },
-    setEditMode(category, scrollToView) {
-      this.field = { ...JSON.parse(JSON.stringify(category)) }
-      this.mode = 'edit'
-      this.isInputVisible = true
-      if (scrollToView) this.scrollIntoView()
+    setEditMode(categoryID, scrollToView) {
+      const category = categoriesDictionary.get(categoryID)
+      if (category) {
+        this.field = { ...JSON.parse(JSON.stringify(category)) }
+        this.mode = 'edit'
+        this.isInputVisible = true
+        if (scrollToView) this.scrollIntoView()
+      }
     },
     handleCategoriesResetDataset() {
       const categories = this.dictionary.getRaw()
@@ -700,22 +751,29 @@ export default {
       this.isInputVisible = bool
       this.resetField()
     },
+    checkFieldTypes(arr) {
+      return arr.some(type => this.field.types.includes(type))
+    },
     beforeAddCategoryAddTypesSelections() {
-      return new Promise((res, rej) => {
-        this.typesDialog.visible = true
-        this.$once('save-types', function() {
-          if (this.mode != 'create') return
-          this.typesDialog.visible = false
-          res()
-        })
-        this.$once('cancel-types-selection', function() {
-          if (this.mode != 'create') return
-          this.typesDialog.visible = false
-          rej()
-        })
+      this.$refs['categories-form'].validate(valid => {
+        if (!valid) return
+
+        if (this.checkFieldTypes(this.nonCustomTypes)) {
+          return new Promise((res, rej) => {
+            this.typesDialog.visible = true
+            this.$once('save-types', function() {
+              this.typesDialog.visible = false
+              res()
+            })
+            this.$once('cancel-types-selection', function() {
+              this.typesDialog.visible = false
+              rej()
+            })
+          })
+            .then(this.addCategory)
+            .catch(() => {})
+        } else if (this.includesDrawnFeatures) this.addCategory()
       })
-        .then(this.addCategory)
-        .catch(() => {})
     },
     /**
      * @param args { Array } - Array of args. Same as setEditMode(category, scrollToView)
@@ -726,12 +784,10 @@ export default {
         this.nextStep()
         this.typesDialog.visible = true
         this.$once('save-types', function() {
-          if (this.mode == 'create') return
           this.typesDialog.visible = false
           res()
         })
         this.$once('cancel-types-selection', function() {
-          if (this.mode == 'create') return
           this.toggleInput(false)
           this.typesDialog.visible = false
           rej()
