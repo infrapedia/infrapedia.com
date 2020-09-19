@@ -356,7 +356,8 @@ export const orgsColumns = [
   {
     label: 'Name',
     value: 'name',
-    showTable: true
+    showTable: true,
+    showSidebar: true
   },
   {
     label: 'Logo',

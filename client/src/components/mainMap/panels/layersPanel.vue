@@ -51,7 +51,6 @@ export default {
   name: 'LayersPanel',
   data: () => ({
     isLegendsPanelActive: true,
-    activeLayers: ['all'],
     isActive: true,
     layers: {
       [mapConfig.cls]: {

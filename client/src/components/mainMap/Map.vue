@@ -15,7 +15,7 @@
         leave-active-class="slideOutLeft"
         mode="out-in"
       >
-        <layers-panel @toggle-layer="handleToggleLayer" />
+        <layers-panel @toggle-layer="handleToggleLayer" ref="layersPanel" />
       </transition>
       <el-button
         id="ThreeD"
@@ -284,7 +284,9 @@ export default {
       return map
     },
     async handleFacilitiesLayerAtCertainZoomLevel() {
-      if (!this.map) return
+      if (!this.map || !this.facilitiesClusters.active) return
+
+      console.log(this.facilitiesClusters)
 
       const currentZoomLevel = this.map.getZoom()
       const minZoom = mapConfig.facsMinZoom - 1.8
@@ -453,7 +455,7 @@ export default {
         this.map.getCanvas().style.cursor = 'pointer'
         this.showPopup({ e, map: this.map, popup, isPoint, type })
       } else {
-        this.map.getCanvas().style.cursor = 'crosshair'
+        this.map.getCanvas().style.cursor = ''
       }
     },
     /**
@@ -529,11 +531,32 @@ export default {
     async handleMapClick(e) {
       // If is currently drawing shouldn't do anything
       if (this.isDrawing) return
+      const clusters = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.clusters]
+      })
 
       if (this.focus) {
         this.disableSelectionHighlight(false, this.focus.type.split().join(''))
       }
-      if (this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
+      if (this.isSidebar && !clusters.length) {
+        await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
+      }
+      if (
+        this.$refs.layersPanel &&
+        !this.facilitiesClusters.hasData &&
+        this.$refs.layersPanel.layers[mapConfig.facilities].active &&
+        !clusters.length
+      ) {
+        await this.handleToggleLayer({
+          active: true,
+          layerName: mapConfig.facilities,
+          layersDict: {
+            [mapConfig.facilities]: {
+              active: true
+            }
+          }
+        })
+      }
 
       const cables = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.cables]
@@ -547,9 +570,6 @@ export default {
       })
       const cls = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.cls]
-      })
-      const clusters = this.map.queryRenderedFeatures(e.point, {
-        layers: [mapConfig.clusters]
       })
 
       const facsClusters = this.map.queryRenderedFeatures(e.point, {
@@ -629,8 +649,18 @@ export default {
         if (!this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
       }
 
-      if (fc) this.map.getSource(mapConfig.clusters).setData(fc)
-      else {
+      if (fc) {
+        await this.handleToggleLayer({
+          layerName: mapConfig.facilities,
+          active: false,
+          layersDict: {
+            [mapConfig.facilities]: {
+              active: false
+            }
+          }
+        })
+        this.map.getSource(mapConfig.clusters).setData(fc)
+      } else {
         this.map.flyTo({
           center: mapConfig.center,
           zoom: mapConfig.zoom,
