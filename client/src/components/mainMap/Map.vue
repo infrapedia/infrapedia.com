@@ -287,7 +287,7 @@ export default {
       if (!this.map || !this.facilitiesClusters.active) return
 
       const currentZoomLevel = this.map.getZoom()
-      const minZoom = mapConfig.facsMinZoom - 1.8
+      const minZoom = mapConfig.facsMinZoom + 5.4
       if (currentZoomLevel >= minZoom) {
         await this.handleToggleLayer({
           layerName: mapConfig.facilities,

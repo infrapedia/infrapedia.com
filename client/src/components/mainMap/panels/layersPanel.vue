@@ -1,7 +1,11 @@
 <template>
   <div
     class="layers-wrapper flex column bottom-shadow w34 transition-all"
-    :class="{ dark, 'adjust-position': !isLegendsPanelActive }"
+    :class="{
+      dark,
+      'adjust-position-mobile': !isLegendsPanelActive && isActive && mobile,
+      'adjust-position': !isLegendsPanelActive
+    }"
   >
     <header class="pt2 pb2 pr4 pl4 flex justify-content-space-between">
       Layers
@@ -76,6 +80,9 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    mobile() {
+      return window.innerWidth < 520
     }
   },
   mounted() {
@@ -94,9 +101,15 @@ export default {
     },
     handleLegendsPanelVisilityChange(bool) {
       this.isLegendsPanelActive = bool
+      if (this.mobile && bool) {
+        this.isActive = false
+      }
     },
     toggleVisibility() {
       this.isActive = !this.isActive
+      if (this.mobile && this.isActive) {
+        bus.$emit('toggle-legend-panel')
+      }
     }
   }
 }
