@@ -286,8 +286,6 @@ export default {
     async handleFacilitiesLayerAtCertainZoomLevel() {
       if (!this.map || !this.facilitiesClusters.active) return
 
-      console.log(this.facilitiesClusters)
-
       const currentZoomLevel = this.map.getZoom()
       const minZoom = mapConfig.facsMinZoom - 1.8
       if (currentZoomLevel >= minZoom) {
