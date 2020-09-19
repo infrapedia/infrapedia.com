@@ -20,15 +20,13 @@
         <header
           class="flex row justify-content-space-between pt1 pb1 pr4 pl4 mb2 el-dialog__header"
         >
-          <el-image :src="imageURL" class="w30" fit="scale-down" lazy />
+          <el-image :src="imageURL" class="w24" fit="scale-down" lazy />
           <el-button
             type="text"
+            icon="el-icon-close"
             :class="{ 'text-white--hsl': dark }"
             @click="handleClose({ keyCode: 4 })"
-            class="underline"
-          >
-            close
-          </el-button>
+          />
         </header>
         <div class="pr4 pl4 pb20">
           <el-input

@@ -88,6 +88,15 @@ header {
   }
 }
 
+.dropdown-links {
+  @media screen and (max-width: $break-sm) {
+    a,
+    .el-button {
+      height: 3rem;
+    }
+  }
+}
+
 .links-wrapper.dark {
   a,
   span,

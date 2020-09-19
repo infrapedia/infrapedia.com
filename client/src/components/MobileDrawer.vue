@@ -89,7 +89,7 @@
                   type="text"
                   :key="dropdownItem.url"
                   class="inline-flex no-border-radius align-items-center color-inherit h-fit-full block no-outline"
-                  @click="goToRoute(link.url)"
+                  @click="goToRoute(dropdownItem.url)"
                   :class="{ dark, light: !dark }"
                 >
                   {{ dropdownItem.label }}
@@ -248,7 +248,9 @@ export default {
     },
     goToRoute(link) {
       this.toggleVisibility()
-      if (this.$route.path != link) this.$router.push(link)
+      if (this.$route.path !== link) {
+        this.$router.push(link)
+      }
     },
     toggleVisibility() {
       this.$emit('close')
