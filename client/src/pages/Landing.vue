@@ -35,6 +35,12 @@ export default {
   },
   head: {
     title: 'Global Internet Infrastructure Map | Infrapedia',
+    link: [
+      {
+        rel: 'canonical',
+        href: `${window.origin}`
+      }
+    ],
     meta: [
       {
         name: 'application-name',

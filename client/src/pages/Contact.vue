@@ -137,7 +137,13 @@ export default {
     }
   }),
   head: {
-    title: 'Infrapedia | Contact Us | Global Internet Infrastructure Map'
+    title: 'Infrapedia | Contact Us | Global Internet Infrastructure Map',
+    link: [
+      {
+        rel: 'canonical',
+        href: `${window.origin}/contact`
+      }
+    ]
   },
   computed: {
     siteKey() {

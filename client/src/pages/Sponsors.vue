@@ -51,6 +51,12 @@ export default {
   head: {
     title:
       'Infrapedia | Exclusive Sponsorships | Global Internet Infrastructure Map',
+    link: [
+      {
+        rel: 'canonical',
+        href: `${window.origin}/sponsors`
+      }
+    ],
     meta: [
       {
         name: 'application-name',

@@ -302,6 +302,12 @@ export default {
   head: {
     title:
       'Infrapedia | Terms & Conditions | Global Internet Infrastructure Map',
+    link: [
+      {
+        rel: 'canonical',
+        href: `${window.origin}/terms-and-conditions`
+      }
+    ],
     meta: [
       {
         name: 'description',

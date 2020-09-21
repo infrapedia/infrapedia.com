@@ -204,6 +204,12 @@ export default {
   name: 'PrivacyPolicy',
   head: {
     title: 'Infrapedia | Privacy Policy | Global Internet Infrastructure Map',
+    link: [
+      {
+        rel: 'canonical',
+        href: `${window.origin}/privacy-policy`
+      }
+    ],
     meta: [
       {
         name: 'description',
