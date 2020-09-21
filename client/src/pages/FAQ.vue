@@ -27,6 +27,12 @@ export default {
   name: 'faq',
   head: {
     title: 'Infrapedia | FAQ | Global Internet Infrastructure Map',
+    link: [
+      {
+        rel: 'canonical',
+        href: `${window.origin}/faq`
+      }
+    ],
     meta: [
       {
         name: 'description',

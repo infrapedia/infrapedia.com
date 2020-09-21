@@ -91,6 +91,12 @@ export default {
         content:
           'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
       }
+    ],
+    link: [
+      {
+        rel: 'canonical',
+        href: `${window.origin}/about`
+      }
     ]
   }
 }

@@ -151,6 +151,12 @@ export default {
   head: {
     title:
       'Infrapedia | Services & Consultancy | Global Internet Infrastructure Map',
+    link: [
+      {
+        rel: 'canonical',
+        href: `${window.origin}/services`
+      }
+    ],
     meta: [
       {
         name: 'description',

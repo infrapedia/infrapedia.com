@@ -2418,6 +2418,12 @@ export default {
   name: 'Attributions',
   head: {
     title: 'Infrapedia | Attributions | Global Internet Infrastructure Map',
+    link: [
+      {
+        rel: 'canonical',
+        href: `${window.origin}/attributions`
+      }
+    ],
     meta: [
       {
         name: 'description',

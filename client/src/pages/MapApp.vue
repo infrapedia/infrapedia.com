@@ -68,7 +68,16 @@ export default {
   data: () => ({
     EDIT_CABLE,
     BUY_CAPACITY,
-    metaData: metadata,
+    metaData: {
+      title: metadata.title,
+      meta: metadata.meta,
+      link: [
+        {
+          rel: 'canonical',
+          href: `${window.origin}/app`
+        }
+      ]
+    },
     openEditDialog: false
   }),
   computed: {
@@ -130,7 +139,16 @@ export default {
       } else {
         this.$once('focus-changed', async function handleFocusChanged(focus) {
           if (!focus) {
-            this.metaData = metadata
+            this.metaData = {
+              title: metadata.title,
+              meta: metadata.meta,
+              link: [
+                {
+                  rel: 'canonical',
+                  href: `${window.origin}/app`
+                }
+              ]
+            }
             return
           }
           const url = `/app/${focus.type}/${data.slug}`
