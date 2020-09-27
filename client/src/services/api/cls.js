@@ -14,6 +14,7 @@ export const createCls = async ({
   slug,
   country,
   user_id,
+  owners,
   tags
 }) => {
   url = `${apiConfig.url}/auth/cls/add`
@@ -33,6 +34,12 @@ export const createCls = async ({
       form.append(`cables[${i}]`, c._id ? c._id : c)
     })
   } else form.append('cables', [])
+
+  if (owners.length) {
+    owners.forEach((c, i) => {
+      form.append(`owners[${i}]`, c._id ? c._id : c)
+    })
+  } else form.append('owners', [])
 
   if (tags && tags.length) {
     tags.forEach((t, i) => {
@@ -59,6 +66,7 @@ export const editCLS = async ({
   slug,
   user_id,
   _id,
+  owners,
   country,
   tags
 }) => {
@@ -86,6 +94,12 @@ export const editCLS = async ({
       form.append(`cables[${i}]`, c._id ? c._id : c)
     })
   } else form.append('cables', [])
+
+  if (owners.length) {
+    owners.forEach((c, i) => {
+      form.append(`owners[${i}]`, c._id ? c._id : c)
+    })
+  } else form.append('owners', [])
 
   const res = await $axios.put(url, form, {
     withCredentials: true,
