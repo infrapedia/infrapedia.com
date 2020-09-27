@@ -767,10 +767,9 @@ export default {
         null,
         sceneDictionary.getCollectionList()
       )
-      await this.handleResetScene({
-        reset: false,
-        removeFilter: this.scene.isDynamicControls
-      })
+
+      const featuresId = this.draw.set(fCollectionFormat([featureSelected]))
+      this.draw.changeMode('direct_select', { featureId: featuresId[0] })
     },
     async handleCutFeatureSelected({ feature, geometryType }) {
       const vertexPoints = this.draw.getSelectedPoints().features
