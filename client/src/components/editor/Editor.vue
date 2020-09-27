@@ -543,16 +543,15 @@ export default {
     },
     async handleFileConverted(fc) {
       if (!fc.features.length) return
-
-      try {
-        const fc_final = fCollectionFormat([
-          ...fc.features,
-          ...sceneDictionary.getCollectionList()
-        ])
-        setFeaturesIntoDataSource({
-          list: fc_final.features,
-          map: this.map
+      {
+        let featuresList = fc.features.map(ft => setFeatureEditorID(ft))
+        featuresList.forEach(ft => {
+          sceneDictionary.add(ft.editorID, ft)
         })
+      }
+      try {
+        const fc_final = fCollectionFormat(sceneDictionary.getCollectionList())
+        updateDrawnFeatureDataSource(this.map, fc_final.features)
         await zoomToFeature({ fc: fc_final, map: this.map, type: this.type })
       } catch (err) {
         console.error(err)
