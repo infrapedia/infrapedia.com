@@ -59,11 +59,7 @@ export default async function getMetaDataTagsFromSelectionType({
       typeClean.title = `${typeClean.title} | Organization | Infrapedia`
       typeClean.t = 'org'
       break
-    case 'organizations':
-      typeClean.title = `${typeClean.title} | Organization | Infrapedia`
-      typeClean.t = 'org'
-      break
-    case 'org':
+    case 'organization':
       typeClean.title = `${typeClean.title} | Organization | Infrapedia`
       typeClean.t = 'org'
       break
@@ -140,7 +136,7 @@ export default async function getMetaDataTagsFromSelectionType({
       {
         name: 'og:image',
         content:
-          type == 'org'
+          type == 'organization'
             ? 'https://cdn1.infrapedia.com/assets/default.jpg'
             : `${apiConfig.url}/elm/map/${typeClean.slug}.jpg`
       },
@@ -177,7 +173,7 @@ export default async function getMetaDataTagsFromSelectionType({
             headline: typeClean.title,
             description: description[typeClean.t],
             image:
-              type == 'org'
+              type == 'organization'
                 ? 'https://cdn1.infrapedia.com/assets/default.jpg'
                 : `${apiConfig.url}/elm/map/${typeClean.slug}.jpg`,
             author: {

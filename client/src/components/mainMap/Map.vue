@@ -644,6 +644,12 @@ export default {
         await this.disableSelectionHighlight(false, 'cable')
         await this.$store.commit(`${CURRENT_SELECTION}`, res.data.r[0])
 
+        this.$store.commit(`${MAP_FOCUS_ON}`, {
+          id: _id,
+          type: 'organization',
+          name: res.data.r[0].name
+        })
+
         if (!this.isSidebar) await this.$store.commit(`${TOGGLE_SIDEBAR}`, true)
       }
 
@@ -658,14 +664,14 @@ export default {
           }
         })
         this.map.getSource(mapConfig.clusters).setData(fc)
-      } else {
-        this.map.flyTo({
-          center: mapConfig.center,
-          zoom: mapConfig.zoom,
-          speed: 1.8,
-          curve: 1
-        })
       }
+
+      this.map.flyTo({
+        center: mapConfig.center,
+        zoom: mapConfig.zoom,
+        speed: 1.8,
+        curve: 1
+      })
     },
     async handleNetworkFocus(_id, fc) {
       const { focus, bounds, map } = this
