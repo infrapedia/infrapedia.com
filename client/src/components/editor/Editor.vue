@@ -6,7 +6,13 @@
     @dragover.prevent="() => (drag.hover = true)"
     @dragleave.prevent="() => (drag.hover = false)"
   >
-    <div id="map" />
+    <div id="map">
+      <e-header
+        :type="type"
+        @close-search="closeSearchMode"
+        @place-selected="handleSearchPlaceSelected"
+      />
+    </div>
     <div class="overlay" v-if="type == 'map'" :class="{ dark }">
       <span class="fs-small">
         Geojson files dropped here, will be imported into the map.
@@ -18,27 +24,9 @@
       <p class="m0 mt1"><strong>Lng:</strong> {{ infoBox.lng }}</p>
       <p class="m0 mt1"><strong>Zoom:</strong> {{ infoBox.zoom }}</p>
     </div>
-    <div
-      class="absolute information-box z-index20 p2 ml5 text-left"
-      :class="{ dark }"
-    >
-      <p class="m0" v-if="oneClickMessage.length == 1">
-        {{ oneClickMessage[0] }}
-      </p>
-      <template v-else-if="oneClickMessage.length == 2">
-        <p class="m0" v-html="oneClickMessage[0]" />
-        <p class="m0 mt1 inline-block" v-html="oneClickMessage[1]" />
-      </template>
-      <p class="m0 mt1" v-if="type != 'facilities'">
-        {{ doubleClickMessage[0] }}
-      </p>
-      <span class="inline-block ml1" v-else>
-        {{ doubleClickMessage[0] }}
-      </span>
-    </div>
     <properties-dialog
-      :mode="dialog.mode"
       :type="type"
+      :mode="dialog.mode"
       :creation-form="form"
       :is-visible="dialog.visible"
       :feature="dialog.selectedFeature"
@@ -81,11 +69,13 @@ const onlyOneFeatureAllowed = ['cls', 'ixps']
 
 export default {
   components: {
-    PropertiesDialog: () => import('./propertiesDialog')
+    PropertiesDialog: () => import('./propertiesDialog'),
+    EHeader: () => import('./Header.vue')
   },
   data: () => ({
     map: null,
     draw: null,
+    placeMarker: null,
     categoriesDictionary: null,
     drag: {
       file: null,
@@ -132,46 +122,6 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
-    },
-    oneClickMessage() {
-      let msg = []
-      switch (this.type) {
-        case 'ixps':
-          msg = [
-            'Click once to edit the properties of the IXP or change its position'
-          ]
-          break
-        case 'cls':
-          msg = [
-            'Click once to edit the properties of the CLS or change its position'
-          ]
-          break
-        case 'facilities':
-          msg = [
-            '<strong>Points:</strong> Click once to edit the properties of the Facility or change its position',
-            '<strong>Polygons:</strong> Click once to edit the properties of a segment.'
-          ]
-          break
-        default:
-          msg = ['Click once to edit the properties of a segment.']
-          break
-      }
-      return msg
-    },
-    doubleClickMessage() {
-      let msg = []
-      switch (this.type) {
-        case 'subsea':
-          msg = ['Click twice to edit the shape of a segment.']
-          break
-        case 'terrestrial-network':
-          msg = ['Click twice to edit the shape of a segment.']
-          break
-        default:
-          msg = []
-          break
-      }
-      return msg
     }
   },
   watch: {
@@ -251,6 +201,19 @@ export default {
     }
   },
   methods: {
+    async handleSearchPlaceSelected(data) {
+      this.placeMarker = new mapboxgl.Marker({ color: '#1e419a' })
+        .setLngLat(data.center)
+        .addTo(this.map)
+      this.map.fitBounds(data.bbox, {
+        animate: true,
+        zoom: 4.89
+      })
+    },
+    closeSearchMode() {
+      this.placeMarker.remove()
+      this.placeMarker = null
+    },
     async handleDrawSceneFeatures() {
       await this.handleRecreateDraw(null, false)
     },
