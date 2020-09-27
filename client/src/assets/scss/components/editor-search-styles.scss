@@ -1,0 +1,37 @@
+@import '../base/variables';
+
+.search-wrapper {
+  top: 4.6rem;
+  left: 2rem;
+  flex-basis: 80%;
+  &.active {
+    flex-basis: 100%;
+    .el-input {
+      width: 100%;
+    }
+  }
+  .search-inner-wrapper {
+    flex-basis: 100%;
+  }
+  .el-input {
+    margin-top: 0.2rem;
+    width: 0;
+  }
+  .el-button {
+    margin-left: 1rem;
+  }
+}
+
+.results-wrapper {
+  left: 1rem;
+  top: 3.4rem;
+  width: 100%;
+  max-width: 24rem;
+  max-height: 32rem;
+  color: $dark-charcoal;
+  background-color: $white-full;
+  &.dark {
+    color: $white-partial;
+    background-color: $dark-charcoal;
+  }
+}
