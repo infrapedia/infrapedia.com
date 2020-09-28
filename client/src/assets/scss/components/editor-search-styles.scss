@@ -1,24 +1,21 @@
 @import '../base/variables';
 
 .search-wrapper {
-  top: 4.6rem;
   left: 2rem;
-  flex-basis: 80%;
+  top: 4.6rem;
+  flex-basis: 0;
   &.active {
-    flex-basis: 100%;
+    flex-basis: 32%;
     .el-input {
       width: 100%;
     }
-  }
-  .search-inner-wrapper {
-    flex-basis: 100%;
+    .search-inner-wrapper {
+      flex-basis: 100%;
+    }
   }
   .el-input {
     margin-top: 0.2rem;
     width: 0;
-  }
-  .el-button {
-    margin-left: 1rem;
   }
 }
 
