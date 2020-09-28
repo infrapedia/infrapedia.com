@@ -13,7 +13,7 @@
         class="search-inner-wrapper flex nowrap align-items-center justify-content-end relative"
       >
         <el-input
-          v-show="isActive"
+          v-if="isActive"
           v-model="search"
           ref="search-input"
           :class="{ dark }"
@@ -25,9 +25,10 @@
           @blur="toggleResults(false)"
         />
         <el-button
+          circle
           size="mini"
+          class="ml4"
           :icon="btnIcon"
-          class="mt1"
           :class="{ dark }"
           :title="btnTitle"
           @click="handleSearchBtnClick"
