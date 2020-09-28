@@ -211,8 +211,10 @@ export default {
       })
     },
     closeSearchMode() {
-      this.placeMarker.remove()
-      this.placeMarker = null
+      if (this.placeMarker) {
+        this.placeMarker.remove()
+        this.placeMarker = null
+      }
     },
     async handleDrawSceneFeatures() {
       await this.handleRecreateDraw(null, false)
