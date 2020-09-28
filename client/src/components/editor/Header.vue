@@ -1,25 +1,46 @@
 <template>
   <header
-    class="information-box z-index20 h5 relative align-items-center p4 text-left flex justify-content-space-between"
+    class="information-box z-index20 h4 relative flex align-items-center p4 text-left"
     :class="{ dark }"
   >
-    <transition mode="out-in" name="fade">
-      <div :class="{ hidden: isSearchActive }" class="w80">
-        <p class="m0" v-if="oneClickMessage.length == 1">
-          {{ oneClickMessage[0] }}
-        </p>
-        <template v-else-if="oneClickMessage.length == 2">
-          <p class="m0" v-html="oneClickMessage[0]" />
-          <p class="m0 inline-block" v-html="oneClickMessage[1]" />
-        </template>
-        <p class="m0" v-if="type != 'facilities'">
-          {{ doubleClickMessage[0] }}
-        </p>
-        <span class="inline-block ml1" v-else>
-          {{ doubleClickMessage[0] }}
-        </span>
-      </div>
-    </transition>
+    <div
+      :class="{ hidden: isSearchActive }"
+      class="flex row nowrap align-items-center"
+    >
+      <span class="inline-block mr4">
+        Actions
+      </span>
+      <el-popover
+        title="Instructions"
+        placement="bottom"
+        trigger="click"
+        width="246"
+        :popper-class="`${dark ? dark : ''} p4`"
+      >
+        <div class="fs-small">
+          <p class="m0" v-if="oneClickMessage.length == 1">
+            {{ oneClickMessage[0] }}
+          </p>
+          <template v-else-if="oneClickMessage.length == 2">
+            <p class="m0" v-html="oneClickMessage[0]" />
+            <p class="m0 inline-block" v-html="oneClickMessage[1]" />
+          </template>
+          <p class="m0" v-if="type != 'facilities'">
+            {{ doubleClickMessage[0] }}
+          </p>
+          <span class="inline-block ml1" v-else>
+            {{ doubleClickMessage[0] }}
+          </span>
+        </div>
+        <el-button
+          circle
+          size="mini"
+          slot="reference"
+          icon="el-icon-info"
+          title="Toggle information"
+        />
+      </el-popover>
+    </div>
     <search-box
       @toggle-search="handleSearchToggle"
       @place-selected="$emit('place-selected', $event)"
