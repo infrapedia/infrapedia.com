@@ -1,5 +1,16 @@
 # Infrapedia Open Source
 
+## Version 2.4.11
+
+- Editor Search Places (Mapbox Geocoding) w/ Lat, Lng query searcher
+- KMZ upload was erroring with the new Editor
+- Clicking a place will create a marker as long the search is open
+- Vertex deletion functionality shouldn't reset the scene
+- Organization url needed to change in order to work with sitemap
+- Organization metadata
+- Cls create, update service(s) was not sending the owners array
+- FreshDesk widget was sitting on top of everything
+
 ## Version 2.2.9
 
 - Searchbar fixings
