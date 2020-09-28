@@ -576,6 +576,10 @@ input.issues-dialog {
     border-color: $dark-charcoal;
     background-color: $dark-charcoal;
   }
+  .el-popover__title {
+    color: $white-partial;
+  }
+
   .popper__arrow,
   .popper__arrow::after {
     border-bottom-color: $dark-charcoal;

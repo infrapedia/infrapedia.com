@@ -36,6 +36,7 @@
           circle
           size="mini"
           slot="reference"
+          :class="{ dark }"
           icon="el-icon-info"
           title="Toggle information"
         />

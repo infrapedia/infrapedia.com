@@ -36,8 +36,9 @@
       </div>
     </transition>
     <div
-      class="absolute results-wrapper bottom-shadow overflow-y-auto"
       v-if="isResults"
+      :class="{ dark }"
+      class="absolute results-wrapper bottom-shadow overflow-y-auto"
     >
       <div v-if="!results.length" class="el-select-dropdown__empty">
         No data
