@@ -6,13 +6,12 @@
     @dragover.prevent="() => (drag.hover = true)"
     @dragleave.prevent="() => (drag.hover = false)"
   >
-    <div id="map">
-      <e-header
-        :type="type"
-        @close-search="closeSearchMode"
-        @place-selected="handleSearchPlaceSelected"
-      />
-    </div>
+    <e-header
+      :type="type"
+      @close-search="closeSearchMode"
+      @place-selected="handleSearchPlaceSelected"
+    />
+    <div id="map" />
     <div class="overlay" v-if="type == 'map'" :class="{ dark }">
       <span class="fs-small">
         Geojson files dropped here, will be imported into the map.

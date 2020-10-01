@@ -7,7 +7,7 @@
       :class="{ hidden: isSearchActive }"
       class="flex row nowrap align-items-center"
     >
-      <span class="inline-block mr4">
+      <span class="inline-block mr4 fs-small">
         Actions
       </span>
       <el-popover
