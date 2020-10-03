@@ -214,6 +214,7 @@ export default {
         user_id: await this.$auth.getUserID(),
         _id: id
       })
+
       return bus.$emit(`${FOCUS_ON}`, {
         id,
         type,

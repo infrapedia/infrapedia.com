@@ -852,7 +852,7 @@ export default {
 
       this.$store.commit(`${MAP_FOCUS_ON}`, {
         id,
-        type: type == 'orgs' ? 'organizations' : type
+        type: type.includes('org') ? 'organization' : type
       })
 
       // Clearing clusters source in case there was something previously selected
@@ -862,6 +862,9 @@ export default {
 
       switch (type.toLowerCase().trim()) {
         case 'organizations':
+          await this.handleOrganizationFocus(id, fc)
+          break
+        case 'organization':
           await this.handleOrganizationFocus(id, fc)
           break
         case 'org':

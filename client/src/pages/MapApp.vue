@@ -162,7 +162,10 @@ export default {
               url: window.origin + url
             }))
           }
-          this.$router.replace(url)
+
+          if (this.$route.fullPath !== url) {
+            this.$router.replace(url)
+          }
         })
       }
     },
