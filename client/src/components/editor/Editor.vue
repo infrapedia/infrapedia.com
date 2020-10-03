@@ -201,6 +201,8 @@ export default {
   },
   methods: {
     async handleSearchPlaceSelected(data) {
+      if (this.placeMarker) this.placeMarker.remove()
+
       this.placeMarker = new mapboxgl.Marker({ color: '#1e419a' })
         .setLngLat(data.center)
         .addTo(this.map)
@@ -910,11 +912,6 @@ export default {
     addMapEvents(map) {
       const vm = this
       map.on('load', function() {
-        // ---------------------------------------------------------------------------------------
-        // ---------------------------------------------------------------------------------------
-        // map.on('draw.selectionchange', vm.handleDrawSelectionChange)
-        // ---------------------------------------------------------------------------------------
-        // ---------------------------------------------------------------------------------------
         map.on('mousemove', function(e) {
           const coords = e.lngLat.wrap()
           vm.infoBox.lat = coords.lat.toFixed(5)
