@@ -92,9 +92,6 @@ export default {
   },
   async created() {
     document.querySelector('body').className = 'no-overflow'
-    window.toggleD = function() {
-      this.isRegisterDialogVisible = !this.isRegisterDialogVisible
-    }.bind(this)
 
     const { params } = this.$route
     if (params.type && params.slug) {
