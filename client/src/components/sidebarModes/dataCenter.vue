@@ -322,8 +322,22 @@
       effect="dark"
       :disabled="!isActionButtonsDisabled"
       placement="top-start"
-      content="You need to login before making use of this features"
     >
+      <div slot="content" class="flex justify-content-center row wrap">
+        <span class="text-center inline-block w-fit-full">
+          You need to login before making use of this features
+        </span>
+        <el-button
+          plain
+          size="mini"
+          title="Sign in"
+          :class="{ dark }"
+          @click="signIn"
+          class="fs-small mt2 h6 vertical-align"
+        >
+          <fa :icon="['fas', 'sign-in-alt']" class="mr1" /> Login
+        </el-button>
+      </div>
       <footer class="pr8 pl8 pb8">
         <el-divider class="mt0" />
         <el-row :gutter="20">
@@ -513,6 +527,9 @@ export default {
     emitEvent(option) {
       this.toggleMenu()
       this.$emit(`${BUY_CAPACITY}`, option)
+    },
+    signIn() {
+      this.$auth.loginWithRedirect()
     }
   }
 }
