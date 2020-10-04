@@ -235,7 +235,7 @@
         <span class="text-center inline-block w-fit-full">
           You need to login before making use of this features
         </span>
-        <el-button
+        <!-- <el-button
           plain
           size="mini"
           title="Sign in"
@@ -244,7 +244,7 @@
           class="fs-small mt2 h6 vertical-align"
         >
           <fa :icon="['fas', 'sign-in-alt']" class="mr1" /> Login
-        </el-button>
+        </el-button> -->
       </div>
       <footer
         class="pr8 pl8 pb8"
