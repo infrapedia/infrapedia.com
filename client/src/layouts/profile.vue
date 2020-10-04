@@ -6,12 +6,18 @@
       'no-overflow': isMobileProfileDrawer
     }"
   >
-    <i-navbar role="navigation" :is-user-navbar="true" />
+    <i-navbar
+      role="navigation"
+      :is-user-navbar="true"
+      @toggle-aside-width="handleToggleSidebarWidth"
+    />
 
     <el-aside
       width="200px"
       class="mt12 no-overflow hidden-md-and-down cubic-transition"
-      :class="{ 'adjust-width': $route.path.includes('create') }"
+      :class="{
+        'adjust-width': !isSidebarFullWidth || $route.path.includes('create')
+      }"
     >
       <ul role="group" class="pt7 h-fit-full">
         <template v-for="(link, i) in links">
@@ -133,6 +139,7 @@ export default {
   data() {
     return {
       profileTourSteps,
+      isSidebarFullWidth: true,
       isMobileProfileDrawer: false,
       tourCallbacks: {
         onStop: this.handleOnTourStop
@@ -167,6 +174,9 @@ export default {
     )
   },
   methods: {
+    handleToggleSidebarWidth() {
+      this.isSidebarFullWidth = !this.isSidebarFullWidth
+    },
     handleTourStart() {
       const isTourDoneAlready = window.localStorage.getItem(TOUR_DONE_KEY)
       if (

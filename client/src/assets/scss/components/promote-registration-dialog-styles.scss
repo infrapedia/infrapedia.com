@@ -1,0 +1,65 @@
+@import '../base/variables';
+
+.el-dialog__wrapper {
+  background-color: rgba(0,0,0,.4);
+  z-index: 2004;
+  .el-dialog {
+    height: 0;
+    width: 34%;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    &.active {
+      height: 23.62rem;
+    }
+
+    &.dark {
+      color: $white-partial;
+      background-color: $dark-charcoal;
+      h4,
+      li {
+        color: inherit
+      }
+    }
+
+    @media screen and (max-width: $break-md) {
+      #signInSvg {
+        width: 12rem;
+      }
+    }
+
+    @media screen and (max-width: $break-sm) {
+      width: 94%;
+      &.active {
+        height: auto;
+      }
+      .body-wrapper {
+        flex-flow: column;
+        padding: 1.4rem;
+        header {
+          margin-top: .8rem;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  .body-wrapper {
+    flex: 1 100% auto;
+  }
+
+  h4 {
+    color: $light-charcoal;
+  }
+
+  .right,
+  .left {
+    flex-basis: 50%;
+  }
+
+  li {
+    list-style: disc;
+    color: #3a3939;
+  }
+}

@@ -478,3 +478,9 @@ export const getTrustedBy = async () => {
   const res = await $axios.get(url)
   return res
 }
+
+export const getOrgClusters = async ({ id }) => {
+  url = `${apiConfig.url}/cluster/organization/${id}`
+  const res = await $axios.get(url)
+  return res
+}

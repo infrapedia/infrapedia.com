@@ -55,8 +55,9 @@
               <el-form-item prop="address" label="Address">
                 <autocomplete-google
                   :mode="tagMode"
-                  @place-changed="handleAddressChange"
+                  :width="312.73"
                   :value="autocompleteAddress"
+                  @place-changed="handleAddressChange"
                 />
               </el-form-item>
             </el-form>
@@ -344,7 +345,7 @@ export default {
       return this.$store.state.isDark
     },
     autocompleteAddress() {
-      return this.tag ? this.tag.fullAddress : ''
+      return this.tag
     },
     tagMode() {
       return this.tagOnEdit !== null && this.tag ? 'edit' : 'create'

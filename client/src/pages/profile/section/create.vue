@@ -687,18 +687,20 @@ export default {
 
       this.isSendingData = false
       if (t != 'error') {
-        this.mode = 'edit'
         if (creationType == 'map') {
           await setupMyMapArchives(this.form.subdomain).catch(console.error)
         } else {
-          this.$router.replace({
-            path: '/user/section/create',
-            query: {
-              id: this.$route.query.id,
-              item: data.r
-            }
-          })
+          if (mode !== 'edit') {
+            this.$router.replace({
+              path: '/user/section/create',
+              query: {
+                id: this.$route.query.id,
+                item: mode == 'edit' ? this.$route.query.item : data.r
+              }
+            })
+          }
         }
+        this.mode = 'edit'
       }
     }
   }

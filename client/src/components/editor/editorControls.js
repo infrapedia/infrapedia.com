@@ -1,6 +1,6 @@
 import createControlButton from './createControlButton'
-import { MessageBox } from 'element-ui'
 import EventEmitter from '../../lib/EventEmitter'
+import { MessageBox } from 'element-ui'
 
 class EditorControls extends EventEmitter {
   constructor({ map, draw, type }) {
@@ -88,6 +88,26 @@ class EditorControls extends EventEmitter {
         }
       }),
 
+      cut: createControlButton('cut-dynamic', {
+        container: this.controlGroup,
+        className:
+          'editor-ctrl el-button m0 p0 el-button--text el-button--small',
+        title: 'Cut Lines',
+        icon: 'el-icon-scissors',
+        visible: this.type == 'map' || this.type == 'subsea' ? true : false,
+        eventListener: () => this.handleCutFeature()
+      }),
+
+      vertexdelete: createControlButton('vertexdelete-dynamic', {
+        container: this.controlGroup,
+        className:
+          'editor-ctrl el-button m0 p0 el-button--text el-button--small',
+        title: 'Vertex Deleting',
+        icon: 'el-icon-delete-location',
+        visible: this.type == 'map' || this.type == 'subsea' ? true : false,
+        eventListener: () => this.handleDeleteVertex()
+      }),
+
       ok: createControlButton('ok-dynamic', {
         container: this.controlGroup,
         className: 'editor-ctrl editor-ok',
@@ -161,12 +181,40 @@ class EditorControls extends EventEmitter {
       for (let key in this.buttons) {
         if (dynamicControls.includes(this.buttons[key].id)) {
           this.buttons[key].style.setProperty('display', 'block')
-        } else if (this.buttons[key].id == deleteAllBtnID) {
+        } else if (
+          this.buttons[key].id == deleteAllBtnID ||
+          this.buttons[key].id == 'cut-dynamic' ||
+          this.buttons[key].id == 'vertexdelete-dynamic'
+        ) {
           this.buttons[key].style.setProperty('display', 'block')
         } else {
           this.buttons[key].style.setProperty('display', 'none')
         }
       }
+    }
+  }
+
+  async handleCutFeature() {
+    const features = this.draw.getSelected().features
+    const feature = features.length ? features[0] : null
+
+    if (feature) {
+      await this.emit('cut-feature', {
+        feature: feature,
+        geometryType: feature.geometry.type.toLowerCase()
+      })
+    }
+  }
+
+  async handleDeleteVertex() {
+    const features = this.draw.getSelected().features
+    const feature = features.length ? features[0] : null
+
+    if (feature) {
+      await this.emit('delete-vertex', {
+        feature: feature,
+        geometryType: feature.geometry.type.toLowerCase()
+      })
     }
   }
 }

@@ -17,11 +17,16 @@
         help-text="Upload kmz or geojson"
         @close="() => (openEditDialog = false)"
       />
+      <!-- <i-register-dialog
+        :visible="isRegisterDialogVisible"
+        @close="closeRegisterDialog"
+      /> -->
       <user-cables-button />
       <h-mobile-menu class="hidden-md-and-up" />
       <market-place :is-mobile="true" />
       <div class="h-fit-content min-height60vh">
         <map-overlay />
+        <!-- @map-loaded="checkUserAuthState" -->
       </div>
     </template>
     <i-footer role="contentinfo" class="ml20 hidden-sm-and-down" />
@@ -60,6 +65,7 @@ export default {
     IIssuesDialog: () => import('../components/dialogs/IssuesDialog'),
     IAlertsDialog: () => import('../components/dialogs/AlertsDialog'),
     IEditDialog: () => import('../components/dialogs/EditDialog'),
+    // IRegisterDialog: () => import('../components/dialogs/PromoteRegistration'),
     IVerificationDialog: () =>
       import('../components/dialogs/VerificationDialog'),
     HMobileMenu: () => import('../components/navbar/MobileMenu'),
@@ -78,7 +84,8 @@ export default {
         }
       ]
     },
-    openEditDialog: false
+    openEditDialog: false,
+    isRegisterDialogVisible: false
   }),
   computed: {
     focus() {
@@ -130,6 +137,16 @@ export default {
     }
   },
   methods: {
+    // closeRegisterDialog() {
+    //   this.isRegisterDialogVisible = false
+    // },
+    // checkUserAuthState() {
+    //   setTimeout(() => {
+    //     if (!this.$auth.isAuthenticated) {
+    //       this.isRegisterDialogVisible = true
+    //     }
+    //   }, 12000)
+    // },
     handleCurrentMetaTagsUpdate(data) {
       if (!data) {
         this.metaData = metadata

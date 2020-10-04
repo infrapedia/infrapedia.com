@@ -62,7 +62,7 @@ import {
 } from './index'
 import { getGeometries } from '../../services/api'
 import { categoriesDictionary } from '../userCreationForms/fields/dictionary'
-import { booleanEqual, lineSlice, lineString, point } from '@turf/turf'
+import { lineString, lineSlice, point, booleanEqual } from '@turf/turf'
 
 const onlyOneFeatureAllowed = ['cls', 'ixps']
 
@@ -201,8 +201,6 @@ export default {
   },
   methods: {
     async handleSearchPlaceSelected(data) {
-      if (this.placeMarker) this.placeMarker.remove()
-
       this.placeMarker = new mapboxgl.Marker({ color: '#1e419a' })
         .setLngLat(data.center)
         .addTo(this.map)
@@ -679,6 +677,11 @@ export default {
         'update-feature-properties',
         await this.setPropertiesDialogEditMode
       )
+      this.controls.on(
+        'delete-vertex',
+        this.handleDeleteVertexFromFeatureSelected
+      )
+      this.controls.on('cut-feature', this.handleCutFeatureSelected)
 
       map.addControl(this.controls)
       map.addControl(this.draw)

@@ -4,7 +4,7 @@ import { bus } from '../helpers/eventBus'
 import { TOGGLE_SIDEBAR, TOGGLE_LOADING } from '../store/actionTypes'
 import { FOCUS_ON, CLEAR_SELECTION } from '../events'
 import { MAP_FOCUS_ON, MAP_BOUNDS } from '../store/actionTypes/map'
-import { viewOrganization } from '../services/api/organizations'
+import { getOrgClusters } from '../services/api/organizations'
 
 export default {
   data: () => ({
@@ -194,7 +194,7 @@ export default {
         user_id: await this.$auth.getUserID(),
         _id: id
       })
-      return bus.$emit(`${FOCUS_ON}`, {
+      bus.$emit(`${FOCUS_ON}`, {
         id,
         type,
         fc:
@@ -210,21 +210,15 @@ export default {
     async handleOrgItemSelected({ id, type }) {
       if (!id) throw { message: 'MISSING ID PARAMETER' }
 
-      const res = await viewOrganization({
-        user_id: await this.$auth.getUserID(),
-        _id: id
-      })
-
-      return bus.$emit(`${FOCUS_ON}`, {
+      const cluster = await getOrgClusters({ id })
+      bus.$emit(`${FOCUS_ON}`, {
         id,
         type,
         fc:
-          res &&
-          res.data &&
-          res.data.r &&
-          res.data.r.features &&
-          res.data.r.features.length
-            ? res.data.r
+          cluster.data.r &&
+          cluster.data.r.features &&
+          cluster.data.r.features.length
+            ? cluster.data.r
             : false
       })
     }
