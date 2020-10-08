@@ -2,7 +2,7 @@
   <transition mode="out-in" name="fade" tag="div">
     <div class="el-dialog__wrapper" v-if="visible">
       <div
-        class="el-dialog p4 h0 transition-all no-overflow"
+        class="el-dialog p4 h0 transition-all no-overflow-x"
         :class="{ active: isFullHeight, dark }"
         role="dialog"
         aria-modal="true"
@@ -153,11 +153,11 @@
             </div>
             <div class="right p2">
               <h4 class="font-semibold fs-medium">
-                Sign in and unlock all of infrapedia's features
+                Sign in and unlock all features
               </h4>
               <ul class="pl5">
                 <li v-for="(text, i) in siteFeatures" :key="i" class="mb2">
-                  <span class="capitalize fs-regular" v-text="text" />
+                  <span class="fs-regular" v-text="text" />
                 </li>
               </ul>
             </div>

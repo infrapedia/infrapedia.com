@@ -34,13 +34,16 @@
       &.active {
         height: auto;
       }
+
+      .left {
+        display: none
+      }
+      .right {
+        flex-basis: 100%;
+      }
       .body-wrapper {
-        flex-flow: column;
-        padding: 1.4rem;
-        header {
-          margin-top: .8rem;
-          text-align: center;
-        }
+        flex-flow: row;
+        padding: 1rem;
       }
     }
   }
