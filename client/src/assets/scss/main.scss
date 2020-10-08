@@ -50,16 +50,6 @@ h1 {
   min-height: calc(100% - 16px);
 }
 
-.cookie-consent {
-  bottom: unset !important;
-  top: 0 !important;
-}
-.cookie-consent-transition {
-  &-leave-to {
-    transform: translateY(-100%) !important;
-  }
-}
-
 .mapboxgl-ctrl-top-right .mapboxgl-ctrl-group,
 .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl-group {
   margin-right: 1.62rem !important;
