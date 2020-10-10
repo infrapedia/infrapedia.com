@@ -1,26 +1,14 @@
 <template>
-  <div>
-    <el-form ref="form" :model="form" :rules="formRules">
-      <basic-information :mode="mode" :form="form" v-if="step == 1" />
-      <building-details :mode="mode" :form="form" v-if="step == 2" />
-      <power-details :mode="mode" :form="form" v-if="step == 3" />
-      <security-details :mode="mode" :form="form" v-if="step == 4" />
-      <onsite-services-details :mode="mode" :form="form" v-if="step == 5" />
-    </el-form>
-  </div>
+  <el-form ref="form" :model="form" :rules="formRules">
+    <transition name="fade" mode="out-in">
+      <component :is="currentView" :mode="mode" :form="form" />
+    </transition>
+  </el-form>
 </template>
 
 <script>
 export default {
   name: 'FacsForm',
-  components: {
-    'basic-information': () => import('./facility-steps/basic-information.vue'),
-    'building-details': () => import('./facility-steps/building-details.vue'),
-    'power-details': () => import('./facility-steps/power-details.vue'),
-    'security-details': () => import('./facility-steps/security-details.vue'),
-    'onsite-services-details': () =>
-      import('./facility-steps/onsite-services.vue')
-  },
   data: () => ({}),
   props: {
     step: {
@@ -45,6 +33,22 @@ export default {
     }
   },
   computed: {
+    currentView() {
+      let view
+
+      if (this.step == 1) {
+        view = () => import('./facility-steps/basic-information.vue')
+      } else if (this.step == 2) {
+        view = () => import('./facility-steps/building-details.vue')
+      } else if (this.step == 3) {
+        view = () => import('./facility-steps/power-details.vue')
+      } else if (this.step == 4) {
+        view = () => import('./facility-steps/security-details.vue')
+      } else if (this.step == 5) {
+        view = () => import('./facility-steps/onsite-services.vue')
+      }
+      return view
+    },
     formRules() {
       return {
         name: [

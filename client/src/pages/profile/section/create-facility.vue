@@ -1,6 +1,6 @@
 <template>
   <div
-    class="main-wrapper w-fit-full mt11 vph-full"
+    class="main-wrapper w-fit-full mt11 vph-full overflow-y-auto"
     :class="{ dark, light: !dark }"
   >
     <header class="w-fit-full text-left p5 pl8 top-header" :class="{ dark }">
@@ -10,7 +10,7 @@
       <div class="inline-block capitalize">{{ mode }} facility</div>
     </header>
 
-    <div class="body-wrapper" :class="{ dark }">
+    <div class="body-wrapper pb50" :class="{ dark }">
       <header class="flex justify-content-center align-items-center h10 pt2">
         <div>
           <el-button
@@ -106,7 +106,7 @@ export default {
     FacilityForm
   },
   data: () => ({
-    step: 5,
+    step: 1,
     featuresList: [],
     isSendingData: false,
     form: {
