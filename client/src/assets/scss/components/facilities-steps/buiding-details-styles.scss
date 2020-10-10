@@ -1,9 +1,8 @@
 @import '../../base/variables';
 
 .svg-wrapper {
-  height: 29vh;
   display: flex;
-  padding: 6.6rem;
+  flex-basis: 60%;
   align-items: center;
   background-color: rgba(114, 114, 114, 0.1);
 }

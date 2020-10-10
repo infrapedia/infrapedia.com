@@ -86,7 +86,7 @@ export default {
     FacilityForm
   },
   data: () => ({
-    step: 2,
+    step: 3,
     featuresList: [],
     isSendingData: false,
     form: {
@@ -97,6 +97,15 @@ export default {
       buildingSize: 0,
       rackHeight: 0,
       meetMeRooms: 0,
+      backupPowerRedundancy: '',
+      utilityConnectionRedundancy: '',
+      totalPower: 0,
+      temperature: 0,
+      coolingCapacity: 0,
+      humidity: 0,
+      maxRackPower: 0,
+      backupPowerDuration: 0,
+      pue: 0.0,
       platform: '',
       isLoadingDocks: false,
       isCarrierNeutral: false,

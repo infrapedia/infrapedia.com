@@ -3,6 +3,7 @@
     <el-form ref="form" :model="form" :rules="formRules">
       <basic-information :mode="mode" :form="form" v-if="step == 1" />
       <building-details :mode="mode" :form="form" v-if="step == 2" />
+      <power-details :mode="mode" :form="form" v-if="step == 3" />
     </el-form>
   </div>
 </template>
@@ -12,7 +13,8 @@ export default {
   name: 'FacsForm',
   components: {
     'basic-information': () => import('./facility-steps/basic-information.vue'),
-    'building-details': () => import('./facility-steps/building-details.vue')
+    'building-details': () => import('./facility-steps/building-details.vue'),
+    'power-details': () => import('./facility-steps/power-details.vue')
   },
   data: () => ({}),
   props: {
