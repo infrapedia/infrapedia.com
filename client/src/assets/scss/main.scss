@@ -369,6 +369,19 @@ input.issues-dialog {
   }
 }
 
+#editor-map-facilities-dashboard {
+  #map {
+    height: 44vh;
+  }
+  .coords-box {
+    top: 4rem
+  }
+  .mapboxgl-ctrl-top-right {
+    right: -1rem;
+    bottom: 3rem !important
+  }
+}
+
 // -----------------------------------------------------
 // -----------------------------------------------------
 // -----------------------------------------------------

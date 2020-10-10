@@ -35,6 +35,9 @@
   &.is-create-route {
     transform: translateX(32.8rem) translateY(-0.4rem);
   }
+  &.is-create-facility-route {
+    transform: translateX(4rem) translateY(-0.4rem);
+  }
 }
 
 .transition-all-delay-520ms {

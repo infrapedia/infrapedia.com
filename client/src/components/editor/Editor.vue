@@ -21,6 +21,7 @@
     <div
       class="absolute information-box z-index20 p2 ml5 text-left"
       :class="{ dark }"
+      v-if="type !== 'facilities'"
     >
       <p class="m0" v-if="oneClickMessage.length == 1">
         {{ oneClickMessage[0] }}

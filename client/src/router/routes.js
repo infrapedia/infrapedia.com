@@ -44,39 +44,53 @@ async function handleAdminOnlyRoutes(next, to) {
  */
 const UserDashboard = () =>
   import(
-    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/index.vue'
+    /* webpackChunkName: "user-nested-routes-group" */
+    '../pages/profile/index.vue'
   )
 const TerrestrialNetworksSection = () =>
   import(
-    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/terrestrial-networks.vue'
+    /* webpackChunkName: "user-nested-routes-group" */
+    '../pages/profile/section/terrestrial-networks.vue'
   )
 const SubseaCablesSection = () =>
   import(
-    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/subsea-cables.vue'
+    /* webpackChunkName: "user-nested-routes-group" */
+    '../pages/profile/section/subsea-cables.vue'
   )
 const CLSSection = () =>
   import(
-    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/cls.vue'
+    /* webpackChunkName: "user-nested-routes-group" */
+    '../pages/profile/section/cls.vue'
   )
 const IxpsSection = () =>
   import(
-    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/ixps.vue'
+    /* webpackChunkName: "user-nested-routes-group" */
+    '../pages/profile/section/ixps.vue'
   )
 const CreateSection = () =>
   import(
-    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/create.vue'
+    /* webpackChunkName: "user-nested-routes-group" */
+    '../pages/profile/section/create.vue'
   )
 const AlertsSection = () =>
   import(
-    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/alerts.vue'
+    /* webpackChunkName: "user-nested-routes-group" */
+    '../pages/profile/section/alerts.vue'
   )
 const OrgsSection = () =>
   import(
-    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/organization.vue'
+    /* webpackChunkName: "user-nested-routes-group" */
+    '../pages/profile/section/organization.vue'
   )
 const FacilitiesSection = () =>
   import(
-    /* webpackChunkName: "user-nested-routes-group" */ '../pages/profile/section/facilities.vue'
+    /* webpackChunkName: "user-nested-routes-group" */
+    '../pages/profile/section/facilities.vue'
+  )
+const CreateFacilitySection = () =>
+  import(
+    /* webpackChunkName: "user-nested-routes-group" */
+    '../pages/profile/section/create-facility.vue'
   )
 
 /**
@@ -84,11 +98,13 @@ const FacilitiesSection = () =>
  */
 const IssuesSection = () =>
   import(
-    /* webpackChunkName: "user-nested-routes-issues-group" */ '../pages/profile/section/issues.vue'
+    /* webpackChunkName: "user-nested-routes-issues-group" */
+    '../pages/profile/section/issues.vue'
   )
 const MyIssuesSection = () =>
   import(
-    /* webpackChunkName: "user-nested-routes-issues-group" */ '../pages/profile/section/myissues.vue'
+    /* webpackChunkName: "user-nested-routes-issues-group" */
+    '../pages/profile/section/myissues.vue'
   )
 
 const routes = [
@@ -248,6 +264,12 @@ const routes = [
         path: 'section/create',
         name: 'create',
         component: CreateSection,
+        beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next, to)
+      },
+      {
+        path: 'section/create-facility',
+        name: 'create-facility',
+        component: CreateFacilitySection,
         beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next, to)
       },
       {

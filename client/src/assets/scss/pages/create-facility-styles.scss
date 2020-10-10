@@ -1,0 +1,34 @@
+@import '../base/variables';
+
+.top-header {
+  background-color: $white-profile;
+}
+
+.body-wrapper {
+  height: 100%;
+  background-color: $white-full;
+  .circle {
+    background-color: lighten($dark-blue, 40%);
+    margin-right: .8rem;
+    &.active {
+      background-color: $dark-blue;
+    }
+  }
+  &.dark {
+    background-color: $dark-charcoal;
+  }
+}
+
+.el-card {
+  width: 88vw;
+  margin: 0 auto;
+}
+
+.facility-form {
+  flex-basis: 65%;
+  margin-right: 4rem;
+}
+
+.editor-map-wrapper {
+  flex-basis: 40%;
+}

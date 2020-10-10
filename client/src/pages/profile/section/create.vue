@@ -85,7 +85,7 @@ import cableStates from '../../../config/cableStates'
 import EditorMap from '../../../components/editor/Editor'
 import CLSForm from '../../../components/userCreationForms/cls'
 import CableForm from '../../../components/userCreationForms/cables'
-import FacilityForm from '../../../components/userCreationForms/facilities'
+// import FacilityForm from '../../../components/userCreationForms/facilities'
 import IXPForm from '../../../components/userCreationForms/ixp'
 import { createCls, editCLS, viewClsOwner } from '../../../services/api/cls'
 import {
@@ -104,11 +104,6 @@ import {
   setMyMap,
   setupMyMapArchives
 } from '../../../services/api/map'
-import {
-  viewFacilityOwner,
-  editFacility,
-  createFacility
-} from '../../../services/api/facs'
 import { viewIXPOwner, editIXP, createIXP } from '../../../services/api/ixps'
 import ManualKMZSubmitDialog from '../../../components/dialogs/ManualKMZSubmit'
 import debounce from '../../../helpers/debounce'
@@ -120,7 +115,6 @@ const allowedCreationTypes = [
   'map',
   'ixps',
   'subsea',
-  'facilities',
   'terrestrial-network'
 ]
 
@@ -181,9 +175,9 @@ export default {
         case 'map':
           view = MapForm
           break
-        case 'facilities':
-          view = FacilityForm
-          break
+        // case 'facilities':
+        //   view = FacilityForm
+        //   break
         case 'ixps':
           view = IXPForm
           break
@@ -216,9 +210,9 @@ export default {
         case 'ixps':
           route = '/user/section/ixps'
           break
-        case 'facilities':
-          route = '/user/section/facilities'
-          break
+        // case 'facilities':
+        //   route = '/user/section/facilities'
+        // break
         default:
           route = '/user/section/terrestrial-networks'
           break
@@ -383,21 +377,21 @@ export default {
             proto_multicast: false
           }
           break
-        case 'facilities':
-          this.form = {
-            name: '',
-            point: '',
-            address: [],
-            website: '',
-            geom: [],
-            ixps: [],
-            tags: [],
-            t: '',
-            owners: [],
-            StartDate: new Date(),
-            building: ''
-          }
-          break
+        // case 'facilities':
+        //   this.form = {
+        //     name: '',
+        //     point: '',
+        //     address: [],
+        //     website: '',
+        //     geom: [],
+        //     ixps: [],
+        //     tags: [],
+        //     t: '',
+        //     owners: [],
+        //     StartDate: new Date(),
+        //     building: ''
+        //   }
+        //   break
         default:
           this.form = {
             cls: [],
@@ -434,9 +428,9 @@ export default {
               currentElement.country = ''
             }
             break
-          case 'facilities':
-            currentElement = await this.viewCurrentFacility(_id)
-            break
+          // case 'facilities':
+          //   currentElement = await this.viewCurrentFacility(_id)
+          //   break
           case 'ixps':
             currentElement = await this.viewCurrentIXP(_id)
             currentElement.owners
@@ -466,9 +460,9 @@ export default {
         case 'ixps':
           this.handleIxpsEditMode(data)
           break
-        case 'facilities':
-          this.handleFacsEditMode(data)
-          break
+        // case 'facilities':
+        //   this.handleFacsEditMode(data)
+        //   break
         default:
           this.handleCablesEditMode(data)
           break
@@ -525,25 +519,25 @@ export default {
         this.form.owners = []
       }
     },
-    handleFacsEditMode(data) {
-      {
-        let ixpsData = data.ixps.map(ixp => ({
-          name: ixp.label,
-          _id: ixp._id
-        }))
-        this.form.ixps = ixpsData
-        this.form.ixpsList = ixpsData
-      }
+    // handleFacsEditMode(data) {
+    //   {
+    //     let ixpsData = data.ixps.map(ixp => ({
+    //       name: ixp.label,
+    //       _id: ixp._id
+    //     }))
+    //     this.form.ixps = ixpsData
+    //     this.form.ixpsList = ixpsData
+    //   }
 
-      {
-        let ownersData = data.owners.map(owner => ({
-          name: owner.label,
-          _id: owner._id
-        }))
-        this.form.owners = ownersData
-        this.form.ownersList = ownersData
-      }
-    },
+    //   {
+    //     let ownersData = data.owners.map(owner => ({
+    //       name: owner.label,
+    //       _id: owner._id
+    //     }))
+    //     this.form.owners = ownersData
+    //     this.form.ownersList = ownersData
+    //   }
+    // },
     handleIxpsEditMode(data) {
       if (!this.form.media || this.form.media == 'undefined') {
         this.form.media = ''
@@ -600,13 +594,13 @@ export default {
         this.form.category = 'unknown'
       }
     },
-    async viewCurrentFacility(_id) {
-      const res = await viewFacilityOwner({
-        user_id: await this.$auth.getUserID(),
-        _id
-      })
-      return res && res.data && res.data.r ? res.data.r : {}
-    },
+    // async viewCurrentFacility(_id) {
+    //   const res = await viewFacilityOwner({
+    //     user_id: await this.$auth.getUserID(),
+    //     _id
+    //   })
+    //   return res && res.data && res.data.r ? res.data.r : {}
+    // },
     async viewCurrentIXP(_id) {
       const res = await viewIXPOwner({
         user_id: await this.$auth.getUserID(),
@@ -644,9 +638,9 @@ export default {
           case 'map':
             method = setMyMap
             break
-          case 'facilities':
-            method = createFacility
-            break
+          // case 'facilities':
+          //   method = createFacility
+          //   break
           default:
             method = createCable
             break
@@ -659,9 +653,9 @@ export default {
           case 'ixps':
             method = editIXP
             break
-          case 'facilities':
-            method = editFacility
-            break
+          // case 'facilities':
+          //   method = editFacility
+          //   break
           case 'map':
             method = setMyMap
             break

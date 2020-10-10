@@ -62,7 +62,10 @@
 
     <i-footer
       class="profile-footer hidden-md-and-down transition-all"
-      :class="{ 'is-create-route': $route.path.includes('create') }"
+      :class="{
+        'is-create-route': $route.path.includes('create?'),
+        'is-create-facility-route': $route.path.includes('create-facility')
+      }"
     />
     <v-tour
       name="profile-tour"

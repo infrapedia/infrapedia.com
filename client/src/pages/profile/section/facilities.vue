@@ -45,7 +45,7 @@ export default {
     promptDelete: false,
     tableConfig: {
       title: 'Facilities',
-      creation_link: '/user/section/create?id=facilities',
+      creation_link: '/user/section/create-facility',
       btn_label: 'Create facility'
     },
     columns: [...facsColumns].filter(col => col.showTable)
@@ -64,8 +64,8 @@ export default {
   methods: {
     handleEditFac(_id) {
       return this.$router.push({
-        path: '/user/section/create',
-        query: { id: 'facilities', item: _id }
+        path: '/user/section/create-facility',
+        query: { item: _id }
       })
     },
     handleFacsSearch: debounce(async function(s, sortBy, page = 0) {
