@@ -1,0 +1,23 @@
+@import '../../base/variables';
+
+.svg-wrapper {
+  height: 29vh;
+  display: flex;
+  padding: 6.6rem;
+  align-items: center;
+  background-color: rgba(114, 114, 114, 0.1);
+}
+
+div.el-card {
+  border: 1px solid #dbd7d7;
+  border-radius: 0;
+
+  header {
+    background-color: $white-profile;
+    border-bottom: 1px solid #dbd7d7;
+    &.dark {
+      color: $white-partial;
+      background-color: darken($light-charcoal, 10%);
+    }
+  }
+}

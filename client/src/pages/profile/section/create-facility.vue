@@ -3,7 +3,7 @@
     class="main-wrapper w-fit-full mt11 vph-full"
     :class="{ dark, light: !dark }"
   >
-    <header class="w-fit-full text-left p5 pl8 top-header">
+    <header class="w-fit-full text-left p5 pl8 top-header" :class="{ dark }">
       <router-link to="/user/section/facilities" class="inline-block mr5">
         <fa :icon="['fas', 'arrow-left']" />
       </router-link>
@@ -11,21 +11,38 @@
     </header>
 
     <div class="body-wrapper" :class="{ dark }">
-      <header class="flex justify-content-center align-items-center h16">
+      <header class="flex justify-content-center align-items-center h10 pt2">
         <div
-          class="circle w5 h5 cursor-pointer active"
+          class="circle w5 h5 cursor-pointer transition-all"
           title="Basic information"
+          :class="{ active: step == 1 }"
         />
-        <div class="circle w5 h5 cursor-pointer" title="Building details" />
         <div
-          class="circle w5 h5 cursor-pointer"
-          title="Power and Cooling details"
+          class="circle w5 h5 cursor-pointer transition-all"
+          title="Building details"
+          :class="{ active: step == 2 }"
         />
-        <div class="circle w5 h5 cursor-pointer" title="Security details" />
-        <div class="circle w5 h5 cursor-pointer" title="Onsite Services" />
+        <div
+          class="circle w5 h5 cursor-pointer transition-all"
+          title="Power and Cooling details"
+          :class="{ active: step == 3 }"
+        />
+        <div
+          class="circle w5 h5 cursor-pointer transition-all"
+          title="Security details"
+          :class="{ active: step == 4 }"
+        />
+        <div
+          class="circle w5 h5 cursor-pointer transition-all"
+          title="Onsite Services"
+          :class="{ active: step == 5 }"
+        />
       </header>
 
-      <div class="el-card p8 is-always-shadow">
+      <fieldset class="el-card p8 is-always-shadow transition-all">
+        <legend class="pl4 pr4 pt2 pb2" :class="{ dark }">
+          {{ legendText }}
+        </legend>
         <div class="flex row nowrap">
           <facility-form
             :step="step"
@@ -34,33 +51,21 @@
             class="facility-form"
             :is-sending-data="isSendingData"
             :is-send-data-disabled="checkGeomLength"
-            @handle-file-converted="handleFileConverted"
             @cancel-geom-loading="toggleMapFormLoading(false)"
-            @set-selection-onto-map="handleSetSelectionOntoMap"
             @loading-selection-geom="toggleMapFormLoading(true)"
             @send-data="handleSendData(mode, creationType, $event)"
           />
-          <div class="editor-map-wrapper" v-if="step == 1">
-            <editor-map
-              id="editor-map-facilities-dashboard"
-              :key="1"
-              :form="form"
-              type="facilities"
-              @features-list-change="featuresList = $event"
-              @error-loading-draw-onto-map="handleFileConvertionFailed"
-            />
-          </div>
         </div>
 
-        <footer class="flex row nowrap justify-content-end">
-          <el-button round class="mr4">
+        <footer class="flex row nowrap justify-content-end mt8">
+          <el-button round class="mr4" @click="handleClickPreviousBtn">
             {{ step == 1 ? 'Cancel' : 'Back' }}
           </el-button>
-          <el-button round type="primary">
+          <el-button round type="primary" @click="handleClickNextBtn">
             {{ nextBtnText }}
           </el-button>
         </footer>
-      </div>
+      </fieldset>
     </div>
   </div>
 </template>
@@ -71,30 +76,32 @@ import {
   editFacility,
   createFacility
 } from '../../../services/api/facs'
-import { bus } from '../../../helpers/eventBus'
-import debounce from '../../../helpers/debounce'
-import EditorMap from '../../../components/editor/Editor'
 import { sceneDictionary } from '../../../components/editor'
-import {
-  EDITOR_SET_FEATURES_LIST,
-  EDITOR_FILE_CONVERTED,
-  EDITOR_SET_FEATURES
-} from '../../../events/editor'
 import FacilityForm from '../../../components/userCreationForms/facilities'
+import { bus } from '../../../helpers/eventBus'
+import { EDITOR_SET_FEATURES_LIST } from '../../../events/editor'
 
 export default {
   components: {
-    FacilityForm,
-    EditorMap
+    FacilityForm
   },
   data: () => ({
-    step: 1,
+    step: 2,
     featuresList: [],
     isSendingData: false,
     form: {
       name: '',
       point: '',
+      type: '',
       address: [],
+      buildingSize: 0,
+      rackHeight: 0,
+      meetMeRooms: 0,
+      platform: '',
+      isLoadingDocks: false,
+      isCarrierNeutral: false,
+      grossColocationSize: 0,
+      floorLoadingCapacity: 0,
       website: '',
       geom: [],
       ixps: [],
@@ -106,6 +113,10 @@ export default {
     }
   }),
   computed: {
+    legendText() {
+      let text = ['Basic Information', 'Specifications']
+      return this.step <= 1 ? text[0] : text[1]
+    },
     nextBtnText() {
       return this.step <= 4 ? 'Next' : 'Save'
     },
@@ -120,11 +131,20 @@ export default {
     }
   },
   methods: {
-    handleFileConverted(fc) {
-      bus.$emit(`${EDITOR_FILE_CONVERTED}`, fc)
+    handleClickNextBtn() {
+      if (this.step == 5) {
+        console.log('not done yet. SEND DATA')
+      }
+
+      this.step++
     },
-    async handleSetSelectionOntoMap(data) {
-      await bus.$emit(`${EDITOR_SET_FEATURES}`, data)
+    handleClickPreviousBtn() {
+      if (this.step == 1) {
+        this.$router.push('/user/section/facilities')
+        return
+      }
+
+      this.step--
     },
     async getElementOnEdit(_id) {
       try {
@@ -139,12 +159,6 @@ export default {
         console.error(err)
       }
     },
-    handleFileConvertionFailed: debounce(function() {
-      this.isManualUploadDialog = true
-      this.$router.replace(
-        `${this.$route.path}?id=${this.$route.query.id}&failedToUploadKMz=true`
-      )
-    }, 320),
     handleEditModeSettings(data) {
       this.handleFacsEditMode(data)
 

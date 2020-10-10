@@ -2,6 +2,10 @@
 
 .top-header {
   background-color: $white-profile;
+  &.dark {
+    color: $white-partial;
+    background-color: darken($light-charcoal, 10%);
+  }
 }
 
 .body-wrapper {
@@ -15,6 +19,7 @@
     }
   }
   &.dark {
+    color: $white-partial;
     background-color: $dark-charcoal;
   }
 }
@@ -22,13 +27,13 @@
 .el-card {
   width: 88vw;
   margin: 0 auto;
+
+  legend {
+    background-color: $white-full;
+    &.dark {
+      color: $white-partial;
+      background-color: $dark-charcoal;
+    }
+  }
 }
 
-.facility-form {
-  flex-basis: 65%;
-  margin-right: 4rem;
-}
-
-.editor-map-wrapper {
-  flex-basis: 40%;
-}
