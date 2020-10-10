@@ -12,31 +12,51 @@
 
     <div class="body-wrapper" :class="{ dark }">
       <header class="flex justify-content-center align-items-center h10 pt2">
-        <div
-          class="circle w5 h5 cursor-pointer transition-all"
-          title="Basic information"
-          :class="{ active: step == 1 }"
-        />
-        <div
-          class="circle w5 h5 cursor-pointer transition-all"
-          title="Building details"
-          :class="{ active: step == 2 }"
-        />
-        <div
-          class="circle w5 h5 cursor-pointer transition-all"
-          title="Power and Cooling details"
-          :class="{ active: step == 3 }"
-        />
-        <div
-          class="circle w5 h5 cursor-pointer transition-all"
-          title="Security details"
-          :class="{ active: step == 4 }"
-        />
-        <div
-          class="circle w5 h5 cursor-pointer transition-all"
-          title="Onsite Services"
-          :class="{ active: step == 5 }"
-        />
+        <div>
+          <el-button
+            circle
+            class="transparent h5 w5 mr2 no-border circle cursor-pointer transition-all"
+            title="Basic information"
+            :class="{ active: step == 1 }"
+            @click="moveToStep(1)"
+          />
+        </div>
+        <div>
+          <el-button
+            circle
+            class="transparent h5 w5 mr2 no-border circle cursor-pointer transition-all"
+            title="Building details"
+            :class="{ active: step == 2 }"
+            @click="moveToStep(2)"
+          />
+        </div>
+        <div>
+          <el-button
+            circle
+            class="transparent h5 w5 mr2 circle no-border cursor-pointer transition-all"
+            title="Power and Cooling details"
+            :class="{ active: step == 3 }"
+            @click="moveToStep(3)"
+          />
+        </div>
+        <div>
+          <el-button
+            circle
+            class="transparent h5 w5 mr2 circle no-border cursor-pointer transition-all"
+            title="Security details"
+            :class="{ active: step == 4 }"
+            @click="moveToStep(4)"
+          />
+        </div>
+        <div>
+          <el-button
+            circle
+            class="transparent h5 w5 mr2 circle no-border cursor-pointer transition-all"
+            title="Onsite Services"
+            :class="{ active: step == 5 }"
+            @click="moveToStep(5)"
+          />
+        </div>
       </header>
 
       <fieldset class="el-card p8 is-always-shadow transition-all">
@@ -86,7 +106,7 @@ export default {
     FacilityForm
   },
   data: () => ({
-    step: 3,
+    step: 5,
     featuresList: [],
     isSendingData: false,
     form: {
@@ -97,11 +117,23 @@ export default {
       buildingSize: 0,
       rackHeight: 0,
       meetMeRooms: 0,
+      meetingRooms: false,
+      carParking: false,
+      spareParts: false,
+      breakRooms: false,
+      stagingRooms: false,
+      officeSpace: false,
+      internetAccess: false,
       backupPowerRedundancy: '',
       utilityConnectionRedundancy: '',
       totalPower: 0,
       temperature: 0,
       coolingCapacity: 0,
+      bulletProffGlass: '',
+      mantrap: '',
+      securityGuards: '',
+      cctv: '',
+      biometric: '',
       humidity: 0,
       maxRackPower: 0,
       backupPowerDuration: 0,
@@ -140,9 +172,13 @@ export default {
     }
   },
   methods: {
+    moveToStep(num) {
+      this.step = num
+    },
     handleClickNextBtn() {
       if (this.step == 5) {
         console.log('not done yet. SEND DATA')
+        return
       }
 
       this.step++

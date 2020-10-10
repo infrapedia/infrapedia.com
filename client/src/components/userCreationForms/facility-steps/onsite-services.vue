@@ -1,0 +1,345 @@
+<template>
+  <div class="flex row nowrap">
+    <div class="el-card" :class="{ dark }">
+      <header class="p4" :class="{ dark }">
+        Onsite Services
+      </header>
+      <el-row class="p4" :gutter="40">
+        <el-col :span="12">
+          <el-row>
+            <el-col :span="24">
+              <el-row :gutter="4">
+                <el-col :span="10">
+                  <el-form-item label="Meeting Rooms">
+                    <br />
+                    <el-radio-group v-model="form.meetingRooms">
+                      <el-radio-button :label="true">
+                        Yes
+                      </el-radio-button>
+                      <el-radio-button :label="false">
+                        No
+                      </el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="10">
+                  <el-form-item label="Break Rooms">
+                    <br />
+                    <el-radio-group v-model="form.breakRooms">
+                      <el-radio-button :label="true">
+                        Yes
+                      </el-radio-button>
+                      <el-radio-button :label="false">
+                        No
+                      </el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="10">
+                  <el-form-item label="Car Parking">
+                    <br />
+                    <el-radio-group v-model="form.carParking">
+                      <el-radio-button :label="true">
+                        Yes
+                      </el-radio-button>
+                      <el-radio-button :label="false">
+                        No
+                      </el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="10">
+                  <el-form-item label="Spare Parts">
+                    <br />
+                    <el-radio-group v-model="form.spareParts">
+                      <el-radio-button :label="true">
+                        Yes
+                      </el-radio-button>
+                      <el-radio-button :label="false">
+                        No
+                      </el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
+        </el-col>
+        <el-col :span="12">
+          <el-row>
+            <el-row>
+              <el-col :span="24">
+                <el-row :gutter="4">
+                  <el-col :span="10">
+                    <el-form-item label="Staging Rooms">
+                      <br />
+                      <el-radio-group v-model="form.stagingRooms">
+                        <el-radio-button :label="true">
+                          Yes
+                        </el-radio-button>
+                        <el-radio-button :label="false">
+                          No
+                        </el-radio-button>
+                      </el-radio-group>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="10">
+                    <el-form-item label="Office Space">
+                      <br />
+                      <el-radio-group v-model="form.officeSpace">
+                        <el-radio-button :label="true">
+                          Yes
+                        </el-radio-button>
+                        <el-radio-button :label="false">
+                          No
+                        </el-radio-button>
+                      </el-radio-group>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="10">
+                    <el-form-item label="Internet Access">
+                      <br />
+                      <el-radio-group v-model="form.internetAccess">
+                        <el-radio-button :label="true">
+                          Yes
+                        </el-radio-button>
+                        <el-radio-button :label="false">
+                          No
+                        </el-radio-button>
+                      </el-radio-group>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-col>
+            </el-row>
+          </el-row>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="svg-wrapper">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="100%"
+        height="40%"
+        viewBox="0 0 314.75 219.57"
+      >
+        <g transform="translate(0 -175.412)">
+          <ellipse
+            id="Ellipse_16"
+            data-name="Ellipse 16"
+            cx="16.759"
+            cy="41.032"
+            rx="16.759"
+            ry="41.032"
+            transform="translate(224.188 286.69)"
+            fill="#3f3d56"
+          />
+          <path
+            id="Path_191"
+            data-name="Path 191"
+            d="M834.792,694.461c6.712-48.323.068-96.472,0-96.952l-1.306.265c.068.478,6.674,48.374,0,96.426Z"
+            transform="translate(-595.393 -299.577)"
+            fill="#e6e6e6"
+          />
+          <path
+            id="Path_197"
+            data-name="Path 197"
+            d="M7.63,4.2l1.53-.11L7.732,22.045l-1.53.11Z"
+            transform="translate(218.26 325.047) rotate(-61.858)"
+            fill="#e6e6e6"
+          />
+          <path
+            id="Path_198"
+            data-name="Path 198"
+            d="M4.206,7.635,22.159,6.206l-.11,1.53L4.1,9.166Z"
+            transform="translate(234.251 328.758) rotate(-28.158)"
+            fill="#e6e6e6"
+          />
+          <ellipse
+            id="Ellipse_17"
+            data-name="Ellipse 17"
+            cx="32.779"
+            cy="80.253"
+            rx="32.779"
+            ry="80.253"
+            transform="translate(248.436 182.53)"
+            fill="#e6e6e6"
+          />
+          <path
+            id="Path_192"
+            data-name="Path 192"
+            d="M945.243,561.885c13.111-94.39.132-188.436,0-189.375l-1.306.265c.132.937,13.073,94.73,0,188.849Z"
+            transform="translate(-667.679 -167.864)"
+            fill="#e6e6e6"
+          />
+          <path
+            id="Path_199"
+            data-name="Path 199"
+            d="M14.681,7.354l1.53-.11L13.417,42.355l-1.53.11Z"
+            transform="translate(238.021 257.076) rotate(-61.858)"
+            fill="#e6e6e6"
+          />
+          <path
+            id="Path_200"
+            data-name="Path 200"
+            d="M7.36,14.691l35.113-2.8-.11,1.53-35.113,2.8Z"
+            transform="translate(269.298 265.279) rotate(-28.158)"
+            fill="#e6e6e6"
+          />
+          <path
+            id="Path_193"
+            data-name="Path 193"
+            d="M403.136,635.029H228.781a2.7,2.7,0,0,1-2.419-2.9V499.93a2.7,2.7,0,0,1,2.419-2.9H403.136a2.7,2.7,0,0,1,2.419,2.9v132.2A2.7,2.7,0,0,1,403.136,635.029Z"
+            transform="translate(-198.051 -240.756)"
+            fill="#e6e6e6"
+          />
+          <path
+            id="Path_194"
+            data-name="Path 194"
+            d="M277.8,535.666a1.156,1.156,0,0,0-1.037,1.244V640.384a1.156,1.156,0,0,0,1.037,1.244H420.089a1.156,1.156,0,0,0,1.037-1.244V536.91a1.156,1.156,0,0,0-1.037-1.244Z"
+            transform="translate(-231.039 -263.374)"
+            fill="#fff"
+          />
+          <rect
+            id="Rectangle_145"
+            data-name="Rectangle 145"
+            width="146.698"
+            height="6.557"
+            transform="translate(43.735 292.385)"
+            fill="#e6e6e6"
+          />
+          <rect
+            id="Rectangle_146"
+            data-name="Rectangle 146"
+            width="146.698"
+            height="6.557"
+            transform="translate(43.735 324.442)"
+            fill="#e6e6e6"
+          />
+          <rect
+            id="Rectangle_147"
+            data-name="Rectangle 147"
+            width="61.325"
+            height="6.557"
+            transform="translate(65.573 306.956)"
+            fill="#e6e6e6"
+          />
+          <rect
+            id="Rectangle_148"
+            data-name="Rectangle 148"
+            width="146.698"
+            height="6.557"
+            transform="translate(43.735 358.319)"
+            fill="#e6e6e6"
+          />
+          <rect
+            id="Rectangle_149"
+            data-name="Rectangle 149"
+            width="5.465"
+            height="90.45"
+            transform="translate(62.841 271.877)"
+            fill="#e6e6e6"
+          />
+          <rect
+            id="Rectangle_150"
+            data-name="Rectangle 150"
+            width="5.465"
+            height="56.208"
+            transform="translate(164.846 271.877)"
+            fill="#e6e6e6"
+          />
+          <rect
+            id="Rectangle_151"
+            data-name="Rectangle 151"
+            width="5.465"
+            height="106.791"
+            transform="translate(123.558 271.877)"
+            fill="#e6e6e6"
+          />
+          <rect
+            id="Rectangle_152"
+            data-name="Rectangle 152"
+            width="5.465"
+            height="53.133"
+            transform="translate(92.289 325.535)"
+            fill="#e6e6e6"
+          />
+          <ellipse
+            id="Ellipse_18"
+            data-name="Ellipse 18"
+            cx="6.982"
+            cy="8.378"
+            rx="6.982"
+            ry="8.378"
+            transform="translate(119.308 320.171)"
+            fill="#e6e6e6"
+          />
+          <path
+            id="Path_195"
+            data-name="Path 195"
+            d="M314.613,703.719H0v-.9H314.75Z"
+            transform="translate(0 -308.737)"
+            fill="#3f3d56"
+          />
+          <ellipse
+            id="Ellipse_19"
+            data-name="Ellipse 19"
+            cx="43.073"
+            cy="51.683"
+            rx="43.073"
+            ry="51.683"
+            transform="translate(84.055 175.412)"
+            fill="#e6e6e6"
+          />
+          <path
+            id="Path_196"
+            data-name="Path 196"
+            d="M317.587,423.395,303.979,395.5,290.371,367.61l26.935-.194,26.935-.194-13.327,28.087Z"
+            transform="translate(-190.038 -112.283)"
+            fill="#e6e6e6"
+          />
+          <ellipse
+            id="Ellipse_20"
+            data-name="Ellipse 20"
+            cx="15.454"
+            cy="18.543"
+            rx="15.454"
+            ry="18.543"
+            transform="translate(112.02 208.227)"
+            fill="#fff"
+          />
+        </g>
+      </svg>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'BuildingDetails',
+  data: () => ({
+    typeOptions: ['Rack', 'Cages', 'Suites']
+  }),
+  props: {
+    form: {
+      type: Object,
+      required: true
+    },
+    mode: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    isViewMode() {
+      return this.mode == 'view'
+    },
+    dark() {
+      return this.$store.state.isDark
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+@import '../../../assets/scss/components/facilities-steps/buiding-details-styles.scss';
+</style>

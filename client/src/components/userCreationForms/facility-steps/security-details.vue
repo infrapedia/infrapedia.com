@@ -1,0 +1,386 @@
+<template>
+  <div class="flex row nowrap">
+    <div class="el-card" :class="{ dark }">
+      <header class="p4" :class="{ dark }">
+        Security details
+      </header>
+      <el-row class="p4" :gutter="40">
+        <el-col :span="12">
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="Bullet Proof Glass">
+                <br />
+                <el-radio-group v-model="form.bulletProffGlass">
+                  <el-radio-button :label="true">
+                    Yes
+                  </el-radio-button>
+                  <el-radio-button :label="false">
+                    No
+                  </el-radio-button>
+                  <el-radio-button label="">
+                    I prefer not to answer
+                  </el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="CCTV">
+                <br />
+                <el-radio-group v-model="form.cctv">
+                  <el-radio-button :label="true">
+                    Yes
+                  </el-radio-button>
+                  <el-radio-button :label="false">
+                    No
+                  </el-radio-button>
+                  <el-radio-button label="">
+                    I prefer not to answer
+                  </el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="Security Guards">
+                <br />
+                <el-radio-group v-model="form.securityGuards">
+                  <el-radio-button :label="true">
+                    Yes
+                  </el-radio-button>
+                  <el-radio-button :label="false">
+                    No
+                  </el-radio-button>
+                  <el-radio-button label="">
+                    I prefer not to answer
+                  </el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-col>
+        <el-col :span="12">
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="Mantrap">
+                <br />
+                <el-radio-group v-model="form.mantrap">
+                  <el-radio-button :label="true">
+                    Yes
+                  </el-radio-button>
+                  <el-radio-button :label="false">
+                    No
+                  </el-radio-button>
+                  <el-radio-button label="">
+                    I prefer not to answer
+                  </el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="Biometric">
+                <br />
+                <el-radio-group v-model="form.biometric">
+                  <el-radio-button :label="true">
+                    Yes
+                  </el-radio-button>
+                  <el-radio-button :label="false">
+                    No
+                  </el-radio-button>
+                  <el-radio-button label="">
+                    I prefer not to answer
+                  </el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-col>
+      </el-row>
+    </div>
+
+    <div class="svg-wrapper">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="100%"
+        height="50%"
+        viewBox="0 0 314.75 205.619"
+      >
+        <defs>
+          <linearGradient
+            id="linear-gradient"
+            y1="0.5"
+            x2="1"
+            y2="0.5"
+            gradientUnits="objectBoundingBox"
+          >
+            <stop offset="0" stop-color="gray" stop-opacity="0.251" />
+            <stop offset="0.535" stop-color="gray" stop-opacity="0.122" />
+            <stop offset="1" stop-color="gray" stop-opacity="0.102" />
+          </linearGradient>
+        </defs>
+        <g transform="translate(-0.004)">
+          <path
+            id="Path_201"
+            data-name="Path 201"
+            d="M430.775,76.854,332,124.318s0,97.895,98.777,151.292c98.777-53.4,98.777-151.292,98.777-151.292Z"
+            transform="translate(-272.774 -73.781)"
+            fill="#777682"
+          />
+          <path
+            id="Path_202"
+            data-name="Path 202"
+            d="M600.388,76.854l-1.688.811V274.684c.561.31,1.121.619,1.688.926,98.777-53.4,98.777-151.292,98.777-151.292Z"
+            transform="translate(-441.797 -73.781)"
+            fill="#e6e6e6"
+            opacity="0.04"
+          />
+          <g
+            id="Group_22"
+            data-name="Group 22"
+            transform="translate(126.329 86.58)"
+            opacity="0.7"
+          >
+            <path
+              id="Path_203"
+              data-name="Path 203"
+              d="M352.68,315.424,371.3,328.752l23.084-26,9.311,6.058L371.3,340.869l-26.38-23.022Z"
+              transform="translate(-344.921 -302.75)"
+              fill="url(#linear-gradient)"
+            />
+          </g>
+          <path
+            id="Path_204"
+            data-name="Path 204"
+            d="M367.215,315.511l15.105,10.812,21.4-24.572,7.553,4.915L382.32,336.152l-21.4-18.675Z"
+            transform="translate(-228.732 -215.456)"
+            fill="#a3b5af"
+          />
+          <path
+            id="Path_205"
+            data-name="Path 205"
+            d="M327.8,109.206a1,1,0,0,1-.75-1.27.41.41,0,0,0,.029-.117h0a.541.541,0,0,0-.44-.526.8.8,0,0,0-.772.177h0a.489.489,0,0,0-.075.1,1.487,1.487,0,0,1-1.626.586.811.811,0,0,0-.149-.023h0a.7.7,0,0,0-.674.344.464.464,0,0,0,.227.6h0a.713.713,0,0,0,.133.058,1,1,0,0,1,.75,1.27.41.41,0,0,0-.029.117h0a.541.541,0,0,0,.44.526.8.8,0,0,0,.772-.177h0a.49.49,0,0,0,.075-.1,1.487,1.487,0,0,1,1.626-.586.809.809,0,0,0,.149.023h0a.7.7,0,0,0,.674-.344.464.464,0,0,0-.227-.6h0A.715.715,0,0,0,327.8,109.206Z"
+            transform="translate(-267.265 -95.492)"
+            fill="#1160c7"
+            opacity="0.5"
+          />
+          <path
+            id="Path_206"
+            data-name="Path 206"
+            d="M181.8,434.206a1,1,0,0,1-.75-1.27.409.409,0,0,0,.029-.117h0a.541.541,0,0,0-.44-.526.8.8,0,0,0-.772.177h0a.49.49,0,0,0-.075.1,1.487,1.487,0,0,1-1.626.586.808.808,0,0,0-.149-.023h0a.7.7,0,0,0-.674.344.464.464,0,0,0,.227.6h0a.713.713,0,0,0,.133.058,1,1,0,0,1,.75,1.27.41.41,0,0,0-.029.117h0a.541.541,0,0,0,.44.526.8.8,0,0,0,.772-.177h0a.489.489,0,0,0,.075-.1,1.487,1.487,0,0,1,1.626-.586.811.811,0,0,0,.149.023h0a.7.7,0,0,0,.674-.344.464.464,0,0,0-.227-.6h0a.715.715,0,0,0-.133-.058Z"
+            transform="translate(-174.737 -327.549)"
+            fill="#1160c7"
+            opacity="0.5"
+          />
+          <ellipse
+            id="Ellipse_21"
+            data-name="Ellipse 21"
+            cx="2.197"
+            cy="1.716"
+            rx="2.197"
+            ry="1.716"
+            transform="translate(271.904 70.923)"
+            fill="#1160c7"
+            opacity="0.5"
+          />
+          <ellipse
+            id="Ellipse_22"
+            data-name="Ellipse 22"
+            cx="2.197"
+            cy="1.716"
+            rx="2.197"
+            ry="1.716"
+            transform="translate(42.267 193.608)"
+            fill="#1160c7"
+            opacity="0.5"
+          />
+          <ellipse
+            id="Ellipse_23"
+            data-name="Ellipse 23"
+            cx="2.197"
+            cy="1.716"
+            rx="2.197"
+            ry="1.716"
+            transform="translate(309.261 136.984)"
+            fill="#1160c7"
+            opacity="0.5"
+          />
+          <path
+            id="Path_207"
+            data-name="Path 207"
+            d="M866.8,138.206a1,1,0,0,1-.75-1.27.41.41,0,0,0,.029-.117h0a.541.541,0,0,0-.44-.526.8.8,0,0,0-.772.177h0a.491.491,0,0,0-.075.1,1.487,1.487,0,0,1-1.626.586.808.808,0,0,0-.149-.023h0a.7.7,0,0,0-.674.344.464.464,0,0,0,.227.6h0a.713.713,0,0,0,.133.058,1,1,0,0,1,.75,1.27.41.41,0,0,0-.029.117h0a.541.541,0,0,0,.44.526.8.8,0,0,0,.772-.177h0a.487.487,0,0,0,.075-.1,1.487,1.487,0,0,1,1.626-.586.809.809,0,0,0,.149.023h0a.7.7,0,0,0,.674-.344.464.464,0,0,0-.227-.6h0A.712.712,0,0,0,866.8,138.206Z"
+            transform="translate(-608.858 -116.199)"
+            fill="#1160c7"
+            opacity="0.5"
+          />
+          <path
+            id="Path_208"
+            data-name="Path 208"
+            d="M966.8,766.207a1,1,0,0,1-.75-1.27.408.408,0,0,0,.029-.117h0a.541.541,0,0,0-.44-.526.8.8,0,0,0-.772.177h0a.49.49,0,0,0-.075.1,1.487,1.487,0,0,1-1.626.586.811.811,0,0,0-.149-.023h0a.7.7,0,0,0-.674.344.464.464,0,0,0,.227.6h0a.712.712,0,0,0,.133.058,1,1,0,0,1,.75,1.27.41.41,0,0,0-.029.117h0a.541.541,0,0,0,.44.526.8.8,0,0,0,.772-.177h0a.485.485,0,0,0,.075-.1,1.487,1.487,0,0,1,1.627-.586.815.815,0,0,0,.149.023h0a.7.7,0,0,0,.674-.344.464.464,0,0,0-.227-.6h0A.713.713,0,0,0,966.8,766.207Z"
+            transform="translate(-672.234 -564.604)"
+            fill="#1160c7"
+            opacity="0.5"
+          />
+          <path
+            id="Path_209"
+            data-name="Path 209"
+            d="M174.8,244.206a1,1,0,0,1-.75-1.27.409.409,0,0,0,.029-.117h0a.541.541,0,0,0-.44-.526.8.8,0,0,0-.772.177h0a.489.489,0,0,0-.075.1,1.487,1.487,0,0,1-1.626.586.811.811,0,0,0-.149-.023h0a.7.7,0,0,0-.674.344.464.464,0,0,0,.227.6h0a.713.713,0,0,0,.133.058,1,1,0,0,1,.75,1.27.409.409,0,0,0-.029.117h0a.541.541,0,0,0,.44.526.8.8,0,0,0,.772-.177h0a.49.49,0,0,0,.075-.1,1.487,1.487,0,0,1,1.626-.586.811.811,0,0,0,.149.023h0a.7.7,0,0,0,.674-.344.464.464,0,0,0-.227-.6h0A.714.714,0,0,0,174.8,244.206Z"
+            transform="translate(-170.3 -191.885)"
+            fill="#1160c7"
+            opacity="0.5"
+          />
+          <ellipse
+            id="Ellipse_24"
+            data-name="Ellipse 24"
+            cx="2.197"
+            cy="1.716"
+            rx="2.197"
+            ry="1.716"
+            transform="translate(26.885 79.502)"
+            fill="#1160c7"
+            opacity="0.5"
+          />
+          <ellipse
+            id="Ellipse_25"
+            data-name="Ellipse 25"
+            cx="2.197"
+            cy="1.716"
+            rx="2.197"
+            ry="1.716"
+            transform="translate(310.359 93.229)"
+            fill="#1160c7"
+            opacity="0.5"
+          />
+          <g
+            id="Group_23"
+            data-name="Group 23"
+            transform="translate(211.107)"
+            opacity="0.5"
+          >
+            <rect
+              id="Rectangle_153"
+              data-name="Rectangle 153"
+              width="1.099"
+              height="4.862"
+              transform="translate(2.564)"
+              fill="#1160c7"
+            />
+            <rect
+              id="Rectangle_154"
+              data-name="Rectangle 154"
+              width="0.858"
+              height="6.226"
+              transform="translate(6.226 2.002) rotate(90)"
+              fill="#1160c7"
+            />
+          </g>
+          <g
+            id="Group_24"
+            data-name="Group 24"
+            transform="translate(215.136 190.462)"
+            opacity="0.5"
+          >
+            <rect
+              id="Rectangle_155"
+              data-name="Rectangle 155"
+              width="1.099"
+              height="4.862"
+              transform="translate(2.564)"
+              fill="#1160c7"
+            />
+            <rect
+              id="Rectangle_156"
+              data-name="Rectangle 156"
+              width="0.858"
+              height="6.226"
+              transform="translate(6.226 2.002) rotate(90)"
+              fill="#1160c7"
+            />
+          </g>
+          <g
+            id="Group_25"
+            data-name="Group 25"
+            transform="translate(7.108 200.757)"
+            opacity="0.5"
+          >
+            <rect
+              id="Rectangle_157"
+              data-name="Rectangle 157"
+              width="1.099"
+              height="4.862"
+              transform="translate(2.564)"
+              fill="#1160c7"
+            />
+            <rect
+              id="Rectangle_158"
+              data-name="Rectangle 158"
+              width="0.858"
+              height="6.226"
+              transform="translate(6.226 2.002) rotate(90)"
+              fill="#1160c7"
+            />
+          </g>
+          <g
+            id="Group_26"
+            data-name="Group 26"
+            transform="translate(257.254 113.248)"
+            opacity="0.5"
+          >
+            <rect
+              id="Rectangle_159"
+              data-name="Rectangle 159"
+              width="1.099"
+              height="4.862"
+              transform="translate(2.564)"
+              fill="#1160c7"
+            />
+            <rect
+              id="Rectangle_160"
+              data-name="Rectangle 160"
+              width="0.858"
+              height="6.226"
+              transform="translate(6.226 2.002) rotate(90)"
+              fill="#1160c7"
+            />
+          </g>
+          <path
+            id="Path_210"
+            data-name="Path 210"
+            d="M793.9,117.65l2.36,1.689,3.343-3.839,1.18.768-4.523,4.607-3.343-2.918Z"
+            transform="translate(-502.514 -82.469)"
+            fill="#1160c7"
+            opacity="0.5"
+          />
+        </g>
+      </svg>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'BuildingDetails',
+  data: () => ({
+    options: []
+  }),
+  props: {
+    form: {
+      type: Object,
+      required: true
+    },
+    mode: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    isViewMode() {
+      return this.mode == 'view'
+    },
+    dark() {
+      return this.$store.state.isDark
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+@import '../../../assets/scss/components/facilities-steps/buiding-details-styles.scss';
+</style>
