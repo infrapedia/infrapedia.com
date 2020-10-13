@@ -8,7 +8,7 @@
         <el-col :span="12">
           <el-row>
             <el-col :span="24">
-              <el-form-item label="Total Power (Megawatts)">
+              <el-form-item label="Total Power (Megawatts)" required>
                 <el-input-number
                   class="w-fit-full"
                   controls-position="right"

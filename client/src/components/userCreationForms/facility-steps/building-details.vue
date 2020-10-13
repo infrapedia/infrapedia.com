@@ -8,7 +8,7 @@
         <el-col :span="12">
           <el-row>
             <el-col :span="24">
-              <el-form-item label="Gross Building Size (sq meters)">
+              <el-form-item label="Gross Building Size (sq meters)" required>
                 <el-input-number
                   class="w-fit-full"
                   controls-position="right"
@@ -69,7 +69,7 @@
         <el-col :span="12">
           <el-row>
             <el-col :span="24">
-              <el-form-item label="Type">
+              <el-form-item label="Type" required>
                 <el-select
                   class="w-fit-full"
                   v-model="form.type"
@@ -86,7 +86,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="24">
-              <el-form-item label="Rack Height">
+              <el-form-item label="Rack Height" :required="form.type == 'Rack'">
                 <el-input-number
                   :class="{ dark }"
                   class="w-fit-full"
