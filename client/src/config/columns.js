@@ -133,6 +133,37 @@ export const cablesColumns = [
   // 'facilities', // (Array)
 ]
 
+export const cspColumns = [
+  {
+    label: 'Color',
+    value: 'color',
+    showTable: true
+  },
+  {
+    label: 'Name',
+    value: 'name',
+    showSidebar: true,
+    showTable: true
+  },
+  {
+    label: 'Established in (year)',
+    value: 'establismentYear',
+    showSidebar: true,
+    showTable: true
+  },
+  {
+    label: 'URL',
+    value: 'url',
+    showSidebar: true,
+    showTable: true
+  },
+  {
+    label: 'Status page (url)',
+    value: 'statusPage',
+    showSidebar: true,
+    showTable: true
+  }
+]
 export const facsColumns = [
   {
     label: 'Name',

@@ -12,7 +12,7 @@ class EditorControls extends EventEmitter {
     this.visibleControls = {
       lines: ['subsea', 'map', 'terrestrial-network'],
       points: ['facilities', 'ixps', 'cls', 'map'],
-      polygon: ['facilities', 'map']
+      polygon: ['facilities', 'map', 'csp']
     }
   }
 

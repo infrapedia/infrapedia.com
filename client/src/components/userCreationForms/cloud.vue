@@ -1,0 +1,188 @@
+<template>
+  <div class="pb6 pt2 pr4 pl4">
+    <header slot="header" class="w-fit-full mb8">
+      <h1 class="title capitalize">{{ title }}</h1>
+    </header>
+    <el-form ref="form" :model="form" :rules="formRules" id="cloudForm">
+      <el-row :gutter="10">
+        <el-col :span="21">
+          <el-form-item label="Name" prop="name" required>
+            <el-input
+              v-model="form.name"
+              class="w-fit-full"
+              :class="{ dark }"
+              clearable
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="3">
+          <el-form-item label="Color" prop="color">
+            <br />
+            <div class="flex align-items-start">
+              <el-color-picker
+                :class="{ dark }"
+                v-model="form.statusUrl"
+                :predefine="predefinedColors"
+              />
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-form-item label="Established in (year)" prop="establismentYear">
+        <el-date-picker
+          type="month"
+          :class="{ dark }"
+          class="w-fit-full-imp"
+          v-model="form.establismentYear"
+        />
+      </el-form-item>
+
+      <el-form-item
+        label="URL (company or cloud services page)"
+        prop="url"
+        required
+      >
+        <el-input
+          v-model="form.url"
+          class="w-fit-full"
+          :class="{ dark }"
+          clearable
+        />
+      </el-form-item>
+
+      <el-form-item label="Status Page (URL)" prop="url" required>
+        <el-input
+          v-model="form.statusUrl"
+          class="w-fit-full"
+          :class="{ dark }"
+          clearable
+        />
+      </el-form-item>
+
+      <el-form-item label="Known Users" prop="knownUsers">
+        <v-multi-select
+          ref="knownUsersField"
+          :mode="mode"
+          :options="knownUsers"
+          @input="loadKnownUsersSearch"
+          :loading="isLoadingKnownUsers"
+          @values-change="handleKnownUsersSelectChange"
+          :value="mode == 'create' ? [] : form.knownUsers"
+        />
+      </el-form-item>
+
+      <el-form-item class="mt12">
+        <el-button
+          type="primary"
+          class="w-fit-full capitalize"
+          round
+          :loading="isSendingData"
+          :disabled="isSendDataDisabled"
+          @click="sendData"
+        >
+          {{ saveBtn }}
+        </el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script>
+import VMultiSelect from '../../components/MultiSelect'
+import { searchOrganization } from '../../services/api/organizations'
+
+export default {
+  components: {
+    VMultiSelect
+  },
+  data: () => ({
+    knownUsers: [],
+    isLoadingKnownUsers: false
+  }),
+  props: {
+    // showTitle: {
+    //   type: Boolean,
+    //   default: () => true
+    // },
+    // isManualKmzUpload: {
+    //   type: Boolean,
+    //   default: () => false
+    // },
+    form: {
+      type: Object,
+      required: true
+    },
+    mode: {
+      type: String,
+      required: true
+    },
+    isSendingData: {
+      type: Boolean,
+      default: () => false
+    },
+    isSendDataDisabled: {
+      type: Boolean,
+      required: true
+    }
+  },
+  computed: {
+    dark() {
+      return this.$store.state.isDark
+    },
+    title() {
+      const t = 'CSP'
+      return this.mode == 'create' ? `Create ${t}` : `Edit ${t}`
+    },
+    saveBtn() {
+      return this.mode == 'create' ? 'Add CSP' : 'Save changes'
+    },
+    formRules() {
+      return {}
+    },
+    predefinedColors() {
+      return [
+        '#ff4500',
+        '#ff8c00',
+        '#ffd700',
+        '#90ee90',
+        '#00ced1',
+        '#1e90ff',
+        '#c71585'
+      ]
+    }
+  },
+  watch: {
+    'form.knownUsersList'(knownUsers) {
+      this.knownUsers = [...knownUsers]
+      delete this.form.knownUsersList
+    }
+  },
+  methods: {
+    handleKnownUsersSelectChange(data) {
+      this.form.knownUsers = data
+    },
+    async loadKnownUsersSearch(s) {
+      this.isLoadingKnownUsers = true
+      const res = await searchOrganization({
+        user_id: await this.$auth.getUserID(),
+        s
+      })
+      if (res && res.data) {
+        this.knownUsers = res.data.reduce(
+          (acc = Array.from(this.orgsList), item) => {
+            return acc.map(i => i._id).includes(item._id) ? acc : [...acc, item]
+          },
+          []
+        )
+      }
+      this.isLoadingKnownUsers = false
+    },
+    sendData() {
+      return this.$refs.form.validate(isValid =>
+        isValid ? this.$emit('send-data') : false
+      )
+    }
+  }
+}
+</script>
+<style lang="scss" scoped></style>

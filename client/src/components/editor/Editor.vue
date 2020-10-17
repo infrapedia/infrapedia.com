@@ -76,6 +76,7 @@ import {
 } from './index'
 import { getGeometries } from '../../services/api'
 import { categoriesDictionary } from '../userCreationForms/fields/dictionary'
+import elemntTypeValidator from '../../helpers/elemntTypeValidator'
 
 const onlyOneFeatureAllowed = ['cls', 'ixps']
 
@@ -111,18 +112,7 @@ export default {
     type: {
       type: String,
       default: () => '',
-      validator: function(t) {
-        return (
-          [
-            'cls',
-            'map',
-            'ixps',
-            'subsea',
-            'facilities',
-            'terrestrial-network'
-          ].indexOf(t) != -1
-        )
-      }
+      validator: elemntTypeValidator
     },
     form: {
       type: Object,

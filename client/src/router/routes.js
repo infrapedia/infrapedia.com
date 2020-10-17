@@ -27,6 +27,7 @@ async function handleAdminOnlyRoutes(next, to) {
   // There's no reason for them to access the creation page of those sections
   if (to) {
     const query =
+      to.query.id == 'csp' ||
       to.query.id == 'map' ||
       to.query.id == 'ixps' ||
       to.query.id == 'facilities'
@@ -81,6 +82,11 @@ const OrgsSection = () =>
   import(
     /* webpackChunkName: "user-nested-routes-group" */
     '../pages/profile/section/organization.vue'
+  )
+const CloudSection = () =>
+  import(
+    /* webpackChunkName: "user-nested-routes-group" */
+    '../pages/profile/section/cloud-services-providers.vue'
   )
 const FacilitiesSection = () =>
   import(
@@ -237,6 +243,12 @@ const routes = [
         path: 'section/facilities',
         name: 'user/facs-section',
         component: FacilitiesSection,
+        beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next, to)
+      },
+      {
+        path: 'section/cloud-service-providers',
+        name: 'user/add-csp',
+        component: CloudSection,
         beforeEnter: (to, from, next) => handleAdminOnlyRoutes(next, to)
       },
       {

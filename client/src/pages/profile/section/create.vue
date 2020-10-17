@@ -83,10 +83,6 @@
 import { bus } from '../../../helpers/eventBus'
 import cableStates from '../../../config/cableStates'
 import EditorMap from '../../../components/editor/Editor'
-import CLSForm from '../../../components/userCreationForms/cls'
-import CableForm from '../../../components/userCreationForms/cables'
-// import FacilityForm from '../../../components/userCreationForms/facilities'
-import IXPForm from '../../../components/userCreationForms/ixp'
 import { createCls, editCLS, viewClsOwner } from '../../../services/api/cls'
 import {
   createCable,
@@ -98,7 +94,6 @@ import {
   EDITOR_SET_FEATURES,
   EDITOR_SET_FEATURES_LIST
 } from '../../../events/editor'
-import MapForm from '../../../components/userCreationForms/map'
 import {
   getMyMap,
   setMyMap,
@@ -111,6 +106,7 @@ import { sceneDictionary } from '../../../components/editor'
 import { STORAGE__WATCH } from '../../../lib/Dictionary'
 
 const allowedCreationTypes = [
+  'csp',
   'cls',
   'map',
   'ixps',
@@ -121,9 +117,7 @@ const allowedCreationTypes = [
 export default {
   name: 'CreateSection',
   components: {
-    'cls-form': CLSForm,
     'editor-map': EditorMap,
-    'cable-form': CableForm,
     'manual-kmz-submit-dialog': ManualKMZSubmitDialog
   },
   data() {
@@ -170,19 +164,22 @@ export default {
 
       switch (this.creationType) {
         case 'cls':
-          view = CLSForm
+          view = import('../../../components/userCreationForms/cls')
           break
         case 'map':
-          view = MapForm
+          view = () => import('../../../components/userCreationForms/map')
           break
         // case 'facilities':
         //   view = FacilityForm
         //   break
+        case 'csp':
+          view = () => import('../../../components/userCreationForms/cloud')
+          break
         case 'ixps':
-          view = IXPForm
+          view = () => import('../../../components/userCreationForms/ixp')
           break
         default:
-          view = CableForm
+          view = () => import('../../../components/userCreationForms/cables')
           break
       }
       return view
@@ -209,6 +206,9 @@ export default {
           break
         case 'ixps':
           route = '/user/section/ixps'
+          break
+        case 'csp':
+          route = '/user/section/cloud-service-providers'
           break
         // case 'facilities':
         //   route = '/user/section/facilities'
@@ -340,6 +340,19 @@ export default {
             owners: [],
             state: 'unknown',
             geom: []
+          }
+          break
+        case 'csp':
+          this.form = {
+            name: '',
+            establismentYear: '',
+            url: '',
+            statusUrl: '',
+            color: '',
+            geom: [],
+            knownUsers: [],
+            regions: [],
+            ramps: []
           }
           break
         case 'map':

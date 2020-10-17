@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import elemntTypeValidator from '../helpers/elemntTypeValidator'
+
 export default {
   data: () => ({
     confirmationText: ''
@@ -62,20 +64,7 @@ export default {
     elemnt: {
       type: String,
       required: true,
-      validator: e => {
-        return (
-          [
-            'cls',
-            'map',
-            'ixp',
-            'ixps',
-            'organization',
-            'subsea cable',
-            'facility',
-            'network'
-          ].indexOf(e.toLowerCase()) != -1
-        )
-      }
+      validator: elemntTypeValidator
     }
   },
   methods: {
