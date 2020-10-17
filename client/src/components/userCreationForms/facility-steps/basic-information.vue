@@ -1,264 +1,258 @@
 <template>
-  <div>
-    <el-row :gutter="60">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="Name" prop="name">
-              <el-input
-                class="w-fit-full"
-                :class="{ dark }"
-                v-model="form.name"
-                clearable
-                @input="checkName"
-                :disabled="isViewMode"
-              />
-              <el-alert
-                v-if="isNameRepeated"
-                class="mt4 p2"
-                type="error"
-                :closable="false"
-                description="This name already exists in our database. Use a different name or
-                    consider extending your name."
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="Website">
-              <el-input
-                class="w-fit-full"
-                :class="{ dark }"
-                :disabled="isViewMode"
-                v-model="form.website"
-                @input="validateURL"
-              />
-              <el-collapse-transition>
-                <el-alert
-                  v-if="isURLValid !== null && !isURLValid"
-                  title="This url is not valid"
-                  type="error"
-                  class="mt2 p1"
-                  :closable="false"
-                />
-              </el-collapse-transition>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="Type">
-              <el-select
-                v-model="form.t"
-                :disabled="isViewMode"
-                class="w-fit-full"
-                :class="{ dark }"
-                placeholder
-              >
-                <el-option
-                  v-for="(opt, i) in facilitiesTypes"
-                  :key="i"
-                  :label="opt.label"
-                  :value="opt.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item
-              label="Ready For Service (RFS)"
-              prop="StartDate"
-              required
-            >
-              <el-date-picker
-                class="inline-block w-fit-full-imp"
-                v-model="form.StartDate"
-                type="year"
-                :class="{ dark }"
-                :disabled="isViewMode"
-                placeholder
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="Type of building">
-              <el-select
-                v-model="form.building"
-                class="w-fit-full"
-                :class="{ dark }"
-                :disabled="isViewMode"
-                placeholder
-              >
-                <el-option
-                  v-for="(opt, i) in facilitiesBuildingTypes"
-                  :key="i"
-                  :value="opt.value"
-                >
-                  <span class="capitalize">
-                    {{ opt.label }}
-                  </span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="Tags">
-              <el-select
-                v-model="form.tags"
-                multiple
-                filterable
-                :disabled="isViewMode"
-                placeholder
-                allow-create
-                :class="{ dark }"
-                class="w-fit-full"
-                collapse-tags
-                default-first-option
-                @change="getTagsList"
-              >
-                <el-option
-                  v-for="item in form.tagsList"
-                  :key="item"
-                  :label="item"
-                  :value="item"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="24">
-            <el-alert
-              type="info"
+  <el-row :gutter="60">
+    <el-col :span="8">
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="Name" prop="name">
+            <el-input
+              class="w-fit-full"
               :class="{ dark }"
-              class="mt10 h11 mb5"
-              title="The following fields interact with the map"
-              :closable="false"
+              v-model="form.name"
+              clearable
+              @input="checkName"
+              :disabled="isViewMode"
             />
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="Address">
-              <div class="flex row wrap w-fit-full">
-                <el-tag
-                  :key="i"
-                  v-for="(tag, i) in form.address"
-                  :closable="!isViewMode"
-                  :disable-transitions="false"
-                  @close="handleAddressRemove(tag)"
-                >
-                  {{ tag.reference }}
-                  <fa
-                    :icon="['fas', 'pen']"
-                    class="cursor-pointer w24 ml1 inline-block"
-                    @click="editAddress(tag, i)"
-                  />
-                </el-tag>
-              </div>
-              <el-collapse-transition>
-                <el-card
-                  v-if="inputVisible"
-                  class="p4 w-auto mt2"
-                  shadow="never"
-                >
-                  <el-form ref="tagForm" :model="tag" :rules="tagRules">
-                    <el-form-item label="Reference" prop="reference" required>
-                      <el-input
-                        name="street"
-                        :class="{ dark }"
-                        v-model="tag.reference"
-                        ref="saveTagInput"
-                        size="mini"
-                      />
-                    </el-form-item>
-                    <el-form-item prop="address" label="Address">
-                      <autocomplete-google
-                        :mode="tagMode"
-                        @place-changed="handleAddressChange"
-                        :value="autocompleteAddress"
-                      />
-                    </el-form-item>
-                  </el-form>
-                  <el-form-item>
-                    <div
-                      class="flex row wrap justify-content-end justify-center-sm pt3"
-                    >
-                      <el-button
-                        plain
-                        :class="{ dark }"
-                        type="success"
-                        size="mini"
-                        class="w25 h8 mb4 mr2"
-                        @click="handleSaveAddress"
-                      >
-                        Save address
-                      </el-button>
-                      <el-button
-                        class="w25 h8"
-                        :class="{ dark }"
-                        size="mini"
-                        @click="clearAddress"
-                      >
-                        Cancel
-                      </el-button>
-                    </div>
-                  </el-form-item>
-                </el-card>
-                <el-button
-                  v-else
-                  :class="{ dark }"
-                  class="w42 text-center"
-                  size="small"
-                  :disabled="isViewMode"
-                  @click="showAdressInput"
-                >
-                  Add
-                </el-button>
-              </el-collapse-transition>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="IXPs">
-              <v-multi-select
-                :mode="mode"
-                :options="ixpsList"
-                @input="loadIXpsSearch"
-                :loading="isLoadingIXPs"
-                :value="mode == 'create' ? [] : form.ixps"
-                @values-change="handleIxpsSelectChange"
-                @remove="handleIxpsSelectRemoveItem"
+            <el-alert
+              v-if="isNameRepeated"
+              class="mt4 p2"
+              type="error"
+              :closable="false"
+              description="This name already exists in our database. Use a different name or
+                  consider extending your name."
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="Website">
+            <el-input
+              class="w-fit-full"
+              :class="{ dark }"
+              :disabled="isViewMode"
+              v-model="form.website"
+              @input="validateURL"
+            />
+            <el-collapse-transition>
+              <el-alert
+                v-if="isURLValid !== null && !isURLValid"
+                title="This url is not valid"
+                type="error"
+                class="mt2 p1"
+                :closable="false"
               />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="Owners" prop="owners" required>
-              <v-multi-select
-                :mode="mode"
-                :is-required="true"
-                :is-field-empty="isOwnersSelectEmpty"
-                :options="ownersList"
-                @input="loadOwnersSearch"
-                :loading="isLoadingOwners"
-                :value="mode == 'create' ? [] : form.owners"
-                @values-change="handleOwnersSelectChange"
-                @remove="handleOwnersSelectRemoveItem"
+            </el-collapse-transition>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="Type">
+            <el-select
+              v-model="form.t"
+              :disabled="isViewMode"
+              class="w-fit-full"
+              :class="{ dark }"
+              placeholder
+            >
+              <el-option
+                v-for="(opt, i) in facilitiesTypes"
+                :key="i"
+                :label="opt.label"
+                :value="opt.value"
               />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <div class="editor-map-wrapper mt5">
-          <editor-map
-            :key="1"
-            :form="form"
-            type="facilities"
-            id="editor-map-facilities-dashboard"
-            @features-list-change="featuresList = $event"
-            @error-loading-draw-onto-map="handleFileConvertionFailed"
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item
+            label="Ready For Service (RFS)"
+            prop="StartDate"
+            required
+          >
+            <el-date-picker
+              class="inline-block w-fit-full-imp"
+              v-model="form.StartDate"
+              type="year"
+              :class="{ dark }"
+              :disabled="isViewMode"
+              placeholder
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="Type of building">
+            <el-select
+              v-model="form.building"
+              class="w-fit-full"
+              :class="{ dark }"
+              :disabled="isViewMode"
+              placeholder
+            >
+              <el-option
+                v-for="(opt, i) in facilitiesBuildingTypes"
+                :key="i"
+                :value="opt.value"
+              >
+                <span class="capitalize">
+                  {{ opt.label }}
+                </span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="Tags">
+            <el-select
+              v-model="form.tags"
+              multiple
+              filterable
+              :disabled="isViewMode"
+              placeholder
+              allow-create
+              :class="{ dark }"
+              class="w-fit-full"
+              collapse-tags
+              default-first-option
+              @change="getTagsList"
+            >
+              <el-option
+                v-for="item in form.tagsList"
+                :key="item"
+                :label="item"
+                :value="item"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-col>
+    <el-col :span="8">
+      <el-row>
+        <el-col :span="24">
+          <el-alert
+            type="info"
+            :class="{ dark }"
+            class="mt10 h11 mb5"
+            title="The following fields interact with the map"
+            :closable="false"
           />
-        </div>
-      </el-col>
-    </el-row>
-  </div>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="Address">
+            <div class="flex row wrap w-fit-full">
+              <el-tag
+                :key="i"
+                v-for="(tag, i) in form.address"
+                :closable="!isViewMode"
+                :disable-transitions="false"
+                @close="handleAddressRemove(tag)"
+              >
+                {{ tag.reference }}
+                <fa
+                  :icon="['fas', 'pen']"
+                  class="cursor-pointer w24 ml1 inline-block"
+                  @click="editAddress(tag, i)"
+                />
+              </el-tag>
+            </div>
+            <el-collapse-transition>
+              <el-card v-if="inputVisible" class="p4 w-auto mt2" shadow="never">
+                <el-form ref="tagForm" :model="tag" :rules="tagRules">
+                  <el-form-item label="Reference" prop="reference" required>
+                    <el-input
+                      name="street"
+                      :class="{ dark }"
+                      v-model="tag.reference"
+                      ref="saveTagInput"
+                      size="mini"
+                    />
+                  </el-form-item>
+                  <el-form-item prop="address" label="Address">
+                    <autocomplete-google
+                      :mode="tagMode"
+                      @place-changed="handleAddressChange"
+                      :value="autocompleteAddress"
+                    />
+                  </el-form-item>
+                </el-form>
+                <el-form-item>
+                  <div
+                    class="flex row wrap justify-content-end justify-center-sm pt3"
+                  >
+                    <el-button
+                      plain
+                      :class="{ dark }"
+                      type="success"
+                      size="mini"
+                      class="w25 h8 mb4 mr2"
+                      @click="handleSaveAddress"
+                    >
+                      Save address
+                    </el-button>
+                    <el-button
+                      class="w25 h8"
+                      :class="{ dark }"
+                      size="mini"
+                      @click="clearAddress"
+                    >
+                      Cancel
+                    </el-button>
+                  </div>
+                </el-form-item>
+              </el-card>
+              <el-button
+                v-else
+                :class="{ dark }"
+                class="w42 text-center"
+                size="small"
+                :disabled="isViewMode"
+                @click="showAdressInput"
+              >
+                Add
+              </el-button>
+            </el-collapse-transition>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="IXPs">
+            <v-multi-select
+              :mode="mode"
+              :options="ixpsList"
+              @input="loadIXpsSearch"
+              :loading="isLoadingIXPs"
+              :value="mode == 'create' ? [] : form.ixps"
+              @values-change="handleIxpsSelectChange"
+              @remove="handleIxpsSelectRemoveItem"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="Owners" prop="owners" required>
+            <v-multi-select
+              :mode="mode"
+              :is-required="true"
+              :is-field-empty="isOwnersSelectEmpty"
+              :options="ownersList"
+              @input="loadOwnersSearch"
+              :loading="isLoadingOwners"
+              :value="mode == 'create' ? [] : form.owners"
+              @values-change="handleOwnersSelectChange"
+              @remove="handleOwnersSelectRemoveItem"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-col>
+    <el-col :span="8">
+      <div class="editor-map-wrapper mt5">
+        <editor-map
+          :key="1"
+          :form="form"
+          type="facilities"
+          id="editor-map-facilities-dashboard"
+          @features-list-change="featuresList = $event"
+          @error-loading-draw-onto-map="handleFileConvertionFailed"
+        />
+      </div>
+    </el-col>
+  </el-row>
 </template>
 
 <script>

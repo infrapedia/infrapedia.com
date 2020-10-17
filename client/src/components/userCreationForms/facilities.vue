@@ -1,5 +1,5 @@
 <template>
-  <el-form ref="form" :model="form" :rules="formRules">
+  <el-form ref="form" :model="form" :rules="formRules" style="flex-basis: 100%">
     <transition name="fade" mode="out-in">
       <component :is="currentView" :mode="mode" :form="form" />
     </transition>

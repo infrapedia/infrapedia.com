@@ -72,7 +72,7 @@
               <el-form-item label="Type" required>
                 <el-select
                   class="w-fit-full"
-                  v-model="form.type"
+                  v-model="form.enType"
                   placeholder
                   :class="{ dark }"
                 >
