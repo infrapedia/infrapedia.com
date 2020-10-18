@@ -217,6 +217,12 @@ export default {
             this.$route.query.id.toLowerCase()
           )
         }
+      } else if (this.$route.fullPath == '/user/section/create-facility') {
+        obj = {
+          'router-link-exact-active router-link-active': link.url.includes(
+            'fac'
+          )
+        }
       }
       return obj
     },

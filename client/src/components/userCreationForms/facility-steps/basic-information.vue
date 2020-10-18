@@ -219,10 +219,10 @@
             <el-form-item label="IXPs">
               <v-multi-select
                 :options="ixpsList"
-                :mode="mode"
+                :mode="multiSelectsMode"
                 @input="loadIXpsSearch"
                 :loading="isLoadingIXPs"
-                :value="mode == 'create' ? [] : form.ixps"
+                :value="multiSelectsMode == 'create' ? [] : form.ixps"
                 @values-change="handleIxpsSelectChange"
                 @remove="handleIxpsSelectRemoveItem"
               />
@@ -235,14 +235,14 @@
               :rules="formRules.owners"
             >
               <v-multi-select
-                :mode="mode"
+                :mode="multiSelectsMode"
                 :is-required="true"
                 :is-field-empty="isOwnersSelectEmpty"
                 :options="ownersList"
                 @input="loadOwnersSearch"
                 @blur="validateOwnerField"
                 :loading="isLoadingOwners"
-                :value="mode == 'create' ? [] : form.owners"
+                :value="multiSelectsMode == 'create' ? [] : form.owners"
                 @values-change="handleOwnersSelectChange"
                 @remove="handleOwnersSelectRemoveItem"
               />
@@ -260,6 +260,15 @@
             @features-list-change="handleFeaturesListChange"
             @error-loading-draw-onto-map="handleFileConvertionFailed"
           />
+          <el-alert type="info" :closable="false">
+            <div>
+              Points: Click once to edit the properties of the facility or
+              change its position
+            </div>
+            <div class="mt1">
+              Polygons: Click once to edit the properties of a segment
+            </div>
+          </el-alert>
         </div>
       </el-col>
     </el-row>
@@ -281,8 +290,9 @@ import { checkFacilityNameExistence } from '../../../services/api/check_name'
 import debounce from '../../../helpers/debounce'
 import { bus } from '../../../helpers/eventBus'
 import {
+  EDITOR_SET_FEATURES,
   EDITOR_FILE_CONVERTED,
-  EDITOR_SET_FEATURES
+  EDITOR_SET_FEATURES_LIST
 } from '../../../events/editor'
 import { fCollectionFormat } from '../../../helpers/featureCollection'
 import { sceneDictionary } from '../../../components/editor'
@@ -306,6 +316,7 @@ export default {
       state: '',
       zipcode: ''
     },
+    multiSelectsMode: 'create',
     isNameRepeated: false,
     isOwnersSelectEmpty: false,
     tagOnEdit: null,
@@ -393,10 +404,24 @@ export default {
       }
     }
   },
-  // TODO: WHEN THIS STEP IS RE-RENDER THE MAP LOSSES ALL OF HIS FEATURES, BUT THE FORM HAS ALL THE DATA
-  // ALSO THE IXPS AND OWNERS MULTISELECT LOSSES THEIR SELECTION
   created() {
     sceneDictionary.on(STORAGE__WATCH, this.handleFeaturesListChange)
+  },
+  async mounted() {
+    if (this.mode != 'create') {
+      // I know `this.mode` can be only either one of these 2: create, edit
+      this.multiSelectsMode = this.mode
+    }
+
+    if (this.form.geom.length >= 1) {
+      bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, this.form.geom)
+    }
+
+    if (this.form.ixps.length >= 1) {
+      this.multiSelectsMode = 'update'
+      this.ixpsList = [...this.form.ixps]
+      await this.handleIxpsSelectChange(this.form.ixps)
+    }
   },
   beforeDestroy() {
     sceneDictionary.off(STORAGE__WATCH, this.handleFeaturesListChange)
@@ -404,7 +429,6 @@ export default {
   watch: {
     'form.ixpsList'(ixps) {
       if (!ixps) return
-      console.log(this.mode, this.form.ixps)
       this.ixpsList = [...ixps]
       delete this.form.ixpsList
     },

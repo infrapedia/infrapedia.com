@@ -46,9 +46,21 @@
           <el-button round class="mr4" @click="handleClickPreviousBtn">
             {{ step == 1 ? 'Cancel' : 'Back' }}
           </el-button>
-          <el-button round type="primary" @click="handleClickNextBtn">
-            {{ nextBtnText }}
-          </el-button>
+          <el-tooltip
+            effect="dark"
+            :disabled="!checkGeomLength"
+            content="Remember to either create a point or a polygon on the map"
+            placement="top-start"
+          >
+            <el-button
+              round
+              type="primary"
+              @click="handleClickNextBtn"
+              :disabled="checkGeomLength"
+            >
+              {{ nextBtnText }}
+            </el-button>
+          </el-tooltip>
         </footer>
       </fieldset>
     </div>
@@ -153,6 +165,12 @@ export default {
       await bus.$emit(`${EDITOR_SET_FEATURES}`, data)
     },
     moveToStep(num) {
+      if (this.step <= 1 && this.checkGeomLength) {
+        this.$message.info(
+          "You can't move further until you add a valid geometry on the map"
+        )
+        return
+      }
       this.step = num
     },
     handleClickNextBtn() {
