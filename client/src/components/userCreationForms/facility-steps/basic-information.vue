@@ -393,6 +393,8 @@ export default {
       }
     }
   },
+  // TODO: WHEN THIS STEP IS RE-RENDER THE MAP LOSSES ALL OF HIS FEATURES, BUT THE FORM HAS ALL THE DATA
+  // ALSO THE IXPS AND OWNERS MULTISELECT LOSSES THEIR SELECTION
   created() {
     sceneDictionary.on(STORAGE__WATCH, this.handleFeaturesListChange)
   },
