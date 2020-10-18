@@ -21,7 +21,7 @@
     <div
       class="absolute information-box z-index20 p2 ml5 text-left"
       :class="{ dark }"
-      v-if="type !== 'facilities'"
+      v-if="type != 'facilities'"
     >
       <p class="m0" v-if="oneClickMessage.length == 1">
         {{ oneClickMessage[0] }}
@@ -57,7 +57,6 @@ import { mapConfig } from '../../config/mapConfig'
 import {
   EDITOR_SET_FEATURES,
   EDITOR_FILE_CONVERTED,
-  EDITOR_GET_FEATURES_LIST,
   EDITOR_SET_FEATURES_LIST
 } from '../../events/editor'
 import { fCollectionFormat } from '../../helpers/featureCollection'
@@ -181,7 +180,6 @@ export default {
     bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetSceneFeaturesList)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
-    bus.$on(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
 
     // CATEGORIES RELATED EVENTS
     if (this.type == 'map') {
@@ -219,7 +217,6 @@ export default {
     bus.$off(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetSceneFeaturesList)
     bus.$off(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$off(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
-    bus.$off(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
 
     // CATEGORIES RELATED EVENTS
     if (this.type == 'map') {
@@ -243,6 +240,10 @@ export default {
   methods: {
     async handleDrawSceneFeatures() {
       await this.handleRecreateDraw(null, false)
+      await this.$emit(
+        'features-list-change',
+        sceneDictionary.getCollectionList()
+      )
     },
     async handleDragAndDropGeojsonFiles(fc) {
       if (this.type != 'map') return
@@ -518,9 +519,6 @@ export default {
         })
       }
     },
-    handleGetFeatures() {
-      this.$emit('features-list-change', sceneDictionary.getCollectionList())
-    },
     handleSetSceneFeaturesList(list) {
       let r = {}
       for (let item of list) {
@@ -711,7 +709,6 @@ export default {
     },
     async handleBeforeCreateFeature(feature) {
       this.dialog.selectedFeature = feature
-
       if (feature.geometry.type != 'Point') {
         this.dialog.visible = true
         this.$once(

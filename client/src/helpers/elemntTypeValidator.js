@@ -6,7 +6,7 @@ const allowedCreationTypes = [
   'ixps',
   'organization',
   'subsea cable',
-  'facility',
+  'facilities',
   'network'
 ]
 

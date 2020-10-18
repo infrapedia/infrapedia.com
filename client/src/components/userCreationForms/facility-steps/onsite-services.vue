@@ -1,5 +1,5 @@
 <template>
-  <div class="flex row nowrap">
+  <el-form class="flex row nowrap" :model="form">
     <div class="el-card" :class="{ dark }">
       <header class="p4" :class="{ dark }">
         Onsite Services
@@ -311,7 +311,7 @@
         </g>
       </svg>
     </div>
-  </div>
+  </el-form>
 </template>
 
 <script>

@@ -12,49 +12,13 @@
 
     <div class="body-wrapper pb50" :class="{ dark }">
       <header class="flex justify-content-center align-items-center h10 pt2">
-        <div>
+        <div v-for="i in 5" :key="i">
           <el-button
             circle
             class="transparent h5 w5 mr2 no-border circle cursor-pointer transition-all"
             title="Basic information"
-            :class="{ active: step == 1 }"
-            @click="moveToStep(1)"
-          />
-        </div>
-        <div>
-          <el-button
-            circle
-            class="transparent h5 w5 mr2 no-border circle cursor-pointer transition-all"
-            title="Building details"
-            :class="{ active: step == 2 }"
-            @click="moveToStep(2)"
-          />
-        </div>
-        <div>
-          <el-button
-            circle
-            class="transparent h5 w5 mr2 circle no-border cursor-pointer transition-all"
-            title="Power and Cooling details"
-            :class="{ active: step == 3 }"
-            @click="moveToStep(3)"
-          />
-        </div>
-        <div>
-          <el-button
-            circle
-            class="transparent h5 w5 mr2 circle no-border cursor-pointer transition-all"
-            title="Security details"
-            :class="{ active: step == 4 }"
-            @click="moveToStep(4)"
-          />
-        </div>
-        <div>
-          <el-button
-            circle
-            class="transparent h5 w5 mr2 circle no-border cursor-pointer transition-all"
-            title="Onsite Services"
-            :class="{ active: step == 5 }"
-            @click="moveToStep(5)"
+            :class="{ active: step == i }"
+            @click="moveToStep(i)"
           />
         </div>
       </header>
@@ -71,6 +35,7 @@
             class="facility-form"
             :is-sending-data="isSendingData"
             :is-send-data-disabled="checkGeomLength"
+            @set-selection-onto-map="handleSetSelectionOntoMap"
             @cancel-geom-loading="toggleMapFormLoading(false)"
             @loading-selection-geom="toggleMapFormLoading(true)"
             @send-data="handleSendData(mode, creationType, $event)"
@@ -96,10 +61,13 @@ import {
   editFacility,
   createFacility
 } from '../../../services/api/facs'
-import { sceneDictionary } from '../../../components/editor'
 import FacilityForm from '../../../components/userCreationForms/facilities'
 import { bus } from '../../../helpers/eventBus'
-import { EDITOR_SET_FEATURES_LIST } from '../../../events/editor'
+import {
+  EDITOR_SET_FEATURES_LIST,
+  EDITOR_SET_FEATURES
+} from '../../../events/editor'
+import { sceneDictionary } from '../../../components/editor'
 
 export default {
   components: {
@@ -165,19 +133,31 @@ export default {
       return this.$store.state.isDark
     },
     mode() {
-      return this.$route.params.item ? 'edit' : 'create'
+      return this.$route.query.item ? 'edit' : 'create'
     },
     checkGeomLength() {
       return this.form.geom.length > 0 ? false : true
     }
   },
+  async created() {
+    sceneDictionary.watchStorage()
+    if (this.$route.query.item) {
+      this.getElementOnEdit(this.$route.query.item)
+    }
+  },
+  beforeDestroy() {
+    sceneDictionary.unwatchStorage()
+  },
   methods: {
+    async handleSetSelectionOntoMap(data) {
+      await bus.$emit(`${EDITOR_SET_FEATURES}`, data)
+    },
     moveToStep(num) {
       this.step = num
     },
     handleClickNextBtn() {
       if (this.step == 5) {
-        console.log('not done yet. SEND DATA')
+        this.handleSendData(this.mode)
         return
       }
 
@@ -194,7 +174,6 @@ export default {
     async getElementOnEdit(_id) {
       try {
         this.loading = true
-        this.mode = 'edit'
 
         const currentElement = await this.viewCurrentFacility(_id)
         this.form = { ...currentElement }
@@ -237,6 +216,8 @@ export default {
       this.$store.dispatch('editor/toggleMapFormLoading', bool)
     },
     handleFacsEditMode(data) {
+      this.form.StartDate = new Date(data.StartDate)
+
       {
         let ixpsData = data.ixps.map(ixp => ({
           name: ixp.label,
@@ -273,7 +254,6 @@ export default {
         method = editFacility
       }
 
-      this.form.geom = sceneDictionary.getCollectionList()
       this.form.geom[0].properties.name === ''
         ? (this.form.geom[0].properties.name = this.form.name)
         : (this.form.geom[0].properties.name = this.form.geom[0].properties.name)
@@ -286,14 +266,13 @@ export default {
 
       this.isSendingData = false
       if (t != 'error') {
-        this.mode = 'edit'
         this.$router.replace({
-          path: '/user/section/create',
+          path: this.$route.path,
           query: {
-            id: this.$route.query.id,
             item: data.r
           }
         })
+        this.step = 1
       }
     }
   }

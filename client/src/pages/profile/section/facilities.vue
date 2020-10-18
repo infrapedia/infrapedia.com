@@ -55,7 +55,7 @@ export default {
       return this.$store.state.isDark
     },
     elemntType() {
-      return 'facility'
+      return 'facilities'
     }
   },
   async created() {

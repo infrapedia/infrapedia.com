@@ -1,15 +1,19 @@
 <template>
-  <el-form ref="form" :model="form" :rules="formRules" style="flex-basis: 100%">
+  <div style="flex-basis: 100%">
     <transition name="fade" mode="out-in">
-      <component :is="currentView" :mode="mode" :form="form" />
+      <component
+        :is="currentView"
+        :form="form"
+        :mode="mode"
+        @set-selection-onto-map="$emit('set-selection-onto-map', $event)"
+      />
     </transition>
-  </el-form>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'FacsForm',
-  data: () => ({}),
   props: {
     step: {
       type: Number,
@@ -49,47 +53,8 @@ export default {
       }
       return view
     },
-    formRules() {
-      return {
-        name: [
-          {
-            required: true,
-            message: 'Please input facility name',
-            trigger: 'change'
-          },
-          { min: 3, message: 'Length should be at least 3', trigger: 'change' }
-        ],
-        StartDate: [
-          {
-            type: 'date',
-            required: true,
-            trigger: ['blur', 'change'],
-            message: 'Please pick a date'
-          }
-        ],
-        owners: [
-          {
-            type: 'array',
-            message: 'At least one owner is required',
-            trigger: ['blur', 'change']
-          }
-        ]
-      }
-    },
     dark() {
       return this.$store.state.isDark
-    }
-  },
-  watch: {
-    'form.ixpsList'(ixps) {
-      if (!ixps) return
-      this.ixpsList = [...ixps]
-      delete this.form.ixpsList
-    },
-    'form.ownersList'(owners) {
-      if (!owners) return
-      this.ownersList = [...owners]
-      delete this.form.ownersList
     }
   },
   mounted() {
@@ -103,10 +68,7 @@ export default {
   },
   methods: {
     sendData() {
-      this.setOwnersEmptyState()
-      return this.$refs['form'].validate(isValid =>
-        isValid ? this.$emit('send-data') : false
-      )
+      this.$emit('send-data')
     }
   }
 }

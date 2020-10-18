@@ -1,5 +1,5 @@
 <template>
-  <div class="flex row nowrap">
+  <el-form class="flex row nowrap" :model="form">
     <div class="el-card" :class="{ dark }">
       <header class="p4" :class="{ dark }">
         Power and Cooling details
@@ -401,7 +401,7 @@
         />
       </svg>
     </div>
-  </div>
+  </el-form>
 </template>
 
 <script>
@@ -426,6 +426,9 @@ export default {
     },
     dark() {
       return this.$store.state.isDark
+    },
+    formRules() {
+      return {}
     }
   }
 }

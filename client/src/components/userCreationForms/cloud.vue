@@ -1,5 +1,5 @@
 <template>
-  <div class="pb6 pt2 pr4 pl4">
+  <div class="pb6 pt6 pr8 pl8">
     <header slot="header" class="w-fit-full mb8">
       <h1 class="title capitalize">{{ title }}</h1>
     </header>
@@ -28,12 +28,12 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item label="Established in (year)" prop="establismentYear">
+      <el-form-item label="Established in (year)" prop="establishmentYear">
         <el-date-picker
           type="month"
           :class="{ dark }"
           class="w-fit-full-imp"
-          v-model="form.establismentYear"
+          v-model="form.establishmentYear"
         />
       </el-form-item>
 
