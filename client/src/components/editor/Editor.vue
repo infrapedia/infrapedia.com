@@ -7,6 +7,7 @@
     @dragleave.prevent="() => (drag.hover = false)"
   >
     <e-header
+      v-if="type != 'facilities'"
       :type="type"
       @close-search="closeSearchMode"
       @place-selected="handleSearchPlaceSelected"
@@ -81,7 +82,7 @@ import {
 import { getGeometries } from '../../services/api'
 import { categoriesDictionary } from '../userCreationForms/fields/dictionary'
 import elemntTypeValidator from '../../helpers/elemntTypeValidator'
-import { booleanEqual, point,lineString, lineSlice } from '@turf/turf'
+import { booleanEqual, point, lineString, lineSlice } from '@turf/turf'
 
 const onlyOneFeatureAllowed = ['cls', 'ixps']
 
