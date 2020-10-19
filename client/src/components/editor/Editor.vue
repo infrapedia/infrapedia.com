@@ -23,6 +23,25 @@
       <p class="m0 mt1"><strong>Lng:</strong> {{ infoBox.lng }}</p>
       <p class="m0 mt1"><strong>Zoom:</strong> {{ infoBox.zoom }}</p>
     </div>
+    <div
+      class="absolute information-box z-index20 p2 ml5 text-left"
+      :class="{ dark }"
+      v-if="type != 'facilities'"
+    >
+      <p class="m0" v-if="oneClickMessage.length == 1">
+        {{ oneClickMessage[0] }}
+      </p>
+      <template v-else-if="oneClickMessage.length == 2">
+        <p class="m0" v-html="oneClickMessage[0]" />
+        <p class="m0 mt1 inline-block" v-html="oneClickMessage[1]" />
+      </template>
+      <p class="m0 mt1" v-if="type != 'facilities'">
+        {{ doubleClickMessage[0] }}
+      </p>
+      <span class="inline-block ml1" v-else>
+        {{ doubleClickMessage[0] }}
+      </span>
+    </div>
     <properties-dialog
       :type="type"
       :mode="dialog.mode"
@@ -43,7 +62,6 @@ import { mapConfig } from '../../config/mapConfig'
 import {
   EDITOR_SET_FEATURES,
   EDITOR_FILE_CONVERTED,
-  EDITOR_GET_FEATURES_LIST,
   EDITOR_SET_FEATURES_LIST
 } from '../../events/editor'
 import { fCollectionFormat } from '../../helpers/featureCollection'
@@ -62,7 +80,8 @@ import {
 } from './index'
 import { getGeometries } from '../../services/api'
 import { categoriesDictionary } from '../userCreationForms/fields/dictionary'
-import { lineString, lineSlice, point, booleanEqual } from '@turf/turf'
+import elemntTypeValidator from '../../helpers/elemntTypeValidator'
+import { booleanEqual, point,lineString, lineSlice } from '@turf/turf'
 
 const onlyOneFeatureAllowed = ['cls', 'ixps']
 
@@ -100,18 +119,7 @@ export default {
     type: {
       type: String,
       default: () => '',
-      validator: function(t) {
-        return (
-          [
-            'cls',
-            'map',
-            'ixps',
-            'subsea',
-            'facilities',
-            'terrestrial-network'
-          ].indexOf(t) != -1
-        )
-      }
+      validator: elemntTypeValidator
     },
     form: {
       type: Object,
@@ -140,7 +148,6 @@ export default {
     bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetSceneFeaturesList)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
-    bus.$on(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
 
     // CATEGORIES RELATED EVENTS
     if (this.type == 'map') {
@@ -178,7 +185,6 @@ export default {
     bus.$off(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetSceneFeaturesList)
     bus.$off(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$off(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
-    bus.$off(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
 
     // CATEGORIES RELATED EVENTS
     if (this.type == 'map') {
@@ -217,6 +223,10 @@ export default {
     },
     async handleDrawSceneFeatures() {
       await this.handleRecreateDraw(null, false)
+      await this.$emit(
+        'features-list-change',
+        sceneDictionary.getCollectionList()
+      )
     },
     async handleDragAndDropGeojsonFiles(fc) {
       if (this.type != 'map') return
@@ -491,9 +501,6 @@ export default {
           map.getCanvas().style.cursor = ''
         })
       }
-    },
-    handleGetFeatures() {
-      this.$emit('features-list-change', sceneDictionary.getCollectionList())
     },
     handleSetSceneFeaturesList(list) {
       let r = {}
@@ -847,7 +854,6 @@ export default {
     },
     async handleBeforeCreateFeature(feature) {
       this.dialog.selectedFeature = feature
-
       if (feature.geometry.type != 'Point') {
         this.dialog.visible = true
         this.$once(

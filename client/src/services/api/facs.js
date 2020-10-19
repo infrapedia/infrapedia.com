@@ -137,12 +137,75 @@ export const createFacility = async ({
   owners,
   building,
   StartDate,
+  buildingSize,
+  grossColocationSize,
+  isCarrierNeutral,
+  isLoadingDocks,
+  enType,
+  pue,
+  rackHeight,
+  meetMeRooms,
+  meetingRooms,
+  platform,
+  totalPower,
+  floorLoadingCapacity,
+  utilityConnectionRedundancy,
+  maxRackPower,
+  mantrap,
+  backupPowerDuration,
+  backupPowerRedundancy,
+  coolingCapacity,
+  temperature,
+  humidity,
+  bulletProffGlass,
+  cctv,
+  securityGuards,
+  biometric,
+  spareParts,
+  carParking,
+  officeSpace,
+  stagingRooms,
+  breakRooms,
+  internetAccess,
   address
 }) => {
   url = `${apiConfig.url}/auth/facilities/add`
   form = new FormData()
 
   form.append('name', name)
+  form.append('buildingSize', buildingSize)
+  form.append('grossColocationSize', grossColocationSize)
+  form.append('floorLoadingCapacity', floorLoadingCapacity)
+  form.append('isCarrierNeutral', isCarrierNeutral)
+  form.append('isLoadingDocks', isLoadingDocks)
+  form.append('enType', enType)
+
+  form.append('rackHeight', rackHeight)
+  form.append('meetMeRooms', meetMeRooms)
+  form.append('platform', platform)
+  form.append('totalPower', totalPower)
+  form.append('pue', pue)
+  form.append('utilityConnectionRedundancy', utilityConnectionRedundancy)
+  form.append('maxRackPower', maxRackPower)
+  form.append('backupPowerDuration', backupPowerDuration)
+  form.append('backupPowerRedundancy', backupPowerRedundancy)
+  form.append('coolingCapacity', coolingCapacity)
+  form.append('temperature', temperature)
+  form.append('humidity', humidity)
+
+  form.append('bulletProffGlass', bulletProffGlass)
+  form.append('cctv', cctv)
+  form.append('securityGuards', securityGuards)
+  form.append('mantrap', mantrap)
+  form.append('biometric', biometric)
+  form.append('meetingRooms', meetingRooms)
+  form.append('breakRooms', breakRooms)
+  form.append('carParking', carParking)
+  form.append('spareParts', spareParts)
+  form.append('stagingRooms', stagingRooms)
+  form.append('officeSpace', officeSpace)
+  form.append('internetAccess', internetAccess)
+
   form.append('website', website)
   form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   form.append('t', t)
@@ -195,13 +258,77 @@ export const editFacility = async ({
   owners,
   building,
   StartDate,
-  address
+  address,
+  buildingSize,
+  grossColocationSize,
+  isCarrierNeutral,
+  isLoadingDocks,
+  enType,
+  pue,
+  rackHeight,
+  meetMeRooms,
+  meetingRooms,
+  platform,
+  totalPower,
+  floorLoadingCapacity,
+  utilityConnectionRedundancy,
+  maxRackPower,
+  mantrap,
+  backupPowerDuration,
+  backupPowerRedundancy,
+  coolingCapacity,
+  temperature,
+  humidity,
+  bulletProffGlass,
+  cctv,
+  securityGuards,
+  biometric,
+  spareParts,
+  carParking,
+  officeSpace,
+  stagingRooms,
+  breakRooms,
+  internetAccess
 }) => {
   url = `${apiConfig.url}/auth/facilities/edit`
   form = new FormData()
 
   form.append('_id', _id)
   form.append('name', name)
+
+  form.append('buildingSize', buildingSize)
+  form.append('grossColocationSize', grossColocationSize)
+  form.append('floorLoadingCapacity', floorLoadingCapacity)
+  form.append('isCarrierNeutral', isCarrierNeutral)
+  form.append('isLoadingDocks', isLoadingDocks)
+  form.append('enType', enType)
+
+  form.append('rackHeight', rackHeight)
+  form.append('meetMeRooms', meetMeRooms)
+  form.append('platform', platform)
+  form.append('totalPower', totalPower)
+  form.append('pue', pue)
+  form.append('utilityConnectionRedundancy', utilityConnectionRedundancy)
+  form.append('maxRackPower', maxRackPower)
+  form.append('backupPowerDuration', backupPowerDuration)
+  form.append('backupPowerRedundancy', backupPowerRedundancy)
+  form.append('coolingCapacity', coolingCapacity)
+  form.append('temperature', temperature)
+  form.append('humidity', humidity)
+
+  form.append('bulletProffGlass', bulletProffGlass)
+  form.append('cctv', cctv)
+  form.append('securityGuards', securityGuards)
+  form.append('mantrap', mantrap)
+  form.append('biometric', biometric)
+  form.append('meetingRooms', meetingRooms)
+  form.append('breakRooms', breakRooms)
+  form.append('carParking', carParking)
+  form.append('spareParts', spareParts)
+  form.append('stagingRooms', stagingRooms)
+  form.append('officeSpace', officeSpace)
+  form.append('internetAccess', internetAccess)
+
   form.append('website', website)
   form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   form.append('t', t)

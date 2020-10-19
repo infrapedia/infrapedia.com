@@ -161,6 +161,7 @@ export default {
     handleInputVisibility(visible) {
       if (!visible) {
         this.toggleInput(false)
+        this.$emit('blur')
         this.selected = null
       }
     },

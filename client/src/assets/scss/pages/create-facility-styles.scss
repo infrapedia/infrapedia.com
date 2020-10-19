@@ -1,0 +1,44 @@
+@import '../base/variables';
+
+.top-header {
+  background-color: $white-profile;
+  &.dark {
+    color: $white-partial;
+    background-color: darken($light-charcoal, 10%);
+  }
+}
+
+.body-wrapper {
+  height: 100%;
+  background-color: $white-full;
+  .circle {
+    background-color: lighten($dark-blue, 40%);
+    padding: 0;
+    &:hover {
+      background-color: darken($blue, 12%);
+    }
+    &.active {
+      background-color: $dark-blue;
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+  }
+  &.dark {
+    color: $white-partial;
+    background-color: $dark-charcoal;
+  }
+}
+
+.el-card {
+  width: 88vw;
+  margin: 0 auto;
+
+  legend {
+    background-color: $white-full;
+    &.dark {
+      color: $white-partial;
+      background-color: $dark-charcoal;
+    }
+  }
+}
+

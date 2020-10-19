@@ -63,6 +63,12 @@ const profileLinks = [
     adminOnly: true
   },
   {
+    label: 'CSP',
+    url: '/user/section/cloud-service-providers',
+    icon: ['fas', 'cloud'],
+    adminOnly: true
+  },
+  {
     label: 'Maps',
     icon: ['fas', 'map-marked-alt'],
     url: '/user/section/create?id=map',
