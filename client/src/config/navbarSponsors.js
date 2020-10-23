@@ -1,17 +1,16 @@
 const sponsors = [
   {
-    url: 'https://www.catchpoint.com/',
+    url: 'http://bit.ly/3mkhjdR',
     alt: 'catchpoint advertiser',
     src: 'https://cdn1.infrapedia.com/assets/img/catchpoint-logo.png'
   },
   {
-    url:
-      'https://ipv4.global/?utm_source=digitalads&utm_medium=banner&utm_campaign=networkatlas&utm_content=sidebar',
+    url: 'http://bit.ly/2TkC9gC',
     alt: 'ipv4 advertiser',
     src: 'https://cdn1.infrapedia.com/assets/img/ipv4global-footer.png'
   },
   {
-    url: 'https://cloud.google.com/',
+    url: 'http://bit.ly/3kpe6sB',
     alt: 'google cloud advertiser',
     src: 'https://cdn1.infrapedia.com/assets/img/cloud-logo.svg'
   }

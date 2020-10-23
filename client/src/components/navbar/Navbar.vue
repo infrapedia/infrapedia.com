@@ -137,7 +137,11 @@
               role="listitem"
             >
               <div class="list-item" data-no-hover-bg="true">
-                <a :href="sponsors[0].url" target="_blank">
+                <a
+                  :href="sponsors[0].url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <el-image
                     :src="sponsors[0].src"
                     lazy
@@ -157,7 +161,11 @@
               role="listitem"
             >
               <div class="list-item" data-no-hover-bg="true">
-                <a :href="sponsors[2].url" target="_blank">
+                <a
+                  :href="sponsors[2].url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <el-image
                     lazy
                     :src="sponsors[2].src"
@@ -176,7 +184,11 @@
               role="listitem"
             >
               <div class="list-item" data-no-hover-bg="true">
-                <a :href="sponsors[1].url" target="_blank">
+                <a
+                  :href="sponsors[1].url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <el-image
                     lazy
                     :src="sponsors[1].src"
