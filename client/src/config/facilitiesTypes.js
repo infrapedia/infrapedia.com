@@ -10,6 +10,7 @@ export const facilitiesTypes = [
 ]
 
 export const facilitiesBuildingTypes = [
+  { label: 'data center', value: 'data_center' },
   { label: 'Building', value: 'building' },
   { label: 'warehouse', value: 'warehouse' },
   { label: 'university', value: 'university' },
@@ -21,7 +22,6 @@ export const facilitiesBuildingTypes = [
   { label: 'restaurant', value: 'restaurant' },
   { label: 'public', value: 'public' },
   { label: 'office', value: 'office' },
-  { label: 'data center', value: 'data_center' },
   { label: 'commercial', value: 'commercial' },
   { label: 'apartments', value: 'apartments' },
   { label: 'industrial', value: 'industrial' }

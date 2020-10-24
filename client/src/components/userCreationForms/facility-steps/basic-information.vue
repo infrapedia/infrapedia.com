@@ -44,40 +44,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="Type">
-              <el-select
-                v-model="form.t"
-                :disabled="isViewMode"
-                class="w-fit-full"
-                :class="{ dark }"
-                placeholder
-              >
-                <el-option
-                  v-for="(opt, i) in facilitiesTypes"
-                  :key="i"
-                  :label="opt.label"
-                  :value="opt.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item
-              label="Ready For Service (RFS)"
-              prop="StartDate"
-              :rules="formRules.StartDate"
-            >
-              <el-date-picker
-                class="inline-block w-fit-full-imp"
-                v-model="form.StartDate"
-                type="year"
-                :class="{ dark }"
-                :disabled="isViewMode"
-                placeholder
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
             <el-form-item label="Type of building">
               <el-select
                 v-model="form.building"
@@ -96,6 +62,22 @@
                   </span>
                 </el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item
+              label="Ready For Service (RFS)"
+              prop="StartDate"
+              :rules="formRules.StartDate"
+            >
+              <el-date-picker
+                class="inline-block w-fit-full-imp"
+                v-model="form.StartDate"
+                type="year"
+                :class="{ dark }"
+                :disabled="isViewMode"
+                placeholder
+              />
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -120,6 +102,39 @@
                   :value="item"
                 />
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item
+              label="Owners"
+              prop="owners"
+              :rules="formRules.owners"
+            >
+              <v-multi-select
+                :mode="multiSelectsMode"
+                :is-required="true"
+                :is-field-empty="isOwnersSelectEmpty"
+                :options="ownersList"
+                @input="loadOwnersSearch"
+                @blur="validateOwnerField"
+                :loading="isLoadingOwners"
+                :value="multiSelectsMode == 'create' ? [] : form.owners"
+                @values-change="handleOwnersSelectChange"
+                @remove="handleRemoveItem('owners', $event)"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="Service Providers" prop="sProviders">
+              <v-multi-select
+                :mode="multiSelectsMode"
+                :options="ownersList"
+                @input="loadOwnersSearch"
+                :loading="isLoadingOwners"
+                :value="multiSelectsMode == 'create' ? [] : form.sProviders"
+                @values-change="handleOwnersSelectChange"
+                @remove="handleRemoveItem('sProviders', $event)"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -216,19 +231,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="IXPs">
-              <v-multi-select
-                :options="ixpsList"
-                :mode="multiSelectsMode"
-                @input="loadIXpsSearch"
-                :loading="isLoadingIXPs"
-                :value="multiSelectsMode == 'create' ? [] : form.ixps"
-                @values-change="handleIxpsSelectChange"
-                @remove="handleIxpsSelectRemoveItem"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
             <el-form-item
               label="Owners"
               prop="owners"
@@ -244,7 +246,59 @@
                 :loading="isLoadingOwners"
                 :value="multiSelectsMode == 'create' ? [] : form.owners"
                 @values-change="handleOwnersSelectChange"
-                @remove="handleOwnersSelectRemoveItem"
+                @remove="handleRemoveItem('owners', $event)"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="IXPs">
+              <v-multi-select
+                :options="ixpsList"
+                :mode="multiSelectsMode"
+                @input="loadIXpsSearch"
+                :loading="isLoadingIXPs"
+                :value="multiSelectsMode == 'create' ? [] : form.ixps"
+                @values-change="handleIxpsSelectChange"
+                @remove="handleIxpsSelectRemoveItem"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="Subsea cables" prop="subsea">
+              <v-multi-select
+                :options="subseaList"
+                :mode="multiSelectsMode"
+                :loading="isLoadingCables"
+                @input="loadCablesSearch($event, 'subsea')"
+                @remove="handleSubseaCablesSelection(form.subsea)"
+                @values-change="handleSubseaCablesSelection"
+                :value="mode == 'create' ? [] : form.subsea"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="Terrestrial Networks" prop="terrestrial">
+              <v-multi-select
+                :options="terrestrialsList"
+                :mode="multiSelectsMode"
+                :loading="isLoadingCables"
+                @input="loadCablesSearch($event, 'terrestrials')"
+                :value="multiSelectsMode == 'create' ? [] : form.terrestrials"
+                @values-change="handleSubseaCablesSelection"
+                @remove="handleSubseaCablesSelection(form.terrestrials)"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="CSP" prop="csp">
+              <v-multi-select
+                :mode="multiSelectsMode"
+                :options="ownersList"
+                @input="loadOwnersSearch"
+                :loading="isLoadingOwners"
+                :value="multiSelectsMode == 'create' ? [] : form.csp"
+                @values-change="handleOwnersSelectChange"
+                @remove="handleRemoveItem('csp', $event)"
               />
             </el-form-item>
           </el-col>
@@ -297,6 +351,11 @@ import {
 import { fCollectionFormat } from '../../../helpers/featureCollection'
 import { sceneDictionary } from '../../../components/editor'
 import { STORAGE__WATCH } from '../../../lib/Dictionary'
+import {
+  getSearchByCablesS,
+  getCablesGeom,
+  getSearchByCablesT
+} from '../../../services/api/cables'
 
 export default {
   name: 'BasicInformation',
@@ -316,6 +375,9 @@ export default {
       state: '',
       zipcode: ''
     },
+    subseaList: [],
+    terrestrialsList: [],
+    isLoadingCables: false,
     multiSelectsMode: 'create',
     isNameRepeated: false,
     isOwnersSelectEmpty: false,
@@ -393,6 +455,10 @@ export default {
             message: 'Please pick a date'
           }
         ],
+        csp: [],
+        subsea: [],
+        sProviders: [],
+        terrestrial: [],
         owners: [
           {
             type: 'array',
@@ -439,6 +505,47 @@ export default {
     }
   },
   methods: {
+    async handleSubseaCablesSelection(cablesSelected) {
+      this.form.cables = cablesSelected
+      const {
+        data: { r: featureCollection = [] }
+      } = (await getCablesGeom({
+        ids: cablesSelected.map(c => c._id),
+        user_id: this.$auth.getUserID()
+      })) || {
+        data: { featureCollection: [] }
+      }
+      return this.$emit('set-selection-onto-map', {
+        fc: Array.isArray(featureCollection)
+          ? fCollectionFormat(featureCollection)
+          : featureCollection
+      })
+    },
+    /**
+     * @param s { String } - search queried from cables select input
+     */
+    async loadCablesSearch(s, type) {
+      if (s === '') return
+      this.isLoadingCables = true
+      let method = () => {}
+      switch (type) {
+        case 'terrestrials':
+          method = getSearchByCablesT
+          break
+        default:
+          method = getSearchByCablesS
+          break
+      }
+      const { data = [] } = (await method({
+        user_id: await this.$auth.getUserID(),
+        s
+      })) || { data: [] }
+
+      if (type == 'terrestrials') this.terrestrialsList = data
+      else this.subseaList = data
+
+      this.isLoadingCables = false
+    },
     handleFeaturesListChange() {
       this.form.geom = sceneDictionary.getCollectionList()
     },
@@ -508,8 +615,8 @@ export default {
       this.ownersList = owners
       this.isLoadingOwners = false
     },
-    handleOwnersSelectRemoveItem(_id) {
-      this.form.owners = this.form.owners.filter(item => item._id != _id)
+    handleRemoveItem(key, _id) {
+      this.form[key] = this.form[key].filter(item => item._id != _id)
     },
     async handleIxpsSelectChange(data) {
       this.form.ixps = Array.from(data)

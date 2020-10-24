@@ -48,8 +48,6 @@ export default {
         view = () => import('./facility-steps/power-details.vue')
       } else if (this.step == 4) {
         view = () => import('./facility-steps/security-details.vue')
-      } else if (this.step == 5) {
-        view = () => import('./facility-steps/onsite-services.vue')
       }
       return view
     },

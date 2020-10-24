@@ -12,13 +12,13 @@
 
     <div class="body-wrapper pb50" :class="{ dark }">
       <header class="flex justify-content-center align-items-center h10 pt2">
-        <div v-for="i in 5" :key="i">
+        <div v-for="(title, i) in btnSteps" :key="i">
           <el-button
             circle
             class="transparent h5 w5 mr2 no-border circle cursor-pointer transition-all"
-            title="Basic information"
-            :class="{ active: step == i }"
-            @click="moveToStep(i)"
+            :title="title"
+            :class="{ active: step == i + 1 }"
+            @click="moveToStep(i + 1)"
           />
         </div>
       </header>
@@ -94,6 +94,9 @@ export default {
       point: '',
       type: '',
       address: [],
+      sProviders: [],
+      subsea: [],
+      terrestrials: [],
       buildingSize: 0,
       rackHeight: 0,
       meetMeRooms: 0,
@@ -107,14 +110,20 @@ export default {
       backupPowerRedundancy: '',
       utilityConnectionRedundancy: '',
       totalPower: 0,
-      temperature: 0,
+      temperature: {
+        value: 0,
+        variant: 0
+      },
       coolingCapacity: 0,
-      bulletProffGlass: '',
-      mantrap: '',
-      securityGuards: '',
-      cctv: '',
-      biometric: '',
-      humidity: 0,
+      bulletProffGlass: false,
+      mantrap: false,
+      securityGuards: false,
+      cctv: false,
+      biometric: false,
+      humidity: {
+        value: 0,
+        variant: 0
+      },
       maxRackPower: 0,
       backupPowerDuration: 0,
       pue: 0.0,
@@ -138,8 +147,16 @@ export default {
       let text = ['Basic Information', 'Specifications']
       return this.step <= 1 ? text[0] : text[1]
     },
+    btnSteps() {
+      return [
+        'Basic information',
+        'Building details',
+        'Power and Cooling details',
+        'Security and Onsite services details'
+      ]
+    },
     nextBtnText() {
-      return this.step <= 4 ? 'Next' : 'Save'
+      return this.step <= 3 ? 'Next' : 'Save'
     },
     dark() {
       return this.$store.state.isDark
@@ -174,7 +191,7 @@ export default {
       this.step = num
     },
     handleClickNextBtn() {
-      if (this.step == 5) {
+      if (this.step == 4) {
         this.handleSendData(this.mode)
         return
       }

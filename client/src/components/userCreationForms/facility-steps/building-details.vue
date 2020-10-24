@@ -73,6 +73,8 @@
                 <el-select
                   class="w-fit-full"
                   v-model="form.enType"
+                  multiple
+                  filterable
                   placeholder
                   :class="{ dark }"
                 >
@@ -86,7 +88,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="24">
-              <el-form-item label="Rack Height" :required="form.type == 'Rack'">
+              <el-form-item
+                label="Rack Height (U)"
+                :required="form.type == 'Rack'"
+              >
                 <el-input-number
                   :class="{ dark }"
                   class="w-fit-full"
@@ -98,18 +103,18 @@
             <el-col :span="24">
               <el-form-item label="Meet me rooms" class="pr2 pl2">
                 <br />
-                <el-slider v-model="form.meetMeRooms" />
+                <el-slider v-model="form.meetMeRooms" show-input />
               </el-form-item>
             </el-col>
             <el-col :span="24">
-              <el-form-item label="Platform">
+              <el-form-item label="Satellite/Antenna Platform">
                 <br />
                 <el-radio-group v-model="form.platform">
-                  <el-radio-button label="antenna">
-                    Antenna
+                  <el-radio-button :label="true">
+                    Yes
                   </el-radio-button>
-                  <el-radio-button label="satellite">
-                    Satellite
+                  <el-radio-button :label="false">
+                    No
                   </el-radio-button>
                 </el-radio-group>
               </el-form-item>

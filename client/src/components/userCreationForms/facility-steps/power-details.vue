@@ -105,11 +105,22 @@
               </el-form-item>
             </el-col>
             <el-col :span="24">
-              <el-form-item label="Temperature">
-                <el-input-number
+              <el-form-item label="Temperature (Celsius)">
+                <br />
+                <el-slider
                   class="w-fit-full"
-                  controls-position="right"
-                  v-model="form.temperature"
+                  v-model="form.temperature.value"
+                  show-input
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="Temperature - + (Celsius)">
+                <br />
+                <el-slider
+                  class="w-fit-full"
+                  v-model="form.temperature.variant"
+                  show-input
                 />
               </el-form-item>
             </el-col>
@@ -118,9 +129,21 @@
         <el-col :span="12">
           <el-row>
             <el-col :span="24">
-              <el-form-item label="Humidity" class="pr4 pl4">
+              <el-form-item label="Humidity (%)" class="pr4 pl4">
                 <br />
-                <el-slider class="w-fit-full" v-model="form.humidity" />
+                <el-slider
+                  class="w-fit-full"
+                  v-model="form.humidity.value"
+                  show-input
+                />
+              </el-form-item>
+              <el-form-item label="Humidity - + (%)" class="pr4 pl4">
+                <br />
+                <el-slider
+                  class="w-fit-full"
+                  v-model="form.humidity.variant"
+                  show-input
+                />
               </el-form-item>
             </el-col>
           </el-row>
