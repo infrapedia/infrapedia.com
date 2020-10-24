@@ -141,6 +141,7 @@
                   :href="sponsors[0].url"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onclick="trackOutboundLink('http://bit.ly/3mkhjdR')"
                 >
                   <el-image
                     :src="sponsors[0].src"
@@ -165,6 +166,7 @@
                   :href="sponsors[2].url"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onclick="trackOutboundLink('http://bit.ly/3kpe6sB')"
                 >
                   <el-image
                     lazy
@@ -188,6 +190,7 @@
                   :href="sponsors[1].url"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onclick="trackOutboundLink('http://bit.ly/2TkC9gC')"
                 >
                   <el-image
                     lazy

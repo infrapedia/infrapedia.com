@@ -9,6 +9,35 @@
     <title>
       The world’s largest network and datacenter infrastructure atlas
     </title>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','<% VUE_APP_GOOGLE_TAG_MANAGER %>');</script>
+    <!-- End Google Tag Manager -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<% VUE_APP_GOOGLE_ANALYTICS %>"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', '<% VUE_APP_GOOGLE_ANALYTICS %>');
+    </script>
+    <!-- End Global site tag (gtag.js) - Google Analytics -->
+    <script>
+      const trackOutboundLink = function(url) {
+        gtag('event', 'click', {
+          'event_category': 'outbound',
+          'event_label': url,
+          'transport_type': 'beacon',
+          'event_callback': function() {
+            document.location = url;
+          }
+        });
+      }
+    </script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -27,13 +56,6 @@
         ]
       }
     </script>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-MRF7LS4');</script>
-    <!-- End Google Tag Manager -->
     <link
       rel="stylesheet"
       href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css"
@@ -41,6 +63,9 @@
   </head>
 
   <body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<% VUE_APP_GOOGLE_TAG_MANAGER %>"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <noscript>
       <strong
         >We're sorry but client doesn't work properly without JavaScript
@@ -48,9 +73,6 @@
       >
     </noscript>
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MRF7LS4"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
     <div id="app" />
     <script async defer>
       window.NREUM || (NREUM = {}),
@@ -1711,20 +1733,6 @@
         applicationID: '592160543',
         sa: 1
       }
-    </script>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script
-      async
-      defer
-      src="https://www.googletagmanager.com/gtag/js?id=<%= VUE_APP_GOOGLE_ANALYTICS %>"
-    ></script>
-    <script async defer>
-      window.dataLayer = window.dataLayer || []
-      function gtag() {
-        dataLayer.push(arguments)
-      }
-      gtag('js', new Date())
-      gtag('config', '<%= VUE_APP_GOOGLE_ANALYTICS %>')
     </script>
     <script
       async
