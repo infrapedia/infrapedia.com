@@ -164,7 +164,7 @@ export default {
 
       switch (this.creationType) {
         case 'cls':
-          view = import('../../../components/userCreationForms/cls')
+          view = () => import('../../../components/userCreationForms/cls')
           break
         case 'map':
           view = () => import('../../../components/userCreationForms/map')

@@ -24,25 +24,6 @@
       <p class="m0 mt1"><strong>Lng:</strong> {{ infoBox.lng }}</p>
       <p class="m0 mt1"><strong>Zoom:</strong> {{ infoBox.zoom }}</p>
     </div>
-    <div
-      class="absolute information-box z-index20 p2 ml5 text-left"
-      :class="{ dark }"
-      v-if="type != 'facilities'"
-    >
-      <p class="m0" v-if="oneClickMessage.length == 1">
-        {{ oneClickMessage[0] }}
-      </p>
-      <template v-else-if="oneClickMessage.length == 2">
-        <p class="m0" v-html="oneClickMessage[0]" />
-        <p class="m0 mt1 inline-block" v-html="oneClickMessage[1]" />
-      </template>
-      <p class="m0 mt1" v-if="type != 'facilities'">
-        {{ doubleClickMessage[0] }}
-      </p>
-      <span class="inline-block ml1" v-else>
-        {{ doubleClickMessage[0] }}
-      </span>
-    </div>
     <properties-dialog
       :type="type"
       :mode="dialog.mode"
