@@ -3,7 +3,7 @@
     <header slot="header" class="w-fit-full mb8">
       <h1 class="title capitalize">{{ title }} CLS</h1>
     </header>
-    <div>
+    <el-form>
       <el-form-item label="Name" required prop="name">
         <el-input
           :class="{ dark }"
@@ -116,7 +116,7 @@
           {{ saveBtn }}
         </el-button>
       </el-form-item>
-    </div>
+    </el-form>
   </div>
 </template>
 
