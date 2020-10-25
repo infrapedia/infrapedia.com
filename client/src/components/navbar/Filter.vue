@@ -1,104 +1,209 @@
 <template>
-  <div class="filter-btn-wrapper" :class="{ dark, light: !dark }">
-    <el-popover
-      :visible-arrow="false"
-      placement="bottom-end"
-      width="320"
-      v-click-outside="closeFilter"
-      trigger="manual"
-      transition="el-zoom-in-top"
-      v-model="isMenuFilter"
-    >
-      <div class="p0">
-        <header
-          class="header no-selectable h8 flex justify-content-space-between pr7 pl6 pt2 pb2 align-items-center"
-          :class="{ dark, light: !dark }"
-        >
-          <span class="sm-icon">
-            <fa :icon="['fas', 'filter']" class="mr2" />
-            <strong class="fs-mdlarge">Filters</strong>
-          </span>
-          <span
-            class="fs-mdlarge cursor-pointer"
-            @click="toggleFilterVisiblity(false)"
+  <div
+    class="filter-btn-wrapper"
+    :class="{ dark, light: !dark }"
+    v-click-outside="closeFilter"
+  >
+    <div class="hidden-md-and-down">
+      <el-popover
+        :visible-arrow="false"
+        placement="bottom-end"
+        class="hidden-md-and-down"
+        width="320"
+        trigger="manual"
+        transition="el-zoom-in-top"
+        v-model="isMenuFilter"
+      >
+        <div class="p0 hidden-md-and-down">
+          <header
+            class="header no-selectable h8 flex justify-content-space-between pr7 pl6 pt2 pb2 align-items-center"
+            :class="{ dark, light: !dark }"
           >
-            <fa :icon="['fas', 'times']" />
-          </span>
-        </header>
-        <ul class="filters-wrapper" :class="{ dark, light: !dark }">
-          <li class="pb4 pt6 pr4 pl4 flex justify-content-space-between">
-            <label for="subseaonly">Subsea only</label>
-            <el-switch
-              name="subseaonly"
-              v-model="filters.isSubseaOnly"
-              :active-color="colorBaseOnThemeState"
-              @change="emitSubseaSelection"
-            />
-          </li>
-          <el-divider class="m0" />
-          <li class="flex justify-content-space-between pt10 pb10 pr4 pl4">
-            <div class="flex column">
-              <label for="activeonly">Active only</label>
-              <label for="futureonly" class="mt8">Future only (RFS)</label>
-            </div>
-            <div
-              class="el-checkbox-group flex column radio"
-              role="group"
-              aria-label="checkbox-group"
-              id="radio-like-wrapper"
+            <span class="sm-icon">
+              <fa :icon="['fas', 'filter']" class="mr2" />
+              <strong class="fs-mdlarge">Filters</strong>
+            </span>
+            <span
+              class="fs-mdlarge cursor-pointer"
+              @click="toggleFilterVisiblity(false)"
             >
-              <el-checkbox
-                class="mr1"
-                v-model="filters.radio"
-                :true-label="0"
-                false-label="no-active"
-                @change="emitRadioSelection"
-                >{{ '' + '' }}</el-checkbox
-              >
-              <el-checkbox
-                class="mt9"
-                v-model="filters.radio"
-                :true-label="1"
-                false-label="no-future"
-                @change="emitRadioSelection"
-                >{{ '' + '' }}</el-checkbox
-              >
-            </div>
-          </li>
-          <el-divider class="m0" />
-          <li class="p4">
-            <header class="flex justify-content-space-between pb14 pr4 pl-1">
-              <label for="timemachine">Subsea time machine (EOL)</label>
-              <el-checkbox
-                name="timemachine"
-                v-model="filters.isTimeMachineActive"
-                @change="emitTimeMachineSelection"
+              <fa :icon="['fas', 'times']" />
+            </span>
+          </header>
+          <ul class="filters-wrapper" :class="{ dark, light: !dark }">
+            <li class="pb4 pt6 pr4 pl4 flex justify-content-space-between">
+              <label for="subseaonly">Subsea only</label>
+              <el-switch
+                name="subseaonly"
+                v-model="filters.isSubseaOnly"
+                :active-color="colorBaseOnThemeState"
+                @change="emitSubseaSelection"
               />
-            </header>
-            <div class="w-fit-full vertical-align pb5">
-              <span class="mr5">{{ minYears }}</span>
-              <el-slider
-                style="width: 55%"
-                :disabled="!filters.isTimeMachineActive"
-                :min="minYears"
-                :max="maxYears"
-                v-model="filters.year"
-                @change="emitTimeMachineYear"
-              />
-              <span class="ml5">{{ maxYears }}</span>
-            </div>
-          </li>
-        </ul>
-      </div>
+            </li>
+            <el-divider class="m0" />
+            <li class="flex justify-content-space-between pt10 pb10 pr4 pl4">
+              <div class="flex column">
+                <label for="activeonly">Active only</label>
+                <label for="futureonly" class="mt8">Future only (RFS)</label>
+              </div>
+              <div
+                class="el-checkbox-group flex column radio"
+                role="group"
+                aria-label="checkbox-group"
+                id="radio-like-wrapper"
+              >
+                <el-checkbox
+                  class="mr1"
+                  v-model="filters.radio"
+                  :true-label="0"
+                  false-label="no-active"
+                  @change="emitRadioSelection"
+                  >{{ '' + '' }}</el-checkbox
+                >
+                <el-checkbox
+                  class="mt9"
+                  v-model="filters.radio"
+                  :true-label="1"
+                  false-label="no-future"
+                  @change="emitRadioSelection"
+                  >{{ '' + '' }}</el-checkbox
+                >
+              </div>
+            </li>
+            <el-divider class="m0" />
+            <li class="p4">
+              <header class="flex justify-content-space-between pb14 pr4 pl-1">
+                <label for="timemachine">Subsea time machine (EOL)</label>
+                <el-checkbox
+                  name="timemachine"
+                  v-model="filters.isTimeMachineActive"
+                  @change="emitTimeMachineSelection"
+                />
+              </header>
+              <div class="w-fit-full vertical-align pb5">
+                <span class="mr5">{{ minYears }}</span>
+                <el-slider
+                  style="width: 55%"
+                  :disabled="!filters.isTimeMachineActive"
+                  :min="minYears"
+                  :max="maxYears"
+                  v-model="filters.year"
+                  @change="emitTimeMachineYear"
+                />
+                <span class="ml5">{{ maxYears }}</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <el-button
+          type="warning"
+          slot="reference"
+          class="circle w7 h7 p0 vertical-align hidden-md-and-down"
+          @click="toggleFilterVisiblity(!isMenuFilter)"
+        >
+          <fa :icon="['fas', 'filter']" class="xsm-icon" />
+        </el-button>
+      </el-popover>
+    </div>
+    <div class="hidden-md-and-up">
       <el-button
         type="warning"
-        slot="reference"
         class="circle w7 h7 p0 vertical-align"
-        @click="toggleFilterVisiblity(!isMenuFilter)"
+        @click.stop="toggleFilterVisiblity(!isMenuFilter)"
       >
         <fa :icon="['fas', 'filter']" class="xsm-icon" />
       </el-button>
-    </el-popover>
+      <transition
+        name="animated fast"
+        enter-active-class="fadeIn"
+        leave-active-class="fadeOut"
+      >
+        <div
+          v-if="isMenuFilter"
+          :class="{ dark, light: !dark }"
+          class="mobile-filter-menu"
+        >
+          <header
+            class="header no-selectable h8 flex justify-content-space-between pr7 pl6 pt2 pb2 align-items-center"
+            :class="{ dark, light: !dark }"
+          >
+            <span class="sm-icon">
+              <fa :icon="['fas', 'filter']" class="mr2" />
+              <strong class="fs-mdlarge">Filters</strong>
+            </span>
+            <el-button
+              icon="el-icon-close"
+              class="transparent no-border fs-mdlarge cursor-pointer text-white"
+              @click.stop="toggleFilterVisiblity(false)"
+            />
+          </header>
+          <ul class="filters-wrapper" :class="{ dark, light: !dark }">
+            <li class="pb4 pt6 pr4 pl4 flex justify-content-space-between">
+              <label for="subseaonly">Subsea only</label>
+              <el-switch
+                name="subseaonly"
+                v-model="filters.isSubseaOnly"
+                :active-color="colorBaseOnThemeState"
+                @change="emitSubseaSelection"
+              />
+            </li>
+            <el-divider class="m0" />
+            <li class="flex justify-content-space-between pt10 pb10 pr4 pl4">
+              <div class="flex column">
+                <label for="activeonly">Active only</label>
+                <label for="futureonly" class="mt8">Future only (RFS)</label>
+              </div>
+              <div
+                class="el-checkbox-group flex column radio"
+                role="group"
+                aria-label="checkbox-group"
+                id="radio-like-wrapper"
+              >
+                <el-checkbox
+                  class="mr1"
+                  v-model="filters.radio"
+                  :true-label="0"
+                  false-label="no-active"
+                  @change="emitRadioSelection"
+                  >{{ '' + '' }}</el-checkbox
+                >
+                <el-checkbox
+                  class="mt9"
+                  v-model="filters.radio"
+                  :true-label="1"
+                  false-label="no-future"
+                  @change="emitRadioSelection"
+                  >{{ '' + '' }}</el-checkbox
+                >
+              </div>
+            </li>
+            <el-divider class="m0" />
+            <li class="p4">
+              <header class="flex justify-content-space-between pb14 pr4 pl-1">
+                <label for="timemachine">Subsea time machine (EOL)</label>
+                <el-checkbox
+                  name="timemachine"
+                  v-model="filters.isTimeMachineActive"
+                  @change="emitTimeMachineSelection"
+                />
+              </header>
+              <div class="w-fit-full vertical-align pb5">
+                <span class="mr5">{{ minYears }}</span>
+                <el-slider
+                  style="width: 55%"
+                  :disabled="!filters.isTimeMachineActive"
+                  :min="minYears"
+                  :max="maxYears"
+                  v-model="filters.year"
+                  @change="emitTimeMachineYear"
+                />
+                <span class="ml5">{{ maxYears }}</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </transition>
+    </div>
   </div>
 </template>
 

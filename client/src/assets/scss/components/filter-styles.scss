@@ -1,8 +1,27 @@
 @import '../helpers/atomic-classes';
 @import '../base/variables';
+
+.mobile-filter-menu {
+  position: fixed;
+  z-index: 200;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
 /*
 *   THEME VARIANT'S
 */
+
+.mobile-filter-menu.light {
+  color: $dark-charcoal;
+  background-color: $white-full;
+}
+.mobile-filter-menu.dark {
+  background-color: $dark-charcoal;
+  color: $white-hsl;
+}
 
 .header.light {
   color: $white-partial;
