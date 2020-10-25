@@ -11,6 +11,7 @@
           v-if="isUserNavbar"
           size="mini"
           icon="el-icon-menu"
+          title="Adjust aside width"
           class="no-border hidden-md-and-down"
           :class="{ dark }"
           @click="$emit('toggle-aside-width')"
