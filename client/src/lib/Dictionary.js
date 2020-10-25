@@ -48,6 +48,14 @@ export default class Dictionary extends EventEmitter {
     return arr
   }
 
+  async setFromCollectionList(list) {
+    if (Array.isArray(list) && list.length > 0) {
+      for await (let ft of list) {
+        this.add(ft.properties.editorID, ft)
+      }
+    }
+  }
+
   getRaw() {
     return this.__storage
   }

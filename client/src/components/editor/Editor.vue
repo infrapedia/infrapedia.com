@@ -498,10 +498,16 @@ export default {
     async handleFileConverted(fc) {
       if (!fc.features.length) return
 
-      fc.features.forEach(ft => {
-        let ftWithId = setFeatureEditorID(ft)
-        sceneDictionary.add(ftWithId.editorID, ftWithId)
-      })
+      // We are asumming that if the first feature has an editorID
+      // All of them have an editorID as well
+      if (!fc.features[0].properties.editorID) {
+        fc.features.forEach(ft => {
+          let ftWithId = setFeatureEditorID(ft)
+          sceneDictionary.add(ftWithId.editorID, ftWithId)
+        })
+      } else {
+        await sceneDictionary.setFromCollectionList(fc.features)
+      }
 
       try {
         const fc_final = fCollectionFormat(sceneDictionary.getCollectionList())
