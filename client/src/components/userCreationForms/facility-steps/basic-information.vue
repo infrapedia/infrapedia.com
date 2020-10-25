@@ -53,7 +53,7 @@
                 placeholder
               >
                 <el-option
-                  v-for="(opt, i) in facilitiesBuildingTypes"
+                  v-for="(opt, i) in facilitiesTypes"
                   :key="i"
                   :value="opt.value"
                 >
@@ -80,6 +80,28 @@
               />
             </el-form-item>
           </el-col>
+          <el-col :span="24">
+            <el-form-item label="Type">
+              <el-select
+                v-model="form.type"
+                class="w-fit-full"
+                :class="{ dark }"
+                :disabled="isViewMode"
+                placeholder
+              >
+                <el-option
+                  v-for="(opt, i) in facilitiesBuildingTypes"
+                  :key="i"
+                  :value="opt.value"
+                >
+                  <span class="capitalize">
+                    {{ opt.label }}
+                  </span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
           <el-col :span="24">
             <el-form-item label="Tags">
               <el-select

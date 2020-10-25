@@ -10,6 +10,8 @@
             <el-col :span="24">
               <el-form-item label="Total Power (Megawatts)" required>
                 <el-input-number
+                  :precision="2"
+                  :step="0.1"
                   class="w-fit-full"
                   controls-position="right"
                   v-model="form.totalPower"
@@ -19,7 +21,7 @@
             <el-col :span="24">
               <el-form-item label="PUE">
                 <el-input-number
-                  :precision="1"
+                  :precision="2"
                   :step="0.1"
                   class="w-fit-full"
                   controls-position="right"
@@ -51,6 +53,8 @@
             <el-col :span="24">
               <el-form-item label="Max Rack Power (Megawatts)">
                 <el-input-number
+                  :precision="2"
+                  :step="0.1"
                   class="w-fit-full"
                   controls-position="right"
                   v-model="form.maxRackPower"
