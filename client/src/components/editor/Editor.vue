@@ -500,7 +500,7 @@ export default {
 
       fc.features.forEach(ft => {
         let ftWithId = setFeatureEditorID(ft)
-        sceneDictionary.add(ftWithId._id, ftWithId)
+        sceneDictionary.add(ftWithId.editorID, ftWithId)
       })
 
       try {
