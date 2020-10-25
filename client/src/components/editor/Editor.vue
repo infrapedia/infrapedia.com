@@ -497,12 +497,12 @@ export default {
     },
     async handleFileConverted(fc) {
       if (!fc.features.length) return
-      {
-        let featuresList = fc.features.map(ft => setFeatureEditorID(ft))
-        featuresList.forEach(ft => {
-          sceneDictionary.add(ft.editorID, ft)
-        })
-      }
+
+      fc.features.forEach(ft => {
+        let ftWithId = setFeatureEditorID(ft)
+        sceneDictionary.add(ftWithId._id, ftWithId)
+      })
+
       try {
         const fc_final = fCollectionFormat(sceneDictionary.getCollectionList())
         updateDrawnFeatureDataSource(this.map, fc_final.features)

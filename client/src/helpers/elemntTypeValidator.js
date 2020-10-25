@@ -7,6 +7,7 @@ const allowedCreationTypes = [
   'organization',
   'subsea cable',
   'facilities',
+  'terrestrial-network',
   'network'
 ]
 
