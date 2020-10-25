@@ -40,7 +40,7 @@
             type="text"
             class="inline-flex no-border-radius align-items-center pl8 color-inherit h-fit-full w-fit-full no-outline"
             @click="goToRoute(link.url)"
-            :class="{ dark, light: !dark }"
+            :class="{ dark, light: !dark, 'hidden-md-and-down': i > 1 }"
           >
             <fa :icon="link.icon" class="mr2" /> {{ link.label }}
           </el-button>

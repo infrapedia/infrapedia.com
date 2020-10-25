@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute mainw">
+  <div class="absolute mainw hidden-md-and-down">
     <el-popover
       :visible-arrow="false"
       v-click-outside="close"
