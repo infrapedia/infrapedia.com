@@ -33,12 +33,20 @@
 }
 
 .application.light {
+  .sm-icon {
+    color: $dark-charcoal;
+  }
+
   .full-screen {
     background-color: $white-full;
   }
 }
 
 .application.dark {
+  .sm-icon {
+    color: $white-partial;
+  }
+
   .full-screen {
     background-color: $dark-charcoal;
   }
