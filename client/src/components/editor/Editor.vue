@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="{ dnd: drag.hover, 'custom-map': type == 'map' }"
+    :class="{ dnd: drag.hover, 'custom-map': true }"
     class="map-editor-wrapper transition-all"
     @drop.prevent="onDrop"
     @dragover.prevent="() => (drag.hover = true)"
@@ -13,11 +13,6 @@
       @place-selected="handleSearchPlaceSelected"
     />
     <div id="map" />
-    <div class="overlay" v-if="type == 'map'" :class="{ dark }">
-      <span class="fs-small">
-        Geojson files dropped here, will be imported into the map.
-      </span>
-    </div>
     <input ref="file" type="file" class="hidden" />
     <div class="absolute coords-box z-index20 p2 w25">
       <p class="m0"><strong>Lat:</strong> {{ infoBox.lat }}</p>
@@ -127,6 +122,7 @@ export default {
   async created() {
     sceneDictionary.on('storage--changed', this.handleDrawSceneFeatures)
 
+    this.$on('drawn-features-dnd', this.handleDragAndDropGeojsonFiles)
     bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetSceneFeaturesList)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
@@ -137,7 +133,6 @@ export default {
 
       {
         bus.$on('category-removed', this.handleCategoryRemoved)
-        this.$on('drawn-features-dnd', this.handleDragAndDropGeojsonFiles)
         this.categoriesDictionary.on(
           'storage--changed',
           this.handleCategoriesChange
@@ -164,6 +159,7 @@ export default {
     sceneDictionary.reset()
     sceneDictionary.off('storage--changed', this.handleDrawSceneFeatures)
 
+    this.$off('drawn-features-dnd', this.handleDragAndDropGeojsonFiles)
     bus.$off(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetSceneFeaturesList)
     bus.$off(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$off(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
@@ -172,7 +168,6 @@ export default {
     if (this.type == 'map') {
       this.categoriesDictionary.reset()
       bus.$off('category-removed', this.handleCategoryRemoved)
-      this.$off('drawn-features-dnd', this.handleDragAndDropGeojsonFiles)
       this.categoriesDictionary.off(
         'storage--changed',
         this.handleCategoriesChange
@@ -211,41 +206,48 @@ export default {
       )
     },
     async handleDragAndDropGeojsonFiles(fc) {
-      if (this.type != 'map') return
+      // if (this.type != 'map') return
 
       let list = []
       let cat = null
       const categories = []
 
       for (let feature of fc.features) {
-        for (let category of this.categoriesDictionary.getCollectionList()) {
-          if (
-            feature.properties &&
-            feature.properties.category &&
-            feature.properties.category._id == category._id
-          ) {
-            cat = { ...category }
-
+        if (this.type == 'map') {
+          for (let category of this.categoriesDictionary.getCollectionList()) {
             if (
-              feature.geometry.type == 'Point' &&
-              cat.types.includes('custom points')
+              feature.properties &&
+              feature.properties.category &&
+              feature.properties.category._id == category._id
             ) {
-              cat.data['custom points'].push(feature)
-            } else if (
-              feature.geometry.type == 'LineString' &&
-              cat.types.includes('custom lines')
-            ) {
-              cat.data['custom lines'].push(feature)
-            } else if (
-              feature.geometry.type == 'Polygon' &&
-              cat.types.includes('custom polygons')
-            ) {
-              cat.data['custom polygons'].push(feature)
+              cat = { ...category }
+
+              if (
+                feature.geometry.type == 'Point' &&
+                cat.types.includes('custom points')
+              ) {
+                cat.data['custom points'].push(feature)
+              } else if (
+                feature.geometry.type == 'LineString' &&
+                cat.types.includes('custom lines')
+              ) {
+                cat.data['custom lines'].push(feature)
+              } else if (
+                feature.geometry.type == 'Polygon' &&
+                cat.types.includes('custom polygons')
+              ) {
+                cat.data['custom polygons'].push(feature)
+              }
+              categories.push(cat)
             }
-            categories.push(cat)
           }
         }
-        list.push(setFeatureEditorID(feature))
+
+        if (!feature.properties.editorID) {
+          list.push(feature)
+        } else {
+          list.push(setFeatureEditorID(feature))
+        }
       }
 
       cat = null
@@ -254,7 +256,7 @@ export default {
         ...list
       ])
 
-      if (categories.length > 0) {
+      if (categories.length > 0 && this.type === 'map') {
         this.handleCategoriesChange(categories)
       } else {
         this.handleRecreateDraw(
@@ -265,7 +267,7 @@ export default {
     },
     onDrop(e) {
       this.drag.hover = false
-      if (this.type != 'map') return
+      // if (this.type != 'map') return
 
       const fr = new FileReader()
       let vm = this

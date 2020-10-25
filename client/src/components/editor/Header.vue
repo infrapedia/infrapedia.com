@@ -17,6 +17,11 @@
         width="246"
         :popper-class="`${dark ? dark : ''} p4`"
       >
+        <span class="fs-small">
+          Geojson files dropped here, will be imported <br />
+          into the map.
+        </span>
+        <el-divider class="mt2 mb2" />
         <div class="fs-small">
           <p class="m0" v-if="oneClickMessage.length == 1">
             {{ oneClickMessage[0] }}
