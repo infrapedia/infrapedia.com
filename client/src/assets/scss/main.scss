@@ -364,7 +364,7 @@ input.issues-dialog {
     height: 44vh;
   }
   .coords-box {
-    top: 2.2rem;
+    top: 6.2rem;
     left: 1rem
   }
   .mapboxgl-ctrl-top-left {
@@ -377,6 +377,16 @@ input.issues-dialog {
     bottom: 3rem !important
   }
 }
+
+.editor-max-view {
+  .results-wrapper {
+    max-width: 27.2rem !important
+  }
+  #editor-map-facilities-dashboard #map {
+    height: 62vh
+  }
+}
+
 
 // -----------------------------------------------------
 // -----------------------------------------------------

@@ -1,16 +1,21 @@
 <template>
   <div
-    :class="{ dnd: drag.hover, 'custom-map': true }"
+    :class="{
+      dnd: drag.hover,
+      'custom-map': true
+    }"
     class="map-editor-wrapper transition-all"
     @drop.prevent="onDrop"
     @dragover.prevent="() => (drag.hover = true)"
     @dragleave.prevent="() => (drag.hover = false)"
   >
     <e-header
-      v-if="type != 'facilities'"
       :type="type"
       @close-search="closeSearchMode"
       @place-selected="handleSearchPlaceSelected"
+      @address-field-activated-by-form="
+        $emit('address-field-activated-by-form')
+      "
     />
     <div id="map" />
     <input ref="file" type="file" class="hidden" />
@@ -184,13 +189,19 @@ export default {
   },
   methods: {
     async handleSearchPlaceSelected(data) {
+      console.log(data)
+
+      if (this.placeMarker) this.placeMarker.remove()
       this.placeMarker = new mapboxgl.Marker({ color: '#1e419a' })
         .setLngLat(data.center)
         .addTo(this.map)
-      this.map.fitBounds(data.bbox, {
-        animate: true,
-        zoom: 4.89
-      })
+      this.map.fitBounds(
+        data.bbox ? data.bbox : [...data.center, ...data.center],
+        {
+          animate: true,
+          zoom: 4.89
+        }
+      )
     },
     closeSearchMode() {
       if (this.placeMarker) {
@@ -652,7 +663,10 @@ export default {
       })
       map.addControl(scaleCtrl, 'top-left')
       map.addControl(new mapboxgl.NavigationControl())
-      map.addControl(new mapboxgl.FullscreenControl())
+
+      if (this.type != 'facilities') {
+        map.addControl(new mapboxgl.FullscreenControl())
+      }
 
       this.draw = await new MapboxDraw({
         displayControlsDefault: false

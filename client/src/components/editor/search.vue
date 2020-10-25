@@ -24,43 +24,57 @@
           @focus="toggleResults(true)"
           @blur="toggleResults(false)"
         />
-        <el-button
-          circle
-          size="mini"
-          class="ml4"
-          :icon="btnIcon"
-          :class="{ dark }"
-          :title="btnTitle"
-          @click="handleSearchBtnClick"
-        />
+        <div
+          v-if="isResults"
+          :class="{ dark, hidden: !isActive }"
+          class="absolute results-wrapper bottom-shadow overflow-y-auto"
+        >
+          <div v-if="!results.length" class="el-select-dropdown__empty">
+            No data
+          </div>
+          <ul role="group" class="pt2" v-else>
+            <li
+              v-for="(item, i) in results"
+              :class="{ dark, light: !dark }"
+              :key="i"
+              role="listitem"
+              class="p2 pr3 pl3 cursor-pointer seamless-hoverbg no-outline"
+              @click="emitSelection(item)"
+              @keyup.enter.space="emitSelection(item)"
+            >
+              {{ item.place_name }}
+            </li>
+          </ul>
+        </div>
+        <div class="flex nowrap align-items-center">
+          <el-button
+            circle
+            size="mini"
+            class="ml4"
+            :icon="btnIcon"
+            :class="{ dark }"
+            :title="btnTitle"
+            @click="handleSearchBtnClick"
+          />
+          <template v-if="isPlaceSelected">
+            <el-divider class="transparent-imp" direction="vertical" />
+            <el-button
+              circle
+              size="mini"
+              title="save"
+              icon="el-icon-check"
+              :class="{ dark }"
+              @click="handleSavePlaceSelected"
+            />
+          </template>
+        </div>
       </div>
     </transition>
-    <div
-      v-if="isResults"
-      :class="{ dark }"
-      class="absolute results-wrapper bottom-shadow overflow-y-auto"
-    >
-      <div v-if="!results.length" class="el-select-dropdown__empty">
-        No data
-      </div>
-      <ul role="group" class="pt2" v-else>
-        <li
-          v-for="(item, i) in results"
-          :class="{ dark, light: !dark }"
-          :key="i"
-          role="listitem"
-          class="p2 pr3 pl3 cursor-pointer seamless-hoverbg no-outline"
-          @click="emitSelection(item)"
-          @keyup.enter.space="emitSelection(item)"
-        >
-          {{ item.place_name }}
-        </li>
-      </ul>
-    </div>
   </div>
 </template>
 
 <script>
+import { bus } from '../../helpers/eventBus'
 import debounce from '../../helpers/debounce'
 import {
   searchGeocodingReverse,
@@ -73,7 +87,8 @@ export default {
     search: '',
     results: [],
     isActive: false,
-    isResults: false
+    isResults: false,
+    isPlaceSelected: false
   }),
   computed: {
     dark() {
@@ -86,7 +101,38 @@ export default {
       return this.isActive ? 'Close' : 'Search place'
     }
   },
+  created() {
+    bus.$on(
+      'add-address-using-header-input',
+      this.handleAddAddressUsingHeaderInput
+    )
+    bus.$on(
+      'edit-address-using-header-input',
+      this.handleEditAddressUsingHeaderInput
+    )
+  },
+  beforeDestroy() {
+    bus.$off(
+      'add-address-using-header-input',
+      this.handleAddAddressUsingHeaderInput
+    )
+    bus.$off(
+      'edit-address-using-header-input',
+      this.handleEditAddressUsingHeaderInput
+    )
+  },
   methods: {
+    async handleSavePlaceSelected() {
+      await this.$message('Save address selected. Implementation TBD')
+    },
+    async handleAddAddressUsingHeaderInput() {
+      this.isActive = true
+      setTimeout(() => this.$refs['search-input'].focus(), 320)
+      this.$emit('address-field-activated-by-form')
+    },
+    async handleEditAddressUsingHeaderInput() {
+      console.log('here 2')
+    },
     handleSearchChange: debounce(async function searchQuery(query) {
       if (!query) return
 
@@ -119,6 +165,7 @@ export default {
     },
     emitSelection(data) {
       this.toggleResults(false)
+      this.isPlaceSelected = true
       this.$emit('place-selected', data)
     },
     toggleResults: debounce(function(bool) {

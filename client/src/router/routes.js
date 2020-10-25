@@ -27,11 +27,15 @@ async function handleAdminOnlyRoutes(next, to) {
   // There's no reason for them to access the creation page of those sections
   if (to) {
     const query =
-      to.query.id == 'csp' ||
-      to.query.id == 'map' ||
-      to.query.id == 'ixps' ||
-      to.query.id == 'facilities'
-    if (query && !isUserAnAdmin) next('/user')
+      to.query.id == 'csp' || to.query.id == 'map' || to.query.id == 'ixps'
+
+    if (
+      (to.path == '/user/section/facilities' ||
+        to.path == '/user/section/cloud-service-providers') &&
+      !isUserAnAdmin
+    )
+      next('/user')
+    else if (query && !isUserAnAdmin) next('/user')
     else next()
   } else if (!isUserAnAdmin) {
     next('/user')

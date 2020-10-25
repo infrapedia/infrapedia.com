@@ -6,6 +6,7 @@
   flex-basis: 0;
   &.active {
     flex-basis: 32%;
+    margin-left: 1.2rem;
     .el-input {
       width: 100%;
     }
@@ -20,8 +21,8 @@
 }
 
 .results-wrapper {
-  left: 1rem;
-  top: 3.4rem;
+  left: 0rem;
+  top: 2.4rem;
   width: 100%;
   max-width: 24rem;
   max-height: 32rem;
@@ -32,3 +33,11 @@
     background-color: $dark-charcoal;
   }
 }
+
+
+.facilities-type.search-wrapper.active {
+  flex-basis: 100%;
+  max-width: 30rem;
+  margin-left: 0rem;
+}
+

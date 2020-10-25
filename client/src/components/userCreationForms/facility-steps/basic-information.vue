@@ -174,82 +174,16 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="Address">
-              <div class="flex row wrap w-fit-full">
-                <el-tag
-                  :key="i"
-                  v-for="(tag, i) in form.address"
-                  :closable="!isViewMode"
-                  :disable-transitions="false"
-                  @close="handleAddressRemove(tag)"
-                >
-                  {{ tag.reference }}
-                  <fa
-                    :icon="['fas', 'pen']"
-                    class="cursor-pointer w24 ml1 inline-block"
-                    @click="editAddress(tag, i)"
-                  />
-                </el-tag>
-              </div>
-              <el-collapse-transition>
-                <el-card
-                  v-if="inputVisible"
-                  class="p4 w-auto mt2"
-                  shadow="never"
-                >
-                  <el-form ref="tagForm" :model="tag" :rules="tagRules">
-                    <el-form-item label="Reference" prop="reference" required>
-                      <el-input
-                        name="street"
-                        :class="{ dark }"
-                        v-model="tag.reference"
-                        ref="saveTagInput"
-                        size="mini"
-                      />
-                    </el-form-item>
-                    <el-form-item prop="address" label="Address">
-                      <autocomplete-google
-                        :mode="tagMode"
-                        @place-changed="handleAddressChange"
-                        :value="autocompleteAddress"
-                      />
-                    </el-form-item>
-                  </el-form>
-                  <el-form-item>
-                    <div
-                      class="flex row wrap justify-content-end justify-center-sm pt3"
-                    >
-                      <el-button
-                        plain
-                        :class="{ dark }"
-                        type="success"
-                        size="mini"
-                        class="w25 h8 mb4 mr2"
-                        @click="handleSaveAddress"
-                      >
-                        Save address
-                      </el-button>
-                      <el-button
-                        class="w25 h8"
-                        :class="{ dark }"
-                        size="mini"
-                        @click="clearAddress"
-                      >
-                        Cancel
-                      </el-button>
-                    </div>
-                  </el-form-item>
-                </el-card>
-                <el-button
-                  v-else
-                  :class="{ dark }"
-                  class="w42 text-center"
-                  size="small"
-                  :disabled="isViewMode"
-                  @click="showAdressInput"
-                >
-                  Add
-                </el-button>
-              </el-collapse-transition>
+              <br />
+              <el-button
+                :class="{ dark }"
+                class="w42 text-center"
+                size="small"
+                :disabled="isViewMode"
+                @click="handleAddAddressDynamic"
+              >
+                Add
+              </el-button>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -327,14 +261,27 @@
         </el-row>
       </el-col>
       <el-col :span="8">
-        <div class="editor-map-wrapper mt5">
+        <div
+          class="editor-map-wrapper mt5"
+          :class="{ 'editor-max-view': isEditorMaximiedView }"
+        >
+          <el-button
+            v-if="isEditorMaximiedView"
+            icon="el-icon-close"
+            class="close-btn-max-view"
+            circle
+            size="small"
+            @click="() => (isEditorMaximiedView = false)"
+          />
           <editor-map
             :key="1"
             :form="form"
+            ref="editor-map"
             type="facilities"
             id="editor-map-facilities-dashboard"
             @features-list-change="handleFeaturesListChange"
             @error-loading-draw-onto-map="handleFileConvertionFailed"
+            @address-field-activated-by-form="handleMaximizeEditorView"
           />
           <el-alert type="info" :closable="false">
             <div>
@@ -383,8 +330,7 @@ export default {
   name: 'BasicInformation',
   components: {
     EditorMap,
-    VMultiSelect,
-    AutocompleteGoogle: () => import('../../../components/AutocompleteGoogle')
+    VMultiSelect
   },
   data: () => ({
     tag: {
@@ -397,6 +343,7 @@ export default {
       state: '',
       zipcode: ''
     },
+    isEditorMaximiedView: false,
     subseaList: [],
     terrestrialsList: [],
     isLoadingCables: false,
@@ -527,6 +474,17 @@ export default {
     }
   },
   methods: {
+    handleMaximizeEditorView() {
+      this.isEditorMaximiedView = true
+      setTimeout(() => this.$refs['editor-map'].map.resize(), 320)
+    },
+    handleAddAddressDynamic() {
+      bus.$emit(
+        this.form.address.length <= 0
+          ? 'add-address-using-header-input'
+          : 'edit-address-using-header-input'
+      )
+    },
     async handleSubseaCablesSelection(cablesSelected) {
       this.form.cables = cablesSelected
       const {
@@ -759,3 +717,32 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.editor-max-view {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  left: 0;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+
+  .map-editor-wrapper {
+    width: 80vw;
+    margin: 8.8rem auto 0 auto;
+  }
+
+  .close-btn-max-view {
+    position: absolute;
+    right: 12rem;
+    top: 7.12rem;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  div[role='alert'] {
+    width: 80.1vw;
+    margin: 0 auto;
+    border-radius: 0;
+  }
+}
+</style>

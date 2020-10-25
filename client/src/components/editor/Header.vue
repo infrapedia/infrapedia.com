@@ -3,14 +3,12 @@
     class="information-box z-index20 h4 relative flex align-items-center p4 text-left"
     :class="{ dark }"
   >
-    <div
-      :class="{ hidden: isSearchActive }"
-      class="flex row nowrap align-items-center"
-    >
+    <div class="flex row nowrap align-items-center">
       <span class="inline-block mr4 fs-small">
         Actions
       </span>
       <el-popover
+        v-if="!isFacilitiesType"
         title="Instructions"
         placement="bottom"
         trigger="click"
@@ -48,8 +46,12 @@
       </el-popover>
     </div>
     <search-box
+      :class="{ 'facilities-type': isFacilitiesType }"
       @toggle-search="handleSearchToggle"
       @place-selected="$emit('place-selected', $event)"
+      @address-field-activated-by-form="
+        $emit('address-field-activated-by-form')
+      "
     />
   </header>
 </template>
@@ -59,9 +61,6 @@ export default {
   components: {
     SearchBox: () => import('./search')
   },
-  data: () => ({
-    isSearchActive: false
-  }),
   props: {
     type: {
       type: String,
@@ -82,6 +81,9 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    isFacilitiesType() {
+      return this.type === 'facilities'
     },
     oneClickMessage() {
       let msg = []
@@ -126,7 +128,6 @@ export default {
   },
   methods: {
     handleSearchToggle(bool) {
-      this.isSearchActive = bool
       if (!bool) this.$emit('close-search')
     }
   }
