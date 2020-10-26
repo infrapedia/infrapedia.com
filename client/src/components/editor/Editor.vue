@@ -126,6 +126,7 @@ export default {
   },
   async created() {
     sceneDictionary.on('storage--changed', this.handleDrawSceneFeatures)
+    window.sceneDictionary = sceneDictionary
 
     this.$on('drawn-features-dnd', this.handleDragAndDropGeojsonFiles)
     bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetSceneFeaturesList)
@@ -218,12 +219,13 @@ export default {
     },
     async handleDragAndDropGeojsonFiles(fc) {
       // if (this.type != 'map') return
+      await this.$store.dispatch('editor/toggleMapFormLoading', true)
 
       let list = []
       let cat = null
       const categories = []
 
-      for (let feature of fc.features) {
+      fc.features.forEach(feature => {
         if (this.type == 'map') {
           for (let category of this.categoriesDictionary.getCollectionList()) {
             if (
@@ -255,11 +257,11 @@ export default {
         }
 
         if (!feature.properties.editorID) {
-          list.push(feature)
-        } else {
           list.push(setFeatureEditorID(feature))
+        } else {
+          list.push(feature)
         }
-      }
+      })
 
       cat = null
       this.handleSetSceneFeaturesList([
@@ -275,6 +277,7 @@ export default {
           false
         )
       }
+      this.$store.dispatch('editor/toggleMapFormLoading', false)
     },
     onDrop(e) {
       this.drag.hover = false
