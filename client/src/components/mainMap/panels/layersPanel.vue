@@ -85,10 +85,18 @@ export default {
       return window.innerWidth < 520
     }
   },
+  watch: {
+    mobile(bool) {
+      if (bool) {
+        this.isActive = false
+      }
+    }
+  },
   mounted() {
     bus.$on('legends-panel-visibility', this.handleLegendsPanelVisilityChange)
     if (this.mobile) {
       this.isLegendsPanelActive = false
+      this.isActive = false
     }
   },
   beforeDestroy() {
