@@ -12,9 +12,9 @@
       slot="reference"
       class="w-fit-full"
       placeholder
-      size="mini"
       clearable
       :id="id"
+      :size="size"
       :class="{ dark }"
       :loading="loading"
       @input="searchPlace"

@@ -49,7 +49,7 @@
           <el-tooltip
             effect="dark"
             :disabled="!checkGeomLength"
-            content="Remember to either create a point or a polygon on the map"
+            content="Remember to either create a point or a polygon on the map to set the facility location"
             placement="top-start"
           >
             <el-button
@@ -93,7 +93,16 @@ export default {
       name: '',
       point: '',
       type: '',
-      address: [],
+      address: {
+        fullAddress: '',
+        reference: '',
+        country: '',
+        street: '',
+        apt: '',
+        city: '',
+        state: '',
+        zipcode: ''
+      },
       sProviders: [],
       subsea: [],
       terrestrials: [],
@@ -124,10 +133,11 @@ export default {
         value: 0,
         variant: 0
       },
+      authentication: false,
       maxRackPower: 0,
       backupPowerDuration: 0,
       pue: 0.0,
-      platform: '',
+      platform: false,
       isLoadingDocks: false,
       isCarrierNeutral: false,
       grossColocationSize: 0,
@@ -184,7 +194,7 @@ export default {
     moveToStep(num) {
       if (this.step <= 1 && this.checkGeomLength) {
         this.$message.info(
-          "You can't move further until you add a valid geometry on the map"
+          "You can't move further until you add a point of the location of the facility on the map"
         )
         return
       }
@@ -269,6 +279,20 @@ export default {
         }))
         this.form.owners = ownersData
         this.form.ownersList = ownersData
+      }
+
+      if (data.temperature && typeof data.temperature == 'number') {
+        this.form.temperature = {
+          value: data.temperature,
+          variant: 0
+        }
+      }
+
+      if (data.humidity && typeof data.humidity == 'number') {
+        this.form.humidity = {
+          value: data.humidity,
+          variant: 0
+        }
       }
     },
     async viewCurrentFacility(_id) {

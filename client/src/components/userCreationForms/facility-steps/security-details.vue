@@ -76,6 +76,19 @@
                 </el-radio-group>
               </el-form-item>
             </el-col>
+            <el-col :span="24">
+              <el-form-item label="Authentication">
+                <br />
+                <el-radio-group v-model="form.authentication">
+                  <el-radio-button :label="true">
+                    Yes
+                  </el-radio-button>
+                  <el-radio-button :label="false">
+                    No
+                  </el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
           </el-row>
         </el-col>
       </el-row>

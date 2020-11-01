@@ -435,7 +435,7 @@
 export default {
   name: 'BuildingDetails',
   data: () => ({
-    options: []
+    options: ['n', 'n+1', 'n+n']
   }),
   props: {
     form: {
