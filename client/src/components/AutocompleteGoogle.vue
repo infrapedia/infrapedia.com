@@ -5,7 +5,8 @@
       :id="id"
       v-model="search"
       :class="{ 'el-input--mini': size === 'mini' }"
-      class="el-input__inner "
+      class="el-input__inner"
+      placeholder=""
       @focus="geolocate"
     />
   </div>

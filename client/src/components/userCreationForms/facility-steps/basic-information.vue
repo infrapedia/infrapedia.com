@@ -164,8 +164,8 @@
                 :loading="isLoadingCables"
                 @input="loadCablesSearch($event, 'subsea')"
                 :value="mode == 'create' ? [] : form.subsea"
-                @values-change="handleCableSelection('subsea', $event)"
-                @remove="handleCableSelection('subsea', form.subsea)"
+                @values-change="handleSelectionChange('subsea', $event)"
+                @remove="handleSelectionChange('subsea', form.subsea)"
               />
             </el-form-item>
           </el-col>
@@ -177,9 +177,9 @@
                 :loading="isLoadingCables"
                 @input="loadCablesSearch($event, 'terrestrials')"
                 :value="multiSelectsMode == 'create' ? [] : form.terrestrials"
-                @values-change="handleCableSelection('terrstrials', $event)"
+                @values-change="handleSelectionChange('terrstrials', $event)"
                 @remove="
-                  handleCableSelection('terrestrials', form.terrestrials)
+                  handleSelectionChange('terrestrials', form.terrestrials)
                 "
               />
             </el-form-item>
@@ -409,10 +409,7 @@ export default {
       this.isEditorMaximiedView = true
       setTimeout(() => this.$refs['editor-map'].map.resize(), 320)
     },
-    handleClose(tag) {
-      return this.form.address.splice(this.form.address.indexOf(tag), 1)
-    },
-    handeSelectionChange(key, data) {
+    handleSelectionChange(key, data) {
       this.form[key] = data
       if (key == 'owners') {
         this.setOwnersEmptyState()
@@ -523,31 +520,8 @@ export default {
         this.form.tagsList = res.data
       }
     },
-    handleAddressRemove(tag) {
-      this.form.address.splice(this.form.address.indexOf(tag), 1)
-    },
     validateURL(url) {
       this.isURLValid = validateUrl(url)
-    },
-    clearAddress() {
-      this.isTagReferenceMissing = false
-      this.inputVisible = false
-      this.tagOnEdit = null
-      this.tag = {
-        fullAddress: '',
-        reference: '',
-        country: '',
-        street: '',
-        apt: '',
-        city: '',
-        state: '',
-        zipcode: ''
-      }
-    },
-    editAddress(tag, i) {
-      this.tag = { ...tag }
-      this.tagOnEdit = i
-      this.inputVisible = true
     },
     handleAddressChange(data) {
       const tagData = {

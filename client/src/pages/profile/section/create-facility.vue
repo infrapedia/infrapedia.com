@@ -294,6 +294,10 @@ export default {
           variant: 0
         }
       }
+
+      if (data.address && data.address.length >= 1) {
+        this.form.address = { ...data.address[0] }
+      }
     },
     async viewCurrentFacility(_id) {
       const res = await viewFacilityOwner({
