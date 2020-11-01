@@ -559,7 +559,7 @@ export default {
       }
 
       let addressType
-      this.tag.fullAddress = data.fullAddress
+      this.form.address.fullAddress = data.fullAddress
 
       for (let i = 0; i < data.address_components.length; i++) {
         addressType = data.address_components[i].types[0]
@@ -567,35 +567,23 @@ export default {
           const val = data.address_components[i][tagData[addressType]]
           switch (addressType) {
             case 'country':
-              this.tag.country = val
+              this.form.address.country = val
               break
             case 'postal_code':
-              this.tag.zipcode = val
+              this.form.address.zipcode = val
               break
             case 'locality':
-              this.tag.city = val
+              this.form.address.city = val
               break
             case 'route':
-              this.tag.street = val
+              this.form.address.street = val
               break
             case 'administrative_area_level_1':
-              this.tag.state = val
+              this.form.address.state = val
               break
           }
         }
       }
-    },
-    handleSaveAddress() {
-      return this.$refs['tagForm'].validate(isValid => {
-        if (isValid) {
-          if (this.tagOnEdit === null) this.form.address.push({ ...this.tag })
-          else this.form.address[this.tagOnEdit] = { ...this.tag }
-          this.clearAddress()
-        } else false
-      })
-    },
-    showAdressInput() {
-      this.inputVisible = true
     }
   }
 }

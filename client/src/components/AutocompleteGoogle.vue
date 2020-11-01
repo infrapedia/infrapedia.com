@@ -1,78 +1,26 @@
 <template>
-  <el-popover
-    placement="bottom-start"
-    :width="width"
-    transition="el-zoom-in-top"
-    trigger="manual"
-    v-click-outside="handleBlur"
-    :value.sync="isResultsVisible"
-  >
-    <el-input
-      v-model="search"
-      slot="reference"
-      class="w-fit-full"
-      placeholder
-      clearable
+  <div class="el-input" :class="{ dark }">
+    <input
+      type="text"
       :id="id"
-      :size="size"
-      :class="{ dark }"
-      :loading="loading"
-      @input="searchPlace"
-      @focus="handleFocus"
+      v-model="search"
+      :class="{ 'el-input--mini': size === 'mini' }"
+      class="el-input__inner "
+      @focus="geolocate"
     />
-    <div
-      class="el-card p0 no-border w-fit-full is-never-shadow relative"
-      :class="{ dark }"
-    >
-      <ul
-        role="list"
-        class="w-fit-full h-fit-content no-outline overflow-y-auto no-overflow-x"
-        :class="{ dark }"
-      >
-        <li
-          v-for="(item, i) in places"
-          :key="i"
-          tabindex="0"
-          role="listitem"
-          :class="{ dark, light: !dark }"
-          class="pt2 pb2 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
-          @click="emitSelection(item.place_id)"
-          @keyup.enter.space="emitSelection(item.place_id)"
-        >
-          {{ item.description }}
-        </li>
-      </ul>
-      <div
-        class="powered-by-wrapper flex nowrap justify-content-end align-items-flex-end p2 pr4 pl4"
-        :class="{ dark }"
-      >
-        <el-image :src="imageURL" fit="contain" class="w25" />
-      </div>
-    </div>
-  </el-popover>
+  </div>
 </template>
 
 <script>
-import debounce from '../helpers/debounce'
-import ClickOutside from 'vue-click-outside'
-import { getPlace, getPlaceDetails } from '../services/api'
-
 export default {
   data: () => ({
-    places: [],
     search: '',
-    selection: '',
-    loading: false,
-    isResultsVisible: false
+    autocomplete: undefined
   }),
   props: {
     value: {
-      type: Object,
-      default: () => {}
-    },
-    width: {
-      type: [String, Number],
-      default: '150px'
+      type: String,
+      default: () => ''
     },
     mode: {
       type: String,
@@ -90,61 +38,54 @@ export default {
   computed: {
     dark() {
       return this.$store.state.isDark
-    },
-    imageURL() {
-      return this.dark
-        ? 'https://cdn1.infrapedia.com/assets/powered_by_google_on_non_white_hdpi.png'
-        : 'https://cdn1.infrapedia.com/assets/powered_by_google_on_white_hdpi.png'
     }
   },
   mounted() {
-    if (this.value && this.mode != 'create') {
-      this.handleEditMode(this.value)
+    this.initAutocomplete()
+    if (this.mode !== 'create' && this.value) {
+      this.search = this.value
     }
   },
   methods: {
-    searchPlace: debounce(async function handleGooglePlaceSearch(s) {
-      this.loading = true
-      const res = await getPlace(s)
-      if (res && res.predictions && res.predictions.length > 0) {
-        this.places = res.predictions
-        this.isResultsVisible = true
-      }
-      this.loading = false
-    }, 800),
-    handleEditMode(data) {
-      if (!data || data == 'undefined' || data == 'null') return
-      const address = data.fullAddress ? data.fullAddress : ''
-      this.search = address
+    initAutocomplete() {
+      // eslint-disable-next-line
+      const autocomplete = new google.maps.places.Autocomplete(
+        document.getElementById(this.id),
+        { types: ['geocode'] }
+      )
+      // Avoid paying for data that you don't need by restricting the set of
+      // place fields that are returned to just the address components.
+      autocomplete.setFields(['address_component'])
+      // When the user selects an address from the drop-down, populate the
+      // address fields in the form.
+      autocomplete.addListener('place_changed', this.fillInAddress)
+      this.autocomplete = autocomplete
     },
-    async emitSelection(id) {
-      this.isResultsVisible = false
-      const fullAddress = this.places.filter(t => t.place_id == id)[0]
-        .description
-      this.search = fullAddress
-
-      const data = await getPlaceDetails(id)
-      if (data && data.result) {
-        this.$emit('place-changed', {
-          ...data.result,
-          fullAddress
+    fillInAddress() {
+      if (this.autocomplete) {
+        // Get the place details from the autocomplete object.
+        return this.$emit('place-changed', {
+          ...this.autocomplete.getPlace(),
+          fullAddress: document.getElementById(this.id).value
         })
       }
     },
-    handleFocus() {
-      this.places.length
-        ? (this.isResultsVisible = true)
-        : (this.isResultsVisible = false)
-    },
-    handleBlur() {
-      this.isResultsVisible = false
+    geolocate() {
+      if (navigator.geolocation) {
+        const autocomplete = this.autocomplete
+        navigator.geolocation.getCurrentPosition(function(position) {
+          // eslint-disable-next-line
+          const circle = new google.maps.Circle({
+            center: {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            },
+            radius: position.coords.accuracy
+          })
+          autocomplete.setBounds(circle.getBounds())
+        })
+      }
     }
-  },
-  directives: {
-    ClickOutside
   }
 }
 </script>
-<style lang="scss" scoped>
-@import '../assets/scss/components/autocomplete-google-styles.scss';
-</style>

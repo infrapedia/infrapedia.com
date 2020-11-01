@@ -1732,6 +1732,12 @@
       gtag('js', new Date())
       gtag('config', '<%= VUE_APP_GOOGLE_ANALYTICS %>')
     </script>
+    <script
+      async
+      type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?libraries=places&key=<%= VUE_APP_GOOGLE_API_KEY %>"
+      defer
+    ></script>
     <!-- built files will be auto injected -->
   </body>
 </html>
