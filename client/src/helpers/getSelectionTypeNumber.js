@@ -34,7 +34,7 @@ const types = [
   // 'owners'
   {
     value: 7,
-    t: ['org', 'organizations']
+    t: ['org', 'organizations', 'organization']
   }
 ]
 
