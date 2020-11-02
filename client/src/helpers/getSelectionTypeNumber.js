@@ -1,7 +1,7 @@
 const types = [
   {
     value: 1,
-    t: ['submarine', 'cable', 'subsea', 'terrestrial-network']
+    t: ['submarine', 'cable', 'subsea', 'terrestrial-network', 'subsea-cable']
   },
   {
     value: 2,
@@ -26,7 +26,7 @@ const types = [
   // 'owners'
   {
     value: 7,
-    t: ['org', 'organizations']
+    t: ['org', 'organizations', 'organization']
   }
 ]
 
