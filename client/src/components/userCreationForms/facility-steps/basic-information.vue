@@ -188,9 +188,9 @@
             <el-form-item label="CSP" prop="csp">
               <v-multi-select
                 :mode="multiSelectsMode"
-                :options="ownersList"
-                @input="loadOwnersSearch"
-                :loading="isLoadingOwners"
+                :options="cspList"
+                @input="loadCSPSearch"
+                :loading="isLoadingCSP"
                 :value="multiSelectsMode == 'create' ? [] : form.csp"
                 @values-change="handleSelectionChange('csp', $event)"
                 @remove="handleRemoveItem('csp', $event)"
@@ -286,6 +286,8 @@ export default {
   data: () => ({
     isEditorMaximiedView: false,
     subseaList: [],
+    cspList: [],
+    isLoadingCSP: false,
     terrestrialsList: [],
     isLoadingCables: false,
     multiSelectsMode: 'create',
@@ -414,6 +416,15 @@ export default {
       if (key == 'owners') {
         this.setOwnersEmptyState()
       }
+    },
+    /**
+     * @param s { String } - search queried from cables select input
+     */
+    async loadCSPSearch(s) {
+      console.log(
+        s
+        // TODO
+      )
     },
     /**
      * @param s { String } - search queried from cables select input
