@@ -127,6 +127,7 @@
             <el-form-item
               label="Owners"
               prop="owners"
+              class="mt1"
               :rules="formRules.owners"
             >
               <v-multi-select

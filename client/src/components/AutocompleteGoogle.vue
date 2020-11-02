@@ -1,10 +1,9 @@
 <template>
-  <div class="el-input" :class="{ dark }">
+  <div class="el-input" :class="{ dark, 'el-input--mini': size === 'mini' }">
     <input
       type="text"
       :id="id"
       v-model="search"
-      :class="{ 'el-input--mini': size === 'mini' }"
       class="el-input__inner"
       placeholder=""
       @focus="geolocate"
