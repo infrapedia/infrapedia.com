@@ -13,7 +13,7 @@ export async function searchCloudServiceProvider({
   psz,
   s
 }) {
-  url = `${apiConfig.url}/auth/cloud/search?s=${s}&sortBy=${sortBy}&page=${page}`
+  url = `${apiConfig.url}/cloud/search?s=${s}&sortBy=${sortBy}&page=${page}`
   if (psz) {
     url = url + '&psz=1'
   }

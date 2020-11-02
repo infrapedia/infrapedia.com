@@ -27,8 +27,10 @@
           <el-col :span="24">
             <el-form-item label="Address" prop="address">
               <autocomplete-google
+                :mode="mode"
                 :width="520"
                 size="medium"
+                ref="autocompleteGoogleField"
                 :value="form.address.fullAddress"
                 @place-changed="handleAddressChange"
               />
@@ -74,9 +76,9 @@
           </el-col>
 
           <el-col :span="24">
-            <el-form-item label="Type" prop="type">
+            <el-form-item label="Type" prop="t">
               <el-select
-                v-model="form.type"
+                v-model="form.t"
                 class="w-fit-full"
                 :class="{ dark }"
                 :disabled="isViewMode"
@@ -178,7 +180,7 @@
                 :loading="isLoadingCables"
                 @input="loadCablesSearch($event, 'terrestrials')"
                 :value="multiSelectsMode == 'create' ? [] : form.terrestrials"
-                @values-change="handleSelectionChange('terrstrials', $event)"
+                @values-change="handleSelectionChange('terrestrials', $event)"
                 @remove="
                   handleSelectionChange('terrestrials', form.terrestrials)
                 "
@@ -265,17 +267,14 @@ import { searchOrganization } from '../../../services/api/organizations'
 import { checkFacilityNameExistence } from '../../../services/api/check_name'
 import debounce from '../../../helpers/debounce'
 import { bus } from '../../../helpers/eventBus'
-import {
-  EDITOR_SET_FEATURES,
-  EDITOR_FILE_CONVERTED,
-  EDITOR_SET_FEATURES_LIST
-} from '../../../events/editor'
+import { EDITOR_SET_FEATURES_LIST } from '../../../events/editor'
 import { sceneDictionary } from '../../../components/editor'
 import { STORAGE__WATCH } from '../../../lib/Dictionary'
 import {
   getSearchByCablesS,
   getSearchByCablesT
 } from '../../../services/api/cables'
+import { searchCloudServiceProvider } from '../../../services/api/csp'
 
 export default {
   name: 'BasicInformation',
@@ -342,12 +341,12 @@ export default {
             message: 'Please pick a date'
           }
         ],
-        type: [
+        t: [
           {
             type: 'string',
             required: true,
             trigger: ['blur', 'change'],
-            message: 'Please select type'
+            message: 'Please select a type'
           }
         ],
         address: [
@@ -377,19 +376,27 @@ export default {
     sceneDictionary.on(STORAGE__WATCH, this.handleFeaturesListChange)
   },
   async mounted() {
-    if (this.mode != 'create') {
-      // I know `this.mode` can be only either one of these 2: create, edit
-      this.multiSelectsMode = this.mode
-    }
-
     if (this.form.geom.length >= 1) {
       bus.$emit(`${EDITOR_SET_FEATURES_LIST}`, this.form.geom)
     }
 
-    if (this.form.ixps.length >= 1) {
-      this.multiSelectsMode = 'update'
-      this.ixpsList = [...this.form.ixps]
-      await this.handleIxpsSelectChange(this.form.ixps)
+    if (this.$route.query.item) {
+      this.multiSelectsMode = 'edit'
+    }
+
+    {
+      let keys = ['ixps', 'subsea', 'terrestrials', 'owners', 'csp']
+      for (let key of keys) {
+        if (this.form[key] && this.form[key].length >= 1) {
+          this[`${key}List`] = [...this.form[key]]
+          await this.handleSelectionChange(key, this.form[key])
+        }
+      }
+    }
+  },
+  beforeUpdate() {
+    if (this.$refs.autocompleteGoogleField) {
+      this.$refs.autocompleteGoogleField.search = this.form.address.fullAddress
     }
   },
   beforeDestroy() {
@@ -422,10 +429,18 @@ export default {
      * @param s { String } - search queried from cables select input
      */
     async loadCSPSearch(s) {
-      console.log(
+      if (s == '') return
+
+      this.isLoadingCSP = true
+      const res = await searchCloudServiceProvider({
+        user_id: await this.$auth.getUserID(),
         s
-        // TODO
-      )
+      })
+      if (res && res.data) {
+        this.cspList = res.data
+      }
+
+      this.isLoadingCSP = false
     },
     /**
      * @param s { String } - search queried from cables select input
@@ -465,12 +480,6 @@ export default {
         `${this.$route.path}?id=${this.$route.query.id}&failedToUploadKMz=true`
       )
     }, 320),
-    async handleSetSelectionOntoMap(data) {
-      await bus.$emit(`${EDITOR_SET_FEATURES}`, data)
-    },
-    handleFileConverted(fc) {
-      bus.$emit(`${EDITOR_FILE_CONVERTED}`, fc)
-    },
     checkName: debounce(async function(name) {
       this.isNameRepeated = false
       const {

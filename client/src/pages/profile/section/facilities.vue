@@ -45,8 +45,8 @@ export default {
     promptDelete: false,
     tableConfig: {
       title: 'Facilities',
-      creation_link: '/user/section/create-facility',
-      btn_label: 'Create facility'
+      btn_label: 'Create facility',
+      creation_link: '/user/section/create-facility'
     },
     columns: [...facsColumns].filter(col => col.showTable)
   }),

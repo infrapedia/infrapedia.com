@@ -92,7 +92,7 @@ export default {
     form: {
       name: '',
       point: '',
-      type: '',
+      t: '',
       address: {
         fullAddress: '',
         reference: '',
@@ -105,6 +105,9 @@ export default {
       },
       sProviders: [],
       subsea: [],
+      owners: [],
+      ixps: [],
+      csp: [],
       terrestrials: [],
       buildingSize: 0,
       rackHeight: 0,
@@ -144,10 +147,7 @@ export default {
       floorLoadingCapacity: 0,
       website: '',
       geom: [],
-      ixps: [],
       tags: [],
-      t: '',
-      owners: [],
       StartDate: new Date(),
       building: ''
     }
@@ -281,16 +281,34 @@ export default {
         this.form.ownersList = ownersData
       }
 
-      if (data.temperature && typeof data.temperature == 'number') {
+      if (
+        data.temperature &&
+        data.temperature.value &&
+        typeof data.temperature.value == 'number'
+      ) {
         this.form.temperature = {
-          value: data.temperature,
+          value: data.temperature.value,
+          variant: data.temperature.variant
+        }
+      } else {
+        this.form.temperature = {
+          value: 0,
           variant: 0
         }
       }
 
-      if (data.humidity && typeof data.humidity == 'number') {
+      if (
+        data.humidity &&
+        data.humidity.value &&
+        typeof data.humidity.value == 'number'
+      ) {
         this.form.humidity = {
-          value: data.humidity,
+          value: data.humidity.value,
+          variant: data.humidity.variant
+        }
+      } else {
+        this.form.humidity = {
+          value: 0,
           variant: 0
         }
       }
@@ -329,12 +347,14 @@ export default {
 
       this.isSendingData = false
       if (t != 'error') {
-        this.$router.replace({
-          path: this.$route.path,
-          query: {
-            item: data.r
-          }
-        })
+        if (!this.$route.query.item) {
+          this.$router.replace({
+            path: this.$route.path,
+            query: {
+              item: data.r
+            }
+          })
+        }
         this.step = 1
       }
     }

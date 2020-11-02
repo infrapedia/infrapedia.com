@@ -141,7 +141,6 @@ export const createFacility = async ({
   grossColocationSize,
   isCarrierNeutral,
   isLoadingDocks,
-  enType,
   pue,
   rackHeight,
   meetMeRooms,
@@ -166,8 +165,14 @@ export const createFacility = async ({
   officeSpace,
   stagingRooms,
   breakRooms,
+  subsea,
+  terrestrials,
+  csp,
+  sProviders,
+  authentication,
   internetAccess,
-  address
+  address,
+  enType
 }) => {
   url = `${apiConfig.url}/auth/facilities/add`
   form = new FormData()
@@ -178,7 +183,6 @@ export const createFacility = async ({
   form.append('floorLoadingCapacity', floorLoadingCapacity)
   form.append('isCarrierNeutral', isCarrierNeutral)
   form.append('isLoadingDocks', isLoadingDocks)
-  form.append('enType', enType)
 
   form.append('rackHeight', rackHeight)
   form.append('meetMeRooms', meetMeRooms)
@@ -190,8 +194,8 @@ export const createFacility = async ({
   form.append('backupPowerDuration', backupPowerDuration)
   form.append('backupPowerRedundancy', backupPowerRedundancy)
   form.append('coolingCapacity', coolingCapacity)
-  form.append('temperature', temperature)
-  form.append('humidity', humidity)
+  form.append('temperature', JSON.stringify(temperature))
+  form.append('humidity', JSON.stringify(humidity))
 
   form.append('bulletProffGlass', bulletProffGlass)
   form.append('cctv', cctv)
@@ -205,6 +209,7 @@ export const createFacility = async ({
   form.append('stagingRooms', stagingRooms)
   form.append('officeSpace', officeSpace)
   form.append('internetAccess', internetAccess)
+  form.append('authentication', authentication)
 
   form.append('website', website)
   form.append('geom', JSON.stringify(fCollectionFormat(geom)))
@@ -224,17 +229,43 @@ export const createFacility = async ({
     })
   } else form.append('owners', [])
 
-  if (address.length > 0) {
-    address.forEach((a, i) => {
-      form.append(`address[${i}]`, JSON.stringify(a))
-    })
+  if (address && address.fullAddress !== '') {
+    form.append('address[0]', JSON.stringify(address))
   } else form.append('address', [])
 
   if (tags.length > 0) {
     tags.forEach((tag, i) => {
       form.append(`tags[${i}]`, tag)
     })
-  } else form.append('tags', tags)
+  } else form.append('tags', [])
+
+  if (sProviders && sProviders.length > 0) {
+    sProviders.forEach((sp, i) => {
+      form.append(`sProviders[${i}]`, sp._id)
+    })
+  } else form.append('sProviders', [])
+
+  if (subsea && subsea.length > 0) {
+    subsea.forEach((s, i) => {
+      form.append(`subsea[${i}]`, s._id)
+    })
+  } else form.append('subsea', [])
+
+  if (terrestrials && terrestrials.length > 0) {
+    terrestrials.forEach((t, i) => {
+      form.append(`terrestrials[${i}]`, t._id)
+    })
+  } else form.append('terrestrials', [])
+
+  if (csp && csp.length > 0) {
+    csp.forEach((csp, i) => {
+      form.append(`csp[${i}]`, csp._id)
+    })
+  } else form.append('csp', [])
+
+  enType.forEach((t, i) => {
+    form.append(`enType[${i}]`, t)
+  })
 
   const res = await $axios.post(url, form, {
     withCredentials: true,
@@ -263,7 +294,6 @@ export const editFacility = async ({
   grossColocationSize,
   isCarrierNeutral,
   isLoadingDocks,
-  enType,
   pue,
   rackHeight,
   meetMeRooms,
@@ -288,7 +318,13 @@ export const editFacility = async ({
   officeSpace,
   stagingRooms,
   breakRooms,
-  internetAccess
+  enType,
+  internetAccess,
+  subsea,
+  terrestrials,
+  csp,
+  sProviders,
+  authentication
 }) => {
   url = `${apiConfig.url}/auth/facilities/edit`
   form = new FormData()
@@ -301,7 +337,6 @@ export const editFacility = async ({
   form.append('floorLoadingCapacity', floorLoadingCapacity)
   form.append('isCarrierNeutral', isCarrierNeutral)
   form.append('isLoadingDocks', isLoadingDocks)
-  form.append('enType', enType)
 
   form.append('rackHeight', rackHeight)
   form.append('meetMeRooms', meetMeRooms)
@@ -313,8 +348,9 @@ export const editFacility = async ({
   form.append('backupPowerDuration', backupPowerDuration)
   form.append('backupPowerRedundancy', backupPowerRedundancy)
   form.append('coolingCapacity', coolingCapacity)
-  form.append('temperature', temperature)
-  form.append('humidity', humidity)
+  form.append('temperature', JSON.stringify(temperature))
+  form.append('humidity', JSON.stringify(humidity))
+  form.append('authentication', authentication)
 
   form.append('bulletProffGlass', bulletProffGlass)
   form.append('cctv', cctv)
@@ -347,17 +383,43 @@ export const editFacility = async ({
     })
   } else form.append('owners', [])
 
-  if (address.length > 0) {
-    address.forEach((a, i) => {
-      form.append(`address[${i}]`, JSON.stringify(a))
-    })
+  if (address && address.fullAddress !== '') {
+    form.append('address[0]', JSON.stringify(address))
   } else form.append('address', [])
 
   if (tags.length > 0) {
     tags.forEach((tag, i) => {
       form.append(`tags[${i}]`, tag)
     })
-  } else form.append('tags', tags)
+  } else form.append('tags', [])
+
+  if (sProviders && sProviders.length > 0) {
+    sProviders.forEach((sp, i) => {
+      form.append(`sProviders[${i}]`, sp._id)
+    })
+  } else form.append('sProviders', [])
+
+  if (subsea && subsea.length > 0) {
+    subsea.forEach((s, i) => {
+      form.append(`subsea[${i}]`, s._id)
+    })
+  } else form.append('subsea', [])
+
+  if (terrestrials && terrestrials.length > 0) {
+    terrestrials.forEach((t, i) => {
+      form.append(`terrestrials[${i}]`, t._id)
+    })
+  } else form.append('terrestrials', [])
+
+  if (csp && csp.length > 0) {
+    csp.forEach((csp, i) => {
+      form.append(`csp[${i}]`, csp._id)
+    })
+  } else form.append('csp', [])
+
+  enType.forEach((t, i) => {
+    form.append(`enType[${i}]`, t)
+  })
 
   const res = await $axios.put(url, form, {
     withCredentials: true,
