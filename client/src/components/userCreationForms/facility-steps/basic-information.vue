@@ -29,7 +29,7 @@
               <autocomplete-google
                 :width="520"
                 size="medium"
-                :value="form.address"
+                :value="form.address.fullAddress"
                 @place-changed="handleAddressChange"
               />
             </el-form-item>
