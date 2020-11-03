@@ -103,6 +103,7 @@ export default {
         state: '',
         zipcode: ''
       },
+      enType: [],
       sProviders: [],
       subsea: [],
       owners: [],
@@ -315,6 +316,10 @@ export default {
 
       if (data.address && data.address.length >= 1) {
         this.form.address = { ...data.address[0] }
+      }
+
+      if (!data.enType) {
+        this.form.enType = []
       }
     },
     async viewCurrentFacility(_id) {
