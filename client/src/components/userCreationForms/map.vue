@@ -268,7 +268,7 @@ export default {
       return this.$store.state.isDark
     },
     autocompleteAddress() {
-      return this.tag
+      return this.tag.fullAddress
     },
     getSelectionID() {
       return t => this.form[t].map(t => (typeof t == 'string' ? t : t._id))

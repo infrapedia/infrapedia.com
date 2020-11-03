@@ -321,7 +321,7 @@ export default {
       return `${apiConfig.url}/auth/upload/logo`
     },
     autocompleteAddress() {
-      return this.tag
+      return this.tag.fullAddress
     },
     tagMode() {
       return this.tagOnEdit != null && this.tag ? 'edit' : 'create'
