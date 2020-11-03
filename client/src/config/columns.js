@@ -172,44 +172,34 @@ export const facsColumns = [
     showTable: true
   },
   {
+    label: 'Type',
+    value: 't',
+    showSidebar: true,
+    showTable: true
+  },
+  {
     label: 'Address',
     value: 'address',
     showSidebar: true,
     showTable: true
   },
   {
-    label: 'Websites',
-    value: 'websites',
+    label: 'In Service',
+    value: 'StartDate',
     showSidebar: true,
     showTable: true
   },
   {
-    label: 'Start date',
-    value: 'startDate',
+    label: 'Gross Building Size',
+    value: 'grossBuildingSize',
     showSidebar: true,
     showTable: true
   },
   {
-    label: 'Ixps',
-    value: 'ixps',
-    showSidebar: true
-  },
-  {
-    label: 'Type',
-    value: 'building',
+    label: 'Total Power (MW)',
+    value: 'totalPower',
     showSidebar: true,
     showTable: true
-  },
-  {
-    label: 'Cables',
-    value: 'cables',
-    showSidebar: true,
-    filter: arr => arr
-  },
-  {
-    label: 'Groups',
-    value: 'networks',
-    showSidebar: true
   },
   {
     label: 'Owners',

@@ -23,10 +23,12 @@
           <div class="relative action-buttons">
             <el-button
               type="text"
-              class="inline-block icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
+              size="mini"
+              circle
+              icon="el-icon-close"
+              class="inline-block icon fs-medium transition-all vertical-align absolute cursor-pointer"
               @click="closeSidebar"
             >
-              <fa :icon="['fas', 'times']" />
             </el-button>
             <el-button
               v-if="focus.type.toLowerCase() !== 'owners'"
