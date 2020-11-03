@@ -338,8 +338,17 @@
           <fa :icon="['fas', 'sign-in-alt']" class="mr1" /> Login
         </el-button>
       </div>
-      <footer class="pr8 pl8 pb8">
+
+      <footer class="pr8 pl8 pb8 relative">
         <el-divider class="mt0" />
+        <el-button
+          round
+          size="mini"
+          id="moreInformationBtn"
+          @click.stop="emitToggleMoreInformationSheet"
+        >
+          More information
+        </el-button>
         <el-row :gutter="20">
           <el-col :sx="24" :md="12">
             <el-popover
@@ -509,6 +518,9 @@ export default {
     }
   },
   methods: {
+    emitToggleMoreInformationSheet() {
+      this.$emit('toggle-more-information-sheet')
+    },
     isArrCol(item) {
       return Array.isArray(item)
     },

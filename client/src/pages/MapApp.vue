@@ -2,11 +2,17 @@
   <div>
     <i-navbar role="navigation" />
     <template>
+      <more-information-sheet
+        :is-visible="isMoreInformationSheet"
+        class="z-index200"
+        @close="handleToggleMoreInformationSheet"
+      />
       <i-sidebar
         @buy-capacity="openBuyDialog"
         @edit-cable="handleEditCable"
         @report-issue="openIssuesDialog"
         @create-alert="openAlertsDialog"
+        @toggle-more-information-sheet="handleToggleMoreInformationSheet"
       />
       <i-buy-dialog />
       <i-issues-dialog />
@@ -64,7 +70,9 @@ export default {
     IEditDialog: () => import('../components/dialogs/EditDialog'),
     IRegisterDialog: () => import('../components/dialogs/PromoteRegistration'),
     IVerificationDialog: () =>
-      import('../components/dialogs/VerificationDialog')
+      import('../components/dialogs/VerificationDialog'),
+    'more-information-sheet': () =>
+      import('../components/sidebarModes/moreInformationSheet')
   },
   data: () => ({
     EDIT_CABLE,
@@ -80,6 +88,7 @@ export default {
       ]
     },
     openEditDialog: false,
+    isMoreInformationSheet: false,
     isRegisterDialogVisible: false
   }),
   computed: {
@@ -132,6 +141,9 @@ export default {
     }
   },
   methods: {
+    handleToggleMoreInformationSheet() {
+      this.isMoreInformationSheet = !this.isMoreInformationSheet
+    },
     closeRegisterDialog() {
       this.isRegisterDialogVisible = false
     },

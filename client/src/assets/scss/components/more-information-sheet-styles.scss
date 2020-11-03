@@ -1,0 +1,27 @@
+@import '../base/variables';
+
+.el-drawer {
+  height: 32%;
+  width: 100%;
+  bottom: 0;
+  top: unset;
+  overflow: visible;
+  z-index: 2102 !important;
+  box-shadow: 0 0 10px 2px rgba($color: #000000, $alpha: .2);
+}
+
+
+
+// Theme variants
+
+
+.el-drawer {
+  .dark {
+    color: $white-partial;
+    background-color: $dark-charcoal;
+  }
+  .light {
+    color: $dark-charcoal;
+    background-color: $white-full;
+  }
+}

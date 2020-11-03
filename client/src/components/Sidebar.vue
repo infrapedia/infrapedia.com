@@ -68,6 +68,7 @@
             @report-issue="$emit(REPORT_ISSUE, $event)"
             @create-alert="$emit(CREATE_ALERT, $event)"
             @selection="handleItemListSelection"
+            @toggle-more-information-sheet="emitToggleMoreInformationSheet"
           />
         </transition>
         <!-- <div class="pr8 pl8 pb8">
@@ -92,7 +93,6 @@ import * as modes from '../config/sidebarModes'
 import dataCollection from '../mixins/dataCollection'
 import copyToClipboard from '../helpers/copyToClipboard'
 import { getSelectionCols } from '../helpers/getSelectionCols'
-// import { CURRENT_SELECTION, MAP_FOCUS_ON } from '../store/actionTypes/map'
 import {
   BUY_CAPACITY,
   EDIT_CABLE,
@@ -118,9 +118,9 @@ export default {
     REPORT_ISSUE,
     CREATE_ALERT,
     prohibitedIDs: [],
-    currentSelectionColumns: [],
     isSidebarActive: false,
     isSidebarFullActive: false,
+    currentSelectionColumns: [],
     transitionsClasses: {
       name: 'animated faster',
       active: 'slideInLeft',
@@ -142,7 +142,7 @@ export default {
       return modes.CABLE_MODE
     },
     isCable() {
-      return this.sidebarMode == this.defaultMode
+      return this.sidebarMode === this.defaultMode
     },
     isVerified() {
       return this.prohibitedIDs.includes(this.currentSelection.uuid)
@@ -185,6 +185,9 @@ export default {
     window.removeEventListener('resize', this.resizeWatcher)
   },
   methods: {
+    emitToggleMoreInformationSheet() {
+      this.$emit('toggle-more-information-sheet')
+    },
     handleColSelectionChange() {
       if (!this.focus) return
 
