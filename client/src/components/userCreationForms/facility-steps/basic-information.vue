@@ -88,6 +88,7 @@
                   v-for="(opt, i) in facilitiesBuildingTypes"
                   :key="i"
                   :value="opt.value"
+                  :label="opt.label"
                 >
                   <span class="capitalize">
                     {{ opt.label }}

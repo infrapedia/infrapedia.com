@@ -92,7 +92,7 @@ export default {
     form: {
       name: '',
       point: '',
-      t: '',
+      t: 'data_center',
       address: {
         fullAddress: '',
         reference: '',
