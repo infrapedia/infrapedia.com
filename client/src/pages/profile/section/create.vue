@@ -380,6 +380,7 @@ export default {
             owners: [],
             geom: [],
             nameLong: '',
+            facilities: [],
             media: '',
             techEmail: '',
             techPhone: '',
@@ -565,6 +566,17 @@ export default {
         this.form.ownersList = ownersData
       } else {
         this.form.owners = []
+      }
+
+      if (data.facilities && Array.isArray(data.facilities)) {
+        let facsData = data.facilities.map(fac => ({
+          name: fac.label,
+          _id: fac._id
+        }))
+        this.form.facilities = facsData
+        this.form.facilitiesList = facsData
+      } else {
+        this.form.facilities = []
       }
     },
     handleCablesEditMode(data) {

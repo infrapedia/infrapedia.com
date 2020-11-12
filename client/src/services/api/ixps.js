@@ -114,9 +114,11 @@ export const createIXP = async ({
   policyPhone,
   proto_ipv6,
   geom,
+  owners,
   techPhone,
   techEmail,
   media,
+  facilities,
   proto_multicast,
   proto_unicast
 }) => {
@@ -141,6 +143,18 @@ export const createIXP = async ({
     })
   } else form.append('tags', tags)
 
+  if (facilities && facilities.length > 0) {
+    facilities.forEach((fac, i) => {
+      form.append(`facilities[${i}]`, fac._id)
+    })
+  } else form.append('facilities', [])
+
+  if (owners && owners.length > 0) {
+    owners.forEach((owner, i) => {
+      form.append(`owners[${i}]`, owner._id)
+    })
+  } else form.append('owners', [])
+
   const res = await $axios.post(url, form, {
     withCredentials: true,
     headers: {
@@ -164,6 +178,8 @@ export const editIXP = async ({
   techPhone,
   techEmail,
   media,
+  facilities,
+  owners,
   proto_multicast,
   proto_unicast
 }) => {
@@ -188,6 +204,18 @@ export const editIXP = async ({
       form.append(`tags[${i}]`, tag)
     })
   } else form.append('tags', tags)
+
+  if (facilities && facilities.length > 0) {
+    facilities.forEach((fac, i) => {
+      form.append(`facilities[${i}]`, fac._id)
+    })
+  } else form.append('facilities', [])
+
+  if (owners && owners.length > 0) {
+    owners.forEach((owner, i) => {
+      form.append(`owners[${i}]`, owner._id)
+    })
+  } else form.append('owners', [])
 
   const res = await $axios.put(url, form, {
     withCredentials: true,

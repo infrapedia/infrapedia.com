@@ -41,6 +41,19 @@
           :disabled="isViewMode"
         />
       </el-form-item>
+      <el-form-item label="Locations" prop="facilities">
+        <v-multi-select
+          :mode="mode"
+          :is-required="true"
+          :is-field-empty="isFacilitiesEmpty"
+          :options="facilitiesList"
+          @input="loadFacilitiesSearch"
+          :loading="isLoadingFacilities"
+          @remove="handleFacilitiesSelection(form.facilities)"
+          @values-change="handleFacilitiesSelection"
+          :value="mode == 'create' ? [] : form.facilities"
+        />
+      </el-form-item>
       <el-form-item label="Media" prop="media">
         <el-select v-model="form.media" class="w-fit-full" placeholder>
           <el-option
@@ -150,6 +163,7 @@ import { searchOrganization } from '../../services/api/organizations'
 import VMultiSelect from '../../components/MultiSelect'
 import { checkIxpsNameExistence } from '../../services/api/check_name'
 import debounce from '../../helpers/debounce'
+import { searchFacilities } from '../../services/api/facs'
 
 export default {
   name: 'FacsForm',
@@ -160,6 +174,9 @@ export default {
     tag: '',
     inputVisible: false,
     tagsList: [],
+    facilitiesList: [],
+    isFacilitiesEmpty: false,
+    isLoadingFacilities: false,
     isNameRepeated: false,
     isOwnersSelectEmpty: false,
     isLoadingOwners: false,
@@ -213,6 +230,13 @@ export default {
           },
           { min: 1, message: 'Length should be at least 1', trigger: 'change' }
         ],
+        facilities: [
+          {
+            required: true,
+            message: 'At least one location is required',
+            trigger: 'change'
+          }
+        ],
         media: [],
         nameLong: [
           {
@@ -263,6 +287,11 @@ export default {
       if (!owners) return
       this.ownersList = [...owners]
       delete this.form.ownersList
+    },
+    'form.facilitiesList'(facs) {
+      if (!facs) return
+      this.facilitiesList = [...facs]
+      delete this.form.facilitiesList
     }
   },
   mounted() {
@@ -275,6 +304,22 @@ export default {
     }
   },
   methods: {
+    async loadFacilitiesSearch(s) {
+      if (s.length <= 0) return
+
+      this.isLoadingFacilities = true
+      const { data: facs = [] } = (await searchFacilities({
+        user_id: await this.$auth.getUserID(),
+        s
+      })) || { facs: [] }
+
+      this.facilitiesList = facs
+      this.isLoadingFacilities = false
+    },
+    async handleFacilitiesSelection(data) {
+      this.form.facilities = Array.from(data)
+      this.isFacilitiesEmpty = !data.length
+    },
     checkName: debounce(async function(name) {
       this.isNameRepeated = false
       const {
