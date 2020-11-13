@@ -119,7 +119,7 @@
           <template v-else>
             <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
               <el-col :span="24">
-                <template v-if="!col.label.toLowerCase() != 'address'">
+                <template v-if="col.value != 'address'">
                   <template
                     v-if="
                       col.value == 'cables' &&
@@ -224,12 +224,22 @@
                   {{ info[col.value] }}
                 </a>
               </template>
-              <date
-                class="text-bold"
-                v-else-if="col.label.toLowerCase().includes('date')"
+              <time
+                class="text-bold mt2 inline-block"
+                :class="{ 'text-white': dark }"
+                v-else-if="
+                  col.label.toLowerCase().includes('date') ||
+                    col.label.toLowerCase().includes('in service')
+                "
               >
-                {{ convertToYear(info[col.value]) }}
-              </date>
+                {{
+                  convertToYear(
+                    col.label.toLowerCase() == 'in service'
+                      ? toIsoDate(info[col.value])
+                      : info[col.value]
+                  )
+                }}
+              </time>
               <template
                 class="text-bold"
                 v-else-if="
@@ -342,10 +352,11 @@
       <footer class="pr8 pl8 pb8 relative">
         <el-divider class="mt0" />
         <el-button
-          v-if="focusType == 'facilities'"
+          v-if="focusType == 'facility'"
           round
           size="mini"
           id="moreInformationBtn"
+          :class="{ dark }"
           @click.stop="emitToggleMoreInformationSheet"
         >
           More information
@@ -527,6 +538,9 @@ export default {
     }
   },
   methods: {
+    toIsoDate(date) {
+      return new Date(date).toISOString()
+    },
     emitToggleMoreInformationSheet() {
       this.$emit('toggle-more-information-sheet')
     },
