@@ -8,6 +8,7 @@
         <el-input
           class="w-fit-full"
           v-model="form.name"
+          :class="{ dark }"
           :disabled="isViewMode"
           clearable
           @input="checkName"
@@ -15,6 +16,7 @@
         <el-alert
           v-if="isNameRepeated"
           class="mt4 p2"
+          :class="{ dark }"
           type="error"
           :closable="false"
           description="This name already exists in our database. Use a different name or
@@ -24,6 +26,7 @@
       <el-form-item label="Owners" prop="owners" required>
         <v-multi-select
           :mode="mode"
+          :class="{ dark }"
           :is-required="true"
           :is-field-empty="isOwnersSelectEmpty"
           :options="ownersList"
@@ -37,6 +40,7 @@
       <el-form-item label="Long name" prop="nameLong">
         <el-input
           class="w-fit-full"
+          :class="{ dark }"
           v-model="form.nameLong"
           :disabled="isViewMode"
         />
@@ -44,6 +48,7 @@
       <el-form-item label="Locations" prop="facilities">
         <v-multi-select
           :mode="mode"
+          :class="{ dark }"
           :is-required="true"
           :is-field-empty="isFacilitiesEmpty"
           :options="facilitiesList"
@@ -55,7 +60,12 @@
         />
       </el-form-item>
       <el-form-item label="Media" prop="media">
-        <el-select v-model="form.media" class="w-fit-full" placeholder>
+        <el-select
+          v-model="form.media"
+          class="w-fit-full"
+          :class="{ dark }"
+          placeholder
+        >
           <el-option
             v-for="(opt, i) in mediaOptions"
             :key="i"
@@ -67,12 +77,14 @@
       <el-form-item label="Policy Email" prop="policyEmail">
         <el-input
           class="w-fit-full"
+          :class="{ dark }"
           v-model="form.policyEmail"
           :disabled="isViewMode"
         />
       </el-form-item>
       <el-form-item label="Policy Phone" prop="policyPhone">
         <el-input
+          :class="{ dark }"
           class="w-fit-full"
           v-model="form.policyPhone"
           :disabled="isViewMode"
@@ -80,6 +92,7 @@
       </el-form-item>
       <el-form-item label="Tech Email" prop="techEmail">
         <el-input
+          :class="{ dark }"
           class="w-fit-full"
           v-model="form.techEmail"
           :disabled="isViewMode"
@@ -87,6 +100,7 @@
       </el-form-item>
       <el-form-item label="Tech Phone" prop="techPhone">
         <el-input
+          :class="{ dark }"
           class="w-fit-full"
           v-model="form.techPhone"
           :disabled="isViewMode"
@@ -94,32 +108,35 @@
       </el-form-item>
       <el-form-item label="Proto ivp6" prop="proto_ipv6">
         <el-radio-group
+          :class="{ dark }"
           v-model="form.proto_ipv6"
           :disabled="isViewMode"
           class="flex row justify-content-start w-fit-full"
         >
-          <el-radio-button :label="true">Yes</el-radio-button>
-          <el-radio-button :label="false">No</el-radio-button>
+          <el-radio-button :class="{ dark }" :label="true">Yes</el-radio-button>
+          <el-radio-button :class="{ dark }" :label="false">No</el-radio-button>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="Proto multicast" prop="proto_multicast">
         <el-radio-group
+          :class="{ dark }"
           v-model="form.proto_multicast"
           :disabled="isViewMode"
           class="flex row justify-content-start w-fit-full"
         >
-          <el-radio-button :label="true">Yes</el-radio-button>
-          <el-radio-button :label="false">No</el-radio-button>
+          <el-radio-button :class="{ dark }" :label="true">Yes</el-radio-button>
+          <el-radio-button :class="{ dark }" :label="false">No</el-radio-button>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="Proto unicast" prop="proto_unicast">
         <el-radio-group
           v-model="form.proto_unicast"
           :disabled="isViewMode"
+          :class="{ dark }"
           class="flex row justify-content-start w-fit-full"
         >
-          <el-radio-button :label="true">Yes</el-radio-button>
-          <el-radio-button :label="false">No</el-radio-button>
+          <el-radio-button :class="{ dark }" :label="true">Yes</el-radio-button>
+          <el-radio-button :class="{ dark }" :label="false">No</el-radio-button>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="Tags" class="mt2" prop="tags">
