@@ -10,6 +10,7 @@
             <el-col :span="24">
               <el-form-item label="Gross Building Size (sq meters)" required>
                 <el-input-number
+                  :class="{ dark }"
                   class="w-fit-full"
                   controls-position="right"
                   v-model="form.buildingSize"
@@ -19,6 +20,7 @@
             <el-col :span="24">
               <el-form-item label="Gross Colocation Size (sq meters)">
                 <el-input-number
+                  :class="{ dark }"
                   class="w-fit-full"
                   controls-position="right"
                   v-model="form.grossColocationSize"
@@ -28,6 +30,7 @@
             <el-col :span="24">
               <el-form-item label="Floor Loading Capacity (Kg/sq meters)">
                 <el-input-number
+                  :class="{ dark }"
                   class="w-fit-full"
                   controls-position="right"
                   v-model="form.floorLoadingCapacity"

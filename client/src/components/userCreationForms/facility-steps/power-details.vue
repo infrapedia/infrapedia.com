@@ -11,6 +11,7 @@
               <el-form-item label="Total Power (Megawatts)" required>
                 <el-input-number
                   :precision="2"
+                  :class="{ dark }"
                   :step="0.1"
                   class="w-fit-full"
                   controls-position="right"
@@ -22,6 +23,7 @@
               <el-form-item label="PUE">
                 <el-input-number
                   :precision="2"
+                  :class="{ dark }"
                   :step="0.1"
                   class="w-fit-full"
                   controls-position="right"
@@ -53,6 +55,7 @@
             <el-col :span="24">
               <el-form-item label="Max Rack Power (Megawatts)">
                 <el-input-number
+                  :class="{ dark }"
                   :precision="2"
                   :step="0.1"
                   class="w-fit-full"
@@ -102,6 +105,7 @@
             <el-col :span="24">
               <el-form-item label="Cooling Capacity (Megawatts)">
                 <el-input-number
+                  :class="{ dark }"
                   class="w-fit-full"
                   controls-position="right"
                   v-model="form.coolingCapacity"
