@@ -164,6 +164,15 @@ export const cspColumns = [
     showTable: true
   }
 ]
+
+//==========================
+//==========================
+//==========================
+// FACILITIES COLUMNS START
+//==========================
+//==========================
+//==========================
+
 export const facsColumns = [
   {
     label: 'Name',
@@ -217,6 +226,146 @@ export const facsColumns = [
     showTable: true
   }
 ]
+
+export const facilitiesBuildingDetailsColumns = [
+  {
+    label: 'Gross Building Size (sq meters)',
+    value: 'buildingSize'
+  },
+  {
+    label: 'Gross Colocation Size (sq meters)',
+    value: 'grossColocationSize'
+  },
+  {
+    label: 'Floor Loading Capacity (kg/sq meters)',
+    value: 'floorLoadingCapacity'
+  },
+  {
+    label: 'Carrier Neutral',
+    value: 'isCarrierNeutral'
+  },
+  {
+    label: 'Loading Docks',
+    value: 'isLoadingDocks'
+  },
+  {
+    label: 'Rack Height (U)',
+    value: 'rackHeight'
+  },
+  {
+    label: 'Meet me rooms',
+    value: 'meetMeRooms'
+  },
+  {
+    label: 'Satellite/Antenna Platform',
+    value: 'platform'
+  }
+]
+
+export const facilitiesPowerAndCoolingDetailsColumns = [
+  {
+    label: 'Total Power',
+    value: 'totalPower'
+  },
+  {
+    label: 'PUE',
+    value: 'pue'
+  },
+  {
+    label: 'Utility Connection Redundancy',
+    value: 'utilityConnectionRedundancy'
+  },
+  {
+    label: 'Max Rack Power (Megawatts)',
+    value: 'maxRackPower'
+  },
+  {
+    label: 'Backup Power Duration (hours)',
+    value: 'backupPowerDuration'
+  },
+  {
+    label: 'Backup Power Redundancy',
+    value: 'backupPowerRedundancy'
+  },
+  {
+    divider: true
+  },
+  {
+    label: 'Cooling Capacity (Megawatts)',
+    value: 'coolingCapacity'
+  },
+  {
+    label: 'Temperature',
+    value: 'temperature'
+  },
+  {
+    label: 'Humidity',
+    value: 'humidity'
+  }
+]
+
+export const facilitiesSecurityAndOnsiteServicesColumns = [
+  {
+    label: 'Bullet Proof Glass',
+    value: 'bulletProffGlass'
+  },
+  {
+    label: 'CCTV',
+    value: 'cctv'
+  },
+  {
+    label: 'Security Guards',
+    value: 'securityGuards'
+  },
+  {
+    label: 'Mantrap',
+    value: 'mantrap'
+  },
+  {
+    label: 'Biometric',
+    value: 'biometric'
+  },
+  {
+    label: 'Authentication',
+    value: 'authentication'
+  },
+  {
+    label: 'Meeting Rooms',
+    value: 'meetingRooms'
+  },
+  {
+    label: 'Break Rooms',
+    value: 'breakRooms'
+  },
+  {
+    label: 'Car Parking',
+    value: 'carParking'
+  },
+  {
+    label: 'Spare Parts',
+    value: 'spareParts'
+  },
+  {
+    label: 'Staging Rooms',
+    value: 'stagingRooms'
+  },
+  {
+    label: 'Office Space',
+    value: 'officeSpace'
+  },
+  {
+    label: 'Internet Access',
+    value: 'internetAccess'
+  }
+]
+
+//==========================
+//==========================
+//==========================
+// FACILITIES COLUMNS END
+//==========================
+//==========================
+//==========================
 
 export const ixpsColumns = [
   {

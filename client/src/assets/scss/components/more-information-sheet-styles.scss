@@ -5,9 +5,23 @@
   width: 100%;
   bottom: 0;
   top: unset;
-  overflow: visible;
+  overflow-y: auto;
+  overflow-x: hidden;
   z-index: 2102 !important;
   box-shadow: 0 0 10px 2px rgba($color: #000000, $alpha: .2);
+}
+
+.drawer-body {
+  display: grid;
+  gap: .4rem;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid rgba($color: #000000, $alpha: .078);
 }
 
 
@@ -15,6 +29,7 @@
 // Theme variants
 
 
+header,
 .el-drawer {
   .dark {
     color: $white-partial;
