@@ -25,6 +25,7 @@
               type="text"
               size="mini"
               circle
+              :class="{ 'text-white--imp': dark }"
               icon="el-icon-close"
               class="inline-block icon fs-medium transition-all vertical-align absolute cursor-pointer"
               @click="closeSidebar"
@@ -132,6 +133,7 @@ export default {
   mixins: [dataCollection],
   computed: {
     ...mapState({
+      dark: state => state.isDark,
       focus: state => state.map.focus,
       isSidebar: state => state.isSidebar,
       sidebarMode: state => state.sidebarMode,

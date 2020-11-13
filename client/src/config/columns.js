@@ -269,11 +269,11 @@ export const ixpsColumns = [
   },
   {
     label: 'Owners',
-    value: 'organizations',
+    value: 'owners',
     showSidebar: true
   },
   {
-    label: 'Facilities',
+    label: 'Locations',
     value: 'facilities',
     showSidebar: true
   },

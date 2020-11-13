@@ -119,7 +119,7 @@
           <template v-else>
             <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
               <el-col :span="24">
-                <template v-if="!col.label.toLowerCase().includes('address')">
+                <template v-if="!col.label.toLowerCase() != 'address'">
                   <template
                     v-if="
                       col.value == 'cables' &&
@@ -128,25 +128,25 @@
                   >
                     <p class="label capitalize">{{ col.label }}</p>
                     <el-tag
-                      v-for="(item, index) in col.filter(info[col.value])"
-                      :key="index + item.name"
+                      v-for="item in col.filter(info[col.value])"
+                      :key="item._id"
                       @click="handleSelection(item._id, col.label)"
                       class="mr2 cursor-pointer"
                       size="mini"
                     >
-                      {{ item.name }}
+                      {{ item.name ? item.name : item.label }}
                     </el-tag>
                   </template>
                   <template v-else-if="col.value != 'cables'">
                     <p class="label capitalize">{{ col.label }}</p>
                     <el-tag
-                      v-for="(item, index) in info[col.value]"
-                      :key="index + item.name"
+                      v-for="item in info[col.value]"
+                      :key="item._id"
                       @click="handleSelection(item._id, col.label)"
                       class="mr2 cursor-pointer"
                       size="mini"
                     >
-                      {{ item.name }}
+                      {{ item.name ? item.name : item.label }}
                     </el-tag>
                   </template>
                 </template>
@@ -224,12 +224,12 @@
                   {{ info[col.value] }}
                 </a>
               </template>
-              <p
+              <date
                 class="text-bold"
                 v-else-if="col.label.toLowerCase().includes('date')"
               >
                 {{ convertToYear(info[col.value]) }}
-              </p>
+              </date>
               <template
                 class="text-bold"
                 v-else-if="
@@ -245,7 +245,7 @@
                   class="text-bold cursor-pointer underline-hover"
                   @click="handleSelection(item._id, col.label)"
                 >
-                  {{ item.name }}
+                  {{ item.name ? item.name : item.label }}
                 </p>
               </template>
               <template
@@ -342,6 +342,7 @@
       <footer class="pr8 pl8 pb8 relative">
         <el-divider class="mt0" />
         <el-button
+          v-if="focusType == 'facilities'"
           round
           size="mini"
           id="moreInformationBtn"
@@ -480,7 +481,15 @@ export default {
       return this.$store.state.map.focus
     },
     collapseColumns() {
-      return ['org', 'networks', 'cables', 'cls', 'address', 'facilities']
+      return [
+        'org',
+        'networks',
+        'cables',
+        'cls',
+        'address',
+        'facilities',
+        'owners'
+      ]
     },
     dataCenterColumns() {
       const cols = [...this.columns]
@@ -500,6 +509,8 @@ export default {
           }
         })
         .filter(col => col)
+
+      console.log(cols)
       return cols
     },
     isActionButtonsDisabled() {
