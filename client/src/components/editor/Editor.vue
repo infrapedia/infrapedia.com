@@ -190,8 +190,6 @@ export default {
   },
   methods: {
     async handleSearchPlaceSelected(data) {
-      console.log(data)
-
       if (this.placeMarker) this.placeMarker.remove()
       this.placeMarker = new mapboxgl.Marker({ color: '#1e419a' })
         .setLngLat(data.center)

@@ -509,8 +509,6 @@ export default {
           }
         })
         .filter(col => col)
-
-      console.log(cols)
       return cols
     },
     isActionButtonsDisabled() {

@@ -241,7 +241,7 @@ export default {
     handleRegionsDialogClose(data) {
       this.regionsDialog.visible = false
       if (data) {
-        console.log(data)
+        // console.log(data)
         // this.form.regions.push(data)
       }
     },
@@ -251,7 +251,7 @@ export default {
     handleRampsDialogClose(data) {
       this.rampsDialog.visible = false
       if (data) {
-        console.log(data)
+        // console.log(data)
         // this.form.regions.push(data)
       }
     },
