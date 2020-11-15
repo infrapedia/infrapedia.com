@@ -324,6 +324,36 @@
           </el-row>
         </template>
       </div>
+
+      <div v-if="isFacilityFocusType">
+        <el-divider></el-divider>
+        <h5 role="heading" tabindex="0" title="More Information">
+          More Information
+        </h5>
+        <el-alert :closable="false" class="p1 m0 transparent">
+          <div
+            v-for="(item, i) in valuesToShow"
+            :key="i"
+            class="mb1 fs-regular"
+          >
+            <template v-if="info[item.value]">
+              <small> {{ item.label }} - </small>
+              <span class="fs-small inline-block">
+                <template
+                  v-if="
+                    typeof info[item.value] != 'string' &&
+                      typeof info[item.value] != 'number'
+                  "
+                >
+                  normally:
+                  {{ info[item.value].value }} / variant:
+                  {{ info[item.value].variant }} </template
+                ><template v-else>{{ info[item.value] }}</template>
+              </span>
+            </template>
+          </div>
+        </el-alert>
+      </div>
     </div>
     <!---- VALUES SECTION END ---->
 
@@ -352,7 +382,7 @@
       <footer class="pr8 pl8 pb8 relative">
         <el-divider class="mt0" />
         <el-button
-          v-if="focusType == 'facility'"
+          v-if="isFacilityFocusType"
           round
           size="mini"
           id="moreInformationBtn"
@@ -458,6 +488,11 @@
 <script>
 import convertToYear from '../../helpers/convertToYear'
 import { BUY_CAPACITY, REPORT_ISSUE, CREATE_ALERT } from '../../events/sidebar'
+import {
+  facilitiesBuildingDetailsColumns,
+  facilitiesPowerAndCoolingDetailsColumns,
+  facilitiesSecurityAndOnsiteServicesColumns
+} from '../../config/columns'
 
 export default {
   name: 'IDataCenter',
@@ -487,6 +522,16 @@ export default {
     },
     focusType() {
       return this.focus.type.toLowerCase()
+    },
+    isFacilityFocusType() {
+      return this.focusType == 'facility'
+    },
+    valuesToShow() {
+      return [
+        ...facilitiesSecurityAndOnsiteServicesColumns,
+        ...facilitiesBuildingDetailsColumns,
+        ...facilitiesPowerAndCoolingDetailsColumns
+      ]
     },
     focus() {
       return this.$store.state.map.focus
