@@ -125,7 +125,7 @@ export default {
       utilityConnectionRedundancy: '',
       totalPower: 0,
       temperature: {
-        value: 0,
+        value: 24.5,
         variant: 0
       },
       coolingCapacity: 0,
@@ -135,7 +135,7 @@ export default {
       cctv: false,
       biometric: false,
       humidity: {
-        value: 0,
+        value: 14.5,
         variant: 0
       },
       authentication: false,

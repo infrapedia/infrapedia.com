@@ -118,6 +118,7 @@
                 <el-slider
                   class="w-fit-full"
                   v-model="form.temperature.value"
+                  :step="0.1"
                   show-input
                 />
               </el-form-item>
@@ -127,6 +128,7 @@
                 <br />
                 <el-slider
                   class="w-fit-full"
+                  :step="0.1"
                   v-model="form.temperature.variant"
                   show-input
                 />
@@ -142,12 +144,14 @@
                 <el-slider
                   class="w-fit-full"
                   v-model="form.humidity.value"
+                  :step="0.1"
                   show-input
                 />
               </el-form-item>
               <el-form-item label="Humidity - + (%)" class="pr4 pl4">
                 <br />
                 <el-slider
+                  :step="0.1"
                   class="w-fit-full"
                   v-model="form.humidity.variant"
                   show-input
