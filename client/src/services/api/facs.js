@@ -431,6 +431,18 @@ export const editFacility = async ({
   return res
 }
 
+export const updateFacilityInterconnections = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/facilities/clusterixpconnection/${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
 export const deleteFacility = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/facilities/delete/${_id}`
   const res = await $axios.delete(url, {

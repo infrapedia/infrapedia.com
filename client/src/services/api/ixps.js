@@ -227,6 +227,18 @@ export const editIXP = async ({
   return res
 }
 
+export const updateIxpInterconnections = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/ixps/clusterfacilityconnection/${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
 export const deleteIXP = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/auth/ixps/delete/${_id}`
   const res = await $axios.delete(url, {

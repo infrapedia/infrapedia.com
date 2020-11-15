@@ -71,7 +71,8 @@
 import {
   viewFacilityOwner,
   editFacility,
-  createFacility
+  createFacility,
+  updateFacilityInterconnections
 } from '../../../services/api/facs'
 import FacilityForm from '../../../components/userCreationForms/facilities'
 import { bus } from '../../../helpers/eventBus'
@@ -345,13 +346,19 @@ export default {
         : (this.form.geom[0].properties.name = this.form.geom[0].properties.name)
 
       const formData = this.form
+      const user_id = await this.$auth.getUserID()
       const { t, data } = (await method({
         ...formData,
-        user_id: await this.$auth.getUserID()
+        user_id
       })) || { t: 'error', data: null }
 
       this.isSendingData = false
       if (t != 'error') {
+        await updateFacilityInterconnections({
+          user_id,
+          _id: !this.$route.query.item ? data.r : this.$route.query.item
+        })
+
         if (!this.$route.query.item) {
           this.$router.replace({
             path: this.$route.path,

@@ -99,7 +99,12 @@ import {
   setMyMap,
   setupMyMapArchives
 } from '../../../services/api/map'
-import { viewIXPOwner, editIXP, createIXP } from '../../../services/api/ixps'
+import {
+  viewIXPOwner,
+  editIXP,
+  createIXP,
+  updateIxpInterconnections
+} from '../../../services/api/ixps'
 import ManualKMZSubmitDialog from '../../../components/dialogs/ManualKMZSubmit'
 import debounce from '../../../helpers/debounce'
 import { sceneDictionary } from '../../../components/editor'
@@ -699,9 +704,10 @@ export default {
        * The only one that sends data throught the event is the custom map form
        */
       const formData = mapData ? mapData : this.form
+      const user_id = await this.$auth.getUserID()
       const { t, data } = (await method({
         ...formData,
-        user_id: await this.$auth.getUserID()
+        user_id
       })) || { t: 'error', data: null }
 
       this.isSendingData = false
@@ -709,12 +715,21 @@ export default {
         if (creationType == 'map') {
           await setupMyMapArchives(this.form.subdomain).catch(console.error)
         } else {
+          let itemid = mode == 'edit' ? this.$route.query.item : data.r
+
+          if (creationType == 'ixps') {
+            await updateIxpInterconnections({
+              user_id,
+              _id: itemid
+            })
+          }
+
           if (mode !== 'edit') {
             this.$router.replace({
               path: '/user/section/create',
               query: {
                 id: this.$route.query.id,
-                item: mode == 'edit' ? this.$route.query.item : data.r
+                item: itemid
               }
             })
           }
