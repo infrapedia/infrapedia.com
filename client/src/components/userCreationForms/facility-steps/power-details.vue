@@ -53,7 +53,7 @@
         <el-col :span="12">
           <el-row>
             <el-col :span="24">
-              <el-form-item label="Max Rack Power (Megawatts)">
+              <el-form-item label="Max Rack Power (Kilowatts)">
                 <el-input-number
                   :class="{ dark }"
                   :precision="2"
@@ -443,7 +443,7 @@
 export default {
   name: 'BuildingDetails',
   data: () => ({
-    options: ['n', 'n+1', 'n+n']
+    options: ['n', 'n+1', 'n+2', '2n', '2n+1']
   }),
   props: {
     form: {

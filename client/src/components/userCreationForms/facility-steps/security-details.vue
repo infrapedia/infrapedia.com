@@ -100,7 +100,7 @@
           <el-row>
             <el-col :span="24">
               <el-row :gutter="4">
-                <el-col :span="10">
+                <!-- <el-col :span="10">
                   <el-form-item label="Meeting Rooms">
                     <br />
                     <el-radio-group v-model="form.meetingRooms">
@@ -112,7 +112,7 @@
                       </el-radio-button>
                     </el-radio-group>
                   </el-form-item>
-                </el-col>
+                </el-col> -->
                 <el-col :span="10">
                   <el-form-item label="Break Rooms">
                     <br />

@@ -91,10 +91,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="24">
-              <el-form-item
-                label="Rack Height (U)"
-                :required="form.enType.includes('Rack')"
-              >
+              <el-form-item label="Rack Height (U)">
+                <!-- :required="form.enType.includes('Rack')" -->
                 <el-input-number
                   :class="{ dark }"
                   class="w-fit-full"
