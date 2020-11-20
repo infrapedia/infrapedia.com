@@ -345,17 +345,15 @@
             >
               <template v-if="info[col.value] !== 'false'">
                 <!-------- LABEL START ---------->
-                <el-col :span="12">
-                  <pre-wrap
-                    ><p>{{ col.label }}</p></pre-wrap
-                  >
+                <el-col :span="10">
+                  <p>{{ col.label }}</p>
                 </el-col>
                 <!-------- LABEL END ------------>
                 <!------------------------------->
                 <!------------------------------->
                 <!------------------------------->
                 <!-------- VALUE START ---------->
-                <el-col v-if="info[col.value]" :span="12">
+                <el-col v-if="info[col.value]" :span="14">
                   <p class="text-bold inline-block">
                     <template
                       v-if="
