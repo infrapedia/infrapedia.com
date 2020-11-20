@@ -330,29 +330,49 @@
         <h5 role="heading" tabindex="0" title="More Information">
           More Information
         </h5>
-        <el-alert :closable="false" class="p1 m0 transparent">
-          <div
-            v-for="(item, i) in valuesToShow"
-            :key="i"
-            class="mb1 fs-regular"
-          >
-            <template v-if="info[item.value]">
-              <small> {{ item.label }} - </small>
-              <span class="fs-small inline-block">
-                <template
-                  v-if="
-                    typeof info[item.value] != 'string' &&
-                      typeof info[item.value] != 'number'
-                  "
-                >
-                  normally:
-                  {{ info[item.value].value }} / variant:
-                  {{ info[item.value].variant }} </template
-                ><template v-else>{{ info[item.value] }}</template>
-              </span>
-            </template>
+        <div class="p1 m0 transparent">
+          <div v-for="(item, i) in valuesToShow" :key="i" class="mb7">
+            <header>
+              <p class="label capitalize">
+                {{ item.label }}
+              </p>
+            </header>
+            <el-row
+              v-for="col in item.value"
+              :key="col.value"
+              :gutter="20"
+              class="pl1"
+            >
+              <template v-if="info[col.value] !== 'false'">
+                <!-------- LABEL START ---------->
+                <el-col :span="12">
+                  <pre-wrap
+                    ><p>{{ col.label }}</p></pre-wrap
+                  >
+                </el-col>
+                <!-------- LABEL END ------------>
+                <!------------------------------->
+                <!------------------------------->
+                <!------------------------------->
+                <!-------- VALUE START ---------->
+                <el-col v-if="info[col.value]" :span="12">
+                  <p class="text-bold inline-block">
+                    <template
+                      v-if="
+                        typeof info[col.value] != 'string' &&
+                          typeof info[col.value] != 'number'
+                      "
+                    >
+                      {{ info[col.value].value }} / +-
+                      {{ info[col.value].variant }} </template
+                    ><template v-else>{{ info[col.value] }}</template>
+                  </p>
+                </el-col>
+                <!--------- VALUE END ---------->
+              </template>
+            </el-row>
           </div>
-        </el-alert>
+        </div>
       </div>
     </div>
     <!---- VALUES SECTION END ---->
@@ -381,16 +401,6 @@
 
       <footer class="pr8 pl8 pb8 relative">
         <el-divider class="mt0" />
-        <el-button
-          v-if="isFacilityFocusType"
-          round
-          size="mini"
-          id="moreInformationBtn"
-          :class="{ dark }"
-          @click.stop="emitToggleMoreInformationSheet"
-        >
-          More information
-        </el-button>
         <el-row :gutter="20">
           <el-col :sx="24" :md="12">
             <el-popover
@@ -528,9 +538,18 @@ export default {
     },
     valuesToShow() {
       return [
-        ...facilitiesSecurityAndOnsiteServicesColumns,
-        ...facilitiesBuildingDetailsColumns,
-        ...facilitiesPowerAndCoolingDetailsColumns
+        {
+          label: 'Building',
+          value: facilitiesBuildingDetailsColumns
+        },
+        {
+          label: 'Power',
+          value: facilitiesPowerAndCoolingDetailsColumns
+        },
+        {
+          label: 'Security',
+          value: facilitiesSecurityAndOnsiteServicesColumns
+        }
       ]
     },
     focus() {
@@ -585,9 +604,6 @@ export default {
   methods: {
     toIsoDate(date) {
       return new Date(date).toISOString()
-    },
-    emitToggleMoreInformationSheet() {
-      this.$emit('toggle-more-information-sheet')
     },
     isArrCol(item) {
       return Array.isArray(item)

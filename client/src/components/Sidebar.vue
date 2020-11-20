@@ -71,7 +71,6 @@
             @report-issue="$emit(REPORT_ISSUE, $event)"
             @create-alert="$emit(CREATE_ALERT, $event)"
             @selection="handleItemListSelection"
-            @toggle-more-information-sheet="emitToggleMoreInformationSheet"
           />
         </transition>
         <!-- <div class="pr8 pl8 pb8">
@@ -189,9 +188,6 @@ export default {
     window.removeEventListener('resize', this.resizeWatcher)
   },
   methods: {
-    emitToggleMoreInformationSheet() {
-      this.$emit('toggle-more-information-sheet')
-    },
     handleColSelectionChange() {
       if (!this.focus) return
 
