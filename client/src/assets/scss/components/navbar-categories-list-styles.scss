@@ -1,0 +1,21 @@
+@import '../base/variables';
+
+.main-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  background-color: $white-full;
+  ul {
+    li {
+      border-top: 1px solid $light-charcoal;
+      &:last-child {
+        border-bottom: 1px solid $light-charcoal;
+      }
+    }
+  }
+  &.dark {
+    background-color: $dark-charcoal;
+  }
+}

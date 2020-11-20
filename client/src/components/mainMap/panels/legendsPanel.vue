@@ -28,11 +28,11 @@
           v-for="b in legend"
           :key="b.label"
         >
-          <span
-            class="color inline-block w4 h4 mr1 circle"
-            :style="`background-color:${b.color}`"
+          <div
+            class="color inline-block h4 circle"
+            :style="`background-color:${b.color}; min-width: 1rem;`"
           />
-          <span class="capitalize">
+          <span class="capitalize pl1">
             {{ b.label }}
           </span>
         </div>
