@@ -71,8 +71,7 @@
 import {
   viewFacilityOwner,
   editFacility,
-  createFacility,
-  updateFacilityInterconnections
+  createFacility
 } from '../../../services/api/facs'
 import FacilityForm from '../../../components/userCreationForms/facilities'
 import { bus } from '../../../helpers/eventBus'
@@ -354,11 +353,6 @@ export default {
 
       this.isSendingData = false
       if (t != 'error') {
-        await updateFacilityInterconnections({
-          user_id,
-          _id: !this.$route.query.item ? data.r : this.$route.query.item
-        })
-
         if (!this.$route.query.item) {
           this.$router.replace({
             path: this.$route.path,
