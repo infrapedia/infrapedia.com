@@ -431,7 +431,7 @@ export const editFacility = async ({
   return res
 }
 
-export const updateFacilityInterconnections = async ({ user_id, _id }) => {
+export const getFacilityInterconnections = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/facilities/clusterixpconnection/${_id}`
   const res = await $axios.get(url, {
     withCredentials: true,

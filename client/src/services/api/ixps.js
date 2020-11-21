@@ -227,7 +227,7 @@ export const editIXP = async ({
   return res
 }
 
-export const updateIxpInterconnections = async ({ user_id, _id }) => {
+export const getIxpInterconnections = async ({ user_id, _id }) => {
   url = `${apiConfig.url}/ixps/clusterfacilityconnection/${_id}`
   const res = await $axios.get(url, {
     withCredentials: true,

@@ -99,12 +99,7 @@ import {
   setMyMap,
   setupMyMapArchives
 } from '../../../services/api/map'
-import {
-  viewIXPOwner,
-  editIXP,
-  createIXP,
-  updateIxpInterconnections
-} from '../../../services/api/ixps'
+import { viewIXPOwner, editIXP, createIXP } from '../../../services/api/ixps'
 import ManualKMZSubmitDialog from '../../../components/dialogs/ManualKMZSubmit'
 import debounce from '../../../helpers/debounce'
 import { sceneDictionary } from '../../../components/editor'
@@ -715,21 +710,12 @@ export default {
         if (creationType == 'map') {
           await setupMyMapArchives(this.form.subdomain).catch(console.error)
         } else {
-          let itemid = mode == 'edit' ? this.$route.query.item : data.r
-
-          if (creationType == 'ixps') {
-            await updateIxpInterconnections({
-              user_id,
-              _id: itemid
-            })
-          }
-
           if (mode !== 'edit') {
             this.$router.replace({
               path: '/user/section/create',
               query: {
                 id: this.$route.query.id,
-                item: itemid
+                item: data.r
               }
             })
           }
