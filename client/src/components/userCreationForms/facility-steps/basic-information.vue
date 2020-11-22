@@ -122,10 +122,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
           <el-col :span="24">
             <el-form-item
               label="Owners"
@@ -147,16 +143,22 @@
               />
             </el-form-item>
           </el-col>
+        </el-row>
+      </el-col>
+      <el-col :span="8">
+        <el-row>
           <el-col :span="24">
-            <el-form-item label="IXPs">
+            <el-form-item label="Terrestrial Networks" prop="terrestrial">
               <v-multi-select
-                :options="ixpsList"
+                :options="terrestrialsList"
                 :mode="multiSelectsMode"
-                @input="loadIXpsSearch"
-                :loading="isLoadingIXPs"
-                :value="multiSelectsMode == 'create' ? [] : form.ixps"
-                @values-change="handleIxpsSelectChange"
-                @remove="handleIxpsSelectRemoveItem"
+                :loading="isLoadingCables"
+                @input="loadCablesSearch($event, 'terrestrials')"
+                :value="multiSelectsMode == 'create' ? [] : form.terrestrials"
+                @values-change="handleSelectionChange('terrestrials', $event)"
+                @remove="
+                  handleSelectionChange('terrestrials', form.terrestrials)
+                "
               />
             </el-form-item>
           </el-col>
@@ -174,21 +176,19 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="Terrestrial Networks" prop="terrestrial">
+            <el-form-item label="IXPs">
               <v-multi-select
-                :options="terrestrialsList"
+                :options="ixpsList"
                 :mode="multiSelectsMode"
-                :loading="isLoadingCables"
-                @input="loadCablesSearch($event, 'terrestrials')"
-                :value="multiSelectsMode == 'create' ? [] : form.terrestrials"
-                @values-change="handleSelectionChange('terrestrials', $event)"
-                @remove="
-                  handleSelectionChange('terrestrials', form.terrestrials)
-                "
+                @input="loadIXpsSearch"
+                :loading="isLoadingIXPs"
+                :value="multiSelectsMode == 'create' ? [] : form.ixps"
+                @values-change="handleIxpsSelectChange"
+                @remove="handleIxpsSelectRemoveItem"
               />
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <!-- <el-col :span="24">
             <el-form-item label="CSP" prop="csp">
               <v-multi-select
                 :mode="multiSelectsMode"
@@ -200,9 +200,9 @@
                 @remove="handleRemoveItem('csp', $event)"
               />
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="24">
-            <el-form-item label="Service Providers" prop="sProviders">
+            <el-form-item label="Known Tenants" prop="sProviders">
               <v-multi-select
                 :mode="multiSelectsMode"
                 :options="ownersList"
@@ -275,7 +275,7 @@ import {
   getSearchByCablesS,
   getSearchByCablesT
 } from '../../../services/api/cables'
-import { searchCloudServiceProvider } from '../../../services/api/csp'
+// import { searchCloudServiceProvider } from '../../../services/api/csp'
 
 export default {
   name: 'BasicInformation',
@@ -288,7 +288,7 @@ export default {
     isEditorMaximiedView: false,
     subseaList: [],
     cspList: [],
-    isLoadingCSP: false,
+    // isLoadingCSP: false,
     terrestrialsList: [],
     isLoadingCables: false,
     multiSelectsMode: 'create',
@@ -429,20 +429,20 @@ export default {
     /**
      * @param s { String } - search queried from cables select input
      */
-    async loadCSPSearch(s) {
-      if (s == '') return
+    // async loadCSPSearch(s) {
+    //   if (s == '') return
 
-      this.isLoadingCSP = true
-      const res = await searchCloudServiceProvider({
-        user_id: await this.$auth.getUserID(),
-        s
-      })
-      if (res && res.data) {
-        this.cspList = res.data
-      }
+    //   this.isLoadingCSP = true
+    //   const res = await searchCloudServiceProvider({
+    //     user_id: await this.$auth.getUserID(),
+    //     s
+    //   })
+    //   if (res && res.data) {
+    //     this.cspList = res.data
+    //   }
 
-      this.isLoadingCSP = false
-    },
+    //   this.isLoadingCSP = false
+    // },
     /**
      * @param s { String } - search queried from cables select input
      */
