@@ -168,7 +168,7 @@
           :loading="isSendingData"
           @click="sendData"
         >
-          {{ title }} IXP
+          {{ title }}
         </el-button>
       </el-form-item>
     </el-form>
@@ -232,10 +232,10 @@ export default {
     },
     title() {
       return this.mode == 'create'
-        ? 'Create'
+        ? 'Create IXP'
         : this.mode == 'view'
-        ? 'View'
-        : 'Edit'
+        ? 'View IXP'
+        : 'Save changes'
     },
     formRules() {
       return {
