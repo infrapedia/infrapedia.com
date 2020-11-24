@@ -122,7 +122,7 @@ export async function handleGetIxpsGeom(ids, user_id) {
 }
 
 export async function getElementIdByType({ type, slug }) {
-  const res = await $axios.get(`${apiConfig.url}/${type}/${slug}`)
+  const res = await $axios.get(`${apiConfig.url}/idslug/${type}/${slug}`)
   return res
 }
 
