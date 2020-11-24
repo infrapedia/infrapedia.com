@@ -205,10 +205,11 @@ export const facsColumns = [
     showTable: true
   },
   {
-    label: 'Total Power (MW)',
+    label: 'Total Power',
     value: 'totalPower',
     showSidebar: true,
-    showTable: true
+    showTable: true,
+    valueMetric: 'MW'
   },
   {
     label: 'Owners',
@@ -229,16 +230,19 @@ export const facsColumns = [
 
 export const facilitiesBuildingDetailsColumns = [
   {
-    label: 'Gross Building Size (sq meters)',
-    value: 'buildingSize'
+    label: 'Gross Building Size',
+    value: 'buildingSize',
+    valueMetric: 'sq m'
   },
   {
     label: 'Gross Colocation Size (sq meters)',
-    value: 'grossColocationSize'
+    value: 'grossColocationSize',
+    valueMetric: 'sq m'
   },
   {
-    label: 'Floor Loading Capacity (kg/sq meters)',
-    value: 'floorLoadingCapacity'
+    label: 'Floor Loading Capacity',
+    value: 'floorLoadingCapacity',
+    valueMetric: 'kg/sq m'
   },
   {
     label: 'Carrier Neutral',
@@ -249,8 +253,9 @@ export const facilitiesBuildingDetailsColumns = [
     value: 'isLoadingDocks'
   },
   {
-    label: 'Rack Height (U)',
-    value: 'rackHeight'
+    label: 'Rack Height',
+    value: 'rackHeight',
+    valueMetric: 'U'
   },
   {
     label: 'Meet me rooms',
@@ -276,12 +281,14 @@ export const facilitiesPowerAndCoolingDetailsColumns = [
     value: 'utilityConnectionRedundancy'
   },
   {
-    label: 'Max Rack Power (Megawatts)',
-    value: 'maxRackPower'
+    label: 'Max Rack Power',
+    value: 'maxRackPower',
+    valueMetric: 'MW'
   },
   {
-    label: 'Backup Power Duration (hours)',
-    value: 'backupPowerDuration'
+    label: 'Backup Power Duration',
+    value: 'backupPowerDuration',
+    valueMetric: 'hours'
   },
   {
     label: 'Backup Power Redundancy',
@@ -292,15 +299,18 @@ export const facilitiesPowerAndCoolingDetailsColumns = [
   },
   {
     label: 'Cooling Capacity (Megawatts)',
-    value: 'coolingCapacity'
+    value: 'coolingCapacity',
+    valueMetric: 'MW'
   },
   {
     label: 'Temperature',
-    value: 'temperature'
+    value: 'temperature',
+    valueMetric: '°C'
   },
   {
     label: 'Humidity',
-    value: 'humidity'
+    value: 'humidity',
+    valueMetric: '%'
   }
 ]
 

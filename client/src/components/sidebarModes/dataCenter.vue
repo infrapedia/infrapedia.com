@@ -327,9 +327,6 @@
 
       <div v-if="isFacilityFocusType">
         <el-divider></el-divider>
-        <h5 role="heading" tabindex="0" title="More Information">
-          More Information
-        </h5>
         <div class="p1 m0 transparent">
           <div v-for="(item, i) in valuesToShow" :key="i" class="mb7">
             <header>
@@ -363,7 +360,12 @@
                     >
                       {{ info[col.value].value }} / +-
                       {{ info[col.value].variant }} </template
-                    ><template v-else>{{ info[col.value] }}</template>
+                    ><template v-else
+                      >{{ info[col.value] == 'true' ? 'Yes' : info[col.value] }}
+                      <span v-if="col.valueMetric">
+                        {{ col.valueMetric }}
+                      </span>
+                    </template>
                   </p>
                 </el-col>
                 <!--------- VALUE END ---------->
