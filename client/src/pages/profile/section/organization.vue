@@ -68,7 +68,9 @@ export default {
       logo: '',
       notes: '',
       link: '',
+      asn: [],
       address: [],
+      peerindDBId: '',
       information: ''
     },
     isDialog: false,

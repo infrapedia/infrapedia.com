@@ -43,6 +43,30 @@
           :rows="4"
         />
       </el-form-item>
+      <el-form-item label="PeeringDB ID" prop="peerindDBId">
+        <el-input
+          :class="{ dark }"
+          class="w-fit-full"
+          v-model="form.peerindDBId"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-select
+          v-model="form.asn"
+          multiple
+          filterable
+          placeholder
+          allow-create
+        >
+          <el-option
+            v-for="item in asnOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="Logo">
         <el-upload
           class="w-fit-full inline-block"
@@ -236,6 +260,7 @@ export default {
   },
   data: () => ({
     fileList: [],
+    asnOptions: [],
     countriesList,
     linkedElements: null,
     isNameRepeated: false,
