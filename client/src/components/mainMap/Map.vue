@@ -265,6 +265,14 @@ export default {
         vm.handlePopupVisibilityOff({ popup, map })
       })
 
+      map.on('mouseenter', mapConfig.cablesLabel, () => {
+        map.getCanvas().style.cursor = 'pointer'
+      })
+
+      map.on('mouseleave', mapConfig.cablesLabel, () => {
+        map.getCanvas().style.cursor = ''
+      })
+
       if (!this.disabled) {
         map.on('click', this.handleMapClick)
         map.on('touchend', this.handleMapClick)
@@ -560,6 +568,10 @@ export default {
         layers: [mapConfig.cables]
       })
 
+      const cablesLabel = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.cablesLabel]
+      })
+
       const facilities = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.facilities]
       })
@@ -613,8 +625,9 @@ export default {
           id: facilities[0].properties._id,
           type: 'facility'
         })
-      } else if (cables.length > 0) {
-        await this.handleCablesSelection(cables.length > 0, cables)
+      } else if (cables.length > 0 || cablesLabel.length > 0) {
+        let data = cables.length > 0 ? cables : cablesLabel
+        await this.handleCablesSelection(true, data)
       } else if (
         facilities.length <= 0 &&
         ixps.length <= 0 &&
