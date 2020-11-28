@@ -91,6 +91,7 @@ export default {
     isSendingData: false,
     form: {
       name: '',
+      peeringDBId: '',
       point: '',
       t: 'data_center',
       address: {

@@ -1,7 +1,7 @@
 <template>
   <div class="pb6 pt6 pr8 pl8">
     <header slot="header" class="w-fit-full mb8">
-      <h1 class="title capitalize">{{ title }} IXP</h1>
+      <h1 class="title capitalize">{{ title }}</h1>
     </header>
     <el-form ref="form" :model="form" :rules="formRules">
       <el-form-item label="Name" prop="name">
@@ -176,7 +176,7 @@
           :loading="isSendingData"
           @click="sendData"
         >
-          {{ title }}
+          {{ saveBtnLabel }}
         </el-button>
       </el-form-item>
     </el-form>
@@ -239,6 +239,13 @@ export default {
       ]
     },
     title() {
+      return this.mode == 'create'
+        ? 'Create IXP'
+        : this.mode == 'view'
+        ? 'View IXP'
+        : 'Edit IXP'
+    },
+    saveBtnLabel() {
       return this.mode == 'create'
         ? 'Create IXP'
         : this.mode == 'view'

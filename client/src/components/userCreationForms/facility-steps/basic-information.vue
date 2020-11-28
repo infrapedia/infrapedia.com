@@ -25,6 +25,18 @@
           </el-col>
 
           <el-col :span="24">
+            <el-form-item label="PeeringDB ID" prop="peeringDBId">
+              <el-input
+                v-model="form.peeringDBId"
+                :class="{ dark }"
+                :disabled="isViewMode"
+                clearable
+                class="w-fit-full"
+              />
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="24">
             <el-form-item label="Address" prop="address">
               <autocomplete-google
                 :mode="mode"
