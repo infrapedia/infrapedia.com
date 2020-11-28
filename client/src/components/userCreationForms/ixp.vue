@@ -59,6 +59,14 @@
           :value="mode == 'create' ? [] : form.facilities"
         />
       </el-form-item>
+      <el-form-item label="PeeringDB ID" prop="peeringDBId">
+        <el-input
+          class="w-fit-full"
+          :class="{ dark }"
+          v-model="form.peeringDBId"
+          :disabled="isViewMode"
+        />
+      </el-form-item>
       <el-form-item label="Media" prop="media">
         <el-select
           v-model="form.media"
@@ -282,6 +290,7 @@ export default {
         proto_multicast: [],
         techPhone: [],
         policyPhone: [],
+        peeringDBId: [],
         tags: [],
         owners: [
           {

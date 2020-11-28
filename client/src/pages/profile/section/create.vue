@@ -385,6 +385,7 @@ export default {
             techEmail: '',
             techPhone: '',
             policyEmail: '',
+            peeringDBId: '',
             policyPhone: '',
             proto_ipv6: false,
             proto_unicast: false,
