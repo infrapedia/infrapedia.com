@@ -126,7 +126,7 @@ export default {
   },
   async created() {
     sceneDictionary.on('storage--changed', this.handleDrawSceneFeatures)
-    window.sceneDictionary = sceneDictionary
+    window.__sceneDictionary = sceneDictionary
 
     this.$on('drawn-features-dnd', this.handleDragAndDropGeojsonFiles)
     bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetSceneFeaturesList)
@@ -694,10 +694,22 @@ export default {
         this.handleDeleteVertexFromFeatureSelected
       )
       this.controls.on('cut-feature', this.handleCutFeatureSelected)
+      this.controls.on('toggle-segments-status', this.handleToggleSegmentStatus)
 
       map.addControl(this.controls)
       map.addControl(this.draw)
       return map
+    },
+    async handleToggleSegmentStatus(currentStatus) {
+      const newStatus = currentStatus ? 'Active' : 'Inactive'
+      const featuresUpdated = sceneDictionary
+        .getCollectionList()
+        .map(feature => {
+          feature.properties.status = newStatus
+          return feature
+        })
+
+      await this.handleUpdateMapSourcesData(null, featuresUpdated)
     },
     async handleDeleteVertexFromFeatureSelected({ feature, geometryType }) {
       const vertexPoints = this.draw.getSelectedPoints().features

@@ -9,6 +9,7 @@ class EditorControls extends EventEmitter {
     this.draw = draw
     this.type = type
     this.buttons = null
+    this.currentStatus = true
     this.visibleControls = {
       lines: ['subsea', 'map', 'terrestrial-network'],
       points: ['facilities', 'ixps', 'cls', 'map'],
@@ -121,9 +122,22 @@ class EditorControls extends EventEmitter {
         className: 'editor-ctrl editor-cancel',
         title: 'Cancel',
         eventListener: () => this.resetScene(false, true)
+      }),
+
+      statusToggler: createControlButton('status-toggler-static', {
+        container: this.controlGroup,
+        className: 'editor-ctrl editor-ctrl-status-toggler',
+        title: 'Toggle segments Status',
+        eventListener: () => this.toggleSegmentsStatus()
       })
     }
   }
+
+  toggleSegmentsStatus() {
+    this.currentStatus = !this.currentStatus
+    this.emit('toggle-segments-status', this.currentStatus)
+  }
+
   /**
    *
    * @param { string } mode - Mapbox Draw Mode
@@ -153,13 +167,17 @@ class EditorControls extends EventEmitter {
       .filter(id => id.includes('-dynamic'))
 
     const deleteAllBtnID = 'delete-all-static'
+    const statusTogglerBtnID = 'status-toggler-static'
 
     if (!scene.isDynamicControls) {
       // ON STATIC MODE, THERE SHOULD ONLY BE TWO CONTROLS AT DISPOSITION
       // THE DRAW BUTTON FOR THE TYPE CREATION AND THE DELETE ALL BUTTON
       for (let key in this.buttons) {
         if (staticControls.includes(this.buttons[key].id)) {
-          if (this.buttons[key].id == deleteAllBtnID) {
+          if (
+            this.buttons[key].id == deleteAllBtnID ||
+            this.buttons[key].id == statusTogglerBtnID
+          ) {
             this.buttons[key].style.setProperty('display', 'block')
           } else if (
             this.buttons[key].dataset.controlFilter &&
