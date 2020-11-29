@@ -119,7 +119,7 @@
             <i-full-screen-search @search-selection="handleItemListSelection" />
 
             <li
-              class="inline-block relative"
+              class="inline-block relative hidden-md-and-down"
               data-no-outline="true"
               role="listitem"
             >

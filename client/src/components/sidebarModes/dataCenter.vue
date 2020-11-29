@@ -326,53 +326,61 @@
       </div>
 
       <div v-if="isFacilityFocusType">
-        <el-divider></el-divider>
-        <div class="p1 m0 transparent">
-          <div v-for="(item, i) in valuesToShow" :key="i" class="mb7">
-            <header>
-              <p class="label capitalize">
-                {{ item.label }}
-              </p>
-            </header>
-            <el-row
-              v-for="col in item.value"
-              :key="col.value"
-              :gutter="20"
-              class="pl1"
-            >
-              <template v-if="info[col.value] !== 'false'">
-                <!-------- LABEL START ---------->
-                <el-col :span="10">
-                  <p>{{ col.label }}</p>
-                </el-col>
-                <!-------- LABEL END ------------>
-                <!------------------------------->
-                <!------------------------------->
-                <!------------------------------->
-                <!-------- VALUE START ---------->
-                <el-col v-if="info[col.value]" :span="14">
-                  <p class="text-bold inline-block">
-                    <template
-                      v-if="
-                        typeof info[col.value] != 'string' &&
-                          typeof info[col.value] != 'number'
-                      "
-                    >
-                      {{ info[col.value].value }} / +-
-                      {{ info[col.value].variant }} </template
-                    ><template v-else
-                      >{{ info[col.value] == 'true' ? 'Yes' : info[col.value] }}
-                      <span v-if="col.valueMetric">
-                        {{ col.valueMetric }}
-                      </span>
-                    </template>
+        <el-collapse class="mt2 mb2">
+          <el-collapse-item title="More details">
+            <div class="p0 m0 transparent">
+              <div v-for="(item, i) in valuesToShow" :key="i" class="mb7">
+                <header>
+                  <p class="label capitalize">
+                    {{ item.label }}
                   </p>
-                </el-col>
-                <!--------- VALUE END ---------->
-              </template>
-            </el-row>
-          </div>
-        </div>
+                </header>
+                <el-row
+                  v-for="col in item.value"
+                  :key="col.value"
+                  :gutter="20"
+                  class="pl1"
+                >
+                  <template v-if="info[col.value] !== 'false'">
+                    <!-------- LABEL START ---------->
+                    <el-col :span="10">
+                      <p>{{ col.label }}</p>
+                    </el-col>
+                    <!-------- LABEL END ------------>
+                    <!------------------------------->
+                    <!------------------------------->
+                    <!------------------------------->
+                    <!-------- VALUE START ---------->
+                    <el-col v-if="info[col.value]" :span="14">
+                      <p class="text-bold inline-block">
+                        <template
+                          v-if="
+                            typeof info[col.value] != 'string' &&
+                              typeof info[col.value] != 'number'
+                          "
+                        >
+                          {{ info[col.value].value }} / +-
+                          {{ info[col.value].variant }}
+                          <span v-if="col.valueMetric">
+                            {{ col.valueMetric }}
+                          </span> </template
+                        ><template v-else
+                          >{{
+                            info[col.value] == 'true' ? 'Yes' : info[col.value]
+                          }}
+                          <span v-if="col.valueMetric">
+                            {{ col.valueMetric }}
+                          </span>
+                        </template>
+                      </p>
+                    </el-col>
+                    <!--------- VALUE END ---------->
+                  </template>
+                </el-row>
+              </div>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
       </div>
     </div>
     <!---- VALUES SECTION END ---->

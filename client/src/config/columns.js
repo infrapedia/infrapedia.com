@@ -235,7 +235,7 @@ export const facilitiesBuildingDetailsColumns = [
     valueMetric: 'sq m'
   },
   {
-    label: 'Gross Colocation Size (sq meters)',
+    label: 'Gross Colocation Size',
     value: 'grossColocationSize',
     valueMetric: 'sq m'
   },
@@ -283,7 +283,7 @@ export const facilitiesPowerAndCoolingDetailsColumns = [
   {
     label: 'Max Rack Power',
     value: 'maxRackPower',
-    valueMetric: 'MW'
+    valueMetric: 'KW'
   },
   {
     label: 'Backup Power Duration',
@@ -295,10 +295,7 @@ export const facilitiesPowerAndCoolingDetailsColumns = [
     value: 'backupPowerRedundancy'
   },
   {
-    divider: true
-  },
-  {
-    label: 'Cooling Capacity (Megawatts)',
+    label: 'Cooling Capacity',
     value: 'coolingCapacity',
     valueMetric: 'MW'
   },
