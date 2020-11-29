@@ -91,7 +91,7 @@ export default {
     isSendingData: false,
     form: {
       name: '',
-      peeringDBId: '',
+      fac_id: '',
       point: '',
       t: 'data_center',
       address: {

@@ -63,7 +63,7 @@
         <el-input
           class="w-fit-full"
           :class="{ dark }"
-          v-model="form.peeringDBId"
+          v-model="form.ix_id"
           :disabled="isViewMode"
         />
       </el-form-item>

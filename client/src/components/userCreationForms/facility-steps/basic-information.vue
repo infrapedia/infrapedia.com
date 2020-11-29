@@ -27,7 +27,7 @@
           <el-col :span="24">
             <el-form-item label="PeeringDB ID" prop="peeringDBId">
               <el-input
-                v-model="form.peeringDBId"
+                v-model="form.fac_id"
                 :class="{ dark }"
                 :disabled="isViewMode"
                 clearable
