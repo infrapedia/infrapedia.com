@@ -329,7 +329,7 @@
         <el-collapse class="mt2 mb2">
           <el-collapse-item title="More details">
             <div class="p0 m0 transparent">
-              <div v-for="(item, i) in valuesToShow" :key="i" class="mb7">
+              <div v-for="(item, i) in valuesToShow" :key="i">
                 <header>
                   <p class="label capitalize">
                     {{ item.label }}
@@ -381,6 +381,36 @@
             </div>
           </el-collapse-item>
         </el-collapse>
+      </div>
+      <div class="p1 m0 mt4">
+        <el-row
+          v-for="col in columnsAfterMoreDetailsCollapse"
+          :key="col.value"
+          :gutter="20"
+          class="mb1"
+        >
+          <template v-if="hasLength(info[col.value])">
+            <!-------- LABEL START ---------->
+            <el-col :span="24">
+              <p>{{ col.label }}</p>
+            </el-col>
+            <!-------- LABEL END ------------>
+
+            <!-------- VALUE START ---------->
+            <el-col :span="24">
+              <el-tag
+                v-for="item in info[col.value]"
+                :key="item._id"
+                @click="handleSelection(item._id, col.label)"
+                class="mr2 cursor-pointer"
+                size="mini"
+              >
+                {{ item.name ? item.name : item.label }}
+              </el-tag>
+            </el-col>
+            <!--------- VALUE END ---------->
+          </template>
+        </el-row>
       </div>
     </div>
     <!---- VALUES SECTION END ---->
@@ -507,6 +537,7 @@
 import convertToYear from '../../helpers/convertToYear'
 import { BUY_CAPACITY, REPORT_ISSUE, CREATE_ALERT } from '../../events/sidebar'
 import {
+  facilitiesColumnsAfterMoreInfo,
   facilitiesBuildingDetailsColumns,
   facilitiesPowerAndCoolingDetailsColumns,
   facilitiesSecurityAndOnsiteServicesColumns
@@ -559,6 +590,9 @@ export default {
           value: facilitiesSecurityAndOnsiteServicesColumns
         }
       ]
+    },
+    columnsAfterMoreDetailsCollapse() {
+      return facilitiesColumnsAfterMoreInfo
     },
     focus() {
       return this.$store.state.map.focus

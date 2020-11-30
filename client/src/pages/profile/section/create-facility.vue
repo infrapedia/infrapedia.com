@@ -322,6 +322,10 @@ export default {
       if (!data.enType) {
         this.form.enType = []
       }
+
+      if (data.fac_id == 'undefined') {
+        this.form.fac_id = ''
+      }
     },
     async viewCurrentFacility(_id) {
       const res = await viewFacilityOwner({

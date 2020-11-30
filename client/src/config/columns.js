@@ -212,11 +212,6 @@ export const facsColumns = [
     valueMetric: 'MW'
   },
   {
-    label: 'Owners',
-    value: 'organizations',
-    showSidebar: true
-  },
-  {
     label: 'Created at',
     value: 'rgDate',
     showTable: true
@@ -363,6 +358,30 @@ export const facilitiesSecurityAndOnsiteServicesColumns = [
   {
     label: 'Internet Access',
     value: 'internetAccess'
+  }
+]
+
+export const facilitiesColumnsAfterMoreInfo = [
+  {
+    label: 'Owners',
+    value: 'owners',
+    showSidebar: true
+  },
+  {
+    label: 'Terrestrial Networks',
+    value: 'terrestrials'
+  },
+  {
+    label: 'Subsea Cables',
+    value: 'subsea'
+  },
+  {
+    label: 'IXPs',
+    value: 'ixps'
+  },
+  {
+    label: 'Known Tenants',
+    value: 'sProviders'
   }
 ]
 
