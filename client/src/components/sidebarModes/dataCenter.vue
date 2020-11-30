@@ -186,7 +186,14 @@
                 </small>
               </el-col>
             </template>
-            <el-col :span="10" v-else-if="info[col.value]">
+            <el-col
+              :span="10"
+              v-else-if="
+                info[col.value] &&
+                  info[col.value] !== 'undefined' &&
+                  info[col.value] !== 'null'
+              "
+            >
               <p class="label capitalize">{{ col.label }}</p>
             </el-col>
             <!---- LABELS SECTION ENDS ---->
@@ -314,9 +321,28 @@
               >
                 Unknown
               </p>
+
+              <!--------- PEERING DB ID Column -------->
               <p
                 class="text-bold"
-                v-else-if="!isArrCol(info[col.value]) && info[col.value] !== ''"
+                v-else-if="
+                  !isArrCol(info[col.value]) &&
+                    info[col.value] &&
+                    info[col.value] !== 'undefined' &&
+                    (col.value == 'fac_id' || col.value == 'ix_id')
+                "
+              >
+                {{ col.link(info[col.value]) }}
+              </p>
+
+              <p
+                class="text-bold"
+                v-else-if="
+                  !isArrCol(info[col.value]) &&
+                    info[col.value] !== '' &&
+                    info[col.value] !== 'undefined' &&
+                    info[col.value] !== 'null'
+                "
               >
                 {{ info[col.value] }}
               </p>

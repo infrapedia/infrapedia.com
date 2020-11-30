@@ -187,6 +187,12 @@ export const facsColumns = [
     showTable: true
   },
   {
+    label: 'PeeringDB ID',
+    value: 'fac_id',
+    showSidebar: true,
+    link: id => `https://www.peeringdb.com/fac/${id}`
+  },
+  {
     label: 'Address',
     value: 'address',
     showSidebar: true,
@@ -399,6 +405,12 @@ export const ixpsColumns = [
     value: 'name',
     showSidebar: true,
     showTable: true
+  },
+  {
+    label: 'PeeringDB ID',
+    value: 'ix_id',
+    showSidebar: true,
+    link: id => `https://www.peeringdb.com/ix/${id}`
   },
   {
     label: 'Address',
