@@ -305,7 +305,7 @@ export default {
     link: [
       {
         rel: 'canonical',
-        href: `${window.origin}/terms-and-conditions`
+        href: `https://www.infrapedia.com/terms-and-conditions`
       }
     ],
     meta: [

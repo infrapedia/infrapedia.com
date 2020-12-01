@@ -141,7 +141,7 @@ export default {
     link: [
       {
         rel: 'canonical',
-        href: `${window.origin}/contact`
+        href: `https://www.infrapedia.com/contact`
       }
     ]
   },

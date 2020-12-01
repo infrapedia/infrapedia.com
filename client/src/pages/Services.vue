@@ -154,7 +154,7 @@ export default {
     link: [
       {
         rel: 'canonical',
-        href: `${window.origin}/services`
+        href: `https://www.infrapedia.com/services`
       }
     ],
     meta: [

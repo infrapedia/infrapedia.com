@@ -54,7 +54,7 @@ export default {
     link: [
       {
         rel: 'canonical',
-        href: `${window.origin}/sponsors`
+        href: `https://www.infrapedia.com/sponsors`
       }
     ],
     meta: [

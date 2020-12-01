@@ -79,7 +79,11 @@ export default {
       link: [
         {
           rel: 'canonical',
-          href: `${window.origin}/app`
+          href: `${
+            window.origin.includes('www')
+              ? window.origin
+              : 'https://www.infrapedia.com'
+          }/app`
         }
       ]
     },
@@ -161,7 +165,11 @@ export default {
               link: [
                 {
                   rel: 'canonical',
-                  href: `${window.origin}/app`
+                  href: `${
+                    window.origin.includes('www')
+                      ? window.origin
+                      : 'https://www.infrapedia.com'
+                  }/app`
                 }
               ]
             }

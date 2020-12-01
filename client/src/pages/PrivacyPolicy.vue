@@ -207,7 +207,7 @@ export default {
     link: [
       {
         rel: 'canonical',
-        href: `${window.origin}/privacy-policy`
+        href: `https://www.infrapedia.com/privacy-policy`
       }
     ],
     meta: [

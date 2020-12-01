@@ -2421,7 +2421,7 @@ export default {
     link: [
       {
         rel: 'canonical',
-        href: `${window.origin}/attributions`
+        href: `https://www.infrapedia.com/attributions`
       }
     ],
     meta: [

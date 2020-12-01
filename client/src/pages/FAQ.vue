@@ -30,7 +30,7 @@ export default {
     link: [
       {
         rel: 'canonical',
-        href: `${window.origin}/faq`
+        href: `https://www.infrapedia.com/faq`
       }
     ],
     meta: [

@@ -95,7 +95,7 @@ export default {
     link: [
       {
         rel: 'canonical',
-        href: `${window.origin}/about`
+        href: 'https://www.infrapedia.com/about'
       }
     ]
   }
