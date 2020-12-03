@@ -45,7 +45,6 @@ export default {
   },
   methods: {
     emitSelection(selection) {
-      console.log(selection)
       this.$emit('change', selection)
       this.close()
     },

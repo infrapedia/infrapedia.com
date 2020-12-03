@@ -410,15 +410,15 @@
       </div>
       <div class="p1 m0 mt4">
         <el-row
-          v-for="col in columnsAfterMoreDetailsCollapse"
-          :key="col.value"
+          v-for="(col, iindx) in columnsAfterMoreDetailsCollapse"
+          :key="iindx + col.value"
           :gutter="20"
           class="mb1"
         >
           <template v-if="hasLength(info[col.value])">
             <!-------- LABEL START ---------->
             <el-col :span="24">
-              <p>{{ col.label }}</p>
+              <p class="label capitalize">{{ col.label }}</p>
             </el-col>
             <!-------- LABEL END ------------>
 
@@ -427,8 +427,8 @@
               <el-tag
                 v-for="item in info[col.value]"
                 :key="item._id"
-                @click="handleSelection(item._id, col.label)"
-                class="mr2 cursor-pointer"
+                @click="handleSelection(item._id, col.value)"
+                class="mr2 mb2 cursor-pointer"
                 size="mini"
               >
                 {{ item.name ? item.name : item.label }}
@@ -677,6 +677,7 @@ export default {
       return Array.isArray(item)
     },
     hasLength(arr) {
+      if (!arr) return false
       return Boolean(arr.length)
     },
     handleSelection(_id, opt) {

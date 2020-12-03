@@ -720,17 +720,15 @@ export default {
      * @param bool { Boolean } - If it opens the sidebar
      * @param cables { Object } [{ properties: { cable_id: String } }]
      */
-    async handleCablesSelection(opensSidebar, cables) {
+    async handleCablesSelection(opensSidebar, [{ properties }]) {
       switch (opensSidebar) {
         case true:
           // Change sidebar mode back to cable in case is on data_centers mode
           await this.changeSidebarMode(-1)
           // Highlight the nearest clicked cable
-          await this.handleCableSelected({
-            _id: cables[0].properties._id,
-            name: cables[0].properties.name,
-            terrestrial: cables[0].properties.terrestrial == 'true'
-          }).then(() => this.highlightSelection(cables[0].properties._id))
+          await this.handleCableSelected(properties).then(() =>
+            this.highlightSelection(properties._id)
+          )
           break
         default:
           // Remove highlights
@@ -883,7 +881,7 @@ export default {
 
       this.$store.commit(`${MAP_FOCUS_ON}`, {
         id,
-        type: type == 'orgs' ? 'organizations' : type
+        type: type == 'orgs' ? 'organization' : type
       })
 
       // Clearing clusters source in case there was something previously selected
@@ -892,16 +890,7 @@ export default {
         .setData({ type: 'FeatureCollection', features: [] })
 
       switch (type.toLowerCase().trim()) {
-        case 'organizations':
-          await this.handleOrganizationFocus(id, fc)
-          break
-        case 'org':
-          await this.handleOrganizationFocus(id, fc)
-          break
-        case 'owners':
-          await this.handleOrganizationFocus(id, fc)
-          break
-        case 'partners':
+        case 'organization':
           await this.handleOrganizationFocus(id, fc)
           break
         case 'terrestrial-network':
