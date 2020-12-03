@@ -29,11 +29,7 @@ async function handleAdminOnlyRoutes(next, to) {
     const query =
       to.query.id == 'csp' || to.query.id == 'map' || to.query.id == 'ixps'
 
-    if (
-      (to.path == '/user/section/facilities' ||
-        to.path == '/user/section/cloud-service-providers') &&
-      !isUserAnAdmin
-    )
+    if (to.path == '/user/section/cloud-service-providers' && !isUserAnAdmin)
       next('/user')
     else if (query && !isUserAnAdmin) next('/user')
     else next()
