@@ -176,7 +176,8 @@ class EditorControls extends EventEmitter {
         if (staticControls.includes(this.buttons[key].id)) {
           if (
             this.buttons[key].id == deleteAllBtnID ||
-            this.buttons[key].id == statusTogglerBtnID
+            (this.buttons[key].id == statusTogglerBtnID &&
+              this.visibleControls.lines.includes(this.type))
           ) {
             this.buttons[key].style.setProperty('display', 'block')
           } else if (
