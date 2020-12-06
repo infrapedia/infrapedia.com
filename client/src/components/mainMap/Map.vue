@@ -743,19 +743,32 @@ export default {
      * @param map { Object } Mapbox map - Object reference (ie: this.map)
      */
     async handleClustersSelection(clusters, map, sourceName) {
-      await map
-        .getSource(sourceName)
-        .getClusterExpansionZoom(clusters[0].properties.cluster_id, function(
-          err,
-          zoom
-        ) {
-          if (err) return
+      try {
+        const source = await map.getSource(sourceName)
 
+        if (clusters.length > 1) {
+          source.getClusterExpansionZoom(
+            clusters[0].properties.cluster_id
+              ? clusters[0].properties.cluster_id
+              : clusters[0].properties._id,
+            function(err, zoom) {
+              if (err) return err
+
+              map.easeTo({
+                center: clusters[0].geometry.coordinates,
+                zoom: zoom + 1
+              })
+            }
+          )
+        } else {
           map.easeTo({
             center: clusters[0].geometry.coordinates,
-            zoom: zoom + 1
+            zoom: map.getZoom() + 1
           })
-        })
+        }
+      } catch (err) {
+        console.error(err, 'cluster selection error')
+      }
     },
     /**
      * @param id { String } - ID of the facility (data centers)

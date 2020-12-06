@@ -256,14 +256,29 @@
                     !col.label.includes('address')
                 "
               >
-                <p
-                  v-for="(item, index) in info[col.value]"
-                  :key="index + item"
-                  class="text-bold cursor-pointer underline-hover"
-                  @click="handleSelection(item._id, col.label)"
-                >
-                  {{ item.name ? item.name : item.label }}
-                </p>
+                <template v-if="col.value != 'asn'">
+                  <p
+                    v-for="(item, index) in info[col.value]"
+                    :key="index + item"
+                    class="text-bold cursor-pointer underline-hover"
+                    @click="handleSelection(item._id, col.label)"
+                  >
+                    {{ item.name ? item.name : item.label }}
+                  </p>
+                </template>
+                <template v-else>
+                  <p
+                    v-for="(item, index) in info[col.value]"
+                    :key="index + item"
+                    class="text-bold"
+                  >
+                    {{
+                      `${item}${
+                        index + 1 !== info[col.value].length ? ',' : ''
+                      }`
+                    }}
+                  </p>
+                </template>
               </template>
               <template
                 class="text-bold"

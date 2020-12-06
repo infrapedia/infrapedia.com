@@ -573,6 +573,16 @@ export const orgsColumns = [
     showTable: true
   },
   {
+    label: 'PeeringDB ID',
+    value: 'ooid',
+    showSidebar: true
+  },
+  {
+    label: 'ASN',
+    value: 'asn',
+    showSidebar: true
+  },
+  {
     label: 'Address',
     value: 'address',
     showTable: true,
