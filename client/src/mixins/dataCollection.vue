@@ -90,6 +90,9 @@ export default {
         case 'facility':
           await this.handleFacilityItemSelected({ id, type: option })
           break
+        case 'locations':
+          await this.handleFacilityItemSelected({ id, type: 'facility' })
+          break
         case 'facilities':
           await this.handleFacilityItemSelected({ id, type: 'facility' })
           break
