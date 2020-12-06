@@ -341,6 +341,18 @@
                   !isArrCol(info[col.value]) &&
                     info[col.value] !== '' &&
                     info[col.value] !== 'undefined' &&
+                    info[col.value] !== 'null' &&
+                    col.valueMetric
+                "
+              >
+                {{ info[col.value] }} {{ col.valueMetric }}
+              </p>
+              <p
+                class="text-bold"
+                v-else-if="
+                  !isArrCol(info[col.value]) &&
+                    info[col.value] !== '' &&
+                    info[col.value] !== 'undefined' &&
                     info[col.value] !== 'null'
                 "
               >
@@ -385,7 +397,11 @@
                               typeof info[col.value] != 'number'
                           "
                         >
-                          {{ info[col.value].value }} / +-
+                          {{ info[col.value].value }}
+                          <span v-if="col.valueMetric">
+                            {{ col.valueMetric }}
+                          </span>
+                          / +-
                           {{ info[col.value].variant }}
                           <span v-if="col.valueMetric">
                             {{ col.valueMetric }}
