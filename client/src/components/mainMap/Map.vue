@@ -341,6 +341,10 @@ export default {
             mapConfig.facilities,
             this.facilitiesClusters.active ? mapConfig.filter.all : filter
           )
+          this.map.setFilter(
+            mapConfig.facilitiesPoints,
+            this.facilitiesClusters.active ? mapConfig.filter.all : filter
+          )
         }
 
         facsClustersSource.setData(features)

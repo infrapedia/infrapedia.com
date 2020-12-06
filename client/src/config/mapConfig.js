@@ -24,6 +24,13 @@ const clsPaintConfig = {
   'circle-stroke-color': '#333333'
 }
 
+const facsPointConfig = {
+  'circle-radius': 3.4,
+  'circle-color': '#88A1EB',
+  'circle-stroke-width': 2,
+  'circle-stroke-color': '#333333'
+}
+
 const snapPaintConfig = {
   'circle-radius': 3.4,
   'circle-color': '#FF0000',
@@ -105,6 +112,7 @@ const facilitiesSinglePoints = 'facilities-single-points'
 const facilitiesClusters = 'facilities_clusters'
 const facilitiesLabel = 'facilities_label'
 const currentEpoch = Math.round(new Date().getTime() / 1000)
+const facilitiesPoints = 'facilities-points'
 
 export const mapConfig = {
   mapToken: token,
@@ -127,6 +135,7 @@ export const mapConfig = {
   cablesPaintConfig,
   facilitiesLabel,
   facilitiesCount,
+  facilitiesPoints,
   facilitiesClusters,
   facilitiesSinglePoints,
   highlightFeatureState,
@@ -228,6 +237,14 @@ export const mapConfig = {
         minzoom: facsMinZoom,
         paint: facsPaintConfig,
         filter: ['has', 'a_propertie_that_doesnt_exist']
+      },
+      {
+        id: facilitiesPoints,
+        type: 'circle',
+        minzoom: 15.24,
+        source: facilities,
+        paint: facsPointConfig,
+        filter: ['==', '$type', 'Point']
       },
       {
         id: facilitiesLabel,
