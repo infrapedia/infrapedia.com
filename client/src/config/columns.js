@@ -419,11 +419,6 @@ export const ixpsColumns = [
     showTable: true
   },
   {
-    label: 'Locations',
-    value: 'facilities',
-    showSidebar: true
-  },
-  {
     label: 'Media',
     value: 'media',
     showSidebar: true
@@ -473,6 +468,11 @@ export const ixpsColumns = [
     label: 'Updated at',
     value: 'uDate',
     showTable: true
+  },
+  {
+    label: 'Locations',
+    value: 'facilities',
+    showSidebar: true
   }
 ]
 
