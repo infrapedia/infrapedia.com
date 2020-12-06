@@ -85,6 +85,7 @@ import LayersPanel from './panels/layersPanel'
 import { bbox } from '@turf/turf'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import $axios from '../../services/axios'
+// import handleHighlightSelectionAssociations from './highlightSelectionAssociations'
 
 export default {
   name: 'Map',
@@ -270,6 +271,14 @@ export default {
       })
 
       map.on('mouseleave', mapConfig.cablesLabel, () => {
+        map.getCanvas().style.cursor = ''
+      })
+
+      map.on('mouseenter', mapConfig.facilitiesLabel, () => {
+        map.getCanvas().style.cursor = 'pointer'
+      })
+
+      map.on('mouseleave', mapConfig.facilitiesLabel, () => {
         map.getCanvas().style.cursor = ''
       })
 
@@ -551,22 +560,24 @@ export default {
       if (this.isSidebar && !clusters.length) {
         await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
       }
-      if (
-        this.$refs.layersPanel &&
-        !this.facilitiesClusters.hasData &&
-        this.$refs.layersPanel.layers[mapConfig.facilities].active &&
-        !clusters.length
-      ) {
-        await this.handleToggleLayer({
-          active: true,
-          layerName: mapConfig.facilities,
-          layersDict: {
-            [mapConfig.facilities]: {
-              active: true
-            }
-          }
-        })
-      }
+
+      // ??
+      // if (
+      //   this.$refs.layersPanel &&
+      //   !this.facilitiesClusters.hasData &&
+      //   this.$refs.layersPanel.layers[mapConfig.facilities].active &&
+      //   !clusters.length
+      // ) {
+      //   await this.handleToggleLayer({
+      //     active: true,
+      //     layerName: mapConfig.facilities,
+      //     layersDict: {
+      //       [mapConfig.facilities]: {
+      //         active: true
+      //       }
+      //     }
+      //   })
+      // }
 
       const cables = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.cables]
@@ -579,6 +590,11 @@ export default {
       const facilities = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.facilities]
       })
+
+      const facilitiesLabel = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.facilitiesLabel]
+      })
+
       const ixps = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.ixps]
       })
@@ -624,9 +640,13 @@ export default {
           id: ixps[0].properties._id,
           type: 'ixp'
         })
-      } else if (facilities.length > 0) {
+      } else if (facilities.length > 0 || facilitiesLabel.length > 0) {
+        const id = facilities.length
+          ? facilities[0].properties._id
+          : facilitiesLabel[0].properties._id
+
         await this.handleFacilitySelection({
-          id: facilities[0].properties._id,
+          id,
           type: 'facility'
         })
       } else if (cables.length > 0 || cablesLabel.length > 0) {
@@ -778,15 +798,27 @@ export default {
      * @param id { String } - ID of the facility (data centers)
      */
     async handleFacilitySelection({ id, type }) {
-      const data = await this.getFacilityData({
+      const { data } = await this.getFacilityData({
         user_id: await this.$auth.getUserID(),
         _id: id
       })
-      this.$store.commit(`${MAP_FOCUS_ON}`, {
-        id,
-        name: data.name,
-        type
-      })
+
+      if (data && data.r.length) {
+        this.$store.commit(`${MAP_FOCUS_ON}`, {
+          id,
+          type,
+          name: data.r[0].name
+        })
+
+        // if (data.r[0].ixps && data.r[0].ixps.length) {
+        //   handleHighlightSelectionAssociations({
+        //     ids: data.r[0].ixps.map(item => item._id),
+        //     dark: this.dark,
+        //     map: this.map,
+        //     type: 'ixp'
+        //   })
+        // }
+      }
 
       this.highlightSelection(id)
       // Changing the sidebar mode to data_center mode
@@ -802,11 +834,14 @@ export default {
         user_id: await this.$auth.getUserID(),
         _id: id
       })
-      this.$store.commit(`${MAP_FOCUS_ON}`, {
-        id,
-        name: data.name,
-        type
-      })
+
+      if (data && data.r.length) {
+        this.$store.commit(`${MAP_FOCUS_ON}`, {
+          id,
+          type,
+          name: data.r[0].name
+        })
+      }
 
       this.highlightSelection(id)
       // Changing the sidebar mode to data_center mode
@@ -818,15 +853,27 @@ export default {
       this.disableSelectionHighlight(false, 'cable')
     },
     async handleIxpsSelection({ id, type }) {
-      const data = await this.getIxpsData({
+      const { data } = await this.getIxpsData({
         user_id: await this.$auth.getUserID(),
         _id: id
       })
-      this.$store.commit(`${MAP_FOCUS_ON}`, {
-        id,
-        name: data.name,
-        type
-      })
+
+      if (data && data.r.length) {
+        this.$store.commit(`${MAP_FOCUS_ON}`, {
+          id,
+          type,
+          name: data.r[0].name
+        })
+
+        // if (data.r[0].facilities && data.r[0].facilities.length) {
+        //   handleHighlightSelectionAssociations({
+        //     ids: data.r[0].facilities.map(item => item._id),
+        //     dark: this.dark,
+        //     map: this.map,
+        //     type: 'ixp'
+        //   })
+        // }
+      }
 
       this.highlightSelection(id)
       // Changing the sidebar mode to data_center mode
