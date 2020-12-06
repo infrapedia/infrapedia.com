@@ -419,6 +419,11 @@ export const ixpsColumns = [
     showTable: true
   },
   {
+    label: 'Facilities',
+    value: 'facilities',
+    showSidebar: true
+  },
+  {
     label: 'Media',
     value: 'media',
     showSidebar: true

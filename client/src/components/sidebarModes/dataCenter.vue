@@ -323,8 +323,10 @@
               </p>
 
               <!--------- PEERING DB ID Column -------->
-              <p
-                class="text-bold"
+              <a
+                class="text-bold cursor-pointer underline"
+                target="_blank"
+                :href="col.link(info[col.value])"
                 v-else-if="
                   !isArrCol(info[col.value]) &&
                     info[col.value] &&
@@ -333,7 +335,7 @@
                 "
               >
                 {{ col.link(info[col.value]) }}
-              </p>
+              </a>
 
               <p
                 class="text-bold"
