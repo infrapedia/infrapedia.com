@@ -49,6 +49,7 @@
       <el-form-item label="ASN">
         <el-select
           v-model="form.asn"
+          class="w-fit-full"
           multiple
           filterable
           placeholder

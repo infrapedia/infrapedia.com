@@ -24,10 +24,10 @@ const clsPaintConfig = {
   'circle-stroke-color': '#333333'
 }
 
-const facsPointConfig = {
-  'circle-radius': 3.4,
-  'circle-color': '#88A1EB',
+const facsPointPaintConfig = {
+  'circle-radius': 8,
   'circle-stroke-width': 2,
+  'circle-color': '#88A1EB',
   'circle-stroke-color': '#333333'
 }
 
@@ -239,14 +239,6 @@ export const mapConfig = {
         filter: ['has', 'a_propertie_that_doesnt_exist']
       },
       {
-        id: facilitiesPoints,
-        type: 'circle',
-        minzoom: 15.24,
-        source: facilities,
-        paint: facsPointConfig,
-        filter: ['==', '$type', 'Point']
-      },
-      {
         id: facilitiesLabel,
         type: 'symbol',
         source: facilities,
@@ -270,6 +262,14 @@ export const mapConfig = {
         source: ixps,
         minzoom: 15,
         paint: ixpsPaintConfig
+      },
+      {
+        id: facilitiesPoints,
+        type: 'circle',
+        minzoom: 14,
+        source: facilities,
+        paint: facsPointPaintConfig,
+        filter: ['==', '$type', 'Point']
       },
       {
         id: facilitiesClusters,
