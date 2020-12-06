@@ -70,7 +70,7 @@ export default {
       link: '',
       asn: [],
       address: [],
-      peerindDBId: '',
+      ooid: '',
       information: ''
     },
     isDialog: false,
@@ -116,12 +116,23 @@ export default {
         }
       }
 
-      const { name, url, notes, address, information, logo } = orgData
+      const {
+        name,
+        url,
+        notes,
+        address,
+        information,
+        logo,
+        ooid,
+        asn
+      } = orgData
       this.form = {
         _id,
         name,
         logo,
         notes,
+        ooid: ooid && ooid != 'undefined' && ooid != 'null' ? ooid : '',
+        asn: asn && asn.length ? asn : [],
         address: address.map(ad => {
           if (
             ad.country &&

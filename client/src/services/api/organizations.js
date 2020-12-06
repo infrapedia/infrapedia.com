@@ -11,21 +11,31 @@ export const createOrganization = async ({
   link,
   address,
   information,
-  user_id
+  user_id,
+  asn,
+  ooid
 }) => {
   url = `${apiConfig.url}/auth/organization/add`
 
   form = new FormData()
   form.append('name', name)
   form.append('url', link)
+  form.append('ooid', ooid)
   form.append('notes', notes)
   form.append('information', information)
   form.append('logo', logo)
+
   if (address.length) {
     address.forEach((a, i) => {
       form.append(`address[${i}]`, JSON.stringify(a))
     })
   } else form.append('address', [])
+
+  if (asn && asn.length) {
+    asn.forEach((a, i) => {
+      form.append(`asn[${i}]`, a)
+    })
+  } else form.append('asn', [])
 
   const res = await $axios.post(url, form, {
     withCredentials: true,
@@ -46,7 +56,9 @@ export const editOrganization = async ({
   link,
   address,
   information,
-  user_id
+  user_id,
+  asn,
+  ooid
 }) => {
   url = `${apiConfig.url}/auth/organization/edit`
   form = new FormData()
@@ -55,12 +67,20 @@ export const editOrganization = async ({
   form.append('url', link)
   form.append('notes', notes)
   form.append('logo', logo)
+  form.append('ooid', ooid)
   form.append('information', information)
+
   if (address.length) {
     address.forEach((a, i) => {
       form.append(`address[${i}]`, JSON.stringify(a))
     })
   } else form.append('address', [])
+
+  if (asn && asn.length) {
+    asn.forEach((a, i) => {
+      form.append(`asn[${i}]`, a)
+    })
+  } else form.append('asn', [])
 
   const res = await $axios.put(url, form, {
     withCredentials: true,

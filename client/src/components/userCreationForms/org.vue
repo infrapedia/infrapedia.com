@@ -44,13 +44,9 @@
         />
       </el-form-item>
       <el-form-item label="PeeringDB ID" prop="peerindDBId">
-        <el-input
-          :class="{ dark }"
-          class="w-fit-full"
-          v-model="form.peerindDBId"
-        />
+        <el-input :class="{ dark }" class="w-fit-full" v-model="form.ooid" />
       </el-form-item>
-      <el-form-item>
+      <el-form-item label="ASN">
         <el-select
           v-model="form.asn"
           multiple
