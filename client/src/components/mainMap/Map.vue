@@ -305,6 +305,7 @@ export default {
 
       const currentZoomLevel = this.map.getZoom()
       const minZoom = mapConfig.facsMinZoom + 5.4
+
       if (currentZoomLevel >= minZoom) {
         await this.handleToggleLayer({
           layerName: mapConfig.facilities,
@@ -529,7 +530,7 @@ export default {
     disableSelectionHighlight(closesSidebar = true, type) {
       if (!this.map) return
       try {
-        return disableCurrentHighlight({
+        disableCurrentHighlight({
           map: this.map,
           closesSidebar,
           commit: this.$store.commit,
@@ -666,6 +667,15 @@ export default {
           // Ignore
         } finally {
           this.disableSelectionHighlight()
+          this.handleToggleLayer({
+            active: true,
+            layerName: mapConfig.facilities,
+            layersDict: {
+              [mapConfig.facilities]: {
+                active: true
+              }
+            }
+          })
         }
       }
     },
@@ -810,7 +820,17 @@ export default {
           name: data.r[0].name
         })
 
-        // Associations cluster
+        // Facilities cluster need to be disabled
+        await this.handleToggleLayer({
+          layerName: mapConfig.facilities,
+          active: false,
+          layersDict: {
+            [mapConfig.facilities]: {
+              active: false
+            }
+          }
+        })
+        // Setting associations cluster data
         this.map.getSource(mapConfig.clusters).setData(data.r[0].cluster)
       }
 
@@ -859,6 +879,16 @@ export default {
           name: data.r[0].name
         })
 
+        // Facilities cluster need to be disabled
+        await this.handleToggleLayer({
+          layerName: mapConfig.facilities,
+          active: false,
+          layersDict: {
+            [mapConfig.facilities]: {
+              active: false
+            }
+          }
+        })
         // Associations cluster
         this.map.getSource(mapConfig.clusters).setData(data.r[0].cluster)
       }
