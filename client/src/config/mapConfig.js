@@ -27,8 +27,8 @@ const clsPaintConfig = {
 const facsPointPaintConfig = {
   'circle-radius': 8,
   'circle-stroke-width': 2,
-  'circle-color': '#88A1EB',
-  'circle-stroke-color': '#333333'
+  'circle-color': '#2196f3',
+  'circle-stroke-color': '#2196f3'
 }
 
 const snapPaintConfig = {
