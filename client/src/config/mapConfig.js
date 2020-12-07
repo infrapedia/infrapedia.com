@@ -326,7 +326,7 @@ export const mapConfig = {
         source: clusters,
         type: 'circle',
         paint: {
-          'circle-color': '#af6ec7',
+          'circle-color': '#F7B267',
           'circle-radius': ['step', ['get', 'point_count'], 15, 2, 22, 4, 30]
         }
       },
@@ -349,7 +349,7 @@ export const mapConfig = {
         maxzoom: 15,
         filter: ['!', ['has', 'point_count']],
         paint: {
-          'circle-color': '#af6ec7',
+          'circle-color': '#F7B267',
           'circle-radius': 10
         }
       }

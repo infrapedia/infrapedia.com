@@ -2,7 +2,7 @@
 
 .layers-wrapper {
   position: absolute;
-  top: 18rem;
+  top: 21rem;
   z-index: 4;
   left: 0.72rem;
   font-weight: 500;
@@ -27,6 +27,6 @@
   }
 
   @media screen and (max-width: $break-sm) {
-    top: 18.4rem;
+    top: 21rem;
   }
 }
