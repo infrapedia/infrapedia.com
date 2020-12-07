@@ -383,7 +383,7 @@
         </template>
       </div>
 
-      <div v-if="isFacilityFocusType">
+      <template v-if="isFacilityFocusType">
         <el-collapse class="mt2 mb2">
           <el-collapse-item title="More details">
             <div class="p0 m0 transparent">
@@ -443,37 +443,37 @@
             </div>
           </el-collapse-item>
         </el-collapse>
-      </div>
-      <div class="p1 m0 mt4">
-        <el-row
-          v-for="(col, iindx) in columnsAfterMoreDetailsCollapse"
-          :key="iindx + col.value"
-          :gutter="20"
-          class="mb1"
-        >
-          <template v-if="hasLength(info[col.value])">
-            <!-------- LABEL START ---------->
-            <el-col :span="24">
-              <p class="label capitalize">{{ col.label }}</p>
-            </el-col>
-            <!-------- LABEL END ------------>
+        <div class="p1 m0 mt4">
+          <el-row
+            v-for="(col, iindx) in columnsAfterMoreDetailsCollapse"
+            :key="iindx + col.value"
+            :gutter="20"
+            class="mb1"
+          >
+            <template v-if="hasLength(info[col.value])">
+              <!-------- LABEL START ---------->
+              <el-col :span="24">
+                <p class="label capitalize">{{ col.label }}</p>
+              </el-col>
+              <!-------- LABEL END ------------>
 
-            <!-------- VALUE START ---------->
-            <el-col :span="24">
-              <el-tag
-                v-for="item in info[col.value]"
-                :key="item._id"
-                @click="handleSelection(item._id, col.value)"
-                class="mr2 mb2 cursor-pointer"
-                size="mini"
-              >
-                {{ item.name ? item.name : item.label }}
-              </el-tag>
-            </el-col>
-            <!--------- VALUE END ---------->
-          </template>
-        </el-row>
-      </div>
+              <!-------- VALUE START ---------->
+              <el-col :span="24">
+                <el-tag
+                  v-for="item in info[col.value]"
+                  :key="item._id"
+                  @click="handleSelection(item._id, col.value)"
+                  class="mr2 mb2 cursor-pointer"
+                  size="mini"
+                >
+                  {{ item.name ? item.name : item.label }}
+                </el-tag>
+              </el-col>
+              <!--------- VALUE END ---------->
+            </template>
+          </el-row>
+        </div>
+      </template>
     </div>
     <!---- VALUES SECTION END ---->
 
