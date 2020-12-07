@@ -118,6 +118,7 @@ export const createIXP = async ({
   techPhone,
   techEmail,
   media,
+  ix_id,
   facilities,
   proto_multicast,
   proto_unicast
@@ -126,6 +127,7 @@ export const createIXP = async ({
   form = new FormData()
 
   form.append('name', name)
+  form.append('ix_id', ix_id)
   form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   form.append('nameLong', nameLong)
   form.append('policyEmail', policyEmail)
@@ -180,6 +182,7 @@ export const editIXP = async ({
   media,
   facilities,
   owners,
+  ix_id,
   proto_multicast,
   proto_unicast
 }) => {
@@ -188,6 +191,7 @@ export const editIXP = async ({
 
   form.append('_id', _id)
   form.append('name', name)
+  form.append('ix_id', ix_id)
   form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   form.append('nameLong', nameLong)
   form.append('policyEmail', policyEmail)
