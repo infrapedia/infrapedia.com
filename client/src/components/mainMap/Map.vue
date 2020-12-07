@@ -810,14 +810,8 @@ export default {
           name: data.r[0].name
         })
 
-        // if (data.r[0].ixps && data.r[0].ixps.length) {
-        //   handleHighlightSelectionAssociations({
-        //     ids: data.r[0].ixps.map(item => item._id),
-        //     dark: this.dark,
-        //     map: this.map,
-        //     type: 'ixp'
-        //   })
-        // }
+        // Associations cluster
+        this.map.getSource(mapConfig.clusters).setData(data.r[0].cluster)
       }
 
       this.highlightSelection(id)
@@ -865,14 +859,8 @@ export default {
           name: data.r[0].name
         })
 
-        // if (data.r[0].facilities && data.r[0].facilities.length) {
-        //   handleHighlightSelectionAssociations({
-        //     ids: data.r[0].facilities.map(item => item._id),
-        //     dark: this.dark,
-        //     map: this.map,
-        //     type: 'ixp'
-        //   })
-        // }
+        // Associations cluster
+        this.map.getSource(mapConfig.clusters).setData(data.r[0].cluster)
       }
 
       this.highlightSelection(id)
