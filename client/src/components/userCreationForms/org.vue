@@ -43,7 +43,7 @@
           :rows="4"
         />
       </el-form-item>
-      <el-form-item label="PeeringDB ID" prop="peerindDBId">
+      <el-form-item label="PeeringDB ID" prop="peerindDBId" v-if="isAdmin">
         <el-input :class="{ dark }" class="w-fit-full" v-model="form.ooid" />
       </el-form-item>
       <el-form-item label="ASN">
@@ -347,6 +347,9 @@ export default {
     },
     tagMode() {
       return this.tagOnEdit != null && this.tag ? 'edit' : 'create'
+    },
+    isAdmin() {
+      return this.$auth.isUserAnAdmin
     }
   },
   watch: {

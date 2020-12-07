@@ -59,7 +59,7 @@
           :value="mode == 'create' ? [] : form.facilities"
         />
       </el-form-item>
-      <el-form-item label="PeeringDB ID" prop="peeringDBId">
+      <el-form-item label="PeeringDB ID" prop="peeringDBId" v-if="isAdmin">
         <el-input
           class="w-fit-full"
           :class="{ dark }"
@@ -313,6 +313,9 @@ export default {
     },
     dark() {
       return this.$store.state.isDark
+    },
+    isAdmin() {
+      return this.$auth.isUserAnAdmin
     }
   },
   watch: {

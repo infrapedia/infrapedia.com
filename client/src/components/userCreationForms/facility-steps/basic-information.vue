@@ -24,7 +24,7 @@
             </el-form-item>
           </el-col>
 
-          <el-col :span="24">
+          <el-col :span="24" v-if="isAdmin">
             <el-form-item label="PeeringDB ID" prop="peeringDBId">
               <el-input
                 v-model="form.fac_id"
@@ -383,6 +383,9 @@ export default {
           }
         ]
       }
+    },
+    isAdmin() {
+      return this.$auth.isUserAnAdmin
     }
   },
   created() {
