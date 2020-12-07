@@ -22,6 +22,7 @@
                 <el-input-number
                   :class="{ dark }"
                   class="w-fit-full"
+                  :max="form.buildingSize"
                   controls-position="right"
                   v-model="form.grossColocationSize"
                 />
