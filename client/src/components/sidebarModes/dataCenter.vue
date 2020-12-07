@@ -346,7 +346,10 @@
                   !isArrCol(info[col.value]) &&
                     info[col.value] &&
                     info[col.value] !== 'undefined' &&
-                    (col.value == 'fac_id' || col.value == 'ix_id')
+                    (col.value == 'fac_id' ||
+                      col.value == 'ix_id' ||
+                      col.value == 'ooid') &&
+                    col.link
                 "
               >
                 {{ col.link(info[col.value]) }}

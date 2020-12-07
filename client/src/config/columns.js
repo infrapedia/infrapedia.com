@@ -187,7 +187,7 @@ export const facsColumns = [
     showTable: true
   },
   {
-    label: 'PeeringDB ID',
+    label: 'PeeringDB',
     value: 'fac_id',
     showSidebar: true,
     link: id => `https://www.peeringdb.com/fac/${id}`
@@ -407,7 +407,7 @@ export const ixpsColumns = [
     showTable: true
   },
   {
-    label: 'PeeringDB ID',
+    label: 'PeeringDB',
     value: 'ix_id',
     showSidebar: true,
     link: id => `https://www.peeringdb.com/ix/${id}`
@@ -573,9 +573,10 @@ export const orgsColumns = [
     showTable: true
   },
   {
-    label: 'PeeringDB ID',
+    label: 'PeeringDB',
     value: 'ooid',
-    showSidebar: true
+    showSidebar: true,
+    link: id => `https://www.peeringdb.com/org/${id}`
   },
   {
     label: 'ASN',
