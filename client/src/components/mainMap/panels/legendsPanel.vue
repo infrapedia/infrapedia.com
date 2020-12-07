@@ -71,10 +71,6 @@ export default {
         {
           color: '#af6ec7',
           label: 'project'
-        },
-        {
-          color: '#F7B267',
-          label: 'clusters connection'
         }
       ]
     },
