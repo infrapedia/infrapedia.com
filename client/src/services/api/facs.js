@@ -333,39 +333,66 @@ export const editFacility = async ({
   form.append('name', name)
 
   form.append('buildingSize', buildingSize)
-  form.append('grossColocationSize', grossColocationSize)
+  form.append(
+    'grossColocationSize',
+    grossColocationSize !== 'null' ? grossColocationSize : 0
+  )
   form.append('floorLoadingCapacity', floorLoadingCapacity)
-  form.append('isCarrierNeutral', isCarrierNeutral)
-  form.append('isLoadingDocks', isLoadingDocks)
+  form.append(
+    'isCarrierNeutral',
+    isCarrierNeutral !== 'null' ? isCarrierNeutral : false
+  )
+  form.append(
+    'isLoadingDocks',
+    isLoadingDocks !== 'null' ? isLoadingDocks : false
+  )
 
   form.append('rackHeight', rackHeight)
-  form.append('meetMeRooms', meetMeRooms)
-  form.append('platform', platform)
+  form.append('meetMeRooms', meetMeRooms !== 'null' ? meetMeRooms : 0)
+  form.append('platform', platform !== 'null' ? platform : false)
   form.append('totalPower', totalPower)
   form.append('pue', pue)
-  form.append('utilityConnectionRedundancy', utilityConnectionRedundancy)
+  form.append(
+    'utilityConnectionRedundancy',
+    utilityConnectionRedundancy !== 'null' ? utilityConnectionRedundancy : ''
+  )
   form.append('maxRackPower', maxRackPower)
   form.append('backupPowerDuration', backupPowerDuration)
-  form.append('backupPowerRedundancy', backupPowerRedundancy)
+  form.append(
+    'backupPowerRedundancy',
+    backupPowerRedundancy !== 'null' ? backupPowerRedundancy : ''
+  )
   form.append('coolingCapacity', coolingCapacity)
   form.append('temperature', JSON.stringify(temperature))
   form.append('humidity', JSON.stringify(humidity))
-  form.append('authentication', authentication)
+  form.append(
+    'authentication',
+    authentication !== 'null' ? authentication : false
+  )
 
-  form.append('bulletProffGlass', bulletProffGlass)
-  form.append('cctv', cctv)
-  form.append('securityGuards', securityGuards)
-  form.append('mantrap', mantrap)
-  form.append('biometric', biometric)
+  form.append(
+    'bulletProffGlass',
+    bulletProffGlass !== 'null' ? bulletProffGlass : false
+  )
+  form.append('cctv', cctv !== 'null' ? cctv : false)
+  form.append(
+    'securityGuards',
+    securityGuards !== 'null' ? securityGuards : false
+  )
+  form.append('mantrap', mantrap !== 'null' ? mantrap : false)
+  form.append('biometric', biometric !== 'null' ? biometric : false)
   form.append('meetingRooms', meetingRooms)
-  form.append('breakRooms', breakRooms)
-  form.append('carParking', carParking)
-  form.append('spareParts', spareParts)
-  form.append('stagingRooms', stagingRooms)
-  form.append('officeSpace', officeSpace)
-  form.append('internetAccess', internetAccess)
+  form.append('breakRooms', breakRooms !== 'null' ? breakRooms : false)
+  form.append('carParking', carParking !== 'null' ? carParking : false)
+  form.append('spareParts', spareParts !== 'null' ? spareParts : false)
+  form.append('stagingRooms', stagingRooms !== 'null' ? stagingRooms : false)
+  form.append('officeSpace', officeSpace !== 'null' ? officeSpace : false)
+  form.append(
+    'internetAccess',
+    internetAccess !== 'null' ? internetAccess : false
+  )
 
-  form.append('website', website)
+  form.append('website', website && website !== 'null' ? website : '')
   form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   form.append('t', t)
   form.append('StartDate', StartDate)
