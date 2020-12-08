@@ -335,7 +335,14 @@ export default {
       return res && res.data && res.data.r ? res.data.r : {}
     },
     async handleSendData(mode) {
-      if (!mode) return
+      if (
+        !mode ||
+        this.form.address.fullAddress === '' ||
+        this.form.t === '' ||
+        !this.form.owners.length ||
+        !this.form.enType.length
+      )
+        return
       let method = null
       this.isSendingData = true
 
