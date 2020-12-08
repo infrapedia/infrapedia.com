@@ -455,3 +455,15 @@ export const deleteFacility = async ({ user_id, _id }) => {
 
   return res
 }
+
+export const checkFacilityPeeringDBId = async ({ _id, user_id }) => {
+  url = `${apiConfig.url}/facilities/checkpeeringdb?p=${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}

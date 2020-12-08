@@ -255,3 +255,15 @@ export const deleteIXP = async ({ user_id, _id }) => {
 
   return res
 }
+
+export const checkIxpPeeringDBId = async ({ _id, user_id }) => {
+  url = `${apiConfig.url}/ixps/checkpeeringdb?p=${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}

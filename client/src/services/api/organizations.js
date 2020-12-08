@@ -504,3 +504,15 @@ export const getOrgClusters = async ({ id }) => {
   const res = await $axios.get(url)
   return res
 }
+
+export const checkOrganizationPeeringDBId = async ({ _id, user_id }) => {
+  url = `${apiConfig.url}/organization/checkpeeringdb?p=${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
