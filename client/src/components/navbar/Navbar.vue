@@ -138,11 +138,7 @@
               role="listitem"
             >
               <div class="list-item" data-no-hover-bg="true">
-                <a
-                  :href="sponsors[0].url"
-                  target="_blank"
-                  @click="handeSponsorClick(sponsors[0].url)"
-                >
+                <a :href="sponsors[0].url" target="_blank">
                   <el-image
                     :src="sponsors[0].src"
                     lazy
@@ -186,11 +182,7 @@
               role="listitem"
             >
               <div class="list-item" data-no-hover-bg="true">
-                <a
-                  :href="sponsors[1].url"
-                  target="_blank"
-                  @click="handeSponsorClick(sponsors[1].url)"
-                >
+                <a :href="sponsors[1].url" target="_blank">
                   <el-image
                     lazy
                     :src="sponsors[1].src"
@@ -343,16 +335,6 @@ export default {
     await this.loadPremiumPartners()
   },
   methods: {
-    handeSponsorClick(url) {
-      // eslint-disable-next-line
-      ga('send', 'event', 'outbound', 'click', url, {
-        transport: 'beacon',
-        hitCallback: function() {
-          document.location = url
-        }
-      })
-      return false
-    },
     toggleDrawerVisibility() {
       this.isDrawerOpen = !this.isDrawerOpen
     },
