@@ -156,7 +156,7 @@
             </li>
 
             <!-- <el-divider direction="vertical" class="m0 hidden-sm-and-down" /> -->
-            <li
+            <!-- <li
               class="inline-block hidden-sm-and-down relative"
               data-no-outline="true"
               role="listitem"
@@ -178,7 +178,7 @@
                   />
                 </a>
               </div>
-            </li>
+            </li> -->
 
             <li
               class="inline-block hidden-sm-and-down relative"
