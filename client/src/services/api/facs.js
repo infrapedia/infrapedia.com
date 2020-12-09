@@ -137,12 +137,80 @@ export const createFacility = async ({
   owners,
   building,
   StartDate,
-  address
+  buildingSize,
+  grossColocationSize,
+  isCarrierNeutral,
+  isLoadingDocks,
+  pue,
+  rackHeight,
+  meetMeRooms,
+  meetingRooms,
+  platform,
+  totalPower,
+  floorLoadingCapacity,
+  utilityConnectionRedundancy,
+  maxRackPower,
+  mantrap,
+  backupPowerDuration,
+  backupPowerRedundancy,
+  coolingCapacity,
+  temperature,
+  humidity,
+  bulletProffGlass,
+  cctv,
+  securityGuards,
+  biometric,
+  spareParts,
+  carParking,
+  officeSpace,
+  stagingRooms,
+  breakRooms,
+  subsea,
+  terrestrials,
+  csp,
+  sProviders,
+  authentication,
+  internetAccess,
+  address,
+  enType
 }) => {
   url = `${apiConfig.url}/auth/facilities/add`
   form = new FormData()
 
   form.append('name', name)
+  form.append('buildingSize', buildingSize)
+  form.append('grossColocationSize', grossColocationSize)
+  form.append('floorLoadingCapacity', floorLoadingCapacity)
+  form.append('isCarrierNeutral', isCarrierNeutral)
+  form.append('isLoadingDocks', isLoadingDocks)
+
+  form.append('rackHeight', rackHeight)
+  form.append('meetMeRooms', meetMeRooms)
+  form.append('platform', platform)
+  form.append('totalPower', totalPower)
+  form.append('pue', pue)
+  form.append('utilityConnectionRedundancy', utilityConnectionRedundancy)
+  form.append('maxRackPower', maxRackPower)
+  form.append('backupPowerDuration', backupPowerDuration)
+  form.append('backupPowerRedundancy', backupPowerRedundancy)
+  form.append('coolingCapacity', coolingCapacity)
+  form.append('temperature', JSON.stringify(temperature))
+  form.append('humidity', JSON.stringify(humidity))
+
+  form.append('bulletProffGlass', bulletProffGlass)
+  form.append('cctv', cctv)
+  form.append('securityGuards', securityGuards)
+  form.append('mantrap', mantrap)
+  form.append('biometric', biometric)
+  form.append('meetingRooms', meetingRooms)
+  form.append('breakRooms', breakRooms)
+  form.append('carParking', carParking)
+  form.append('spareParts', spareParts)
+  form.append('stagingRooms', stagingRooms)
+  form.append('officeSpace', officeSpace)
+  form.append('internetAccess', internetAccess)
+  form.append('authentication', authentication)
+
   form.append('website', website)
   form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   form.append('t', t)
@@ -161,17 +229,43 @@ export const createFacility = async ({
     })
   } else form.append('owners', [])
 
-  if (address.length > 0) {
-    address.forEach((a, i) => {
-      form.append(`address[${i}]`, JSON.stringify(a))
-    })
+  if (address && address.fullAddress !== '') {
+    form.append('address[0]', JSON.stringify(address))
   } else form.append('address', [])
 
   if (tags.length > 0) {
     tags.forEach((tag, i) => {
       form.append(`tags[${i}]`, tag)
     })
-  } else form.append('tags', tags)
+  } else form.append('tags', [])
+
+  if (sProviders && sProviders.length > 0) {
+    sProviders.forEach((sp, i) => {
+      form.append(`sProviders[${i}]`, sp._id)
+    })
+  } else form.append('sProviders', [])
+
+  if (subsea && subsea.length > 0) {
+    subsea.forEach((s, i) => {
+      form.append(`subsea[${i}]`, s._id)
+    })
+  } else form.append('subsea', [])
+
+  if (terrestrials && terrestrials.length > 0) {
+    terrestrials.forEach((t, i) => {
+      form.append(`terrestrials[${i}]`, t._id)
+    })
+  } else form.append('terrestrials', [])
+
+  if (csp && csp.length > 0) {
+    csp.forEach((csp, i) => {
+      form.append(`csp[${i}]`, csp._id)
+    })
+  } else form.append('csp', [])
+
+  enType.forEach((t, i) => {
+    form.append(`enType[${i}]`, t)
+  })
 
   const res = await $axios.post(url, form, {
     withCredentials: true,
@@ -195,14 +289,110 @@ export const editFacility = async ({
   owners,
   building,
   StartDate,
-  address
+  address,
+  buildingSize,
+  grossColocationSize,
+  isCarrierNeutral,
+  isLoadingDocks,
+  pue,
+  rackHeight,
+  meetMeRooms,
+  meetingRooms,
+  platform,
+  totalPower,
+  floorLoadingCapacity,
+  utilityConnectionRedundancy,
+  maxRackPower,
+  mantrap,
+  backupPowerDuration,
+  backupPowerRedundancy,
+  coolingCapacity,
+  temperature,
+  humidity,
+  bulletProffGlass,
+  cctv,
+  securityGuards,
+  biometric,
+  spareParts,
+  carParking,
+  officeSpace,
+  stagingRooms,
+  breakRooms,
+  enType,
+  internetAccess,
+  subsea,
+  terrestrials,
+  csp,
+  sProviders,
+  authentication
 }) => {
   url = `${apiConfig.url}/auth/facilities/edit`
   form = new FormData()
 
   form.append('_id', _id)
   form.append('name', name)
-  form.append('website', website)
+
+  form.append('buildingSize', buildingSize)
+  form.append(
+    'grossColocationSize',
+    grossColocationSize !== 'null' ? grossColocationSize : 0
+  )
+  form.append('floorLoadingCapacity', floorLoadingCapacity)
+  form.append(
+    'isCarrierNeutral',
+    isCarrierNeutral !== 'null' ? isCarrierNeutral : false
+  )
+  form.append(
+    'isLoadingDocks',
+    isLoadingDocks !== 'null' ? isLoadingDocks : false
+  )
+
+  form.append('rackHeight', rackHeight)
+  form.append('meetMeRooms', meetMeRooms !== 'null' ? meetMeRooms : 0)
+  form.append('platform', platform !== 'null' ? platform : false)
+  form.append('totalPower', totalPower)
+  form.append('pue', pue)
+  form.append(
+    'utilityConnectionRedundancy',
+    utilityConnectionRedundancy !== 'null' ? utilityConnectionRedundancy : ''
+  )
+  form.append('maxRackPower', maxRackPower)
+  form.append('backupPowerDuration', backupPowerDuration)
+  form.append(
+    'backupPowerRedundancy',
+    backupPowerRedundancy !== 'null' ? backupPowerRedundancy : ''
+  )
+  form.append('coolingCapacity', coolingCapacity)
+  form.append('temperature', JSON.stringify(temperature))
+  form.append('humidity', JSON.stringify(humidity))
+  form.append(
+    'authentication',
+    authentication !== 'null' ? authentication : false
+  )
+
+  form.append(
+    'bulletProffGlass',
+    bulletProffGlass !== 'null' ? bulletProffGlass : false
+  )
+  form.append('cctv', cctv !== 'null' ? cctv : false)
+  form.append(
+    'securityGuards',
+    securityGuards !== 'null' ? securityGuards : false
+  )
+  form.append('mantrap', mantrap !== 'null' ? mantrap : false)
+  form.append('biometric', biometric !== 'null' ? biometric : false)
+  form.append('meetingRooms', meetingRooms)
+  form.append('breakRooms', breakRooms !== 'null' ? breakRooms : false)
+  form.append('carParking', carParking !== 'null' ? carParking : false)
+  form.append('spareParts', spareParts !== 'null' ? spareParts : false)
+  form.append('stagingRooms', stagingRooms !== 'null' ? stagingRooms : false)
+  form.append('officeSpace', officeSpace !== 'null' ? officeSpace : false)
+  form.append(
+    'internetAccess',
+    internetAccess !== 'null' ? internetAccess : false
+  )
+
+  form.append('website', website && website !== 'null' ? website : '')
   form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   form.append('t', t)
   form.append('StartDate', StartDate)
@@ -220,19 +410,57 @@ export const editFacility = async ({
     })
   } else form.append('owners', [])
 
-  if (address.length > 0) {
-    address.forEach((a, i) => {
-      form.append(`address[${i}]`, JSON.stringify(a))
-    })
+  if (address && address.fullAddress !== '') {
+    form.append('address[0]', JSON.stringify(address))
   } else form.append('address', [])
 
   if (tags.length > 0) {
     tags.forEach((tag, i) => {
       form.append(`tags[${i}]`, tag)
     })
-  } else form.append('tags', tags)
+  } else form.append('tags', [])
+
+  if (sProviders && sProviders.length > 0) {
+    sProviders.forEach((sp, i) => {
+      form.append(`sProviders[${i}]`, sp._id)
+    })
+  } else form.append('sProviders', [])
+
+  if (subsea && subsea.length > 0) {
+    subsea.forEach((s, i) => {
+      form.append(`subsea[${i}]`, s._id)
+    })
+  } else form.append('subsea', [])
+
+  if (terrestrials && terrestrials.length > 0) {
+    terrestrials.forEach((t, i) => {
+      form.append(`terrestrials[${i}]`, t._id)
+    })
+  } else form.append('terrestrials', [])
+
+  if (csp && csp.length > 0) {
+    csp.forEach((csp, i) => {
+      form.append(`csp[${i}]`, csp._id)
+    })
+  } else form.append('csp', [])
+
+  enType.forEach((t, i) => {
+    form.append(`enType[${i}]`, t)
+  })
 
   const res = await $axios.put(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const getFacilityInterconnections = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/facilities/clusterixpconnection/${_id}`
+  const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
       userid: user_id,
@@ -252,5 +480,17 @@ export const deleteFacility = async ({ user_id, _id }) => {
     }
   })
 
+  return res
+}
+
+export const checkFacilityPeeringDBId = async ({ _id, user_id }) => {
+  url = `${apiConfig.url}/facilities/checkpeeringdb?p=${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
   return res
 }

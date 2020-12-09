@@ -119,7 +119,7 @@
             <i-full-screen-search @search-selection="handleItemListSelection" />
 
             <li
-              class="inline-block relative"
+              class="inline-block relative hidden-md-and-down"
               data-no-outline="true"
               role="listitem"
             >
@@ -141,8 +141,7 @@
                 <a
                   :href="sponsors[0].url"
                   target="_blank"
-                  rel="noopener noreferrer"
-                  onclick="trackOutboundLink('http://bit.ly/3mkhjdR')"
+                  @click="handeSponsorClick(sponsors[0].url)"
                 >
                   <el-image
                     :src="sponsors[0].src"
@@ -190,8 +189,7 @@
                 <a
                   :href="sponsors[1].url"
                   target="_blank"
-                  rel="noopener noreferrer"
-                  onclick="trackOutboundLink('http://bit.ly/2TkC9gC')"
+                  @click="handeSponsorClick(sponsors[1].url)"
                 >
                   <el-image
                     lazy
@@ -345,6 +343,16 @@ export default {
     await this.loadPremiumPartners()
   },
   methods: {
+    handeSponsorClick(url) {
+      // eslint-disable-next-line
+      ga('send', 'event', 'outbound', 'click', url, {
+        transport: 'beacon',
+        hitCallback: function() {
+          document.location = url
+        }
+      })
+      return false
+    },
     toggleDrawerVisibility() {
       this.isDrawerOpen = !this.isDrawerOpen
     },

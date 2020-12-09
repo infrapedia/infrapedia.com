@@ -67,7 +67,7 @@
                           size="small"
                           :class="{ dark }"
                           v-model="field.color"
-                          :predefine="predefineColors"
+                          :predefine="predefinedColors"
                         />
                       </el-form-item>
                     </el-col>
@@ -461,7 +461,7 @@ export default {
     customDialogClass() {
       return this.dark ? 'custom-dialog dark' : 'custom-dialog light'
     },
-    predefineColors() {
+    predefinedColors() {
       return [
         '#ff4500',
         '#ff8c00',

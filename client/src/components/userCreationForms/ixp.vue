@@ -1,13 +1,14 @@
 <template>
   <div class="pb6 pt6 pr8 pl8">
     <header slot="header" class="w-fit-full mb8">
-      <h1 class="title capitalize">{{ title }} IXP</h1>
+      <h1 class="title capitalize">{{ title }}</h1>
     </header>
     <el-form ref="form" :model="form" :rules="formRules">
       <el-form-item label="Name" prop="name">
         <el-input
           class="w-fit-full"
           v-model="form.name"
+          :class="{ dark }"
           :disabled="isViewMode"
           clearable
           @input="checkName"
@@ -15,6 +16,7 @@
         <el-alert
           v-if="isNameRepeated"
           class="mt4 p2"
+          :class="{ dark }"
           type="error"
           :closable="false"
           description="This name already exists in our database. Use a different name or
@@ -24,6 +26,7 @@
       <el-form-item label="Owners" prop="owners" required>
         <v-multi-select
           :mode="mode"
+          :class="{ dark }"
           :is-required="true"
           :is-field-empty="isOwnersSelectEmpty"
           :options="ownersList"
@@ -37,12 +40,48 @@
       <el-form-item label="Long name" prop="nameLong">
         <el-input
           class="w-fit-full"
+          :class="{ dark }"
           v-model="form.nameLong"
           :disabled="isViewMode"
         />
       </el-form-item>
+      <el-form-item label="Locations" prop="facilities">
+        <v-multi-select
+          :mode="mode"
+          :class="{ dark }"
+          :is-required="true"
+          :is-field-empty="isFacilitiesEmpty"
+          :options="facilitiesList"
+          @input="loadFacilitiesSearch"
+          :loading="isLoadingFacilities"
+          @remove="handleFacilitiesSelection(form.facilities)"
+          @values-change="handleFacilitiesSelection"
+          :value="mode == 'create' ? [] : form.facilities"
+        />
+      </el-form-item>
+      <el-form-item label="PeeringDB ID" prop="peeringDBId" v-if="isAdmin">
+        <el-input
+          class="w-fit-full"
+          :class="{ dark }"
+          v-model="form.ix_id"
+          :disabled="isViewMode"
+          @input="checkPeeringDbId"
+        />
+        <el-alert
+          v-if="isPeeringDbIdRepeated"
+          class="mt4 p2"
+          type="error"
+          :closable="false"
+          description="This ID already exits in our database. Consider checking the value you entered."
+        />
+      </el-form-item>
       <el-form-item label="Media" prop="media">
-        <el-select v-model="form.media" class="w-fit-full" placeholder>
+        <el-select
+          v-model="form.media"
+          class="w-fit-full"
+          :class="{ dark }"
+          placeholder
+        >
           <el-option
             v-for="(opt, i) in mediaOptions"
             :key="i"
@@ -54,12 +93,14 @@
       <el-form-item label="Policy Email" prop="policyEmail">
         <el-input
           class="w-fit-full"
+          :class="{ dark }"
           v-model="form.policyEmail"
           :disabled="isViewMode"
         />
       </el-form-item>
       <el-form-item label="Policy Phone" prop="policyPhone">
         <el-input
+          :class="{ dark }"
           class="w-fit-full"
           v-model="form.policyPhone"
           :disabled="isViewMode"
@@ -67,6 +108,7 @@
       </el-form-item>
       <el-form-item label="Tech Email" prop="techEmail">
         <el-input
+          :class="{ dark }"
           class="w-fit-full"
           v-model="form.techEmail"
           :disabled="isViewMode"
@@ -74,6 +116,7 @@
       </el-form-item>
       <el-form-item label="Tech Phone" prop="techPhone">
         <el-input
+          :class="{ dark }"
           class="w-fit-full"
           v-model="form.techPhone"
           :disabled="isViewMode"
@@ -81,32 +124,35 @@
       </el-form-item>
       <el-form-item label="Proto ivp6" prop="proto_ipv6">
         <el-radio-group
+          :class="{ dark }"
           v-model="form.proto_ipv6"
           :disabled="isViewMode"
           class="flex row justify-content-start w-fit-full"
         >
-          <el-radio-button :label="true">Yes</el-radio-button>
-          <el-radio-button :label="false">No</el-radio-button>
+          <el-radio-button :class="{ dark }" :label="true">Yes</el-radio-button>
+          <el-radio-button :class="{ dark }" :label="false">No</el-radio-button>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="Proto multicast" prop="proto_multicast">
         <el-radio-group
+          :class="{ dark }"
           v-model="form.proto_multicast"
           :disabled="isViewMode"
           class="flex row justify-content-start w-fit-full"
         >
-          <el-radio-button :label="true">Yes</el-radio-button>
-          <el-radio-button :label="false">No</el-radio-button>
+          <el-radio-button :class="{ dark }" :label="true">Yes</el-radio-button>
+          <el-radio-button :class="{ dark }" :label="false">No</el-radio-button>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="Proto unicast" prop="proto_unicast">
         <el-radio-group
           v-model="form.proto_unicast"
           :disabled="isViewMode"
+          :class="{ dark }"
           class="flex row justify-content-start w-fit-full"
         >
-          <el-radio-button :label="true">Yes</el-radio-button>
-          <el-radio-button :label="false">No</el-radio-button>
+          <el-radio-button :class="{ dark }" :label="true">Yes</el-radio-button>
+          <el-radio-button :class="{ dark }" :label="false">No</el-radio-button>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="Tags" class="mt2" prop="tags">
@@ -138,7 +184,7 @@
           :loading="isSendingData"
           @click="sendData"
         >
-          {{ title }} IXP
+          {{ saveBtnLabel }}
         </el-button>
       </el-form-item>
     </el-form>
@@ -150,6 +196,8 @@ import { searchOrganization } from '../../services/api/organizations'
 import VMultiSelect from '../../components/MultiSelect'
 import { checkIxpsNameExistence } from '../../services/api/check_name'
 import debounce from '../../helpers/debounce'
+import { searchFacilities } from '../../services/api/facs'
+import { checkIxpPeeringDBId } from '../../services/api/ixps'
 
 export default {
   name: 'FacsForm',
@@ -160,6 +208,10 @@ export default {
     tag: '',
     inputVisible: false,
     tagsList: [],
+    facilitiesList: [],
+    isFacilitiesEmpty: false,
+    isPeeringDbIdRepeated: false,
+    isLoadingFacilities: false,
     isNameRepeated: false,
     isOwnersSelectEmpty: false,
     isLoadingOwners: false,
@@ -198,10 +250,17 @@ export default {
     },
     title() {
       return this.mode == 'create'
-        ? 'Create'
+        ? 'Create IXP'
         : this.mode == 'view'
-        ? 'View'
-        : 'Edit'
+        ? 'View IXP'
+        : 'Edit IXP'
+    },
+    saveBtnLabel() {
+      return this.mode == 'create'
+        ? 'Create IXP'
+        : this.mode == 'view'
+        ? 'View IXP'
+        : 'Save changes'
     },
     formRules() {
       return {
@@ -212,6 +271,13 @@ export default {
             trigger: 'change'
           },
           { min: 1, message: 'Length should be at least 1', trigger: 'change' }
+        ],
+        facilities: [
+          {
+            required: true,
+            message: 'At least one location is required',
+            trigger: 'change'
+          }
         ],
         media: [],
         nameLong: [
@@ -241,6 +307,7 @@ export default {
         proto_multicast: [],
         techPhone: [],
         policyPhone: [],
+        peeringDBId: [],
         tags: [],
         owners: [
           {
@@ -256,6 +323,9 @@ export default {
     },
     dark() {
       return this.$store.state.isDark
+    },
+    isAdmin() {
+      return this.$auth.isUserAnAdmin
     }
   },
   watch: {
@@ -263,6 +333,11 @@ export default {
       if (!owners) return
       this.ownersList = [...owners]
       delete this.form.ownersList
+    },
+    'form.facilitiesList'(facs) {
+      if (!facs) return
+      this.facilitiesList = [...facs]
+      delete this.form.facilitiesList
     }
   },
   mounted() {
@@ -275,19 +350,54 @@ export default {
     }
   },
   methods: {
+    checkPeeringDbId: debounce(async function checkPDBId(_id) {
+      if (this.mode == 'create') {
+        const {
+          t,
+          data: { r }
+        } = (await checkIxpPeeringDBId({
+          user_id: this.$auth.getUserID(),
+          _id
+        })) || { t: 'error', data: { r: false } }
+
+        if (t != 'error' && r >= 1) {
+          this.isPeeringDbIdRepeated = true
+        } else {
+          this.isPeeringDbIdRepeated = false
+        }
+      }
+    }, 320),
+    async loadFacilitiesSearch(s) {
+      if (s.length <= 0) return
+
+      this.isLoadingFacilities = true
+      const { data: facs = [] } = (await searchFacilities({
+        user_id: await this.$auth.getUserID(),
+        s
+      })) || { facs: [] }
+
+      this.facilitiesList = facs
+      this.isLoadingFacilities = false
+    },
+    async handleFacilitiesSelection(data) {
+      this.form.facilities = Array.from(data)
+      this.isFacilitiesEmpty = !data.length
+    },
     checkName: debounce(async function(name) {
-      this.isNameRepeated = false
-      const {
-        t,
-        data: { r }
-      } = (await checkIxpsNameExistence({
-        user_id: this.$auth.getUserID(),
-        name
-      })) || { t: 'error', data: { r: false } }
-      if (t != 'error' && r >= 1) {
-        this.isNameRepeated = true
-      } else {
+      if (this.mode == 'create') {
         this.isNameRepeated = false
+        const {
+          t,
+          data: { r }
+        } = (await checkIxpsNameExistence({
+          user_id: this.$auth.getUserID(),
+          name
+        })) || { t: 'error', data: { r: false } }
+        if (t != 'error' && r >= 1) {
+          this.isNameRepeated = true
+        } else {
+          this.isNameRepeated = false
+        }
       }
     }, 320),
     async loadOwnersSearch(s) {

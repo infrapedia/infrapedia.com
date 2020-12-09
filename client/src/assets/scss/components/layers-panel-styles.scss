@@ -13,7 +13,7 @@
     background-color: $dark-charcoal;
   }
   &.adjust-position {
-    top: 7.4rem;
+    top: 7.2rem;
     @media screen and (max-width: $break-sm) {
       top: 8rem;
     }
@@ -27,6 +27,6 @@
   }
 
   @media screen and (max-width: $break-sm) {
-    top: 18.4rem;
+    top: 19.3rem;
   }
 }

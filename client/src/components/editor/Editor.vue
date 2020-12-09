@@ -1,6 +1,9 @@
 <template>
   <div
-    :class="{ dnd: drag.hover, 'custom-map': true }"
+    :class="{
+      dnd: drag.hover,
+      'custom-map': true
+    }"
     class="map-editor-wrapper transition-all"
     @drop.prevent="onDrop"
     @dragover.prevent="() => (drag.hover = true)"
@@ -10,6 +13,9 @@
       :type="type"
       @close-search="closeSearchMode"
       @place-selected="handleSearchPlaceSelected"
+      @address-field-activated-by-form="
+        $emit('address-field-activated-by-form')
+      "
     />
     <div id="map" />
     <input ref="file" type="file" class="hidden" />
@@ -38,7 +44,6 @@ import { mapConfig } from '../../config/mapConfig'
 import {
   EDITOR_SET_FEATURES,
   EDITOR_FILE_CONVERTED,
-  EDITOR_GET_FEATURES_LIST,
   EDITOR_SET_FEATURES_LIST
 } from '../../events/editor'
 import { fCollectionFormat } from '../../helpers/featureCollection'
@@ -57,7 +62,8 @@ import {
 } from './index'
 import { getGeometries } from '../../services/api'
 import { categoriesDictionary } from '../userCreationForms/fields/dictionary'
-import { lineString, lineSlice, point, booleanEqual } from '@turf/turf'
+import elemntTypeValidator from '../../helpers/elemntTypeValidator'
+import { booleanEqual, point, lineString, lineSlice } from '@turf/turf'
 
 const onlyOneFeatureAllowed = ['cls', 'ixps']
 
@@ -95,18 +101,7 @@ export default {
     type: {
       type: String,
       default: () => '',
-      validator: function(t) {
-        return (
-          [
-            'cls',
-            'map',
-            'ixps',
-            'subsea',
-            'facilities',
-            'terrestrial-network'
-          ].indexOf(t) != -1
-        )
-      }
+      validator: elemntTypeValidator
     },
     form: {
       type: Object,
@@ -131,12 +126,12 @@ export default {
   },
   async created() {
     sceneDictionary.on('storage--changed', this.handleDrawSceneFeatures)
+    window.__sceneDictionary = sceneDictionary
 
     this.$on('drawn-features-dnd', this.handleDragAndDropGeojsonFiles)
     bus.$on(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetSceneFeaturesList)
     bus.$on(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$on(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
-    bus.$on(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
 
     // CATEGORIES RELATED EVENTS
     if (this.type == 'map') {
@@ -174,7 +169,6 @@ export default {
     bus.$off(`${EDITOR_SET_FEATURES_LIST}`, this.handleSetSceneFeaturesList)
     bus.$off(`${EDITOR_FILE_CONVERTED}`, this.handleFileConverted)
     bus.$off(`${EDITOR_SET_FEATURES}`, this.handleMapFormFeatureSelection)
-    bus.$off(`${EDITOR_GET_FEATURES_LIST}`, this.handleGetFeatures)
 
     // CATEGORIES RELATED EVENTS
     if (this.type == 'map') {
@@ -196,13 +190,17 @@ export default {
   },
   methods: {
     async handleSearchPlaceSelected(data) {
+      if (this.placeMarker) this.placeMarker.remove()
       this.placeMarker = new mapboxgl.Marker({ color: '#1e419a' })
         .setLngLat(data.center)
         .addTo(this.map)
-      this.map.fitBounds(data.bbox, {
-        animate: true,
-        zoom: 4.89
-      })
+      this.map.fitBounds(
+        data.bbox ? data.bbox : [...data.center, ...data.center],
+        {
+          animate: true,
+          zoom: 4.89
+        }
+      )
     },
     closeSearchMode() {
       if (this.placeMarker) {
@@ -212,15 +210,20 @@ export default {
     },
     async handleDrawSceneFeatures() {
       await this.handleRecreateDraw(null, false)
+      await this.$emit(
+        'features-list-change',
+        sceneDictionary.getCollectionList()
+      )
     },
     async handleDragAndDropGeojsonFiles(fc) {
       // if (this.type != 'map') return
+      await this.$store.dispatch('editor/toggleMapFormLoading', true)
 
       let list = []
       let cat = null
       const categories = []
 
-      for (let feature of fc.features) {
+      fc.features.forEach(feature => {
         if (this.type == 'map') {
           for (let category of this.categoriesDictionary.getCollectionList()) {
             if (
@@ -252,11 +255,11 @@ export default {
         }
 
         if (!feature.properties.editorID) {
-          list.push(feature)
-        } else {
           list.push(setFeatureEditorID(feature))
+        } else {
+          list.push(feature)
         }
-      }
+      })
 
       cat = null
       this.handleSetSceneFeaturesList([
@@ -272,6 +275,7 @@ export default {
           false
         )
       }
+      this.$store.dispatch('editor/toggleMapFormLoading', false)
     },
     onDrop(e) {
       this.drag.hover = false
@@ -494,9 +498,6 @@ export default {
         })
       }
     },
-    handleGetFeatures() {
-      this.$emit('features-list-change', sceneDictionary.getCollectionList())
-    },
     handleSetSceneFeaturesList(list) {
       let r = {}
       for (let item of list) {
@@ -663,7 +664,10 @@ export default {
       })
       map.addControl(scaleCtrl, 'top-left')
       map.addControl(new mapboxgl.NavigationControl())
-      map.addControl(new mapboxgl.FullscreenControl())
+
+      if (this.type != 'facilities') {
+        map.addControl(new mapboxgl.FullscreenControl())
+      }
 
       this.draw = await new MapboxDraw({
         displayControlsDefault: false
@@ -690,10 +694,22 @@ export default {
         this.handleDeleteVertexFromFeatureSelected
       )
       this.controls.on('cut-feature', this.handleCutFeatureSelected)
+      this.controls.on('toggle-segments-status', this.handleToggleSegmentStatus)
 
       map.addControl(this.controls)
       map.addControl(this.draw)
       return map
+    },
+    async handleToggleSegmentStatus(currentStatus) {
+      const newStatus = currentStatus ? 'Active' : 'Inactive'
+      const featuresUpdated = sceneDictionary
+        .getCollectionList()
+        .map(feature => {
+          feature.properties.status = newStatus
+          return feature
+        })
+
+      await this.handleUpdateMapSourcesData(null, featuresUpdated)
     },
     async handleDeleteVertexFromFeatureSelected({ feature, geometryType }) {
       const vertexPoints = this.draw.getSelectedPoints().features
@@ -855,7 +871,6 @@ export default {
     },
     async handleBeforeCreateFeature(feature) {
       this.dialog.selectedFeature = feature
-
       if (feature.geometry.type != 'Point') {
         this.dialog.visible = true
         this.$once(

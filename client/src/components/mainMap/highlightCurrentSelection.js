@@ -70,9 +70,6 @@ export default function highlightCurrentSelection({
     case 'cls':
       highlightCls(args)
       break
-    case 'facilities':
-      highlightFacility(args)
-      break
     case 'facility':
       highlightFacility(args)
       break

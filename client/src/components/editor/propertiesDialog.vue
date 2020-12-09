@@ -134,13 +134,13 @@ export default {
               this.form = {
                 name: '',
                 height: 0,
-                status: true
+                status: 'Active'
               }
               break
             default:
               this.form = {
                 name: '',
-                status: true
+                status: 'Active'
               }
               break
           }

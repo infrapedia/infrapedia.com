@@ -114,9 +114,12 @@ export const createIXP = async ({
   policyPhone,
   proto_ipv6,
   geom,
+  owners,
   techPhone,
   techEmail,
   media,
+  ix_id,
+  facilities,
   proto_multicast,
   proto_unicast
 }) => {
@@ -124,6 +127,7 @@ export const createIXP = async ({
   form = new FormData()
 
   form.append('name', name)
+  form.append('ix_id', ix_id)
   form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   form.append('nameLong', nameLong)
   form.append('policyEmail', policyEmail)
@@ -140,6 +144,18 @@ export const createIXP = async ({
       form.append(`tags[${i}]`, tag)
     })
   } else form.append('tags', tags)
+
+  if (facilities && facilities.length > 0) {
+    facilities.forEach((fac, i) => {
+      form.append(`facilities[${i}]`, fac._id)
+    })
+  } else form.append('facilities', [])
+
+  if (owners && owners.length > 0) {
+    owners.forEach((owner, i) => {
+      form.append(`owners[${i}]`, owner._id)
+    })
+  } else form.append('owners', [])
 
   const res = await $axios.post(url, form, {
     withCredentials: true,
@@ -164,6 +180,9 @@ export const editIXP = async ({
   techPhone,
   techEmail,
   media,
+  facilities,
+  owners,
+  ix_id,
   proto_multicast,
   proto_unicast
 }) => {
@@ -172,6 +191,7 @@ export const editIXP = async ({
 
   form.append('_id', _id)
   form.append('name', name)
+  form.append('ix_id', ix_id)
   form.append('geom', JSON.stringify(fCollectionFormat(geom)))
   form.append('nameLong', nameLong)
   form.append('policyEmail', policyEmail)
@@ -189,7 +209,31 @@ export const editIXP = async ({
     })
   } else form.append('tags', tags)
 
+  if (facilities && facilities.length > 0) {
+    facilities.forEach((fac, i) => {
+      form.append(`facilities[${i}]`, fac._id)
+    })
+  } else form.append('facilities', [])
+
+  if (owners && owners.length > 0) {
+    owners.forEach((owner, i) => {
+      form.append(`owners[${i}]`, owner._id)
+    })
+  } else form.append('owners', [])
+
   const res = await $axios.put(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const getIxpInterconnections = async ({ user_id, _id }) => {
+  url = `${apiConfig.url}/ixps/clusterfacilityconnection/${_id}`
+  const res = await $axios.get(url, {
     withCredentials: true,
     headers: {
       userid: user_id,
@@ -209,5 +253,17 @@ export const deleteIXP = async ({ user_id, _id }) => {
     }
   })
 
+  return res
+}
+
+export const checkIxpPeeringDBId = async ({ _id, user_id }) => {
+  url = `${apiConfig.url}/ixps/checkpeeringdb?p=${_id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
   return res
 }

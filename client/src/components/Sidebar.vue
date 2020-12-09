@@ -23,10 +23,13 @@
           <div class="relative action-buttons">
             <el-button
               type="text"
-              class="inline-block icon fs-medium p2 transition-all circle vertical-align absolute cursor-pointer"
+              size="mini"
+              circle
+              :class="{ 'text-white--imp': dark }"
+              icon="el-icon-close"
+              class="inline-block icon fs-medium transition-all vertical-align absolute cursor-pointer"
               @click="closeSidebar"
             >
-              <fa :icon="['fas', 'times']" />
             </el-button>
             <el-button
               v-if="focus.type.toLowerCase() !== 'owners'"
@@ -92,7 +95,6 @@ import * as modes from '../config/sidebarModes'
 import dataCollection from '../mixins/dataCollection'
 import copyToClipboard from '../helpers/copyToClipboard'
 import { getSelectionCols } from '../helpers/getSelectionCols'
-// import { CURRENT_SELECTION, MAP_FOCUS_ON } from '../store/actionTypes/map'
 import {
   BUY_CAPACITY,
   EDIT_CABLE,
@@ -118,9 +120,9 @@ export default {
     REPORT_ISSUE,
     CREATE_ALERT,
     prohibitedIDs: [],
-    currentSelectionColumns: [],
     isSidebarActive: false,
     isSidebarFullActive: false,
+    currentSelectionColumns: [],
     transitionsClasses: {
       name: 'animated faster',
       active: 'slideInLeft',
@@ -130,6 +132,7 @@ export default {
   mixins: [dataCollection],
   computed: {
     ...mapState({
+      dark: state => state.isDark,
       focus: state => state.map.focus,
       isSidebar: state => state.isSidebar,
       sidebarMode: state => state.sidebarMode,
@@ -142,7 +145,7 @@ export default {
       return modes.CABLE_MODE
     },
     isCable() {
-      return this.sidebarMode == this.defaultMode
+      return this.sidebarMode === this.defaultMode
     },
     isVerified() {
       return this.prohibitedIDs.includes(this.currentSelection.uuid)

@@ -133,6 +133,46 @@ export const cablesColumns = [
   // 'facilities', // (Array)
 ]
 
+export const cspColumns = [
+  {
+    label: 'Color',
+    value: 'color',
+    showTable: true
+  },
+  {
+    label: 'Name',
+    value: 'name',
+    showSidebar: true,
+    showTable: true
+  },
+  {
+    label: 'Established in (year)',
+    value: 'establismentYear',
+    showSidebar: true,
+    showTable: true
+  },
+  {
+    label: 'URL',
+    value: 'url',
+    showSidebar: true,
+    showTable: true
+  },
+  {
+    label: 'Status page (url)',
+    value: 'statusPage',
+    showSidebar: true,
+    showTable: true
+  }
+]
+
+//==========================
+//==========================
+//==========================
+// FACILITIES COLUMNS START
+//==========================
+//==========================
+//==========================
+
 export const facsColumns = [
   {
     label: 'Name',
@@ -141,49 +181,41 @@ export const facsColumns = [
     showTable: true
   },
   {
+    label: 'Type',
+    value: 't',
+    showSidebar: true,
+    showTable: true
+  },
+  {
+    label: 'PeeringDB',
+    value: 'fac_id',
+    showSidebar: true,
+    link: id => `https://www.peeringdb.com/fac/${id}`
+  },
+  {
     label: 'Address',
     value: 'address',
     showSidebar: true,
     showTable: true
   },
   {
-    label: 'Websites',
-    value: 'websites',
+    label: 'In Service',
+    value: 'StartDate',
     showSidebar: true,
     showTable: true
   },
   {
-    label: 'Start date',
-    value: 'startDate',
+    label: 'Gross Building Size',
+    value: 'grossBuildingSize',
     showSidebar: true,
     showTable: true
   },
   {
-    label: 'Ixps',
-    value: 'ixps',
-    showSidebar: true
-  },
-  {
-    label: 'Type',
-    value: 'building',
+    label: 'Total Power',
+    value: 'totalPower',
     showSidebar: true,
-    showTable: true
-  },
-  {
-    label: 'Cables',
-    value: 'cables',
-    showSidebar: true,
-    filter: arr => arr
-  },
-  {
-    label: 'Groups',
-    value: 'networks',
-    showSidebar: true
-  },
-  {
-    label: 'Owners',
-    value: 'organizations',
-    showSidebar: true
+    showTable: true,
+    valueMetric: 'MW'
   },
   {
     label: 'Created at',
@@ -197,12 +229,188 @@ export const facsColumns = [
   }
 ]
 
+export const facilitiesBuildingDetailsColumns = [
+  {
+    label: 'Gross Building Size',
+    value: 'buildingSize',
+    valueMetric: 'sq m'
+  },
+  {
+    label: 'Gross Colocation Size',
+    value: 'grossColocationSize',
+    valueMetric: 'sq m'
+  },
+  {
+    label: 'Floor Loading Capacity',
+    value: 'floorLoadingCapacity',
+    valueMetric: 'kg/sq m'
+  },
+  {
+    label: 'Carrier Neutral',
+    value: 'isCarrierNeutral'
+  },
+  {
+    label: 'Loading Docks',
+    value: 'isLoadingDocks'
+  },
+  {
+    label: 'Rack Height',
+    value: 'rackHeight',
+    valueMetric: 'U'
+  },
+  {
+    label: 'Meet me rooms',
+    value: 'meetMeRooms'
+  },
+  {
+    label: 'Satellite/Antenna Platform',
+    value: 'platform'
+  }
+]
+
+export const facilitiesPowerAndCoolingDetailsColumns = [
+  {
+    label: 'Total Power',
+    value: 'totalPower'
+  },
+  {
+    label: 'PUE',
+    value: 'pue'
+  },
+  {
+    label: 'Utility Connection Redundancy',
+    value: 'utilityConnectionRedundancy'
+  },
+  {
+    label: 'Max Rack Power',
+    value: 'maxRackPower',
+    valueMetric: 'KW'
+  },
+  {
+    label: 'Backup Power Duration',
+    value: 'backupPowerDuration',
+    valueMetric: 'hours'
+  },
+  {
+    label: 'Backup Power Redundancy',
+    value: 'backupPowerRedundancy'
+  },
+  {
+    label: 'Cooling Capacity',
+    value: 'coolingCapacity',
+    valueMetric: 'MW'
+  },
+  {
+    label: 'Temperature',
+    value: 'temperature',
+    valueMetric: '°C'
+  },
+  {
+    label: 'Humidity',
+    value: 'humidity',
+    valueMetric: '%'
+  }
+]
+
+export const facilitiesSecurityAndOnsiteServicesColumns = [
+  {
+    label: 'Bullet Proof Glass',
+    value: 'bulletProffGlass'
+  },
+  {
+    label: 'CCTV',
+    value: 'cctv'
+  },
+  {
+    label: 'Security Guards',
+    value: 'securityGuards'
+  },
+  {
+    label: 'Mantrap',
+    value: 'mantrap'
+  },
+  {
+    label: 'Biometric',
+    value: 'biometric'
+  },
+  {
+    label: 'Authentication',
+    value: 'authentication'
+  },
+  {
+    label: 'Meeting Rooms',
+    value: 'meetingRooms'
+  },
+  {
+    label: 'Break Rooms',
+    value: 'breakRooms'
+  },
+  {
+    label: 'Car Parking',
+    value: 'carParking'
+  },
+  {
+    label: 'Spare Parts',
+    value: 'spareParts'
+  },
+  {
+    label: 'Staging Rooms',
+    value: 'stagingRooms'
+  },
+  {
+    label: 'Office Space',
+    value: 'officeSpace'
+  },
+  {
+    label: 'Internet Access',
+    value: 'internetAccess'
+  }
+]
+
+export const facilitiesColumnsAfterMoreInfo = [
+  {
+    label: 'Owners',
+    value: 'owners',
+    showSidebar: true
+  },
+  {
+    label: 'Terrestrial Networks',
+    value: 'terrestrials'
+  },
+  {
+    label: 'Subsea Cables',
+    value: 'subsea'
+  },
+  {
+    label: 'IXPs',
+    value: 'ixps'
+  },
+  {
+    label: 'Known Tenants',
+    value: 'sProviders'
+  }
+]
+
+//==========================
+//==========================
+//==========================
+// FACILITIES COLUMNS END
+//==========================
+//==========================
+//==========================
+
 export const ixpsColumns = [
   {
     label: 'Name',
     value: 'name',
     showSidebar: true,
     showTable: true
+  },
+  {
+    label: 'PeeringDB',
+    value: 'ix_id',
+    showSidebar: true,
+    link: id => `https://www.peeringdb.com/ix/${id}`
   },
   {
     label: 'Address',
@@ -248,12 +456,7 @@ export const ixpsColumns = [
   },
   {
     label: 'Owners',
-    value: 'organizations',
-    showSidebar: true
-  },
-  {
-    label: 'Facilities',
-    value: 'facilities',
+    value: 'owners',
     showSidebar: true
   },
   {
@@ -265,6 +468,11 @@ export const ixpsColumns = [
     label: 'Updated at',
     value: 'uDate',
     showTable: true
+  },
+  {
+    label: 'Locations',
+    value: 'facilities',
+    showSidebar: true
   }
 ]
 
@@ -363,6 +571,17 @@ export const orgsColumns = [
     label: 'Logo',
     value: 'logo',
     showTable: true
+  },
+  {
+    label: 'PeeringDB',
+    value: 'ooid',
+    showSidebar: true,
+    link: id => `https://www.peeringdb.com/org/${id}`
+  },
+  {
+    label: 'ASN',
+    value: 'asn',
+    showSidebar: true
   },
   {
     label: 'Address',

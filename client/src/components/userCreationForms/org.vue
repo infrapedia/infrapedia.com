@@ -43,6 +43,39 @@
           :rows="4"
         />
       </el-form-item>
+      <el-form-item label="PeeringDB ID" prop="peerindDBId" v-if="isAdmin">
+        <el-input
+          :class="{ dark }"
+          class="w-fit-full"
+          v-model="form.ooid"
+          @input="checkPeeringDbId"
+        />
+        <el-alert
+          v-if="isPeeringDbIdRepeated"
+          class="mt4 p2"
+          type="error"
+          :closable="false"
+          description="This ID already exits in our database. Consider checking the value you entered."
+        />
+      </el-form-item>
+      <el-form-item label="ASN">
+        <el-select
+          v-model="form.asn"
+          class="w-fit-full"
+          multiple
+          filterable
+          placeholder
+          allow-create
+        >
+          <el-option
+            v-for="item in asnOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="Logo">
         <el-upload
           class="w-fit-full inline-block"
@@ -218,7 +251,8 @@ import {
   removeOrgFacilitiesAssociations,
   setOrgKnownUsersAssociations,
   setOrgFacilitiesAssociations,
-  removeOrgIxpsAssociations
+  removeOrgIxpsAssociations,
+  checkOrganizationPeeringDBId
 } from '../../services/api/organizations'
 import {
   getSearchByCablesS,
@@ -236,9 +270,11 @@ export default {
   },
   data: () => ({
     fileList: [],
+    asnOptions: [],
     countriesList,
     linkedElements: null,
     isNameRepeated: false,
+    isPeeringDbIdRepeated: false,
     tag: {
       fullAddress: '',
       reference: '',
@@ -325,6 +361,9 @@ export default {
     },
     tagMode() {
       return this.tagOnEdit != null && this.tag ? 'edit' : 'create'
+    },
+    isAdmin() {
+      return this.$auth.isUserAnAdmin
     }
   },
   watch: {
@@ -348,6 +387,23 @@ export default {
     }
   },
   methods: {
+    checkPeeringDbId: debounce(async function checkPDBId(_id) {
+      if (this.mode == 'create') {
+        const {
+          t,
+          data: { r }
+        } = (await checkOrganizationPeeringDBId({
+          user_id: this.$auth.getUserID(),
+          _id
+        })) || { t: 'error', data: { r: false } }
+
+        if (t != 'error' && r >= 1) {
+          this.isPeeringDbIdRepeated = true
+        } else {
+          this.isPeeringDbIdRepeated = false
+        }
+      }
+    }, 320),
     /**
      * @param t { string } - The type of the elemnt: subsea cable, terretrial networks, cls, known users, etc...
      * @param search { string } - Query search
@@ -499,18 +555,20 @@ export default {
       }
     },
     checkName: debounce(async function(name) {
-      this.isNameRepeated = false
-      const {
-        t,
-        data: { r }
-      } = (await checkOrganizationNameExistence({
-        user_id: this.$auth.getUserID(),
-        name
-      })) || { t: 'error', data: { r: false } }
-      if (t != 'error' && r >= 1) {
-        this.isNameRepeated = true
-      } else {
+      if (this.mode == 'create') {
         this.isNameRepeated = false
+        const {
+          t,
+          data: { r }
+        } = (await checkOrganizationNameExistence({
+          user_id: this.$auth.getUserID(),
+          name
+        })) || { t: 'error', data: { r: false } }
+        if (t != 'error' && r >= 1) {
+          this.isNameRepeated = true
+        } else {
+          this.isNameRepeated = false
+        }
       }
     }, 320),
     handleFileListRemove() {

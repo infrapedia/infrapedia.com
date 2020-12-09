@@ -4,10 +4,11 @@
     class="cursor-pointer circle p2 w4 h4 vertical-align hidden-md-and-up"
   >
     <el-button
-      class="sm-icon fs-screen-btn transparent-imp no-border p0"
-      :class="{ dark }"
-      type="text"
+      class="sm-icon transparent-imp no-border"
       @click="toggleVisibility"
+      size="small"
+      :class="{ dark }"
+      circle
     >
       <fa :icon="['fas', 'search']" />
     </el-button>
@@ -17,92 +18,102 @@
         class="absolute full-screen z-index1 transition-all custom-dialog w-fit-full-imp"
         :class="{ dark, light: !dark }"
       >
-        <header
-          class="flex row justify-content-space-between pt1 pb1 pr4 pl4 mb2 el-dialog__header"
-        >
-          <el-image :src="imageURL" class="w24" fit="scale-down" lazy />
-          <el-button
-            type="text"
-            icon="el-icon-close"
-            :class="{ 'text-white--hsl': dark }"
-            @click="handleClose({ keyCode: 4 })"
-          />
-        </header>
-        <div class="pr4 pl4 pb20">
-          <el-input
-            :placeholder="`Search in ${categories.selected}`"
-            :class="{ dark }"
-            id="fullscreen-searchbar"
-            v-model="search"
-            clearable
-            autofocus
-            @input="getQueryData"
+        <template>
+          <header
+            class="flex row justify-content-space-between pt1 pb1 pr4 pl4 mb2 el-dialog__header"
           >
-            <el-select
-              v-model="categories.selected"
-              slot="prepend"
-              class="p0"
-              placeholder
-              @change="getQueryData(search)"
+            <el-image :src="imageURL" class="w30" fit="scale-down" lazy />
+            <el-button
+              type="text"
+              :class="{ 'text-white--hsl': dark }"
+              @click="handleClose({ keyCode: 4 })"
+              class="underline"
             >
-              <el-option
-                v-for="(opt, i) in categories.list"
-                :key="i"
-                :label="opt"
-                :value="opt"
-              />
-            </el-select>
-          </el-input>
-          <ul class="mt8 color-inherit w-fit-full" v-loading="isLoading">
-            <li
-              v-for="(item, i) in searchResults.r"
-              :key="i + item"
-              tabindex="0"
-              role="listitem"
-              :class="{ dark, light: !dark }"
-              class="pt2 pb2 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
-              @click="handlePlaceSelection(item)"
-              @keyup.enter.space="handlePlaceSelection(item)"
+              close
+            </el-button>
+          </header>
+          <div class="pr4 pl4 pb20">
+            <el-input
+              :placeholder="`Search in ${categorySelected}`"
+              :class="{ dark }"
+              id="fullscreen-searchbar"
+              v-model="search"
+              clearable
+              autofocus
+              @input="getQueryData"
+            />
+            <el-button
+              size="mini"
+              class="mt4 w-fit-full"
+              :class="{ dark }"
+              :icon="
+                isCategoriesList ? 'el-icon-arrow-up' : 'el-icon-arrow-down'
+              "
+              style="border: 1px solid #ccc"
+              @click="toggleCategoriesList"
             >
-              <div v-if="item.address" class="inline-block fs-small">
-                {{ item.name }} in
-                <small
-                  v-for="(a, index) in item.address"
-                  :key="a.state + index"
-                >
-                  {{ a.city }}, {{ a.state }};
-                </small>
-              </div>
-              <span v-else>
-                {{ item.name }}
-              </span>
-              -
-              <small class="capitalize">{{ item.t }}</small>
-              <span
-                v-if="item.premium && item.premium == 'true'"
-                class="w22 p1 h6 partner round flo-right vertical-align mt-2"
+              Change category selected
+            </el-button>
+            <ul class="mt8 color-inherit w-fit-full" v-loading="isLoading">
+              <li
+                v-for="(item, i) in searchResults.r"
+                :key="i + item"
+                tabindex="0"
+                role="listitem"
+                :class="{ dark, light: !dark }"
+                class="pt2 pb2 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
+                @click="handlePlaceSelection(item)"
+                @keyup.enter.space="handlePlaceSelection(item)"
               >
-                Partner
-                <fa :icon="['fas', 'star']" class="sm-icon ml2" />
-              </span>
-            </li>
-            <el-divider class="m0" v-if="searchResults.r.length" />
-            <li
-              v-for="(item, i) in searchResults.places"
-              :key="i"
-              tabindex="0"
-              role="listitem"
-              :class="{ dark, light: !dark }"
-              class="pt2 pb2 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
-              @click="handlePlaceSelection(item)"
-              @keyup.enter.space="handlePlaceSelection(item)"
-            >
-              <span class="fs-small">
-                {{ item.name }}
-              </span>
-            </li>
-          </ul>
-        </div>
+                <div v-if="item.address" class="inline-block fs-small">
+                  {{ item.name }} in
+                  <small
+                    v-for="(a, index) in item.address"
+                    :key="a.state + index"
+                  >
+                    {{ a.city }}, {{ a.state }};
+                  </small>
+                </div>
+                <span v-else>
+                  {{ item.name }}
+                </span>
+                -
+                <small class="capitalize">{{ item.t }}</small>
+                <span
+                  v-if="item.premium && item.premium == 'true'"
+                  class="w22 p1 h6 partner round flo-right vertical-align mt-2"
+                >
+                  Partner
+                  <fa :icon="['fas', 'star']" class="sm-icon ml2" />
+                </span>
+              </li>
+              <el-divider class="m0" v-if="searchResults.r.length" />
+              <li
+                v-for="(item, i) in searchResults.places"
+                :key="i"
+                tabindex="0"
+                role="listitem"
+                :class="{ dark, light: !dark }"
+                class="pt2 pb2 pr5 pl5 cursor-pointer seamless-hoverbg no-outline"
+                @click="handlePlaceSelection(item)"
+                @keyup.enter.space="handlePlaceSelection(item)"
+              >
+                <span class="fs-small">
+                  {{ item.name }}
+                </span>
+              </li>
+            </ul>
+          </div>
+        </template>
+        <!------ CATEGORIES FULLSCREEN START ------>
+        <transition name="fade" mode="out-in">
+          <categories-list
+            v-if="isCategoriesList"
+            @close="toggleCategoriesList"
+            @change="handleCategorySelectedChange"
+          />
+        </transition>
+        <!------ CATEGORIES FULLSCREEN END ------->
       </div>
     </transition>
   </div>
@@ -116,18 +127,19 @@ import { FOCUS_ON, SEARCH_SELECTION } from '../../events'
 
 export default {
   name: 'IFullScreenSearch',
+  components: {
+    CategoriesList: () => import('./CategoriesList')
+  },
   data: () => ({
-    isFullScreen: false,
     isLoading: false,
+    isFullScreen: false,
+    isCategoriesList: false,
     searchResults: {
       r: [],
       places: []
     },
     search: '',
-    categories: {
-      list: ['All', 'Cables', 'CLS', 'Networks', 'Orgs'],
-      selected: 'All'
-    }
+    categorySelected: 'All'
   }),
   computed: {
     dark() {
@@ -148,6 +160,12 @@ export default {
       .removeEventListener('keydown', this.handleClose)
   },
   methods: {
+    handleCategorySelectedChange(str) {
+      this.categorySelected = str
+    },
+    toggleCategoriesList() {
+      this.isCategoriesList = !this.isCategoriesList
+    },
     toggleVisibility() {
       this.isFullScreen = !this.isFullScreen
     },
@@ -156,7 +174,7 @@ export default {
       this.isLoading = true
       const res = await this.$store.dispatch('getSearchQueryData', {
         s: querystring,
-        type: this.categories.selected
+        type: this.categorySelected
       })
       const places = await this.$store.dispatch(
         'getSearchQueryDataMapbox',

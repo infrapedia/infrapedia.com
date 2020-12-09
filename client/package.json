@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "version": "2.4.11",
+  "version": "2.6.12",
   "private": true,
   "scripts": {
     "build": "rm -r dist && vue-cli-service build",
@@ -30,6 +30,7 @@
     "luxon": "^1.22.0",
     "mapbox-gl": "^1.4.1",
     "normalize.css": "^8.0.1",
+    "uuid": "^8.3.1",
     "vue": "^2.6.10",
     "vue-click-outside": "^1.1.0",
     "vue-cookieconsent-component": "^1.2.0",

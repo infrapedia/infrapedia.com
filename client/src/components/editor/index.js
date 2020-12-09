@@ -2,6 +2,7 @@ import bbox from '@turf/bbox'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import { mapConfig } from '../../config/mapConfig'
 import Dictionary from '../../lib/Dictionary'
+import { v4 as uuidv4 } from 'uuid'
 
 const sceneDictionary = new Dictionary({
   debug: process.env.NODE_ENV != 'production'
@@ -37,7 +38,7 @@ function toggleDarkMode({ dark, map }) {
 
 function setFeatureEditorID(feat) {
   const feature = { ...feat }
-  let id = `${feat.properties.name}.${Date.now() + Math.random() * 1.52}`
+  let id = `${feat.properties.name}.${uuidv4()}`
   feature.editorID = id
   feature.properties.editorID = id
   return feature

@@ -1,10 +1,15 @@
 <template>
-  <div class="absolute z-index1" id="menuOpener" v-click-outside="closeBoth">
+  <div
+    class="absolute z-index1 transparent-imp"
+    id="menuOpener"
+    v-click-outside="closeBoth"
+  >
     <el-button
       circle
       class="w11 h11"
       title="Share menu, print map"
       @click="toggleMenu"
+      :class="{ dark }"
     >
       <fa
         :icon="['far', 'hand-point-up']"

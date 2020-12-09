@@ -85,6 +85,7 @@ import LayersPanel from './panels/layersPanel'
 import { bbox } from '@turf/turf'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import $axios from '../../services/axios'
+// import handleHighlightSelectionAssociations from './highlightSelectionAssociations'
 
 export default {
   name: 'Map',
@@ -265,6 +266,22 @@ export default {
         vm.handlePopupVisibilityOff({ popup, map })
       })
 
+      map.on('mouseenter', mapConfig.cablesLabel, () => {
+        map.getCanvas().style.cursor = 'pointer'
+      })
+
+      map.on('mouseleave', mapConfig.cablesLabel, () => {
+        map.getCanvas().style.cursor = ''
+      })
+
+      map.on('mouseenter', mapConfig.facilitiesLabel, () => {
+        map.getCanvas().style.cursor = 'pointer'
+      })
+
+      map.on('mouseleave', mapConfig.facilitiesLabel, () => {
+        map.getCanvas().style.cursor = ''
+      })
+
       if (!this.disabled) {
         map.on('click', this.handleMapClick)
         map.on('touchend', this.handleMapClick)
@@ -288,6 +305,7 @@ export default {
 
       const currentZoomLevel = this.map.getZoom()
       const minZoom = mapConfig.facsMinZoom + 5.4
+
       if (currentZoomLevel >= minZoom) {
         await this.handleToggleLayer({
           layerName: mapConfig.facilities,
@@ -332,6 +350,10 @@ export default {
           this.map.setFilter(
             mapConfig.facilities,
             this.facilitiesClusters.active ? mapConfig.filter.all : filter
+          )
+          this.map.setFilter(
+            mapConfig.facilitiesPoints,
+            this.facilitiesClusters.active ? ['==', '$type', 'Point'] : filter
           )
         }
 
@@ -508,7 +530,7 @@ export default {
     disableSelectionHighlight(closesSidebar = true, type) {
       if (!this.map) return
       try {
-        return disableCurrentHighlight({
+        disableCurrentHighlight({
           map: this.map,
           closesSidebar,
           commit: this.$store.commit,
@@ -539,30 +561,41 @@ export default {
       if (this.isSidebar && !clusters.length) {
         await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
       }
-      if (
-        this.$refs.layersPanel &&
-        !this.facilitiesClusters.hasData &&
-        this.$refs.layersPanel.layers[mapConfig.facilities].active &&
-        !clusters.length
-      ) {
-        await this.handleToggleLayer({
-          active: true,
-          layerName: mapConfig.facilities,
-          layersDict: {
-            [mapConfig.facilities]: {
-              active: true
-            }
-          }
-        })
-      }
+
+      // ??
+      // if (
+      //   this.$refs.layersPanel &&
+      //   !this.facilitiesClusters.hasData &&
+      //   this.$refs.layersPanel.layers[mapConfig.facilities].active &&
+      //   !clusters.length
+      // ) {
+      //   await this.handleToggleLayer({
+      //     active: true,
+      //     layerName: mapConfig.facilities,
+      //     layersDict: {
+      //       [mapConfig.facilities]: {
+      //         active: true
+      //       }
+      //     }
+      //   })
+      // }
 
       const cables = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.cables]
       })
 
+      const cablesLabel = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.cablesLabel]
+      })
+
       const facilities = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.facilities]
       })
+
+      const facilitiesLabel = this.map.queryRenderedFeatures(e.point, {
+        layers: [mapConfig.facilitiesLabel]
+      })
+
       const ixps = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.ixps]
       })
@@ -608,13 +641,18 @@ export default {
           id: ixps[0].properties._id,
           type: 'ixp'
         })
-      } else if (facilities.length > 0) {
+      } else if (facilities.length > 0 || facilitiesLabel.length > 0) {
+        const id = facilities.length
+          ? facilities[0].properties._id
+          : facilitiesLabel[0].properties._id
+
         await this.handleFacilitySelection({
-          id: facilities[0].properties._id,
+          id,
           type: 'facility'
         })
-      } else if (cables.length > 0) {
-        await this.handleCablesSelection(cables.length > 0, cables)
+      } else if (cables.length > 0 || cablesLabel.length > 0) {
+        let data = cables.length > 0 ? cables : cablesLabel
+        await this.handleCablesSelection(true, data)
       } else if (
         facilities.length <= 0 &&
         ixps.length <= 0 &&
@@ -629,6 +667,15 @@ export default {
           // Ignore
         } finally {
           this.disableSelectionHighlight()
+          this.handleToggleLayer({
+            active: true,
+            layerName: mapConfig.facilities,
+            layersDict: {
+              [mapConfig.facilities]: {
+                active: true
+              }
+            }
+          })
         }
       }
     },
@@ -707,17 +754,15 @@ export default {
      * @param bool { Boolean } - If it opens the sidebar
      * @param cables { Object } [{ properties: { cable_id: String } }]
      */
-    async handleCablesSelection(opensSidebar, cables) {
+    async handleCablesSelection(opensSidebar, [{ properties }]) {
       switch (opensSidebar) {
         case true:
           // Change sidebar mode back to cable in case is on data_centers mode
           await this.changeSidebarMode(-1)
           // Highlight the nearest clicked cable
-          await this.handleCableSelected({
-            _id: cables[0].properties._id,
-            name: cables[0].properties.name,
-            terrestrial: cables[0].properties.terrestrial == 'true'
-          }).then(() => this.highlightSelection(cables[0].properties._id))
+          await this.handleCableSelected(properties).then(() =>
+            this.highlightSelection(properties._id)
+          )
           break
         default:
           // Remove highlights
@@ -732,33 +777,62 @@ export default {
      * @param map { Object } Mapbox map - Object reference (ie: this.map)
      */
     async handleClustersSelection(clusters, map, sourceName) {
-      await map
-        .getSource(sourceName)
-        .getClusterExpansionZoom(clusters[0].properties.cluster_id, function(
-          err,
-          zoom
-        ) {
-          if (err) return
+      try {
+        const source = await map.getSource(sourceName)
 
+        if (clusters.length > 1) {
+          source.getClusterExpansionZoom(
+            clusters[0].properties.cluster_id
+              ? clusters[0].properties.cluster_id
+              : clusters[0].properties._id,
+            function(err, zoom) {
+              if (err) return err
+
+              map.easeTo({
+                center: clusters[0].geometry.coordinates,
+                zoom: zoom + 1
+              })
+            }
+          )
+        } else {
           map.easeTo({
             center: clusters[0].geometry.coordinates,
-            zoom: zoom + 1
+            zoom: map.getZoom() + 1
           })
-        })
+        }
+      } catch (err) {
+        console.error(err, 'cluster selection error')
+      }
     },
     /**
      * @param id { String } - ID of the facility (data centers)
      */
     async handleFacilitySelection({ id, type }) {
-      const data = await this.getFacilityData({
+      const { data } = await this.getFacilityData({
         user_id: await this.$auth.getUserID(),
         _id: id
       })
-      this.$store.commit(`${MAP_FOCUS_ON}`, {
-        id,
-        name: data.name,
-        type
-      })
+
+      if (data && data.r.length) {
+        this.$store.commit(`${MAP_FOCUS_ON}`, {
+          id,
+          type,
+          name: data.r[0].name
+        })
+
+        // Facilities cluster need to be disabled
+        await this.handleToggleLayer({
+          layerName: mapConfig.facilities,
+          active: false,
+          layersDict: {
+            [mapConfig.facilities]: {
+              active: false
+            }
+          }
+        })
+        // Setting associations cluster data
+        this.map.getSource(mapConfig.clusters).setData(data.r[0].cluster)
+      }
 
       this.highlightSelection(id)
       // Changing the sidebar mode to data_center mode
@@ -774,11 +848,14 @@ export default {
         user_id: await this.$auth.getUserID(),
         _id: id
       })
-      this.$store.commit(`${MAP_FOCUS_ON}`, {
-        id,
-        name: data.name,
-        type
-      })
+
+      if (data && data.r.length) {
+        this.$store.commit(`${MAP_FOCUS_ON}`, {
+          id,
+          type,
+          name: data.r[0].name
+        })
+      }
 
       this.highlightSelection(id)
       // Changing the sidebar mode to data_center mode
@@ -790,15 +867,31 @@ export default {
       this.disableSelectionHighlight(false, 'cable')
     },
     async handleIxpsSelection({ id, type }) {
-      const data = await this.getIxpsData({
+      const { data } = await this.getIxpsData({
         user_id: await this.$auth.getUserID(),
         _id: id
       })
-      this.$store.commit(`${MAP_FOCUS_ON}`, {
-        id,
-        name: data.name,
-        type
-      })
+
+      if (data && data.r.length) {
+        this.$store.commit(`${MAP_FOCUS_ON}`, {
+          id,
+          type,
+          name: data.r[0].name
+        })
+
+        // Facilities cluster need to be disabled
+        await this.handleToggleLayer({
+          layerName: mapConfig.facilities,
+          active: false,
+          layersDict: {
+            [mapConfig.facilities]: {
+              active: false
+            }
+          }
+        })
+        // Associations cluster
+        this.map.getSource(mapConfig.clusters).setData(data.r[0].cluster)
+      }
 
       this.highlightSelection(id)
       // Changing the sidebar mode to data_center mode
@@ -870,7 +963,7 @@ export default {
 
       this.$store.commit(`${MAP_FOCUS_ON}`, {
         id,
-        type: type.includes('org') ? 'organization' : type
+        type: type == 'orgs' ? 'organization' : type
       })
 
       // Clearing clusters source in case there was something previously selected
@@ -879,19 +972,7 @@ export default {
         .setData({ type: 'FeatureCollection', features: [] })
 
       switch (type.toLowerCase().trim()) {
-        case 'organizations':
-          await this.handleOrganizationFocus(id, fc)
-          break
         case 'organization':
-          await this.handleOrganizationFocus(id, fc)
-          break
-        case 'org':
-          await this.handleOrganizationFocus(id, fc)
-          break
-        case 'owners':
-          await this.handleOrganizationFocus(id, fc)
-          break
-        case 'partners':
           await this.handleOrganizationFocus(id, fc)
           break
         case 'terrestrial-network':

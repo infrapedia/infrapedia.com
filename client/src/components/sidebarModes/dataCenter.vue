@@ -133,7 +133,7 @@
           <template v-else>
             <el-row :gutter="20" v-if="info[col.value] && col.showSidebar">
               <el-col :span="24">
-                <template v-if="!col.label.toLowerCase().includes('address')">
+                <template v-if="col.value != 'address'">
                   <template
                     v-if="
                       col.value == 'cables' &&
@@ -142,32 +142,25 @@
                   >
                     <p class="label capitalize">{{ col.label }}</p>
                     <el-tag
-                      v-for="(item, index) in col.filter(info[col.value])"
-                      :key="index + item.name"
-                      @click="
-                        handleSelection(
-                          item._id,
-                          item.terrestrial == true
-                            ? 'terrestrial-network'
-                            : 'subsea-cable'
-                        )
-                      "
+                      v-for="item in col.filter(info[col.value])"
+                      :key="item._id"
+                      @click="handleSelection(item._id, col.label)"
                       class="mr2 cursor-pointer"
                       size="mini"
                     >
-                      {{ item.name }}
+                      {{ item.name ? item.name : item.label }}
                     </el-tag>
                   </template>
                   <template v-else-if="col.value != 'cables'">
                     <p class="label capitalize">{{ col.label }}</p>
                     <el-tag
-                      v-for="(item, index) in info[col.value]"
-                      :key="index + item.name"
+                      v-for="item in info[col.value]"
+                      :key="item._id"
                       @click="handleSelection(item._id, col.label)"
                       class="mr2 cursor-pointer"
                       size="mini"
                     >
-                      {{ item.name }}
+                      {{ item.name ? item.name : item.label }}
                     </el-tag>
                   </template>
                 </template>
@@ -207,7 +200,14 @@
                 </small>
               </el-col>
             </template>
-            <el-col :span="10" v-else-if="info[col.value]">
+            <el-col
+              :span="10"
+              v-else-if="
+                info[col.value] &&
+                  info[col.value] !== 'undefined' &&
+                  info[col.value] !== 'null'
+              "
+            >
               <p class="label capitalize">{{ col.label }}</p>
             </el-col>
             <!---- LABELS SECTION ENDS ---->
@@ -245,12 +245,22 @@
                   {{ info[col.value] }}
                 </a>
               </template>
-              <p
-                class="text-bold"
-                v-else-if="col.label.toLowerCase().includes('date')"
+              <time
+                class="text-bold mt2 inline-block"
+                :class="{ 'text-white': dark }"
+                v-else-if="
+                  col.label.toLowerCase().includes('date') ||
+                    col.label.toLowerCase().includes('in service')
+                "
               >
-                {{ convertToYear(info[col.value]) }}
-              </p>
+                {{
+                  convertToYear(
+                    col.label.toLowerCase() == 'in service'
+                      ? toIsoDate(info[col.value])
+                      : info[col.value]
+                  )
+                }}
+              </time>
               <template
                 class="text-bold"
                 v-else-if="
@@ -260,14 +270,29 @@
                     !col.label.includes('address')
                 "
               >
-                <p
-                  v-for="(item, index) in info[col.value]"
-                  :key="index + item"
-                  class="text-bold cursor-pointer underline-hover"
-                  @click="handleSelection(item._id, col.label)"
-                >
-                  {{ item.name }}
-                </p>
+                <template v-if="col.value != 'asn'">
+                  <p
+                    v-for="(item, index) in info[col.value]"
+                    :key="index + item"
+                    class="text-bold cursor-pointer underline-hover"
+                    @click="handleSelection(item._id, col.label)"
+                  >
+                    {{ item.name ? item.name : item.label }}
+                  </p>
+                </template>
+                <template v-else>
+                  <p
+                    v-for="(item, index) in info[col.value]"
+                    :key="index + item"
+                    class="text-bold"
+                  >
+                    {{
+                      `${item}${
+                        index + 1 !== info[col.value].length ? ',' : ''
+                      }`
+                    }}
+                  </p>
+                </template>
               </template>
               <template
                 class="text-bold"
@@ -325,9 +350,45 @@
               >
                 Unknown
               </p>
+
+              <!--------- PEERING DB ID Column -------->
+              <a
+                class="text-bold cursor-pointer underline"
+                target="_blank"
+                :href="col.link(info[col.value])"
+                v-else-if="
+                  !isArrCol(info[col.value]) &&
+                    info[col.value] &&
+                    info[col.value] !== 'undefined' &&
+                    (col.value == 'fac_id' ||
+                      col.value == 'ix_id' ||
+                      col.value == 'ooid') &&
+                    col.link
+                "
+              >
+                {{ col.link(info[col.value]) }}
+              </a>
+
               <p
                 class="text-bold"
-                v-else-if="!isArrCol(info[col.value]) && info[col.value] !== ''"
+                v-else-if="
+                  !isArrCol(info[col.value]) &&
+                    info[col.value] !== '' &&
+                    info[col.value] !== 'undefined' &&
+                    info[col.value] !== 'null' &&
+                    col.valueMetric
+                "
+              >
+                {{ info[col.value] }} {{ col.valueMetric }}
+              </p>
+              <p
+                class="text-bold"
+                v-else-if="
+                  !isArrCol(info[col.value]) &&
+                    info[col.value] !== '' &&
+                    info[col.value] !== 'undefined' &&
+                    info[col.value] !== 'null'
+                "
               >
                 {{ info[col.value] }}
               </p>
@@ -335,6 +396,98 @@
           </el-row>
         </template>
       </div>
+
+      <template v-if="isFacilityFocusType">
+        <el-collapse class="mt2 mb2">
+          <el-collapse-item title="More details">
+            <div class="p0 m0 transparent">
+              <div v-for="(item, i) in valuesToShow" :key="i">
+                <header>
+                  <p class="label capitalize">
+                    {{ item.label }}
+                  </p>
+                </header>
+                <el-row
+                  v-for="col in item.value"
+                  :key="col.value"
+                  :gutter="20"
+                  class="pl1"
+                >
+                  <template v-if="info[col.value] !== 'false'">
+                    <!-------- LABEL START ---------->
+                    <el-col :span="10">
+                      <p>{{ col.label }}</p>
+                    </el-col>
+                    <!-------- LABEL END ------------>
+                    <!------------------------------->
+                    <!------------------------------->
+                    <!------------------------------->
+                    <!-------- VALUE START ---------->
+                    <el-col v-if="info[col.value]" :span="14">
+                      <p class="text-bold inline-block">
+                        <template
+                          v-if="
+                            typeof info[col.value] != 'string' &&
+                              typeof info[col.value] != 'number'
+                          "
+                        >
+                          {{ info[col.value].value }}
+                          <span v-if="col.valueMetric">
+                            {{ col.valueMetric }}
+                          </span>
+                          / +-
+                          {{ info[col.value].variant }}
+                          <span v-if="col.valueMetric">
+                            {{ col.valueMetric }}
+                          </span> </template
+                        ><template v-else
+                          >{{
+                            info[col.value] == 'true' ? 'Yes' : info[col.value]
+                          }}
+                          <span v-if="col.valueMetric">
+                            {{ col.valueMetric }}
+                          </span>
+                        </template>
+                      </p>
+                    </el-col>
+                    <!--------- VALUE END ---------->
+                  </template>
+                </el-row>
+              </div>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
+        <div class="p1 m0 mt4">
+          <el-row
+            v-for="(col, iindx) in columnsAfterMoreDetailsCollapse"
+            :key="iindx + col.value"
+            :gutter="20"
+            class="mb1"
+          >
+            <template v-if="hasLength(info[col.value])">
+              <!-------- LABEL START ---------->
+              <el-col :span="24">
+                <p class="label capitalize">{{ col.label }}</p>
+              </el-col>
+              <!-------- LABEL END ------------>
+
+              <!-------- VALUE START ---------->
+              <el-col :span="24">
+                <el-tag
+                  v-for="item in info[col.value]"
+                  :key="item._id"
+                  @click="handleSelection(item._id, col.value)"
+                  class="mr2 mb2 cursor-pointer"
+                  size="mini"
+                >
+                  {{ item.name ? item.name : item.label }}
+                </el-tag>
+              </el-col>
+              <!--------- VALUE END ---------->
+            </template>
+          </el-row>
+        </div>
+      </template>
     </div>
     <!---- VALUES SECTION END ---->
 
@@ -359,7 +512,8 @@
           <fa :icon="['fas', 'sign-in-alt']" class="mr1" /> Login
         </el-button> -->
       </div>
-      <footer class="pr8 pl8 pb8">
+
+      <footer class="pr8 pl8 pb8 relative">
         <el-divider class="mt0" />
         <el-row :gutter="20">
           <el-col :sx="24" :md="12">
@@ -458,6 +612,12 @@
 <script>
 import convertToYear from '../../helpers/convertToYear'
 import { BUY_CAPACITY, REPORT_ISSUE, CREATE_ALERT } from '../../events/sidebar'
+import {
+  facilitiesColumnsAfterMoreInfo,
+  facilitiesBuildingDetailsColumns,
+  facilitiesPowerAndCoolingDetailsColumns,
+  facilitiesSecurityAndOnsiteServicesColumns
+} from '../../config/columns'
 
 export default {
   name: 'IDataCenter',
@@ -488,11 +648,41 @@ export default {
     focusType() {
       return this.focus.type.toLowerCase()
     },
+    isFacilityFocusType() {
+      return this.focusType == 'facility'
+    },
+    valuesToShow() {
+      return [
+        {
+          label: 'Building',
+          value: facilitiesBuildingDetailsColumns
+        },
+        {
+          label: 'Power',
+          value: facilitiesPowerAndCoolingDetailsColumns
+        },
+        {
+          label: 'Security',
+          value: facilitiesSecurityAndOnsiteServicesColumns
+        }
+      ]
+    },
+    columnsAfterMoreDetailsCollapse() {
+      return facilitiesColumnsAfterMoreInfo
+    },
     focus() {
       return this.$store.state.map.focus
     },
     collapseColumns() {
-      return ['org', 'networks', 'cables', 'cls', 'address', 'facilities']
+      return [
+        'org',
+        'networks',
+        'cables',
+        'cls',
+        'address',
+        'facilities',
+        'owners'
+      ]
     },
     dataCenterColumns() {
       const cols = [...this.columns]
@@ -530,10 +720,14 @@ export default {
     }
   },
   methods: {
+    toIsoDate(date) {
+      return new Date(date).toISOString()
+    },
     isArrCol(item) {
       return Array.isArray(item)
     },
     hasLength(arr) {
+      if (!arr) return false
       return Boolean(arr.length)
     },
     handleSelection(_id, opt) {

@@ -121,6 +121,10 @@ $header-color: rgb(37, 95, 185);
   &.ipv4 {
     margin-top: -1rem;
   }
+
+  @media screen and (max-width: $break-md) {
+    width: 4.75rem !important;
+  }
 }
 
 /*

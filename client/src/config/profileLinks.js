@@ -59,7 +59,13 @@ const profileLinks = [
   {
     label: 'Facilities',
     url: '/user/section/facilities',
-    icon: ['fas', 'building'],
+    icon: ['fas', 'building']
+    // adminOnly: true
+  },
+  {
+    label: 'CSP',
+    url: '/user/section/cloud-service-providers',
+    icon: ['fas', 'cloud'],
     adminOnly: true
   },
   {

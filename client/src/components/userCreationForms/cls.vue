@@ -3,7 +3,7 @@
     <header slot="header" class="w-fit-full mb8">
       <h1 class="title capitalize">{{ title }} CLS</h1>
     </header>
-    <el-form ref="form" :model="form" :rules="formRules">
+    <el-form>
       <el-form-item label="Name" required prop="name">
         <el-input
           :class="{ dark }"

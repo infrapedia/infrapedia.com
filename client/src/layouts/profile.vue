@@ -69,7 +69,10 @@
 
     <i-footer
       class="profile-footer hidden-md-and-down transition-all"
-      :class="{ 'is-create-route': $route.path.includes('create') }"
+      :class="{
+        'is-create-route': $route.path.includes('create?'),
+        'is-create-facility-route': $route.path.includes('create-facility')
+      }"
     />
     <v-tour
       name="profile-tour"
@@ -224,6 +227,12 @@ export default {
         obj = {
           'router-link-exact-active router-link-active': pathName.includes(
             this.$route.query.id.toLowerCase()
+          )
+        }
+      } else if (this.$route.fullPath == '/user/section/create-facility') {
+        obj = {
+          'router-link-exact-active router-link-active': link.url.includes(
+            'fac'
           )
         }
       }

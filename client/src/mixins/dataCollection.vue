@@ -13,6 +13,9 @@ export default {
   computed: {
     focus() {
       return this.$store.state.map.focus
+    },
+    currentSelection() {
+      return this.$store.state.map.currentSelection
     }
   },
   mounted() {
@@ -37,8 +40,13 @@ export default {
     async loadPremiumPartners() {
       return await this.getPremiumData()
     },
-    async handleCableSelected({ _id, name, terrestrial }) {
+    async handleCableSelected({ _id, name }) {
       if (!_id) return
+
+      let type = {
+        true: 'terrestrial-network',
+        false: 'subsea-cable'
+      }
 
       await this.$store.commit(`${TOGGLE_LOADING}`, true)
       try {
@@ -50,7 +58,7 @@ export default {
           this.$store.commit(`${MAP_FOCUS_ON}`, {
             name,
             id: _id,
-            type: terrestrial ? 'terrestrial-network' : 'subsea-cable'
+            type: type[`${this.currentSelection.terrestrial}`]
           })
         })
       } catch {
@@ -67,14 +75,14 @@ export default {
       this.$store.commit(`${MAP_BOUNDS}`, bounds)
     },
     async handleItemListSelection({ option, id }) {
-      if (this.focus) {
+      if (this.focus && this.focus.type) {
         bus.$emit(`${CLEAR_SELECTION}`, true, this.focus.type.split().join(''))
       }
       option = option.toLowerCase().trim()
 
       switch (option) {
         case 'ixps':
-          await this.handleIxpsItemSelected({ id, type: option })
+          await this.handleIxpsItemSelected({ id, type: 'ixp' })
           break
         case 'ixp':
           await this.handleIxpsItemSelected({ id, type: option })
@@ -82,8 +90,11 @@ export default {
         case 'facility':
           await this.handleFacilityItemSelected({ id, type: option })
           break
+        case 'locations':
+          await this.handleFacilityItemSelected({ id, type: 'facility' })
+          break
         case 'facilities':
-          await this.handleFacilityItemSelected({ id, type: option })
+          await this.handleFacilityItemSelected({ id, type: 'facility' })
           break
         case 'cls':
           await this.handleClsItemSelected({ id, type: option })
@@ -97,29 +108,47 @@ export default {
             type: option
           })
           break
+        case 'subsea':
+          await this.handleCableItemSelected({
+            id,
+            type: 'subsea-cable'
+          })
+          break
         case 'terrestrial-network':
           await this.handleCableItemSelected({
             id,
             type: option
           })
           break
+        case 'terrestrials':
+          await this.handleCableItemSelected({
+            id,
+            type: 'terrestrial-network'
+          })
+          break
         case 'organizations':
-          await this.handleOrgItemSelected({ id, type: option })
+          await this.handleOrgItemSelected({ id, type: 'organization' })
           break
         case 'organization':
           await this.handleOrgItemSelected({ id, type: option })
           break
+        case 'known tenants':
+          await this.handleOrgItemSelected({ id, type: 'organization' })
+          break
+        case 'sproviders':
+          await this.handleOrgItemSelected({ id, type: 'organization' })
+          break
         case 'org':
-          await this.handleOrgItemSelected({ id, type: option })
+          await this.handleOrgItemSelected({ id, type: 'organization' })
           break
         case 'owners':
-          await this.handleOrgItemSelected({ id, type: option })
+          await this.handleOrgItemSelected({ id, type: 'organization' })
           break
         case 'owner':
-          await this.handleOrgItemSelected({ id, type: option })
+          await this.handleOrgItemSelected({ id, type: 'organization' })
           break
         case 'partners':
-          await this.handleOrgItemSelected({ id, type: option })
+          await this.handleOrgItemSelected({ id, type: 'organization' })
           break
       }
     },
@@ -140,6 +169,7 @@ export default {
           _id: id
         })
       }
+
       bus.$emit(`${FOCUS_ON}`, { id, type })
     },
     async handleFacilityItemSelected({ id, type }) {
