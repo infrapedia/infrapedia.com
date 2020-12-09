@@ -667,7 +667,11 @@ export default {
           // Ignore
         } finally {
           this.disableSelectionHighlight()
-          if (!this.facilitiesClusters.active) {
+
+          if (
+            !this.facilitiesClusters.active &&
+            this.$refs.layersPanel.layers.facilities.active
+          ) {
             this.handleToggleLayer({
               active: true,
               layerName: mapConfig.facilities,
