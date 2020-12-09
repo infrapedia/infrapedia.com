@@ -667,15 +667,17 @@ export default {
           // Ignore
         } finally {
           this.disableSelectionHighlight()
-          this.handleToggleLayer({
-            active: true,
-            layerName: mapConfig.facilities,
-            layersDict: {
-              [mapConfig.facilities]: {
-                active: true
+          if (!this.facilitiesClusters.active) {
+            this.handleToggleLayer({
+              active: true,
+              layerName: mapConfig.facilities,
+              layersDict: {
+                [mapConfig.facilities]: {
+                  active: true
+                }
               }
-            }
-          })
+            })
+          }
         }
       }
     },
@@ -844,7 +846,7 @@ export default {
       this.disableSelectionHighlight(false, 'cable')
     },
     async handleClsSelection({ id, type }) {
-      const data = await this.getClsData({
+      const { data } = await this.getClsData({
         user_id: await this.$auth.getUserID(),
         _id: id
       })

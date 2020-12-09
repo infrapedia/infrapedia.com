@@ -4,10 +4,16 @@ export const clsColumns = [
   { label: 'Slug', value: 'slug', showSidebar: true },
   { label: 'Geom', value: 'geom' },
   {
-    label: 'Cables',
+    label: 'Subsea cables',
     value: 'cables',
     showSidebar: true,
-    filter: arr => arr
+    filter: arr => arr.filter(item => !item.terrestrial)
+  },
+  {
+    label: 'Terrestrial networks',
+    value: 'cables',
+    showSidebar: true,
+    filter: arr => arr.filter(item => item.terrestrial)
   },
   {
     label: 'Groups',

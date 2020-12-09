@@ -48,7 +48,7 @@
               <el-button
                 type="text"
                 class="color-inherit transparent text-left w-fit-full row pt5 pb4 pl2 pr2"
-                @click="loadCable(cable._id)"
+                @click="loadCable(cable._id, cable.terrestrial)"
               >
                 <div
                   class="no-overflow flex nowrap justify-content-space-between align-items-center"
@@ -145,9 +145,12 @@ export default {
       }
       this.loading = false
     },
-    loadCable(id) {
+    loadCable(id, isTerrestrial) {
       this.toggleListVisibility()
-      this.handleItemListSelection({ option: 'cable', id })
+      this.handleItemListSelection({
+        id,
+        option: isTerrestrial ? 'terrestrial-network' : 'subsea-cable'
+      })
     },
     headToCreationRoute(r) {
       return r == 'subsea'

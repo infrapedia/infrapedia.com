@@ -114,10 +114,22 @@ export default {
             type: 'subsea-cable'
           })
           break
+        case 'subsea cables':
+          await this.handleCableItemSelected({
+            id,
+            type: 'subsea-cable'
+          })
+          break
         case 'terrestrial-network':
           await this.handleCableItemSelected({
             id,
             type: option
+          })
+          break
+        case 'terrestrial networks':
+          await this.handleCableItemSelected({
+            id,
+            type: 'terrestrial-network'
           })
           break
         case 'terrestrials':
