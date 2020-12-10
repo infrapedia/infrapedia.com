@@ -707,7 +707,7 @@ export default {
       })) || { t: 'error', data: null }
 
       this.isSendingData = false
-      if (t != 'error') {
+      if (t != 'error' && data) {
         if (creationType == 'map') {
           await setupMyMapArchives(this.form.subdomain).catch(console.error)
         } else {
@@ -722,6 +722,11 @@ export default {
           }
         }
         this.mode = 'edit'
+      } else {
+        this.$notify({
+          type: 'error',
+          message: 'Something wrong happened.'
+        })
       }
     }
   }
