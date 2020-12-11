@@ -164,7 +164,7 @@ export default {
       const map = new mapboxgl.Map({
         container: 'map',
         zoom: mapConfig.zoom,
-        maxZoom: 17.8,
+        maxZoom: mapConfig.maxZoom,
         minZoom: 2,
         pitch: this.disabled ? 45 : 0,
         center: mapConfig.center,
@@ -252,8 +252,20 @@ export default {
       map.on('mouseenter', mapConfig.cables, function(e) {
         vm.handlePopupVisibilityOn({ e, popup, isPoint: false })
       })
+      map.on('mouseleave', mapConfig.cables, () => {
+        vm.handlePopupVisibilityOff({ popup, map })
+      })
       map.on('mouseenter', mapConfig.ixps, function(e) {
         vm.handlePopupVisibilityOn({ e, popup, isPoint: true, type: 'ixps' })
+      })
+      map.on('mouseleave', mapConfig.ixps, function() {
+        vm.handlePopupVisibilityOff({ popup, map })
+      })
+      map.on('mouseenter', mapConfig.facilities, () => {
+        map.getCanvas().style.cursor = 'pointer'
+      })
+      map.on('mouseleave', mapConfig.facilities, () => {
+        map.getCanvas().style.cursor = ''
       })
       map.on('mouseenter', mapConfig.cls, function(e) {
         vm.handlePopupVisibilityOn({ e, popup, isPoint: true, type: 'cls' })
@@ -262,22 +274,15 @@ export default {
       map.on('mouseleave', mapConfig.cls, function(e) {
         vm.handleCLSHover(e, false)
       })
-      map.on('mouseleave', mapConfig.cables, () => {
-        vm.handlePopupVisibilityOff({ popup, map })
-      })
-
       map.on('mouseenter', mapConfig.cablesLabel, () => {
         map.getCanvas().style.cursor = 'pointer'
       })
-
       map.on('mouseleave', mapConfig.cablesLabel, () => {
         map.getCanvas().style.cursor = ''
       })
-
       map.on('mouseenter', mapConfig.facilitiesLabel, () => {
         map.getCanvas().style.cursor = 'pointer'
       })
-
       map.on('mouseleave', mapConfig.facilitiesLabel, () => {
         map.getCanvas().style.cursor = ''
       })
@@ -288,10 +293,6 @@ export default {
         map.on('render', this.handleBoundsChange)
         map.on('zoomend', this.handleFacilitiesLayerAtCertainZoomLevel)
         // this.lastMileTool.reference.registerEvents()
-      } else {
-        const disabledClick = () => this.$emit('clicked-disabled-map')
-        map.on('click', disabledClick)
-        map.on('touchend', disabledClick)
       }
 
       map.on('draw.create', this.handleDrawEvents)
@@ -345,7 +346,11 @@ export default {
         ) {
           features = { features } = (await $axios.get(
             process.env.VUE_APP_TILES_FACS_CLUSTERS
-          )) || { features: [] }
+          )) || {
+            features: {
+              features: []
+            }
+          }
         } else {
           this.map.setFilter(
             mapConfig.facilities,
@@ -562,24 +567,6 @@ export default {
         await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
       }
 
-      // ??
-      // if (
-      //   this.$refs.layersPanel &&
-      //   !this.facilitiesClusters.hasData &&
-      //   this.$refs.layersPanel.layers[mapConfig.facilities].active &&
-      //   !clusters.length
-      // ) {
-      //   await this.handleToggleLayer({
-      //     active: true,
-      //     layerName: mapConfig.facilities,
-      //     layersDict: {
-      //       [mapConfig.facilities]: {
-      //         active: true
-      //       }
-      //     }
-      //   })
-      // }
-
       const cables = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.cables]
       })
@@ -782,7 +769,7 @@ export default {
       try {
         const source = await map.getSource(sourceName)
 
-        if (clusters.length > 1) {
+        if (clusters[0].properties.cluster_id) {
           source.getClusterExpansionZoom(
             clusters[0].properties.cluster_id
               ? clusters[0].properties.cluster_id
@@ -792,15 +779,38 @@ export default {
 
               map.easeTo({
                 center: clusters[0].geometry.coordinates,
-                zoom: zoom + 1
+                zoom: zoom * 1.2
               })
             }
           )
         } else {
           map.easeTo({
             center: clusters[0].geometry.coordinates,
-            zoom: map.getZoom() + 1
+            zoom: mapConfig.maxZoom
           })
+
+          if (
+            clusters[0].properties._id &&
+            this.focus &&
+            this.focus.type == 'ixp'
+          ) {
+            // We need to remove the clusters layer data before anything else
+            await this.map
+              .getSource(mapConfig.clusters)
+              .setData(fCollectionFormat())
+            // When viewing facilities the clusters facilities should be back again
+            this.facilitiesClusters.active = true
+            await this.handleFacilitiesLayerAtCertainZoomLevel()
+            // Closing the sidebar so the information updates correctly
+            this.disableSelectionHighlight(
+              true,
+              this.focus.type.split().join('')
+            )
+            await this.handleFacilitySelection({
+              id: clusters[0].properties._id,
+              type: 'facility'
+            })
+          }
         }
       } catch (err) {
         console.error(err, 'cluster selection error')
@@ -868,16 +878,12 @@ export default {
           name: data.r[0].name
         })
 
-        // Facilities cluster need to be disabled
-        await this.handleToggleLayer({
-          layerName: mapConfig.facilities,
-          active: false,
-          layersDict: {
-            [mapConfig.facilities]: {
-              active: false
-            }
-          }
-        })
+        // Facilities cluster data needs to be removed
+        this.map
+          .getSource(mapConfig.facilitiesClusters)
+          .setData(fCollectionFormat())
+        this.facilitiesClusters.hasData = false
+        this.facilitiesClusters.active = false
         // Associations cluster
         this.map.getSource(mapConfig.clusters).setData(data.r[0].cluster)
       }
