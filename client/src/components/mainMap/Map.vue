@@ -821,19 +821,6 @@ export default {
           type,
           name: data.r[0].name
         })
-
-        // Facilities cluster need to be disabled
-        await this.handleToggleLayer({
-          layerName: mapConfig.facilities,
-          active: false,
-          layersDict: {
-            [mapConfig.facilities]: {
-              active: false
-            }
-          }
-        })
-        // Setting associations cluster data
-        this.map.getSource(mapConfig.clusters).setData(data.r[0].cluster)
       }
 
       this.highlightSelection(id)
