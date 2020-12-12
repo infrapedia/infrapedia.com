@@ -1022,14 +1022,14 @@ export default {
     /**
      * @param id { String } - Cable ID
      */
-    async handleCableFocus(id) {
+    async handleCableFocus(_id) {
       const { map, focus, bounds, hasToEase } = this
+
       if (hasToEase) await this.handleFocusOnEasePoints()
       else if (focus && bounds && bounds.length) {
         try {
           await map.fitBounds(bounds, {
-            padding: 20,
-            zoom: 4
+            padding: 362
           })
         } catch {
           // Ignore
@@ -1038,7 +1038,7 @@ export default {
         }
       }
 
-      await this.handleCablesSelection(true, [{ properties: { _id: id } }])
+      await this.handleCablesSelection(true, [{ properties: { _id } }])
     },
     /**
      * @param id { String } - Building/DataCenter/Dot ID
