@@ -739,6 +739,11 @@ export default {
         })
       }
     },
+    handleCableClustersSelection(data) {
+      if (this.map && data.cluster && data.cluster.features.length) {
+        this.map.getSource(mapConfig.clusters).setData(data.cluster)
+      }
+    },
     /**
      * @param bool { Boolean } - If it opens the sidebar
      * @param cables { Object } [{ properties: { cable_id: String } }]
