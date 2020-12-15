@@ -115,6 +115,15 @@ export default class lastMileTool {
   }
 
   find(e) {
+    // If adding another pointer directly from the map
+    // Start the whole process again
+    if (this.latlng !== null) {
+      this.clearLastMileTool()
+      this.registerEvents()
+      this.map.getCanvas().style.cursor = 'crosshair'
+      this.setCenterStatus = true
+    }
+
     if (this.setCenterStatus) {
       this.latlng = [e.lng, e.lat]
       var pnt = point(this.latlng)
@@ -127,12 +136,12 @@ export default class lastMileTool {
   registerEvents() {
     const vm = this
     this.setCenterStatus = true
-    this.map.on('idle', function(f) {
-      vm.handleIdle(f)
+    this.map.on('idle', async function(e) {
+      await vm.handleIdle(e)
     })
   }
 
-  handleIdle(f) {
+  async handleIdle(f) {
     if (!this.latlng) return
     var dist = [500, 750, 1000, 1500, 2000, 2500, 3000]
     var mypoint = this.map.project(this.latlng)
@@ -212,7 +221,7 @@ export default class lastMileTool {
         var shortestGoogleLines = []
 
         // eslint-disable-next-line no-inner-declarations
-        function findGooglePath(i, that) {
+        async function findGooglePath(i, that) {
           if (i < sortList.length) {
             var pnt = sortList[i].point.geometry.coordinates
             that.calcRoute(that.latlng, pnt, function(way) {
@@ -225,7 +234,7 @@ export default class lastMileTool {
               (a, b) => a.properties.len - b.properties.len
             )
 
-            var shortWay = that.findIntersects(sortGoogleList, geojson)
+            var shortWay = await that.findIntersects(sortGoogleList, geojson)
 
             that.map.getSource('finishpoints').setData(shortWay.point)
             var resultNear = that.findNearNetworks(
@@ -248,12 +257,12 @@ export default class lastMileTool {
           }
         }
 
-        findGooglePath(0, this)
+        await findGooglePath(0, this)
       }
     }
   }
 
-  findIntersects(roads, cables) {
+  async findIntersects(roads, cables) {
     const shortest = []
     const start = point(this.latlng)
     roads.forEach(function(road) {
@@ -409,8 +418,8 @@ export default class lastMileTool {
       var that = this
       fetch(url)
         .then(res => res.json())
-        .then(function(result) {
-          callback(that.getMapboxRoad(result, start, finish))
+        .then(async function(result) {
+          callback(await that.getMapboxRoad(result, start, finish))
         })
     }
   }
@@ -420,11 +429,11 @@ export default class lastMileTool {
   changeRequestType(e) {
     this.requestType = e.value
   }
-  getMapboxRoad(data, start, finish) {
+  async getMapboxRoad(data, start, finish) {
     if (data.routes !== undefined) {
       const routes = data.routes[0]
       const distance = round(routes.distance, 3)
-      const ll = this.googlePointDecode(routes.geometry)
+      const ll = await this.googlePointDecode(routes.geometry)
       const line = lineString(ll, {
         distance: distance,
         len: distance
@@ -454,7 +463,7 @@ export default class lastMileTool {
     }
     return route
   }
-  googlePointDecode(encoded) {
+  async googlePointDecode(encoded) {
     var points = []
     var index = 0,
       len = encoded.length

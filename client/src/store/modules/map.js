@@ -10,6 +10,7 @@ const state = {
   filter: ['all'],
   easePoint: null,
   hasToEase: false,
+  isLastMileTool: false,
   currentSelection: null
 }
 
@@ -31,6 +32,9 @@ const mutations = {
   },
   HAS_TO_EASE_TO(state, bool) {
     state.hasToEase = bool
+  },
+  IS_LMT(state, bool) {
+    state.isLastMileTool = bool
   },
   EASE_POINT(state, easePoint) {
     state.easePoint = easePoint

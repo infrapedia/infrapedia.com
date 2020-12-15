@@ -46,6 +46,13 @@
             <fa :icon="['fas', 'share-alt']" />
           </el-button>
         </li>
+        <li role="listitem" class="mr1">
+          <lmt-button
+            :map="map"
+            @change-network="$emit('change-network', $event)"
+            @change-length="$emit('change-length', $event)"
+          />
+        </li>
       </ul>
     </transition>
 
@@ -95,7 +102,8 @@ import { shareLinkButtons } from '../../config/shareLinkButtons'
 
 export default {
   components: {
-    PrintButton
+    PrintButton,
+    LmtButton: () => import('./LastMileButton')
   },
   data: () => ({
     isMenuOpen: false,
@@ -117,6 +125,9 @@ export default {
     },
     focus() {
       return this.$store.state.map.focus
+    },
+    isLastMileTool() {
+      return this.$store.state.map.isLastMileTool
     }
   },
   methods: {
@@ -133,7 +144,7 @@ export default {
       }
     },
     closeBoth() {
-      if (!this.isPrintDialog) {
+      if (!this.isPrintDialog && !this.isLastMileTool) {
         this.isGooeyMenu = false
         this.isMenuOpen = false
       }

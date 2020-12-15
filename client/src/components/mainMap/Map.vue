@@ -7,7 +7,22 @@
         leave-active-class="slideOutLeft"
         mode="out-in"
       >
-        <legends-panel />
+        <el-card
+          v-if="isLastMileTool"
+          class="z-index120 w50 p4"
+          style="position: fixed; top: 4rem; left: 2.4rem;"
+        >
+          <h3>Last Mile Tool Panel</h3>
+          <b>Length: </b>
+          <span>{{ lmt.length }}</span
+          ><br />
+          <ul>
+            <b>Available Networks :</b>
+            <li v-for="(item, i) in lmt.networks" :key="i + item">
+              {{ i + 1 }} - {{ item }}
+            </li>
+          </ul>
+        </el-card>
       </transition>
       <transition
         name="animated faster delay-1s"
@@ -15,7 +30,19 @@
         leave-active-class="slideOutLeft"
         mode="out-in"
       >
-        <layers-panel @toggle-layer="handleToggleLayer" ref="layersPanel" />
+        <legends-panel v-if="!isLastMileTool" />
+      </transition>
+      <transition
+        name="animated faster delay-1s"
+        enter-active-class="slideInLeft"
+        leave-active-class="slideOutLeft"
+        mode="out-in"
+      >
+        <layers-panel
+          v-if="!isLastMileTool"
+          ref="layersPanel"
+          @toggle-layer="handleToggleLayer"
+        />
       </transition>
       <el-button
         id="ThreeD"
@@ -38,7 +65,12 @@
       >
         <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
       </el-button>
-      <gooey-menu :map="map ? map : {}" />
+      <gooey-menu
+        :map="map ? map : {}"
+        ref="gooeymenu"
+        @change-network="lmt.networks = $event"
+        @change-length="lmt.length = $event"
+      />
     </template>
   </div>
 </template>
@@ -61,7 +93,8 @@ import {
   CURRENT_SELECTION,
   MAP_FOCUS_ON,
   HAS_TO_EASE_TO,
-  EASE_POINT
+  EASE_POINT,
+  IS_LMT
 } from '../../store/actionTypes/map'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../../config/mapConfig'
@@ -85,7 +118,6 @@ import LayersPanel from './panels/layersPanel'
 import { bbox } from '@turf/turf'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import $axios from '../../services/axios'
-// import handleHighlightSelectionAssociations from './highlightSelectionAssociations'
 
 export default {
   name: 'Map',
@@ -107,6 +139,10 @@ export default {
     trackID: null,
     map: undefined,
     isMenuOpen: false,
+    lmt: {
+      networks: [],
+      length: 0
+    },
     facilitiesClusters: {
       active: true,
       hasData: true
@@ -124,12 +160,11 @@ export default {
       points: state => state.map.points,
       isSidebar: state => state.isSidebar,
       easePoint: state => state.map.easePoint,
-      hasToEase: state => state.map.hasToEase
+      hasToEase: state => state.map.hasToEase,
+      isLastMileTool: state => state.map.isLastMileTool
     })
   },
-  mounted() {
-    this.map = this.addMapEvents(this.initMapLayers(this.createMap()))
-
+  created() {
     bus.$on(CLEAR_SELECTION, this.disableSelectionHighlight)
     bus.$on(TOGGLE_THEME, this.toggleDarkMode)
     bus.$on(FOCUS_ON, this.handleFocusOn)
@@ -137,6 +172,12 @@ export default {
     bus.$on(UPDATE_TIME_MACHINE, this.handleUpdateTimeMachine)
     bus.$on(TOGGLE_FILTER_SELECTION, this.handleFilterSelection)
     bus.$on(SUBSEA_FILTER, this.handleSubseaToggle)
+    if (this.isLastMileTool) {
+      this.$store.commit(`${IS_LMT}`, false)
+    }
+  },
+  mounted() {
+    this.map = this.addMapEvents(this.initMapLayers(this.createMap()))
 
     if (this.dark) this.map.setStyle(mapConfig.darkBasemap)
     if (this.currentSelection && this.focus) this.handlePreviouslySelected()
@@ -203,7 +244,6 @@ export default {
         mbCtrl.appendChild(document.getElementById('FScreen'))
 
         window.draw = draw
-        // this.lastMileTool.reference = new lastMileTool({ map })
       }
 
       window.mapboxgl = mapboxgl
@@ -234,7 +274,6 @@ export default {
       for (let layer of mapConfig.data.layers) {
         map.addLayer(layer)
       }
-      // lastMileToolLayers(map)
       map.setFilter(mapConfig.cables, mapConfig.filter.all)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
     },
@@ -292,7 +331,6 @@ export default {
         map.on('touchend', this.handleMapClick)
         map.on('render', this.handleBoundsChange)
         map.on('zoomend', this.handleFacilitiesLayerAtCertainZoomLevel)
-        // this.lastMileTool.reference.registerEvents()
       }
 
       map.on('draw.create', this.handleDrawEvents)
@@ -393,8 +431,7 @@ export default {
       }
     },
     handleCLSHover(e, isHovering) {
-      //  || this.lastMileTool.active
-      if (!this.map) return
+      if (!this.map || this.isLastMileTool) return
       const {
         features: [
           {
@@ -474,8 +511,8 @@ export default {
       if (
         !clusters.length &&
         e.features.length &&
-        !this.isMobile
-        // !this.lastMileTool.active
+        !this.isMobile &&
+        !this.isLastMileTool
       ) {
         this.map.getCanvas().style.cursor = 'pointer'
         this.showPopup({ e, map: this.map, popup, isPoint, type })
@@ -488,12 +525,12 @@ export default {
      * @param map { Object } The map instance
      */
     handlePopupVisibilityOff({ popup, map }) {
-      // if (!this.lastMileTool.active) {
-      popup.remove()
-      map.getCanvas().style.cursor = ''
-      // } else {
-      //   map.getCanvas().style.cursor = 'crosshair'
-      // }
+      if (!this.isLastMileTool) {
+        popup.remove()
+        map.getCanvas().style.cursor = ''
+      } else {
+        map.getCanvas().style.cursor = 'crosshair'
+      }
     },
     highlightSelection(id) {
       if (!this.focus) return
