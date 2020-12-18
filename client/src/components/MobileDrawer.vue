@@ -37,10 +37,19 @@
         <el-collapse-item name="partners" class="pr4 pl4">
           <span slot="title" class="underline">Our Partners</span>
           <i-list
+            :is-search-visible="false"
             class="w-fit-full-imp overflow-y-auto no-overflow-x"
             option="partners"
             @click="emitSelected"
+          />
+        </el-collapse-item>
+        <el-collapse-item name="trusted-by" class="pr4 pl4">
+          <span slot="title" class="underline">Trusted by</span>
+          <i-list
             :is-search-visible="false"
+            class="w-fit-full-imp overflow-y-auto no-overflow-x"
+            option="organizations"
+            @click="emitSelected"
           />
         </el-collapse-item>
       </el-collapse>
@@ -58,30 +67,6 @@
               <span class="el-link fs-regular font-regular" slot="title">
                 {{ link.label }}
               </span> -->
-          <div v-else-if="link.dropdown" class="dropdown-links">
-            <template v-for="dropdownItem in link.dropdown">
-              <a
-                v-if="dropdownItem.tab"
-                :href="dropdownItem.url"
-                target="_blank"
-                :key="dropdownItem.url"
-                class="inline-flex no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline"
-              >
-                {{ dropdownItem.label }}
-              </a>
-              <el-button
-                v-else
-                plain
-                type="text"
-                :key="dropdownItem.url"
-                class="inline-flex no-border-radius align-items-center color-inherit h-fit-full block no-outline"
-                @click="goToRoute(link.url)"
-                :class="{ dark, light: !dark }"
-              >
-                {{ dropdownItem.label }}
-              </el-button>
-            </template>
-          </div>
           <!-- </el-collapse-item>
           </el-collapse> -->
           <template v-else>
@@ -89,7 +74,7 @@
               v-if="i == 0"
               plain
               type="text"
-              class="inline-flex mt4 no-border-radius align-items-center color-inherit h-fit-full block no-outline"
+              class="inline-flex mt2 no-border-radius align-items-center color-inherit h-fit-full block no-outline"
               @click="goToRoute(link.url)"
               :class="{ dark, light: !dark }"
             >
@@ -106,6 +91,32 @@
               {{ link.label }}
             </el-button>
           </template>
+        </li>
+        <li
+          class="pr4 pl4 fs-regular"
+          v-for="dropdownItem in dropdownLinks"
+          :key="dropdownItem.label.replace(' ', '')"
+        >
+          <a
+            v-if="dropdownItem.tab"
+            :href="dropdownItem.url"
+            target="_blank"
+            :key="dropdownItem.url"
+            class="inline-flex mt2 no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline"
+          >
+            {{ dropdownItem.label }}
+          </a>
+          <el-button
+            v-else
+            plain
+            type="text"
+            :key="dropdownItem.url"
+            class="inline-flex no-border-radius align-items-center color-inherit h-fit-full no-outline"
+            :class="{ dark, light: !dark }"
+            @click="goToRoute(link.url)"
+          >
+            {{ dropdownItem.label }}
+          </el-button>
         </li>
       </ul>
       <i-footer class="footer relative" style="width: 90%; margin: 0;" />
@@ -125,7 +136,34 @@ export default {
     IList
   },
   data: () => ({
-    collapseActive: ''
+    collapseActive: '',
+    dropdownLinks: [
+      {
+        label: 'Our team',
+        url: '/about'
+      },
+      {
+        label: 'Advisory Board',
+        url: '/advisory-board'
+      },
+      {
+        label: 'Attributions',
+        url: '/attributions'
+      },
+      {
+        label: 'Github',
+        url: 'https://github.com/infrapedia',
+        tab: true
+      },
+      {
+        label: 'FAQ',
+        url: '/faq'
+      },
+      {
+        label: 'Contact Us',
+        url: '/contact'
+      }
+    ]
   }),
   props: {
     visibility: {
@@ -142,7 +180,9 @@ export default {
       return this.$store.state.isDark
     },
     links() {
-      return navbarLinks
+      let links = navbarLinks.filter(item => !item.dropdown)
+      links.pop() // removing contact us link
+      return links
     },
     checkIfLoggedIn() {
       return this.$auth.isAuthenticated ? '/app' : '/'
