@@ -30,6 +30,13 @@
         <h1 class="title w34" :class="{ 'text-white--imp': dark }">
           Trusted by
         </h1>
+        <el-button
+          icon="el-icon-close"
+          circle
+          class="absolute no-border"
+          style="top: 2rem; right: 12rem;"
+          @click="toggleVisibility"
+        />
         <div class="sponsors-wrapper">
           <div class="img-wrapper" v-for="(img, i) in sponsors" :key="i">
             <el-image

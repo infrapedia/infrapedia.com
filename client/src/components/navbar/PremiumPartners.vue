@@ -30,6 +30,13 @@
         <h2 class="title" :class="{ 'text-white--imp': dark }">
           Our Partners
         </h2>
+        <el-button
+          icon="el-icon-close"
+          circle
+          class="absolute no-border"
+          style="top: 2rem; right: 12rem;"
+          @click="toggleVisibility"
+        />
         <div class="sponsors-wrapper">
           <template v-for="(item, i) in premium">
             <div
