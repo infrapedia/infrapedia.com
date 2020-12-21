@@ -330,7 +330,6 @@ export default {
         map.on('click', this.handleMapClick)
         map.on('touchend', this.handleMapClick)
         map.on('render', this.handleBoundsChange)
-        map.on('zoomend', this.handleFacilitiesLayerAtCertainZoomLevel)
       }
 
       map.on('draw.create', this.handleDrawEvents)
@@ -338,27 +337,6 @@ export default {
       map.on('draw.update', this.handleDrawEvents)
 
       return map
-    },
-    async handleFacilitiesLayerAtCertainZoomLevel() {
-      if (!this.map || !this.facilitiesClusters.active) return
-
-      const currentZoomLevel = this.map.getZoom()
-      const minZoom = mapConfig.facsMinZoom + 5.4
-
-      if (currentZoomLevel >= minZoom) {
-        await this.handleToggleLayer({
-          layerName: mapConfig.facilities,
-          active: false
-        })
-      } else if (
-        currentZoomLevel < minZoom &&
-        !this.facilitiesClusters.hasData
-      ) {
-        await this.handleToggleLayer({
-          layerName: mapConfig.facilities,
-          active: true
-        })
-      }
     },
     async handleToggleLayer({ layerName, active, layersDict }) {
       if (!this.map) return
@@ -842,7 +820,10 @@ export default {
               .setData(fCollectionFormat())
             // When viewing facilities the clusters facilities should be back again
             this.facilitiesClusters.active = true
-            await this.handleFacilitiesLayerAtCertainZoomLevel()
+            await this.handleToggleLayer({
+              layerName: mapConfig.facilities,
+              active: true
+            })
             // Closing the sidebar so the information updates correctly
             this.disableSelectionHighlight(
               true,
