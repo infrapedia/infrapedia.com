@@ -1098,8 +1098,7 @@ export default {
             animate: true,
             padding: 20,
             speed: 1.1,
-            zoom: 12,
-            pitch: 45
+            zoom: 12
           })
         } catch {
           // Ignore
@@ -1119,8 +1118,7 @@ export default {
             animate: true,
             padding: 20,
             speed: 1.1,
-            zoom: 18,
-            pitch: 45
+            zoom: 18
           })
         } catch {
           // Ignore
