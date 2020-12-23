@@ -128,6 +128,7 @@ export const viewFacilityOwner = async ({ user_id, _id }) => {
 
 export const createFacility = async ({
   user_id,
+  fac_id,
   ixps,
   name,
   website,
@@ -178,6 +179,7 @@ export const createFacility = async ({
   form = new FormData()
 
   form.append('name', name)
+  form.append('fac_id', fac_id)
   form.append('buildingSize', buildingSize)
   form.append('grossColocationSize', grossColocationSize)
   form.append('floorLoadingCapacity', floorLoadingCapacity)
@@ -279,6 +281,7 @@ export const createFacility = async ({
 
 export const editFacility = async ({
   user_id,
+  fac_id,
   _id,
   ixps,
   name,
@@ -331,6 +334,7 @@ export const editFacility = async ({
 
   form.append('_id', _id)
   form.append('name', name)
+  form.append('fac_id', fac_id)
 
   form.append('buildingSize', buildingSize)
   form.append(
