@@ -799,7 +799,7 @@ export default {
 
               map.easeTo({
                 center: clusters[0].geometry.coordinates,
-                zoom: zoom * 1.2
+                zoom: zoom * 1.54
               })
             }
           )
