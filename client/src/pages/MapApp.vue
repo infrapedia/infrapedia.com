@@ -157,7 +157,11 @@ export default {
               link: [
                 {
                   rel: 'canonical',
-                  href: `${window.origin}/app`
+                  href: `${
+                    window.origin.includes('www')
+                      ? window.origin
+                      : 'https://www.infrapedia.com'
+                  }/app`
                 }
               ]
             }
@@ -171,7 +175,12 @@ export default {
               slug: data.slug,
               type: focus.type,
               owners: data.owners ? data.owners : [],
-              url: window.origin + url
+              url:
+                `${
+                  window.origin.includes('www')
+                    ? window.origin
+                    : 'https://www.infrapedia.com'
+                }` + url
             }))
           }
           this.$router.replace(url)
