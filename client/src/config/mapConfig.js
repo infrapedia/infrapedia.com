@@ -236,8 +236,7 @@ export const mapConfig = {
         type: 'fill-extrusion',
         source: facilities,
         minzoom: facsMinZoom,
-        paint: facsPaintConfig,
-        filter: ['has', 'a_propertie_that_doesnt_exist']
+        paint: facsPaintConfig
       },
       {
         id: facilitiesLabel,

@@ -343,7 +343,7 @@ export default {
 
       const filter = active
         ? mapConfig.filter.all
-        : ['has', 'a_propertie_that_doesnt_exist']
+        : ['has', 'a_property_that_does_not_exist']
 
       if (layersDict) {
         this.facilitiesClusters.active = layersDict[mapConfig.facilities].active
@@ -386,7 +386,7 @@ export default {
         if (!layersDict.subsea.active && active) {
           filterBy = ['all', ['==', 'terrestrial', 'true'], ['has', '_id']]
         } else if (!layersDict.subsea.active && !active) {
-          filterBy = ['has', 'a_propertie_that_doesnt_exist']
+          filterBy = ['has', 'a_property_that_does_not_exist']
         }
 
         this.map.setFilter(mapConfig.cables, filterBy)
@@ -399,7 +399,7 @@ export default {
         if (!layersDict.terrestrial.active && active) {
           filterBy = ['all', ['!=', 'terrestrial', 'true'], ['has', '_id']]
         } else if (!layersDict.terrestrial.active && !active) {
-          filterBy = ['has', 'a_propertie_that_doesnt_exist']
+          filterBy = ['has', 'a_property_that_does_not_exist']
         }
 
         this.map.setFilter(mapConfig.cables, filterBy)
