@@ -34,7 +34,7 @@
           icon="el-icon-close"
           circle
           class="absolute no-border"
-          style="top: 2rem; right: 12rem;"
+          style="top: 2rem; right: 14rem;"
           @click="toggleVisibility"
         />
         <div class="sponsors-wrapper">

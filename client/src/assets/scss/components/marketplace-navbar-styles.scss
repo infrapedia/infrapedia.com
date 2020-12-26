@@ -21,7 +21,14 @@ div.wrapper {
   position: fixed;
   top: 3rem;
   left: 0;
+  cursor: auto;
   .cell p {
     margin: 0;
   }
+}
+
+.close-btn {
+  position: absolute;
+  right: 10rem;
+  top: 0;
 }
