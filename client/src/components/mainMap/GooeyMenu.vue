@@ -48,7 +48,6 @@
         </li>
         <li role="listitem" class="mr1">
           <lmt-button
-            v-if="isUserLoggedIn"
             :map="map"
             @change-network="$emit('change-network', $event)"
             @change-length="$emit('change-length', $event)"
@@ -120,9 +119,6 @@ export default {
   computed: {
     shareLinkButtons() {
       return shareLinkButtons
-    },
-    isUserLoggedIn() {
-      return this.$auth.isAuthenticated
     },
     dark() {
       return this.$store.state.isDark

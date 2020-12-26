@@ -12,16 +12,28 @@
           class="z-index120 w50 p4"
           style="position: fixed; top: 4rem; left: 2.4rem;"
         >
-          <h3>Last Mile Tool Panel</h3>
-          <b>Length: </b>
-          <span>{{ lmt.length }}</span
-          ><br />
-          <ul>
-            <b>Available Networks :</b>
-            <li v-for="(item, i) in lmt.networks" :key="i + item">
-              {{ i + 1 }} - {{ item }}
-            </li>
-          </ul>
+          <template v-if="isUserLoggedIn">
+            <h3>Last Mile Tool Panel</h3>
+            <b>Length: </b>
+            <span>{{ lmt.length }}</span
+            ><br />
+            <ul>
+              <b>Available Networks :</b>
+              <li v-for="(item, i) in lmt.networks" :key="i + item">
+                {{ i + 1 }} - {{ item }}
+              </li>
+            </ul>
+          </template>
+          <div v-else>
+            You need to sign in before using the tool.
+          </div>
+          <el-button
+            size="mini"
+            class="w-fit-full mt2"
+            @click="closeLastMileTool"
+          >
+            Close tool
+          </el-button>
         </el-card>
       </transition>
       <transition
@@ -162,7 +174,10 @@ export default {
       easePoint: state => state.map.easePoint,
       hasToEase: state => state.map.hasToEase,
       isLastMileTool: state => state.map.isLastMileTool
-    })
+    }),
+    isUserLoggedIn() {
+      return this.$auth.isAuthenticated
+    }
   },
   created() {
     bus.$on(CLEAR_SELECTION, this.disableSelectionHighlight)
@@ -172,9 +187,7 @@ export default {
     bus.$on(UPDATE_TIME_MACHINE, this.handleUpdateTimeMachine)
     bus.$on(TOGGLE_FILTER_SELECTION, this.handleFilterSelection)
     bus.$on(SUBSEA_FILTER, this.handleSubseaToggle)
-    if (this.isLastMileTool) {
-      this.$store.commit(`${IS_LMT}`, false)
-    }
+    if (this.isLastMileTool) this.closeLastMileTool()
   },
   mounted() {
     this.map = this.addMapEvents(this.initMapLayers(this.createMap()))
@@ -199,6 +212,9 @@ export default {
       changeSidebarMode: 'changeSidebarMode',
       getCableData: 'map/getCableData'
     }),
+    closeLastMileTool() {
+      this.$store.commit(`${IS_LMT}`, false)
+    },
     createMap() {
       mapboxgl.accessToken = mapConfig.mapToken
 
@@ -506,7 +522,7 @@ export default {
       if (!this.isLastMileTool) {
         popup.remove()
         map.getCanvas().style.cursor = ''
-      } else {
+      } else if (this.isUserLoggedIn) {
         map.getCanvas().style.cursor = 'crosshair'
       }
     },
@@ -1065,6 +1081,7 @@ export default {
     },
     /**
      * @param id { String } - Building/DataCenter/Dot ID
+     * @param type { String }
      */
     async handleFacilityFocus({ id, type }) {
       const { map, focus, bounds } = this
@@ -1087,6 +1104,10 @@ export default {
         }
       }
     },
+    /**
+     * @param id { [Number, String] }
+     * @param type { String }
+     */
     async handleClsFocus({ id, type }) {
       const { map, focus, bounds } = this
 

@@ -32,6 +32,9 @@ export default {
     },
     active() {
       return this.$store.state.map.isLastMileTool
+    },
+    isUserLoggedIn() {
+      return this.$auth.isAuthenticated
     }
   },
   watch: {
@@ -65,9 +68,11 @@ export default {
       if (!this.map) return
 
       if (!this.active) {
-        this.tool.initService()
-        this.tool.registerEvents()
-        this.map.getCanvas().style.cursor = 'crosshair'
+        if (this.isUserLoggedIn) {
+          this.tool.initService()
+          this.tool.registerEvents()
+          this.map.getCanvas().style.cursor = 'crosshair'
+        }
         this.$store.commit(`${IS_LMT}`, true)
       } else {
         this.tool.clearLastMileTool()
