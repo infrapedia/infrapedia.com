@@ -317,6 +317,9 @@ export default {
 
       if (data.address && data.address.length >= 1) {
         this.form.address = { ...data.address[0] }
+        this.form.address.fullAddress = `${this.form.address.fullAddress.trim()}${
+          this.form.address.country ? `, ${this.form.address.country}.` : ''
+        }`
       }
 
       if (!data.enType) {

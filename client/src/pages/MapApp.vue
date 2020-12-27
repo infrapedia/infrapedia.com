@@ -183,7 +183,12 @@ export default {
               slug: data.slug,
               type: focus.type,
               owners: data.owners ? data.owners : [],
-              url: window.origin + url
+              url:
+                `${
+                  window.origin.includes('www')
+                    ? window.origin
+                    : 'https://www.infrapedia.com'
+                }` + url
             }))
           }
 

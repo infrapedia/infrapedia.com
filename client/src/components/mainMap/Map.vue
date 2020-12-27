@@ -7,7 +7,34 @@
         leave-active-class="slideOutLeft"
         mode="out-in"
       >
-        <legends-panel />
+        <el-card
+          v-if="isLastMileTool"
+          class="z-index120 w50 p4"
+          style="position: fixed; top: 4rem; left: 2.4rem;"
+        >
+          <template v-if="isUserLoggedIn">
+            <h3>Last Mile Tool Panel</h3>
+            <b>Length: </b>
+            <span>{{ lmt.length }}</span
+            ><br />
+            <ul>
+              <b>Available Networks :</b>
+              <li v-for="(item, i) in lmt.networks" :key="i + item">
+                {{ i + 1 }} - {{ item }}
+              </li>
+            </ul>
+          </template>
+          <div v-else>
+            You need to sign in before using the tool.
+          </div>
+          <el-button
+            size="mini"
+            class="w-fit-full mt2"
+            @click="closeLastMileTool"
+          >
+            Close tool
+          </el-button>
+        </el-card>
       </transition>
       <transition
         name="animated faster delay-1s"
@@ -15,7 +42,19 @@
         leave-active-class="slideOutLeft"
         mode="out-in"
       >
-        <layers-panel @toggle-layer="handleToggleLayer" ref="layersPanel" />
+        <legends-panel v-if="!isLastMileTool" />
+      </transition>
+      <transition
+        name="animated faster delay-1s"
+        enter-active-class="slideInLeft"
+        leave-active-class="slideOutLeft"
+        mode="out-in"
+      >
+        <layers-panel
+          v-if="!isLastMileTool"
+          ref="layersPanel"
+          @toggle-layer="handleToggleLayer"
+        />
       </transition>
       <el-button
         id="ThreeD"
@@ -38,7 +77,12 @@
       >
         <fa :icon="['fas', 'expand-arrows-alt']" class="sm-icon" />
       </el-button>
-      <gooey-menu :map="map ? map : {}" />
+      <gooey-menu
+        :map="map ? map : {}"
+        ref="gooeymenu"
+        @change-network="lmt.networks = $event"
+        @change-length="lmt.length = $event"
+      />
     </template>
   </div>
 </template>
@@ -61,7 +105,8 @@ import {
   CURRENT_SELECTION,
   MAP_FOCUS_ON,
   HAS_TO_EASE_TO,
-  EASE_POINT
+  EASE_POINT,
+  IS_LMT
 } from '../../store/actionTypes/map'
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
 import { mapConfig } from '../../config/mapConfig'
@@ -85,7 +130,6 @@ import LayersPanel from './panels/layersPanel'
 import { bbox } from '@turf/turf'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import $axios from '../../services/axios'
-// import handleHighlightSelectionAssociations from './highlightSelectionAssociations'
 
 export default {
   name: 'Map',
@@ -107,6 +151,10 @@ export default {
     trackID: null,
     map: undefined,
     isMenuOpen: false,
+    lmt: {
+      networks: [],
+      length: 0
+    },
     facilitiesClusters: {
       active: true,
       hasData: true
@@ -124,12 +172,14 @@ export default {
       points: state => state.map.points,
       isSidebar: state => state.isSidebar,
       easePoint: state => state.map.easePoint,
-      hasToEase: state => state.map.hasToEase
-    })
+      hasToEase: state => state.map.hasToEase,
+      isLastMileTool: state => state.map.isLastMileTool
+    }),
+    isUserLoggedIn() {
+      return this.$auth.isAuthenticated
+    }
   },
-  mounted() {
-    this.map = this.addMapEvents(this.initMapLayers(this.createMap()))
-
+  created() {
     bus.$on(CLEAR_SELECTION, this.disableSelectionHighlight)
     bus.$on(TOGGLE_THEME, this.toggleDarkMode)
     bus.$on(FOCUS_ON, this.handleFocusOn)
@@ -137,6 +187,10 @@ export default {
     bus.$on(UPDATE_TIME_MACHINE, this.handleUpdateTimeMachine)
     bus.$on(TOGGLE_FILTER_SELECTION, this.handleFilterSelection)
     bus.$on(SUBSEA_FILTER, this.handleSubseaToggle)
+    if (this.isLastMileTool) this.closeLastMileTool()
+  },
+  mounted() {
+    this.map = this.addMapEvents(this.initMapLayers(this.createMap()))
 
     if (this.dark) this.map.setStyle(mapConfig.darkBasemap)
     if (this.currentSelection && this.focus) this.handlePreviouslySelected()
@@ -158,13 +212,16 @@ export default {
       changeSidebarMode: 'changeSidebarMode',
       getCableData: 'map/getCableData'
     }),
+    closeLastMileTool() {
+      this.$store.commit(`${IS_LMT}`, false)
+    },
     createMap() {
       mapboxgl.accessToken = mapConfig.mapToken
 
       const map = new mapboxgl.Map({
         container: 'map',
         zoom: mapConfig.zoom,
-        maxZoom: 17.8,
+        maxZoom: mapConfig.maxZoom,
         minZoom: 2,
         pitch: this.disabled ? 45 : 0,
         center: mapConfig.center,
@@ -203,7 +260,6 @@ export default {
         mbCtrl.appendChild(document.getElementById('FScreen'))
 
         window.draw = draw
-        // this.lastMileTool.reference = new lastMileTool({ map })
       }
 
       window.mapboxgl = mapboxgl
@@ -234,7 +290,6 @@ export default {
       for (let layer of mapConfig.data.layers) {
         map.addLayer(layer)
       }
-      // lastMileToolLayers(map)
       map.setFilter(mapConfig.cables, mapConfig.filter.all)
       this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
     },
@@ -252,8 +307,20 @@ export default {
       map.on('mouseenter', mapConfig.cables, function(e) {
         vm.handlePopupVisibilityOn({ e, popup, isPoint: false })
       })
+      map.on('mouseleave', mapConfig.cables, () => {
+        vm.handlePopupVisibilityOff({ popup, map })
+      })
       map.on('mouseenter', mapConfig.ixps, function(e) {
         vm.handlePopupVisibilityOn({ e, popup, isPoint: true, type: 'ixps' })
+      })
+      map.on('mouseleave', mapConfig.ixps, function() {
+        vm.handlePopupVisibilityOff({ popup, map })
+      })
+      map.on('mouseenter', mapConfig.facilities, () => {
+        map.getCanvas().style.cursor = 'pointer'
+      })
+      map.on('mouseleave', mapConfig.facilities, () => {
+        map.getCanvas().style.cursor = ''
       })
       map.on('mouseenter', mapConfig.cls, function(e) {
         vm.handlePopupVisibilityOn({ e, popup, isPoint: true, type: 'cls' })
@@ -262,22 +329,15 @@ export default {
       map.on('mouseleave', mapConfig.cls, function(e) {
         vm.handleCLSHover(e, false)
       })
-      map.on('mouseleave', mapConfig.cables, () => {
-        vm.handlePopupVisibilityOff({ popup, map })
-      })
-
       map.on('mouseenter', mapConfig.cablesLabel, () => {
         map.getCanvas().style.cursor = 'pointer'
       })
-
       map.on('mouseleave', mapConfig.cablesLabel, () => {
         map.getCanvas().style.cursor = ''
       })
-
       map.on('mouseenter', mapConfig.facilitiesLabel, () => {
         map.getCanvas().style.cursor = 'pointer'
       })
-
       map.on('mouseleave', mapConfig.facilitiesLabel, () => {
         map.getCanvas().style.cursor = ''
       })
@@ -286,12 +346,6 @@ export default {
         map.on('click', this.handleMapClick)
         map.on('touchend', this.handleMapClick)
         map.on('render', this.handleBoundsChange)
-        map.on('zoomend', this.handleFacilitiesLayerAtCertainZoomLevel)
-        // this.lastMileTool.reference.registerEvents()
-      } else {
-        const disabledClick = () => this.$emit('clicked-disabled-map')
-        map.on('click', disabledClick)
-        map.on('touchend', disabledClick)
       }
 
       map.on('draw.create', this.handleDrawEvents)
@@ -300,33 +354,12 @@ export default {
 
       return map
     },
-    async handleFacilitiesLayerAtCertainZoomLevel() {
-      if (!this.map || !this.facilitiesClusters.active) return
-
-      const currentZoomLevel = this.map.getZoom()
-      const minZoom = mapConfig.facsMinZoom + 5.4
-
-      if (currentZoomLevel >= minZoom) {
-        await this.handleToggleLayer({
-          layerName: mapConfig.facilities,
-          active: false
-        })
-      } else if (
-        currentZoomLevel < minZoom &&
-        !this.facilitiesClusters.hasData
-      ) {
-        await this.handleToggleLayer({
-          layerName: mapConfig.facilities,
-          active: true
-        })
-      }
-    },
     async handleToggleLayer({ layerName, active, layersDict }) {
       if (!this.map) return
 
       const filter = active
         ? mapConfig.filter.all
-        : ['has', 'a_propertie_that_doesnt_exist']
+        : ['has', 'a_property_that_does_not_exist']
 
       if (layersDict) {
         this.facilitiesClusters.active = layersDict[mapConfig.facilities].active
@@ -345,7 +378,11 @@ export default {
         ) {
           features = { features } = (await $axios.get(
             process.env.VUE_APP_TILES_FACS_CLUSTERS
-          )) || { features: [] }
+          )) || {
+            features: {
+              features: []
+            }
+          }
         } else {
           this.map.setFilter(
             mapConfig.facilities,
@@ -365,7 +402,7 @@ export default {
         if (!layersDict.subsea.active && active) {
           filterBy = ['all', ['==', 'terrestrial', 'true'], ['has', '_id']]
         } else if (!layersDict.subsea.active && !active) {
-          filterBy = ['has', 'a_propertie_that_doesnt_exist']
+          filterBy = ['has', 'a_property_that_does_not_exist']
         }
 
         this.map.setFilter(mapConfig.cables, filterBy)
@@ -378,7 +415,7 @@ export default {
         if (!layersDict.terrestrial.active && active) {
           filterBy = ['all', ['!=', 'terrestrial', 'true'], ['has', '_id']]
         } else if (!layersDict.terrestrial.active && !active) {
-          filterBy = ['has', 'a_propertie_that_doesnt_exist']
+          filterBy = ['has', 'a_property_that_does_not_exist']
         }
 
         this.map.setFilter(mapConfig.cables, filterBy)
@@ -388,8 +425,7 @@ export default {
       }
     },
     handleCLSHover(e, isHovering) {
-      //  || this.lastMileTool.active
-      if (!this.map) return
+      if (!this.map || this.isLastMileTool) return
       const {
         features: [
           {
@@ -469,8 +505,8 @@ export default {
       if (
         !clusters.length &&
         e.features.length &&
-        !this.isMobile
-        // !this.lastMileTool.active
+        !this.isMobile &&
+        !this.isLastMileTool
       ) {
         this.map.getCanvas().style.cursor = 'pointer'
         this.showPopup({ e, map: this.map, popup, isPoint, type })
@@ -483,12 +519,12 @@ export default {
      * @param map { Object } The map instance
      */
     handlePopupVisibilityOff({ popup, map }) {
-      // if (!this.lastMileTool.active) {
-      popup.remove()
-      map.getCanvas().style.cursor = ''
-      // } else {
-      //   map.getCanvas().style.cursor = 'crosshair'
-      // }
+      if (!this.isLastMileTool) {
+        popup.remove()
+        map.getCanvas().style.cursor = ''
+      } else if (this.isUserLoggedIn) {
+        map.getCanvas().style.cursor = 'crosshair'
+      }
     },
     highlightSelection(id) {
       if (!this.focus) return
@@ -561,24 +597,6 @@ export default {
       if (this.isSidebar && !clusters.length) {
         await this.$store.commit(`${TOGGLE_SIDEBAR}`, false)
       }
-
-      // ??
-      // if (
-      //   this.$refs.layersPanel &&
-      //   !this.facilitiesClusters.hasData &&
-      //   this.$refs.layersPanel.layers[mapConfig.facilities].active &&
-      //   !clusters.length
-      // ) {
-      //   await this.handleToggleLayer({
-      //     active: true,
-      //     layerName: mapConfig.facilities,
-      //     layersDict: {
-      //       [mapConfig.facilities]: {
-      //         active: true
-      //       }
-      //     }
-      //   })
-      // }
 
       const cables = this.map.queryRenderedFeatures(e.point, {
         layers: [mapConfig.cables]
@@ -756,6 +774,11 @@ export default {
         })
       }
     },
+    handleCableClustersSelection(data) {
+      if (this.map && data.cluster && data.cluster.features.length) {
+        this.map.getSource(mapConfig.clusters).setData(data.cluster)
+      }
+    },
     /**
      * @param bool { Boolean } - If it opens the sidebar
      * @param cables { Object } [{ properties: { cable_id: String } }]
@@ -786,7 +809,7 @@ export default {
       try {
         const source = await map.getSource(sourceName)
 
-        if (clusters.length > 1) {
+        if (clusters[0].properties.cluster_id) {
           source.getClusterExpansionZoom(
             clusters[0].properties.cluster_id
               ? clusters[0].properties.cluster_id
@@ -796,15 +819,41 @@ export default {
 
               map.easeTo({
                 center: clusters[0].geometry.coordinates,
-                zoom: zoom + 1
+                zoom: zoom * 1.54
               })
             }
           )
         } else {
           map.easeTo({
             center: clusters[0].geometry.coordinates,
-            zoom: map.getZoom() + 1
+            zoom: mapConfig.maxZoom
           })
+
+          if (
+            clusters[0].properties._id &&
+            this.focus &&
+            this.focus.type == 'ixp'
+          ) {
+            // We need to remove the clusters layer data before anything else
+            await this.map
+              .getSource(mapConfig.clusters)
+              .setData(fCollectionFormat())
+            // When viewing facilities the clusters facilities should be back again
+            this.facilitiesClusters.active = true
+            await this.handleToggleLayer({
+              layerName: mapConfig.facilities,
+              active: true
+            })
+            // Closing the sidebar so the information updates correctly
+            this.disableSelectionHighlight(
+              true,
+              this.focus.type.split().join('')
+            )
+            await this.handleFacilitySelection({
+              id: clusters[0].properties._id,
+              type: 'facility'
+            })
+          }
         }
       } catch (err) {
         console.error(err, 'cluster selection error')
@@ -825,19 +874,6 @@ export default {
           type,
           name: data.r[0].name
         })
-
-        // Facilities cluster need to be disabled
-        await this.handleToggleLayer({
-          layerName: mapConfig.facilities,
-          active: false,
-          layersDict: {
-            [mapConfig.facilities]: {
-              active: false
-            }
-          }
-        })
-        // Setting associations cluster data
-        this.map.getSource(mapConfig.clusters).setData(data.r[0].cluster)
       }
 
       this.highlightSelection(id)
@@ -885,16 +921,12 @@ export default {
           name: data.r[0].name
         })
 
-        // Facilities cluster need to be disabled
-        await this.handleToggleLayer({
-          layerName: mapConfig.facilities,
-          active: false,
-          layersDict: {
-            [mapConfig.facilities]: {
-              active: false
-            }
-          }
-        })
+        // Facilities cluster data needs to be removed
+        this.map
+          .getSource(mapConfig.facilitiesClusters)
+          .setData(fCollectionFormat())
+        this.facilitiesClusters.hasData = false
+        this.facilitiesClusters.active = false
         // Associations cluster
         this.map.getSource(mapConfig.clusters).setData(data.r[0].cluster)
       }
@@ -1033,14 +1065,14 @@ export default {
     /**
      * @param id { String } - Cable ID
      */
-    async handleCableFocus(id) {
+    async handleCableFocus(_id) {
       const { map, focus, bounds, hasToEase } = this
+
       if (hasToEase) await this.handleFocusOnEasePoints()
       else if (focus && bounds && bounds.length) {
         try {
           await map.fitBounds(bounds, {
-            padding: 20,
-            zoom: 4
+            padding: 362
           })
         } catch {
           // Ignore
@@ -1049,10 +1081,11 @@ export default {
         }
       }
 
-      await this.handleCablesSelection(true, [{ properties: { _id: id } }])
+      await this.handleCablesSelection(true, [{ properties: { _id } }])
     },
     /**
      * @param id { String } - Building/DataCenter/Dot ID
+     * @param type { String }
      */
     async handleFacilityFocus({ id, type }) {
       const { map, focus, bounds } = this
@@ -1075,6 +1108,10 @@ export default {
         }
       }
     },
+    /**
+     * @param id { [Number, String] }
+     * @param type { String }
+     */
     async handleClsFocus({ id, type }) {
       const { map, focus, bounds } = this
 
@@ -1086,8 +1123,7 @@ export default {
             animate: true,
             padding: 20,
             speed: 1.1,
-            zoom: 12,
-            pitch: 45
+            zoom: 12
           })
         } catch {
           // Ignore
@@ -1107,8 +1143,7 @@ export default {
             animate: true,
             padding: 20,
             speed: 1.1,
-            zoom: 18,
-            pitch: 45
+            zoom: 18
           })
         } catch {
           // Ignore

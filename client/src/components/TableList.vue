@@ -66,7 +66,7 @@
               :src="scope.row[col.value]"
               class="w12 h12 circle"
             />
-            <div v-else-if="col.value == 'name'">
+            <div v-else-if="col.value == 'name'" class="capitalize">
               {{ scope.row[col.value] }}
               <el-tag v-if="scope.row.deleted" type="danger" size="mini">
                 Deleted

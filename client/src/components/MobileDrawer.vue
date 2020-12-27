@@ -24,11 +24,43 @@
             @click="toggleVisibility"
             type="text"
             circle
-            :class="{ dark }"
+            :class="{ dark }">
+          <fa :icon="['fas', 'times']" />
+        </el-button>
+      </header>
+      <el-collapse
+        v-if="!isHomepageDrawer"
+        accordion
+        v-model="collapseActive"
+        :class="{ dark, light: !dark }"
+      >
+        <el-collapse-item name="partners" class="pr4 pl4">
+          <span slot="title" class="underline">Our Partners</span>
+          <i-list
+            :is-search-visible="false"
+            class="w-fit-full-imp overflow-y-auto no-overflow-x"
+            option="partners"
+            @click="emitSelected"
+          />
+        </el-collapse-item>
+        <el-collapse-item name="trusted-by" class="pr4 pl4">
+          <span slot="title" class="underline">Trusted by</span>
+          <i-list
+            :is-search-visible="false"
+            class="w-fit-full-imp overflow-y-auto no-overflow-x"
+            option="organizations"
+            @click="emitSelected"
+          />
+        </el-collapse-item>
+      </el-collapse>
+      <ul class="links-wrapper mb14" :class="{ dark }">
+        <li class="pr4 pl4 fs-regular" v-for="(link, i) in links" :key="i">
+          <a
+            v-if="link.tab"
+            :href="link.url"
+            class="inline-flex no-border-radius align-items-center color-inherit h-fit-full w-fit-full no-outline"
           >
             <fa :icon="['fas', 'times']" />
-          </el-button>
-        </header>
         <el-collapse
           v-if="!isHomepageDrawer"
           accordion
@@ -202,7 +234,34 @@ export default {
     IList
   },
   data: () => ({
-    collapseActive: ''
+    collapseActive: '',
+    dropdownLinks: [
+      {
+        label: 'Our team',
+        url: '/about'
+      },
+      {
+        label: 'Advisory Board',
+        url: '/advisory-board'
+      },
+      {
+        label: 'Attributions',
+        url: '/attributions'
+      },
+      {
+        label: 'Github',
+        url: 'https://github.com/infrapedia',
+        tab: true
+      },
+      {
+        label: 'FAQ',
+        url: '/faq'
+      },
+      {
+        label: 'Contact Us',
+        url: '/contact'
+      }
+    ]
   }),
   props: {
     visibility: {
@@ -222,7 +281,9 @@ export default {
       return sponsors
     },
     links() {
-      return navbarLinks
+      let links = navbarLinks.filter(item => !item.dropdown)
+      links.pop() // removing contact us link
+      return links
     },
     checkIfLoggedIn() {
       return this.$auth.isAuthenticated ? '/app' : '/'

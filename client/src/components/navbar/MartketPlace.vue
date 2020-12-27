@@ -29,7 +29,16 @@
             'bg-charcoal': dark
           }"
         >
-          <h1 class="title w-fit-full mb8">Community Market Place</h1>
+          <header class="relative">
+            <h1 class="title mb8 inline-block">Community Market Place</h1>
+            <el-button
+              circle
+              class="close-btn no-border"
+              icon="el-icon-close"
+              @click="closeSheet"
+            />
+          </header>
+
           <el-table
             :data="marketplaceData"
             :class="{ dark }"

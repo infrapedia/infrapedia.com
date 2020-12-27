@@ -85,6 +85,7 @@
 <script>
 import { mapState } from 'vuex'
 import { LOAD_MORE } from '../events/listview'
+import { getTrustedBy } from '../services/api/organizations'
 
 export default {
   name: 'IList',
@@ -102,6 +103,7 @@ export default {
     search: '',
     LOAD_MORE,
     searchResults: [],
+    trustedBy: [],
     isSearching: false
   }),
   computed: {
@@ -124,7 +126,20 @@ export default {
       else if (option == 'submarine') return this.submarine
       else if (option == 'ixps') return this.ixps
       else if (option == 'datacenters') return this.dataCenters
+      else if (option == 'organizations') return this.trustedBy
       else return this.networks
+    }
+  },
+  async mounted() {
+    if (this.option == 'organizations') {
+      try {
+        let res = (await getTrustedBy()) || []
+        if (res && res.data && res.data.r) {
+          this.trustedBy = res.data.r
+        }
+      } catch {
+        // Ignore
+      }
     }
   },
   methods: {

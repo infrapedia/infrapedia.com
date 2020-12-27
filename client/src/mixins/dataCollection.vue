@@ -60,6 +60,7 @@ export default {
             id: _id,
             type: type[`${this.currentSelection.terrestrial}`]
           })
+          this.handleCableClustersSelection(this.currentSelection)
         })
       } catch {
         // Ignore

@@ -13,8 +13,8 @@ const highlightFeatureState = [
 const ixpsPaintConfig = {
   'circle-radius': 10,
   'circle-stroke-width': 2,
-  'circle-color': '#b10f0f',
-  'circle-stroke-color': '#333333'
+  'circle-color': '#FA7200',
+  'circle-stroke-color': '#FA7200'
 }
 
 const clsPaintConfig = {
@@ -25,7 +25,7 @@ const clsPaintConfig = {
 }
 
 const facsPointPaintConfig = {
-  'circle-radius': 8,
+  'circle-radius': 10,
   'circle-stroke-width': 2,
   'circle-color': '#2196f3',
   'circle-stroke-color': '#2196f3'
@@ -120,6 +120,7 @@ export const mapConfig = {
     'mapbox://styles/networkatlas/cjt4y5k77443z1fmfu2pfbcuu?optimize=true',
   darkBasemap: 'mapbox://styles/mapbox/dark-v10',
   zoom: 1.75,
+  maxZoom: 17.8,
   center: [-34.292, 27.57],
   cls,
   ixps,
@@ -235,8 +236,7 @@ export const mapConfig = {
         type: 'fill-extrusion',
         source: facilities,
         minzoom: facsMinZoom,
-        paint: facsPaintConfig,
-        filter: ['has', 'a_propertie_that_doesnt_exist']
+        paint: facsPaintConfig
       },
       {
         id: facilitiesLabel,
@@ -327,7 +327,15 @@ export const mapConfig = {
         type: 'circle',
         paint: {
           'circle-color': '#F7B267',
-          'circle-radius': ['step', ['get', 'point_count'], 15, 2, 22, 4, 30]
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40
+          ]
         }
       },
       {
@@ -346,11 +354,11 @@ export const mapConfig = {
         id: 'clusters-single-points',
         type: 'circle',
         source: clusters,
-        maxzoom: 15,
+        // maxzoom: 15,
         filter: ['!', ['has', 'point_count']],
         paint: {
-          'circle-color': '#F7B267',
-          'circle-radius': 10
+          'circle-radius': 12,
+          'circle-color': '#F7B267'
         }
       }
     ]

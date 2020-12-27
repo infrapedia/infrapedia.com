@@ -387,6 +387,18 @@
                   !isArrCol(info[col.value]) &&
                     info[col.value] !== '' &&
                     info[col.value] !== 'undefined' &&
+                    info[col.value] !== 'null' &&
+                    col.format
+                "
+              >
+                {{ col.format(info[col.value]) }}
+              </p>
+              <p
+                class="text-bold"
+                v-else-if="
+                  !isArrCol(info[col.value]) &&
+                    info[col.value] !== '' &&
+                    info[col.value] !== 'undefined' &&
                     info[col.value] !== 'null'
                 "
               >

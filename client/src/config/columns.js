@@ -456,6 +456,24 @@ export const ixpsColumns = [
     showSidebar: true
   },
   {
+    label: 'Proto IPv6',
+    value: 'proto_ipv6',
+    showSidebar: true,
+    format: v => (v ? 'Yes' : 'no')
+  },
+  {
+    label: 'Proto Multicast',
+    value: 'proto_multicast',
+    showSidebar: true,
+    format: v => (v ? 'Yes' : 'no')
+  },
+  {
+    label: 'Proto Unicast',
+    value: 'proto_unicast',
+    showSidebar: true,
+    format: v => (v ? 'Yes' : 'no')
+  },
+  {
     label: 'Groups',
     value: 'networks',
     showSidebar: true
