@@ -775,8 +775,12 @@ export default {
       }
     },
     handleCableClustersSelection(data) {
-      if (this.map && data.cluster && data.cluster.features.length) {
-        this.map.getSource(mapConfig.clusters).setData(data.cluster)
+      if (this.map) {
+        if (data.cluster && data.cluster.features.length) {
+          this.map.getSource(mapConfig.clusters).setData(data.cluster)
+        } else {
+          this.map.getSource(mapConfig.clusters).setData(fCollectionFormat())
+        }
       }
     },
     /**
