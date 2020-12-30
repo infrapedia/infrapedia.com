@@ -161,7 +161,7 @@ export const mapConfig = {
         name: facilities,
         opts: {
           type: 'geojson',
-          data: `${process.env.VUE_APP_TILES_FACILITIES}`
+          data: `${window.origin}/${process.env.VUE_APP_TILES_FACILITIES}`
         }
       },
       {
