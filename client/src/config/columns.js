@@ -638,5 +638,30 @@ export const orgsColumns = [
     label: 'Updated at',
     value: 'uDate',
     showTable: true
+  },
+  {
+    label: 'Ixps',
+    value: 'ixps',
+    showSidebar: true
+  },
+  {
+    label: 'Cls',
+    value: 'cls',
+    showSidebar: true
+  },
+  {
+    label: 'Facilities',
+    value: 'facilities',
+    showSidebar: true
+  },
+  {
+    label: 'Subsea cables',
+    value: 'subsecables',
+    showSidebar: true
+  },
+  {
+    label: 'Terrestrial Networks',
+    value: 'terrestrialnetworks',
+    showSidebar: true
   }
 ]
