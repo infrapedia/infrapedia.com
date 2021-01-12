@@ -198,7 +198,7 @@
         Cancel
       </el-button>
     </div>
-    <el-form slot="footer" v-loading="!linkedElements">
+    <el-form slot="footer" v-if="mode !== 'create'" v-loading="!linkedElements">
       <el-divider />
       <el-form-item label="Associations" v-if="linkedElements">
         <div class="flex column w-fit-full">
@@ -529,12 +529,12 @@ export default {
       this.linkedElements = {
         loading: false,
         labels: [
-          'CLS',
-          'IXPS',
-          'Subsea Cables',
-          'Known Users',
-          'Facilities',
-          'Terrestrial Networks'
+          'CLS (Ownership)',
+          'IXPS (Ownership)',
+          'Subsea Cables (Ownership)',
+          'Subsea Cables (User)',
+          'Facilities (Ownership)',
+          'Terrestrial Networks (Ownership)'
         ],
         options: {
           cls: [],
