@@ -209,7 +209,7 @@
                 get-selected-id
                 :loading="linkedElements.loading"
                 :value="mode == 'create' ? [] : linkedElements.values[i]"
-                :options="linkedElements.options[label.toLowerCase()]"
+                :options="linkedElements.options[label]"
                 @remove="
                   handleLinkedElementsRemove({
                     type: label,
@@ -431,7 +431,7 @@ export default {
         case 'ixps':
           method = searchIxps
           break
-        case 'known users':
+        case 'subsea cables (user)':
           method = getSearchByCablesS
           break
         case 'facilities':
@@ -465,8 +465,6 @@ export default {
         user_id: await this.$auth.getUserID()
       }
 
-      console.log(type)
-
       try {
         switch (type.toLowerCase()) {
           case 'terrestrial networks':
@@ -481,14 +479,14 @@ export default {
           case 'facilities':
             await setOrgFacilitiesAssociations(args)
             break
-          case 'known users':
+          case 'subsea cables (user)':
             await setOrgKnownUsersAssociations(args)
-            break
-          default:
-            await setOrgSubseaAssociations(args)
             break
           case 'facilities (tenants)':
             await setOrgFacilityTenantsAssociations(args)
+            break
+          default:
+            await setOrgSubseaAssociations(args)
             break
         }
       } catch (err) {
@@ -528,13 +526,13 @@ export default {
     },
     async getOrgLinkedElements(id) {
       const [
-        cls,
-        subsea,
-        terrestrial,
         facilities,
-        ixps,
+        knownUsersFacilities,
+        subsea,
         knownUsers,
-        knownUsersFacilities
+        cls,
+        ixps,
+        terrestrial
       ] = await getOrgLinkedElements({
         user_id: this.$auth.getUserID(),
         id
@@ -543,31 +541,33 @@ export default {
       this.linkedElements = {
         loading: false,
         labels: [
-          'CLS (Ownership)',
-          'IXPS (Ownership)',
+          'Facilities (Ownership)',
+          'Facilities (Tenants)',
           'Subsea Cables (Ownership)',
           'Subsea Cables (User)',
-          'Facilities (Ownership)',
-          'Terrestrial Networks (Ownership)',
-          'Facilities (Tenants)'
+          'CLS (Ownership)',
+          'IXPS (Ownership)',
+          'Terrestrial Networks (Ownership)'
         ],
         options: {
-          cls: [],
-          ixps: [],
-          facilities: [],
-          'known users': [],
-          'subsea cables': [],
-          'terrestrial networks': [],
-          knownUsersFacilities: []
+          'Facilities (Ownership)': [],
+          'Facilities (Tenants)': [],
+          'Subsea Cables (Ownership)': [],
+          'Subsea Cables (User)': [],
+          'CLS (Ownership)': [],
+          'IXPS (Ownership)': [],
+          'Terrestrial Networks (Ownership)': []
         },
         values: [
-          cls.r ? cls.r : cls,
-          ixps.r ? ixps.r : ixps,
+          facilities.r ? facilities.r : facilities,
+          knownUsersFacilities.r
+            ? knownUsersFacilities.r
+            : knownUsersFacilities,
           subsea.r ? subsea.r : subsea,
           knownUsers.r ? knownUsers.r : knownUsers,
-          facilities.r ? facilities.r : facilities,
-          terrestrial.r ? terrestrial.r : terrestrial,
-          knownUsersFacilities.r ? knownUsersFacilities.r : knownUsersFacilities
+          cls.r ? cls.r : cls,
+          ixps.r ? ixps.r : ixps,
+          terrestrial.r ? terrestrial.r : terrestrial
         ]
       }
     },

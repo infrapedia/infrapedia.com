@@ -161,13 +161,13 @@ export const searchOrganization = async ({ user_id, s, psz, sortBy, page }) => {
 export const getOrgLinkedElements = async args => {
   const results = []
   const promises = [
-    getOrgClsAssociations,
-    getOrgSubseaAssociations,
-    getOrgTerrestrialsAssociations,
     getOrgFacilitesAssociations,
-    getOrgIxpsAssociations,
+    getOrgFacilityTenantsAssociations,
+    getOrgSubseaAssociations,
     getOrgKnownUsersAssociations,
-    getOrgFacilityTenantsAssociations
+    getOrgClsAssociations,
+    getOrgIxpsAssociations,
+    getOrgTerrestrialsAssociations
   ]
 
   for (let promise of promises) {
