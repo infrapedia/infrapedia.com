@@ -453,6 +453,10 @@ export default {
       return Array.isArray(item)
     },
     handleSelection(_id, opt) {
+      if (opt == 'Known Users') {
+        opt = 'organizations'
+      }
+
       return this.$emit('selection', {
         id: _id,
         option: opt

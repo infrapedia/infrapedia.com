@@ -640,28 +640,38 @@ export const orgsColumns = [
     showTable: true
   },
   {
-    label: 'Ixps',
+    label: 'Ixps (Ownership)',
     value: 'ixps',
     showSidebar: true
   },
   {
-    label: 'Cls',
+    label: 'Cls (Ownership)',
     value: 'cls',
     showSidebar: true
   },
   {
-    label: 'Facilities',
+    label: 'Facilities (Ownership)',
     value: 'facilities',
     showSidebar: true
   },
   {
-    label: 'Subsea cables',
+    label: 'Subsea cables (Ownership)',
     value: 'subsecables',
     showSidebar: true
   },
   {
-    label: 'Terrestrial Networks',
+    label: 'Terrestrial Networks (Ownership)',
     value: 'terrestrialnetworks',
+    showSidebar: true
+  },
+  {
+    label: 'Subsea Cables (User)',
+    value: 'knownUsersSubseaCable',
+    showSidebar: true
+  },
+  {
+    label: 'Facilities (Tenants)',
+    value: 'knownUsersFacilities',
     showSidebar: true
   }
 ]

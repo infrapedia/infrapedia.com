@@ -701,7 +701,9 @@ export default {
         'owners',
         'ixps',
         'subsecables',
-        'terrestrialnetworks'
+        'terrestrialnetworks',
+        'knownuserssubseacable',
+        'knownusersfacilities'
       ]
     },
     dataCenterColumns() {
@@ -751,6 +753,19 @@ export default {
       return Boolean(arr.length)
     },
     handleSelection(_id, opt) {
+      if (opt == 'Facilities (Ownership)') {
+        opt = 'facilities'
+      } else if (
+        opt == 'Subsea Cables (User)' ||
+        opt == 'Subsea Cables (Ownership)'
+      ) {
+        opt = 'subsea-cable'
+      } else if (opt == 'Terrestrial Networks (Ownership)') {
+        opt = 'terrestrial-network'
+      } else if (opt == 'Ixps (Ownership)') {
+        opt = 'ixps'
+      }
+
       return this.$emit('selection', {
         id: _id,
         option: opt

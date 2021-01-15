@@ -252,7 +252,9 @@ import {
   setOrgKnownUsersAssociations,
   setOrgFacilitiesAssociations,
   removeOrgIxpsAssociations,
-  checkOrganizationPeeringDBId
+  checkOrganizationPeeringDBId,
+  setOrgFacilityTenantsAssociations,
+  removeOrgFacilityTenantsAssociations
 } from '../../services/api/organizations'
 import {
   getSearchByCablesS,
@@ -435,6 +437,9 @@ export default {
         case 'facilities':
           method = searchFacilities
           break
+        case 'facilities (tenants)':
+          method = searchFacilities
+          break
         default:
           method = getSearchByCablesS
           break
@@ -460,6 +465,8 @@ export default {
         user_id: await this.$auth.getUserID()
       }
 
+      console.log(type)
+
       try {
         switch (type.toLowerCase()) {
           case 'terrestrial networks':
@@ -479,6 +486,9 @@ export default {
             break
           default:
             await setOrgSubseaAssociations(args)
+            break
+          case 'facilities (tenants)':
+            await setOrgFacilityTenantsAssociations(args)
             break
         }
       } catch (err) {
@@ -508,6 +518,9 @@ export default {
         case 'cls':
           await removeOrgClsAssociations(args)
           break
+        case 'facilities (tenants)':
+          await removeOrgFacilityTenantsAssociations(args)
+          break
         default:
           await removeOrgSubseaAssociations(args)
           break
@@ -520,7 +533,8 @@ export default {
         terrestrial,
         facilities,
         ixps,
-        knownUsers
+        knownUsers,
+        knownUsersFacilities
       ] = await getOrgLinkedElements({
         user_id: this.$auth.getUserID(),
         id
@@ -534,7 +548,8 @@ export default {
           'Subsea Cables (Ownership)',
           'Subsea Cables (User)',
           'Facilities (Ownership)',
-          'Terrestrial Networks (Ownership)'
+          'Terrestrial Networks (Ownership)',
+          'Facilities (Tenants)'
         ],
         options: {
           cls: [],
@@ -542,7 +557,8 @@ export default {
           facilities: [],
           'known users': [],
           'subsea cables': [],
-          'terrestrial networks': []
+          'terrestrial networks': [],
+          knownUsersFacilities: []
         },
         values: [
           cls.r ? cls.r : cls,
@@ -550,7 +566,8 @@ export default {
           subsea.r ? subsea.r : subsea,
           knownUsers.r ? knownUsers.r : knownUsers,
           facilities.r ? facilities.r : facilities,
-          terrestrial.r ? terrestrial.r : terrestrial
+          terrestrial.r ? terrestrial.r : terrestrial,
+          knownUsersFacilities.r ? knownUsersFacilities.r : knownUsersFacilities
         ]
       }
     },
