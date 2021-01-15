@@ -209,7 +209,7 @@
                 get-selected-id
                 :loading="linkedElements.loading"
                 :value="mode == 'create' ? [] : linkedElements.values[i]"
-                :options="linkedElements.options[label]"
+                :options="linkedElements.options[label.toLowerCase()]"
                 @remove="
                   handleLinkedElementsRemove({
                     type: label,
@@ -510,7 +510,7 @@ export default {
         case 'facilities':
           await removeOrgFacilitiesAssociations(args)
           break
-        case 'known users':
+        case 'subsea cables (user)':
           await removeOrgKnownUsersAssociations(args)
           break
         case 'cls':
@@ -550,13 +550,13 @@ export default {
           'Terrestrial Networks (Ownership)'
         ],
         options: {
-          'Facilities (Ownership)': [],
-          'Facilities (Tenants)': [],
-          'Subsea Cables (Ownership)': [],
-          'Subsea Cables (User)': [],
-          'CLS (Ownership)': [],
-          'IXPS (Ownership)': [],
-          'Terrestrial Networks (Ownership)': []
+          'facilities (ownership)': [],
+          'facilities (tenants)': [],
+          'subsea cables (ownership)': [],
+          'subsea cables (user)': [],
+          'cls (ownership)': [],
+          'ixps (ownership)': [],
+          'terrestrial networks (ownership)': []
         },
         values: [
           facilities.r ? facilities.r : facilities,
