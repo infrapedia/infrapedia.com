@@ -470,13 +470,13 @@ export default {
           case 'terrestrial networks':
             await setOrgTerrestrialsAssociations(args)
             break
-          case 'cls':
+          case 'cls (ownership)':
             await setOrgClsAssociations(args)
             break
-          case 'ixps':
+          case 'ixps (ownership)':
             await setOrgIxpsAssociations(args)
             break
-          case 'facilities':
+          case 'facilities (ownership)':
             await setOrgFacilitiesAssociations(args)
             break
           case 'subsea cables (user)':
@@ -504,16 +504,16 @@ export default {
         case 'terrestrial networks':
           await removeOrgTerrestrialsAssociations(args)
           break
-        case 'ixps':
+        case 'ixps (ownership)':
           await removeOrgIxpsAssociations(args)
           break
-        case 'facilities':
+        case 'facilities (ownership)':
           await removeOrgFacilitiesAssociations(args)
           break
         case 'subsea cables (user)':
           await removeOrgKnownUsersAssociations(args)
           break
-        case 'cls':
+        case 'cls (ownership)':
           await removeOrgClsAssociations(args)
           break
         case 'facilities (tenants)':
