@@ -422,19 +422,19 @@ export default {
       t = t.toLowerCase()
 
       switch (t) {
-        case 'terrestrial networks':
+        case 'terrestrial networks (ownership)':
           method = getSearchByCablesT
           break
-        case 'cls':
+        case 'cls (ownership)':
           method = searchCls
           break
-        case 'ixps':
+        case 'ixps (ownership)':
           method = searchIxps
           break
         case 'subsea cables (user)':
           method = getSearchByCablesS
           break
-        case 'facilities':
+        case 'facilities (ownership)':
           method = searchFacilities
           break
         case 'facilities (tenants)':
@@ -467,7 +467,7 @@ export default {
 
       try {
         switch (type.toLowerCase()) {
-          case 'terrestrial networks':
+          case 'terrestrial networks (ownership)':
             await setOrgTerrestrialsAssociations(args)
             break
           case 'cls (ownership)':
@@ -501,7 +501,7 @@ export default {
       }
 
       switch (type.toLowerCase()) {
-        case 'terrestrial networks':
+        case 'terrestrial networks (ownership)':
           await removeOrgTerrestrialsAssociations(args)
           break
         case 'ixps (ownership)':
