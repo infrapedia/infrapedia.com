@@ -80,9 +80,16 @@ const activationDateTime =
     .toMillis() / 1000
 
 const cablesPaintConfig = {
-  'line-width': 1.62,
+  'line-width': [
+    'case',
+    ['boolean', ['feature-state', 'active'], false],
+    3,
+    1.62
+  ],
   'line-color': [
     'case',
+    ['boolean', ['feature-state', 'active'], false],
+    '#F7D079',
     ['==', ['get', 'haspartial'], 'true'],
     '#CC591F',
     ['==', ['get', 'hasoutage'], 'true'],
@@ -143,9 +150,12 @@ export const mapConfig = {
   data: {
     sources: [
       {
-        name: 'cables',
+        name: cables,
         opts: {
           type: 'vector',
+          promoteId: {
+            [cables]: '_id'
+          },
           tiles: [`${process.env.VUE_APP_TILES_CABLES}`]
         }
       },

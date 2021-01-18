@@ -130,6 +130,9 @@ import LayersPanel from './panels/layersPanel'
 import { bbox } from '@turf/turf'
 import { fCollectionFormat } from '../../helpers/featureCollection'
 import $axios from '../../services/axios'
+import highlightSeveralFeatures, {
+  disableHighlightSeveralFeatures
+} from './highlightSeveralFeatures'
 
 export default {
   name: 'Map',
@@ -179,6 +182,18 @@ export default {
       return this.$auth.isAuthenticated
     }
   },
+  watch: {
+    '$store.state.isSidebar'(bool) {
+      if (!bool) {
+        disableHighlightSeveralFeatures({
+          map: this.map,
+          layerName: mapConfig.cables,
+          ids: [...this.$store.state.map.activatedElements]
+        })
+        this.$store.commit('map/SET_ACTIVATED_ELEMENTS', [])
+      }
+    }
+  },
   created() {
     bus.$on(CLEAR_SELECTION, this.disableSelectionHighlight)
     bus.$on(TOGGLE_THEME, this.toggleDarkMode)
@@ -212,6 +227,13 @@ export default {
       changeSidebarMode: 'changeSidebarMode',
       getCableData: 'map/getCableData'
     }),
+    handleHighlightCablesArray({ terrestrial, subsea }) {
+      highlightSeveralFeatures({
+        map: this.map,
+        layerName: mapConfig.cables,
+        elements: [...terrestrial.map(i => i._id), ...subsea.map(i => i._id)]
+      })
+    },
     closeLastMileTool() {
       this.$store.commit(`${IS_LMT}`, false)
     },
@@ -739,6 +761,26 @@ export default {
         speed: 1.8,
         curve: 1
       })
+
+      if (res && res.data && res.data.r && res.data.r.length) {
+        const selection = res.data.r[0]
+        const cables = {
+          subsea: [
+            ...selection.subsecables,
+            ...selection.knownUsersSubseaCable
+          ],
+          terrestrial: [
+            ...selection.terrestrialnetworks,
+            ...selection.knownUsersTerrestrialN
+          ]
+        }
+
+        this.handleHighlightCablesArray(cables)
+        this.$store.commit('map/SET_ACTIVATED_ELEMENTS', [
+          ...cables.terrestrial.map(item => item._id),
+          ...cables.subsea.map(item => item._id)
+        ])
+      }
     },
     async handleNetworkFocus(_id, fc) {
       const { focus, bounds, map } = this
