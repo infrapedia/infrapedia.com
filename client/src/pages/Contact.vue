@@ -183,6 +183,7 @@ export default {
         ],
         subject: [
           {
+            required: true,
             message: 'A subject is required',
             trigger: ['blur', 'change']
           }
