@@ -219,6 +219,9 @@ export default {
         const { t } = await sendContactForm(this.form)
         if (t != 'error') {
           this.$refs.contactForm.resetFields()
+          if (this.$refs.captcha) {
+            this.$refs.captcha.reset()
+          }
         }
         this.isSendingData = false
       })
