@@ -19,7 +19,10 @@
                         v-model="orgCollapse"
                         :ref="`el-collapse_${i}`"
                       >
-                        <el-collapse-item :name="i" :title="col.label">
+                        <el-collapse-item :name="i">
+                          <div slot="title" class="label capitalize">
+                            {{ col.label }}
+                          </div>
                           <el-tag
                             v-for="(item, index) in col.filter(info[col.value])"
                             :key="index + item.name"
@@ -58,7 +61,10 @@
                         v-model="orgCollapse"
                         :ref="`el-collapse_${i}`"
                       >
-                        <el-collapse-item :name="i" :title="col.label">
+                        <el-collapse-item :name="i">
+                          <div slot="title" class="label capitalize">
+                            {{ col.label }}
+                          </div>
                           <el-tag
                             v-for="(item, index) in info[col.value]"
                             :key="index + item.name"
@@ -92,7 +98,10 @@
                       :ref="`el-collapse_${i}`"
                       class="mb4"
                     >
-                      <el-collapse-item :name="i" :title="col.label">
+                      <el-collapse-item :name="i">
+                        <div slot="title" class="label capitalize">
+                          {{ col.label }}
+                        </div>
                         <p
                           v-for="(item, index) in info[col.value]"
                           :key="index + item"
@@ -266,7 +275,6 @@
                     v-for="(item, index) in info[col.value]"
                     :key="index + item"
                     class="text-bold cursor-pointer underline-hover"
-                    @click="handleSelection(item._id, col.label)"
                   >
                     {{ item.name ? item.name : item.label }}
                   </p>
@@ -342,7 +350,7 @@
                 Unknown
               </p>
 
-              <!--------- PEERING DB ID Column -------->
+              <!--------- PEERING DB ID Column START -------->
               <a
                 class="text-bold cursor-pointer underline"
                 target="_blank"
@@ -357,8 +365,9 @@
                     col.link
                 "
               >
-                {{ col.link(info[col.value]) }}
+                {{ info[col.value] }}
               </a>
+              <!--------- PEERING DB ID Column END -------->
 
               <p
                 class="text-bold"
@@ -405,7 +414,9 @@
               <div class="flex row wrap ml-1">
                 <div v-for="tag in info[col.value]" :key="tag" class="pr1 pl1">
                   <el-tag type="info" size="small">
-                    {{ tag }}
+                    <a :href="col.link(tag)" class="underline" target="_blank">
+                      {{ tag }}
+                    </a>
                   </el-tag>
                 </div>
               </div>
