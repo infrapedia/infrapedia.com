@@ -161,18 +161,73 @@ export const searchOrganization = async ({ user_id, s, psz, sortBy, page }) => {
 export const getOrgLinkedElements = async args => {
   const results = []
   const promises = [
-    getOrgClsAssociations,
-    getOrgSubseaAssociations,
-    getOrgTerrestrialsAssociations,
     getOrgFacilitesAssociations,
+    getOrgFacilityTenantsAssociations,
+    getOrgSubseaAssociations,
+    getOrgKnownUsersAssociations,
+    getOrgClsAssociations,
     getOrgIxpsAssociations,
-    getOrgKnownUsersAssociations
+    getOrgTerrestrialsAssociations
   ]
 
   for (let promise of promises) {
     results.push(await promise(args))
   }
   return results.map(r => r.data)
+}
+
+export const getOrgFacilityTenantsAssociations = async ({ user_id, id }) => {
+  url = `${apiConfig.url}/organization/facilities/ku/${id}`
+  const res = await $axios.get(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const setOrgFacilityTenantsAssociations = async ({
+  user_id,
+  org_id,
+  _id
+}) => {
+  url = `${apiConfig.url}/auth/updateknownuserFacility`
+  form = new FormData()
+
+  form.append('idFacility', _id)
+  form.append('idorg', org_id)
+
+  const res = await $axios.post(url, form, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    }
+  })
+  return res
+}
+
+export const removeOrgFacilityTenantsAssociations = async ({
+  user_id,
+  org_id,
+  _id
+}) => {
+  url = `${apiConfig.url}/auth/updateknownuserFacility`
+
+  const res = await $axios.delete(url, {
+    withCredentials: true,
+    headers: {
+      userid: user_id,
+      Authorization: 'Bearer ' + apiConfig.bearer()
+    },
+    data: {
+      idFacility: _id,
+      idorg: org_id
+    }
+  })
+  return res
 }
 
 export const getOrgClsAssociations = async ({ user_id, id }) => {

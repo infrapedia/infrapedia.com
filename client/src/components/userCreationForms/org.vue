@@ -198,7 +198,7 @@
         Cancel
       </el-button>
     </div>
-    <el-form slot="footer" v-loading="!linkedElements">
+    <el-form slot="footer" v-if="mode !== 'create'" v-loading="!linkedElements">
       <el-divider />
       <el-form-item label="Associations" v-if="linkedElements">
         <div class="flex column w-fit-full">
@@ -252,7 +252,9 @@ import {
   setOrgKnownUsersAssociations,
   setOrgFacilitiesAssociations,
   removeOrgIxpsAssociations,
-  checkOrganizationPeeringDBId
+  checkOrganizationPeeringDBId,
+  setOrgFacilityTenantsAssociations,
+  removeOrgFacilityTenantsAssociations
 } from '../../services/api/organizations'
 import {
   getSearchByCablesS,
@@ -420,19 +422,22 @@ export default {
       t = t.toLowerCase()
 
       switch (t) {
-        case 'terrestrial networks':
+        case 'terrestrial networks (ownership)':
           method = getSearchByCablesT
           break
-        case 'cls':
+        case 'cls (ownership)':
           method = searchCls
           break
-        case 'ixps':
+        case 'ixps (ownership)':
           method = searchIxps
           break
-        case 'known users':
+        case 'subsea cables (user)':
           method = getSearchByCablesS
           break
-        case 'facilities':
+        case 'facilities (ownership)':
+          method = searchFacilities
+          break
+        case 'facilities (tenants)':
           method = searchFacilities
           break
         default:
@@ -462,20 +467,23 @@ export default {
 
       try {
         switch (type.toLowerCase()) {
-          case 'terrestrial networks':
+          case 'terrestrial networks (ownership)':
             await setOrgTerrestrialsAssociations(args)
             break
-          case 'cls':
+          case 'cls (ownership)':
             await setOrgClsAssociations(args)
             break
-          case 'ixps':
+          case 'ixps (ownership)':
             await setOrgIxpsAssociations(args)
             break
-          case 'facilities':
+          case 'facilities (ownership)':
             await setOrgFacilitiesAssociations(args)
             break
-          case 'known users':
+          case 'subsea cables (user)':
             await setOrgKnownUsersAssociations(args)
+            break
+          case 'facilities (tenants)':
+            await setOrgFacilityTenantsAssociations(args)
             break
           default:
             await setOrgSubseaAssociations(args)
@@ -493,20 +501,23 @@ export default {
       }
 
       switch (type.toLowerCase()) {
-        case 'terrestrial networks':
+        case 'terrestrial networks (ownership)':
           await removeOrgTerrestrialsAssociations(args)
           break
-        case 'ixps':
+        case 'ixps (ownership)':
           await removeOrgIxpsAssociations(args)
           break
-        case 'facilities':
+        case 'facilities (ownership)':
           await removeOrgFacilitiesAssociations(args)
           break
-        case 'known users':
+        case 'subsea cables (user)':
           await removeOrgKnownUsersAssociations(args)
           break
-        case 'cls':
+        case 'cls (ownership)':
           await removeOrgClsAssociations(args)
+          break
+        case 'facilities (tenants)':
+          await removeOrgFacilityTenantsAssociations(args)
           break
         default:
           await removeOrgSubseaAssociations(args)
@@ -515,12 +526,13 @@ export default {
     },
     async getOrgLinkedElements(id) {
       const [
-        cls,
-        subsea,
-        terrestrial,
         facilities,
+        knownUsersFacilities,
+        subsea,
+        knownUsers,
+        cls,
         ixps,
-        knownUsers
+        terrestrial
       ] = await getOrgLinkedElements({
         user_id: this.$auth.getUserID(),
         id
@@ -529,27 +541,32 @@ export default {
       this.linkedElements = {
         loading: false,
         labels: [
-          'CLS',
-          'IXPS',
-          'Subsea Cables',
-          'Known Users',
-          'Facilities',
-          'Terrestrial Networks'
+          'Facilities (Ownership)',
+          'Facilities (Tenants)',
+          'Subsea Cables (Ownership)',
+          'Subsea Cables (User)',
+          'CLS (Ownership)',
+          'IXPS (Ownership)',
+          'Terrestrial Networks (Ownership)'
         ],
         options: {
-          cls: [],
-          ixps: [],
-          facilities: [],
-          'known users': [],
-          'subsea cables': [],
-          'terrestrial networks': []
+          'facilities (ownership)': [],
+          'facilities (tenants)': [],
+          'subsea cables (ownership)': [],
+          'subsea cables (user)': [],
+          'cls (ownership)': [],
+          'ixps (ownership)': [],
+          'terrestrial networks (ownership)': []
         },
         values: [
-          cls.r ? cls.r : cls,
-          ixps.r ? ixps.r : ixps,
+          facilities.r ? facilities.r : facilities,
+          knownUsersFacilities.r
+            ? knownUsersFacilities.r
+            : knownUsersFacilities,
           subsea.r ? subsea.r : subsea,
           knownUsers.r ? knownUsers.r : knownUsers,
-          facilities.r ? facilities.r : facilities,
+          cls.r ? cls.r : cls,
+          ixps.r ? ixps.r : ixps,
           terrestrial.r ? terrestrial.r : terrestrial
         ]
       }

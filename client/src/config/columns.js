@@ -605,7 +605,8 @@ export const orgsColumns = [
   {
     label: 'ASN',
     value: 'asn',
-    showSidebar: true
+    showSidebar: true,
+    link: id => `https://bgp.he.net/AS${id}`
   },
   {
     label: 'Address',
@@ -638,5 +639,40 @@ export const orgsColumns = [
     label: 'Updated at',
     value: 'uDate',
     showTable: true
+  },
+  {
+    label: 'Facilities (Ownership)',
+    value: 'facilities',
+    showSidebar: true
+  },
+  {
+    label: 'Facilities (Tenants)',
+    value: 'knownUsersFacilities',
+    showSidebar: true
+  },
+  {
+    label: 'Subsea cables (Ownership)',
+    value: 'subsecables',
+    showSidebar: true
+  },
+  {
+    label: 'Subsea Cables (User)',
+    value: 'knownUsersSubseaCable',
+    showSidebar: true
+  },
+  {
+    label: 'Terrestrial Networks (Ownership)',
+    value: 'terrestrialnetworks',
+    showSidebar: true
+  },
+  {
+    label: 'Ixps (Ownership)',
+    value: 'ixps',
+    showSidebar: true
+  },
+  {
+    label: 'Cls (Ownership)',
+    value: 'cls',
+    showSidebar: true
   }
 ]

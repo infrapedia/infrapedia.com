@@ -11,7 +11,8 @@ const state = {
   easePoint: null,
   hasToEase: false,
   isLastMileTool: false,
-  currentSelection: null
+  currentSelection: null,
+  activatedElements: []
 }
 
 const mutations = {
@@ -35,6 +36,9 @@ const mutations = {
   },
   IS_LMT(state, bool) {
     state.isLastMileTool = bool
+  },
+  SET_ACTIVATED_ELEMENTS(state, elemntsIds) {
+    state.activatedElements = elemntsIds
   },
   EASE_POINT(state, easePoint) {
     state.easePoint = easePoint

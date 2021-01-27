@@ -18,9 +18,11 @@
                       <el-collapse
                         v-model="orgCollapse"
                         :ref="`el-collapse_${i}`"
-                        class="mb4"
                       >
-                        <el-collapse-item :name="i" :title="col.label">
+                        <el-collapse-item :name="i">
+                          <div slot="title" class="label capitalize">
+                            {{ col.label }}
+                          </div>
                           <el-tag
                             v-for="(item, index) in col.filter(info[col.value])"
                             :key="index + item.name"
@@ -41,7 +43,7 @@
                       </el-collapse>
                     </template>
                     <template v-else>
-                      <p class="label capitalize">{{ col.label }}h</p>
+                      <p class="label capitalize mt5">{{ col.label }}</p>
                       <el-tag
                         v-for="(item, index) in col.filter(info[col.value])"
                         :key="index + item.name"
@@ -53,7 +55,7 @@
                               : 'subsea-cable'
                           )
                         "
-                        class="mr2 cursor-pointer"
+                        class="mr2 cursor-pointer mb4"
                         size="mini"
                       >
                         {{ item.name }}h
@@ -65,9 +67,11 @@
                       <el-collapse
                         v-model="orgCollapse"
                         :ref="`el-collapse_${i}`"
-                        class="mb4"
                       >
-                        <el-collapse-item :name="i" :title="col.label">
+                        <el-collapse-item :name="i">
+                          <div slot="title" class="label capitalize">
+                            {{ col.label }}
+                          </div>
                           <el-tag
                             v-for="(item, index) in info[col.value]"
                             :key="index + item.name"
@@ -81,12 +85,12 @@
                       </el-collapse>
                     </template>
                     <template v-else>
-                      <p class="label capitalize">{{ col.label }}</p>
+                      <p class="label capitalize mt5">{{ col.label }}</p>
                       <el-tag
                         v-for="(item, index) in info[col.value]"
                         :key="index + item.name"
                         @click="handleSelection(item._id, col.label)"
-                        class="mr2 cursor-pointer"
+                        class="mr2 cursor-pointer mb4"
                         size="mini"
                       >
                         {{ item.name }} t
@@ -101,7 +105,10 @@
                       :ref="`el-collapse_${i}`"
                       class="mb4"
                     >
-                      <el-collapse-item :name="i" :title="col.label">
+                      <el-collapse-item :name="i">
+                        <div slot="title" class="label capitalize">
+                          {{ col.label }}
+                        </div>
                         <p
                           v-for="(item, index) in info[col.value]"
                           :key="index + item"
@@ -192,9 +199,9 @@
                   info[col.value].length
               "
             >
-              <el-col :span="24">
+              <el-col :span="24" class="mb4">
                 <small>
-                  <p class="m0 capitalize">
+                  <p class="m0 capitalize label">
                     More information:
                   </p>
                 </small>
@@ -213,11 +220,11 @@
             <!---- LABELS SECTION ENDS ---->
 
             <!---- VALUES SECTION STARTS---->
-            <el-col :span="12" v-if="info[col.value]">
+            <el-col :span="12" v-if="info[col.value] && col.value != 'asn'">
               <template v-if="col.label.toLowerCase().includes('url')">
                 <template v-if="Array.isArray(info[col.value])">
                   <a
-                    class="text-bold underline dont-break-out mt3 inline-block"
+                    class="text-bold underline dont-break-out mt3 inline-block mb4"
                     style="max-width: 20.4rem"
                     v-for="(url, i) in info[col.value]"
                     :href="
@@ -233,7 +240,7 @@
                 <a
                   v-else
                   style="max-width: 20.4rem"
-                  class="text-bold underline dont-break-out mt3 inline-block"
+                  class="text-bold underline dont-break-out mt3 inline-block mb4"
                   :href="
                     info[col.value].includes('http://') ||
                     info[col.value].includes('https://')
@@ -275,7 +282,6 @@
                     v-for="(item, index) in info[col.value]"
                     :key="index + item"
                     class="text-bold cursor-pointer underline-hover"
-                    @click="handleSelection(item._id, col.label)"
                   >
                     {{ item.name ? item.name : item.label }}
                   </p>
@@ -351,7 +357,7 @@
                 Unknown
               </p>
 
-              <!--------- PEERING DB ID Column -------->
+              <!--------- PEERING DB ID Column START -------->
               <a
                 class="text-bold cursor-pointer underline"
                 target="_blank"
@@ -366,8 +372,9 @@
                     col.link
                 "
               >
-                {{ col.link(info[col.value]) }}
+                {{ info[col.value] }}
               </a>
+              <!--------- PEERING DB ID Column END -------->
 
               <p
                 class="text-bold"
@@ -404,6 +411,22 @@
               >
                 {{ info[col.value] }}
               </p>
+            </el-col>
+            <el-col
+              v-else-if="
+                col.value == 'asn' && info[col.value] && info[col.value].length
+              "
+              class="mb2"
+            >
+              <div class="flex row wrap ml-1">
+                <div v-for="tag in info[col.value]" :key="tag" class="pr1 pl1">
+                  <el-tag type="info" size="small">
+                    <a :href="col.link(tag)" class="underline" target="_blank">
+                      {{ tag }}
+                    </a>
+                  </el-tag>
+                </div>
+              </div>
             </el-col>
           </el-row>
         </template>
@@ -693,7 +716,12 @@ export default {
         'cls',
         'address',
         'facilities',
-        'owners'
+        'owners',
+        'ixps',
+        'subsecables',
+        'terrestrialnetworks',
+        'knownuserssubseacable',
+        'knownusersfacilities'
       ]
     },
     dataCenterColumns() {
@@ -743,6 +771,19 @@ export default {
       return Boolean(arr.length)
     },
     handleSelection(_id, opt) {
+      if (opt == 'Facilities (Ownership)') {
+        opt = 'facilities'
+      } else if (
+        opt == 'Subsea Cables (User)' ||
+        opt == 'Subsea Cables (Ownership)'
+      ) {
+        opt = 'subsea-cable'
+      } else if (opt == 'Terrestrial Networks (Ownership)') {
+        opt = 'terrestrial-network'
+      } else if (opt == 'Ixps (Ownership)') {
+        opt = 'ixps'
+      }
+
       return this.$emit('selection', {
         id: _id,
         option: opt

@@ -9,12 +9,14 @@ export const sendContactForm = async ({
   first_name,
   last_name,
   company,
-  message
+  message,
+  subject
 }) => {
   url = `${apiConfig.url}/contact`
   form = new FormData()
 
   form.append('email', email)
+  form.append('subject', subject)
   form.append('first_name', first_name)
   form.append('last_name', last_name)
   form.append('company', company)

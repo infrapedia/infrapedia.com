@@ -8,7 +8,7 @@ a {
 p {
   font-weight: 400;
   font-size: 14px;
-  margin: .5rem 0;
+  margin: 0.5rem 0;
 }
 
 span.label {
@@ -44,50 +44,54 @@ footer {
 */
 
 .application.light {
-  .el-col span.label,
-  p.label {
-    color: $dark-blue;
-  }
-
-  .status-text {
-    color: #ff8282;
-    &.active-cable {
-      color: #2aa9b7;
+  .sidebar-wrapper {
+    .el-col span.label,
+    .label {
+      color: $dark-blue;
     }
-    &.cls {
-      color: grey;
-      &.active {
-        color: green;
+
+    .status-text {
+      color: #ff8282;
+      &.active-cable {
+        color: #2aa9b7;
+      }
+      &.cls {
+        color: grey;
+        &.active {
+          color: green;
+        }
       }
     }
   }
 }
 .application.dark {
-  p {
-    color: $white-partial;
-  }
-  .status-text {
-    color: #ff4e46;
-    &.active-cable {
-      color: #57ced8;
+  .sidebar-wrapper  {
+    p {
+      color: $white-partial;
     }
-    &.cls {
-      color: grey;
-      &.active {
-        color: green;
+    .status-text {
+      color: #ff4e46;
+      &.active-cable {
+        color: #57ced8;
+      }
+      &.cls {
+        color: grey;
+        &.active {
+          color: green;
+        }
       }
     }
-  }
-  .el-button {
-    color: $dark-charcoal;
-    background-color: $light-yellow;
-    &:hover {
-      background-color: darken($light-yellow, 8%);
+    .el-button {
+      color: $dark-charcoal;
+      background-color: $light-yellow;
+      &:hover {
+        background-color: darken($light-yellow, 8%);
+      }
     }
-  }
 
-  a,
-  .el-col span.label {
-    color: $white-partial;
+    a,
+    .el-col span.label {
+      color: $white-partial;
+    }
   }
 }

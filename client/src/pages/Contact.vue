@@ -52,6 +52,11 @@
                 <el-input v-model="form.email" :class="{ dark }" />
               </el-form-item>
             </el-col>
+            <el-col :sm="24" :lg="24">
+              <el-form-item label="Subject" prop="subject" required>
+                <el-input v-model="form.subject" :class="{ dark }" />
+              </el-form-item>
+            </el-col>
             <el-col :span="24">
               <el-form-item label="Message" prop="message" required>
                 <el-input
@@ -130,6 +135,7 @@ export default {
     isSendingData: false,
     form: {
       email: '',
+      subject: '',
       first_name: '',
       last_name: '',
       company: '',
@@ -175,6 +181,13 @@ export default {
             trigger: ['blur', 'change']
           }
         ],
+        subject: [
+          {
+            required: true,
+            message: 'A subject is required',
+            trigger: ['blur', 'change']
+          }
+        ],
         message: [
           {
             required: true,
@@ -206,6 +219,9 @@ export default {
         const { t } = await sendContactForm(this.form)
         if (t != 'error') {
           this.$refs.contactForm.resetFields()
+          if (this.$refs.captcha) {
+            this.$refs.captcha.reset()
+          }
         }
         this.isSendingData = false
       })
