@@ -4,7 +4,7 @@ import {
   nearestPointOnLine,
   lineString
 } from '@turf/turf'
-
+import { fCollectionFormat } from '../../helpers/featureCollection'
 class Snaping {
   constructor({ map, draw, pixel, snapLayers, scene }) {
     this.status = true
@@ -18,60 +18,40 @@ class Snaping {
     this.init()
   }
   init() {
-    var vm = this
-
-    this.map.on('mousemove', function(e) {
-      if (vm.scene.creation || vm.scene.edition) {
-        vm.mouseMove(e, vm)
-      }
-    })
-
-    this.map.on('click', function(e) {
-      vm.addSnapToDraw(e)
-    })
-
-    this.map.on('draw.update', function() {
-      vm.addSnapToDraw()
-    })
+    this.map.on('click', this.addSnapToDraw)
+    this.map.on('mousemove', this.mouseMove)
+    this.map.on('draw.update', this.addSnapToDraw)
   }
 
   addSnapToDraw() {
-    var that = this
-    if (this.scene.creation || this.scene.edition) {
-      if (this.snapPoint !== false) {
-        var drawMode = this.draw.getMode()
-        if (drawMode == 'draw_line_string' || drawMode == 'direct_select') {
-          if (drawMode == 'draw_line_string') {
-            var lines = this.draw.getAll()
-            var line = lines.features[0]
-            line.geometry.coordinates.pop()
-            line.geometry.coordinates.pop()
-            line.geometry.coordinates.push(this.snapPoint.geometry.coordinates)
-            lines.features[0] = line
-            this.draw.set(lines)
-          }
-          if (drawMode == 'direct_select') {
-            var mypoint = this.draw.getSelectedPoints()
-            var lines1 = this.draw.getSelected()
-            if (mypoint.features.length > 0 && lines1.features.length > 0) {
-              var line1 = lines1.features[0]
-              var id = line1.id
-              var newcoords = []
-              var selectLat = mypoint.features[0].geometry.coordinates[1]
-              var selectLng = mypoint.features[0].geometry.coordinates[0]
+    if (this.snapPoint !== false) {
+      var drawMode = this.draw.getMode()
+      if (drawMode == 'draw_line_string' || drawMode == 'direct_select') {
+        if (drawMode == 'draw_line_string') {
+          var lines = this.draw.getAll()
+          var line = lines.features[0]
+          line.geometry.coordinates.pop()
+          line.geometry.coordinates.pop()
+          line.geometry.coordinates.push(this.snapPoint.geometry.coordinates)
+          lines.features[0] = line
+          this.draw.set(lines)
+        }
+        if (drawMode == 'direct_select') {
+          const mypoint = this.draw.getSelectedPoints()
+          const lines = this.draw.getSelected()
+          if (mypoint.features.length > 0 && lines.features.length > 0) {
+            const line = lines.features[0]
+            const selectLat = mypoint.features[0].geometry.coordinates[1]
+            const selectLng = mypoint.features[0].geometry.coordinates[0]
+            const newcoords = line.geometry.coordinates.map(c => {
+              if (selectLat == c[1] && selectLng == c[0]) {
+                return this.snapPoint.geometry.coordinates
+              } else return c
+            })
 
-              line1.geometry.coordinates.map(function(c) {
-                if (selectLat == c[1] && selectLng == c[0]) {
-                  newcoords.push(that.snapPoint.geometry.coordinates)
-                } else {
-                  newcoords.push(c)
-                }
-              })
-              var newLine = lineString(newcoords)
-              newLine.id = id
-              var fcol = { type: 'FeatureCollection', features: [newLine] }
-              this.draw.set(fcol)
-            }
+            const newLine = lineString(newcoords)
+            newLine.id = line.id
+            this.draw.set(fCollectionFormat([newLine]))
           }
         }
       }
@@ -85,21 +65,20 @@ class Snaping {
       return false
     }
   }
-  mouseMove(e, vm) {
-    if (vm.status) {
+  mouseMove(e) {
+    if (this.status) {
       var feature = this.getFeatures(e)
       if (feature !== false) {
-        vm.snapPoint = vm.findSnapPoint(e, feature)
-        if (vm.snapPoint !== false) {
-          vm.map.getSource('snappoint').setData(vm.snapPoint)
+        this.snapPoint = this.findSnapPoint(e, feature)
+        if (this.snapPoint !== false) {
+          this.map.getSource('snappoint').setData(this.snapPoint)
         } else {
-          vm.map
+          this.map
             .getSource('snappoint')
             .setData({ type: 'FeatureCollection', features: [] })
         }
       }
     }
-    return { e: e, vm: vm, features: feature }
   }
   findSnapPoint(e, f) {
     var that = this
