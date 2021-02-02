@@ -425,7 +425,7 @@
         </template>
       </div>
 
-      <template v-if="isFacilityFocusType">
+      <template v-if="isFacilityFocusType && info.enType">
         <el-collapse class="mt2 mb2">
           <el-collapse-item title="More details">
             <div class="p0 m0 transparent">
