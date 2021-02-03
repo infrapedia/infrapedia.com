@@ -8,7 +8,8 @@ const allowedCreationTypes = [
   'subsea cable',
   'facilities',
   'terrestrial-network',
-  'network'
+  'network',
+  'subsea'
 ]
 
 export default function elemntTypeValidator(e) {

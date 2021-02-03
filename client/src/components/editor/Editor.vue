@@ -550,10 +550,10 @@ export default {
     async handleDialogData(data) {
       this.dialog.visible = false
       if (data) {
-        const featuresSelected = this.draw.getSelected().features
-        if (featuresSelected && featuresSelected.length) {
+        const { selectedFeature } = this.dialog
+        if (selectedFeature) {
           const feature = {
-            ...JSON.parse(JSON.stringify(featuresSelected[0]))
+            ...JSON.parse(JSON.stringify(selectedFeature))
           }
           feature.properties = { ...data }
           // This adds the editorID property with which I keep track of it
@@ -875,7 +875,7 @@ export default {
         this.dialog.visible = true
         this.$once(
           `properties-dialog-close-${this.dialog.mode}`,
-          await this.handleDialogData
+          this.handleDialogData
         )
       } else await this.handleDialogData({ name: '' })
     },
@@ -938,11 +938,6 @@ export default {
     addMapEvents(map) {
       const vm = this
       map.on('load', function() {
-        // ---------------------------------------------------------------------------------------
-        // ---------------------------------------------------------------------------------------
-        // map.on('draw.selectionchange', vm.handleDrawSelectionChange)
-        // ---------------------------------------------------------------------------------------
-        // ---------------------------------------------------------------------------------------
         map.on('mousemove', function(e) {
           const coords = e.lngLat.wrap()
           vm.infoBox.lat = coords.lat.toFixed(5)
