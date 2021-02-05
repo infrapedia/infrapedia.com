@@ -5,10 +5,9 @@ const sponsors = [
     src: 'https://cdn1.infrapedia.com/assets/img/catchpoint-logo.png'
   },
   {
-    url:
-      'https://ipv4.global/?utm_source=digitalads&utm_medium=banner&utm_campaign=networkatlas&utm_content=sidebar',
-    alt: 'ipv4 advertiser',
-    src: 'https://cdn1.infrapedia.com/assets/img/ipv4global-footer.png'
+    url: 'https://www.edgeuno.com?ref=https://www.infrapedia.com',
+    alt: 'edgeuno advertiser',
+    src: 'https://cdn1.infrapedia.com/assets/img/dark-logo.png'
   }
   // {
   //   url: 'https://www.infrapedia.com/',
