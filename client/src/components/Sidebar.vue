@@ -192,10 +192,10 @@ export default {
       if (!this.focus) return
 
       let columns = getSelectionCols(this.focus.type)
-      // activationDateTime column is irrelevant on terrestrial cables
-      if (this.currentSelection && this.currentSelection.terrestrial) {
-        columns = columns.filter(col => col.value != 'activationDateTime')
-      }
+      // // activationDateTime column is irrelevant on terrestrial cables
+      // if (this.currentSelection && this.currentSelection.terrestrial) {
+      //  ;; columns = columns.filter(col => col.value != 'activationDateTime')
+      // }
 
       this.currentSelectionColumns = Array.from(columns)
 

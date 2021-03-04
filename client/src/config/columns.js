@@ -77,7 +77,6 @@ export const cablesColumns = [
     value: 'activationDateTime',
     showSidebar: true
   },
-  // 'terrestrial', // (Bool)
   {
     label: 'Design Capacity',
     value: 'capacityTBPS',
