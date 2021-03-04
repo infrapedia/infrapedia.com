@@ -764,7 +764,7 @@ export default {
       return Boolean(arr.length)
     },
     handleSelection(_id, opt) {
-      if (opt == 'Facilities (Ownership)') {
+      if (opt == 'Facilities (Ownership)' || opt == 'Facilities (Tenants)') {
         opt = 'facilities'
       } else if (
         opt == 'Subsea Cables (User)' ||
@@ -775,6 +775,8 @@ export default {
         opt = 'terrestrial-network'
       } else if (opt == 'Ixps (Ownership)') {
         opt = 'ixps'
+      } else if (opt == 'Cls (Ownership)') {
+        opt = 'cls'
       }
 
       return this.$emit('selection', {

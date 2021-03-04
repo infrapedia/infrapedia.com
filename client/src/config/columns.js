@@ -650,7 +650,7 @@ export const orgsColumns = [
     showSidebar: true
   },
   {
-    label: 'Subsea cables (Ownership)',
+    label: 'Subsea Cables (Ownership)',
     value: 'subsecables',
     showSidebar: true
   },
