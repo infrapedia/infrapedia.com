@@ -49,9 +49,6 @@
       :class="{ 'facilities-type': isFacilitiesType }"
       @toggle-search="handleSearchToggle"
       @place-selected="$emit('place-selected', $event)"
-      @address-field-activated-by-form="
-        $emit('address-field-activated-by-form')
-      "
     />
   </header>
 </template>

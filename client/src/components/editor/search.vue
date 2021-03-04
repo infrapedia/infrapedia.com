@@ -128,7 +128,6 @@ export default {
     async handleAddAddressUsingHeaderInput() {
       this.isActive = true
       setTimeout(() => this.$refs['search-input'].focus(), 320)
-      this.$emit('address-field-activated-by-form')
     },
     async handleEditAddressUsingHeaderInput() {
       console.log('here 2')

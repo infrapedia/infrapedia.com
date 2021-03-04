@@ -13,9 +13,6 @@
       :type="type"
       @close-search="closeSearchMode"
       @place-selected="handleSearchPlaceSelected"
-      @address-field-activated-by-form="
-        $emit('address-field-activated-by-form')
-      "
     />
     <div id="map" />
     <input ref="file" type="file" class="hidden" />
@@ -102,6 +99,10 @@ export default {
       type: String,
       default: () => '',
       validator: elemntTypeValidator
+    },
+    zoomToFeatureOnLoad: {
+      type: Boolean,
+      default: () => false
     },
     form: {
       type: Object,
@@ -209,7 +210,7 @@ export default {
       }
     },
     async handleDrawSceneFeatures() {
-      await this.handleRecreateDraw(null, false)
+      await this.handleRecreateDraw(null, this.zoomToFeatureOnLoad)
       await this.$emit(
         'features-list-change',
         sceneDictionary.getCollectionList()
