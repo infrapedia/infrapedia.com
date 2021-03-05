@@ -121,6 +121,8 @@ const facilitiesLabel = 'facilities_label'
 const currentEpoch = Math.round(new Date().getTime() / 1000)
 const facilitiesPoints = 'facilities-points'
 
+const earthquakes = 'earthquakes'
+
 export const mapConfig = {
   mapToken: token,
   default:
@@ -136,6 +138,7 @@ export const mapConfig = {
   facilities,
   facsMinZoom,
   cablesLabel,
+  earthquakes,
   clsPaintConfig,
   snapPaintConfig,
   ixpsPaintConfig,
@@ -203,6 +206,14 @@ export const mapConfig = {
           cluster: true,
           clusterRadius: 60,
           clusterMaxZoom: 17.8
+        }
+      },
+      {
+        name: earthquakes,
+        opts: {
+          type: 'geojson',
+          data:
+            'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week.geojson'
         }
       }
     ],
@@ -370,6 +381,15 @@ export const mapConfig = {
           'circle-radius': 12,
           'circle-color': '#F7B267'
         }
+      },
+      {
+        id: earthquakes,
+        type: 'symbol',
+        source: earthquakes,
+        layout: {
+          'icon-image': 'pulsing-dot'
+        },
+        filter: ['has', 'a_property_that_does_not_exist']
       }
     ]
   },

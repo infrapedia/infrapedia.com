@@ -74,6 +74,10 @@ export default {
       subsea: {
         active: true,
         label: 'Subsea Cables'
+      },
+      earthquakes: {
+        active: false,
+        label: 'Earthquakes > 6.0'
       }
     }
   }),
