@@ -211,8 +211,7 @@ export const mapConfig = {
         name: earthquakes,
         opts: {
           type: 'geojson',
-          data:
-            'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week.geojson'
+          data: `${process.env.VUE_APP_EARTHQUAKES_API_URL}`
         }
       }
     ],
