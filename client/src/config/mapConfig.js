@@ -121,6 +121,7 @@ const facilitiesLabel = 'facilities_label'
 const currentEpoch = Math.round(new Date().getTime() / 1000)
 const facilitiesPoints = 'facilities-points'
 const earthquakes = 'earthquakes'
+const d = new Date(new Date().setDate(new Date().getDate() - 7))
 
 export const mapConfig = {
   mapToken: token,
@@ -211,7 +212,11 @@ export const mapConfig = {
         name: earthquakes,
         opts: {
           type: 'geojson',
-          data: `${process.env.VUE_APP_EARTHQUAKES_API_URL}`
+          data: `${
+            process.env.VUE_APP_EARTHQUAKES_API_URL
+          }&starttime=${d.getUTCFullYear()}-${
+            d.getUTCMonth >= 12 ? 12 : d.getUTCMonth() + 1
+          }-${d.getUTCDate()}`
         }
       }
     ],

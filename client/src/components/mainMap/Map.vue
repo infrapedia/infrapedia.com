@@ -443,11 +443,13 @@ export default {
     },
     handleEarthquakesPopup({ e, popup, off, map }) {
       if (e && !off) {
-        const { time, title } = JSON.parse(
+        const { time, title, tsunami } = JSON.parse(
           JSON.stringify(e.features[0].properties)
         )
         const date = DateTime.fromMillis(time).toLocaleString()
-        const markup = `<div class="cable-name dark-color"><b> ${title}</b></div><div class="rfs dark-color"> Date: ${date}</div>`
+        const markup = `<div class="cable-name dark-color"><b> ${title}</b></div><div class="rfs dark-color"> Date: ${date}</div><div class="rfs dark-color"> Tsunami: ${
+          tsunami ? 'Yes' : 'No'
+        }</div>`
         popup
           .setLngLat(e.lngLat)
           .setHTML(markup)
