@@ -395,6 +395,14 @@ export default {
       map.on('mouseleave', mapConfig.ixps, function() {
         vm.handlePopupVisibilityOff({ popup, map })
       })
+      // Earthquakes layer - START
+      map.on('mouseenter', mapConfig.earthquakes, function(e) {
+        vm.handleEarthquakesPopup({ e, popup, map, off: false })
+      })
+      map.on('mouseleave', mapConfig.earthquakes, function() {
+        vm.handleEarthquakesPopup({ popup, map, off: true })
+      })
+      // Earthquakes layer - END
       map.on('mouseenter', mapConfig.facilities, () => {
         map.getCanvas().style.cursor = 'pointer'
       })
@@ -432,6 +440,26 @@ export default {
       map.on('draw.update', this.handleDrawEvents)
 
       return map
+    },
+    handleEarthquakesPopup({ e, popup, off, map }) {
+      if (e && !off) {
+        const { time, title } = JSON.parse(
+          JSON.stringify(e.features[0].properties)
+        )
+        const date = DateTime.fromMillis(time).toLocaleString()
+        const markup = `<div class="cable-name dark-color"><b> ${title}</b></div><div class="rfs dark-color"> Date: ${date}</div>`
+        popup
+          .setLngLat(e.lngLat)
+          .setHTML(markup)
+          .addTo(map)
+      } else {
+        if (!this.isLastMileTool) {
+          popup.remove()
+          map.getCanvas().style.cursor = ''
+        } else if (this.isUserLoggedIn) {
+          map.getCanvas().style.cursor = 'crosshair'
+        }
+      }
     },
     async handleToggleLayer({ layerName, active, layersDict }) {
       if (!this.map) return

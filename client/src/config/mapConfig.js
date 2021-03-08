@@ -120,7 +120,6 @@ const facilitiesClusters = 'facilities_clusters'
 const facilitiesLabel = 'facilities_label'
 const currentEpoch = Math.round(new Date().getTime() / 1000)
 const facilitiesPoints = 'facilities-points'
-
 const earthquakes = 'earthquakes'
 
 export const mapConfig = {
