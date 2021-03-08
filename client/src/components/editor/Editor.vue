@@ -13,9 +13,6 @@
       :type="type"
       @close-search="closeSearchMode"
       @place-selected="handleSearchPlaceSelected"
-      @address-field-activated-by-form="
-        $emit('address-field-activated-by-form')
-      "
     />
     <div id="map" />
     <input ref="file" type="file" class="hidden" />
@@ -102,6 +99,10 @@ export default {
       type: String,
       default: () => '',
       validator: elemntTypeValidator
+    },
+    zoomToFeatureOnLoad: {
+      type: Boolean,
+      default: () => false
     },
     form: {
       type: Object,
@@ -209,7 +210,7 @@ export default {
       }
     },
     async handleDrawSceneFeatures() {
-      await this.handleRecreateDraw(null, false)
+      await this.handleRecreateDraw(null, this.zoomToFeatureOnLoad)
       await this.$emit(
         'features-list-change',
         sceneDictionary.getCollectionList()
@@ -550,10 +551,10 @@ export default {
     async handleDialogData(data) {
       this.dialog.visible = false
       if (data) {
-        const featuresSelected = this.draw.getSelected().features
-        if (featuresSelected && featuresSelected.length) {
+        const { selectedFeature } = this.dialog
+        if (selectedFeature) {
           const feature = {
-            ...JSON.parse(JSON.stringify(featuresSelected[0]))
+            ...JSON.parse(JSON.stringify(selectedFeature))
           }
           feature.properties = { ...data }
           // This adds the editorID property with which I keep track of it
@@ -875,7 +876,7 @@ export default {
         this.dialog.visible = true
         this.$once(
           `properties-dialog-close-${this.dialog.mode}`,
-          await this.handleDialogData
+          this.handleDialogData
         )
       } else await this.handleDialogData({ name: '' })
     },

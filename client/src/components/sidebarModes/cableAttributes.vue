@@ -430,8 +430,8 @@ export default {
         })
         .filter(col => col)
 
-      if (this.info.category == 'project') {
-        cols = cols.filter(col => col.label != 'EOL')
+      if (this.info.category === 'project') {
+        cols = cols.filter(col => col.label !== 'EOL')
       }
 
       if (this.info.terrestrial) {

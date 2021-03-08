@@ -432,7 +432,7 @@
         </template>
       </div>
 
-      <template v-if="isFacilityFocusType">
+      <template v-if="isFacilityFocusType && info.enType">
         <el-collapse class="mt2 mb2">
           <el-collapse-item title="More details">
             <div class="p0 m0 transparent">
@@ -771,7 +771,7 @@ export default {
       return Boolean(arr.length)
     },
     handleSelection(_id, opt) {
-      if (opt == 'Facilities (Ownership)') {
+      if (opt == 'Facilities (Ownership)' || opt == 'Facilities (Tenants)') {
         opt = 'facilities'
       } else if (
         opt == 'Subsea Cables (User)' ||
@@ -782,6 +782,8 @@ export default {
         opt = 'terrestrial-network'
       } else if (opt == 'Ixps (Ownership)') {
         opt = 'ixps'
+      } else if (opt == 'Cls (Ownership)') {
+        opt = 'cls'
       }
 
       return this.$emit('selection', {

@@ -77,7 +77,6 @@ export const cablesColumns = [
     value: 'activationDateTime',
     showSidebar: true
   },
-  // 'terrestrial', // (Bool)
   {
     label: 'Design Capacity',
     value: 'capacityTBPS',
@@ -651,7 +650,7 @@ export const orgsColumns = [
     showSidebar: true
   },
   {
-    label: 'Subsea cables (Ownership)',
+    label: 'Subsea Cables (Ownership)',
     value: 'subsecables',
     showSidebar: true
   },

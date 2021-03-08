@@ -1,6 +1,7 @@
 import createControlButton from './createControlButton'
 import EventEmitter from '../../lib/EventEmitter'
 import { MessageBox } from 'element-ui'
+import Snapping from './snapping'
 
 class EditorControls extends EventEmitter {
   constructor({ map, draw, type }) {
@@ -15,16 +16,41 @@ class EditorControls extends EventEmitter {
       points: ['facilities', 'ixps', 'cls', 'map'],
       polygon: ['facilities', 'map', 'csp']
     }
+
+    if (this.type == 'subsea') {
+      this.snapMode = true
+      this.snapToPoint = new Snapping({
+        map,
+        draw,
+        pixel: 8,
+        status: this.snapMode,
+        snapLayers: [
+          'cls-layer',
+          'cables-layer',
+          'facilities-layer',
+          'gl-draw-line-inactive.cold'
+        ]
+      })
+    }
   }
 
   onAdd() {
+    if (this.type == 'subsea') {
+      this.snapToPoint.on('confirm', this.handleConfirmFeature.bind(this))
+    }
+
     this.controlGroup = document.createElement('div')
     this.controlGroup.className = 'mapboxgl-ctrl-group mapboxgl-ctrl'
     this.buttons = this._createButtons()
+
     return this.controlGroup
   }
 
   onRemove() {
+    if (this.type == 'subsea') {
+      this.snapToPoint.off('confirm', this.handleConfirmFeature.bind(this))
+    }
+
     this.controlGroup.parentNode.removeChild(this.controlGroup)
   }
 
@@ -114,7 +140,7 @@ class EditorControls extends EventEmitter {
         className: 'editor-ctrl editor-ok',
         title: 'Accept',
         eventListener: () =>
-          this.emit('confirm', this.draw.getSelected().features)
+          this.handleConfirmFeature(this.draw.getSelected().features)
       }),
 
       cancel: createControlButton('cancel-dynamic', {
@@ -136,6 +162,14 @@ class EditorControls extends EventEmitter {
   toggleSegmentsStatus() {
     this.currentStatus = !this.currentStatus
     this.emit('toggle-segments-status', this.currentStatus)
+  }
+
+  /**
+   *
+   * @param { Array } features - features to be added to dictionary
+   */
+  handleConfirmFeature(features) {
+    this.emit('confirm', features)
   }
 
   /**

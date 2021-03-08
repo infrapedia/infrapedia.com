@@ -237,27 +237,16 @@
         </el-row>
       </el-col>
       <el-col :span="8">
-        <div
-          class="editor-map-wrapper mt5"
-          :class="{ 'editor-max-view': isEditorMaximiedView }"
-        >
-          <el-button
-            v-if="isEditorMaximiedView"
-            icon="el-icon-close"
-            class="close-btn-max-view"
-            circle
-            size="small"
-            @click="() => (isEditorMaximiedView = false)"
-          />
+        <div class="editor-map-wrapper mt5">
           <editor-map
             :key="1"
             :form="form"
             ref="editor-map"
             type="facilities"
+            zoom-to-feature-on-load
             id="editor-map-facilities-dashboard"
             @features-list-change="handleFeaturesListChange"
             @error-loading-draw-onto-map="handleFileConvertionFailed"
-            @address-field-activated-by-form="handleMaximizeEditorView"
           />
           <el-alert type="info" :closable="false">
             <div>
@@ -306,7 +295,6 @@ export default {
     AutocompleteGoogle: () => import('../../../components/AutocompleteGoogle')
   },
   data: () => ({
-    isEditorMaximiedView: false,
     isPeeringDbIdRepeated: false,
     subseaList: [],
     cspList: [],
@@ -458,10 +446,6 @@ export default {
         }
       }
     }, 320),
-    handleMaximizeEditorView() {
-      this.isEditorMaximiedView = true
-      setTimeout(() => this.$refs['editor-map'].map.resize(), 320)
-    },
     handleSelectionChange(key, data) {
       this.form[key] = data
       if (key == 'owners') {
