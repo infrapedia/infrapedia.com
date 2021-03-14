@@ -83,6 +83,7 @@
         @change-network="lmt.networks = $event"
         @change-length="lmt.length = $event"
       />
+      <donations-banner />
     </template>
   </div>
 </template>
@@ -140,7 +141,8 @@ export default {
   components: {
     GooeyMenu,
     LayersPanel,
-    LegendsPanel
+    LegendsPanel,
+    DonationsBanner: () => import('./DonationsBanner')
   },
   props: {
     disabled: {
