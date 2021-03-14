@@ -24,6 +24,7 @@
         </a>
       </div>
       <el-button
+        circle
         :class="{ dark }"
         icon="el-icon-close"
         class="no-border close-btn"
@@ -96,45 +97,69 @@ export default {
 
 <style lang="scss" scoped>
 .main-wrapper {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   z-index: 20;
   padding: 0.2rem;
+  min-height: 6rem;
 
   width: 100%;
   background: white;
 
   display: flex;
-  align-items: center;
   justify-content: center;
 
+  min-height: 13rem;
+  align-items: flex-start;
+
   .inner-wrapper {
-    width: 60vw;
+    width: 66vw;
     display: flex;
     flex-flow: row wrap;
     align-items: center;
   }
 
+  .close-btn {
+    margin-left: 1rem;
+    margin-top: 0.4rem;
+  }
+
   .message-wrapper {
-    font-size: 16px;
-    flex: 1;
+    font-size: 1em;
   }
 
   .image {
-    flex: 1;
+    flex: 0 0 auto;
     height: 3rem;
   }
 
-  .close-btn {
-    margin-left: 2rem;
-  }
-
-  .donate-link {
-    height: 2rem;
-    display: flex;
+  @media screen and (min-width: 1125px) {
     align-items: center;
-    justify-content: center;
+    min-height: 10rem;
+    .inner-wrapper {
+      width: 60vw;
+    }
+
+    .message-wrapper {
+      font-size: 1.2em;
+    }
+
+    .close-btn {
+      margin-top: 0;
+      margin-left: 0;
+    }
+
+    .image {
+      margin-left: 2rem;
+    }
+
+    .donate-link {
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }
 </style>
