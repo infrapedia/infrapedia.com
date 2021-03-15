@@ -6,30 +6,32 @@
     mode="out-in"
   >
     <div class="main-wrapper donations-banner" v-if="isVisible">
-      <div class="inner-wrapper">
-        <div class="message-wrapper">
-          <p v-html="message" />
+      <div class="grid-wrapper">
+        <div class="inner-wrapper">
+          <div class="message-wrapper">
+            <p v-html="message" />
+          </div>
+          <a
+            target="_blank"
+            rel="noopeneer noreferrer"
+            class="inline-block donate-link"
+            :href="donationLink"
+          >
+            <el-image
+              src="https://storage.googleapis.com/infrapediacom/assets/paypal-donate-button2.png"
+              fit="contain"
+              class="image"
+            />
+          </a>
         </div>
-        <a
-          target="_blank"
-          rel="noopeneer noreferrer"
-          class="inline-block donate-link"
-          :href="donationLink"
-        >
-          <el-image
-            src="https://storage.googleapis.com/infrapediacom/assets/paypal-donate-button2.png"
-            fit="contain"
-            class="image"
-          />
-        </a>
+        <el-button
+          circle
+          :class="{ dark }"
+          icon="el-icon-close"
+          class="no-border close-btn"
+          @click.stop="handleClose"
+        />
       </div>
-      <el-button
-        circle
-        :class="{ dark }"
-        icon="el-icon-close"
-        class="no-border close-btn"
-        @click.stop="handleClose"
-      />
     </div>
   </transition>
 </template>
@@ -97,32 +99,32 @@ export default {
 
 <style lang="scss" scoped>
 .main-wrapper {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   z-index: 20;
   padding: 0.2rem;
-  min-height: 6rem;
+  min-height: 7.2rem;
 
   width: 100%;
   background: white;
 
-  display: flex;
-  justify-content: center;
-
-  min-height: 13rem;
-  align-items: flex-start;
-
   .inner-wrapper {
-    width: 66vw;
     display: flex;
     flex-flow: row wrap;
     align-items: center;
   }
 
+  .grid-wrapper {
+    display: grid;
+    width: 66vw;
+    margin: 0 auto;
+    grid-template-columns: 60vw 1fr;
+  }
+
   .close-btn {
-    margin-left: 1rem;
-    margin-top: 0.4rem;
+    width: 3rem;
+    height: 3rem;
   }
 
   .message-wrapper {
@@ -134,24 +136,13 @@ export default {
     height: 3rem;
   }
 
-  @media screen and (min-width: 1125px) {
-    align-items: center;
-    min-height: 10rem;
-    .inner-wrapper {
-      width: 60vw;
-    }
+  @media screen and (min-width: 825px) {
+    min-height: 5rem;
+    padding-bottom: 1rem;
 
     .message-wrapper {
       font-size: 1.2em;
-    }
-
-    .close-btn {
-      margin-top: 0;
-      margin-left: 0;
-    }
-
-    .image {
-      margin-left: 2rem;
+      margin-right: 2rem;
     }
 
     .donate-link {
