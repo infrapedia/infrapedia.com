@@ -53,7 +53,7 @@ export default {
   }),
   computed: {
     message() {
-      return 'We are proudly non-profit, non-corporate and non-compromised. We rely on donations to carry out our mission to keep the Web open and free. <br/> Will you give today?'
+      return process.env.VUE_APP_DONATIONS_BANNER_TEXT
     },
     donationLink() {
       return 'https://www.paypal.com/donate?hosted_button_id=3YHKKNWF4F3QA'
