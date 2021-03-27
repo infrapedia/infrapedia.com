@@ -113,7 +113,7 @@
             :key="dropdownItem.url"
             class="inline-flex no-border-radius align-items-center color-inherit h-fit-full no-outline"
             :class="{ dark, light: !dark }"
-            @click="goToRoute(link.url)"
+            @click="goToRoute(dropdownItem.url)"
           >
             {{ dropdownItem.label }}
           </el-button>
