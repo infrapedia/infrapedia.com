@@ -48,8 +48,8 @@
           </el-button>
           <el-tooltip
             effect="dark"
-            :disabled="!checkGeomLength"
-            content="Remember to either create a point or a polygon on the map to set the facility location"
+            :disabled="isTooltipDisabled"
+            :content="tooltipMessage"
             placement="top-start"
           >
             <el-button
@@ -167,6 +167,20 @@ export default {
         'Security and Onsite services details'
       ]
     },
+    tooltipMessage() {
+      return this.step <= 1
+        ? 'Remember to either create a point or a polygon on the map to set the facility location'
+        : 'Total Power is required to continue.'
+    },
+    isTooltipDisabled() {
+      let isDisabled = true
+      if (this.step <= 1) {
+        isDisabled = !this.checkGeomLength
+      } else if (this.step === 3) {
+        isDisabled = !this.isTotalPowerValid
+      }
+      return isDisabled
+    },
     nextBtnText() {
       return this.step <= 3 ? 'Next' : 'Save'
     },
@@ -177,7 +191,14 @@ export default {
       return this.$route.query.item ? 'edit' : 'create'
     },
     checkGeomLength() {
-      return this.form.geom.length > 0 ? false : true
+      if (this.step <= 1) {
+        return !this.form.geom.length > 0
+      } else if (this.step === 3) {
+        return !this.form.totalPower > 0
+      } else return false
+    },
+    isTotalPowerValid() {
+      return this.form.totalPower > 0
     }
   },
   async created() {
@@ -197,6 +218,11 @@ export default {
       if (this.step <= 1 && this.checkGeomLength) {
         this.$message.info(
           "You can't move further until you add a point of the location of the facility on the map"
+        )
+        return
+      } else if (this.step === 3 && !this.isTotalPowerValid) {
+        this.$message.info(
+          "Total Power field can't be minor than 0 as this is required to continue."
         )
         return
       }

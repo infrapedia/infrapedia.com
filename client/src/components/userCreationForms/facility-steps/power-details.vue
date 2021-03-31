@@ -1,5 +1,5 @@
 <template>
-  <el-form class="flex row nowrap" :model="form">
+  <el-form class="flex row nowrap" :model="form" :rules="formRules">
     <div class="el-card" :class="{ dark }">
       <header class="p4" :class="{ dark }">
         Power and Cooling details
@@ -8,10 +8,11 @@
         <el-col :span="12">
           <el-row>
             <el-col :span="24">
-              <el-form-item label="Total Power (Megawatts)" required>
+              <el-form-item label="Total Power (Megawatts)" prop="totalPower">
                 <el-input-number
                   :precision="2"
                   :class="{ dark }"
+                  :min="0"
                   :step="0.1"
                   class="w-fit-full"
                   controls-position="right"
@@ -463,7 +464,24 @@ export default {
       return this.$store.state.isDark
     },
     formRules() {
-      return {}
+      return {
+        totalPower: [
+          {
+            trigger: ['change', 'blur'],
+            required: true,
+            validator: (_, value, cb) => {
+              if (value <= 0) {
+                cb(
+                  new Error(
+                    'This field is required and can not be minor than 0.'
+                  )
+                )
+              }
+              cb()
+            }
+          }
+        ]
+      }
     }
   }
 }
