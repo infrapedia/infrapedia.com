@@ -433,7 +433,7 @@ export default {
 
       if (!this.disabled) {
         map.on('click', this.handleMapClick)
-        map.on('touchend', this.handleMapClick)
+        map.on('touchend', this.handleMapTouchEndMobile)
         map.on('render', this.handleBoundsChange)
       }
 
@@ -698,6 +698,10 @@ export default {
       } catch (err) {
         console.error(err)
       }
+    },
+    handleMapTouchEndMobile(e) {
+      if (this.focus) return
+      else this.handleMapClick(e)
     },
     /**
      * @param e { Object } Map's any clicking event
@@ -1208,15 +1212,16 @@ export default {
      * @param id { String } - Cable ID
      */
     async handleCableFocus(_id) {
-      const { map, focus, bounds, hasToEase } = this
+      const { map, isMobile, focus, bounds, hasToEase } = this
 
       if (hasToEase) await this.handleFocusOnEasePoints()
       else if (focus && bounds && bounds.length) {
         try {
           await map.fitBounds(bounds, {
-            padding: 362
+            padding: isMobile ? 362 : 10
           })
-        } catch {
+        } catch (err) {
+          alert(err)
           // Ignore
           // Even thought that it throws an error
           // The bounds are been set correctly

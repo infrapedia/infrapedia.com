@@ -5,7 +5,7 @@
     leave-active-class="slideOutDown"
     mode="out-in"
   >
-    <div class="main-wrapper donations-banner" v-if="isVisible">
+    <div class="main-wrapper donations-banner" v-if="isVisible && message">
       <div class="grid-wrapper">
         <div class="inner-wrapper">
           <div class="message-wrapper">
