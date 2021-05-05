@@ -437,7 +437,7 @@ export default {
         case 'facilities (ownership)':
           method = searchFacilities
           break
-        case 'facilities (tenants)':
+        case 'facilities (tenant)':
           method = searchFacilities
           break
         default:
@@ -482,7 +482,7 @@ export default {
           case 'subsea cables (user)':
             await setOrgKnownUsersAssociations(args)
             break
-          case 'facilities (tenants)':
+          case 'facilities (tenant)':
             await setOrgFacilityTenantsAssociations(args)
             break
           default:
@@ -516,7 +516,7 @@ export default {
         case 'cls (ownership)':
           await removeOrgClsAssociations(args)
           break
-        case 'facilities (tenants)':
+        case 'facilities (tenant)':
           await removeOrgFacilityTenantsAssociations(args)
           break
         default:
@@ -542,7 +542,7 @@ export default {
         loading: false,
         labels: [
           'Facilities (Ownership)',
-          'Facilities (Tenants)',
+          'Facilities (Tenant)',
           'Subsea Cables (Ownership)',
           'Subsea Cables (User)',
           'CLS (Ownership)',
@@ -551,7 +551,7 @@ export default {
         ],
         options: {
           'facilities (ownership)': [],
-          'facilities (tenants)': [],
+          'facilities (tenant)': [],
           'subsea cables (ownership)': [],
           'subsea cables (user)': [],
           'cls (ownership)': [],
