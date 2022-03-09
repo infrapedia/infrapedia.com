@@ -13,7 +13,7 @@ import { Auth0Plugin } from './auth'
 // import * as bugsnag from './plugins/bugsnag'
 import Vue2TouchEvents from 'vue2-touch-events'
 import * as vueTour from './plugins/vue-tour'
-import initiateCall from './plugins/freshchat'
+// import initiateCall from './plugins/freshchat'
 import { bus } from './helpers/eventBus'
 import { AUTH_USER } from './events/auth'
 import injectInitialState from './helpers/injectInitialState'
@@ -62,16 +62,16 @@ const app = new Vue({
   cockieconsent,
   render: h => h(App),
   created() {
-    window.addEventListener
-      ? window.addEventListener('load', initiateCall, !1)
-      : window.attachEvent('load', initiateCall, !1)
+    // window.addEventListener
+    //   ? window.addEventListener('load', initiateCall, !1)
+    //   : window.attachEvent('load', initiateCall, !1)
 
     bus.$on(`${AUTH_USER}`, this.handleSetUserData)
   },
   beforeDestroy() {
-    window.removeEventListener
-      ? window.addEventListener('load', initiateCall, !1)
-      : window.attachEvent('load', initiateCall, !1)
+    // window.removeEventListener
+    //   ? window.addEventListener('load', initiateCall, !1)
+    //   : window.attachEvent('load', initiateCall, !1)
 
     bus.$off(`${AUTH_USER}`, this.handleSetUserData)
   },

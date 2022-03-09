@@ -16,7 +16,6 @@
       <home-page />
     </transition>
     <h-footer />
-    <contact-dialog></contact-dialog>
   </el-container>
 </template>
 
@@ -26,15 +25,13 @@ import HNavbar from '../components/homepage/Navbar'
 import HMobileDrawer from '../components/MobileDrawer'
 import HomePage from '../components/homepage/HomePage'
 import { checkCookie } from '../helpers/cookies'
-import ContactDialog from '../components/dialogs/ContactDialog.vue'
 
 export default {
   components: {
     HomePage,
     HFooter,
     HNavbar,
-    HMobileDrawer,
-    ContactDialog
+    HMobileDrawer
   },
   head: {
     title: 'Global Internet Infrastructure Map | Infrapedia',

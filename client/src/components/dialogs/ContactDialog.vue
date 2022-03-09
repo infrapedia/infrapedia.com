@@ -1,8 +1,9 @@
 <template>
   <div>
     <el-button type="text" @click="dialogVisible = true"
-      >click to open the Dialog</el-button
-    >
+      >click to open the Dialog
+      <fa :icon="['fa', 'envelope']" />
+    </el-button>
 
     <el-dialog
       :custom-class="dark ? 'custom-dialog dark' : 'custom-dialog'"
@@ -34,7 +35,7 @@ export default {
   },
   methods: {
     handleClose(done) {
-      this.$confirm('Are you sure to close this dialog?').then(() => {
+      this.$confirm('Success | Fail').then(() => {
         done()
       })
     }
@@ -46,3 +47,7 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import '../../assets/scss/components/contact-dialog-styles.scss';
+</style>
