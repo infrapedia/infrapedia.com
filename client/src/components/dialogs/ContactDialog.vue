@@ -1,7 +1,6 @@
 <template>
   <div>
-    <el-button type="text" @click="dialogVisible = true"
-      >click to open the Dialog
+    <el-button class="contactBtn" type="primary" @click="dialogVisible = true">
       <fa :icon="['fa', 'envelope']" />
     </el-button>
 
