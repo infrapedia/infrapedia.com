@@ -166,6 +166,9 @@ h1 {
     padding: 1.2rem 1rem;
   }
 }
+.el-dialog.contact-dialog {
+  border-radius: 20px;
+}
 
 .dark-color {
   color: $dark-charcoal;
@@ -925,4 +928,3 @@ input.issues-dialog {
 .light {
   transition: all 120ms ease-in;
 }
-

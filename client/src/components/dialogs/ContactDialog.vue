@@ -1,22 +1,54 @@
 <template>
   <div>
-    <el-button class="contactBtn" type="primary" @click="dialogVisible = true">
+    <el-button class="contact-button" type="primary" @click="openDialog">
       <fa :icon="['fa', 'envelope']" />
     </el-button>
 
     <el-dialog
-      :custom-class="dark ? 'custom-dialog dark' : 'custom-dialog'"
-      title="Send us a Message"
+      :custom-class="
+        dark
+          ? 'custom-dialog dark contact-dialog'
+          : 'custom-dialog contact-dialog'
+      "
+      title="Contact Us"
       :visible.sync="dialogVisible"
-      :before-close="handleClose"
     >
-      <contact-form></contact-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="dialogVisible = false"
-          >Confirm</el-button
-        >
-      </span>
+      <transition name="el-fade-in-linear">
+        <contact-form
+          v-show="hideForm"
+          :handle-submit="handleSubmit"
+        ></contact-form>
+      </transition>
+      <transition name="el-fade-in-linear">
+        <div v-show="showSuccess" class="container-center contact-dialog-alert">
+          <h2>Message Received</h2>
+          <i class="el-icon-success big-icon success"></i>
+          <p>We will contact you <br />as soon as posible</p>
+          <el-button
+            round
+            class=""
+            type="primary"
+            @click="dialogVisible = false"
+          >
+            Close
+          </el-button>
+        </div>
+      </transition>
+      <transition name="el-fade-in-linear">
+        <div v-show="showError" class="container-center contact-dialog-alert">
+          <h2>Unsuccessfull</h2>
+          <i class="el-icon-error big-icon error"></i>
+          <p>Something went wrong <br />Please, try again at a later time.</p>
+          <el-button
+            round
+            class=""
+            type="primary"
+            @click="dialogVisible = false"
+          >
+            Close
+          </el-button>
+        </div>
+      </transition>
     </el-dialog>
   </div>
 </template>
@@ -29,14 +61,24 @@ export default {
   },
   data() {
     return {
-      dialogVisible: false
+      dialogVisible: false,
+      hideForm: false,
+      showSuccess: false,
+      showError: false
     }
   },
   methods: {
-    handleClose(done) {
-      this.$confirm('Success | Fail').then(() => {
-        done()
-      })
+    handleSubmit() {
+      this.hideForm = false
+      console.log('submit')
+      this.showSuccess = true
+      this.showError = true
+    },
+    openDialog() {
+      this.showSuccess = false
+      this.showError = false
+      this.dialogVisible = true
+      this.hideForm = true
     }
   },
   computed: {

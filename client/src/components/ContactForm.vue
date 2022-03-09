@@ -6,7 +6,7 @@
       :model="form"
       class="transparent"
     >
-      <el-row :gutter="20">
+      <el-row :gutter="15">
         <el-col :sm="24" :lg="12">
           <el-form-item label="First Name" prop="first_name" required>
             <el-input v-model="form.first_name" autofocus :class="{ dark }" />
@@ -59,10 +59,18 @@
         <el-col :span="24">
           <el-form-item>
             <div class="flex mt4 row justify-content-end">
-              <el-button
+              <!-- <el-button
                 round
                 :disabled="!catchaVerified"
                 :loading="isSendingData"
+                class="w-fit-full"
+                type="primary"
+                @click="sendData"
+              >
+                Send
+              </el-button> -->
+              <el-button
+                round
                 class="w-fit-full"
                 type="primary"
                 @click="sendData"
@@ -79,13 +87,14 @@
 <script>
 import VueRecaptcha from 'vue-recaptcha'
 import siteKey from '../config/siteKey'
-import { sendContactForm } from '../services/api/contact'
+// import { sendContactForm } from '../services/api/contact'
 
 export default {
   name: 'ContactForm',
   components: {
     VueRecaptcha
   },
+  props: ['handleSubmit'],
   data: () => ({
     catchaVerified: null,
     isSendingData: false,
@@ -156,20 +165,23 @@ export default {
       if (!v) return
       else this.catchaVerified = true
     },
-    async sendData() {
-      await this.$refs.contactForm.validate(async isValid => {
-        if (!isValid || !this.catchaVerified) return
-        this.isSendingData = true
-        const { t } = await sendContactForm(this.form)
-        if (t != 'error') {
-          this.$refs.contactForm.resetFields()
-          if (this.$refs.captcha) {
-            this.$refs.captcha.reset()
-          }
-        }
-        this.isSendingData = false
-      })
+    sendData() {
+      this.handleSubmit()
     }
+    // async sendData() {
+    //   await this.$refs.contactForm.validate(async isValid => {
+    //     if (!isValid || !this.catchaVerified) return
+    //     this.isSendingData = true
+    //     const { t } = await sendContactForm(this.form)
+    //     if (t != 'error') {
+    //       this.$refs.contactForm.resetFields()
+    //       if (this.$refs.captcha) {
+    //         this.$refs.captcha.reset()
+    //       }
+    //     }
+    //     this.isSendingData = false
+    //   })
+    // }
   }
 }
 </script>
