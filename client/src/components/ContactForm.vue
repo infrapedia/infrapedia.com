@@ -21,13 +21,13 @@
           <el-form-item label="Company" prop="company">
             <el-input
               v-model="form.company"
-              placeholder="optional"
+              placeholder="Optional"
               :class="{ dark }"
             />
           </el-form-item>
         </el-col>
         <el-col :sm="24" :lg="12">
-          <el-form-item label="Email" prop="email" required>
+          <el-form-item label="Email" prop="email" type="email" required>
             <el-input v-model="form.email" :class="{ dark }" />
           </el-form-item>
         </el-col>
@@ -47,33 +47,27 @@
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <vue-recaptcha
-            ref="catpcha"
-            :sitekey="siteKey"
-            :loadRecaptchaScript="true"
-            @verify="handleCatchaVerification"
-            @error="() => (catchaVerified = false)"
-            @expired="() => (catchaVerified = false)"
-          />
+          <div class="overflow-hidden">
+            <vue-recaptcha
+              ref="catpcha"
+              :sitekey="siteKey"
+              :loadRecaptchaScript="true"
+              @verify="handleCatchaVerification"
+              @error="() => (catchaVerified = false)"
+              @expired="() => (catchaVerified = false)"
+            />
+          </div>
         </el-col>
         <el-col :span="24">
           <el-form-item>
             <div class="flex mt4 row justify-content-end">
-              <!-- <el-button
+              <el-button
                 round
-                :disabled="!catchaVerified"
                 :loading="isSendingData"
                 class="w-fit-full"
                 type="primary"
                 @click="sendData"
-              >
-                Send
-              </el-button> -->
-              <el-button
-                round
-                class="w-fit-full"
-                type="primary"
-                @click="sendData"
+                :disabled="!catchaVerified"
               >
                 Send
               </el-button>
@@ -165,8 +159,17 @@ export default {
       if (!v) return
       else this.catchaVerified = true
     },
-    sendData() {
-      this.handleSubmit()
+    async sendData() {
+      await this.$refs.contactForm.validate(async isValid => {
+        if (!isValid || !this.catchaVerified) return
+        this.isSendingData = true
+        await this.handleSubmit(this.form)
+        this.$refs.contactForm.resetFields()
+        if (this.$refs.captcha) {
+          this.$refs.captcha.reset()
+        }
+        this.isSendingData = false
+      })
     }
     // async sendData() {
     //   await this.$refs.contactForm.validate(async isValid => {
@@ -185,3 +188,6 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+@import './../assets/scss/components/contact-dialog-styles.scss';
+</style>

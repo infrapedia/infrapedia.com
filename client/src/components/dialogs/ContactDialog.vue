@@ -23,7 +23,7 @@
         <div v-show="showSuccess" class="container-center contact-dialog-alert">
           <h2>Message Received</h2>
           <i class="el-icon-success big-icon success"></i>
-          <p>We will contact you <br />as soon as posible</p>
+          <p>We will contact you <br />as soon as possible</p>
           <el-button
             round
             class=""
@@ -36,7 +36,7 @@
       </transition>
       <transition name="el-fade-in-linear">
         <div v-show="showError" class="container-center contact-dialog-alert">
-          <h2>Unsuccessfull</h2>
+          <h2>Unsuccessful</h2>
           <i class="el-icon-error big-icon error"></i>
           <p>Something went wrong <br />Please, try again at a later time.</p>
           <el-button
@@ -54,6 +54,8 @@
 </template>
 <script>
 import ContactForm from '../ContactForm.vue'
+import { sendContactForm } from '../../services/api/contact'
+
 export default {
   name: 'ContactDialog',
   components: {
@@ -68,11 +70,15 @@ export default {
     }
   },
   methods: {
-    handleSubmit() {
+    async handleSubmit(form) {
       this.hideForm = false
-      console.log('submit')
+      const { t } = await sendContactForm(form)
+      if (t != 'error') {
+        this.showError = true
+        this.showSuccess = false
+      }
+      this.showError = false
       this.showSuccess = true
-      this.showError = true
     },
     openDialog() {
       this.showSuccess = false
