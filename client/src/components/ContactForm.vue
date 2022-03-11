@@ -101,6 +101,9 @@ export default {
       message: ''
     }
   }),
+  created: function() {
+    this.fillForm()
+  },
   computed: {
     siteKey() {
       return siteKey
@@ -170,21 +173,16 @@ export default {
         }
         this.isSendingData = false
       })
+    },
+    fillForm() {
+      if (this.$auth.user) {
+        this.form.first_name = this.$auth.user.given_name
+        this.form.last_name = this.$auth.user.family_name
+        this.form.email = this.$auth.user.email
+      } else {
+        this.form.first_name = ''
+      }
     }
-    // async sendData() {
-    //   await this.$refs.contactForm.validate(async isValid => {
-    //     if (!isValid || !this.catchaVerified) return
-    //     this.isSendingData = true
-    //     const { t } = await sendContactForm(this.form)
-    //     if (t != 'error') {
-    //       this.$refs.contactForm.resetFields()
-    //       if (this.$refs.captcha) {
-    //         this.$refs.captcha.reset()
-    //       }
-    //     }
-    //     this.isSendingData = false
-    //   })
-    // }
   }
 }
 </script>
