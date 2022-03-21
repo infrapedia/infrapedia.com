@@ -58,15 +58,15 @@ module.exports = {
       config.plugins.push(new WebpackBar())
     }
   },
-  chainWebpack: config => {
-    config.module
-      .rule('eslint')
-      .use('eslint-loader')
-      .options({
-        fix: true
-      })
+  // chainWebpack: config => {
+  //   config.module
+  //     .rule('eslint')
+  //     .use('eslint-loader')
+  //     .options({
+  //       fix: true
+  //     })
     // if (process.env.NODE_ENV == 'production') {
     // config.module.rule('gzip-loader').use('gzip-loader')
     // }
-  }
+  // }
 }
