@@ -153,7 +153,9 @@ h1 {
 .el-select-dropdown {
   border: none !important;
 }
-
+.overflow-hidden {
+  overflow: hidden;
+}
 .custom-dialog {
   color: inherit;
   @media screen and (max-width: $break-lg) {
@@ -164,7 +166,11 @@ h1 {
   }
   .el-dialog__header {
     padding: 1.2rem 1rem;
+    border-radius: 20px 20px 0 0;
   }
+}
+.el-dialog.contact-dialog {
+  border-radius: 20px;
 }
 
 .dark-color {
@@ -925,4 +931,3 @@ input.issues-dialog {
 .light {
   transition: all 120ms ease-in;
 }
-

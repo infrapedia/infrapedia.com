@@ -15,12 +15,17 @@
     >
       <router-view />
     </transition>
+    <contact-dialog></contact-dialog>
   </div>
 </template>
 
 <script>
+import ContactDialog from './components/dialogs/ContactDialog.vue'
 export default {
   name: 'App',
+  components: {
+    ContactDialog
+  },
   created() {
     if (Object.keys(this.$route.query).length > 0) {
       this.handleSharedView()

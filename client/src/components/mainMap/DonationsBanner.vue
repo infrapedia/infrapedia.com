@@ -102,7 +102,7 @@ export default {
   position: absolute;
   bottom: 0;
   left: 0;
-  z-index: 20;
+  z-index: 22;
   padding: 0.2rem;
   min-height: 7.2rem;
 

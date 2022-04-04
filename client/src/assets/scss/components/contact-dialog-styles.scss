@@ -1,0 +1,39 @@
+@import '../base/variables';
+
+.contact-button {
+  box-shadow: 0 5px 4px 0 rgb(0 0 0 / 26%);
+  border-radius: 34px 8px 34px 34px;
+  position: fixed;
+  z-index: 21;
+  @media screen and (max-width: $break-sm) {
+    font-size: 16px;
+    padding: 8px;
+    bottom: 35px;
+    right: 25px;
+  }
+  @media screen and (min-width: $break-sm) {
+    bottom: 15px;
+    right: 15px;
+    padding: 18px;
+    font-size: 20px;
+  }
+}
+
+.contact-dialog-alert {
+  p {
+    padding-bottom: 3em;
+  }
+}
+.container-center {
+  text-align: center;
+}
+
+.big-icon {
+  font-size: 4.5em;
+  &.error {
+    color: $berry;
+  }
+  &.success {
+    color: $success;
+  }
+}
