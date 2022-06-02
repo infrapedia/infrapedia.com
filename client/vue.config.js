@@ -1,7 +1,7 @@
 // const fs = require('fs')
 // const path = require('path')
 // const PrerenderSpaPlugin = require('prerender-spa-plugin')
-const WebpackBar = require('webpackbar')
+// const WebpackBar = require('webpackbar')
 const CompressionPlugin = require('compression-webpack-plugin')
 // const gzip = require('@gfx/zopfli').gzip
 
@@ -54,19 +54,20 @@ module.exports = {
           // }
         })
       )
-    } else {
-      config.plugins.push(new WebpackBar())
-    }
+    } 
+    // else {
+    //   config.plugins.push(new WebpackBar())
+    // }
   },
-  chainWebpack: config => {
-    config.module
-      .rule('eslint')
-      .use('eslint-loader')
-      .options({
-        fix: true
-      })
+  // chainWebpack: config => {
+  //   config.module
+  //     .rule('eslint')
+  //     .use('eslint-loader')
+  //     .options({
+  //       fix: true
+  //     })
     // if (process.env.NODE_ENV == 'production') {
     // config.module.rule('gzip-loader').use('gzip-loader')
     // }
-  }
+  // }
 }

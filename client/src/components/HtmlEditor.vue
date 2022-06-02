@@ -33,6 +33,3 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-@import '../assets/scss/components/html-editor-styles.scss';
-</style>
