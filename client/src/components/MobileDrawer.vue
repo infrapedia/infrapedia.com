@@ -16,7 +16,7 @@
         class="h14 pr4 pl4 pb2 flex justify-content-space-between align-items-center"
         :class="{ dark, light: !dark }"
       >
-        <router-link :to="checkIfLoggedIn">
+        <router-link to="/">
           <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
         </router-link>
         <el-button
@@ -34,7 +34,7 @@
         v-model="collapseActive"
         :class="{ dark, light: !dark }"
       >
-        <el-collapse-item name="partners" class="pr4 pl4">
+        <!-- <el-collapse-item name="partners" class="pr4 pl4">
           <span slot="title" class="underline">Our Partners</span>
           <i-list
             :is-search-visible="false"
@@ -42,7 +42,7 @@
             option="partners"
             @click="emitSelected"
           />
-        </el-collapse-item>
+        </el-collapse-item> -->
         <el-collapse-item name="trusted-by" class="pr4 pl4">
           <span slot="title" class="underline">Trusted by</span>
           <i-list
@@ -110,7 +110,7 @@
             v-else
             plain
             type="text"
-            :key="dropdownItem.url"
+            :key="`${dropdownItem.url}`"
             class="inline-flex no-border-radius align-items-center color-inherit h-fit-full no-outline"
             :class="{ dark, light: !dark }"
             @click="goToRoute(dropdownItem.url)"
@@ -185,7 +185,7 @@ export default {
       return links
     },
     checkIfLoggedIn() {
-      return this.$auth.isAuthenticated ? '/app' : '/'
+      return this.$auth.isAuthenticated ? '/' : '/'
     },
     imageURL() {
       return this.dark

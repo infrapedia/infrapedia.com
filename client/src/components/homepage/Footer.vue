@@ -41,7 +41,7 @@
                   <router-link
                     v-if="i == 0 && $auth.isAuthenticated"
                     :key="i"
-                    :to="checkIfLoggedIn"
+                    to="/"
                     class="underline-hover color-inherit"
                   >
                     {{ link.label }}
@@ -136,10 +136,6 @@ export default {
         url: '/'
       },
       {
-        label: 'Map',
-        url: '/app'
-      },
-      {
         label: 'Services',
         url: '/services'
       },
@@ -164,7 +160,7 @@ export default {
       return pkg.version
     },
     checkIfLoggedIn() {
-      return this.$auth.isAuthenticated ? '/app' : '/'
+      return this.$auth.isAuthenticated ? '/' : '/'
     },
     imageURL() {
       return this.dark

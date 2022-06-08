@@ -4,7 +4,7 @@ import NotFound from '../layouts/404.vue'
 import ProfileLayout from '../layouts/profile.vue'
 import HomepageLayout from '../layouts/homepage.vue'
 
-import Landing from '../pages/Landing.vue'
+// import Landing from '../pages/Landing.vue'
 import MapApp from '../pages/MapApp.vue'
 import Login from '../pages/login.vue'
 import Profile from '../pages/profile/profile.vue'
@@ -14,7 +14,7 @@ import Contact from '../pages/Contact.vue'
 import About from '../pages/About.vue'
 import Attributions from '../pages/Attributions.vue'
 import Services from '../pages/Services.vue'
-import Sponsors from '../pages/Sponsors.vue'
+// import Sponsors from '../pages/Sponsors.vue'
 import VotesResults from '../pages/VotesResults.vue'
 import PrivacyPolicy from '../pages/PrivacyPolicy.vue'
 import TermsAndConditions from '../pages/TermsAndConditions.vue'
@@ -117,21 +117,16 @@ const MyIssuesSection = () =>
 const routes = [
   { path: '*', component: NotFound },
   {
-    path: '/app',
+    path: '/',
     name: 'app',
     component: MapApp
   },
-  {
-    path: '/app/:type/:slug',
-    name: 'app-match-routes',
-    component: MapApp
-  },
-  {
-    path: '/homepage',
-    name: 'homepage',
-    alias: '/',
-    component: Landing
-  },
+  // {
+  //   path: '/homepage',
+  //   name: 'homepage',
+  //   alias: '/',
+  //   component: Landing
+  // },
   {
     path: '/',
     name: 'landing',
@@ -162,11 +157,11 @@ const routes = [
         name: 'terms-and-conditions',
         component: TermsAndConditions
       },
-      {
-        path: '/sponsors',
-        name: 'sponsors',
-        component: Sponsors
-      },
+      // {
+      //   path: '/sponsors',
+      //   name: 'sponsors',
+      //   component: Sponsors
+      // },
       {
         path: '/contact',
         name: 'contact',

@@ -24,7 +24,7 @@ import HFooter from '../components/homepage/Footer'
 import HNavbar from '../components/homepage/Navbar'
 import HMobileDrawer from '../components/MobileDrawer'
 import HomePage from '../components/homepage/HomePage'
-import { checkCookie } from '../helpers/cookies'
+// import { checkCookie } from '../helpers/cookies'
 
 export default {
   components: {
@@ -107,17 +107,23 @@ export default {
   created() {
     document.querySelector('body').className = 'overflow-y-auto'
   },
-  beforeRouteEnter(to, from, next) {
-    next(async vm => {
-      if (
-        checkCookie('auth0.is.authenticated') &&
-        !localStorage.getItem('once-redirected')
-      ) {
-        vm.$router.push('/app')
-        localStorage.setItem('once-redirected', true)
-      }
-    })
-  },
+  // beforeRouteEnter(to, from, next) {
+  //   next(async vm => {
+  //     if (
+  //       checkCookie('auth0.is.authenticated') ||
+  //       (await vm.$auth.checkAuthStatus()) === true ||
+  //       window.location.search.includes('code=')
+  //     ) {
+  //       vm.$router
+  //         .replace('/login')
+  //         .then(() => {})
+  //         // eslint-disable-next-line
+  //         .catch(err => {
+  //           // Ignore
+  //         })
+  //     }
+  //   })
+  // },
   methods: {
     closeDrawer() {
       this.isMobileDrawer = false

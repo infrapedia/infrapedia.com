@@ -64,7 +64,7 @@ export async function shareViaFacebook(user_id, link) {
 //   if (res && res.data && res.data.r) {
 //     const encoded = encodeURIComponent(res.data.r)
 //     const r = `https://www.linkedin.com/shareArticle/?mini=true&url=${encoded}&title=${title}&source=${encodeURIComponent(
-//       'https://www.infrapedia.com/app'
+//       'https://www.infrapedia.com'
 //     )}`
 //     return r
 //   }

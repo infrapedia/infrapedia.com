@@ -33,7 +33,7 @@
             </router-link>
           </el-button>
         </li>
-        <li class="w-fit-full" v-if="currentRoute.to != '/app'">
+        <li class="w-fit-full">
           <router-link
             to="/user/profile"
             class="el-button h10 pl4 pr4 el-button--text color-inherit w-fit-full text-left inline-block underline-hover"
@@ -42,6 +42,14 @@
           </router-link>
         </li>
       </template>
+      <!-- <li class="w-fit-full" v-if="currentRoute.to != '/'">
+        <router-link
+          to="/user/profile"
+          class="el-button h10 pl4 pr4 el-button--text color-inherit w-fit-full text-left inline-block underline-hover"
+        >
+          Profile
+        </router-link>
+      </li> -->
       <li class="w-fit-full h10">
         <el-button
           type="text"
@@ -154,7 +162,7 @@ export default {
       return this.$route.path.includes('/user')
         ? {
             label: 'Back to map',
-            to: '/app'
+            to: '/'
           }
         : {
             label: 'Dashboard',
@@ -179,7 +187,7 @@ export default {
       this.isVisible = bool
     },
     toggleDarkMode() {
-      if (this.currentRoute.to == '/app') {
+      if (this.currentRoute.to == '/') {
         this.$store.commit(`${TOGGLE_DARK}`, !this.dark)
       } else {
         bus.$emit(`${TOGGLE_THEME}`)
