@@ -12,7 +12,7 @@
             </small>
           </h1>
           <router-link
-            to="/app"
+            to="/"
             class="el-button el-button--primary is-round mr4 w42 inline-block is-plain"
           >
             Go to Map

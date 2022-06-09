@@ -114,10 +114,10 @@ export const navbarLinks = [
   {
     label: 'About',
     dropdown: [
-      {
-        label: 'Our team',
-        url: '/about'
-      },
+      // {
+      //   label: 'Our team',
+      //   url: '/about'
+      // },
       {
         label: 'Advisory Board',
         url: '/advisory-board'

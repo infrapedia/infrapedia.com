@@ -138,10 +138,10 @@ export default {
   data: () => ({
     collapseActive: '',
     dropdownLinks: [
-      {
-        label: 'Our team',
-        url: '/about'
-      },
+      // {
+      //   label: 'Our team',
+      //   url: '/about'
+      // },
       {
         label: 'Advisory Board',
         url: '/advisory-board'

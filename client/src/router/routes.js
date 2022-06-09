@@ -4,14 +4,14 @@ import NotFound from '../layouts/404.vue'
 import ProfileLayout from '../layouts/profile.vue'
 import HomepageLayout from '../layouts/homepage.vue'
 
-// import Landing from '../pages/Landing.vue'
+import Landing from '../pages/Landing.vue'
 import MapApp from '../pages/MapApp.vue'
 import Login from '../pages/login.vue'
 import Profile from '../pages/profile/profile.vue'
 import ChangePassword from '../pages/profile/recover-password.vue'
 import EmailProviders from '../pages/profile/email-providers.vue'
 import Contact from '../pages/Contact.vue'
-import About from '../pages/About.vue'
+// import About from '../pages/About.vue'
 import Attributions from '../pages/Attributions.vue'
 import Services from '../pages/Services.vue'
 // import Sponsors from '../pages/Sponsors.vue'
@@ -170,7 +170,7 @@ const routes = [
       {
         path: '/about',
         name: 'about',
-        component: About
+        component: Landing
       },
       {
         path: '/votes-results',

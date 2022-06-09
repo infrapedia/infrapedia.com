@@ -6,7 +6,6 @@
       :visibility="isMobileDrawer"
       @close="closeDrawer"
     />
-    <h-navbar @toggle-mobile-drawer="toggleDrawerVisibility" />
     <transition
       mode="out-in"
       name="animated faster3x"
@@ -15,7 +14,6 @@
     >
       <home-page />
     </transition>
-    <h-footer />
   </el-container>
 </template>
 
