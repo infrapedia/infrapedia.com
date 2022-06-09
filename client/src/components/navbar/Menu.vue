@@ -33,7 +33,7 @@
             </router-link>
           </el-button>
         </li>
-        <li class="w-fit-full">
+        <li class="w-fit-full" v-if="currentRoute.to != '/'">
           <router-link
             to="/user/profile"
             class="el-button h10 pl4 pr4 el-button--text color-inherit w-fit-full text-left inline-block underline-hover"
@@ -42,14 +42,6 @@
           </router-link>
         </li>
       </template>
-      <!-- <li class="w-fit-full" v-if="currentRoute.to != '/'">
-        <router-link
-          to="/user/profile"
-          class="el-button h10 pl4 pr4 el-button--text color-inherit w-fit-full text-left inline-block underline-hover"
-        >
-          Profile
-        </router-link>
-      </li> -->
       <li class="w-fit-full h10">
         <el-button
           type="text"

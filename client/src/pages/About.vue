@@ -35,11 +35,10 @@
           consisting of industry specialists, we are developing awareness of our
           community, reaching out to other carriers, service providers and
           Internet business such as Google, Microsoft and Facebook. And with the
-          help from our Partners and
-          <router-link to="/sponsors">Sponsors</router-link>
-          Infrapedia is able to keep providing the world’s most realistic view
-          of the internet infrastructure for free by assuring the long term
-          sustainability of the platform and community.
+          help from our Partners and Sponsors Infrapedia is able to keep
+          providing the world’s most realistic view of the internet
+          infrastructure for free by assuring the long term sustainability of
+          the platform and community.
         </p>
       </template>
 

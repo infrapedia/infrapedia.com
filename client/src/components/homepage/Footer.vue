@@ -8,15 +8,15 @@
           </router-link>
         </h1>
         <p class="fs-small m0 ml1 mt4">v{{ packageVersion }}</p>
-        <a
+        <!-- <a
           target="_blank"
           href="https://www.google.com/maps/place/South+San+Francisco,+California+94083,+EE.+UU./@37.6500162,-122.4187548,15z/data=!3m1!4b1!4m5!3m4!1s0x808f79ac2e06d7eb:0x899aea1b64c95f9b!8m2!3d37.65!4d-122.41"
           class="fs-small text-white mt4 ml1 inline-block w-fit-full underline-hover"
         >
           San Francisco, California 94083, US
-        </a>
+        </a> -->
         <p class="fs-small mt4 ml1">
-          ©️ {{ year }} Copyright, All Rights Reserved by Infrapedia Inc.
+          ©️ {{ year }} Copyright, All Rights Reserved by Infrapedia.
         </p>
       </div>
       <div class="links-wrapper">
@@ -48,7 +48,7 @@
                   </router-link>
                   <router-link
                     v-else-if="i != 0"
-                    :key="i"
+                    :key="`${i}`"
                     :to="link.url"
                     class="underline-hover color-inherit"
                   >
@@ -75,7 +75,7 @@
                   </li>
                   <li
                     class="list-item mb3"
-                    :key="i"
+                    :key="`${i}`"
                     v-else-if="link.footer"
                     :data-index-link="link.footer.order"
                   >
@@ -138,10 +138,6 @@ export default {
       {
         label: 'Services',
         url: '/services'
-      },
-      {
-        label: 'Sponsorships',
-        url: '/sponsors'
       },
       {
         label: 'FAQ',
