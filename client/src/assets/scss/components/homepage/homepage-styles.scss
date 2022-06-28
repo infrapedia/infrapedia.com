@@ -15,6 +15,12 @@
 
 .hero-wrapper {
   border-top: 1px solid $grey-ligthen-3;
+
+  .hero-img {
+    object-fit: cover;
+    width: 100%;
+  }
+
   .overlay-inner {
     top: 0;
     opacity: 0;
@@ -33,6 +39,28 @@
     .overlay-inner {
       @extend .visible-from-start;
     }
+  }
+}
+
+.hidden {
+  display: hidden;
+}
+
+@media screen and (min-width: $break-xs) {
+  .md\:block {
+    display: block;
+  }
+  .md\:hidden {
+    display: none;
+  }
+}
+
+@media screen and (min-width: $break-md) {
+  .lg\:block {
+    display: block;
+  }
+  .lg\:hidden {
+    display: none;
   }
 }
 

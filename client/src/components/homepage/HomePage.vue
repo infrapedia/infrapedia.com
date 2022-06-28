@@ -20,7 +20,21 @@
         </div>
       </div>
       <div class="map-wrapper cubic-transition">
-        <i-map :disabled="true" />
+        <img
+          src="../../assets/infrapedia_map.png"
+          alt="Infrapedia’s Map"
+          class="hero-img hidden lg:block"
+        />
+        <img
+          src="../../assets/infrapedia_map_tablet.png"
+          alt="Infrapedia’s Map"
+          class="hero-img hidden md:block lg:hidden"
+        />
+        <img
+          src="../../assets/infrapedia_map_mobile.png"
+          alt="Infrapedia’s Map"
+          class="hero-img md:hidden"
+        />
       </div>
     </div>
     <div class="main-wrapper_after-hero">
@@ -71,23 +85,6 @@
           </div>
         </div>
       </div>
-      <!-- <div class="p4 services-wrapper">
-        <h2 class="title--homepage-variant md w80 mt20 mb8">
-          Our Services
-        </h2>
-        <div
-          class="boxes-wrapper el-card row wrap justify-content-space-between"
-        >
-          <div class="box p4" v-for="(item, i) in texts.withIcon" :key="i">
-            <h3 class="title--homepage-variant sm">
-              <router-link to="/services" class="underline-hover">
-                {{ item.title--homepage-variant }}
-              </router-link>
-            </h3>
-            <p class="text--homepage-variant" style="max-width: 100%;" v-text="item.text" />
-          </div>
-        </div>
-      </div> -->
       <div class="phrases mb8 p4 flex row wrap">
         <div class="left">
           <div class="icons-main-wrapper mt4">
@@ -165,34 +162,6 @@
           </div>
         </div>
       </div>
-      <!-- <div class="p4 mb8" id="blogSection">
-        <h2 class="title--homepage-variant md w80 font-medium mb8">
-          Latest News
-        </h2>
-        <transition-group
-          name="fade"
-          appear
-          mode="out-in"
-          tag="div"
-          v-loading="blogPosts.length <= 0"
-          class="flex row wrap justify-content-space-between"
-        >
-          <el-card
-            shadow="never"
-            class="p8"
-            v-for="(post, i) in blogPosts"
-            :key="`${i + post.id}_${post.date}`"
-          >
-            <small>
-              {{ formatDate(post.modified_gmt) }}
-            </small>
-            <h3 class="title sm">
-              {{ post.title.rendered }}
-            </h3>
-            <p v-html="post.excerpt.rendered" />
-          </el-card>
-        </transition-group>
-      </div> -->
       <div class="blockquote p12 el-card transparent no-border flex row wrap">
         <div class="left">
           <el-image :src="founder.photo" class="circle founder-image" />
@@ -214,9 +183,7 @@
         class="bottom-banner el-card flex row nowrap align-items-center mb20 mt12"
       >
         <div class="p2">
-          <h2 class="font-medium">
-            Ready to get started?
-          </h2>
+          <h2 class="font-medium">Ready to get started?</h2>
           <h2 class="font-thin title--homepage-variant diff">
             Create an account or talk to our experts.
           </h2>
@@ -242,8 +209,6 @@
 </template>
 
 <script>
-import Map from '../mainMap/Map'
-// import getBlogPosts from '../../services/api/blog'
 import teamMembers from '../../config/teamMembers.js'
 import { formatDate } from '../../helpers/formatDate'
 import { getTrustedBy } from '../../services/api/organizations'
@@ -251,13 +216,9 @@ import { checkCookie } from '../../helpers/cookies'
 
 export default {
   name: 'HomePage',
-  components: {
-    'i-map': Map
-  },
   data: () => ({
     trustedBy: [],
-    // blogPosts: [],
-    loadingVotes: false
+    loadingVotes: false,
   }),
   computed: {
     texts() {
@@ -265,24 +226,21 @@ export default {
         withIcon: [
           {
             title: 'Data Analysis',
-            text:
-              'Access our team of experts and gain deep insight into our infrastructure database.'
+            text: 'Access our team of experts and gain deep insight into our infrastructure database.',
           },
           {
             title: 'Custom Maps & GIS Engineering',
-            text: 'GIS and Custom Map development.'
+            text: 'GIS and Custom Map development.',
           },
           {
             title: 'Software Development',
-            text:
-              'Our skilled engineers work with you to develop the software you need.'
+            text: 'Our skilled engineers work with you to develop the software you need.',
           },
           {
             title: 'Infrastructure Procurement',
-            text:
-              'Connect with the provider you need and get quotes directly from them.'
-          }
-        ]
+            text: 'Connect with the provider you need and get quotes directly from them.',
+          },
+        ],
       }
     },
     founder() {
@@ -290,7 +248,7 @@ export default {
       return founder
     },
     formatDate() {
-      return function(date) {
+      return function (date) {
         return formatDate(date)
       }
     },
@@ -302,14 +260,13 @@ export default {
     },
     isMobile() {
       return window.innerWidth <= 425
-    }
+    },
   },
   async mounted() {
     try {
       await Promise.all([
         this.loadTrustedBy(),
-        // this.loadBlogPosts(),
-        this.$store.dispatch('getPremiumData')
+        this.$store.dispatch('getPremiumData'),
       ])
     } catch {
       // Ignore
@@ -322,23 +279,14 @@ export default {
         this.trustedBy = res.data.r
       }
     },
-    // async loadBlogPosts() {
-    //   const posts = (await getBlogPosts()) || []
-    //   let length = this.isMobile ? 1 : 5
-    //   this.blogPosts = posts
-    //     .map((item, i) => {
-    //       return i < length ? item : false
-    //     })
-    //     .filter(t => t)
-    // },
     askToRegister() {
       if (checkCookie('auth0.is.authenticated')) {
         this.$router.push('/app')
       } else {
         this.$router.push('/login?redirect=true')
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
