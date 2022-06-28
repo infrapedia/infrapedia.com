@@ -42,8 +42,27 @@
   }
 }
 
+#whatWeDo {
+  margin: 5rem 0;
+  div {
+    flex: 1;
+    margin: 0 auto;
+    max-width: 75vw;
+    padding: 4rem 8px;
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
 .hidden {
   display: hidden;
+}
+
+.text-lg {
+  font-size: 1.2em;
 }
 
 @media screen and (min-width: $break-xs) {
@@ -64,7 +83,7 @@
   }
 }
 
-.main-wrapper_after-hero {
+.adjust-max-w {
   width: 75vw;
   margin: 0 auto;
 }

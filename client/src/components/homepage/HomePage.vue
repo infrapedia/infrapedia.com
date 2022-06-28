@@ -38,7 +38,7 @@
       </div>
     </div>
     <div class="main-wrapper_after-hero">
-      <div class="introduction mt20 mb12 p4 flex row wrap">
+      <div class="adjust-max-w introduction mt20 mb12 p4 flex row wrap">
         <div class="left">
           <h1 class="title--homepage-variant mb8 mt4">
             The Infrastructure Map
@@ -75,7 +75,27 @@
           />
         </div>
       </div>
-      <div class="p4 mb20 mt20" id="partnersSection">
+
+      <section class="mt-20" id="whatWeDo">
+        <div>
+          <h2 class="title--homepage-variant mb5 text-center diff">
+            What we do
+          </h2>
+
+          <p class="text--homepage-variant mt4">
+            Most importantly, Infrapedia is open source and a community where
+            you can connect and get assistance from professionals or
+            Infrapedia’s team of industry experts. Together with the help from
+            our sponsor EdgeUno Inc. Infrapedia is able to keep providing the
+            world’s most realistic view of the internet infrastructure for free
+            and assure the long term sustainability of the platform and
+            community. Joining is easy, no fees needed to register and use the
+            interactive map. Sign up here and start interacting with our map!
+          </p>
+        </div>
+      </section>
+
+      <div class="adjust-max-w p4 mb20 mt20" id="partnersSection">
         <h2 class="title--homepage-variant mb20 text-center diff">
           Our Partners
         </h2>
@@ -85,70 +105,96 @@
           </div>
         </div>
       </div>
-      <div class="phrases mb8 p4 flex row wrap">
-        <div class="left">
-          <div class="icons-main-wrapper mt4">
-            <div class="icon-wrapper">
-              <span class="icon w12 h12 inline-block vertical-align">
-                <fa :icon="['fas', 'globe-americas']" />
-              </span>
-              discover
-            </div>
-            <div class="icon-wrapper">
-              <span class="icon w12 h12 inline-block vertical-align">
-                <fa :icon="['fas', 'tasks']" />
-              </span>
-              plan
-            </div>
-            <div class="icon-wrapper">
-              <span class="icon w12 h12 inline-block vertical-align">
-                <fa :icon="['fas', 'headset']" />
-              </span>
-              connect
-            </div>
-            <div class="icon-wrapper">
-              <span class="icon w12 h12 inline-block vertical-align">
-                <fa :icon="['fas', 'money-check-alt']" />
-              </span>
-              buy
-            </div>
+
+      <div class="adjust-max-w">
+        <div class="phrases flex row wrap">
+          <div class="left" aria-hidden="true" />
+          <div class="right">
+            <h2 class="title--homepage-variant mt-4">
+              Internet infrastructure view
+            </h2>
+
+            <p
+              style="margin: 4rem 0; text-align: left; max-width: 720px"
+              class="text--homepage-variant mt4"
+            >
+              Infrapedia is the only available public tool that gives an
+              operational global view of the internet infrastructure to support
+              identifying possible
+              <b>
+                areas of expansion, new opportunities and potential
+                collaborations
+              </b>
+              with other community members.
+            </p>
           </div>
         </div>
-        <div class="right">
-          <p class="text--homepage-variant">
-            Our focus is to show the layer 1 structure of the global network.
-          </p>
-          <ul class="list-wrapper">
-            <li>
-              <strong>View</strong> information about key internet
-              infrastructures including fiber optic submarine cable <br />
-              systems, terrestrial fiber networks, internet exchange points and
-              data center facilities.
-            </li>
-            <li>
-              See <strong>near-real time</strong> operational status of
-              networks, especially subsea cable systems.
-            </li>
-            <li>
-              <strong>Find</strong> new routes and get technical details to help
-              network planning teams to build more <br />
-              resilient networks.
-            </li>
-            <li>
-              <strong>Find and connect</strong> with sales teams to acquire
-              capacity without paying commissions to middle parties.
-            </li>
-          </ul>
-          <p class="text--homepage-variant">
-            Like PeeringDB, Infrapedia is a crowd-sourced platform. Users can
-            add and update information about their networks and data center
-            facilities on the map as well as help update listings with more
-            accurate information to keep an <br />
-            updated and usable tool for the entire Internet community.
-          </p>
+        <div class="phrases mb8 p4 flex row wrap">
+          <div class="left">
+            <div class="icons-main-wrapper mt4">
+              <div class="icon-wrapper">
+                <span class="icon w12 h12 inline-block vertical-align">
+                  <fa :icon="['fas', 'globe-americas']" />
+                </span>
+                discover
+              </div>
+              <div class="icon-wrapper">
+                <span class="icon w12 h12 inline-block vertical-align">
+                  <fa :icon="['fas', 'tasks']" />
+                </span>
+                plan
+              </div>
+              <div class="icon-wrapper">
+                <span class="icon w12 h12 inline-block vertical-align">
+                  <fa :icon="['fas', 'headset']" />
+                </span>
+                connect
+              </div>
+              <div class="icon-wrapper">
+                <span class="icon w12 h12 inline-block vertical-align">
+                  <fa :icon="['fas', 'money-check-alt']" />
+                </span>
+                buy
+              </div>
+            </div>
+          </div>
+          <div class="right">
+            <p class="text--homepage-variant">
+              Our focus is to show the layer 1 structure of the global network.
+            </p>
+            <ul class="list-wrapper">
+              <li>
+                <strong>View</strong> information about key internet
+                infrastructures including fiber optic submarine cable <br />
+                systems, terrestrial fiber networks, internet exchange points
+                and data center facilities.
+              </li>
+              <li>
+                See <strong>near-real time</strong> operational status of
+                networks, especially subsea cable systems.
+              </li>
+              <li>
+                <strong>Find</strong> new routes and get technical details to
+                help network planning teams to build more <br />
+                resilient networks.
+              </li>
+              <li>
+                <strong>Find and connect</strong> with sales teams to acquire
+                capacity without paying commissions to middle parties.
+              </li>
+            </ul>
+            <p class="text--homepage-variant">
+              Like PeeringDB, Infrapedia is a crowd-sourced platform. Users can
+              add and update information about their networks and data center
+              facilities on the map as well as help update listings with more
+              accurate information to keep an <br />
+              updated and usable tool for the entire Internet community.
+            </p>
+          </div>
         </div>
       </div>
-      <div class="p4 mb12" id="trustedBySection">
+
+      <div class="adjust-max-w p4 mb12" id="trustedBySection">
         <h2 class="title--homepage-variant mb20 text-center diff">
           Trusted by
         </h2>
@@ -162,25 +208,66 @@
           </div>
         </div>
       </div>
-      <div class="blockquote p12 el-card transparent no-border flex row wrap">
-        <div class="left">
-          <el-image :src="founder.photo" class="circle founder-image" />
+
+      <div class="adjust-max-w">
+        <h2 class="title--homepage-variant text-center mt-4">Team</h2>
+
+        <div
+          class="blockquote p12 el-card transparent no-border flex row wrap"
+          style="margin: 4rem auto"
+        >
+          <div class="left">
+            <el-image :src="founder.photo" class="circle founder-image" />
+          </div>
+          <div class="right">
+            <p class="text--homepage-variant mt4">
+              “My goal is to give people real-time visibility and connect buyers
+              and sellers directly to get Internet infrastructure at the best
+              value and help connect billions of people to the internet cheaper
+              and faster.”
+              <br />
+              <strong class="inline-block mt4">
+                - Mehmet Akcin Founder & President
+              </strong>
+            </p>
+          </div>
         </div>
-        <div class="right">
-          <p class="text--homepage-variant mt4">
-            “My goal is to give people real-time visibility and connect buyers
-            and sellers directly to get Internet infrastructure at the best
-            value and help connect billions of people to the internet cheaper
-            and faster.”
-            <br />
-            <strong class="inline-block mt4">
-              - Mehmet Akcin Founder & President
-            </strong>
-          </p>
+
+        <div
+          class="blockquote p12 el-card transparent no-border flex row wrap"
+          style="margin: 4rem auto"
+        >
+          <div class="left">
+            <p class="text--homepage-variant mt4">
+              “We maintain close relationships with key market players, industry
+              specialists and scour the Internet for information and update our
+              databases on a daily basis.”
+              <br />
+              <strong class="inline-block mt4">
+                - Hubert Souisa Director of Operations
+              </strong>
+            </p>
+          </div>
+          <div class="right">
+            <el-image
+              src="https://cdn1.infrapedia.com/assets/team/hubert.jpeg"
+              class="circle founder-image"
+            />
+          </div>
         </div>
+
+        <p style="max-width: 720px; padding: 4px">
+          We do not stand alone. With the help of our
+          <router-link to="/advisory-board"> Board of Advisors </router-link>
+          consisting of industry specialists, we are developing awareness of our
+          community, reaching out to other carriers, service providers and
+          Internet businesses such as Google, Microsoft and Facebook.
+        </p>
       </div>
+
       <div
-        class="bottom-banner el-card flex row nowrap align-items-center mb20 mt12"
+        class="bottom-banner adjust-max-w el-card flex row nowrap align-items-center mb20 mt12"
+        style="margin: 4rem auto"
       >
         <div class="p2">
           <h2 class="font-medium">Ready to get started?</h2>
