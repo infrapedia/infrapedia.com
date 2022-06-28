@@ -29,99 +29,82 @@ export default {
     HomePage,
     HFooter,
     HNavbar,
-    HMobileDrawer
+    HMobileDrawer,
   },
   head: {
-    title: 'Global Internet Infrastructure Map | Infrapedia',
+    title: 'About | Global Internet Infrastructure Map | Infrapedia',
     link: [
       {
         rel: 'canonical',
-        href: `https://www.infrapedia.com`
-      }
+        href: `https://www.infrapedia.com`,
+      },
     ],
     meta: [
       {
         name: 'application-name',
         content:
-          'Global Internet Infrastructure Map | Telecommunications and Data Center Infrastructure'
+          'Global Internet Infrastructure Map | Telecommunications and Data Center Infrastructure',
       },
       {
         name: 'description',
         content:
-          "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
+          'Infrapedia provides the world’s most realistic view of the internet infrastructure map for free. No fees needed to register and use the interactive map. Learn more here!',
       },
       {
         name: 'keywords',
         content:
-          'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
+          'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure',
       },
       // ------------------ FACEBOOK - OPEN GRAPH
       {
         vmid: 'og:title',
         name: 'og:title',
         content:
-          'The world’s largest network and datacenter infrastructure atlas.'
+          'The world’s largest network and datacenter infrastructure atlas.',
       },
       {
         vmid: 'og:description',
         name: 'og:description',
         content:
-          "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
+          'Infrapedia provides the world’s most realistic view of the internet infrastructure map for free. No fees needed to register and use the interactive map. Learn more here!',
       },
       {
         vmid: 'og:image',
         name: 'og:image',
-        content: '/infrapedia-2.jpg'
+        content: '/infrapedia-2.jpg',
       },
       // ---------------------- TWITTER
       {
         vmid: 'twitter:title',
         name: 'twitter:title',
         content:
-          'The world’s largest network and datacenter infrastructure atlas.'
+          'The world’s largest network and datacenter infrastructure atlas.',
       },
       {
         vmid: 'twitter:description',
         name: 'twitter:description',
         content:
-          "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
+          'Infrapedia provides the world’s most realistic view of the internet infrastructure map for free. No fees needed to register and use the interactive map. Learn more here!',
       },
       {
         vmid: 'twitter:image',
         name: 'twitter:image',
-        content: '/infrapedia-2.jpg'
+        content: '/infrapedia-2.jpg',
       },
       {
         vmid: 'content-language',
         name: 'content-language',
-        content: 'en-US'
-      }
-    ]
+        content: 'en-US',
+      },
+    ],
   },
   data: () => ({
     isPoolDialog: false,
-    isMobileDrawer: false
+    isMobileDrawer: false,
   }),
   created() {
     document.querySelector('body').className = 'overflow-y-auto'
   },
-  // beforeRouteEnter(to, from, next) {
-  //   next(async vm => {
-  //     if (
-  //       checkCookie('auth0.is.authenticated') ||
-  //       (await vm.$auth.checkAuthStatus()) === true ||
-  //       window.location.search.includes('code=')
-  //     ) {
-  //       vm.$router
-  //         .replace('/login')
-  //         .then(() => {})
-  //         // eslint-disable-next-line
-  //         .catch(err => {
-  //           // Ignore
-  //         })
-  //     }
-  //   })
-  // },
   methods: {
     closeDrawer() {
       this.isMobileDrawer = false
@@ -134,7 +117,7 @@ export default {
 
       const body = document.querySelector('body')
       body.className = this.isMobileDrawer ? 'no-overflow' : 'overflow-y-scroll'
-    }
-  }
+    },
+  },
 }
 </script>

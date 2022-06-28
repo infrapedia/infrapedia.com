@@ -15,7 +15,7 @@ import Contact from '../pages/Contact.vue'
 import Attributions from '../pages/Attributions.vue'
 import Services from '../pages/Services.vue'
 // import Sponsors from '../pages/Sponsors.vue'
-import VotesResults from '../pages/VotesResults.vue'
+// import VotesResults from '../pages/VotesResults.vue'
 import PrivacyPolicy from '../pages/PrivacyPolicy.vue'
 import TermsAndConditions from '../pages/TermsAndConditions.vue'
 import FAQ from '../pages/FAQ.vue'
@@ -164,22 +164,22 @@ const routes = [
       // },
       {
         path: '/contact',
-        name: 'contact',
+        name: 'Contact',
         component: Contact
       },
       {
-        path: '/about',
-        name: 'about',
+        path: '/about-us',
+        name: 'About Us',
         component: Landing
       },
-      {
-        path: '/votes-results',
-        name: 'votes-results',
-        component: VotesResults
-      },
+      // {
+      //   path: '/votes-results',
+      //   name: 'votes-results',
+      //   component: VotesResults
+      // },
       {
         path: '/advisory-board',
-        name: 'advisory-board',
+        name: 'Advisory Board',
         component: Advisors
       }
     ]
