@@ -2,7 +2,7 @@ const infoMenuLinks = {
   info: [
     {
       label: 'About us',
-      url: '/about',
+      url: '/about-us',
       router: true,
       footer: {
         order: 0
