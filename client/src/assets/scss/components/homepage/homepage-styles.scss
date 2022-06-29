@@ -13,6 +13,10 @@
   background-color: #fcfcfc;
 }
 
+.main-wrapper_after-hero {
+  margin-top: 5rem;
+}
+
 .hero-wrapper {
   border-top: 1px solid $grey-ligthen-3;
 
@@ -321,43 +325,3 @@
     filter: grayscale(20%);
   }
 }
-
-// #blogSection {
-//   width: 72.8vw;
-//   .flex {
-//     min-height: 20vh;
-//   }
-//   .el-card {
-//     width: 12rem;
-//     margin-bottom: 1rem;
-//     &:last-child {
-//       margin-right: 0;
-//     }
-//   }
-// }
-
-// .services-wrapper {
-//   width: 72.6vw;
-//   .boxes-wrapper {
-//     display: grid;
-//     width: 100%;
-//     gap: 0.4rem;
-//     margin-bottom: 2rem;
-//     grid-auto-flow: dense;
-//     grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-//     .box {
-//       width: 17rem;
-//     }
-//   }
-//   @media screen and (max-width: $break-xs) {
-//     width: 100%;
-//     .el-card {
-//       width: 14rem;
-//       padding: 1rem;
-//       .box {
-//         width: 100%;
-//         padding: 0;
-//       }
-//     }
-//   }
-// }
