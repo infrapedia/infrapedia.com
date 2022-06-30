@@ -37,42 +37,85 @@
         />
       </div>
     </div>
-    <div class="main-wrapper_after-hero">
+    <div class="main-wrapper_after-hero" style="margin-bottom: 10rem">
       <div class="adjust-max-w introduction mt20 mb12 p4 flex row wrap">
         <div class="left">
           <h1 class="title--homepage-variant mb8 mt4">
             The Infrastructure Map
           </h1>
-          <p class="text--homepage-variant heading">
-            Infrapedia is the most complete and versatile interactive
-            infrastructure map of the Internet. It is the community’s best and
-            freely accessible tool that allows engineers, carriers, data center
-            operators, business development executives and other stakeholders to
-            navigate the Internet’s collection of networks and data centers.
-          </p>
-          <p class="text--homepage-variant sub mt4">
-            Most importantly, Infrapedia is open source and a community where
-            you can connect and get assistance from professionals or
-            Infrapedia’s team of industry experts.
-          </p>
-          <p class="text--homepage-variant mt4">
-            Joining is easy, no fees needed to register and use the interactive
-            map.
-          </p>
-          <div class="mt8">
-            <el-button @click="askToRegister" type="primary" round class="mr4">
-              Join now
-            </el-button>
+
+          <div>
+            <p class="text--homepage-variant heading">
+              Infrapedia is the most complete and versatile interactive
+              infrastructure map of the Internet. It is the community’s best and
+              freely accessible tool that allows engineers, carriers, data
+              center operators, business development executives and other
+              stakeholders to navigate the Internet’s infrastructure.
+            </p>
+
+            <p>Infrapedia’s free web application consist of:</p>
+            <ul style="padding-left: 1rem; list-style: disc">
+              <li>
+                <h2 class="title-sm">
+                  <strong> Submarine Cable Map </strong>
+                </h2>
+                <p class="text--homepage-variant">
+                  Depicting more than 600 internet cables under the ocean and
+                  1,450 cable landing stations (CLS) that are currently active,
+                  under construction or have been taken out of service
+                  (decommissioned).
+                </p>
+              </li>
+              <li>
+                <h2 class="title-sm">
+                  <strong> Terrestrial Fiber Map </strong>
+                </h2>
+                <p class="text--homepage-variant">
+                  Detailed maps of more than 100 terrestrial fiber networks
+                  throughout the world owned and operated by local and national
+                  telecom operators and international backbone providers.
+                </p>
+              </li>
+              <li>
+                <h2 class="title-sm">
+                  <strong> Data Center Map </strong>
+                </h2>
+                <p class="text--homepage-variant">
+                  Detailed information about more than 10,000 facilities
+                  globally, including data centers, carrier hotels, towers and
+                  earth stations.
+                </p>
+              </li>
+              <li>
+                <h2 class="title-sm">
+                  <strong> Internet Exchange Map </strong>
+                </h2>
+                <p class="text--homepage-variant">
+                  Over 300 active Internet exchanges and more than 500 buildings
+                  in which those exchanges reside.
+                </p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="right">
+          <div class="image-wrapper">
+            <el-image
+              src="https://cdn1.infrapedia.com/assets/top_new_gif.gif"
+              fit="contain"
+            />
+          </div>
+          <div class="mt8" style="text-align: end">
+            <router-link
+              to="/app"
+              class="el-button mr4 el-button--primary is-round"
+            >
+              View Map
+            </router-link>
             <router-link class="el-button is-round p4 el-link" to="/contact">
               Contact Us
             </router-link>
           </div>
-        </div>
-        <div class="right">
-          <el-image
-            src="https://cdn1.infrapedia.com/assets/top_new_gif.gif"
-            fit="contain"
-          />
         </div>
       </div>
 
@@ -90,21 +133,16 @@
             world’s most realistic view of the internet infrastructure for free
             and assure the long term sustainability of the platform and
             community. Joining is easy, no fees needed to register and use the
-            interactive map. Sign up here and start interacting with our map!
+            interactive map.
+            <a
+              href="https://infrapedia.com/app"
+              rel="noreferrer noopener"
+              target="_self"
+              >Start interacting with our map now!</a
+            >
           </p>
         </div>
       </section>
-
-      <div class="adjust-max-w p4 mb20 mt20" id="partnersSection">
-        <h2 class="title--homepage-variant mb20 text-center diff">
-          Our Partners
-        </h2>
-        <div class="boxes-wrapper">
-          <div class="el-card box p2" v-for="(partner, i) in premium" :key="i">
-            <el-image fit="contain" :src="partner.logo" />
-          </div>
-        </div>
-      </div>
 
       <div class="adjust-max-w">
         <div class="phrases flex row wrap">
@@ -184,38 +222,37 @@
               </li>
             </ul>
             <p class="text--homepage-variant">
-              Like PeeringDB, Infrapedia is a crowd-sourced platform. Users can
-              add and update information about their networks and data center
-              facilities on the map as well as help update listings with more
-              accurate information to keep an <br />
+              Like
+              <a
+                href="https://www.peeringdb.com/"
+                rel="noreferrer noopener"
+                target="_blank"
+                >PeeringDB</a
+              >, Infrapedia is a crowd-sourced platform. Users can add and
+              update information about their networks and data center facilities
+              on the map as well as help update listings with more accurate
+              information to keep an <br />
               updated and usable tool for the entire Internet community.
             </p>
           </div>
         </div>
       </div>
 
-      <div class="adjust-max-w p4 mb12" id="trustedBySection">
-        <h2 class="title--homepage-variant mb20 text-center diff">
-          Trusted by
-        </h2>
-        <div class="boxes-wrapper">
-          <div
-            class="el-card box p2"
-            v-for="(partner, i) in trustedBy"
-            :key="i"
-          >
-            <el-image fit="contain" :src="partner.logo" />
-          </div>
-        </div>
-      </div>
-
-      <div class="adjust-max-w">
-        <h2 class="title--homepage-variant text-center mt-4">Team</h2>
+      <div class="adjust-max-w pt20">
+        <h2 class="title--homepage-variant text-center">Team</h2>
 
         <div
-          class="blockquote p12 el-card transparent no-border flex row wrap"
+          class="blockquote pl12 pr12 pb12 el-card transparent no-border flex row wrap"
           style="margin: 4rem auto"
         >
+          <p class="text--homepage-variant pb10" style="padding:0 2rem; margin-bottom: 5rem;">
+            We do not stand alone. With the help of our
+            <router-link to="/advisory-board"> Board of Advisors </router-link>
+            consisting of industry specialists, we are developing awareness of
+            our community, reaching out to other carriers, service providers and
+            Internet businesses such as Google, Microsoft and Facebook.
+          </p>
+
           <div class="left">
             <el-image :src="founder.photo" class="circle founder-image" />
           </div>
@@ -234,7 +271,7 @@
         </div>
 
         <div
-          class="blockquote p12 el-card transparent no-border flex row wrap"
+          class="blockquote pl12 pr12 pb12 el-card transparent no-border flex row wrap"
           style="margin: 4rem auto"
         >
           <div class="left">
@@ -255,17 +292,9 @@
             />
           </div>
         </div>
-
-        <p style="max-width: 720px; padding: 4px">
-          We do not stand alone. With the help of our
-          <router-link to="/advisory-board"> Board of Advisors </router-link>
-          consisting of industry specialists, we are developing awareness of our
-          community, reaching out to other carriers, service providers and
-          Internet businesses such as Google, Microsoft and Facebook.
-        </p>
       </div>
 
-      <div
+      <!-- <div
         class="bottom-banner adjust-max-w el-card flex row nowrap align-items-center mb20 mt12"
         style="margin: 4rem auto"
       >
@@ -290,7 +319,7 @@
             src="https://cdn1.infrapedia.com/assets/footer3.png"
           />
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -298,13 +327,10 @@
 <script>
 import teamMembers from '../../config/teamMembers.js'
 import { formatDate } from '../../helpers/formatDate'
-import { getTrustedBy } from '../../services/api/organizations'
-import { checkCookie } from '../../helpers/cookies'
 
 export default {
   name: 'HomePage',
   data: () => ({
-    trustedBy: [],
     loadingVotes: false,
   }),
   computed: {
@@ -331,16 +357,10 @@ export default {
       }
     },
     founder() {
-      const founder = teamMembers.filter(t => t.position == 'President')[0]
-      return founder
+      return teamMembers.filter(t => t.position == 'President')[0]
     },
     formatDate() {
-      return function (date) {
-        return formatDate(date)
-      }
-    },
-    premium() {
-      return this.$store.state.premium
+      return date => formatDate(date)
     },
     blogHeight() {
       return this.isMobile ? '40vh' : '28vh'
@@ -349,34 +369,18 @@ export default {
       return window.innerWidth <= 425
     },
   },
-  async mounted() {
-    try {
-      await Promise.all([
-        this.loadTrustedBy(),
-        this.$store.dispatch('getPremiumData'),
-      ])
-    } catch {
-      // Ignore
-    }
-  },
-  methods: {
-    async loadTrustedBy() {
-      const res = await getTrustedBy()
-      if (res && res.data && res.data.r) {
-        this.trustedBy = res.data.r
-      }
-    },
-    askToRegister() {
-      if (checkCookie('auth0.is.authenticated')) {
-        this.$router.push('/app')
-      } else {
-        this.$router.push('/login?redirect=true')
-      }
-    },
-  },
 }
 </script>
 
 <style lang="scss" scoped>
 @import '../../assets/scss/components/homepage/homepage-styles.scss';
+
+.title-sm {
+  font-size: 0.98em;
+  margin-bottom: 0;
+  line-height: 1.42;
+}
+.title-sm + p {
+  margin: 0;
+}
 </style>

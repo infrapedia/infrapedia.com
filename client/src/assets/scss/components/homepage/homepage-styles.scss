@@ -117,10 +117,13 @@
   .right {
     width: 40%;
     margin-top: 4.2rem;
-    height: fit-content;
-    box-shadow: 2px 2px 12px 2px #ccc;
-    border-radius: 12px;
-    overflow: hidden;
+
+    .image-wrapper {
+      height: fit-content;
+      box-shadow: 2px 2px 12px 2px #ccc;
+      border-radius: 12px;
+      overflow: hidden;
+    }
 
     @media screen and (max-width: $break-md) {
       margin-top: 5.2rem;
