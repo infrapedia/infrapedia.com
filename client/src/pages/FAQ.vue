@@ -2,55 +2,69 @@
   <div class="main-wrapper p4 pt20 pb30">
     <div class="inner-wrapper">
       <h1 class="title text-center mb20" :class="{ dark }">
-        Frequently Ask Questions
+        Infrapedia’s most frequently asked questions
       </h1>
 
-      <div
-        v-for="(item, i) in generalFAQ"
-        :id="item.marker ? item.marker : ''"
-        :key="i"
-        :name="i"
-      >
-        <h2 class="text strong">{{ item.title }}</h2>
+      <ul class="list">
+        <li v-for="item in [...generalFAQ, ...dataFAQ, ...buyNowFAQ]" :key="item.marker">
+          <a :href="`faq#${item.marker}`" target="_self">{{ item.title }}</a>
+        </li>
+      </ul>
 
-        <p v-if="item.html" class="text" v-html="item.content" />
-        <p v-else class="text">
-          {{ item.content }}
+      <div>
+        <div
+          v-for="(item, i) in generalFAQ"
+          :id="item.marker"
+          :key="i"
+          :name="i"
+        >
+          <h2 class="text strong">{{ item.title }}</h2>
+
+          <p v-if="item.html" class="text" v-html="item.content" />
+          <p v-else class="text">
+            {{ item.content }}
+          </p>
+        </div>
+
+        <div aria-hidden="true" class="mb10" />
+
+        <h1 class="title text-center mb10">About Data</h1>
+
+        <div v-for="(item, i) in dataFAQ" :id="item.marker" :key="i" :name="i">
+          <h2 class="text strong">{{ item.title }}</h2>
+
+          <p v-if="item.html" class="text" v-html="item.content" />
+          <p v-else class="text">
+            {{ item.content }}
+          </p>
+        </div>
+
+        <div aria-hidden="true" class="mb10" />
+
+        <h1 class="title text-center mb10">About Buy Now!</h1>
+
+        <div
+          v-for="(item, i) in buyNowFAQ"
+          :id="item.marker"
+          :key="i"
+          :name="i"
+        >
+          <h2 class="text strong">{{ item.title }}</h2>
+
+          <p v-if="item.html" class="text" v-html="item.content" />
+          <p v-else class="text">
+            {{ item.content }}
+          </p>
+        </div>
+
+        <div aria-hidden="true" class="mb10" />
+
+        <p class="text">
+          Have more questions?
+          <a href="https://infrapedia.com/contact"> Write to us!</a> We will
+          reach out.
         </p>
       </div>
-
-      <div aria-hidden="true" class="mb10" />
-
-      <h1 class="title text-center mb10">About Data</h1>
-
-      <div v-for="(item, i) in dataFAQ" :key="i" :name="i">
-        <h2 class="text strong">{{ item.title }}</h2>
-
-        <p v-if="item.html" class="text" v-html="item.content" />
-        <p v-else class="text">
-          {{ item.content }}
-        </p>
-      </div>
-
-      <div aria-hidden="true" class="mb10" />
-
-      <h1 class="title text-center mb10">About Buy Now!</h1>
-
-      <div v-for="(item, i) in buyNowFAQ" :key="i" :name="i">
-        <h2 class="text strong">{{ item.title }}</h2>
-
-        <p v-if="item.html" class="text" v-html="item.content" />
-        <p v-else class="text">
-          {{ item.content }}
-        </p>
-      </div>
-
-      <div aria-hidden="true" class="mb10" />
-
-      <p class="text">
-        Have more questions? <a href="https://infrapedia.com/contact"> Write to us!</a> We will reach out.
-      </p>
-
     </div>
   </div>
 </template>
@@ -182,11 +196,13 @@ export default {
         {
           title: 'What is Infrapedia?',
           html: true,
+          marker: 'whatIsInfrapedia',
           content:
             "Infrapedia is a crowd-sourced near real-time <a href='https://infrapedia.com/app'> map of the global Internet infrastructure </a> detailing the world's submarine cable system infrastructure, fiber optic terrestrial networks and other critical infrastructure assets giving the ability to network professionals to connect with each other to help improve, acquire and sell capacity faster, cheaper and easier.",
         },
         {
           title: 'Do I need anything special to use Infrapedia?',
+          marker: 'DoINeedAnything',
           content:
             'All you need to use Infrapedia is an internet connection and desktop computer or a mobile device',
         },
@@ -199,23 +215,27 @@ export default {
         },
         {
           title: 'Is Infrapedia a not-for-profit company?',
+          marker: 'isInfrapediaANonForProfit',
           content:
             'No, Infrapedia is a project supported by various industry professionals and organizations. The platform is free to use as-is and commercial users may share their operational status and infrastructure data to make Infrapedia a useful tool and increase their visibility to a growing community.',
         },
         {
           title: 'Can we use a screenshot or embed your application/website?',
+          marker: 'canWeUseAScreenshot',
           html: true,
           content:
             'You can use an image/screenshot or embed the website (https://www.infrapedia.com/) into any (interactive) content, as long as our name (Infrapedia) and website/url (https://www.infrapedia.com/) is clearly visible as a reference/source. Do you want to do anything else, please <a href="https://infrapedia.com/contact">contact us</a> first to discuss it in more detail.',
         },
         {
           title: 'How can I help?',
+          marker: 'howCanIHelp',
           html: true,
           content:
             'Promoting the website to vendors as well as help increase the visibility of the website or  contribute content/data are just a few ways to help us. You can also share your thoughts and ideas by contacting us directly or share on social media, <a href="https://twitter.com/infrapedia" target="_blank" rel="noreferrer noopener"> Twitter</a>, <a href="https://www.facebook.com/infrapediainc/" target="_blank" rel="noreferrer noopener"> Facebook </a>, <a href="https://www.linkedin.com/in/hubertsouisa/" target="_blank" rel="noreferrer noopener"> Linkedin</a>!',
         },
         {
           title: 'Do you take sponsorships?',
+          marker: 'doYouTakeSponsorships',
           html: true,
           content:
             'We are always open for discussion. <a href="https://www.infrapedia.com/contact" rel="noreferrer noopener"> Contact us</a> to arrange a meeting.',
@@ -227,37 +247,44 @@ export default {
         {
           title: 'How do you keep your map up to date?',
           html: true,
+          marker: 'howDoYouKeepYourMap',
           content:
             'We are a group of infrastructure enthusiasts who are extremely focused on network availability. We monitor many lists and in addition to that we have various scripts running checking key infrastructure assets around the world. We often get notified by our users and receive the outage as a report. We also monitor for information and press releases often shared across social media platforms like <a href="https://twitter.com/infrapedia" target="_blank" rel="noreferrer noopener"> Twitter</a>, <a href="https://www.facebook.com/infrapediainc/" target="_blank" rel="noreferrer noopener"> Facebook </a>, <a href="https://www.linkedin.com/in/hubertsouisa/" target="_blank" rel="noreferrer noopener"> Linkedin</a>',
         },
         {
-          title: 'Where did you find all this data? ',
+          title: 'Where did you find all this data?',
+          marker: 'whereDidYouFind',
           content:
             'We did not find all this data ourselves. We are a platform where vendors and users can share data and availability information. We have simply created a self service platform for anyone who is authorized to share the data and created a validation process to ensure data is allowed to be shared.',
         },
         {
           title: 'Is the data on your website accurate? ',
+          marker: 'isTheDataOnYourWebsiteAccurate',
           html: true,
           content:
             'There is no way we can validate all the data on the map. We do perform common checks on our data and look for confirmation from vendors or other sources. If you see any error, please <a href="https://infrapedia.com/contact">reach out to us</a> or use the “Report” button in the sidebar to notify us on a specific object.',
         },
         {
           title: 'What is considered a submarine cable system?',
+          marker: 'whatIsConsideredASubmarineCableSystem',
           content:
             'Infrapedia defines a submarine cable system as a fiber optic cable laid on the ocean floor between two or more land-based stations and is owned and/or operated by one or more organizations. Submarine cable systems are also often referred to as subsea cables, undersea cables, Internet cables, underwater cables or submarine communications cables. ',
         },
         {
           title: 'What is considered a terrestrial network? ',
+          marker: 'whatIsConsideredATerrestrialNetwork',
           content:
             'Infrapedia defines a terrestrial network as a land-based network of fixed cables (most often fiber optic cable) used to provide connectivity between (land-locked) countries or urban centers within a country. Please note that this definition does not include micro wave networks or mobile communications infrastructures, see “What is considered a facility?',
         },
         {
           title: 'What is considered a facility?',
+          marker: 'whatIsConsideredAFacility',
           content:
             'Infrapedia defines a facility as any and all physical structures used to provide space, power, cooling and physical security for servers, storage, network and other digital communications related infrastructure. For example data centers, carrier hotels, Central Offices (CO), mobile communications towers and earth stations.',
         },
         {
           title: 'What is considered an Internet Exchange Point (IXP)?',
+          marker: 'whatIsConsideredAnIXP',
           html: true,
           content:
             'Infrapedia defines an Internet Exchange Point, often referred to as IXP, as a physical location or shared infrastructure that allows participant Internet Service Providers, carriers, content providers and other Internet related network owners to exchange data destined for their respective networks. Note that most facilities fall under this definition, but Infrapedia does prefer physical exchange locations to be identified as a facility as well. To simplify, Infrapedia uses peeringdb.com as the main source of truth. Consider adding your IXP in <a href="https://www.peeringdb.com/" rel="noreferrer noopener">peeringdb.com</a> before continuing using <a href="https://www.infrapedia.com/app">www.infrapedia.com.</a>',
@@ -265,33 +292,39 @@ export default {
         {
           title:
             'Why can’t I see network ABC/subsea cable XYZ/Data Center Y or IXP 123?',
+          marker: 'whyCantISeeNetworkABC',
           content:
             'Infrapedia is a crowd-sourced platform and depends on users or vendors to share data. This means that there is a possibility that we do not yet have certain information. We try to contact as many vendors as possible and promote the platform. Help us by doing the same!',
         },
         {
           title: "Can I submit/share my company's submarine cable data?",
           html: true,
+          marker: 'canISubmitMyCompanySubmarineCableData',
           content:
             'Providing your organization’s leadership approves, yes please! There are several ways but the simplest way is to go to <a href="https://www.infrapedia.com">www.infrapedia.com</a>, sign up and upload your KMZ data via the <a href="https://www.infrapedia.com/user/section/terrestrial-networks"> User dashboard</a>. If you run into any issues, <a href="https://infrapedia.com/contact"> contact us</a> and we will arrange for an email exchange of the KMZ data and add it for you.',
         },
         {
           title: "Can I submit/share my company's terrestrial network data?",
+          marker: 'canISubmitMyCompanyTerrestrialNetworkData',
           html: true,
           content:
             'Providing your organization’s leadership approves, yes please! There are several ways but the simplest way is to go to <a href="https://www.infrapedia.com">www.infrapedia.com</a>, sign up and upload your KMZ data via the <a href="https://www.infrapedia.com/user/section/terrestrial-networks"> User dashboard</a>. If you run into any issues, <a href="https://infrapedia.com/contact"> contact us</a> and we will arrange for an email exchange of the KMZ data and add it for you.',
         },
         {
           title: 'Can I submit/share my data center or IXP data?',
+          marker: 'canISubmitMyDataCenterOrIXPData',
           content:
             'Yes you can. Consider adding/updating your information in <a href="https://www.peeringdb.com/" rel="noreferrer noopener">PeeringDB</a> first. This allows us to synchronize the information directly. Otherwise, go to <a href="https://www.infrapedia.com">www.infrapedia.com</a>, sign up and add the information via the User dashboard. If you run into any issues, <a href="https://infrapedia.com/contact"> contact us</a> and we will help you.',
         },
         {
           title: 'I uploaded my network data but it is not on the map? ',
+          marker: 'IUploadedMyNetwork',
           content:
             'Sorry. It takes time. The technology behind the Infrapedia platform requires the data to be processed. Basic information of your data (i.e. organization name, network details, CLSs, POPs) is available immediately, but geographical (KMZ) data for subsea cable systems , terrestrial networks and 3D facilities building needs to be processed first.',
         },
         {
           title: 'How often do you refresh your map?',
+          marker: 'howOftenDoYouRefreshYourMap',
           html: true,
           content:
             'Depending on the number of changes made we refresh the <a href="https://infrapedia.com/app">map</a> as frequently as possible',
@@ -300,6 +333,7 @@ export default {
           title:
             'Can I get the KMZ data of terrestrial network XYZ/subsea cable ABC?',
           html: true,
+          marker: 'canIGetTheKMZData',
           content:
             'No, KMZ information is not available for download from our platform. We would be happy to connect with you and see if we can be of help in some other way as part of our <a href="https://www.infrapedia.com/services">professional services </a>',
         },
@@ -309,29 +343,34 @@ export default {
       return [
         {
           title: 'What is “Buy Now!” and how much does it cost? ',
+          marker: 'whatIsBuyNow',
           content:
             'Buy Now! is Infrapedia’s lead funnel for vendors. Infrapedia users can submit their sales requests, RFIs and RFQs for free. No commissions.',
         },
         {
           title: 'I need something. How can I submit a request?',
+          marker: 'iNeedSomethingHowCanI',
           html: true,
           content:
-            'Make sure you have an account, see <a href="/faq/#doINeedToSignUp">“Do I need to sign-up in order to use Infrapedia?” </a> . After this, whenever you click on a subsea cable, terrestrial network, data center or IXP the sidebar contains the  button. Simply click, choose the type of infrastructure/service, fill-in the required details and click on “Send”. Infrapedia will take it from here!',
+            'Make sure you have an account, see <a href="faq#doINeedToSignUp">“Do I need to sign-up in order to use Infrapedia?” </a> . After this, whenever you click on a subsea cable, terrestrial network, data center or IXP the sidebar contains the  button. Simply click, choose the type of infrastructure/service, fill-in the required details and click on “Send”. Infrapedia will take it from here!',
         },
         {
           title: 'Do vendors need to pay to receive “Buy Now!” leads?',
+          marker: 'doVendorsNeedToPayToReceiveLeads',
           html: true,
           content:
             'No, at Infrapedia we make it clear that we treat every vendor equally. We strictly do not take any commission. The only things we are asking for in return is to: <ul style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; list-style: disc; padding-left: 1rem"> <li>Promote the platform to your peers,</li> <li> Consider contributing your network, subsea cable, IXP or data center information to the community.</li> </ul>',
         },
         {
           title: 'I am a vendor. How can I receive Buy Now! leads?',
+          marker: 'iAmVendorHowCanIReceiveLeads',
           html: true,
           content:
             '<a href="https://www.infrapedia.com/contact"> Connect with us</a> and we will keep you posted on any relevant leads. However, in order to better identify relevant leads it is helpful to validate and update information about your organization and infrastructures. Request access to the information via the dashboard or <a href="https://www.infrapedia.com/contact"> contact us</a> to exchange the information so we can update it for you.',
         },
         {
           title: 'Do you see the contents of the lead when I click Buy Now!?',
+          marker: 'doYouSeeTheContentsOfTheLeadWhen',
           content:
             'We do not as long as it is possible for us to directly forward a lead to a single, verified vendor. In other cases we may need information from the user in order to help identify and connect to the right vendor(s).',
         },
@@ -356,5 +395,14 @@ export default {
   @media screen and (max-width: $break-lg) {
     width: 40vw;
   }
+}
+
+.list {
+  padding-left: 1rem;
+  list-style: disc;
+  margin: 2rem 0;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: .8rem;
 }
 </style>
