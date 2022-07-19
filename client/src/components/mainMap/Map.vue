@@ -83,7 +83,7 @@
         @change-network="lmt.networks = $event"
         @change-length="lmt.length = $event"
       />
-      <donations-banner />
+      <!-- <donations-banner /> -->
     </template>
   </div>
 </template>
@@ -142,7 +142,7 @@ export default {
     GooeyMenu,
     LayersPanel,
     LegendsPanel,
-    DonationsBanner: () => import('./DonationsBanner')
+    // DonationsBanner: () => import('./DonationsBanner')
   },
   props: {
     disabled: {
@@ -823,7 +823,7 @@ export default {
             })
           }
         }
-      }
+      } else await this.$auth.loginWithRedirect()
     },
     async handleOrganizationFocus(_id, fc) {
       const res = await viewOrganization({
@@ -1327,7 +1327,7 @@ export default {
         window.localStorage.removeItem('__easePointData')
       }
       if (Object.keys(this.$route.query).length > 0) {
-        this.$router.push('/app')
+        this.$router.push('/')
       }
     }, 820),
     async handleSubseaToggle(bool) {

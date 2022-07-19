@@ -13,8 +13,18 @@
   background-color: #fcfcfc;
 }
 
+.main-wrapper_after-hero {
+  margin-top: 5rem;
+}
+
 .hero-wrapper {
   border-top: 1px solid $grey-ligthen-3;
+
+  .hero-img {
+    object-fit: cover;
+    width: 100%;
+  }
+
   .overlay-inner {
     top: 0;
     opacity: 0;
@@ -36,7 +46,48 @@
   }
 }
 
-.main-wrapper_after-hero {
+#whatWeDo {
+  margin: 5rem 0;
+  div {
+    flex: 1;
+    margin: 0 auto;
+    max-width: 75vw;
+    padding: 4rem 8px;
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+.hidden {
+  display: hidden;
+}
+
+.text-lg {
+  font-size: 1.2em;
+}
+
+@media screen and (min-width: $break-xs) {
+  .md\:block {
+    display: block;
+  }
+  .md\:hidden {
+    display: none;
+  }
+}
+
+@media screen and (min-width: $break-md) {
+  .lg\:block {
+    display: block;
+  }
+  .lg\:hidden {
+    display: none;
+  }
+}
+
+.adjust-max-w {
   width: 75vw;
   margin: 0 auto;
 }
@@ -66,10 +117,13 @@
   .right {
     width: 40%;
     margin-top: 4.2rem;
-    height: fit-content;
-    box-shadow: 2px 2px 12px 2px #ccc;
-    border-radius: 12px;
-    overflow: hidden;
+
+    .image-wrapper {
+      height: fit-content;
+      box-shadow: 2px 2px 12px 2px #ccc;
+      border-radius: 12px;
+      overflow: hidden;
+    }
 
     @media screen and (max-width: $break-md) {
       margin-top: 5.2rem;
@@ -274,43 +328,3 @@
     filter: grayscale(20%);
   }
 }
-
-// #blogSection {
-//   width: 72.8vw;
-//   .flex {
-//     min-height: 20vh;
-//   }
-//   .el-card {
-//     width: 12rem;
-//     margin-bottom: 1rem;
-//     &:last-child {
-//       margin-right: 0;
-//     }
-//   }
-// }
-
-// .services-wrapper {
-//   width: 72.6vw;
-//   .boxes-wrapper {
-//     display: grid;
-//     width: 100%;
-//     gap: 0.4rem;
-//     margin-bottom: 2rem;
-//     grid-auto-flow: dense;
-//     grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-//     .box {
-//       width: 17rem;
-//     }
-//   }
-//   @media screen and (max-width: $break-xs) {
-//     width: 100%;
-//     .el-card {
-//       width: 14rem;
-//       padding: 1rem;
-//       .box {
-//         width: 100%;
-//         padding: 0;
-//       }
-//     }
-//   }
-// }

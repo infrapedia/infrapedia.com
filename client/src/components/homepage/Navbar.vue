@@ -39,7 +39,7 @@
           >
             {{ link.label }}
           </a>
-          <el-dropdown v-else-if="link.dropdown" :key="i">
+          <el-dropdown v-else-if="link.dropdown" :key="`${i}`">
             <span class="el-link mr4 font-regular fs-small">
               {{ link.label }}
               <i aria-hidden="true" class="el-icon-arrow-down ml1 fs-small" />
@@ -99,7 +99,7 @@ export default {
       return navbarLinks
     },
     checkIfLoggedIn() {
-      return this.$auth.isAuthenticated ? '/app' : '/'
+      return this.$auth.isAuthenticated ? '/' : '/'
     },
     imageURL() {
       return this.dark

@@ -18,7 +18,7 @@
       <transition name="fade" mode="out-in">
         <div>
           <header class="header">
-            <router-link to="/app">
+            <router-link to="/">
               <el-image
                 class="mt2 ml4 logo-img"
                 :src="imageURL"
@@ -86,7 +86,7 @@
       <transition name="fade" mode="out-in">
         <div style="width: 50vw">
           <header class="header">
-            <router-link to="/app">
+            <router-link to="/">
               <el-image
                 class="mt2 ml4 logo-img"
                 :src="imageURL"
@@ -310,7 +310,7 @@ export default {
         votes: this.selections
       })
       if (t != 'error') {
-        this.$router.replace('/app')
+        this.$router.replace('/')
       }
       this.sendingData = false
     }

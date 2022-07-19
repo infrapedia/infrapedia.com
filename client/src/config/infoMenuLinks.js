@@ -2,7 +2,7 @@ const infoMenuLinks = {
   info: [
     {
       label: 'About us',
-      url: '/about',
+      url: '/about-us',
       router: true,
       footer: {
         order: 0
@@ -30,14 +30,14 @@ const infoMenuLinks = {
         order: 2
       }
     },
-    {
-      label: 'Sponsorships',
-      url: '/sponsors',
-      router: true,
-      menu: {
-        order: 4
-      }
-    },
+    // {
+    //   label: 'Sponsorships',
+    //   url: '/sponsors',
+    //   router: true,
+    //   menu: {
+    //     order: 4
+    //   }
+    // },
     {
       label: 'Contact us',
       url: '/contact',
@@ -80,11 +80,11 @@ const infoMenuLinks = {
       icon: ['fab', 'twitter'],
       url: 'https://www.twitter.com/infrapedia'
     },
-    {
-      label: 'Linkedin',
-      icon: ['fab', 'linkedin'],
-      url: 'https://www.linkedin.com/company/infrapedia'
-    },
+    // {
+    //   label: 'Linkedin',
+    //   icon: ['fab', 'linkedin'],
+    //   url: 'https://www.linkedin.com/company/infrapedia'
+    // },
     {
       label: 'Instagram',
       icon: ['fab', 'instagram'],
@@ -99,17 +99,13 @@ export const navbarLinks = [
     url: '/'
   },
   {
-    label: 'Map',
-    url: '/app'
-  },
-  {
     label: 'Services',
     url: '/services'
   },
-  {
-    label: 'Sponsorships',
-    url: '/sponsors'
-  },
+  // {
+  //   label: 'Sponsorships',
+  //   url: '/sponsors'
+  // },
   {
     label: 'Blog',
     url: 'https://blog.infrapedia.com',
@@ -118,10 +114,10 @@ export const navbarLinks = [
   {
     label: 'About',
     dropdown: [
-      {
-        label: 'Our team',
-        url: '/about'
-      },
+      // {
+      //   label: 'Our team',
+      //   url: '/about'
+      // },
       {
         label: 'Advisory Board',
         url: '/advisory-board'

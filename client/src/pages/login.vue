@@ -45,7 +45,7 @@ export default {
         setTimeout(() => {
           if (this.$auth.isAuthenticated) {
             this.$router
-              .replace('/app')
+              .replace('/')
               .then(() => {})
               // eslint-disable-next-line
               .catch(err => {
