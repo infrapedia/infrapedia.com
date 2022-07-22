@@ -107,7 +107,7 @@
           </div>
           <div class="mt8" style="text-align: end">
             <router-link
-              to="/app"
+              to="/"
               class="el-button mr4 el-button--primary is-round"
             >
               View Map
@@ -135,7 +135,7 @@
             community. Joining is easy, no fees needed to register and use the
             interactive map.
             <a
-              href="https://infrapedia.com/app"
+              href="https://infrapedia.com"
               rel="noreferrer noopener"
               target="_self"
               >Start interacting with our map now!</a

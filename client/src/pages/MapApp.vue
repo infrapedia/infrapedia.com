@@ -83,7 +83,7 @@ export default {
             window.origin.includes('www')
               ? window.origin
               : 'https://www.infrapedia.com'
-          }/app`
+          }/`
         }
       ]
     },
@@ -154,7 +154,7 @@ export default {
       if (!data) {
         this.metaData = metadata
         if (Object.keys(this.$route.params).length > 0) {
-          this.$router.replace('/app')
+          this.$router.replace('/')
         }
       } else {
         this.$once('focus-changed', async function handleFocusChanged(focus) {
@@ -169,13 +169,13 @@ export default {
                     window.origin.includes('www')
                       ? window.origin
                       : 'https://www.infrapedia.com'
-                  }/app`
+                  }/`
                 }
               ]
             }
             return
           }
-          const url = `/app/${focus.type}/${data.slug}`
+          const url = `/${focus.type}/${data.slug}`
 
           this.metaData = {
             ...(await getMetaDataTagsFromSelectionType({
