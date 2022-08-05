@@ -119,6 +119,7 @@ const routes = [
   {
     path: '/',
     name: 'app',
+    alias: ['/subsea-cable/*', '/cls/*', '/terrestrial-network/*', '/ixp/*', '/facility/*', '/organization/*'],
     component: MapApp
   },
   // {
