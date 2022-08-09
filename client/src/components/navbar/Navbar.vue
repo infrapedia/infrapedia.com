@@ -53,6 +53,20 @@
               role="listitem"
             >
               <router-link
+                to="/about-us"
+                class="list-item pr4 pl4"
+                :class="{ 'text-white--hsl': dark }"
+                title="Services"
+              >
+                About
+              </router-link>
+            </li>
+            <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
+            <li
+              class="inline-block no-selectable relative hidden-sm-and-down"
+              role="listitem"
+            >
+              <router-link
                 to="/services"
                 class="list-item pr4 pl4"
                 :class="{ 'text-white--hsl': dark }"

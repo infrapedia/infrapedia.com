@@ -32,7 +32,7 @@ export default {
     HMobileDrawer,
   },
   head: {
-    title: 'About | Global Internet Infrastructure Map | Infrapedia',
+    title: 'Learn about the best infrastructure map of the internet | Infrapedia',
     link: [
       {
         rel: 'canonical',

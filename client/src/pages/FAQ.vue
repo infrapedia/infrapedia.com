@@ -313,6 +313,7 @@ export default {
         {
           title: 'Can I submit/share my data center or IXP data?',
           marker: 'canISubmitMyDataCenterOrIXPData',
+          html: true,
           content:
             'Yes you can. Consider adding/updating your information in <a href="https://www.peeringdb.com/" rel="noreferrer noopener">PeeringDB</a> first. This allows us to synchronize the information directly. Otherwise, go to <a href="https://www.infrapedia.com">www.infrapedia.com</a>, sign up and add the information via the User dashboard. If you run into any issues, <a href="https://infrapedia.com/contact"> contact us</a> and we will help you.',
         },
