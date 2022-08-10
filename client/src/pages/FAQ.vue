@@ -198,7 +198,7 @@ export default {
           html: true,
           marker: 'whatIsInfrapedia',
           content:
-            "Infrapedia is a crowd-sourced near real-time <a href='https://infrapedia.com/app'> map of the global Internet infrastructure </a> detailing the world's submarine cable system infrastructure, fiber optic terrestrial networks and other critical infrastructure assets giving the ability to network professionals to connect with each other to help improve, acquire and sell capacity faster, cheaper and easier.",
+            "Infrapedia is a crowd-sourced near real-time <a href='https://infrapedia.com'> map of the global Internet infrastructure </a> detailing the world's submarine cable system infrastructure, fiber optic terrestrial networks and other critical infrastructure assets giving the ability to network professionals to connect with each other to help improve, acquire and sell capacity faster, cheaper and easier.",
         },
         {
           title: 'Do I need anything special to use Infrapedia?',
@@ -287,7 +287,7 @@ export default {
           marker: 'whatIsConsideredAnIXP',
           html: true,
           content:
-            'Infrapedia defines an Internet Exchange Point, often referred to as IXP, as a physical location or shared infrastructure that allows participant Internet Service Providers, carriers, content providers and other Internet related network owners to exchange data destined for their respective networks. Note that most facilities fall under this definition, but Infrapedia does prefer physical exchange locations to be identified as a facility as well. To simplify, Infrapedia uses peeringdb.com as the main source of truth. Consider adding your IXP in <a href="https://www.peeringdb.com/" rel="noreferrer noopener">peeringdb.com</a> before continuing using <a href="https://www.infrapedia.com/app">www.infrapedia.com.</a>',
+            'Infrapedia defines an Internet Exchange Point, often referred to as IXP, as a physical location or shared infrastructure that allows participant Internet Service Providers, carriers, content providers and other Internet related network owners to exchange data destined for their respective networks. Note that most facilities fall under this definition, but Infrapedia does prefer physical exchange locations to be identified as a facility as well. To simplify, Infrapedia uses peeringdb.com as the main source of truth. Consider adding your IXP in <a href="https://www.peeringdb.com/" rel="noreferrer noopener">peeringdb.com</a> before continuing using <a href="https://www.infrapedia.com">www.infrapedia.com.</a>',
         },
         {
           title:
@@ -328,7 +328,7 @@ export default {
           marker: 'howOftenDoYouRefreshYourMap',
           html: true,
           content:
-            'Depending on the number of changes made we refresh the <a href="https://infrapedia.com/app">map</a> as frequently as possible',
+            'Depending on the number of changes made we refresh the <a href="https://infrapedia.com">map</a> as frequently as possible',
         },
         {
           title:
