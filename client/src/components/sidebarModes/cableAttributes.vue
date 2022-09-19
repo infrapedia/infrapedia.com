@@ -290,7 +290,7 @@
                   >
                     <fa :icon="['fas', 'cart-plus']" class="sm-icon mt-1" />
                   </el-button>
-                  <span class="fs-regular label">Buy capacity</span>
+                  <span class="fs-regular label">Buy Now!</span>
                 </div>
               </el-popover>
             </el-col>

@@ -17,10 +17,10 @@
           @click="$emit('toggle-aside-width')"
         />
         <h1 class="logo-title">
-          <router-link :to="checkIfLoggedIn" class="hidden-md-and-down">
+          <router-link to="/" class="hidden-md-and-down">
             <el-image class="mt2 logo-img" :src="imageURL" fit="scale-down" />
           </router-link>
-          <router-link :to="checkIfLoggedIn" class="sphere-logo">
+          <router-link to="/" class="sphere-logo">
             <el-image
               class="mt2 logo-img"
               :src="imageURLSphere"
@@ -53,6 +53,20 @@
               role="listitem"
             >
               <router-link
+                to="/about-us"
+                class="list-item pr4 pl4"
+                :class="{ 'text-white--hsl': dark }"
+                title="Services"
+              >
+                About
+              </router-link>
+            </li>
+            <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
+            <li
+              class="inline-block no-selectable relative hidden-sm-and-down"
+              role="listitem"
+            >
+              <router-link
                 to="/services"
                 class="list-item pr4 pl4"
                 :class="{ 'text-white--hsl': dark }"
@@ -63,7 +77,7 @@
             </li>
             <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
 
-            <li
+            <!-- <li
               class="inline-block no-selectable relative hidden-sm-and-down"
               role="listitem"
             >
@@ -81,9 +95,9 @@
               <premium-partners-button
                 @item-selected="handleItemListSelection"
               />
-            </li>
+            </li> -->
 
-            <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
+            <!-- <el-divider direction="vertical" class="m0 hidden-sm-and-down" /> -->
 
             <li
               class="inline-block relative hidden-sm-and-down"
@@ -235,9 +249,10 @@ export default {
     IMenu: () => import('./Menu'),
     IFilter: () => import('./Filter'),
     ISearch: () => import('./Search'),
-    TrustedBy: () => import('./TrustedBy'),
-    MarketPlace: () => import('./MartketPlace'),
-    PremiumPartnersButton: () => import('./PremiumPartners'),
+    TrustedBy: () => import('./TrustedBy.vue'),
+    // BottomSheet: () => import('./BottomSheet'),
+    // MarketPlace: () => import('./MartketPlace'),
+    // PremiumPartnersButton: () => import('./PremiumPartners'),
     IFullScreenSearch: () => import('./FullScreenSearch.vue')
   },
   mixins: [dataCollection],
@@ -267,7 +282,7 @@ export default {
       return this.$store.state.isDark
     },
     checkIfLoggedIn() {
-      return this.$auth.isAuthenticated ? '/app' : '/'
+      return this.$auth.isAuthenticated ? '/' : '/'
     },
     popoverClassGiver() {
       let c = 'popover'

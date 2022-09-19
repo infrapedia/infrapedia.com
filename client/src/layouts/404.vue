@@ -8,7 +8,7 @@
       <p>
         The page you’re looking for was not found... but you can find every
         single subsea and terrestrial cable in our map, click
-        <router-link :to="checkIfLoggedIn" class="underline-hover">
+        <router-link to="/" class="underline-hover">
           here
         </router-link>
         to head over there now.
@@ -21,7 +21,7 @@
 export default {
   computed: {
     checkIfLoggedIn() {
-      return this.$auth.isAuthenticated ? '/app' : '/'
+      return this.$auth.isAuthenticated ? '/' : '/'
     }
   }
 }

@@ -6,7 +6,6 @@
       :visibility="isMobileDrawer"
       @close="closeDrawer"
     />
-    <h-navbar @toggle-mobile-drawer="toggleDrawerVisibility" />
     <transition
       mode="out-in"
       name="animated faster3x"
@@ -15,7 +14,6 @@
     >
       <home-page />
     </transition>
-    <h-footer />
   </el-container>
 </template>
 
@@ -24,99 +22,88 @@ import HFooter from '../components/homepage/Footer'
 import HNavbar from '../components/homepage/Navbar'
 import HMobileDrawer from '../components/MobileDrawer'
 import HomePage from '../components/homepage/HomePage'
-import { checkCookie } from '../helpers/cookies'
+// import { checkCookie } from '../helpers/cookies'
 
 export default {
   components: {
     HomePage,
     HFooter,
     HNavbar,
-    HMobileDrawer
+    HMobileDrawer,
   },
   head: {
-    title: 'Global Internet Infrastructure Map | Infrapedia',
+    title: 'Learn about the best infrastructure map of the internet | Infrapedia',
     link: [
       {
         rel: 'canonical',
-        href: `https://www.infrapedia.com`
-      }
+        href: `https://www.infrapedia.com`,
+      },
     ],
     meta: [
       {
         name: 'application-name',
         content:
-          'Global Internet Infrastructure Map | Telecommunications and Data Center Infrastructure'
+          'Global Internet Infrastructure Map | Telecommunications and Data Center Infrastructure',
       },
       {
         name: 'description',
         content:
-          "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
+          'Infrapedia provides the world’s most realistic view of the internet infrastructure map for free. No fees needed to register and use the interactive map. Learn more here!',
       },
       {
         name: 'keywords',
         content:
-          'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
+          'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure',
       },
       // ------------------ FACEBOOK - OPEN GRAPH
       {
         vmid: 'og:title',
         name: 'og:title',
         content:
-          'The world’s largest network and datacenter infrastructure atlas.'
+          'The world’s largest network and datacenter infrastructure atlas.',
       },
       {
         vmid: 'og:description',
         name: 'og:description',
         content:
-          "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
+          'Infrapedia provides the world’s most realistic view of the internet infrastructure map for free. No fees needed to register and use the interactive map. Learn more here!',
       },
       {
         vmid: 'og:image',
         name: 'og:image',
-        content: '/infrapedia-2.jpg'
+        content: '/infrapedia-2.jpg',
       },
       // ---------------------- TWITTER
       {
         vmid: 'twitter:title',
         name: 'twitter:title',
         content:
-          'The world’s largest network and datacenter infrastructure atlas.'
+          'The world’s largest network and datacenter infrastructure atlas.',
       },
       {
         vmid: 'twitter:description',
         name: 'twitter:description',
         content:
-          "Infrapedia is the world’s largest crowd-sourced map of the global Internet infrastructure. Explore in detail the world's data centers, submarine and terrestrial networks in real-time."
+          'Infrapedia provides the world’s most realistic view of the internet infrastructure map for free. No fees needed to register and use the interactive map. Learn more here!',
       },
       {
         vmid: 'twitter:image',
         name: 'twitter:image',
-        content: '/infrapedia-2.jpg'
+        content: '/infrapedia-2.jpg',
       },
       {
         vmid: 'content-language',
         name: 'content-language',
-        content: 'en-US'
-      }
-    ]
+        content: 'en-US',
+      },
+    ],
   },
   data: () => ({
     isPoolDialog: false,
-    isMobileDrawer: false
+    isMobileDrawer: false,
   }),
   created() {
     document.querySelector('body').className = 'overflow-y-auto'
-  },
-  beforeRouteEnter(to, from, next) {
-    next(async vm => {
-      if (
-        checkCookie('auth0.is.authenticated') &&
-        !localStorage.getItem('once-redirected')
-      ) {
-        vm.$router.push('/app')
-        localStorage.setItem('once-redirected', true)
-      }
-    })
   },
   methods: {
     closeDrawer() {
@@ -130,7 +117,7 @@ export default {
 
       const body = document.querySelector('body')
       body.className = this.isMobileDrawer ? 'no-overflow' : 'overflow-y-scroll'
-    }
-  }
+    },
+  },
 }
 </script>

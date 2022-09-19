@@ -11,15 +11,15 @@ import Profile from '../pages/profile/profile.vue'
 import ChangePassword from '../pages/profile/recover-password.vue'
 import EmailProviders from '../pages/profile/email-providers.vue'
 import Contact from '../pages/Contact.vue'
-import About from '../pages/About.vue'
+// import About from '../pages/About.vue'
 import Attributions from '../pages/Attributions.vue'
 import Services from '../pages/Services.vue'
-import Sponsors from '../pages/Sponsors.vue'
-import VotesResults from '../pages/VotesResults.vue'
+// import Sponsors from '../pages/Sponsors.vue'
+// import VotesResults from '../pages/VotesResults.vue'
 import PrivacyPolicy from '../pages/PrivacyPolicy.vue'
 import TermsAndConditions from '../pages/TermsAndConditions.vue'
 import FAQ from '../pages/FAQ.vue'
-import Advisors from '../pages/Advisors.vue'
+// import Advisors from '../pages/Advisors.vue'
 
 async function handleAdminOnlyRoutes(next, to) {
   const $authInstance = getInstance()
@@ -117,21 +117,17 @@ const MyIssuesSection = () =>
 const routes = [
   { path: '*', component: NotFound },
   {
-    path: '/app',
+    path: '/',
     name: 'app',
+    alias: ['/subsea-cable/*', '/cls/*', '/terrestrial-network/*', '/ixp/*', '/facility/*', '/organization/*'],
     component: MapApp
   },
-  {
-    path: '/app/:type/:slug',
-    name: 'app-match-routes',
-    component: MapApp
-  },
-  {
-    path: '/homepage',
-    name: 'homepage',
-    alias: '/',
-    component: Landing
-  },
+  // {
+  //   path: '/homepage',
+  //   name: 'homepage',
+  //   alias: '/',
+  //   component: Landing
+  // },
   {
     path: '/',
     name: 'landing',
@@ -162,31 +158,31 @@ const routes = [
         name: 'terms-and-conditions',
         component: TermsAndConditions
       },
-      {
-        path: '/sponsors',
-        name: 'sponsors',
-        component: Sponsors
-      },
+      // {
+      //   path: '/sponsors',
+      //   name: 'sponsors',
+      //   component: Sponsors
+      // },
       {
         path: '/contact',
-        name: 'contact',
+        name: 'Contact',
         component: Contact
       },
       {
-        path: '/about',
-        name: 'about',
-        component: About
+        path: '/about-us',
+        name: 'About Us',
+        component: Landing
       },
-      {
-        path: '/votes-results',
-        name: 'votes-results',
-        component: VotesResults
-      },
-      {
-        path: '/advisory-board',
-        name: 'advisory-board',
-        component: Advisors
-      }
+      // {
+      //   path: '/votes-results',
+      //   name: 'votes-results',
+      //   component: VotesResults
+      // },
+      // {
+      //   path: '/advisory-board',
+      //   name: 'Advisory Board',
+      //   component: Advisors
+      // }
     ]
   },
   {

@@ -7,7 +7,7 @@
       class="bgcolor-inherit flex justify-content-space-around wrap align-items-center"
     >
       <span
-        >©️ {{ year }} Copyright, All Rights Reserved by Infrapedia Inc.</span
+        >©️ {{ year }} Copyright, All Rights Reserved by Infrapedia</span
       >
       <p class="fs-small m0 ml2">- v {{ packageVersion }}</p>
       <router-link
