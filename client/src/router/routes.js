@@ -19,7 +19,7 @@ import Services from '../pages/Services.vue'
 import PrivacyPolicy from '../pages/PrivacyPolicy.vue'
 import TermsAndConditions from '../pages/TermsAndConditions.vue'
 import FAQ from '../pages/FAQ.vue'
-import Advisors from '../pages/Advisors.vue'
+// import Advisors from '../pages/Advisors.vue'
 
 async function handleAdminOnlyRoutes(next, to) {
   const $authInstance = getInstance()
@@ -178,11 +178,11 @@ const routes = [
       //   name: 'votes-results',
       //   component: VotesResults
       // },
-      {
-        path: '/advisory-board',
-        name: 'Advisory Board',
-        component: Advisors
-      }
+      // {
+      //   path: '/advisory-board',
+      //   name: 'Advisory Board',
+      //   component: Advisors
+      // }
     ]
   },
   {
