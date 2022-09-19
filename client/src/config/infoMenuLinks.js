@@ -57,17 +57,17 @@ const infoMenuLinks = {
         order: 6
       }
     },
-    {
-      label: 'Advisory Board',
-      url: '/advisory-board',
-      router: true,
-      footer: {
-        order: 5
-      },
-      menu: {
-        order: 5
-      }
-    }
+    // {
+    //   label: 'Advisory Board',
+    //   url: '/advisory-board',
+    //   router: true,
+    //   footer: {
+    //     order: 5
+    //   },
+    //   menu: {
+    //     order: 5
+    //   }
+    // }
   ],
   social: [
     {

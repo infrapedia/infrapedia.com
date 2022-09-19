@@ -247,7 +247,7 @@
         >
           <p class="text--homepage-variant pb10" style="padding:0 2rem; margin-bottom: 5rem;">
             We do not stand alone. With the help of our
-            <router-link to="/advisory-board"> Board of Advisors </router-link>
+            Board of Advisors
             consisting of industry specialists, we are developing awareness of
             our community, reaching out to other carriers, service providers and
             Internet businesses such as Google, Microsoft and Facebook.

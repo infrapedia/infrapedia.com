@@ -142,10 +142,10 @@ export default {
       //   label: 'Our team',
       //   url: '/about'
       // },
-      {
-        label: 'Advisory Board',
-        url: '/advisory-board'
-      },
+      // {
+      //   label: 'Advisory Board',
+      //   url: '/advisory-board'
+      // },
       {
         label: 'Attributions',
         url: '/attributions'
