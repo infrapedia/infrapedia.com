@@ -270,7 +270,7 @@
           </div>
         </div>
 
-        <div
+        <!-- <div
           class="blockquote pl12 pr12 pb12 el-card transparent no-border flex row wrap"
           style="margin: 4rem auto"
         >
@@ -291,7 +291,7 @@
               class="circle founder-image"
             />
           </div>
-        </div>
+        </div> -->
       </div>
 
       <!-- <div
