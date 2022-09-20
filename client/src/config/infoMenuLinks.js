@@ -118,10 +118,10 @@ export const navbarLinks = [
         label: 'About us',
         url: '/about-us'
       },
-      {
-        label: 'Advisory Board',
-        url: '/advisory-board'
-      },
+      // {
+      //   label: 'Advisory Board',
+      //   url: '/advisory-board'
+      // },
       {
         label: 'Attributions',
         url: '/attributions'
