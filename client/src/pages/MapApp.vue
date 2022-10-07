@@ -27,6 +27,7 @@
       <div class="h-fit-content min-height60vh">
         <map-overlay @map-loaded="checkUserAuthState" />
       </div>
+      <must-be-logged-in :is-visible="isMustBeLoggedInDialog" />
     </template>
     <i-footer role="contentinfo" class="ml20 hidden-sm-and-down" />
   </div>
@@ -52,27 +53,29 @@ import { PARAMS_SELECTION } from '../events'
 import { bus } from '../helpers/eventBus'
 import { getMetaDataTagsFromSelectionType } from '../helpers'
 import metadata from '../config/map_metadata.json'
+import MustBeLoggedIn from '../components/dialogs/MustBeLoggedIn.vue'
 
 export default {
   components: {
     IFooter,
     INavbar,
     MapOverlay,
-    ISidebar: () => import('../components/Sidebar.vue'),
-    IBuyDialog: () => import('../components/dialogs/BuyDialog'),
-    UserCablesButton: () => import('../components/UserCablesButton'),
-    IIssuesDialog: () => import('../components/dialogs/IssuesDialog'),
-    IAlertsDialog: () => import('../components/dialogs/AlertsDialog'),
-    IEditDialog: () => import('../components/dialogs/EditDialog'),
-    IRegisterDialog: () => import('../components/dialogs/PromoteRegistration'),
-    IVerificationDialog: () =>
-      import('../components/dialogs/VerificationDialog'),
-    HMobileMenu: () => import('../components/navbar/MobileMenu'),
-    MarketPlace: () => import('../components/navbar/MartketPlace')
-  },
+    ISidebar: () => import("../components/Sidebar.vue"),
+    IBuyDialog: () => import("../components/dialogs/BuyDialog"),
+    UserCablesButton: () => import("../components/UserCablesButton"),
+    IIssuesDialog: () => import("../components/dialogs/IssuesDialog"),
+    IAlertsDialog: () => import("../components/dialogs/AlertsDialog"),
+    IEditDialog: () => import("../components/dialogs/EditDialog"),
+    IRegisterDialog: () => import("../components/dialogs/PromoteRegistration"),
+    IVerificationDialog: () => import("../components/dialogs/VerificationDialog"),
+    HMobileMenu: () => import("../components/navbar/MobileMenu"),
+    MarketPlace: () => import("../components/navbar/MartketPlace"),
+    MustBeLoggedIn
+},
   data: () => ({
     EDIT_CABLE,
     BUY_CAPACITY,
+    isMustBeLoggedInDialog: false,
     metaData: {
       title: metadata.title,
       meta: metadata.meta,
@@ -118,6 +121,8 @@ export default {
   async mounted() {
     if (this.$auth.isAuthenticated) {
       await this.setToken()
+    } else {
+      this.isMustBeLoggedInDialog = true
     }
   },
   beforeRouteLeave(to, from, next) {

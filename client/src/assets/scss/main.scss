@@ -169,6 +169,14 @@ h1 {
     border-radius: 20px 20px 0 0;
   }
 }
+
+.custom-dialog.login-dialog {
+  .el-dialog__header {
+    padding: .2rem .8rem;
+    border-radius: 0;
+  }
+}
+
 .el-dialog.contact-dialog {
   border-radius: 20px;
 }
