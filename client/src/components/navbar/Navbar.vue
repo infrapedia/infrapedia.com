@@ -146,22 +146,28 @@
               </div>
             </li>
 
+            <!-- v-for="(item, i) in sponsors" -->
+            <!-- :key="i" -->
             <li
-              v-for="(item, i) in sponsors"
-              :key="i"
               class="inline-block hidden-sm-and-down relative"
               data-no-outline="true"
               role="listitem"
             >
               <div class="list-item" data-no-hover-bg="true">
-                <a :href="item.url" target="_blank">
-                  <el-image
-                    :src="item.src"
-                    lazy
-                    class="w26 image-sponsor"
+                <!-- <el-image
+                :src="item.src"
+                lazy
+                class="w26 image-sponsor"
                     fit="cover"
                     :alt="item.alt"
                     referrer-policy="strict-origin-when-cross-origin"
+                    /> -->
+                <a :href="donationLink" target="_blank">
+                  <el-image
+                    src="https://storage.googleapis.com/infrapediacom/assets/paypal-donate-button2.png"
+                    fit="scale-down"
+                    class="image"
+                    style="width: 120px; height: 40px; margin-top: .5rem;"
                   />
                 </a>
               </div>
@@ -246,21 +252,21 @@ import { bus } from '../../helpers/eventBus'
 export default {
   name: 'INavbar',
   components: {
-    IMenu: () => import('./Menu'),
-    IFilter: () => import('./Filter'),
-    ISearch: () => import('./Search'),
-    TrustedBy: () => import('./TrustedBy.vue'),
+    IMenu: () => import("./Menu"),
+    IFilter: () => import("./Filter"),
+    ISearch: () => import("./Search"),
+    TrustedBy: () => import("./TrustedBy.vue"),
     // BottomSheet: () => import('./BottomSheet'),
     // MarketPlace: () => import('./MartketPlace'),
     // PremiumPartnersButton: () => import('./PremiumPartners'),
-    IFullScreenSearch: () => import('./FullScreenSearch.vue')
-  },
+    IFullScreenSearch: () => import("./FullScreenSearch.vue")
+},
   mixins: [dataCollection],
   props: {
     isUserNavbar: {
       type: Boolean,
-      default: () => false
-    }
+      default: () => false,
+    },
   },
   data: () => ({
     sponsors,
@@ -275,11 +281,14 @@ export default {
     isSponsorsMenuOpen: false,
     isPartnersMenuOpen: false,
     isSubmarineMenuOpen: false,
-    isDataCentersMenuOpen: false
+    isDataCentersMenuOpen: false,
   }),
   computed: {
     dark() {
       return this.$store.state.isDark
+    },
+    donationLink() {
+      return 'https://www.paypal.com/donate/?hosted_button_id=LJKFVS2C39HCL'
     },
     checkIfLoggedIn() {
       return this.$auth.isAuthenticated ? '/' : '/'
@@ -302,7 +311,7 @@ export default {
       return this.dark
         ? 'https://cdn1.infrapedia.com/assets/img/dark-mode-logo-sphere.svg'
         : 'https://cdn1.infrapedia.com/assets/img/light-mode-logo-sphere.svg'
-    }
+    },
   },
   async mounted() {
     await this.loadPremiumPartners()
@@ -320,8 +329,8 @@ export default {
           ? `${events.TOGGLE_MOBILE_DRAWER_PROFILE}`
           : `${events.TOGGLE_MOBILE_DRAWER}`
       )
-    }
-  }
+    },
+  },
 }
 </script>
 
