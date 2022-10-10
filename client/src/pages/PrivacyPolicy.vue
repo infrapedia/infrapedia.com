@@ -1,19 +1,17 @@
 <template>
   <div class="main-wrapper p4 pt20 pb20">
     <div class="inner-wrapper">
-      <h1 class="title text-center mb20" :class="{ dark }">
-        Privacy Policy
-      </h1>
+      <h1 class="title text-center mb20" :class="{ dark }">Privacy Policy</h1>
 
       <p>
         Protecting your private information is our priority. This Statement of
-        Privacy applies to https://www.infrapedia.com and Kapany Networks, Inc.
-        and governs data collection and usage. For the purposes of this Privacy
-        Policy, unless otherwise noted, all references to Kapany Networks, Inc.
-        include https://www.infrapedia.com, Infrapedia, Kapany Networks, Inc.,
-        www.kapany.net and dev.infrapedia.com. The Infrapedia website is an
-        Infrapedia Service site. By using the Infrapedia website, you consent to
-        the data practices described in this statement.
+        Privacy applies to https://www.infrapedia.com and Infrapedia, Inc. and
+        governs data collection and usage. For the purposes of this Privacy
+        Policy, unless otherwise noted, all references to Infrapedia, Inc.
+        include https://www.infrapedia.com, Infrapedia, Inc, and
+        dev.infrapedia.com. The Infrapedia website is an Infrapedia Service
+        site. By using the Infrapedia website, you consent to the data practices
+        described in this statement.
       </p>
 
       <h3>Collection of your Personal Information</h3>
@@ -42,9 +40,7 @@
         the future.
       </p>
 
-      <h3>
-        Use of your Personal Information
-      </h3>
+      <h3>Use of your Personal Information</h3>
       <p>
         Infrapedia collects and uses your personal information to operate its
         website(s) and deliver the services you have requested.
@@ -54,9 +50,7 @@
         inform you of other products or services available from Infrapedia and
         its affiliates.
       </p>
-      <h3>
-        Sharing Information with Third Parties
-      </h3>
+      <h3>Sharing Information with Third Parties</h3>
       <p>
         Infrapedia does not sell, rent or lease its customer lists to third
         parties.
@@ -82,9 +76,7 @@
         circumstances to protect the personal safety of users of Infrapedia, or
         the public
       </p>
-      <h3>
-        Automatically Collected Information
-      </h3>
+      <h3>Automatically Collected Information</h3>
       <p>
         Information about your computer hardware and software may be
         automatically collected by Infrapedia. This information can include:
@@ -93,9 +85,7 @@
         service, to maintain quality of the service, and to provide general
         statistics regarding use of the Infrapedia website.
       </p>
-      <h3>
-        Links
-      </h3>
+      <h3>Links</h3>
       <p>
         This website contains links to other sites. Please be aware that we are
         not responsible for the content or privacy practices of such other
@@ -110,9 +100,7 @@
         purpose:
       </p>
       <ul class="ml1">
-        <li>
-          - SSL Protocol
-        </li>
+        <li>- SSL Protocol</li>
       </ul>
       <p>
         When personal information (such as a credit card number) is transmitted
@@ -149,8 +137,8 @@
         If you would like to stop receiving marketing or promotional
         communications via email from Infrapedia, you may opt out of such
         communications by emailing
-        <a href="mailto:contact@kapany.net" target="_blank"
-          >contact@kapany.net</a
+        <a href="mailto:admin@infrapedia.com" target="_blank"
+          >admin@infrapedia.com</a
         >.
       </p>
 
@@ -180,21 +168,20 @@
       </p>
 
       <p>
-        Kapany Networks, Inc. <br />
-        200 Spectrum Center Dr Suite 300 <br />
-        Irvine, California 92620
+        Infrapedia, Inc. <br />
+        3109 Grand Ave #267 <br />
+        Miami, FL 33133-5103
       </p>
       <p>
         Email Address: <br />
-        <a href="mailto:contact@kapany.net" target="_blank"
-          >contact@kapany.net</a
+        <a href="mailto:admin@infrapedia.com" target="_blank"
+          >admin@infrapedia.com</a
         >
       </p>
       <p>
         Telephone number: <br />
-        +1-833-3KAPANY
+        +1-305-985-1903
       </p>
-      <p>Effective as of January 01, 2019</p>
     </div>
   </div>
 </template>
@@ -207,27 +194,27 @@ export default {
     link: [
       {
         rel: 'canonical',
-        href: `https://www.infrapedia.com/privacy-policy`
-      }
+        href: `https://www.infrapedia.com/privacy-policy`,
+      },
     ],
     meta: [
       {
         name: 'description',
         content:
-          'Here at Infrapedia protecting your private information is our priority.'
+          'Here at Infrapedia protecting your private information is our priority.',
       },
       {
         name: 'keywords',
         content:
-          'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
-      }
-    ]
+          'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure',
+      },
+    ],
   },
   computed: {
     dark() {
       return this.$store.state.isDark
-    }
-  }
+    },
+  },
 }
 </script>
 

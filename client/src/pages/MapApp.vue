@@ -17,17 +17,14 @@
         help-text="Upload kmz or geojson"
         @close="() => (openEditDialog = false)"
       />
-      <i-register-dialog
-        :visible="isRegisterDialogVisible"
-        @close="closeRegisterDialog"
-      />
+      <i-register-dialog :visible="isRegisterDialogVisible" />
       <user-cables-button />
       <h-mobile-menu class="hidden-md-and-up" />
       <market-place :is-mobile="true" />
       <div class="h-fit-content min-height60vh">
         <map-overlay @map-loaded="checkUserAuthState" />
       </div>
-      <must-be-logged-in :is-visible="isMustBeLoggedInDialog" />
+      <!-- <must-be-logged-in :is-visible="isMustBeLoggedInDialog" /> -->
     </template>
     <i-footer role="contentinfo" class="ml20 hidden-sm-and-down" />
   </div>
@@ -53,7 +50,7 @@ import { PARAMS_SELECTION } from '../events'
 import { bus } from '../helpers/eventBus'
 import { getMetaDataTagsFromSelectionType } from '../helpers'
 import metadata from '../config/map_metadata.json'
-import MustBeLoggedIn from '../components/dialogs/MustBeLoggedIn.vue'
+// import MustBeLoggedIn from '../components/dialogs/MustBeLoggedIn.vue'
 
 export default {
   components: {
@@ -70,7 +67,7 @@ export default {
     IVerificationDialog: () => import("../components/dialogs/VerificationDialog"),
     HMobileMenu: () => import("../components/navbar/MobileMenu"),
     MarketPlace: () => import("../components/navbar/MartketPlace"),
-    MustBeLoggedIn
+    // MustBeLoggedIn
 },
   data: () => ({
     EDIT_CABLE,
@@ -121,8 +118,6 @@ export default {
   async mounted() {
     if (this.$auth.isAuthenticated) {
       await this.setToken()
-    } else {
-      this.isMustBeLoggedInDialog = true
     }
   },
   beforeRouteLeave(to, from, next) {
@@ -149,11 +144,9 @@ export default {
       this.isRegisterDialogVisible = false
     },
     checkUserAuthState() {
-      setTimeout(() => {
-        if (!this.$auth.isAuthenticated) {
-          this.isRegisterDialogVisible = true
-        }
-      }, 12000)
+      if (!this.$auth.isAuthenticated) {
+        this.isRegisterDialogVisible = true
+      }
     },
     handleCurrentMetaTagsUpdate(data) {
       if (!data) {

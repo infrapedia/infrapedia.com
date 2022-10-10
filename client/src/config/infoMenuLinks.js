@@ -22,14 +22,14 @@ const infoMenuLinks = {
         order: 2
       }
     },
-    {
-      label: 'Services',
-      url: '/services',
-      router: true,
-      menu: {
-        order: 2
-      }
-    },
+    // {
+    //   label: 'Services',
+    //   url: '/services',
+    //   router: true,
+    //   menu: {
+    //     order: 2
+    //   }
+    // },
     // {
     //   label: 'Sponsorships',
     //   url: '/sponsors',
@@ -85,11 +85,11 @@ const infoMenuLinks = {
     //   icon: ['fab', 'linkedin'],
     //   url: 'https://www.linkedin.com/company/infrapedia'
     // },
-    {
-      label: 'Instagram',
-      icon: ['fab', 'instagram'],
-      url: 'https://www.instagram.com/live.infrapedia/'
-    }
+    // {
+    //   label: 'Instagram',
+    //   icon: ['fab', 'instagram'],
+    //   url: 'https://www.instagram.com/live.infrapedia/'
+    // }
   ]
 }
 

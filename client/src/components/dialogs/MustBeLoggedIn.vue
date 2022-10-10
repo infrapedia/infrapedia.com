@@ -9,7 +9,7 @@
   >
     <header slot="title" class="header p0 no-selectable">
       <div
-          :class="{ animate: !isUserBlock }"
+          :class="{ animate: true }"
         >
           <el-image
             fit="contain"

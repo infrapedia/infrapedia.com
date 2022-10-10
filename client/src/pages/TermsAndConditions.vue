@@ -9,12 +9,12 @@
       <p>
         Welcome to https://www.infrapedia.com. The https://www.infrapedia.com
         website (the "Site") is comprised of various web pages operated by
-        Kapany Networks, Inc. ("Infrapedia"). https://www.infrapedia.com is
-        offered to you conditioned on your acceptance without modification of
-        the terms, conditions, and notices contained herein (the "Terms"). Your
-        use of https://www.infrapedia.com constitutes your agreement to all such
-        Terms. Please read these terms carefully, and keep a copy of them for
-        your reference.
+        Infrapedia, Inc. ("Infrapedia"). https://www.infrapedia.com is offered
+        to you conditioned on your acceptance without modification of the terms,
+        conditions, and notices contained herein (the "Terms"). Your use of
+        https://www.infrapedia.com constitutes your agreement to all such Terms.
+        Please read these terms carefully, and keep a copy of them for your
+        reference.
       </p>
 
       <p>https://www.infrapedia.com is a Software as Service Site.</p>
@@ -185,26 +185,26 @@
       <p>
         THE INFORMATION, SOFTWARE, PRODUCTS, AND SERVICES INCLUDED IN OR
         AVAILABLE THROUGH THE SITE MAY INCLUDE INACCURACIES OR TYPOGRAPHICAL
-        ERRORS. CHANGES ARE PERIODICALLY ADDED TO THE INFORMATION HEREIN. KAPANY
-        NETWORKS, INC. AND/OR ITS SUPPLIERS MAY MAKE IMPROVEMENTS AND/OR CHANGES
-        IN THE SITE AT ANY TIME.
+        ERRORS. CHANGES ARE PERIODICALLY ADDED TO THE INFORMATION HEREIN.
+        INFRAPEDIA, INC AND/OR ITS SUPPLIERS MAY MAKE IMPROVEMENTS AND/OR
+        CHANGES IN THE SITE AT ANY TIME.
       </p>
       <p>
-        KAPANY NETWORKS, INC. AND/OR ITS SUPPLIERS MAKE NO REPRESENTATIONS ABOUT
-        THE SUITABILITY, RELIABILITY, AVAILABILITY, TIMELINESS, AND ACCURACY OF
-        THE INFORMATION, SOFTWARE, PRODUCTS, SERVICES AND RELATED GRAPHICS
-        CONTAINED ON THE SITE FOR ANY PURPOSE. TO THE MAXIMUM EXTENT PERMITTED
-        BY APPLICABLE LAW, ALL SUCH INFORMATION, SOFTWARE, PRODUCTS, SERVICES
-        AND RELATED GRAPHICS ARE PROVIDED "AS IS" WITHOUT WARRANTY OR CONDITION
-        OF ANY KIND. KAPANY NETWORKS, INC. AND/OR ITS SUPPLIERS HEREBY DISCLAIM
-        ALL WARRANTIES AND CONDITIONS WITH REGARD TO THIS INFORMATION, SOFTWARE,
+        INFRAPEDIA, INC. AND/OR ITS SUPPLIERS MAKE NO REPRESENTATIONS ABOUT THE
+        SUITABILITY, RELIABILITY, AVAILABILITY, TIMELINESS, AND ACCURACY OF THE
+        INFORMATION, SOFTWARE, PRODUCTS, SERVICES AND RELATED GRAPHICS CONTAINED
+        ON THE SITE FOR ANY PURPOSE. TO THE MAXIMUM EXTENT PERMITTED BY
+        APPLICABLE LAW, ALL SUCH INFORMATION, SOFTWARE, PRODUCTS, SERVICES AND
+        RELATED GRAPHICS ARE PROVIDED "AS IS" WITHOUT WARRANTY OR CONDITION OF
+        ANY KIND. INFRAPEDIA, INC. AND/OR ITS SUPPLIERS HEREBY DISCLAIM ALL
+        WARRANTIES AND CONDITIONS WITH REGARD TO THIS INFORMATION, SOFTWARE,
         PRODUCTS, SERVICES AND RELATED GRAPHICS, INCLUDING ALL IMPLIED
         WARRANTIES OR CONDITIONS OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
         PURPOSE, TITLE AND NON- INFRINGEMENT.
       </p>
       <p>
         TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL
-        KAPANY NETWORKS, INC. AND/OR ITS SUPPLIERS BE LIABLE FOR ANY DIRECT,
+        INFRAPEDIA, INC. AND/OR ITS SUPPLIERS BE LIABLE FOR ANY DIRECT,
         INDIRECT, PUNITIVE, INCIDENTAL, SPECIAL, CONSEQUENTIAL DAMAGES OR ANY
         DAMAGES WHATSOEVER INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF
         USE, DATA OR PROFITS, ARISING OUT OF OR IN ANY WAY CONNECTED WITH THE
@@ -213,8 +213,8 @@
         SERVICES, OR FOR ANY INFORMATION, SOFTWARE, PRODUCTS, SERVICES AND
         RELATED GRAPHICS OBTAINED THROUGH THE SITE, OR OTHERWISE ARISING OUT OF
         THE USE OF THE SITE, WHETHER BASED ON CONTRACT, TORT, NEGLIGENCE, STRICT
-        LIABILITY OR OTHERWISE, EVEN IF KAPANY NETWORKS, INC. OR ANY OF ITS
-        SUPPLIERS HAS BEEN ADVISED OF THE POSSIBILITY OF DAMAGES. BECAUSE SOME
+        LIABILITY OR OTHERWISE, EVEN IF INFRAPEDIA, INC. OR ANY OF ITS SUPPLIERS
+        HAS BEEN ADVISED OF THE POSSIBILITY OF DAMAGES. BECAUSE SOME
         STATES/JURISDICTIONS DO NOT ALLOW THE EXCLUSION OR LIMITATION OF
         LIABILITY FOR CONSEQUENTIAL OR INCIDENTAL DAMAGES, THE ABOVE LIMITATION
         MAY NOT APPLY TO YOU. IF YOU ARE DISSATISFIED WITH ANY PORTION OF THE
@@ -272,24 +272,22 @@
         informed of our updates.
       </p>
       <h3>Contact Us</h3>
+      <p>Infrapedia welcomes your questions or comments regarding the</p>
       <p>
-        Infrapedia welcomes your questions or comments regarding the
-      </p>
-      <p>
-        Kapany Networks, Inc. <br />
-        200 Spectrum Center Dr Suite 300 <br />
-        Irvine, California 92618
+        Infrapedia, Inc. <br />
+        3109 Grand Ave #267 <br />
+        Miami, FL 33133-5103
       </p>
 
       <p>
         Email Address: <br />
-        <a href="mailto:contact@kapany.net" target="_blank"
-          >contact@kapany.net</a
+        <a href="mailto:admin@infrapedia.com" target="_blank"
+          >admin@infrapedia.com</a
         >
       </p>
       <p>
         Telephone number: <br />
-        424-298-1903
+        +1-305-985-1903
       </p>
       <p>Effective as of January 01, 2019</p>
     </div>
@@ -305,26 +303,26 @@ export default {
     link: [
       {
         rel: 'canonical',
-        href: `https://www.infrapedia.com/terms-and-conditions`
-      }
+        href: `https://www.infrapedia.com/terms-and-conditions`,
+      },
     ],
     meta: [
       {
         name: 'description',
-        content: 'Infrapedia Terms and Conditions of use.'
+        content: 'Infrapedia Terms and Conditions of use.',
       },
       {
         name: 'keywords',
         content:
-          'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure'
-      }
-    ]
+          'internet map, global internet infrastructure, submarine cable map. telecommunications, network pops, world internet structure',
+      },
+    ],
   },
   computed: {
     dark() {
       return this.$store.state.isDark
-    }
-  }
+    },
+  },
 }
 </script>
 

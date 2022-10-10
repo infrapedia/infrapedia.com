@@ -135,10 +135,10 @@ export default {
         label: 'Home',
         url: '/'
       },
-      {
-        label: 'Services',
-        url: '/services'
-      },
+      // {
+      //   label: 'Services',
+      //   url: '/services'
+      // },
       {
         label: 'FAQ',
         url: '/faq'

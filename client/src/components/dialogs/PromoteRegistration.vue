@@ -163,18 +163,8 @@
             </div>
           </div>
         </div>
+
         <footer class="flex justify-content-end pr5">
-          <el-button
-            round
-            :plain="dark == false"
-            class="mr2"
-            size="small"
-            title="Close"
-            :class="{ dark }"
-            @click="handleClose"
-          >
-            Maybe later
-          </el-button>
           <el-button
             round
             :type="dark ? 'info' : 'primary'"
@@ -228,10 +218,6 @@ export default {
     }
   },
   methods: {
-    handleClose() {
-      this.isFullHeight = false
-      setTimeout(() => this.$emit('close'), 200)
-    },
     signIn() {
       this.$auth.loginWithRedirect()
     }

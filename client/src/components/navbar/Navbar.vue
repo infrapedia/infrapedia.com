@@ -61,8 +61,8 @@
                 About
               </router-link>
             </li>
-            <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
-            <li
+            <!-- <el-divider direction="vertical" class="m0 hidden-sm-and-down" /> -->
+            <!-- <li
               class="inline-block no-selectable relative hidden-sm-and-down"
               role="listitem"
             >
@@ -74,7 +74,7 @@
               >
                 Services
               </router-link>
-            </li>
+            </li> -->
             <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
 
             <!-- <li

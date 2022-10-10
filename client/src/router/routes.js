@@ -13,7 +13,7 @@ import EmailProviders from '../pages/profile/email-providers.vue'
 import Contact from '../pages/Contact.vue'
 // import About from '../pages/About.vue'
 import Attributions from '../pages/Attributions.vue'
-import Services from '../pages/Services.vue'
+// import Services from '../pages/Services.vue'
 // import Sponsors from '../pages/Sponsors.vue'
 // import VotesResults from '../pages/VotesResults.vue'
 import PrivacyPolicy from '../pages/PrivacyPolicy.vue'
@@ -143,11 +143,11 @@ const routes = [
         name: 'faq',
         component: FAQ
       },
-      {
-        path: '/services',
-        name: 'services',
-        component: Services
-      },
+      // {
+      //   path: '/services',
+      //   name: 'services',
+      //   component: Services
+      // },
       {
         path: '/privacy-policy',
         name: 'privacy-policy',
