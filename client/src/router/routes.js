@@ -201,7 +201,7 @@ const routes = [
     component: ProfileLayout,
     beforeEnter: (to, from, next) => {
       const auth = getInstance()
-      if (!checkCookie('auth0.is.authenticated')) {
+      if (!checkCookie('auth.token-session')) {
         auth.loginWithRedirect()
       } else next()
     },
