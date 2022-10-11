@@ -135,7 +135,8 @@ import ClickOutside from 'vue-click-outside'
 
 export default {
   data: () => ({
-    isVisible: false
+    isVisible: false,
+    isUserAuthenticated: false,
   }),
   computed: {
     dark() {
@@ -143,9 +144,6 @@ export default {
     },
     infoMenuLinks() {
       return infoMenuLinks
-    },
-    isUserAuthenticated() {
-      return this.$auth.isAuthenticated
     },
     userName() {
       return this.$auth.user ? this.$auth.user.name : ''
@@ -171,7 +169,15 @@ export default {
       return c
     }
   },
+  watch: {
+    isVisible(_) {
+      this.checkAuthState()
+    }
+  },
   methods: {
+    async checkAuthState() {
+      this.isUserAuthenticated = await this.$auth.checkAuthStatus()
+    },
     closeMenu() {
       this.toggleVisibility(false)
     },

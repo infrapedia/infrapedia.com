@@ -50,6 +50,7 @@ import { PARAMS_SELECTION } from '../events'
 import { bus } from '../helpers/eventBus'
 import { getMetaDataTagsFromSelectionType } from '../helpers'
 import metadata from '../config/map_metadata.json'
+import { checkCookie } from '../helpers/cookies'
 // import MustBeLoggedIn from '../components/dialogs/MustBeLoggedIn.vue'
 
 export default {
@@ -144,7 +145,7 @@ export default {
       this.isRegisterDialogVisible = false
     },
     checkUserAuthState() {
-      if (!this.$auth.isAuthenticated) {
+      if (!this.$auth.isAuthenticated && !checkCookie('auth.token-session')) {
         this.isRegisterDialogVisible = true
       }
     },

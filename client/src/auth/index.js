@@ -5,6 +5,25 @@ import { AUTH_USER } from '../events/auth'
 
 let instance
 
+const sessionStorageCache = {
+  get: function (key) {
+    return JSON.parse(sessionStorage.getItem(key));
+  },
+
+  set: function (key, value) {
+    sessionStorage.setItem(key, JSON.stringify(value));
+  },
+
+  remove: function (key) {
+    sessionStorage.removeItem(key);
+  },
+
+  // Optional
+  allKeys: function () {
+    return Object.keys(sessionStorage);
+  }
+}
+
 export const getInstance = () => instance
 
 export const useAuth0 = ({
@@ -43,7 +62,8 @@ export const useAuth0 = ({
           domain: options.domain,
           client_id: options.clientId,
           audience: options.audience,
-          redirect_uri: redirectUri
+          redirect_uri: redirectUri,
+          cache: sessionStorageCache
         })
         try {
           // If the user is returning to the app after authentication..
@@ -72,7 +92,7 @@ export const useAuth0 = ({
       },
       async checkAuthStatus() {
         if (this.auth0Client) {
-          await this.auth0Client.isAuthenticated()
+          return await this.auth0Client.isAuthenticated()
         }
       },
       /** Authenticates the user using a popup window */
