@@ -153,7 +153,7 @@
             </div>
             <div class="right p2">
               <h4 class="font-semibold fs-medium">
-                Sign in and unlock all features
+                Sign in to continue using Infrapedia
               </h4>
               <ul class="pl5">
                 <li v-for="(text, i) in siteFeatures" :key="i" class="mb2">
