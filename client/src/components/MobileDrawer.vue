@@ -43,7 +43,7 @@
             @click="emitSelected"
           />
         </el-collapse-item> -->
-        <el-collapse-item name="trusted-by" class="pr4 pl4">
+        <!-- <el-collapse-item name="trusted-by" class="pr4 pl4">
           <span slot="title" class="underline">Trusted by</span>
           <i-list
             :is-search-visible="false"
@@ -51,7 +51,7 @@
             option="organizations"
             @click="emitSelected"
           />
-        </el-collapse-item>
+        </el-collapse-item> -->
       </el-collapse>
       <ul class="links-wrapper mb14" :class="{ dark }">
         <li class="pr4 pl4 fs-regular" v-for="(link, i) in links" :key="i">

@@ -231,7 +231,7 @@ export default {
           marker: 'howCanIHelp',
           html: true,
           content:
-            'Promoting the website to vendors as well as help increase the visibility of the website or  contribute content/data are just a few ways to help us. You can also share your thoughts and ideas by contacting us directly or share on social media, <a href="https://twitter.com/infrapedia" target="_blank" rel="noreferrer noopener"> Twitter</a>, <a href="https://www.facebook.com/infrapediainc/" target="_blank" rel="noreferrer noopener"> Facebook </a>, <a href="https://www.linkedin.com/in/hubertsouisa/" target="_blank" rel="noreferrer noopener"> Linkedin</a>!',
+            'Promoting the website to vendors as well as help increase the visibility of the website or  contribute content/data are just a few ways to help us. You can also share your thoughts and ideas by contacting us directly.',
         },
         {
           title: 'Do you take sponsorships?',
@@ -249,7 +249,7 @@ export default {
           html: true,
           marker: 'howDoYouKeepYourMap',
           content:
-            'We are a group of infrastructure enthusiasts who are extremely focused on network availability. We monitor many lists and in addition to that we have various scripts running checking key infrastructure assets around the world. We often get notified by our users and receive the outage as a report. We also monitor for information and press releases often shared across social media platforms like <a href="https://twitter.com/infrapedia" target="_blank" rel="noreferrer noopener"> Twitter</a>, <a href="https://www.facebook.com/infrapediainc/" target="_blank" rel="noreferrer noopener"> Facebook </a>, <a href="https://www.linkedin.com/in/hubertsouisa/" target="_blank" rel="noreferrer noopener"> Linkedin</a>',
+            'We are a group of infrastructure enthusiasts who are extremely focused on network availability. We monitor many lists and in addition to that we have various scripts running checking key infrastructure assets around the world. We often get notified by our users and receive the outage as a report.',
         },
         {
           title: 'Where did you find all this data?',

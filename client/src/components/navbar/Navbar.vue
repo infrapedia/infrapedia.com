@@ -75,7 +75,7 @@
                 Services
               </router-link>
             </li> -->
-            <el-divider direction="vertical" class="m0 hidden-sm-and-down" />
+            <!-- <el-divider direction="vertical" class="m0 hidden-sm-and-down" /> -->
 
             <!-- <li
               class="inline-block no-selectable relative hidden-sm-and-down"
@@ -99,7 +99,7 @@
 
             <!-- <el-divider direction="vertical" class="m0 hidden-sm-and-down" /> -->
 
-            <li
+            <!-- <li
               class="inline-block relative hidden-sm-and-down"
               @click="toggleDrawerVisibility"
               @keyup.enter="toggleDrawerVisibility"
@@ -111,7 +111,7 @@
                   @item-selected="handleItemListSelection"
                 />
               </div>
-            </li>
+            </li> -->
 
             <li
               class="inline-block relative hidden-sm-and-down"
@@ -255,7 +255,7 @@ export default {
     IMenu: () => import("./Menu"),
     IFilter: () => import("./Filter"),
     ISearch: () => import("./Search"),
-    TrustedBy: () => import("./TrustedBy.vue"),
+    // TrustedBy: () => import("./TrustedBy.vue"),
     // BottomSheet: () => import('./BottomSheet'),
     // MarketPlace: () => import('./MartketPlace'),
     // PremiumPartnersButton: () => import('./PremiumPartners'),

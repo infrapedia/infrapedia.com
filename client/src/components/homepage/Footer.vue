@@ -106,7 +106,7 @@
             </ul>
           </div>
         </div>
-        <div class="social-links mt12">
+        <!-- <div class="social-links mt12">
           <a
             v-for="(link, i) in infoMenuLinks.social"
             :key="i"
@@ -116,7 +116,7 @@
           >
             <fa :icon="link.icon" class="fs-medium" />
           </a>
-        </div>
+        </div> -->
       </div>
     </div>
   </el-footer>

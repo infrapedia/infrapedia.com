@@ -96,7 +96,7 @@
           </li>
         </div>
         <el-divider class="mt2 mb2" />
-        <ul
+        <!-- <ul
           class="flex justify-content-space-around pt2 p2"
           :class="{ dark, light: !dark }"
         >
@@ -114,8 +114,8 @@
               <fa :icon="link.icon" class="sm-icon" />
             </a>
           </li>
-        </ul>
-        <el-divider class="mt2 mb2" />
+        </ul> -->
+        <!-- <el-divider class="mt2 mb2" /> -->
         <li class="w-fit-full h10">
           <el-button
             type="text"

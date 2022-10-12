@@ -68,28 +68,6 @@ const infoMenuLinks = {
     //     order: 5
     //   }
     // }
-  ],
-  social: [
-    {
-      label: 'Facebook',
-      icon: ['fab', 'facebook'],
-      url: 'https://www.facebook.com/infrapediainc'
-    },
-    {
-      label: 'Twitter',
-      icon: ['fab', 'twitter'],
-      url: 'https://www.twitter.com/infrapedia'
-    },
-    // {
-    //   label: 'Linkedin',
-    //   icon: ['fab', 'linkedin'],
-    //   url: 'https://www.linkedin.com/company/infrapedia'
-    // },
-    // {
-    //   label: 'Instagram',
-    //   icon: ['fab', 'instagram'],
-    //   url: 'https://www.instagram.com/live.infrapedia/'
-    // }
   ]
 }
 
