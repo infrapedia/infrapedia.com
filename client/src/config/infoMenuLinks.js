@@ -11,17 +11,17 @@ const infoMenuLinks = {
         order: 1
       }
     },
-    {
-      label: 'Blog',
-      url: 'https://blog.infrapedia.com',
-      openTab: true,
-      footer: {
-        order: 2
-      },
-      menu: {
-        order: 2
-      }
-    },
+    // {
+    //   label: 'Blog',
+    //   url: 'https://blog.infrapedia.com',
+    //   openTab: true,
+    //   footer: {
+    //     order: 2
+    //   },
+    //   menu: {
+    //     order: 2
+    //   }
+    // },
     // {
     //   label: 'Services',
     //   url: '/services',
@@ -84,11 +84,11 @@ export const navbarLinks = [
   //   label: 'Sponsorships',
   //   url: '/sponsors'
   // },
-  {
-    label: 'Blog',
-    url: 'https://blog.infrapedia.com',
-    tab: true
-  },
+  // {
+  //   label: 'Blog',
+  //   url: 'https://blog.infrapedia.com',
+  //   tab: true
+  // },
   {
     label: 'About',
     dropdown: [
