@@ -22,7 +22,6 @@ import HFooter from '../components/homepage/Footer'
 import HNavbar from '../components/homepage/Navbar'
 import HMobileDrawer from '../components/MobileDrawer'
 import HomePage from '../components/homepage/HomePage'
-// import { checkCookie } from '../helpers/cookies'
 
 export default {
   components: {
