@@ -42,7 +42,7 @@ import {
   TOGGLE_ISSUES_DIALOG
 } from '../store/actionTypes'
 import { disableAlert } from '../services/api/alerts'
-import { setCookie } from '../helpers/cookies'
+import { deleteCookie, setCookie } from '../helpers/cookies'
 import { getAccessToken } from '../services/api/auth'
 import MapOverlay from '../components/mainMap/MapOverlay'
 import { getElementIdByType } from '../services/api'
@@ -116,11 +116,6 @@ export default {
       }
     }
   },
-  async mounted() {
-    if (this.$auth.isAuthenticated) {
-      await this.setToken()
-    }
-  },
   beforeRouteLeave(to, from, next) {
     if (this.$store.state.isDrawing) {
       this.$store.commit(`${IS_DRAWING}`, false)
@@ -144,7 +139,9 @@ export default {
     closeRegisterDialog() {
       this.isRegisterDialogVisible = false
     },
-    checkUserAuthState() {
+    async checkUserAuthState() {
+      if (this.$auth.isAuthenticated) await this.setToken()
+      else deleteCookie('auth.token-session')
       if (!this.$auth.isAuthenticated && !checkCookie('auth.token-session')) {
         this.isRegisterDialogVisible = true
       }
