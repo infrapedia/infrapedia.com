@@ -155,11 +155,21 @@
               <h4 class="font-semibold fs-medium">
                 Sign in to continue using Infrapedia
               </h4>
-              <ul class="pl5">
-                <li v-for="(text, i) in siteFeatures" :key="i" class="mb2">
-                  <span class="fs-regular" v-text="text" />
-                </li>
-              </ul>
+              <div>
+                <p>
+                  If you'd like to know more about Infrapedia before continuing:
+                </p>
+                <p>
+                  <router-link to="/faq">
+                    FAQ
+                  </router-link>
+                </p>
+                <p>
+                  <router-link to="/contact">
+                    Contact us
+                  </router-link>
+                </p>
+              </div>
             </div>
           </div>
         </div>
