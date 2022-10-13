@@ -336,7 +336,7 @@ export default {
           html: true,
           marker: 'canIGetTheKMZData',
           content:
-            'No, KMZ information is not available for download from our platform. We would be happy to connect with you and see if we can be of help in some other way as part of our <a href="https://www.infrapedia.com/services">professional services </a>',
+            'No, KMZ information is not available for download from our platform. We would be happy to <a href="https://www.infrapedia.com/contact"> connect</a> with you and see if we can be of help in some other way.',
         },
       ]
     },

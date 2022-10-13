@@ -76,10 +76,10 @@ export const navbarLinks = [
     label: 'Home',
     url: '/'
   },
-  {
-    label: 'Services',
-    url: '/services'
-  },
+  // {
+  //   label: 'Services',
+  //   url: '/services'
+  // },
   // {
   //   label: 'Sponsorships',
   //   url: '/sponsors'

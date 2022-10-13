@@ -166,21 +166,11 @@
         of Privacy. If you believe that Infrapedia has not adhered to this
         Statement, please contact Infrapedia at:
       </p>
-
-      <p>
-        Infrapedia, Inc. <br />
-        3109 Grand Ave #267 <br />
-        Miami, FL 33133-5103
-      </p>
       <p>
         Email Address: <br />
         <a href="mailto:admin@infrapedia.com" target="_blank"
           >admin@infrapedia.com</a
         >
-      </p>
-      <p>
-        Telephone number: <br />
-        +1-305-985-1903
       </p>
     </div>
   </div>
