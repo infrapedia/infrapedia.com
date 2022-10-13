@@ -35,6 +35,7 @@
               <label for="subseaonly">Subsea only</label>
               <el-switch
                 name="subseaonly"
+                disabled
                 v-model="filters.isSubseaOnly"
                 :active-color="colorBaseOnThemeState"
                 @change="emitSubseaSelection"
@@ -76,6 +77,7 @@
                 <label for="timemachine">Subsea time machine (EOL)</label>
                 <el-checkbox
                   name="timemachine"
+                  disabled
                   v-model="filters.isTimeMachineActive"
                   @change="emitTimeMachineSelection"
                 />
@@ -221,9 +223,10 @@ export default {
   name: 'IFilter',
   data: () => ({
     isMenuFilter: false,
+    // TODO: Remember to change this later to `false`
     filters: {
-      isSubseaOnly: false,
-      isTimeMachineActive: false,
+      isSubseaOnly: true,
+      isTimeMachineActive: true,
       radio: '',
       year: currentYear()
     }
@@ -254,12 +257,13 @@ export default {
      * @param isSubseaOnly { Boolean }
      */
     emitSubseaSelection(isSubseaOnly) {
+      // TODO: Remember to change this later
       // Other filters cannot be active
-      if (this.filters.isTimeMachineActive) {
-        this.filters.isTimeMachineActive = false
-      }
+      // if (this.filters.isTimeMachineActive) {
+      //   this.filters.isTimeMachineActive = false
+      // }
 
-      return bus.$emit(`${SUBSEA_FILTER}`, isSubseaOnly)
+      return bus.$emit(`${SUBSEA_FILTER}`, true)
     },
     /**
      * @param selection { Boolean }
@@ -304,7 +308,8 @@ export default {
       // Other filters cannot be active
       if (this.filters.radio !== '' || this.filters.isSubseaOnly) {
         this.filters.radio = ''
-        this.filters.isSubseaOnly = false
+        // TODO: Remember to change this later
+        this.filters.isSubseaOnly = true
       }
 
       return bus.$emit(`${UPDATE_TIME_MACHINE}`, {

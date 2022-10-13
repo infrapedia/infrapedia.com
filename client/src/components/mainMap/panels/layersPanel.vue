@@ -39,6 +39,7 @@
             :width="40"
             class="ml2 mt1"
             v-model="layers[key].active"
+            :disabled="layers[key].disabled"
             @change="handleSwitchValueChange($event, key, layers)"
           />
         </div>
@@ -61,15 +62,17 @@ export default {
         active: true
       },
       [mapConfig.ixps]: {
-        active: true
+        active: false,
+        disabled: true
       },
       [mapConfig.facilities]: {
         active: true,
         label: 'Facilities'
       },
       terrestrial: {
-        active: true,
-        label: 'Terrestrial Networks'
+        active: false,
+        label: 'Terrestrial Networks',
+        disabled: true
       },
       subsea: {
         active: true,

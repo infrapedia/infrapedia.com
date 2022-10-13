@@ -287,6 +287,7 @@ export default {
       }
 
       window.mapboxgl = mapboxgl
+      // map.scrollZoom.disable()
       return map
     },
     /**
@@ -371,8 +372,8 @@ export default {
       for (let layer of mapConfig.data.layers) {
         map.addLayer(layer)
       }
-      map.setFilter(mapConfig.cables, mapConfig.filter.all)
-      this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.all)
+      map.setFilter(mapConfig.cables, mapConfig.filter.subsea)
+      this.$store.commit(`${CURRENT_MAP_FILTER}`, mapConfig.filter.subsea)
     },
     /**
      * @param map { Object } map instance
@@ -508,6 +509,7 @@ export default {
         facsClustersSource.setData(features)
         this.facilitiesClusters.hasData = features.features.length > 0
       } else if (layerName == 'terrestrial') {
+        return
         let filterBy = active ? mapConfig.filter.all : mapConfig.filter.subsea
 
         if (!layersDict.subsea.active && active) {
