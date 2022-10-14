@@ -140,6 +140,7 @@ export default {
       this.isRegisterDialogVisible = false
     },
     async checkUserAuthState() {
+      await this.$nextTick()
       if (this.$auth.isAuthenticated) await this.setToken()
       else deleteCookie('auth.token-session')
       if (!this.$auth.isAuthenticated && !checkCookie('auth.token-session')) {
