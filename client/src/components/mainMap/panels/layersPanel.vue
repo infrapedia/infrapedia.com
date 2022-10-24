@@ -72,7 +72,7 @@ export default {
       terrestrial: {
         active: false,
         label: 'Terrestrial Networks',
-        disabled: true
+        // disabled: true
       },
       subsea: {
         active: true,
@@ -101,6 +101,7 @@ export default {
   },
   mounted() {
     bus.$on('legends-panel-visibility', this.handleLegendsPanelVisilityChange)
+    bus.$on('SET_TERRESTRIAL_NETWORK_LAYER', this.handleSetTerrestrialNetworkVisiblity)
     if (this.mobile) {
       this.isLegendsPanelActive = false
       this.isActive = false
@@ -108,8 +109,12 @@ export default {
   },
   beforeDestroy() {
     bus.$off('legends-panel-visibility', this.handleLegendsPanelVisilityChange)
+    bus.$off('SET_TERRESTRIAL_NETWORK_LAYER', this.handleSetTerrestrialNetworkVisiblity)
   },
   methods: {
+    handleSetTerrestrialNetworkVisiblity(bool) {
+      this.layers.terrestrial.active = !bool
+    },
     handleSwitchValueChange(bool, layer, layers) {
       this.$emit('toggle-layer', {
         active: bool,

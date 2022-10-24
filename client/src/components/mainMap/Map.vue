@@ -509,7 +509,6 @@ export default {
         facsClustersSource.setData(features)
         this.facilitiesClusters.hasData = features.features.length > 0
       } else if (layerName == 'terrestrial') {
-        return
         let filterBy = active ? mapConfig.filter.all : mapConfig.filter.subsea
 
         if (!layersDict.subsea.active && active) {
@@ -1346,6 +1345,8 @@ export default {
      */
     async handleFilterSelection(selection) {
       let filter
+
+      console.log(selection)
 
       switch (selection) {
         case -1:

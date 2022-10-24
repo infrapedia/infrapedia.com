@@ -35,7 +35,6 @@
               <label for="subseaonly">Subsea only</label>
               <el-switch
                 name="subseaonly"
-                disabled
                 v-model="filters.isSubseaOnly"
                 :active-color="colorBaseOnThemeState"
                 @change="emitSubseaSelection"
@@ -77,7 +76,6 @@
                 <label for="timemachine">Subsea time machine (EOL)</label>
                 <el-checkbox
                   name="timemachine"
-                  disabled
                   v-model="filters.isTimeMachineActive"
                   @change="emitTimeMachineSelection"
                 />
@@ -259,11 +257,12 @@ export default {
     emitSubseaSelection(isSubseaOnly) {
       // TODO: Remember to change this later
       // Other filters cannot be active
-      // if (this.filters.isTimeMachineActive) {
-      //   this.filters.isTimeMachineActive = false
-      // }
+      if (this.filters.isTimeMachineActive) {
+        this.filters.isTimeMachineActive = false
+      }
 
-      return bus.$emit(`${SUBSEA_FILTER}`, true)
+      bus.$emit(`${SUBSEA_FILTER}`, isSubseaOnly)
+      bus.$emit('SET_TERRESTRIAL_NETWORK_LAYER', isSubseaOnly)
     },
     /**
      * @param selection { Boolean }
@@ -283,7 +282,7 @@ export default {
       // Subsea filter cannot be active
       if (this.filters.isTimeMachineActive) {
         this.filters.isTimeMachineActive = false
-        // this.filters.isSubseaOnly = false
+        this.filters.isSubseaOnly = false
       }
 
       if (this.filters.isSubseaOnly) {
@@ -309,10 +308,12 @@ export default {
       if (this.filters.radio !== '' || this.filters.isSubseaOnly) {
         this.filters.radio = ''
         // TODO: Remember to change this later
-        this.filters.isSubseaOnly = true
+        this.filters.isSubseaOnly = false
       }
 
-      return bus.$emit(`${UPDATE_TIME_MACHINE}`, {
+
+      bus.$emit('SET_TERRESTRIAL_NETWORK_LAYER', isTimeMachineActive)
+      bus.$emit(`${UPDATE_TIME_MACHINE}`, {
         isActive: isTimeMachineActive,
         year: this.filters.year,
         target: 'checkbox'
