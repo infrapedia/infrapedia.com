@@ -61,6 +61,18 @@
                 About
               </router-link>
             </li>
+            <li
+              class="inline-block no-selectable relative hidden-sm-and-down"
+              role="listitem"
+            >
+              <a
+                class="list-item pr4 pl4"
+                href="https://discord.gg/dTDP4EXm"
+                target="_blank"
+              >
+                Discord
+              </a>
+            </li>
             <!-- <el-divider direction="vertical" class="m0 hidden-sm-and-down" /> -->
             <!-- <li
               class="inline-block no-selectable relative hidden-sm-and-down"
@@ -167,7 +179,7 @@
                     src="https://storage.googleapis.com/infrapediacom/assets/paypal-donate-button2.png"
                     fit="scale-down"
                     class="image"
-                    style="width: 120px; height: 40px; margin-top: .5rem;"
+                    style="width: 120px; height: 40px; margin-top: 0.5rem"
                   />
                 </a>
               </div>
@@ -252,15 +264,15 @@ import { bus } from '../../helpers/eventBus'
 export default {
   name: 'INavbar',
   components: {
-    IMenu: () => import("./Menu"),
-    IFilter: () => import("./Filter"),
-    ISearch: () => import("./Search"),
+    IMenu: () => import('./Menu'),
+    IFilter: () => import('./Filter'),
+    ISearch: () => import('./Search'),
     // TrustedBy: () => import("./TrustedBy.vue"),
     // BottomSheet: () => import('./BottomSheet'),
     // MarketPlace: () => import('./MartketPlace'),
     // PremiumPartnersButton: () => import('./PremiumPartners'),
-    IFullScreenSearch: () => import("./FullScreenSearch.vue")
-},
+    IFullScreenSearch: () => import('./FullScreenSearch.vue'),
+  },
   mixins: [dataCollection],
   props: {
     isUserNavbar: {

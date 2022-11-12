@@ -35,6 +35,7 @@
             v-if="link.tab"
             :key="i"
             :href="link.url"
+            target="_blank"
             class="underline-hover mr4"
           >
             {{ link.label }}

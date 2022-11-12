@@ -211,7 +211,7 @@ export default {
           marker: 'doINeedToSignUp',
           html: true,
           content:
-            'No, basic functions are available to every user. A user account is only required to unlock certain features or upload/update data. <a href="https://infrapedia.com/login">Sign up here </a> to unlock the special features.',
+            'Yes, you must <a href="https://infrapedia.com/login">authenticate</a> using you linkedin account to access Infrapedia. This is an API integration with linkedin. We do not see your linkedin username/password.',
         },
         {
           title: 'Is Infrapedia a not-for-profit company?',

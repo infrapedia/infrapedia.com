@@ -159,6 +159,11 @@
                 <p>
                   If you'd like to know more about Infrapedia before continuing:
                 </p>
+                <p class="mt2">
+                  <a href="https://discord.gg/dTDP4EXm" target="_blank">
+                    Discord
+                  </a>
+                </p>
                 <p>
                   <router-link to="/faq">
                     FAQ

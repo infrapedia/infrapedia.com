@@ -90,6 +90,11 @@ export const navbarLinks = [
   //   tab: true
   // },
   {
+    label: 'Discord',
+    url: 'https://discord.gg/aJhRSeju5k',
+    tab: true
+  },
+  {
     label: 'About',
     dropdown: [
       {
