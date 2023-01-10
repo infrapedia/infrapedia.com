@@ -238,6 +238,13 @@ export default {
         : 'https://cdn1.infrapedia.com/assets/img/light-mode-logo.svg'
     },
   },
+  mounted() {
+    if (this.visible) {
+      setTimeout(() => {
+          this.isFullHeight = true
+        }, 200)
+    }
+  },
   methods: {
     signIn() {
       this.$auth.loginWithRedirect()

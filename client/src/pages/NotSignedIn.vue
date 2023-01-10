@@ -1,7 +1,7 @@
 <template>
   <div>
     <INavbar role="navigation"  class="blur" />
-    <el-image class="mt12 blur" :src="imgUrl" fit="contain" />
+    <div class="blur img-container" />
     <i-register-dialog :visible="isRegisterDialogVisible" />
   </div>
 </template>
@@ -57,5 +57,16 @@ export default {
 .blur {
   filter: blur(4px)
 }
+
+.img-container {
+  width: 100%;
+  height: 100vh;
+  padding-top: 3rem;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url('../assets/map_screenshot.png');
+}
+
 @import '../assets/scss/layouts/profile-styles.scss';
 </style>
