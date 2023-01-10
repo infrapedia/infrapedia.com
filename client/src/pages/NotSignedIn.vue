@@ -22,11 +22,6 @@ export default {
   data: () => ({
     isRegisterDialogVisible: false
   }),
-  computed: {
-    imgUrl() {
-      return require('../assets/map_screenshot.png')
-    }
-  },
   async mounted() {
     document.querySelector('body').className = 'no-overflow'
     await this.checkUserAuthState()
