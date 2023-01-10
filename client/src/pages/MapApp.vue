@@ -17,12 +17,11 @@
         help-text="Upload kmz or geojson"
         @close="() => (openEditDialog = false)"
       />
-      <i-register-dialog :visible="isRegisterDialogVisible" />
       <user-cables-button />
       <h-mobile-menu class="hidden-md-and-up" />
       <market-place :is-mobile="true" />
       <div class="h-fit-content min-height60vh">
-        <map-overlay @map-loaded="checkUserAuthState" />
+        <map-overlay />
       </div>
       <!-- <must-be-logged-in :is-visible="isMustBeLoggedInDialog" /> -->
     </template>
@@ -51,7 +50,6 @@ import { bus } from '../helpers/eventBus'
 import { getMetaDataTagsFromSelectionType } from '../helpers'
 import metadata from '../config/map_metadata.json'
 import { checkCookie } from '../helpers/cookies'
-// import MustBeLoggedIn from '../components/dialogs/MustBeLoggedIn.vue'
 
 export default {
   components: {
@@ -64,7 +62,6 @@ export default {
     IIssuesDialog: () => import("../components/dialogs/IssuesDialog"),
     IAlertsDialog: () => import("../components/dialogs/AlertsDialog"),
     IEditDialog: () => import("../components/dialogs/EditDialog"),
-    IRegisterDialog: () => import("../components/dialogs/PromoteRegistration"),
     IVerificationDialog: () => import("../components/dialogs/VerificationDialog"),
     HMobileMenu: () => import("../components/navbar/MobileMenu"),
     MarketPlace: () => import("../components/navbar/MartketPlace"),
@@ -89,7 +86,6 @@ export default {
       ]
     },
     openEditDialog: false,
-    isRegisterDialogVisible: false
   }),
   computed: {
     focus() {
@@ -136,17 +132,6 @@ export default {
     }
   },
   methods: {
-    closeRegisterDialog() {
-      this.isRegisterDialogVisible = false
-    },
-    async checkUserAuthState() {
-      await this.$nextTick()
-      if (this.$auth.isAuthenticated) await this.setToken()
-      else deleteCookie('auth.token-session')
-      if (!this.$auth.isAuthenticated && !checkCookie('auth.token-session')) {
-        this.isRegisterDialogVisible = true
-      }
-    },
     handleCurrentMetaTagsUpdate(data) {
       if (!data) {
         this.metaData = metadata

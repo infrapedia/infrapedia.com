@@ -11,15 +11,11 @@ import Profile from '../pages/profile/profile.vue'
 import ChangePassword from '../pages/profile/recover-password.vue'
 import EmailProviders from '../pages/profile/email-providers.vue'
 import Contact from '../pages/Contact.vue'
-// import About from '../pages/About.vue'
 import Attributions from '../pages/Attributions.vue'
-// import Services from '../pages/Services.vue'
-// import Sponsors from '../pages/Sponsors.vue'
-// import VotesResults from '../pages/VotesResults.vue'
 import PrivacyPolicy from '../pages/PrivacyPolicy.vue'
 import TermsAndConditions from '../pages/TermsAndConditions.vue'
 import FAQ from '../pages/FAQ.vue'
-// import Advisors from '../pages/Advisors.vue'
+import NotSignedIn from '../pages/NotSignedIn'
 
 async function handleAdminOnlyRoutes(next, to) {
   const $authInstance = getInstance()
@@ -120,14 +116,8 @@ const routes = [
     path: '/',
     name: 'app',
     alias: ['/subsea-cable/*', '/cls/*', '/terrestrial-network/*', '/ixp/*', '/facility/*', '/organization/*'],
-    component: MapApp
+    component: !checkCookie('auth.token-session') ? NotSignedIn : MapApp
   },
-  // {
-  //   path: '/homepage',
-  //   name: 'homepage',
-  //   alias: '/',
-  //   component: Landing
-  // },
   {
     path: '/',
     name: 'landing',
@@ -143,11 +133,6 @@ const routes = [
         name: 'faq',
         component: FAQ
       },
-      // {
-      //   path: '/services',
-      //   name: 'services',
-      //   component: Services
-      // },
       {
         path: '/privacy-policy',
         name: 'privacy-policy',
@@ -158,11 +143,6 @@ const routes = [
         name: 'terms-and-conditions',
         component: TermsAndConditions
       },
-      // {
-      //   path: '/sponsors',
-      //   name: 'sponsors',
-      //   component: Sponsors
-      // },
       {
         path: '/contact',
         name: 'Contact',
@@ -173,16 +153,6 @@ const routes = [
         name: 'About Us',
         component: Landing
       },
-      // {
-      //   path: '/votes-results',
-      //   name: 'votes-results',
-      //   component: VotesResults
-      // },
-      // {
-      //   path: '/advisory-board',
-      //   name: 'Advisory Board',
-      //   component: Advisors
-      // }
     ]
   },
   {
