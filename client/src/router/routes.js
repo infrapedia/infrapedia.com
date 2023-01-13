@@ -113,9 +113,8 @@ const MyIssuesSection = () =>
 const routes = [
   { path: '*', component: NotFound },
   {
-    path: '/',
+    path: '/:type/:slug',
     name: 'app',
-    alias: ['/subsea-cable/*', '/cls/*', '/terrestrial-network/*', '/ixp/*', '/facility/*', '/organization/*'],
     component: !checkCookie('auth.token-session') ? NotSignedIn : MapApp
   },
   {
