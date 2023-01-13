@@ -119,6 +119,11 @@ const routes = [
   },
   {
     path: '/',
+    name: 'app',
+    component: !checkCookie('auth.token-session') ? NotSignedIn : MapApp
+  },
+  {
+    path: '/',
     name: 'landing',
     component: HomepageLayout,
     children: [
