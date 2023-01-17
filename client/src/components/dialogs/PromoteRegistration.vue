@@ -159,7 +159,7 @@
                 <p>
                   If you'd like to know more about Infrapedia before continuing:
                 </p>
-                <p class="mt2">
+                <!-- <p class="mt2">
                   <a href="https://discord.gg/dTDP4EXm" class="flex items-center" style="gap: .5rem" target="_blank" title="Discord">
                     <svg
                     width="24"
@@ -173,13 +173,13 @@
                       />
                     </svg>
                   </a>
-                </p>
+                </p> -->
                 <p>
                   <router-link to="/faq"> FAQ </router-link>
                 </p>
-                <p>
+                <!-- <p>
                   <router-link to="/contact"> Contact us </router-link>
-                </p>
+                </p> -->
               </div>
             </div>
           </div>
