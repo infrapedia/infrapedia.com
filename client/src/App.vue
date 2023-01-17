@@ -58,7 +58,7 @@ export default {
     }
   },
   async created() {
-    if (!await this.$auth.checkAuthStatus() && checkCookie('auth.token-session')) {
+    if (await this.$auth.checkAuthStatus() === false && checkCookie('auth.token-session')) {
       deleteCookie('auth.token-session')
       this.$router.go(0)
     }
