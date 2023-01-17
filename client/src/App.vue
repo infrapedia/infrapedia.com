@@ -21,6 +21,8 @@
 
 <script>
 import ContactDialog from './components/dialogs/ContactDialog.vue'
+import { checkCookie, deleteCookie } from './helpers/cookies'
+
 export default {
   name: 'App',
   components: {
@@ -53,6 +55,12 @@ export default {
         }
       }
       return theme
+    }
+  },
+  async created() {
+    if (!await this.$auth.checkAuthStatus() && checkCookie('auth.token-session')) {
+      deleteCookie('auth.token-session')
+      this.$router.go(0)
     }
   },
   methods: {
