@@ -112,9 +112,9 @@
             >
               View Map
             </router-link>
-            <router-link class="el-button is-round p4 el-link" to="/contact">
+            <!-- <router-link class="el-button is-round p4 el-link" to="/contact">
               Contact Us
-            </router-link>
+            </router-link> -->
           </div>
         </div>
       </div>

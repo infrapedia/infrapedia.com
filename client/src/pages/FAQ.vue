@@ -57,13 +57,13 @@
           </p>
         </div>
 
-        <div aria-hidden="true" class="mb10" />
+        <!-- <div aria-hidden="true" class="mb10" /> -->
 
-        <p class="text">
+        <!-- <p class="text">
           Have more questions?
           <a href="https://infrapedia.com/contact"> Write to us!</a> We will
           reach out.
-        </p>
+        </p> -->
       </div>
     </div>
   </div>
@@ -198,7 +198,7 @@ export default {
           html: true,
           marker: 'whatIsInfrapedia',
           content:
-            "Infrapedia is a crowd-sourced near real-time <a href='https://infrapedia.com'> map of the global Internet infrastructure </a> detailing the world's submarine cable system infrastructure, fiber optic terrestrial networks and other critical infrastructure assets giving the ability to network professionals to connect with each other to help improve, acquire and sell capacity faster, cheaper and easier.",
+            "Infrapedia is a crowd-sourced <a href='https://infrapedia.com'> map of the global Internet infrastructure </a> detailing the world's submarine cable system infrastructure, fiber optic terrestrial networks and other critical infrastructure assets giving the ability to network professionals to connect with each other to help improve, acquire and sell capacity faster, cheaper and easier.",
         },
         {
           title: 'Do I need anything special to use Infrapedia?',
@@ -224,7 +224,7 @@ export default {
           marker: 'canWeUseAScreenshot',
           html: true,
           content:
-            'You can use an image/screenshot or embed the website (https://www.infrapedia.com/) into any (interactive) content, as long as our name (Infrapedia) and website/url (https://www.infrapedia.com/) is clearly visible as a reference/source. Do you want to do anything else, please <a href="https://infrapedia.com/contact">contact us</a> first to discuss it in more detail.',
+            'You can use an image/screenshot or embed the website (https://www.infrapedia.com/) into any (interactive) content, as long as our name (Infrapedia) and website/url (https://www.infrapedia.com/) is clearly visible as a reference/source.',
         },
         {
           title: 'How can I help?',
@@ -301,21 +301,21 @@ export default {
           html: true,
           marker: 'canISubmitMyCompanySubmarineCableData',
           content:
-            'Providing your organization’s leadership approves, yes please! There are several ways but the simplest way is to go to <a href="https://www.infrapedia.com">www.infrapedia.com</a>, sign up and upload your KMZ data via the <a href="https://www.infrapedia.com/user/section/terrestrial-networks"> User dashboard</a>. If you run into any issues, <a href="https://infrapedia.com/contact"> contact us</a> and we will arrange for an email exchange of the KMZ data and add it for you.',
+            'Providing your organization’s leadership approves, yes please! There are several ways but the simplest way is to go to <a href="https://www.infrapedia.com">www.infrapedia.com</a>, sign up and upload your KMZ data via the <a href="https://www.infrapedia.com/user/section/terrestrial-networks"> User dashboard</a>.',
         },
         {
           title: "Can I submit/share my company's terrestrial network data?",
           marker: 'canISubmitMyCompanyTerrestrialNetworkData',
           html: true,
           content:
-            'Providing your organization’s leadership approves, yes please! There are several ways but the simplest way is to go to <a href="https://www.infrapedia.com">www.infrapedia.com</a>, sign up and upload your KMZ data via the <a href="https://www.infrapedia.com/user/section/terrestrial-networks"> User dashboard</a>. If you run into any issues, <a href="https://infrapedia.com/contact"> contact us</a> and we will arrange for an email exchange of the KMZ data and add it for you.',
+            'Providing your organization’s leadership approves, yes please! There are several ways but the simplest way is to go to <a href="https://www.infrapedia.com">www.infrapedia.com</a>, sign up and upload your KMZ data via the <a href="https://www.infrapedia.com/user/section/terrestrial-networks"> User dashboard</a>.',
         },
         {
           title: 'Can I submit/share my data center or IXP data?',
           marker: 'canISubmitMyDataCenterOrIXPData',
           html: true,
           content:
-            'Yes you can. Consider adding/updating your information in <a href="https://www.peeringdb.com/" rel="noreferrer noopener">PeeringDB</a> first. This allows us to synchronize the information directly. Otherwise, go to <a href="https://www.infrapedia.com">www.infrapedia.com</a>, sign up and add the information via the User dashboard. If you run into any issues, <a href="https://infrapedia.com/contact"> contact us</a> and we will help you.',
+            'Yes you can. Consider adding/updating your information in <a href="https://www.peeringdb.com/" rel="noreferrer noopener">PeeringDB</a> first. This allows us to synchronize the information directly. Otherwise, go to <a href="https://www.infrapedia.com">www.infrapedia.com</a>, sign up and add the information via the User dashboard.',
         },
         {
           title: 'I uploaded my network data but it is not on the map? ',
@@ -362,13 +362,13 @@ export default {
           content:
             'No, at Infrapedia we make it clear that we treat every vendor equally. We strictly do not take any commission. The only things we are asking for in return is to: <ul style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; list-style: disc; padding-left: 1rem"> <li>Promote the platform to your peers,</li> <li> Consider contributing your network, subsea cable, IXP or data center information to the community.</li> </ul>',
         },
-        {
-          title: 'I am a vendor. How can I receive Buy Now! leads?',
-          marker: 'iAmVendorHowCanIReceiveLeads',
-          html: true,
-          content:
-            '<a href="https://www.infrapedia.com/contact"> Connect with us</a> and we will keep you posted on any relevant leads. However, in order to better identify relevant leads it is helpful to validate and update information about your organization and infrastructures. Request access to the information via the dashboard or <a href="https://www.infrapedia.com/contact"> contact us</a> to exchange the information so we can update it for you.',
-        },
+        // {
+        //   title: 'I am a vendor. How can I receive Buy Now! leads?',
+        //   marker: 'iAmVendorHowCanIReceiveLeads',
+        //   html: true,
+        //   content:
+        //     '<a href="https://www.infrapedia.com/contact"> Connect with us</a> and we will keep you posted on any relevant leads. However, in order to better identify relevant leads it is helpful to validate and update information about your organization and infrastructures. Request access to the information via the dashboard or <a href="https://www.infrapedia.com/contact"> contact us</a> to exchange the information so we can update it for you.',
+        // },
         {
           title: 'Do you see the contents of the lead when I click Buy Now!?',
           marker: 'doYouSeeTheContentsOfTheLeadWhen',
