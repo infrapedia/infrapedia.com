@@ -15,19 +15,19 @@
     >
       <router-view />
     </transition>
-    <contact-dialog></contact-dialog>
+    <!-- <contact-dialog></contact-dialog> -->
   </div>
 </template>
 
 <script>
-import ContactDialog from './components/dialogs/ContactDialog.vue'
+// import ContactDialog from './components/dialogs/ContactDialog.vue'
 import { checkCookie, deleteCookie } from './helpers/cookies'
 
 export default {
   name: 'App',
-  components: {
-    ContactDialog
-  },
+  // components: {
+  //   ContactDialog
+  // },
   created() {
     if (Object.keys(this.$route.query).length > 0) {
       this.handleSharedView()

@@ -1346,8 +1346,6 @@ export default {
     async handleFilterSelection(selection) {
       let filter
 
-      console.log(selection)
-
       switch (selection) {
         case -1:
           filter = mapConfig.filter.all

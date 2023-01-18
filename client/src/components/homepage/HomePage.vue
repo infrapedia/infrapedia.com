@@ -208,8 +208,7 @@
                 and data center facilities.
               </li>
               <li>
-                See <strong>near-real time</strong> operational status of
-                networks, especially subsea cable systems.
+                See operational status of networks, especially subsea cable systems.
               </li>
               <li>
                 <strong>Find</strong> new routes and get technical details to

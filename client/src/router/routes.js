@@ -10,8 +10,8 @@ import Login from '../pages/login.vue'
 import Profile from '../pages/profile/profile.vue'
 import ChangePassword from '../pages/profile/recover-password.vue'
 import EmailProviders from '../pages/profile/email-providers.vue'
-import Contact from '../pages/Contact.vue'
-import Attributions from '../pages/Attributions.vue'
+// import Contact from '../pages/Contact.vue'
+// import Attributions from '../pages/Attributions.vue'
 import PrivacyPolicy from '../pages/PrivacyPolicy.vue'
 import TermsAndConditions from '../pages/TermsAndConditions.vue'
 import FAQ from '../pages/FAQ.vue'
@@ -127,11 +127,11 @@ const routes = [
     name: 'landing',
     component: HomepageLayout,
     children: [
-      {
-        path: '/attributions',
-        name: 'attributions',
-        component: Attributions
-      },
+      // {
+      //   path: '/attributions',
+      //   name: 'attributions',
+      //   component: Attributions
+      // },
       {
         path: '/faq',
         name: 'faq',
@@ -147,11 +147,11 @@ const routes = [
         name: 'terms-and-conditions',
         component: TermsAndConditions
       },
-      {
-        path: '/contact',
-        name: 'Contact',
-        component: Contact
-      },
+      // {
+      //   path: '/contact',
+      //   name: 'Contact',
+      //   component: Contact
+      // },
       {
         path: '/about-us',
         name: 'About Us',

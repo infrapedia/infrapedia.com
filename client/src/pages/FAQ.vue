@@ -104,7 +104,7 @@ export default {
               name: 'What is Infrapedia?',
               acceptedAnswer: {
                 '@type': 'Answer',
-                text: "Infrapedia is a crowd-sourced near real-time map of the global Internet infrastructure detailing the world's submarine and terrestrial networks as well as other critical infrastructure assets in real time while giving the ability to network professionals to connect with each other to help improve companies acquire and sell capacity faster , cheaper and easier.",
+                text: "Infrapedia is a crowd-sourced map of the global Internet infrastructure detailing the world's submarine and terrestrial networks as well as other critical infrastructure assets in real time while giving the ability to network professionals to connect with each other to help improve companies acquire and sell capacity faster , cheaper and easier.",
               },
             },
             {

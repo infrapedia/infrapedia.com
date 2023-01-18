@@ -62,8 +62,8 @@ export default {
         active: true
       },
       [mapConfig.ixps]: {
-        active: false,
-        disabled: true
+        active: true,
+        disabled: false
       },
       [mapConfig.facilities]: {
         active: true,

@@ -160,20 +160,20 @@
 
             <!-- v-for="(item, i) in sponsors" -->
             <!-- :key="i" -->
-            <li
+            <!-- <li
               class="inline-block hidden-sm-and-down relative"
               data-no-outline="true"
               role="listitem"
             >
               <div class="list-item" data-no-hover-bg="true">
-                <!-- <el-image
+                <el-image
                 :src="item.src"
                 lazy
                 class="w26 image-sponsor"
                     fit="cover"
                     :alt="item.alt"
                     referrer-policy="strict-origin-when-cross-origin"
-                    /> -->
+                    />
                 <a :href="donationLink" target="_blank">
                   <el-image
                     src="https://storage.googleapis.com/infrapediacom/assets/paypal-donate-button2.png"
@@ -183,7 +183,7 @@
                   />
                 </a>
               </div>
-            </li>
+            </li> -->
 
             <li
               class="inline-block relative"
