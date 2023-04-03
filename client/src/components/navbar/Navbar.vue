@@ -61,7 +61,7 @@
                 About
               </router-link>
             </li>
-            <li
+            <!-- <li
               class="inline-block no-selectable relative hidden-sm-and-down"
               role="listitem"
             >
@@ -72,7 +72,7 @@
               >
                 Discord
               </a>
-            </li>
+            </li> -->
             <!-- <el-divider direction="vertical" class="m0 hidden-sm-and-down" /> -->
             <!-- <li
               class="inline-block no-selectable relative hidden-sm-and-down"
